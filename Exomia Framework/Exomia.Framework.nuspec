@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.githubusercontent.com/exomia/framework/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/exomia/framework</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright © 2018 exomia</copyright>
+    <tags>exomia framework</tags>
+  </metadata>
+</package>
