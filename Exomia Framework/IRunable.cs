@@ -22,21 +22,33 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
+namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to handle content writing
+    ///     An interface to run a object.
     /// </summary>
-    public interface IContentSerializationWriter
+    public interface IRunnable
     {
+        #region Properties
+
+        /// <summary>
+        ///     return true if the object is running
+        /// </summary>
+        bool IsRunning { get; }
+
+        #endregion
+
         #region Methods
 
         /// <summary>
-        ///     Write the object informations into the context
+        ///     starts the run
         /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        void Write(ContentSerializationContext context, object obj);
+        void Run();
+
+        /// <summary>
+        ///     shutdown the run
+        /// </summary>
+        void Shutdown();
 
         #endregion
     }

@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -9,32 +33,20 @@ namespace Exomia.Framework.Collections
 {
     public sealed class List<T>
     {
-        #region Constants
+        #region Variables
 
         private const int DEFAULT_CAPACITY = 8;
         private const int MAX_CAPACITY = 0X7FEFFFFF;
 
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
         private static readonly T[] s_emptyArray = new T[0];
 
-        #endregion
+        private readonly int _sizeOf;
 
         private T[] _items;
-
-        private readonly int _sizeOf;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         public int Capacity
         {
@@ -86,10 +98,6 @@ namespace Exomia.Framework.Collections
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         public List()
         {
             _items = s_emptyArray;
@@ -98,16 +106,14 @@ namespace Exomia.Framework.Collections
 
         public List(uint capacity)
         {
-            if (capacity == 0) { _items = s_emptyArray; }
-            else { _items = new T[capacity]; }
+            _items = capacity == 0 ? s_emptyArray : new T[capacity];
             _sizeOf = Marshal.SizeOf<T>();
         }
 
         public List(int capacity)
         {
             if (capacity < 0) { throw new ArgumentOutOfRangeException(nameof(capacity)); }
-            if (capacity == 0) { _items = s_emptyArray; }
-            else { _items = new T[capacity]; }
+            _items = capacity == 0 ? s_emptyArray : new T[capacity];
             _sizeOf = Marshal.SizeOf<T>();
         }
 
@@ -143,25 +149,6 @@ namespace Exomia.Framework.Collections
         #endregion
 
         #region Methods
-
-        #region Statics
-
-        #endregion
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void EnsureCapacity(int min)
-        {
-            if (_items.Length < min)
-            {
-                int newCapacity = _items.Length == 0 ? DEFAULT_CAPACITY : _items.Length * 2;
-                if (newCapacity > MAX_CAPACITY) { newCapacity = MAX_CAPACITY; }
-                if (newCapacity < min) { newCapacity = min; }
-
-                T[] newItems = new T[newCapacity];
-                if (Count > 0) { Buffer.BlockCopy(_items, 0, newItems, 0, Count * _sizeOf); }
-                _items = newItems;
-            }
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int index)
@@ -349,6 +336,21 @@ namespace Exomia.Framework.Collections
             T[] array = new T[count];
             Buffer.BlockCopy(_items, index, array, 0, count * _sizeOf);
             return array;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureCapacity(int min)
+        {
+            if (_items.Length < min)
+            {
+                int newCapacity = _items.Length == 0 ? DEFAULT_CAPACITY : _items.Length * 2;
+                if (newCapacity > MAX_CAPACITY) { newCapacity = MAX_CAPACITY; }
+                if (newCapacity < min) { newCapacity = min; }
+
+                T[] newItems = new T[newCapacity];
+                if (Count > 0) { Buffer.BlockCopy(_items, 0, newItems, 0, Count * _sizeOf); }
+                _items = newItems;
+            }
         }
 
         #endregion

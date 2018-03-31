@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -13,47 +37,17 @@ namespace Exomia.Framework.Graphics
     [ContentSerializable(typeof(SpriteFontCR), typeof(SpriteFontCW))]
     public sealed class SpriteFont : IDisposable
     {
-        [ContentSerializable(typeof(SpriteFontGlyphCR), typeof(SpriteFontGlyphCW))]
-        public struct Glyph
-        {
-            public int Character;
-            public Rectangle Subrect;
-            public int OffsetX;
-            public int OffsetY;
-            public int XAdvance;
-        }
-
-        [ContentSerializable(typeof(SpriteFontKerningCR), typeof(SpriteFontKerningCW))]
-        public struct Kerning
-        {
-            public int First;
-            public int Second;
-            public int Offset;
-        }
-
-        #region Constants
-
-        #endregion
-
         #region Variables
-
-        #region Statics
-
-        #endregion
 
         private Glyph _defaultGlyph;
 
-        private Texture _texture;
-
         private Dictionary<int, Glyph> _glyphs;
+
+        private Texture _texture;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         public bool IgnoreUnknownCharacters { get; set; }
 
@@ -109,10 +103,6 @@ namespace Exomia.Framework.Graphics
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         public SpriteFont()
         {
             _glyphs = new Dictionary<int, Glyph>();
@@ -126,9 +116,25 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #region Methods
+        #region Nested
 
-        #region Statics
+        [ContentSerializable(typeof(SpriteFontGlyphCR), typeof(SpriteFontGlyphCW))]
+        public struct Glyph
+        {
+            public int Character;
+            public Rectangle Subrect;
+            public int OffsetX;
+            public int OffsetY;
+            public int XAdvance;
+        }
+
+        [ContentSerializable(typeof(SpriteFontKerningCR), typeof(SpriteFontKerningCW))]
+        public struct Kerning
+        {
+            public int First;
+            public int Second;
+            public int Offset;
+        }
 
         #endregion
 
@@ -786,8 +792,6 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #endregion
-
         #region IDisposable Support
 
         private bool _disposed;
@@ -823,29 +827,17 @@ namespace Exomia.Framework.Graphics
     [ContentSerializable(typeof(SpriteFontCR), typeof(SpriteFontCW))]
     public sealed class SpriteFont2 : IDisposable
     {
-        #region Constants
-
-        #endregion
-
         #region Variables
-
-        #region Statics
-
-        #endregion
 
         private SpriteFont.Glyph _defaultGlyph;
 
-        private Texture2 _texture2;
-
         private Dictionary<int, SpriteFont.Glyph> _glyphs;
+
+        private Texture2 _texture2;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         public bool IgnoreUnknownCharacters { get; set; }
 
@@ -901,10 +893,6 @@ namespace Exomia.Framework.Graphics
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         public SpriteFont2()
         {
             _glyphs = new Dictionary<int, SpriteFont.Glyph>();
@@ -915,12 +903,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
-
-        #region Statics
 
         #endregion
 
@@ -1578,8 +1560,6 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #endregion
-
         #region IDisposable Support
 
         private bool _disposed;
@@ -1613,6 +1593,8 @@ namespace Exomia.Framework.Graphics
 
     internal sealed class SpriteFontCW : AContentSerializationWriter<SpriteFont>
     {
+        #region Methods
+
         public override void WriteContext(ContentSerializationContext context, SpriteFont obj)
         {
             context.Set("Face", obj.Face);
@@ -1632,10 +1614,14 @@ namespace Exomia.Framework.Graphics
 
             context.Set("ImageData", Convert.ToBase64String(obj.ImageData));
         }
+
+        #endregion
     }
 
     internal sealed class SpriteFontGlyphCW : AContentSerializationWriter<SpriteFont.Glyph>
     {
+        #region Methods
+
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Glyph obj)
         {
             context.Set("Character", obj.Character);
@@ -1644,23 +1630,31 @@ namespace Exomia.Framework.Graphics
             context.Set("OffsetY", obj.OffsetY);
             context.Set("XAdvance", obj.XAdvance);
         }
+
+        #endregion
     }
 
     internal sealed class SpriteFontKerningCW : AContentSerializationWriter<SpriteFont.Kerning>
     {
+        #region Methods
+
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Kerning obj)
         {
             context.Set("First", obj.First);
             context.Set("Second", obj.Second);
             context.Set("Offset", obj.Offset);
         }
+
+        #endregion
     }
 
     internal sealed class SpriteFontCR : AContentSerializationReader<SpriteFont>
     {
+        #region Methods
+
         public override SpriteFont ReadContext(ContentSerializationContext context)
         {
-            SpriteFont data = new SpriteFont
+            return new SpriteFont
             {
                 Face = context.Get<string>("Face"),
                 Size = context.Get<int>("Size"),
@@ -1678,15 +1672,19 @@ namespace Exomia.Framework.Graphics
 
                 ImageData = Convert.FromBase64String(context.Get<string>("ImageData"))
             };
-            return data;
+            ;
         }
+
+        #endregion
     }
 
     internal sealed class SpriteFontGlyphCR : AContentSerializationReader<SpriteFont.Glyph>
     {
+        #region Methods
+
         public override SpriteFont.Glyph ReadContext(ContentSerializationContext context)
         {
-            SpriteFont.Glyph data = new SpriteFont.Glyph
+            return new SpriteFont.Glyph
             {
                 Character = context.Get<int>("Character"),
                 Subrect = context.Get<Rectangle>("Subrect"),
@@ -1694,21 +1692,27 @@ namespace Exomia.Framework.Graphics
                 OffsetY = context.Get<int>("OffsetY"),
                 XAdvance = context.Get<int>("XAdvance")
             };
-            return data;
+            ;
         }
+
+        #endregion
     }
 
     internal sealed class SpriteFontKerningCR : AContentSerializationReader<SpriteFont.Kerning>
     {
+        #region Methods
+
         public override SpriteFont.Kerning ReadContext(ContentSerializationContext context)
         {
-            SpriteFont.Kerning data = new SpriteFont.Kerning
+            return new SpriteFont.Kerning
             {
                 First = context.Get<int>("First"),
                 Second = context.Get<int>("Second"),
                 Offset = context.Get<int>("Offset")
             };
-            return data;
+            ;
         }
+
+        #endregion
     }
 }

@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using Exomia.Framework.ContentSerialization.Exceptions;
 
@@ -9,13 +33,7 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// </summary>
     internal sealed class DictionaryType : IType
     {
-        /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public DictionaryType()
-        {
-            BaseType = typeof(Dictionary<,>);
-        }
+        #region Properties
 
         /// <summary>
         ///     TypeName without System
@@ -39,6 +57,22 @@ namespace Exomia.Framework.ContentSerialization.Types
             get { return false; }
         }
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public DictionaryType()
+        {
+            BaseType = typeof(Dictionary<,>);
+        }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
         /// </summary>
@@ -52,12 +86,9 @@ namespace Exomia.Framework.ContentSerialization.Types
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
-            if (ContentSerializer.s_types.TryGetValue(valueBaseTypeInfo, out IType itv))
-            {
-                return BaseType.MakeGenericType(itk.CreateType(string.Empty), itv.CreateType(valueGenericTypeInfo));
-            }
-
-            return BaseType.MakeGenericType(itk.CreateType(string.Empty), valueBaseTypeInfo.CreateType());
+            return ContentSerializer.s_types.TryGetValue(valueBaseTypeInfo, out IType itv)
+                ? BaseType.MakeGenericType(itk.CreateType(string.Empty), itv.CreateType(valueGenericTypeInfo))
+                : BaseType.MakeGenericType(itk.CreateType(string.Empty), valueBaseTypeInfo.CreateType());
         }
 
         /// <summary>
@@ -153,16 +184,6 @@ namespace Exomia.Framework.ContentSerialization.Types
             catch { throw; }
         }
 
-        private void Write<TKey, TValue>(Action<string, string> writeHandler, string tabSpace, string key,
-            Dictionary<TKey, TValue> content, bool useTypeInfo = true)
-        {
-            writeHandler(
-                tabSpace,
-                $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}({content.Count})]");
-            ForeachDictionaryDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
-            writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
-        }
-
         #region WriteHelper
 
         private static void ForeachDictionaryDimension<TKey, TValue>(Action<string, string> writeHandler,
@@ -184,6 +205,18 @@ namespace Exomia.Framework.ContentSerialization.Types
                     writeHandler(tabSpace, "[/]");
                 }
             }
+        }
+
+        #endregion
+
+        private void Write<TKey, TValue>(Action<string, string> writeHandler, string tabSpace, string key,
+            Dictionary<TKey, TValue> content, bool useTypeInfo = true)
+        {
+            writeHandler(
+                tabSpace,
+                $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}({content.Count})]");
+            ForeachDictionaryDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
+            writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
         }
 
         #endregion

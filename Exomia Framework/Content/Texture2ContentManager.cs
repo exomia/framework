@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -14,24 +38,34 @@ namespace Exomia.Framework.Content
     /// <inheritdoc />
     public sealed class Texture2ContentManager : ITexture2ContentManager
     {
-        #region Properties
+        #region Variables
 
-        #region Statics
+        private const int INITIAL_QUEUE_SIZE = 8;
+        private const int ATLAS_WIDTH = 1024 * 8;
+        private const int ATLAS_HEIGHT = 1024 * 8;
+
+        private readonly Dictionary<int, SpriteBatchAtlas> _atlases =
+            new Dictionary<int, SpriteBatchAtlas>(INITIAL_QUEUE_SIZE);
+
+        private readonly Dictionary<string, Texture2> _atlasesKeys =
+            new Dictionary<string, Texture2>(INITIAL_QUEUE_SIZE);
+
+        private readonly object _lockAtlas = new object();
+
+        private int _atlasesIndex;
+
+        private Texture _texture;
 
         #endregion
 
-        /// <summary>
-        ///     <see cref="ITexture2ContentManager.IsTextureInvalid" />
-        /// </summary>
+        #region Properties
+
+        /// <inheritdoc />
         public bool IsTextureInvalid { get; private set; }
 
         #endregion
 
         #region Constructors
-
-        #region Statics
-
-        #endregion
 
         ~Texture2ContentManager()
         {
@@ -40,46 +74,7 @@ namespace Exomia.Framework.Content
 
         #endregion
 
-        #region Constants
-
-        private const int INITIAL_QUEUE_SIZE = 8;
-        private const int ATLAS_WIDTH = 1024 * 8;
-        private const int ATLAS_HEIGHT = 1024 * 8;
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        private readonly Dictionary<int, SpriteBatchAtlas> _atlases =
-            new Dictionary<int, SpriteBatchAtlas>(INITIAL_QUEUE_SIZE);
-
-        private readonly Dictionary<string, Texture2> _atlasesKeys =
-            new Dictionary<string, Texture2>(INITIAL_QUEUE_SIZE);
-
-        private int _atlasesIndex;
-        private readonly object _lockAtlas = new object();
-
-        private Texture _texture;
-
-        #endregion
-
         #region Methods
-
-        #region Statics
-
-        #endregion
-
-        private void AddAtlas()
-        {
-            lock (_lockAtlas)
-            {
-                _atlases.Add(_atlasesIndex++, new SpriteBatchAtlas(ATLAS_WIDTH, ATLAS_HEIGHT));
-            }
-        }
 
         /// <inheritdoc />
         public Texture2 AddTexture(Stream stream, string assetName, int startIndex = 0)
@@ -110,6 +105,7 @@ namespace Exomia.Framework.Content
 
             return AddTexture(stream, assetName, _atlasesIndex - 1);
         }
+
         /// <inheritdoc />
         public Texture2 AddTexture(string assetName, int startIndex = 0)
         {
@@ -170,6 +166,14 @@ namespace Exomia.Framework.Content
             IsTextureInvalid = true;
             _texture?.Dispose();
             _texture = null;
+        }
+
+        private void AddAtlas()
+        {
+            lock (_lockAtlas)
+            {
+                _atlases.Add(_atlasesIndex++, new SpriteBatchAtlas(ATLAS_WIDTH, ATLAS_HEIGHT));
+            }
         }
 
         #endregion

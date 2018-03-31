@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -18,54 +42,47 @@ using Message = System.Windows.Forms.Message;
 
 namespace Exomia.Framework.Game
 {
+    /// <inheritdoc cref="IRunnable" />
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     ///     Game class
     /// </summary>
-    public class Game : IRunnable, IDisposable
+    public abstract class Game : IRunnable, IDisposable
     {
-        #region Constants
+        #region Variables
 
         private const int INITIAL_QUEUE_SIZE = 16;
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
 
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        private bool _isInitialized;
-        private bool _isRunning;
-        private bool _isContentLoaded;
-
-        private IContentManager _contentManager;
-        private IGraphicsDevice _graphicsDevice;
-        private IGameWindow _gameWindow;
+        private readonly List<IContentable> _contentableComponent;
+        private readonly List<IContentable> _currentlyContentableComponent;
 
         private readonly List<IDrawable> _currentlyDrawableComponent;
         private readonly List<IUpdateable> _currentlyUpdateableComponent;
-        private readonly List<IContentable> _currentlyContentableComponent;
 
         private readonly List<IDrawable> _drawableComponent;
-        private readonly List<IUpdateable> _updateableComponent;
-        private readonly List<IContentable> _contentableComponent;
 
         private readonly Dictionary<string, IComponent> _gameComponents;
         private readonly List<IInitializable> _pendingInitializables;
 
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly List<IUpdateable> _updateableComponent;
+
         private DisposeCollector _collector;
+
+        private IContentManager _contentManager;
+        private IGameWindow _gameWindow;
+        private IGraphicsDevice _graphicsDevice;
+        private bool _isContentLoaded;
+
+        private bool _isInitialized;
+        private bool _isRunning;
+
+        private bool _shutdown;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
-
-        private event EventHandler IsRunningChanged;
 
         public bool IsRunning
         {
@@ -75,7 +92,7 @@ namespace Exomia.Framework.Game
                 if (_isRunning != value)
                 {
                     _isRunning = value;
-                    IsRunningChanged?.Invoke(this, EventArgs.Empty);
+                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -107,17 +124,18 @@ namespace Exomia.Framework.Game
 
         #region Constructors
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Game" /> class.
+        ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Game.Game" /> class.
         /// </summary>
-        public Game()
+        protected Game()
             : this(string.Empty) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Game" /> class.
         /// </summary>
         /// <param name="title">title</param>
-        public Game(string title)
+        protected Game(string title)
         {
 #if DEBUG
             /*string info = "";
@@ -170,9 +188,7 @@ namespace Exomia.Framework.Game
 
         #region Methods
 
-        /// <summary>
-        ///     Call this method to initialize the game, begin running the game loop, and start processing events for the game.
-        /// </summary>
+        /// <inheritdoc />
         public void Run()
         {
             BeginInitialize();
@@ -184,7 +200,7 @@ namespace Exomia.Framework.Game
 
             _isRunning = true;
 
-            IsRunningChanged += (s, e) =>
+            _isRunningChanged += (s, e) =>
             {
                 if (_isRunning)
                 {
@@ -215,17 +231,280 @@ namespace Exomia.Framework.Game
             UnloadContent();
         }
 
-        private bool _shutdown;
-
-        /// <summary>
-        ///     Shutdown the game
-        /// </summary>
+        /// <inheritdoc />
         public void Shutdown()
         {
             _shutdown = true;
         }
 
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        /// <summary>
+        ///     add a new game system
+        /// </summary>
+        /// <typeparam name="T">T</typeparam>
+        /// <param name="item">item</param>
+        /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
+        public T Add<T>(T item)
+        {
+            if (item is IComponent component)
+            {
+                if (_gameComponents.ContainsKey(component.Name)) { return item; }
+                lock (_gameComponents)
+                {
+                    _gameComponents.Add(component.Name, component);
+                }
+            }
+
+            if (item is IInitializable initializable)
+            {
+                if (_isInitialized)
+                {
+                    initializable.Initialize(Services);
+                }
+                else
+                {
+                    lock (_pendingInitializables)
+                    {
+                        _pendingInitializables.Add(initializable);
+                    }
+                }
+            }
+
+            if (item is IContentable contentable && !_contentableComponent.Contains(contentable))
+            {
+                lock (_contentableComponent)
+                {
+                    _contentableComponent.Add(contentable);
+                }
+                if (_isInitialized && _isContentLoaded)
+                {
+                    contentable.LoadContent();
+                }
+            }
+
+            if (item is IUpdateable updateable && !_updateableComponent.Contains(updateable))
+            {
+                lock (_updateableComponent)
+                {
+                    bool inserted = false;
+                    for (int i = 0; i < _updateableComponent.Count; i++)
+                    {
+                        IUpdateable compare = _updateableComponent[i];
+                        if (UpdateableComparer.Default.Compare(updateable, compare) <= 0)
+                        {
+                            _updateableComponent.Insert(i, updateable);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted) { _updateableComponent.Add(updateable); }
+                }
+                updateable.UpdateOrderChanged += UpdateableComponent_UpdateOrderChanged;
+            }
+
+            if (item is IDrawable drawable && !_drawableComponent.Contains(drawable))
+            {
+                lock (_drawableComponent)
+                {
+                    bool inserted = false;
+                    for (int i = 0; i < _drawableComponent.Count; i++)
+                    {
+                        IDrawable compare = _drawableComponent[i];
+                        if (DrawableComparer.Default.Compare(drawable, compare) <= 0)
+                        {
+                            _drawableComponent.Insert(i, drawable);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted) { _drawableComponent.Add(drawable); }
+                }
+                drawable.DrawOrderChanged += DrawableComponent_DrawOrderChanged;
+            }
+
+            if (item is IDisposable disposable)
+            {
+                ToDispose(disposable);
+            }
+            return item;
+        }
+
+        /// <summary>
+        ///     add a new game system
+        /// </summary>
+        /// <typeparam name="T">T</typeparam>
+        /// <param name="item">item</param>
+        /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
+        public T Remove<T>(T item)
+        {
+            lock (_contentableComponent)
+            {
+                if (item is IContentable contentable && _contentableComponent.Contains(contentable))
+                {
+                    lock (_contentableComponent)
+                    {
+                        _contentableComponent.Remove(contentable);
+                    }
+                    contentable.UnloadContent();
+                }
+            }
+
+            lock (_updateableComponent)
+            {
+                if (item is IUpdateable updateable && _updateableComponent.Contains(updateable))
+                {
+                    lock (_updateableComponent)
+                    {
+                        _updateableComponent.Remove(updateable);
+                    }
+                    updateable.UpdateOrderChanged -= UpdateableComponent_UpdateOrderChanged;
+                }
+            }
+
+            lock (_drawableComponent)
+            {
+                if (item is IDrawable drawable && _drawableComponent.Contains(drawable))
+                {
+                    lock (_drawableComponent)
+                    {
+                        _drawableComponent.Remove(drawable);
+                    }
+                    drawable.DrawOrderChanged -= DrawableComponent_DrawOrderChanged;
+                }
+            }
+
+            if (item is IComponent component1 && _gameComponents.ContainsKey(component1.Name))
+            {
+                lock (_gameComponents)
+                {
+                    _gameComponents.Remove(component1.Name);
+                }
+            }
+
+            if (item is IDisposable disposable)
+            {
+                disposable.Dispose();
+                _collector.Remove(item);
+            }
+
+            return item;
+        }
+
+        /// <summary>
+        ///     adds a IDisposable object to the disposecollector
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public T ToDispose<T>(T obj) where T : IDisposable
+        {
+            return _collector.Collect(obj);
+        }
+
+        /// <summary>
+        ///     get a game system by name
+        /// </summary>
+        /// <param name="name">the game system name</param>
+        /// <param name="system">out found gamesystem</param>
+        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
+        public bool GetComponent(string name, out IComponent system)
+        {
+            return _gameComponents.TryGetValue(name, out system);
+        }
+
+        /// <summary>
+        ///     Initialize game graphics parameters
+        /// </summary>
+        /// <param name="parameters"></param>
+        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
+
+        /// <summary>
+        ///     Called before Initialize.
+        /// </summary>
+        protected virtual void OnBeforeInitialize() { }
+
+        /// <summary>
+        ///     Called after the Game and GraphicsDevice are created.
+        /// </summary>
+        protected virtual void OnInitialize() { }
+
+        /// <summary>
+        ///     Called after Initialize but before LoadContent.
+        /// </summary>
+        protected virtual void OnAfterInitialize() { }
+
+        /// <summary>
+        ///     Called once to perform user-defined loading
+        /// </summary>
+        protected virtual void OnLoadContent() { }
+
+        /// <summary>
+        ///     Called once do perform user-defined unloading
+        /// </summary>
+        protected virtual void OnUnloadContent() { }
+
+        /// <summary>
+        ///     updates the game logic
+        /// </summary>
+        protected virtual void Update(GameTime gameTime)
+        {
+            lock (_updateableComponent)
+            {
+                _currentlyUpdateableComponent.AddRange(_updateableComponent);
+            }
+
+            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
+            {
+                IUpdateable updatable = _currentlyUpdateableComponent[i];
+                if (updatable.Enabled)
+                {
+                    updatable.Update(gameTime);
+                }
+            }
+
+            _currentlyUpdateableComponent.Clear();
+        }
+
+        /// <summary>
+        ///     draws the current scene
+        /// </summary>
+        protected virtual void Draw(GameTime gameTime)
+        {
+            lock (_drawableComponent)
+            {
+                _currentlyDrawableComponent.AddRange(_drawableComponent);
+            }
+
+            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
+            {
+                IDrawable drawable = _currentlyDrawableComponent[i];
+                if (drawable.BeginDraw())
+                {
+                    drawable.Draw(gameTime);
+                    drawable.EndDraw();
+                }
+            }
+
+            _currentlyDrawableComponent.Clear();
+        }
+
+        /// <summary>
+        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
+        /// </summary>
+        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
+        protected virtual bool BeginFrame()
+        {
+            return _graphicsDevice.BeginFrame();
+        }
+
+        /// <summary>
+        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
+        /// </summary>
+        protected virtual void EndFrame()
+        {
+            _graphicsDevice.EndFrame();
+        }
+
+        private event EventHandler _isRunningChanged;
 
         private void Renderloop(GameTime gameTime)
         {
@@ -319,27 +598,6 @@ namespace Exomia.Framework.Game
             }
         }
 
-        /// <summary>
-        ///     Initialize game graphics parameters
-        /// </summary>
-        /// <param name="parameters"></param>
-        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
-
-        /// <summary>
-        ///     Called before Initialize.
-        /// </summary>
-        protected virtual void OnBeforeInitialize() { }
-
-        /// <summary>
-        ///     Called after the Game and GraphicsDevice are created.
-        /// </summary>
-        protected virtual void OnInitialize() { }
-
-        /// <summary>
-        ///     Called after Initialize but before LoadContent.
-        /// </summary>
-        protected virtual void OnAfterInitialize() { }
-
         private void InitializePendingInitializations()
         {
             while (_pendingInitializables.Count != 0)
@@ -374,11 +632,6 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Called once to perform user-defined loading
-        /// </summary>
-        protected virtual void OnLoadContent() { }
-
-        /// <summary>
         ///     Unloads the content.
         /// </summary>
         private void UnloadContent()
@@ -402,249 +655,23 @@ namespace Exomia.Framework.Game
             }
         }
 
-        /// <summary>
-        ///     Called once do perform user-defined unloading
-        /// </summary>
-        protected virtual void OnUnloadContent() { }
-
-        /// <summary>
-        ///     updates the game logic
-        /// </summary>
-        protected virtual void Update(GameTime gameTime)
+        private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
         {
             lock (_updateableComponent)
             {
-                _currentlyUpdateableComponent.AddRange(_updateableComponent);
+                _updateableComponent.Sort(UpdateableComparer.Default);
             }
-
-            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
-            {
-                IUpdateable updatable = _currentlyUpdateableComponent[i];
-                if (updatable.Enabled)
-                {
-                    updatable.Update(gameTime);
-                }
-            }
-
-            _currentlyUpdateableComponent.Clear();
-        }
-
-        /// <summary>
-        ///     draws the current scene
-        /// </summary>
-        protected virtual void Draw(GameTime gameTime)
-        {
-            lock (_drawableComponent)
-            {
-                _currentlyDrawableComponent.AddRange(_drawableComponent);
-            }
-
-            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
-            {
-                IDrawable drawable = _currentlyDrawableComponent[i];
-                if (drawable.BeginDraw())
-                {
-                    drawable.Draw(gameTime);
-                    drawable.EndDraw();
-                }
-            }
-
-            _currentlyDrawableComponent.Clear();
-        }
-
-        /// <summary>
-        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
-        /// </summary>
-        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
-        protected virtual bool BeginFrame()
-        {
-            return _graphicsDevice.BeginFrame();
-        }
-
-        /// <summary>
-        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
-        /// </summary>
-        protected virtual void EndFrame()
-        {
-            _graphicsDevice.EndFrame();
-        }
-
-        /// <summary>
-        ///     add a new game system
-        /// </summary>
-        /// <typeparam name="T">T</typeparam>
-        /// <param name="item">item</param>
-        /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
-        public T Add<T>(T item)
-        {
-            if (item is IComponent component)
-            {
-                if (_gameComponents.ContainsKey(component.Name)) { return item; }
-                lock (_gameComponents)
-                {
-                    _gameComponents.Add(component.Name, component);
-                }
-            }
-
-            if (item is IInitializable initializable)
-            {
-                if (_isInitialized)
-                {
-                    initializable.Initialize(Services);
-                }
-                else
-                {
-                    lock (_pendingInitializables)
-                    {
-                        _pendingInitializables.Add(initializable);
-                    }
-                }
-            }
-
-            if (item is IContentable contentable && !_contentableComponent.Contains(contentable))
-            {
-                lock (_contentableComponent)
-                {
-                    _contentableComponent.Add(contentable);
-                }
-                if (_isInitialized && _isContentLoaded)
-                {
-                    contentable.LoadContent();
-                }
-            }
-
-            if (item is IUpdateable updateable && !_updateableComponent.Contains(updateable))
-            {
-                lock (_updateableComponent)
-                {
-                    IUpdateable compare = null;
-                    bool inserted = false;
-                    for (int i = 0; i < _updateableComponent.Count; i++)
-                    {
-                        compare = _updateableComponent[i];
-                        if (IUpdateableComparer.s_default.Compare(updateable, compare) <= 0)
-                        {
-                            _updateableComponent.Insert(i, updateable);
-                            inserted = true;
-                            break;
-                        }
-                    }
-                    if (!inserted) { _updateableComponent.Add(updateable); }
-                }
-                updateable.UpdateOrderChanged += UpdateableComponent_UpdateOrderChanged;
-            }
-
-            if (item is IDrawable drawable && !_drawableComponent.Contains(drawable))
-            {
-                lock (_drawableComponent)
-                {
-                    IDrawable compare = null;
-                    bool inserted = false;
-                    for (int i = 0; i < _drawableComponent.Count; i++)
-                    {
-                        compare = _drawableComponent[i];
-                        if (IDrawableComparer.s_default.Compare(drawable, compare) <= 0)
-                        {
-                            _drawableComponent.Insert(i, drawable);
-                            inserted = true;
-                            break;
-                        }
-                    }
-                    if (!inserted) { _drawableComponent.Add(drawable); }
-                }
-                drawable.DrawOrderChanged += DrawableComponent_DrawOrderChanged;
-            }
-
-            if (item is IDisposable disposable)
-            {
-                ToDispose(disposable);
-            }
-            return item;
-        }
-
-        /// <summary>
-        ///     add a new game system
-        /// </summary>
-        /// <typeparam name="T">T</typeparam>
-        /// <param name="item">item</param>
-        /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
-        public T Remove<T>(T item)
-        {
-            if (item is IContentable contentable && _contentableComponent.Contains(contentable))
-            {
-                lock (_contentableComponent)
-                {
-                    _contentableComponent.Remove(contentable);
-                }
-                contentable.UnloadContent();
-            }
-
-            if (item is IUpdateable updateable && _updateableComponent.Contains(updateable))
-            {
-                lock (_updateableComponent)
-                {
-                    _updateableComponent.Remove(updateable);
-                }
-                updateable.UpdateOrderChanged -= UpdateableComponent_UpdateOrderChanged;
-            }
-
-            if (item is IDrawable drawable && _drawableComponent.Contains(drawable))
-            {
-                lock (_drawableComponent)
-                {
-                    _drawableComponent.Remove(drawable);
-                }
-                drawable.DrawOrderChanged -= DrawableComponent_DrawOrderChanged;
-            }
-
-            if (item is IComponent component1 && _gameComponents.ContainsKey(component1.Name))
-            {
-                lock (_gameComponents)
-                {
-                    _gameComponents.Remove(component1.Name);
-                }
-            }
-
-            if (item is IDisposable disposable)
-            {
-                disposable.Dispose();
-                _collector.Remove(item);
-            }
-
-            return item;
-        }
-
-        /// <summary>
-        ///     adds a IDisposable object to the disposecollector
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public T ToDispose<T>(T obj) where T : IDisposable
-        {
-            return _collector.Collect(obj);
-        }
-
-        /// <summary>
-        ///     get a game system by name
-        /// </summary>
-        /// <param name="name">the game system name</param>
-        /// <param name="system">out found gamesystem</param>
-        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
-        public bool GetComponent(string name, out IComponent system)
-        {
-            return _gameComponents.TryGetValue(name, out system);
-        }
-
-        private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
-        {
-            _updateableComponent.Sort(IUpdateableComparer.s_default);
         }
 
         private void UpdateableComponent_UpdateOrderChanged(object sender, EventArgs e)
         {
-            _drawableComponent.Sort(IDrawableComparer.s_default);
+            lock (_drawableComponent)
+            {
+                _drawableComponent.Sort(DrawableComparer.Default);
+            }
         }
+
+        #endregion
 
         #region Timer2
 
@@ -679,8 +706,6 @@ namespace Exomia.Framework.Game
             }
             return timer;
         }
-
-        #endregion
 
         #endregion
 
@@ -775,9 +800,9 @@ namespace Exomia.Framework.Game
 
     #region Camparer
 
-    internal struct IDrawableComparer : IComparer<IDrawable>
+    internal struct DrawableComparer : IComparer<IDrawable>
     {
-        public static readonly IDrawableComparer s_default = new IDrawableComparer();
+        public static readonly DrawableComparer Default = new DrawableComparer();
 
         public int Compare(IDrawable left, IDrawable right)
         {
@@ -800,9 +825,9 @@ namespace Exomia.Framework.Game
         }
     }
 
-    internal struct IUpdateableComparer : IComparer<IUpdateable>
+    internal struct UpdateableComparer : IComparer<IUpdateable>
     {
-        public static readonly IUpdateableComparer s_default = new IUpdateableComparer();
+        public static readonly UpdateableComparer Default = new UpdateableComparer();
 
         public int Compare(IUpdateable left, IUpdateable right)
         {

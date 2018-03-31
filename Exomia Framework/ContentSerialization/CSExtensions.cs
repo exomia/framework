@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -9,24 +33,30 @@ namespace Exomia.Framework.ContentSerialization
 {
     internal static class CSExtensions
     {
-        private static readonly Regex _innerTypeMatcher = new Regex(
+        #region Variables
+
+        private static readonly Regex s_innerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9.+,\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)?)>$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private static readonly Regex _valueInnerTypeMatcher = new Regex(
+        private static readonly Regex s_valueInnerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9]+),(?:[\\s]*)?([A-Za-z][A-Za-z0-9.`+]+)(?:(<[A-Za-z0-9.,\\s<>`+]+>)?)>$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private static readonly Regex _keyInfoMatcher = new Regex(
+        private static readonly Regex s_keyInfoMatcher = new Regex(
             "^([A-Za-z][A-Za-z0-9]*):([A-Za-z][A-Za-z0-9.,+\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)(\\([0-9,]+\\))?)?$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private static readonly Regex _kvInfoMatcher = new Regex(
+        private static readonly Regex s_kvInfoMatcher = new Regex(
             "^([a-zA-Z0-9-]+)?:(\\([0-9,]+\\))?$", RegexOptions.Compiled | RegexOptions.Singleline);
+
+        #endregion
+
+        #region Methods
 
         internal static void GetInnerType(this string typeInfo, out string baseTypeinfo, out string genericTypeInfo)
         {
-            Match match = _innerTypeMatcher.Match(typeInfo);
+            Match match = s_innerTypeMatcher.Match(typeInfo);
             if (!match.Success)
             {
                 throw new CSReaderException($"ERROR: TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
@@ -44,7 +74,7 @@ namespace Exomia.Framework.ContentSerialization
         internal static void GetKeyValueInnerType(this string typeInfo, out string keyBaseTypeInfo,
             out string valueBaseTypeinfo, out string valueGenericTypeInfo)
         {
-            Match match = _valueInnerTypeMatcher.Match(typeInfo);
+            Match match = s_valueInnerTypeMatcher.Match(typeInfo);
             if (!match.Success)
             {
                 throw new CSReaderException($"ERROR: KEY VALUE TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
@@ -113,7 +143,7 @@ namespace Exomia.Framework.ContentSerialization
                     {
                         string buffer = sb.ToString();
 
-                        Match match = _keyInfoMatcher.Match(buffer);
+                        Match match = s_keyInfoMatcher.Match(buffer);
                         if (!match.Success)
                         {
                             key = buffer;
@@ -206,31 +236,6 @@ namespace Exomia.Framework.ContentSerialization
             throw new CSReaderException($"ERROR: NO TAG FOUND -> '{content}'");
         }
 
-        private static void ReadTagInner(this CSStreamReader stream, string content)
-        {
-            StringBuilder sb = new StringBuilder(128);
-
-            while (stream.ReadChar(out char c))
-            {
-                switch (c)
-                {
-                    case ']':
-                    {
-                        string buffer = sb.ToString();
-                        if (buffer == content) { return; }
-                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> '{buffer}' != '{content}'");
-                    }
-                    case '\n':
-                    case '[':
-                    case '\r':
-                    case '\t':
-                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> invalid char '{c}'");
-                }
-                sb.Append(c);
-            }
-            throw new CSReaderException($"ERROR: NO KEY FOUND! -> '{sb}'");
-        }
-
         internal static void ReadStartTag(this CSStreamReader stream, out string key, out string dimensionInfo)
         {
             while (stream.ReadChar(out char c))
@@ -258,6 +263,31 @@ namespace Exomia.Framework.ContentSerialization
             throw new CSReaderException($"ERROR: NO START TAG FOUND -> '[:]'");
         }
 
+        private static void ReadTagInner(this CSStreamReader stream, string content)
+        {
+            StringBuilder sb = new StringBuilder(128);
+
+            while (stream.ReadChar(out char c))
+            {
+                switch (c)
+                {
+                    case ']':
+                    {
+                        string buffer = sb.ToString();
+                        if (buffer == content) { return; }
+                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> '{buffer}' != '{content}'");
+                    }
+                    case '\n':
+                    case '[':
+                    case '\r':
+                    case '\t':
+                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> invalid char '{c}'");
+                }
+                sb.Append(c);
+            }
+            throw new CSReaderException($"ERROR: NO KEY FOUND! -> '{sb}'");
+        }
+
         private static void ReadStartTagInner(this CSStreamReader stream, out string key, out string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(128);
@@ -270,7 +300,7 @@ namespace Exomia.Framework.ContentSerialization
                     {
                         string buffer = sb.ToString();
 
-                        Match match = _kvInfoMatcher.Match(buffer);
+                        Match match = s_kvInfoMatcher.Match(buffer);
                         if (!match.Success)
                         {
                             dimensionInfo = string.Empty;
@@ -297,5 +327,7 @@ namespace Exomia.Framework.ContentSerialization
             }
             throw new CSReaderException($"ERROR: NO KEY FOUND! -> {sb}");
         }
+
+        #endregion
     }
 }

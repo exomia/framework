@@ -1,4 +1,27 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,16 +30,61 @@ using Exomia.Framework.Game;
 namespace Exomia.Framework.Tools
 {
     /// <inheritdoc />
-    /// <summary>
-    /// </summary>
     public sealed class Tween : IUpdateable
     {
-        #region Constructors
+        #region Variables
 
-        #region Statics
+        private readonly EasingFunction _callback;
+        private readonly float _delay;
+        private readonly float _duration;
+
+        private readonly List<TweenItem> _items;
+
+        private readonly object _target;
+        private float _delayTime;
+
+        private bool _enabled;
+
+        private float _time;
+        private int _updateOrder;
 
         #endregion
 
+        #region Properties
+
+        /// <inheritdoc />
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public int UpdateOrder
+        {
+            get { return _updateOrder; }
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <inheritdoc />
         public Tween(object target, object values, float duration, float delay, EasingFunction callback)
         {
             if (values == null) { throw new ArgumentNullException(nameof(values)); }
@@ -46,10 +114,7 @@ namespace Exomia.Framework.Tools
 
         #region Methods
 
-        #region Statics
-
-        #endregion
-
+        /// <inheritdoc />
         public void Update(GameTime gameTime)
         {
             _delayTime = Math.Min(_delayTime + gameTime.DeltaTimeMS, _delay);
@@ -71,10 +136,28 @@ namespace Exomia.Framework.Tools
             }
         }
 
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
+
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
+
         #endregion
+
+        #region Nested
 
         private class TweenItem
         {
+            #region Properties
+
+            public float From { get; }
+            public float To { get; }
+            public PropertyInfo PropertyInfo { get; }
+
+            #endregion
+
+            #region Constructors
+
             public TweenItem(float from, float to, PropertyInfo info)
             {
                 From = from;
@@ -82,70 +165,7 @@ namespace Exomia.Framework.Tools
                 PropertyInfo = info;
             }
 
-            public float From { get; }
-            public float To { get; }
-            public PropertyInfo PropertyInfo { get; }
-        }
-
-        #region Constants
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-        public event EventHandler<EventArgs> EnabledChanged;
-
-        private readonly EasingFunction _callback;
-
-        private bool _enabled;
-        private int _updateOrder;
-
-        private readonly object _target;
-        private readonly float _duration;
-        private readonly float _delay;
-
-        private float _time;
-        private float _delayTime;
-
-        private readonly List<TweenItem> _items;
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public int UpdateOrder
-        {
-            get { return _updateOrder; }
-            set
-            {
-                if (_updateOrder != value)
-                {
-                    _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            #endregion
         }
 
         #endregion

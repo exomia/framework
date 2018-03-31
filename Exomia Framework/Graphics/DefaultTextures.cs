@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.IO;
@@ -10,19 +34,13 @@ namespace Exomia.Framework.Graphics
 {
     public static class DefaultTextures
     {
-        #region Constants
+        #region Variables
 
         private const string WHITE_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAEElEQVR42mP8/5+BgRFEAAAYAQP/58fuIwAAAABJRU5ErkJggg==";
 
         private const string BLACK_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAD0lEQVR42mNk+M/AwAgiAAsOAgGA6bm/AAAAAElFTkSuQmCC";
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
 
         private static Texture s_whiteTexture;
         private static Texture s_blackTexture;
@@ -35,11 +53,7 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #endregion
-
         #region Properties
-
-        #region Statics
 
         public static Texture WhiteTexture
         {
@@ -63,19 +77,7 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #endregion
-
-        #region Constructors
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Methods
-
-        #region Statics
 
         internal static void InitializeTextures(Device5 device)
         {
@@ -114,8 +116,6 @@ namespace Exomia.Framework.Graphics
                 }
             }
         }
-
-        #endregion
 
         #endregion
 

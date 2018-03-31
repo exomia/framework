@@ -1,9 +1,35 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
 using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Tools
 {
+    /// <summary>
+    /// </summary>
+    /// <param name="timer">sender instance</param>
     public delegate void TimerEvent(Timer2 timer);
 
     /// <inheritdoc />
@@ -11,44 +37,24 @@ namespace Exomia.Framework.Tools
     /// </summary>
     public sealed class Timer2 : IUpdateable
     {
-        #region Constants
-
-        #endregion
-
         #region Variables
 
-        #region Statics
-
-        #endregion
-
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-        public event EventHandler<EventArgs> EnabledChanged;
-
-        public event TimerEvent TimerTicked;
-        public event TimerEvent TimerFinished;
-
-        private bool _enabled;
+        private readonly uint _maxIterations;
         private float _elapsedTime;
 
-        private readonly uint _maxIterations;
+        private bool _enabled;
         private int _updateOrder;
 
         #endregion
 
         #region Properties
 
-        #region Statics
-
-        #endregion
-
         /// <summary>
         ///     Gets or sets the timer tick(time in ms after a timer Tick occurs)
         /// </summary>
         public float TimerTick { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the enabled state
-        /// </summary>
+        /// <inheritdoc />
         public bool Enabled
         {
             get { return _enabled; }
@@ -62,9 +68,7 @@ namespace Exomia.Framework.Tools
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the update order
-        /// </summary>
+        /// <inheritdoc />
         public int UpdateOrder
         {
             get { return _updateOrder; }
@@ -87,10 +91,6 @@ namespace Exomia.Framework.Tools
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Timer2" /> class.
         /// </summary>
@@ -102,8 +102,9 @@ namespace Exomia.Framework.Tools
             _maxIterations = maxIterations;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Timer2" /> class.
+        ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Tools.Timer2" /> class.
         /// </summary>
         /// <param name="tick">time in ms after a timer Tick occurs</param>
         /// <param name="tickCallback">callback for each tick event</param>
@@ -114,8 +115,9 @@ namespace Exomia.Framework.Tools
             TimerTicked += tickCallback;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Timer2" /> class.
+        ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Tools.Timer2" /> class.
         /// </summary>
         /// <param name="tick">time in ms after a timer Tick occurs</param>
         /// <param name="tickCallback">callback for each tick event</param>
@@ -131,10 +133,13 @@ namespace Exomia.Framework.Tools
 
         #region Methods
 
-        #region Statics
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
-        #endregion
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
 
+        /// <inheritdoc />
         public void Update(GameTime gameTime)
         {
             if (!_enabled) { return; }
@@ -153,6 +158,16 @@ namespace Exomia.Framework.Tools
             }
         }
 
+        /// <summary>
+        /// </summary>
+        public event TimerEvent TimerTicked;
+
+        /// <summary>
+        /// </summary>
+        public event TimerEvent TimerFinished;
+
+        /// <summary>
+        /// </summary>
         public void Reset()
         {
             _elapsedTime = 0;

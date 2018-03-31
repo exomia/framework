@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using Exomia.Framework.Mathematics;
 
@@ -6,12 +30,18 @@ namespace Exomia.Framework.Noise
 {
     public class SimplexNoise : NoiseBase
     {
+        #region Variables
+
         private const float F2 = 1.0f / 2.0f;
         private const float G2 = 1.0f / 4.0f;
 
         private const float F3 = 1.0f / 3.0f;
         private const float G3 = 1.0f / 6.0f;
         private const float G33 = G3 * 3f - 1f;
+
+        #endregion
+
+        #region Constructors
 
         public SimplexNoise(int seed, float frequency, int octaves,
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
@@ -23,6 +53,10 @@ namespace Exomia.Framework.Noise
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
             : base(seed, frequency, octaves, lacunarity, gain, noiseInterpolationType, noiseFractalType) { }
 
+        #endregion
+
+        #region Methods
+
         //TODO: TEST!
         protected override float Single(int seed, double x)
         {
@@ -31,15 +65,13 @@ namespace Exomia.Framework.Noise
             double x0 = x - i0;
             double x1 = x0 - 1.0f;
 
-            double n0, n1;
-
             double t0 = 1.0f - x0 * x0;
             t0 *= t0;
-            n0 = t0 * t0 * GradCoord1D(seed, i0, x0);
+            double n0 = t0 * t0 * GradCoord1D(seed, i0, x0);
 
             double t1 = 1.0f - x1 * x1;
             t1 *= t1;
-            n1 = t1 * t1 * GradCoord1D(seed, i1, x1);
+            double n1 = t1 * t1 * GradCoord1D(seed, i1, x1);
 
             return (float)(0.395 * (n0 + n1));
         }
@@ -218,5 +250,7 @@ namespace Exomia.Framework.Noise
 
             return (float)(32.0 * (n0 + n1 + n2 + n3));
         }
+
+        #endregion
     }
 }

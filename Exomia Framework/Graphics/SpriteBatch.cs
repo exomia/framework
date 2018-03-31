@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -34,58 +58,7 @@ namespace Exomia.Framework.Graphics
 
     public sealed class SpriteBatch : IDisposable
     {
-        [StructLayout(LayoutKind.Explicit, Size = 64)]
-        private struct ConstantFrameBuffer
-        {
-            [FieldOffset(0)] public Matrix WorldViewProjection;
-        }
-
-        private struct TextureInfo
-        {
-            public ShaderResourceView View { get; }
-            public int Width { get; }
-            public int Height { get; }
-            public long PTR64 { get; }
-
-            public TextureInfo(ShaderResourceView view, int width, int height)
-            {
-                View = view;
-                Width = width;
-                Height = height;
-                PTR64 = view.NativePointer.ToInt64();
-            }
-        }
-
-        private struct SpriteInfo
-        {
-            public RectangleF Source;
-            public RectangleF Destination;
-            public Vector2 Origin;
-            public float Rotation;
-            public float Depth;
-            public SpriteEffects SpriteEffects;
-            public Color Color;
-            public float Opacity;
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 40)]
-        private struct VertexPositionColorTexture
-        {
-            [FieldOffset(0)] public float X;
-            [FieldOffset(4)] public float Y;
-            [FieldOffset(8)] public float Z;
-            [FieldOffset(12)] public float W;
-
-            [FieldOffset(16)] public float R;
-            [FieldOffset(20)] public float G;
-            [FieldOffset(24)] public float B;
-            [FieldOffset(28)] public float A;
-
-            [FieldOffset(32)] public float U;
-            [FieldOffset(36)] public float V;
-        }
-
-        #region Constants
+        #region Variables
 
         private const int MAX_BATCH_SIZE = 4096;
         private const int INITIAL_QUEUE_SIZE = 128;
@@ -99,80 +72,63 @@ namespace Exomia.Framework.Graphics
 
         private const int VERTEX_STRIDE = sizeof(float) * 10;
 
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
         private static readonly Vector2[]
-            s_corner_Offests = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
+            s_corner_offsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
 
         private static readonly ushort[] s_indices;
 
         private static readonly Vector2 s_vector2Zero = Vector2.Zero;
         private static readonly Rectangle? s_nullRectangle = null;
-
-        #endregion
-
-        private VertexShader _vertexShader;
-        private PixelShader _pixelShader;
-
-        private BlendState _defaultBlendState;
-        private DepthStencilState _defaultDepthStencilState;
-        private SamplerState _defaultSamplerState;
-        private RasterizerState _defaultRasterizerState;
-        private RasterizerState _defaultRasterizerScissorEnabledState;
-
-        private int[] _sortIndices, _tempSortBuffer;
-        private SpriteInfo[] _spriteQueue, _sortedSprites;
-        private TextureInfo[] _spriteTextures;
-
-        private bool _isInitialized;
-
-        private readonly InputLayout _vertexInputLayout;
-
-        private Buffer _vertexBuffer, _indexBuffer;
-        private Buffer _perFrameBuffer;
-        private readonly VertexBufferBinding _vertexBufferBinding;
-
-        private bool _isBeginCalled;
-
-        private SpriteSortMode _spriteSortMode;
-
-        private BlendState _blendState;
-        private RasterizerState _rasterizerState;
-        private SamplerState _samplerState;
-        private DepthStencilState _depthStencilState;
-
-        private Rectangle _scissoRectangle;
-        private bool _isScissorEnabled;
-
-        private int _spriteQueueCount;
-
-        private readonly Device5 _device;
         private readonly DeviceContext4 _context;
 
-        private Matrix _projectionMatrix;
-        private Matrix _transformMatrix;
-        private Matrix _viewMatrix;
+        private readonly Device5 _device;
 
         private readonly Dictionary<IntPtr, TextureInfo> _textureInfos =
             new Dictionary<IntPtr, TextureInfo>(INITIAL_QUEUE_SIZE);
 
-        #endregion
+        private readonly VertexBufferBinding _vertexBufferBinding;
 
-        #region Properties
+        private readonly InputLayout _vertexInputLayout;
 
-        #region Statics
+        private BlendState _blendState;
 
-        #endregion
+        private BlendState _defaultBlendState;
+        private DepthStencilState _defaultDepthStencilState;
+        private RasterizerState _defaultRasterizerScissorEnabledState;
+        private RasterizerState _defaultRasterizerState;
+        private SamplerState _defaultSamplerState;
+        private DepthStencilState _depthStencilState;
+
+        private bool _isBeginCalled;
+
+        private bool _isInitialized;
+        private bool _isScissorEnabled;
+        private Buffer _perFrameBuffer;
+        private PixelShader _pixelShader;
+
+        private Matrix _projectionMatrix;
+        private RasterizerState _rasterizerState;
+        private SamplerState _samplerState;
+
+        private Rectangle _scissoRectangle;
+
+        private int[] _sortIndices, _tempSortBuffer;
+        private SpriteInfo[] _spriteQueue, _sortedSprites;
+
+        private int _spriteQueueCount;
+
+        private SpriteSortMode _spriteSortMode;
+        private TextureInfo[] _spriteTextures;
+        private Matrix _transformMatrix;
+
+        private Buffer _vertexBuffer, _indexBuffer;
+
+        private VertexShader _vertexShader;
+        private Matrix _viewMatrix;
 
         #endregion
 
         #region Constructors
-
-        #region Statics
 
         static SpriteBatch()
         {
@@ -191,8 +147,6 @@ namespace Exomia.Framework.Graphics
                 s_indices[i + 5] = (ushort)(k + 3);
             }
         }
-
-        #endregion
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteBatch" /> class.
@@ -241,10 +195,6 @@ namespace Exomia.Framework.Graphics
 
         #region Methods
 
-        #region Statics
-
-        #endregion
-
         public void Resize(Size2F size)
         {
             Resize(size.Width, size.Height);
@@ -268,6 +218,47 @@ namespace Exomia.Framework.Graphics
                 M41 = -1f,
                 M42 = 1f
             };
+        }
+
+        public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred, BlendState blendState = null,
+            SamplerState samplerState = null, DepthStencilState depthStencilState = null,
+            RasterizerState rasterizerState = null, Matrix? transformMatrix = null, Matrix? viewMatrix = null,
+            Rectangle? scissorRectangle = null)
+        {
+            if (_isBeginCalled)
+            {
+                throw new InvalidOperationException("End must be called before begin");
+            }
+
+            _spriteSortMode = sortMode;
+            _blendState = blendState;
+            _samplerState = samplerState;
+            _depthStencilState = depthStencilState;
+            _rasterizerState = rasterizerState;
+            _transformMatrix = transformMatrix ?? Matrix.Identity;
+            _viewMatrix = viewMatrix ?? Matrix.Identity;
+
+            _isScissorEnabled = scissorRectangle.HasValue;
+            _scissoRectangle = scissorRectangle ?? Rectangle.Empty;
+
+            _isBeginCalled = true;
+        }
+
+        public void End()
+        {
+            if (!_isBeginCalled)
+            {
+                throw new InvalidOperationException("Begin must be called before End");
+            }
+            if (_spriteQueueCount > 0)
+            {
+                PrepareForRendering();
+                FlushBatch();
+            }
+
+            _textureInfos.Clear();
+
+            _isBeginCalled = false;
         }
 
         private void Initialize(Device5 device)
@@ -383,47 +374,6 @@ namespace Exomia.Framework.Graphics
                 });
         }
 
-        public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred, BlendState blendState = null,
-            SamplerState samplerState = null, DepthStencilState depthStencilState = null,
-            RasterizerState rasterizerState = null, Matrix? transformMatrix = null, Matrix? viewMatrix = null,
-            Rectangle? scissorRectangle = null)
-        {
-            if (_isBeginCalled)
-            {
-                throw new InvalidOperationException("End must be called before begin");
-            }
-
-            _spriteSortMode = sortMode;
-            _blendState = blendState;
-            _samplerState = samplerState;
-            _depthStencilState = depthStencilState;
-            _rasterizerState = rasterizerState;
-            _transformMatrix = transformMatrix ?? Matrix.Identity;
-            _viewMatrix = viewMatrix ?? Matrix.Identity;
-
-            _isScissorEnabled = scissorRectangle.HasValue;
-            _scissoRectangle = scissorRectangle ?? Rectangle.Empty;
-
-            _isBeginCalled = true;
-        }
-
-        public void End()
-        {
-            if (!_isBeginCalled)
-            {
-                throw new InvalidOperationException("Begin must be called before End");
-            }
-            if (_spriteQueueCount > 0)
-            {
-                PrepareForRendering();
-                FlushBatch();
-            }
-
-            _textureInfos.Clear();
-
-            _isBeginCalled = false;
-        }
-
         private void PrepareForRendering()
         {
             _context.VertexShader.Set(_vertexShader);
@@ -476,10 +426,10 @@ namespace Exomia.Framework.Graphics
 
             int offset = 0;
             TextureInfo previousTexture = default;
-            TextureInfo texture;
 
             for (int i = 0; i < _spriteQueueCount; i++)
             {
+                TextureInfo texture;
                 if (_spriteSortMode != SpriteSortMode.Deferred)
                 {
                     int index = _sortIndices[i];
@@ -577,7 +527,7 @@ namespace Exomia.Framework.Graphics
                 {
                     VertexPositionColorTexture* vertex = vpctPtr + j;
 
-                    Vector2 corner = s_corner_Offests[j];
+                    Vector2 corner = s_corner_offsets[j];
                     float posX = (corner.X - origin.X) * spriteInfo.Destination.Width;
                     float posY = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
 
@@ -591,7 +541,7 @@ namespace Exomia.Framework.Graphics
                     vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
-                    corner = s_corner_Offests[j ^ (int)spriteInfo.SpriteEffects];
+                    corner = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
                     vertex->U = (spriteInfo.Source.X + corner.X * spriteInfo.Source.Width) * deltaX;
                     vertex->V = (spriteInfo.Source.Y + corner.Y * spriteInfo.Source.Height) * deltaY;
                 }
@@ -604,7 +554,7 @@ namespace Exomia.Framework.Graphics
                 {
                     VertexPositionColorTexture* vertex = vpctPtr + j;
 
-                    Vector2 corner = s_corner_Offests[j];
+                    Vector2 corner = s_corner_offsets[j];
                     float posX = (corner.X - origin.X) * spriteInfo.Destination.Width;
                     float posY = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
 
@@ -618,7 +568,7 @@ namespace Exomia.Framework.Graphics
                     vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
-                    corner = s_corner_Offests[j ^ (int)spriteInfo.SpriteEffects];
+                    corner = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
                     vertex->U = (spriteInfo.Source.X + corner.X * spriteInfo.Source.Width) * deltaX;
                     vertex->V = (spriteInfo.Source.Y + corner.Y * spriteInfo.Source.Height) * deltaY;
                 }
@@ -654,6 +604,63 @@ namespace Exomia.Framework.Graphics
                     throw new NotSupportedException();
             }
         }
+
+        #endregion
+
+        #region Nested
+
+        [StructLayout(LayoutKind.Explicit, Size = 64)]
+        private struct ConstantFrameBuffer
+        {
+            [FieldOffset(0)] public Matrix WorldViewProjection;
+        }
+
+        private struct TextureInfo
+        {
+            public ShaderResourceView View { get; }
+            public int Width { get; }
+            public int Height { get; }
+            public long PTR64 { get; }
+
+            public TextureInfo(ShaderResourceView view, int width, int height)
+            {
+                View = view;
+                Width = width;
+                Height = height;
+                PTR64 = view.NativePointer.ToInt64();
+            }
+        }
+
+        private struct SpriteInfo
+        {
+            public RectangleF Source;
+            public RectangleF Destination;
+            public Vector2 Origin;
+            public float Rotation;
+            public float Depth;
+            public SpriteEffects SpriteEffects;
+            public Color Color;
+            public float Opacity;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = 40)]
+        private struct VertexPositionColorTexture
+        {
+            [FieldOffset(0)] public float X;
+            [FieldOffset(4)] public float Y;
+            [FieldOffset(8)] public float Z;
+            [FieldOffset(12)] public float W;
+
+            [FieldOffset(16)] public float R;
+            [FieldOffset(20)] public float G;
+            [FieldOffset(24)] public float B;
+            [FieldOffset(28)] public float A;
+
+            [FieldOffset(32)] public float U;
+            [FieldOffset(36)] public float V;
+        }
+
+        #endregion
 
         #region Drawing
 
@@ -692,9 +699,7 @@ namespace Exomia.Framework.Graphics
                 float sin = (float)Math.Sin(rotation);
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
                 {
-                    Vector2 pos = Vector2.Zero;
-
-                    Vector2 corner = s_corner_Offests[j];
+                    Vector2 corner = s_corner_offsets[j];
                     float posX = (corner.X - o.X) * destinationRectangle.Width;
                     float posY = (corner.Y - o.Y) * destinationRectangle.Height;
 
@@ -758,12 +763,6 @@ namespace Exomia.Framework.Graphics
                 }
                 DrawLine(vertex[vertex.Length - 1], vertex[0], color, lineWidth, opacity, layerDepth);
             }
-        }
-
-        private void DrawCircle(in Vector2 center, float radius, in Color color, float lineWidth, float opacity,
-            float layerDepth)
-        {
-            DrawCircle(center, radius, color, lineWidth, opacity, 16, layerDepth);
         }
 
         public void DrawCircle(in Vector2 center, float radius, in Color color, float lineWidth, float opacity,
@@ -1223,8 +1222,6 @@ namespace Exomia.Framework.Graphics
             System.Buffer.BlockCopy(
                 tempArray, sizeof(int) * oldPosition, arr, sizeof(int) * oldPosition, sizeof(int) * size);
         }
-
-        #endregion
 
         #endregion
 

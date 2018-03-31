@@ -22,21 +22,23 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
+namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to handle content writing
+    ///     An interface to initialize a game component.
     /// </summary>
-    public interface IContentSerializationWriter
+    public interface IInitializable
     {
         #region Methods
 
         /// <summary>
-        ///     Write the object informations into the context
+        ///     This method is called when the component is added to the game.
         /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        void Write(ContentSerializationContext context, object obj);
+        /// <remarks>
+        ///     This method can be used for tasks like querying for services the component needs and setting up non-graphics
+        ///     resources.
+        /// </remarks>
+        void Initialize(IServiceRegistry registry);
 
         #endregion
     }

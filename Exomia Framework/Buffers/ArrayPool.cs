@@ -1,4 +1,28 @@
-﻿#pragma warning disable CS1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable CS1591
 
 using System;
 using System.Diagnostics;
@@ -8,11 +32,17 @@ namespace Exomia.Framework.Buffers
 {
     public sealed class ArrayPool<T>
     {
-        #region Constructors
+        #region Variables
 
-        #region Statics
+        private readonly int _bufferLength;
+        private readonly T[][] _buffers;
+        private int _index;
+
+        private SpinLock _lock;
 
         #endregion
+
+        #region Constructors
 
         public ArrayPool(int bufferLength, int numberOfBuffers = 10)
         {
@@ -26,37 +56,7 @@ namespace Exomia.Framework.Buffers
 
         #endregion
 
-        #region Constants
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        private SpinLock _lock;
-        private readonly T[][] _buffers;
-        private int _index;
-
-        private readonly int _bufferLength;
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Methods
-
-        #region Statics
-
-        #endregion
 
         public T[] Rent()
         {

@@ -176,20 +176,20 @@
     <Compile Include="Content\Resolver\DSFileStreamContentResolver.cs" />
     <Compile Include="Content\Texture2ContentManager.cs" />
     <Compile Include="Diagnostic\Diagnostic.cs" />
-    <Compile Include="Framework\AComponent.cs" />
-    <Compile Include="Framework\ADrawableComponent.cs" />
-    <Compile Include="Framework\ARenderer.cs" />
-    <Compile Include="Framework\ICloneable.cs" />
-    <Compile Include="Framework\IComponent.cs" />
-    <Compile Include="Framework\IContentable.cs" />
-    <Compile Include="Framework\IDrawable.cs" />
-    <Compile Include="Framework\IInitializable.cs" />
-    <Compile Include="Framework\Index2.cs" />
-    <Compile Include="Framework\Index3.cs" />
-    <Compile Include="Framework\IRunable.cs" />
-    <Compile Include="Framework\IServiceRegistry.cs" />
-    <Compile Include="Framework\IUpdateable.cs" />
-    <Compile Include="Framework\ServiceRegistry.cs" />
+    <Compile Include="AComponent.cs" />
+    <Compile Include="ADrawableComponent.cs" />
+    <Compile Include="ARenderer.cs" />
+    <Compile Include="ICloneable.cs" />
+    <Compile Include="IComponent.cs" />
+    <Compile Include="IContentable.cs" />
+    <Compile Include="IDrawable.cs" />
+    <Compile Include="IInitializable.cs" />
+    <Compile Include="Index2.cs" />
+    <Compile Include="Index3.cs" />
+    <Compile Include="IRunable.cs" />
+    <Compile Include="IServiceRegistry.cs" />
+    <Compile Include="IUpdateable.cs" />
+    <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameGraphicsParameters.cs" />
     <Compile Include="Game\GameTime.cs" />
@@ -243,7 +243,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".dispose" />
-    <None Include=".regions" />
     <None Include="packages.config" />
     <None Include="Resources\arial_ansi_12px.ds1" />
     <None Include="Resources\arial_ansi_12px.ds2" />

@@ -1,17 +1,47 @@
-﻿using SharpDX;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
     internal sealed class ColorCR : AContentSerializationReader<Color>
     {
+        #region Methods
+
         public override Color ReadContext(ContentSerializationContext context)
         {
-            Color result = new Color();
-            result.A = context.Get<byte>("A");
-            result.R = context.Get<byte>("R");
-            result.G = context.Get<byte>("G");
-            result.B = context.Get<byte>("B");
-            return result;
+            return new Color
+            {
+                A = context.Get<byte>("A"),
+                R = context.Get<byte>("R"),
+                G = context.Get<byte>("G"),
+                B = context.Get<byte>("B")
+            };
+            ;
         }
+
+        #endregion
     }
 }

@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using Exomia.Framework.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.ContentSerialization.Types
@@ -8,13 +32,7 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// </summary>
     internal sealed class ArrayType : IType
     {
-        /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public ArrayType()
-        {
-            BaseType = typeof(Array);
-        }
+        #region Properties
 
         /// <summary>
         ///     TypeName without System
@@ -38,6 +56,22 @@ namespace Exomia.Framework.ContentSerialization.Types
             get { return false; }
         }
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public ArrayType()
+        {
+            BaseType = typeof(Array);
+        }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
         /// </summary>
@@ -45,12 +79,9 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
-            {
-                return it.CreateType(gti).MakeArrayType();
-            }
-
-            return bti.CreateType().MakeArrayType();
+            return ContentSerializer.s_types.TryGetValue(bti, out IType it)
+                ? it.CreateType(gti).MakeArrayType()
+                : bti.CreateType().MakeArrayType();
         }
 
         /// <summary>
@@ -137,6 +168,8 @@ namespace Exomia.Framework.ContentSerialization.Types
             else { throw new InvalidCastException(nameof(content)); }
         }
 
+        #endregion
+
         #region WriteHelper
 
         private static string CreateArrayDimensionInfo(Array arr)
@@ -195,17 +228,17 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         private static int[] GetArrayDimensionInfo(string arrayTypeInfo)
         {
-            string start = "(";
-            string end = ")";
+            const string start = "(";
+            const string end = ")";
 
-            int sIndex = arrayTypeInfo.IndexOf(start);
+            int sIndex = arrayTypeInfo.IndexOf(start, StringComparison.Ordinal);
             if (sIndex == -1)
             {
                 throw new CSTypeException("No dimension start definition found in '" + arrayTypeInfo + "'");
             }
             sIndex += start.Length;
 
-            int eIndex = arrayTypeInfo.LastIndexOf(end);
+            int eIndex = arrayTypeInfo.LastIndexOf(end, StringComparison.Ordinal);
             if (eIndex == -1)
             {
                 throw new CSTypeException("No dimension end definition found in '" + arrayTypeInfo + "'");

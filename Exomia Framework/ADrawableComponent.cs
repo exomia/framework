@@ -1,42 +1,52 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
 {
+    /// <inheritdoc cref="AComponent" />
+    /// <inheritdoc cref="IDrawable" />
     /// <summary>
     ///     A drawable game component
     /// </summary>
     public abstract class ADrawableComponent : AComponent, IDrawable
     {
-        #region Constants
-
-        #endregion
-
         #region Variables
 
-        #region Statics
-
-        #endregion
-
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
+        private int _drawOrder;
 
         private bool _visible;
-        private int _drawOrder;
 
         #endregion
 
         #region Properties
 
-        #region Statics
-
-        #endregion
-
-        /// <summary>
-        ///     Gets or sets the visible state
-        /// </summary>
+        /// <inheritdoc />
         public bool Visible
         {
             get { return _visible; }
@@ -50,9 +60,7 @@ namespace Exomia.Framework
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the draw order
-        /// </summary>
+        /// <inheritdoc />
         public int DrawOrder
         {
             get { return _drawOrder; }
@@ -70,15 +78,11 @@ namespace Exomia.Framework
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
         /// </summary>
         /// <param name="name">name</param>
-        public ADrawableComponent(string name)
+        protected ADrawableComponent(string name)
             : base(name) { }
 
         /// <summary>
@@ -86,33 +90,26 @@ namespace Exomia.Framework
         /// </summary>
         /// <param name="game">The game.</param>
         /// <param name="name">name</param>
-        public ADrawableComponent(Game.Game game, string name)
+        protected ADrawableComponent(Game.Game game, string name)
             : base(game, name) { }
 
         #endregion
 
         #region Methods
 
-        #region Statics
+        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs> VisibleChanged;
 
-        #endregion
-
-        /// <summary>
-        ///     see <see cref="IDrawable.BeginDraw()"></see>
-        /// </summary>
+        /// <inheritdoc />
         public virtual bool BeginDraw()
         {
             return _visible;
         }
 
-        /// <summary>
-        ///     see <see cref="IDrawable.Draw(GameTime)"></see>
-        /// </summary>
+        /// <inheritdoc />
         public abstract void Draw(GameTime gameTime);
 
-        /// <summary>
-        ///     see <see cref="IDrawable.EndDraw()"></see>
-        /// </summary>
+        /// <inheritdoc />
         public virtual void EndDraw() { }
 
         #endregion

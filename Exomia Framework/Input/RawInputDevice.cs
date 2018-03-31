@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -12,11 +36,22 @@ namespace Exomia.Framework.Input
 {
     public sealed class RawInputDevice : IRawInputDevice, IDisposable
     {
-        #region Constructors
+        #region Variables
 
-        #region Statics
+        private readonly HashSet<Keys> _pressedKeys;
+
+        private Point _mousePosition = Point.Empty;
+
+        private int _mouseWheelDataBuffer;
+        private Panel _panel;
+
+        private RMouseButtons _pressedMouseButtons = 0;
+
+        private IGameWindow _window;
 
         #endregion
+
+        #region Constructors
 
         public RawInputDevice()
         {
@@ -31,15 +66,7 @@ namespace Exomia.Framework.Input
 
         #endregion
 
-        #region Constants
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
+        #region Methods
 
         public event RKeyEventHandler KeyDown;
         public event RKeyEventHandler KeyUp;
@@ -48,33 +75,6 @@ namespace Exomia.Framework.Input
         public event RMouseEventHandler MouseMove;
         public event RMouseEventHandler MouseDown;
         public event RMouseEventHandler MouseUp;
-
-        private IGameWindow _window;
-        private Panel _panel;
-
-        private RMouseButtons _pressedMouseButtons = 0;
-
-        private readonly HashSet<Keys> _pressedKeys;
-
-        private int _mouseWheelDataBuffer;
-
-        private Point _mousePosition = Point.Empty;
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
-        #region Methods
-
-        #region Statics
-
-        #endregion
 
         public void Initialize(IGameWindow window)
         {
@@ -91,17 +91,19 @@ namespace Exomia.Framework.Input
             _panel.MouseMove += Renderform_MouseMove;
         }
 
+        public void EndUpdate()
+        {
+            WheelData = _mouseWheelDataBuffer;
+            _mouseWheelDataBuffer = 0;
+        }
+
         private void Renderform_MouseMove(object sender, MouseEventArgs e)
         {
             _mousePosition = e.Location;
             MouseMove?.Invoke(e.X, e.Y, _pressedMouseButtons, 1, e.Delta);
         }
 
-        public void EndUpdate()
-        {
-            WheelData = _mouseWheelDataBuffer;
-            _mouseWheelDataBuffer = 0;
-        }
+        #endregion
 
         //TODO: CHANGE TO FORM INPUT INSTEAD OF RAW INPUT
 
@@ -265,8 +267,6 @@ namespace Exomia.Framework.Input
             }
             return false;
         }
-
-        #endregion
 
         #endregion
 

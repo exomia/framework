@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
@@ -7,84 +31,26 @@ using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Input
 {
+    /// <inheritdoc cref="IInputDevice" />
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     ///     WinFormsInputDevice class
     /// </summary>
     public sealed class WinFormsInputDevice : IInputDevice, IDisposable
     {
-        #region Constants
-
-        #endregion
-
         #region Variables
-
-        #region Statics
-
-        #endregion
-
-        /// <summary>
-        ///     <see cref="IInputDevice.KeyDown" />
-        /// </summary>
-        public event KeyEventHandler KeyDown;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.KeyUp" />
-        /// </summary>
-        public event KeyEventHandler KeyUp;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.KeyPress" />
-        /// </summary>
-        public event KeyPressEventHandler KeyPress;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.MouseMove" />
-        /// </summary>
-        public event MouseEventHandler MouseMove;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.MouseDown" />
-        /// </summary>
-        public event MouseEventHandler MouseDown;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.MouseUp" />
-        /// </summary>
-        public event MouseEventHandler MouseUp;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.MouseClick" />
-        /// </summary>
-        public event MouseEventHandler MouseClick;
-
-        /// <summary>
-        ///     <see cref="IInputDevice.MouseWheel" />
-        /// </summary>
-        public event MouseEventHandler MouseWheel;
-
-        private readonly IWinFormsGameWindow _window;
-
-        private MouseButtons _pressedMouseButtons = MouseButtons.None;
-
-        private Point _mousePosition = Point.Empty;
 
         private readonly HashSet<int> _pressedKeys = new HashSet<int>();
 
-        #endregion
+        private readonly IWinFormsGameWindow _window;
 
-        #region Properties
+        private Point _mousePosition = Point.Empty;
 
-        #region Statics
-
-        #endregion
+        private MouseButtons _pressedMouseButtons = MouseButtons.None;
 
         #endregion
 
         #region Constructors
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     WinFormsInputDevice constuctor
@@ -117,7 +83,29 @@ namespace Exomia.Framework.Input
 
         #region Methods
 
-        #region Statics
+        /// <inheritdoc />
+        public event KeyEventHandler KeyDown;
+
+        /// <inheritdoc />
+        public event KeyEventHandler KeyUp;
+
+        /// <inheritdoc />
+        public event KeyPressEventHandler KeyPress;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseMove;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseDown;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseUp;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseClick;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseWheel;
 
         #endregion
 
@@ -341,8 +329,6 @@ namespace Exomia.Framework.Input
             }
             return false;
         }
-
-        #endregion
 
         #endregion
 

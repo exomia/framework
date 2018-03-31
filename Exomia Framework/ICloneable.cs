@@ -22,21 +22,20 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
+namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to handle content writing
+    ///     An interface to clone a object.
     /// </summary>
-    public interface IContentSerializationWriter
+    public interface ICloneable
     {
         #region Methods
 
         /// <summary>
-        ///     Write the object informations into the context
+        ///     returns a deep copy of the object
         /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        void Write(ContentSerializationContext context, object obj);
+        /// <returns>a new deep copied object</returns>
+        object Clone();
 
         #endregion
     }

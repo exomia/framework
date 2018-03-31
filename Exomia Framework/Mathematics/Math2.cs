@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Runtime.CompilerServices;
 using SharpDX;
 
@@ -9,7 +33,13 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public static class Math2
     {
+        #region Variables
+
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         ///     Maps a value from l1 to u1 to l2 to u2
@@ -101,15 +131,20 @@ namespace Exomia.Framework.Mathematics
         /// <returns>b^e</returns>
         public static double Pow(double b, int e)
         {
-            if (e < 0) { throw new ArgumentException("b must be positive", nameof(b)); }
+            if (e < 0) { throw new ArgumentException("e must be positive", nameof(e)); }
 
-            if (e == 0) { return 1; }
-            if (b == 0) { return 0; }
-            if ((e & 1) == 0)
+            while (true)
             {
-                return Pow(b * b, e >> 1);
+                if (e == 0) { return 1; }
+                if (b == 0) { return 0; }
+                if ((e & 1) == 0)
+                {
+                    b = b * b;
+                    e = e >> 1;
+                    continue;
+                }
+                return b * Pow(b * b, e >> 1);
             }
-            return b * Pow(b * b, e >> 1);
         }
 
         /// <summary>
@@ -120,15 +155,20 @@ namespace Exomia.Framework.Mathematics
         /// <returns>b^e</returns>
         public static float Pow(float b, int e)
         {
-            if (e < 0) { throw new ArgumentException("b must be positive", nameof(b)); }
+            if (e < 0) { throw new ArgumentException("e must be positive", nameof(e)); }
 
-            if (e == 0) { return 1; }
-            if (b == 0) { return 0; }
-            if ((e & 1) == 0)
+            while (true)
             {
-                return Pow(b * b, e >> 1);
+                if (e == 0) { return 1; }
+                if (b == 0) { return 0; }
+                if ((e & 1) == 0)
+                {
+                    b = b * b;
+                    e = e >> 1;
+                    continue;
+                }
+                return b * Pow(b * b, e >> 1);
             }
-            return b * Pow(b * b, e >> 1);
         }
 
         /// <summary>
@@ -261,6 +301,8 @@ namespace Exomia.Framework.Mathematics
                    Matrix.Scaling(scale.X, scale.Y, 0.0f) *
                    Matrix.Translation(position.X, position.Y, 0);
         }
+
+        #endregion
 
         #region Curves
 
