@@ -22,21 +22,24 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
+namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to handle content writing
+    ///     An interface to load and unload content.
     /// </summary>
-    public interface IContentSerializationWriter
+    public interface IContentable
     {
         #region Methods
 
         /// <summary>
-        ///     Write the object informations into the context
+        ///     Loads the content.
         /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        void Write(ContentSerializationContext context, object obj);
+        void LoadContent();
+
+        /// <summary>
+        ///     Called when graphics resources need to be unloaded.
+        /// </summary>
+        void UnloadContent();
 
         #endregion
     }

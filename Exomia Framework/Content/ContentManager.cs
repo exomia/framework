@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -12,74 +36,22 @@ namespace Exomia.Framework.Content
     /// <inheritdoc />
     public sealed class ContentManager : IContentManager
     {
-        #region Constants
+        #region Variables
 
         private const int INITIAL_QUEUE_SIZE = 16;
 
-        #endregion
-
-        private struct AssetKey : IEquatable<AssetKey>
-        {
-            public AssetKey(Type assetType, string assetName)
-            {
-                _assetType = assetType;
-                _assetName = assetName;
-            }
-
-            private readonly Type _assetType;
-
-            private readonly string _assetName;
-
-            public bool Equals(AssetKey other)
-            {
-                return _assetType == other._assetType &&
-                       string.Equals(_assetName, other._assetName, StringComparison.OrdinalIgnoreCase);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (obj is null) { return false; }
-                return obj is AssetKey key && Equals(key);
-            }
-
-            public override int GetHashCode()
-            {
-                return (_assetType.GetHashCode() * 397) ^ _assetName.GetHashCode();
-            }
-
-            public static bool operator ==(AssetKey left, AssetKey right)
-            {
-                return left.Equals(right);
-            }
-
-            public static bool operator !=(AssetKey left, AssetKey right)
-            {
-                return !left.Equals(right);
-            }
-        }
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
         private readonly Dictionary<AssetKey, object> _assetLockers;
-        private readonly List<IContentResolver> _registeredContentResolvers;
-        private readonly Dictionary<Type, IContentReader> _registeredContentReaders;
-        private readonly List<IContentReaderFactory> _registeredContentReaderFactories;
 
         private readonly Dictionary<AssetKey, object> _loadedAssets;
+        private readonly List<IContentReaderFactory> _registeredContentReaderFactories;
+        private readonly Dictionary<Type, IContentReader> _registeredContentReaders;
+        private readonly List<IContentResolver> _registeredContentResolvers;
 
         private string _rootDirectory;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         public string RootDirectory
         {
@@ -104,10 +76,6 @@ namespace Exomia.Framework.Content
         #endregion
 
         #region Constructors
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ContentManager" /> class.
@@ -154,10 +122,6 @@ namespace Exomia.Framework.Content
         #endregion
 
         #region Methods
-
-        #region Statics
-
-        #endregion
 
         /// <inheritdoc />
         public bool AddContentResolver(IContentResolver resolver)
@@ -431,6 +395,50 @@ namespace Exomia.Framework.Content
             }
 
             return result;
+        }
+
+        #endregion
+
+        #region Nested
+
+        private struct AssetKey : IEquatable<AssetKey>
+        {
+            public AssetKey(Type assetType, string assetName)
+            {
+                _assetType = assetType;
+                _assetName = assetName;
+            }
+
+            private readonly Type _assetType;
+
+            private readonly string _assetName;
+
+            public bool Equals(AssetKey other)
+            {
+                return _assetType == other._assetType &&
+                       string.Equals(_assetName, other._assetName, StringComparison.OrdinalIgnoreCase);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is null) { return false; }
+                return obj is AssetKey key && Equals(key);
+            }
+
+            public override int GetHashCode()
+            {
+                return (_assetType.GetHashCode() * 397) ^ _assetName.GetHashCode();
+            }
+
+            public static bool operator ==(AssetKey left, AssetKey right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(AssetKey left, AssetKey right)
+            {
+                return !left.Equals(right);
+            }
         }
 
         #endregion

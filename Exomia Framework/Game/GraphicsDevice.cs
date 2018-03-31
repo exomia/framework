@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -8,34 +32,13 @@ using Device4 = SharpDX.DXGI.Device4;
 
 namespace Exomia.Framework.Game
 {
+    /// <inheritdoc />
     /// <summary>
     ///     GraphicsDevice class
     /// </summary>
-    public sealed class GraphicsDevice : IGraphicsDevice, IDisposable
+    public sealed class GraphicsDevice : IGraphicsDevice
     {
-        private struct ResizeParameters
-        {
-            public int Width;
-            public int Height;
-            public int BufferCount;
-            public SwapChainFlags SwapChainFlags;
-        }
-
-        #region Constructors
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
-        #region Constants
-
-        #endregion
-
         #region Variables
-
-        #region Statics
 
         private static readonly FeatureLevel[] s_featureLevels =
         {
@@ -48,126 +51,94 @@ namespace Exomia.Framework.Game
             FeatureLevel.Level_9_1
         };
 
-        #endregion
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.ResizeFinished" />
-        /// </summary>
-        public event ResizeEventHandler ResizeFinished;
-
         private Adapter4 _adapter4;
-        private SwapChain4 _swapChain4;
-        private Factory5 _dxgiFactory;
+        private RenderTargetView1 _currentRenderView;
         private Device5 _d3DDevice5;
         private DeviceContext4 _d3DDeviceContext;
-        private RenderTargetView1 _renderView1;
-        private RenderTargetView1 _currentRenderView;
-        private Device4 _dxgiDevice4;
 
         private DepthStencilView _depthStencilView;
-
-        private int _vSync;
+        private Device4 _dxgiDevice4;
+        private Factory5 _dxgiFactory;
 
         private bool _needResize;
 
-        private ResizeParameters _resizeParameters;
-
         private Output _output;
+        private RenderTargetView1 _renderView1;
+
+        private ResizeParameters _resizeParameters;
+        private SwapChain4 _swapChain4;
+
+        private int _vSync;
 
         #endregion
 
         #region Properties
 
-        #region Statics
-
-        #endregion
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.IsInitialized" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsInitialized { get; private set; }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.VSync" />
-        /// </summary>
+        /// <inheritdoc />
         public bool VSync
         {
-            get { return _vSync == 0 ? false : true; }
+            get { return _vSync != 0; }
             set { _vSync = value ? 1 : 0; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Adapter" />
-        /// </summary>
+        /// <inheritdoc />
         public Adapter4 Adapter
         {
             get { return _adapter4; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Device" />
-        /// </summary>
+        /// <inheritdoc />
         public Device5 Device
         {
             get { return _d3DDevice5; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.DeviceContext" />
-        /// </summary>
+        /// <inheritdoc />
         public DeviceContext4 DeviceContext
         {
             get { return _d3DDeviceContext; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.RenderView" />
-        /// </summary>
+        /// <inheritdoc />
         public RenderTargetView1 RenderView
         {
             get { return _renderView1; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Factory" />
-        /// </summary>
+        /// <inheritdoc />
         public Factory5 Factory
         {
             get { return _dxgiFactory; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.SwapChain" />
-        /// </summary>
+        /// <inheritdoc />
         public SwapChain4 SwapChain
         {
             get { return _swapChain4; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.DXGIDevice" />
-        /// </summary>
+        /// <inheritdoc />
         public Device4 DXGIDevice
         {
             get { return _dxgiDevice4; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Viewport" />
-        /// </summary>
+        /// <inheritdoc />
         public ViewportF Viewport { get; private set; }
 
         #endregion
 
         #region Methods
 
-        #region Statics
-
-        #endregion
-
         /// <summary>
-        ///     <see cref="IGraphicsDevice.Initialize(ref GameGraphicsParameters) " />
+        ///     <see cref="IGraphicsDevice.ResizeFinished" />
         /// </summary>
+        public event ResizeEventHandler ResizeFinished;
+
+        /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
         {
             if (IsInitialized) { return; }
@@ -344,60 +315,6 @@ namespace Exomia.Framework.Game
             _needResize = true;
         }
 
-        private void Resize(ResizeParameters args)
-        {
-            lock (_d3DDevice5)
-            {
-                if (_renderView1 != null)
-                {
-                    _renderView1.Dispose();
-                    _renderView1 = null;
-                }
-
-                _swapChain4.ResizeBuffers(
-                    args.BufferCount, args.Width, args.Height, Format.Unknown, args.SwapChainFlags);
-
-                RenderTargetView renderView;
-                using (Texture2D backBuffer = _swapChain4.GetBackBuffer<Texture2D>(0))
-                {
-                    renderView = new RenderTargetView(_d3DDevice5, backBuffer);
-                    _renderView1 = renderView.QueryInterface<RenderTargetView1>();
-                }
-                renderView.Dispose();
-
-                using (Texture2D depthBuffer = new Texture2D(
-                    _d3DDevice5, new Texture2DDescription
-                    {
-                        Format = Format.D24_UNorm_S8_UInt,
-                        ArraySize = 1,
-                        MipLevels = 1,
-                        Width = args.Width,
-                        Height = args.Height,
-                        SampleDescription = _swapChain4.Description.SampleDescription,
-                        BindFlags = BindFlags.DepthStencil,
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        OptionFlags = ResourceOptionFlags.None,
-                        Usage = ResourceUsage.Default
-                    }))
-                {
-                    _depthStencilView = new DepthStencilView(
-                        _d3DDevice5, depthBuffer, new DepthStencilViewDescription
-                        {
-                            Dimension = _swapChain4.Description.SampleDescription.Count > 1 ||
-                                        _swapChain4.Description.SampleDescription.Quality > 0
-                                ? DepthStencilViewDimension.Texture2DMultisampled
-                                : DepthStencilViewDimension.Texture2D
-                        });
-                }
-
-                Viewport = new Viewport(0, 0, args.Width, args.Height);
-
-                _d3DDeviceContext.Rasterizer.SetViewport(Viewport);
-                SetRenderTarget(null);
-            }
-            ResizeFinished?.Invoke(Viewport);
-        }
-
         /// <summary>
         ///     <see cref="IGraphicsDevice.BeginFrame" />
         /// </summary>
@@ -474,6 +391,72 @@ namespace Exomia.Framework.Game
         public bool GetFullscreenState()
         {
             return _swapChain4.IsFullScreen;
+        }
+
+        private void Resize(ResizeParameters args)
+        {
+            lock (_d3DDevice5)
+            {
+                if (_renderView1 != null)
+                {
+                    _renderView1.Dispose();
+                    _renderView1 = null;
+                }
+
+                _swapChain4.ResizeBuffers(
+                    args.BufferCount, args.Width, args.Height, Format.Unknown, args.SwapChainFlags);
+
+                RenderTargetView renderView;
+                using (Texture2D backBuffer = _swapChain4.GetBackBuffer<Texture2D>(0))
+                {
+                    renderView = new RenderTargetView(_d3DDevice5, backBuffer);
+                    _renderView1 = renderView.QueryInterface<RenderTargetView1>();
+                }
+                renderView.Dispose();
+
+                using (Texture2D depthBuffer = new Texture2D(
+                    _d3DDevice5, new Texture2DDescription
+                    {
+                        Format = Format.D24_UNorm_S8_UInt,
+                        ArraySize = 1,
+                        MipLevels = 1,
+                        Width = args.Width,
+                        Height = args.Height,
+                        SampleDescription = _swapChain4.Description.SampleDescription,
+                        BindFlags = BindFlags.DepthStencil,
+                        CpuAccessFlags = CpuAccessFlags.None,
+                        OptionFlags = ResourceOptionFlags.None,
+                        Usage = ResourceUsage.Default
+                    }))
+                {
+                    _depthStencilView = new DepthStencilView(
+                        _d3DDevice5, depthBuffer, new DepthStencilViewDescription
+                        {
+                            Dimension = _swapChain4.Description.SampleDescription.Count > 1 ||
+                                        _swapChain4.Description.SampleDescription.Quality > 0
+                                ? DepthStencilViewDimension.Texture2DMultisampled
+                                : DepthStencilViewDimension.Texture2D
+                        });
+                }
+
+                Viewport = new Viewport(0, 0, args.Width, args.Height);
+
+                _d3DDeviceContext.Rasterizer.SetViewport(Viewport);
+                SetRenderTarget(null);
+            }
+            ResizeFinished?.Invoke(Viewport);
+        }
+
+        #endregion
+
+        #region Nested
+
+        private struct ResizeParameters
+        {
+            public int Width;
+            public int Height;
+            public int BufferCount;
+            public SwapChainFlags SwapChainFlags;
         }
 
         #endregion

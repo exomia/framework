@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Collections.Generic;
@@ -7,42 +31,7 @@ namespace Exomia.Framework.Collections
 {
     public sealed class LinkedList<T>
     {
-        public sealed class LinkedListNode
-        {
-            internal T Item;
-            internal LinkedListNode Next;
-            internal LinkedListNode Previous;
-
-            internal LinkedListNode(in T value)
-            {
-                Item = value;
-            }
-
-            internal void Invalidate()
-            {
-                Item = default;
-                Next = null;
-                Previous = null;
-            }
-        }
-
-        #region Constants
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         public uint Count { get; private set; }
 
@@ -56,10 +45,6 @@ namespace Exomia.Framework.Collections
         #endregion
 
         #region Constructors
-
-        #region Statics
-
-        #endregion
 
         public LinkedList() { }
 
@@ -75,10 +60,6 @@ namespace Exomia.Framework.Collections
         #endregion
 
         #region Methods
-
-        #region Statics
-
-        #endregion
 
         public LinkedListNode AddFirst(in T item)
         {
@@ -148,6 +129,41 @@ namespace Exomia.Framework.Collections
                     node = node.Next;
                 } while (node != Last.Next);
             }
+        }
+
+        #endregion
+
+        #region Nested
+
+        public sealed class LinkedListNode
+        {
+            #region Variables
+
+            internal T Item;
+            internal LinkedListNode Next;
+            internal LinkedListNode Previous;
+
+            #endregion
+
+            #region Constructors
+
+            internal LinkedListNode(in T value)
+            {
+                Item = value;
+            }
+
+            #endregion
+
+            #region Methods
+
+            internal void Invalidate()
+            {
+                Item = default;
+                Next = null;
+                Previous = null;
+            }
+
+            #endregion
         }
 
         #endregion

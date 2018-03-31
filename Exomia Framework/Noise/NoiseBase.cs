@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Runtime.CompilerServices;
@@ -8,7 +32,7 @@ namespace Exomia.Framework.Noise
 {
     public abstract class NoiseBase : INoise
     {
-        #region Constants
+        #region Variables
 
         protected const int X_PRIME = 1103;
         protected const int Y_PRIME = 29401;
@@ -17,15 +41,9 @@ namespace Exomia.Framework.Noise
 
         protected const int U_PRIME = 58193;
 
-        #endregion
+        protected static readonly float[] Grad_1D = { -1.0f, 1.0f };
 
-        #region Variables
-
-        #region Statics
-
-        protected static readonly float[] GRAD_1D = { -1.0f, 1.0f };
-
-        protected static readonly Vector2[] GRAD_2D =
+        protected static readonly Vector2[] Grad_2D =
         {
             new Vector2(-1.0f, -1.0f),
             new Vector2(1.0f, -1.0f),
@@ -37,7 +55,7 @@ namespace Exomia.Framework.Noise
             new Vector2(1.0f, 0.0f)
         };
 
-        protected static readonly Vector3[] GRAD_3D =
+        protected static readonly Vector3[] Grad_3D =
         {
             new Vector3(1.0f, 1.0f, 0.0f),
             new Vector3(-1.0f, 1.0f, 0.0f),
@@ -57,35 +75,22 @@ namespace Exomia.Framework.Noise
             new Vector3(0.0f, -1.0f, -1.0f)
         };
 
-        #endregion
-
-        protected int _seed = 2017;
-        protected int _octaves = 3;
-        protected double _frequency = 0.02;
-
-        protected double _lacunarity = 2.0f;
-
-        protected float _gain = 0.5f;
         protected float _fractalBounding;
+        protected double _frequency;
 
-        protected NoiseInterpolationType _noiseInterpolationType;
+        protected float _gain;
+
+        protected double _lacunarity;
         protected NoiseFractalType _noiseFractalType;
 
-        #endregion
+        protected NoiseInterpolationType _noiseInterpolationType;
+        protected int _octaves;
 
-        #region Properties
-
-        #region Statics
-
-        #endregion
+        protected int _seed;
 
         #endregion
 
         #region Constructors
-
-        #region Statics
-
-        #endregion
 
         protected NoiseBase(int seed, float frequency)
             : this(seed, frequency, 0, 0f, 0f, NoiseInterpolationType.Linear, NoiseFractalType.None) { }
@@ -116,13 +121,7 @@ namespace Exomia.Framework.Noise
 
         #region Methods
 
-        #region Statics
-
-        #endregion
-
-        /// <summary>
-        ///     <see cref="INoise.GenerateNoise1D(int, int)" />
-        /// </summary>
+        /// <inheritdoc />
         public float[] GenerateNoise1D(int x, int xmax)
         {
             float[] noise = new float[xmax];
@@ -133,9 +132,7 @@ namespace Exomia.Framework.Noise
             return noise;
         }
 
-        /// <summary>
-        ///     <see cref="INoise.GenerateNoise2D(int, int, int, int)" />
-        /// </summary>
+        /// <inheritdoc />
         public float[,] GenerateNoise2D(int x, int y, int xmax, int ymax)
         {
             float[,] noise = new float[xmax, ymax];
@@ -149,9 +146,7 @@ namespace Exomia.Framework.Noise
             return noise;
         }
 
-        /// <summary>
-        ///     <see cref="INoise.GenerateNoise3D(int, int, int, int, int, int)" />
-        /// </summary>
+        /// <inheritdoc />
         public float[,,] GenerateNoise3D(int x, int y, int z, int xmax, int ymax, int zmax)
         {
             float[,,] noise = new float[xmax, ymax, zmax];
@@ -179,6 +174,8 @@ namespace Exomia.Framework.Noise
             }
             _fractalBounding = 1.0f / ampFractal;
         }
+
+        #endregion
 
         #region Hasing
 
@@ -286,7 +283,7 @@ namespace Exomia.Framework.Noise
             hash = hash * hash * hash * U_PRIME;
             hash = (hash >> 13) ^ hash;
 
-            float g = GRAD_1D[hash & 1];
+            float g = Grad_1D[hash & 1];
 
             return (float)(xd * g);
         }
@@ -301,7 +298,7 @@ namespace Exomia.Framework.Noise
             hash = hash * hash * hash * U_PRIME;
             hash = (hash >> 13) ^ hash;
 
-            Vector2 g = GRAD_2D[hash & 7];
+            Vector2 g = Grad_2D[hash & 7];
 
             return (float)(xd * g.X + yd * g.Y);
         }
@@ -317,7 +314,7 @@ namespace Exomia.Framework.Noise
             hash = hash * hash * hash * U_PRIME;
             hash = (hash >> 13) ^ hash;
 
-            Vector3 g = GRAD_3D[hash & 15];
+            Vector3 g = Grad_3D[hash & 15];
 
             return (float)(xd * g.X + yd * g.Y + zd * g.Z);
         }
@@ -582,8 +579,6 @@ namespace Exomia.Framework.Noise
         }
 
         protected abstract float Single(int seed, double x, double y, double z);
-
-        #endregion
 
         #endregion
     }

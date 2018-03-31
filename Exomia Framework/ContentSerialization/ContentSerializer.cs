@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -15,9 +39,27 @@ namespace Exomia.Framework.ContentSerialization
     /// </summary>
     public static class ContentSerializer
     {
-        #region Constructors
+        #region Variables
 
-        #region Statics
+        internal const string TABSPACE = "\t";
+
+        /// <summary>
+        ///     DEFAULT_EXTENSION
+        /// </summary>
+        public const string DEFAULT_EXTENSION = ".ds0";
+
+        private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders =
+            new Dictionary<Type, IContentSerializationReader>();
+
+        private static readonly Dictionary<Type, IContentSerializationWriter> s_contentPipeLineWriters =
+            new Dictionary<Type, IContentSerializationWriter>();
+
+        internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
+        internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
+
+        #endregion
+
+        #region Constructors
 
         static ContentSerializer()
         {
@@ -117,56 +159,7 @@ namespace Exomia.Framework.ContentSerialization
 
         #endregion
 
-        #endregion
-
-        #region Constants
-
-        internal const string TABSPACE = "\t";
-
-        /// <summary>
-        ///     DEFAULT_EXTENSION
-        /// </summary>
-        public const string DEFAULT_EXTENSION = ".ds0";
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders =
-            new Dictionary<Type, IContentSerializationReader>();
-
-        private static readonly Dictionary<Type, IContentSerializationWriter> s_contentPipeLineWriters =
-            new Dictionary<Type, IContentSerializationWriter>();
-
-        internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
-        internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
-
-        #endregion
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Methods
-
-        #region Statics
-
-        private static void AddAssembly(Assembly assembly)
-        {
-            string assemblyName = assembly.GetName().Name;
-            if (!s_assemblies.ContainsKey(assemblyName))
-            {
-                s_assemblies.Add(assemblyName, assembly);
-            }
-        }
 
         /// <summary>
         ///     Adds a new content pipeline reader to the content pipeline
@@ -230,6 +223,17 @@ namespace Exomia.Framework.ContentSerialization
         {
             AddWriter(typeof(T), writer);
         }
+
+        private static void AddAssembly(Assembly assembly)
+        {
+            string assemblyName = assembly.GetName().Name;
+            if (!s_assemblies.ContainsKey(assemblyName))
+            {
+                s_assemblies.Add(assemblyName, assembly);
+            }
+        }
+
+        #endregion
 
         #region ContentWriter
 
@@ -427,10 +431,6 @@ namespace Exomia.Framework.ContentSerialization
                 }
             }
         }
-
-        #endregion
-
-        #endregion
 
         #endregion
     }

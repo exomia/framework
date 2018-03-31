@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using Exomia.Framework.Content;
@@ -7,41 +31,31 @@ using SharpDX;
 
 namespace Exomia.Framework
 {
+    /// <inheritdoc cref="IComponent" />
+    /// <inheritdoc cref="IInitializable" />
+    /// <inheritdoc cref="IContentable" />
+    /// <inheritdoc cref="IUpdateable" />
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     ///     a game component
     /// </summary>
     public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
-        #region Constants
-
-        #endregion
-
         #region Variables
 
-        #region Statics
-
-        #endregion
-
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        protected bool _isInitialized;
-        protected bool _isContentLoaded;
+        private DisposeCollector _collector;
 
         private bool _enabled;
-        private int _updateOrder;
+        protected bool _isContentLoaded;
 
-        private DisposeCollector _collector;
+        protected bool _isInitialized;
+        private int _updateOrder;
 
         #endregion
 
         #region Properties
 
-        #region Statics
-
-        #endregion
-
-        public string Name { get; } = string.Empty;
+        public string Name { get; }
 
         /// <summary>
         ///     Gets the <see cref="Game" /> associated with this <see cref="AComponent" />. This value can be null in a mock
@@ -62,9 +76,7 @@ namespace Exomia.Framework
         /// <value>The graphics device.</value>
         protected IGraphicsDevice GraphicsDevice { get; private set; }
 
-        /// <summary>
-        ///     Gets or sets the enabled state
-        /// </summary>
+        /// <inheritdoc />
         public bool Enabled
         {
             get { return _enabled; }
@@ -78,9 +90,7 @@ namespace Exomia.Framework
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the update order
-        /// </summary>
+        /// <inheritdoc />
         public int UpdateOrder
         {
             get { return _updateOrder; }
@@ -98,15 +108,11 @@ namespace Exomia.Framework
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="AComponent" /> class.
         /// </summary>
         /// <param name="name">The component name.</param>
-        public AComponent(string name)
+        protected AComponent(string name)
         {
             Name = name;
             _collector = new DisposeCollector();
@@ -117,7 +123,7 @@ namespace Exomia.Framework
         /// </summary>
         /// <param name="game">The game.</param>
         /// <param name="name">The component name.</param>
-        public AComponent(Game.Game game, string name)
+        protected AComponent(Game.Game game, string name)
             : this(name)
         {
             Game = game;
@@ -135,13 +141,27 @@ namespace Exomia.Framework
 
         #region Methods
 
-        #region Statics
+        /// <inheritdoc />
+        public void LoadContent()
+        {
+            if (_isInitialized && !_isContentLoaded)
+            {
+                OnLoadContent();
+                _isContentLoaded = true;
+            }
+        }
 
-        #endregion
+        /// <inheritdoc />
+        public void UnloadContent()
+        {
+            if (_isContentLoaded)
+            {
+                OnUnloadContent();
+                _isContentLoaded = false;
+            }
+        }
 
-        /// <summary>
-        ///     see <see cref="IInitializable.Initialize(IServiceRegistry)"></see>
-        /// </summary>
+        /// <inheritdoc />
         public void Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized)
@@ -157,40 +177,17 @@ namespace Exomia.Framework
             }
         }
 
-        protected virtual void OnInitialize(IServiceRegistry registry) { }
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
-        /// <summary>
-        ///     see <see cref="IContentable.LoadContent()"></see>
-        /// </summary>
-        public void LoadContent()
-        {
-            if (_isInitialized && !_isContentLoaded)
-            {
-                OnLoadContent();
-                _isContentLoaded = true;
-            }
-        }
+        /// <inheritdoc />
+        public abstract void Update(GameTime gameTime);
+
+        protected virtual void OnInitialize(IServiceRegistry registry) { }
 
         protected virtual void OnLoadContent() { }
 
-        /// <summary>
-        ///     see <see cref="IContentable.UnloadContent()"></see>
-        /// </summary>
-        public void UnloadContent()
-        {
-            if (_isContentLoaded)
-            {
-                OnUnloadContent();
-                _isContentLoaded = false;
-            }
-        }
-
         protected virtual void OnUnloadContent() { }
-
-        /// <summary>
-        ///     see <see cref="IUpdateable.Update(GameTime)"></see>
-        /// </summary>
-        public abstract void Update(GameTime gameTime);
 
         /// <summary>
         ///     adds a <see cref="IDisposable" /> object to the dispose collector

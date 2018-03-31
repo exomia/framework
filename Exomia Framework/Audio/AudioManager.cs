@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using SharpDX;
@@ -8,62 +32,44 @@ using SharpDX.XAudio2;
 
 namespace Exomia.Framework.Audio
 {
+    /// <inheritdoc />
     /// <summary>
     ///     AudioManager class
     /// </summary>
     public sealed class AudioManager : IDisposable
     {
-        #region Constants
-
-        #endregion
-
         #region Variables
-
-        #region Statics
-
-        #endregion
 
         private readonly int _inputChannelCount = 2;
         private readonly int _inputSampleRate = 44100;
 
-        private float _masterVolume = 0.5f;
+        private readonly Listener _listener;
         private float _bgmVolume = 1.0f;
-        private float _fxVolume = 1.0f;
+
+        private SourceVoice _currentBgm;
+        private LinkedSoundList _envLinkedSoundList;
+        private SubmixVoice _envSubmixVoice;
+        private VoiceSendDescriptor _envVoiceSendDescriptor;
         private float _envVolume = 1.0f;
 
-        private XAudio2 _xAudio2;
-        private X3DAudio _x3dAudio;
-        private MasteringVoice _masteringVoice;
+        private LinkedSoundList _fxLinkedSoundList;
+        private SubmixVoice _fxSubmixVoice;
 
         private VoiceSendDescriptor _fxVoiceSendDescriptor;
-        private SubmixVoice _fxSubmixVoice;
-        private VoiceSendDescriptor _envVoiceSendDescriptor;
-        private SubmixVoice _envSubmixVoice;
+        private float _fxVolume = 1.0f;
+        private MasteringVoice _masteringVoice;
 
-        private SourceVoice _currentBGM;
-
-        private struct SoundBuffer
-        {
-            public AudioBuffer AudioBuffer;
-            public WaveFormat Format;
-            public uint[] DecodedPacketsInfo;
-        }
+        private float _masterVolume = 0.5f;
 
         private Dictionary<int, SoundBuffer> _soundBuffer;
         private int _soundBufferIndex;
+        private X3DAudio _x3DAudio;
 
-        private LinkedSoundList _fxLinkedSoundList;
-        private LinkedSoundList _envLinkedSoundList;
-
-        private readonly Listener _listener;
+        private XAudio2 _xAudio2;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     ListenerPosition
@@ -109,15 +115,15 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     BGMVolume
         /// </summary>
-        public float BGMVolume
+        public float BgmVolume
         {
             get { return _bgmVolume; }
             set
             {
                 _bgmVolume = MathUtil.Clamp(value, 0.0f, 1.0f);
-                if (_currentBGM != null && _currentBGM.State.BuffersQueued > 0)
+                if (_currentBgm != null && _currentBgm.State.BuffersQueued > 0)
                 {
-                    _currentBGM.SetVolume(_bgmVolume);
+                    _currentBgm.SetVolume(_bgmVolume);
                 }
             }
         }
@@ -125,7 +131,7 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     FXVolume
         /// </summary>
-        public float FXVolume
+        public float FxVolume
         {
             get { return _fxVolume; }
             set
@@ -151,10 +157,6 @@ namespace Exomia.Framework.Audio
         #endregion
 
         #region Constructors
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AudioManager" /> class.
@@ -197,7 +199,7 @@ namespace Exomia.Framework.Audio
                 throw new Exception("can't create MasteringVoice");
             }
             _masteringVoice.SetVolume(_masterVolume);
-            _x3dAudio = new X3DAudio(speakers, X3DAudio.SpeedOfSound / 1000f, X3DAudioVersion.Default);
+            _x3DAudio = new X3DAudio(speakers, X3DAudio.SpeedOfSound / 1000f, X3DAudioVersion.Default);
 
             _masteringVoice.GetVoiceDetails(out VoiceDetails details);
             _inputChannelCount = details.InputChannelCount;
@@ -224,10 +226,6 @@ namespace Exomia.Framework.Audio
         #endregion
 
         #region Methods
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     load a sound from a given stream and returns the sound id
@@ -408,6 +406,74 @@ namespace Exomia.Framework.Audio
             }
         }
 
+        /// <summary>
+        ///     starts a back ground music song
+        /// </summary>
+        /// <param name="songID">the song id</param>
+        /// <param name="onBGMEnd">called than the song ends</param>
+        public void RunBGM(int songID, Action<IntPtr> onBGMEnd = null)
+        {
+            if (!_soundBuffer.TryGetValue(songID, out SoundBuffer buffer))
+            {
+                return;
+            }
+            if (_currentBgm?.State.BuffersQueued > 0)
+            {
+                _currentBgm.Stop();
+            }
+
+            _currentBgm = new SourceVoice(_xAudio2, buffer.Format, VoiceFlags.None, true);
+            _currentBgm.SetVolume(_bgmVolume);
+            _currentBgm.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
+
+            _currentBgm.BufferEnd += ptr =>
+            {
+                _currentBgm.DestroyVoice();
+            };
+            if (onBGMEnd != null)
+            {
+                _currentBgm.BufferEnd += onBGMEnd;
+            }
+
+            _currentBgm.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
+            _currentBgm.Start();
+        }
+
+        /// <summary>
+        ///     resume a bgm song
+        /// </summary>
+        public void ResumeBGM()
+        {
+            if (_currentBgm?.State.BuffersQueued > 0)
+            {
+                _currentBgm.Start();
+            }
+        }
+
+        /// <summary>
+        ///     pause a bgm song
+        /// </summary>
+        public void PauseBGM()
+        {
+            if (_currentBgm?.State.BuffersQueued > 0)
+            {
+                _currentBgm.Stop();
+            }
+        }
+
+        /// <summary>
+        ///     stop a bgm song
+        /// </summary>
+        public void StopBGM()
+        {
+            if (_currentBgm?.State.BuffersQueued > 0)
+            {
+                _currentBgm.Stop();
+                _currentBgm.DestroyVoice();
+                _currentBgm.Dispose();
+            }
+        }
+
         private void PlaySound(int soundID, Vector3 emitterPos, float volume, float maxDistanance, LinkedSoundList list,
             ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr> onFXEnd = null)
         {
@@ -461,7 +527,7 @@ namespace Exomia.Framework.Audio
             }
             sourceVoice.Start();
 
-            DspSettings settings = _x3dAudio.Calculate(
+            DspSettings settings = _x3DAudio.Calculate(
                 _listener,
                 sound.Emitter,
                 CalculateFlags.Matrix | CalculateFlags.Doppler,
@@ -476,7 +542,7 @@ namespace Exomia.Framework.Audio
             DspSettings settings = null;
             foreach (Sound sound in _fxLinkedSoundList.Enumerate())
             {
-                settings = _x3dAudio.Calculate(
+                settings = _x3DAudio.Calculate(
                     _listener,
                     sound.Emitter,
                     CalculateFlags.Matrix | CalculateFlags.Doppler,
@@ -493,7 +559,7 @@ namespace Exomia.Framework.Audio
             DspSettings settings = null;
             foreach (Sound sound in _envLinkedSoundList.Enumerate())
             {
-                settings = _x3dAudio.Calculate(
+                settings = _x3DAudio.Calculate(
                     _listener,
                     sound.Emitter,
                     CalculateFlags.Matrix | CalculateFlags.Doppler,
@@ -505,73 +571,18 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     starts a back ground music song
-        /// </summary>
-        /// <param name="songID">the song id</param>
-        /// <param name="onBGMEnd">called than the song ends</param>
-        public void RunBGM(int songID, Action<IntPtr> onBGMEnd = null)
+        #endregion
+
+        #region Nested
+
+        private struct SoundBuffer
         {
-            if (!_soundBuffer.TryGetValue(songID, out SoundBuffer buffer))
-            {
-                return;
-            }
-            if (_currentBGM?.State.BuffersQueued > 0)
-            {
-                _currentBGM.Stop();
-            }
-
-            _currentBGM = new SourceVoice(_xAudio2, buffer.Format, VoiceFlags.None, true);
-            _currentBGM.SetVolume(_bgmVolume);
-            _currentBGM.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
-
-            _currentBGM.BufferEnd += ptr =>
-            {
-                _currentBGM.DestroyVoice();
-            };
-            if (onBGMEnd != null)
-            {
-                _currentBGM.BufferEnd += onBGMEnd;
-            }
-
-            _currentBGM.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
-            _currentBGM.Start();
+            public AudioBuffer AudioBuffer;
+            public WaveFormat Format;
+            public uint[] DecodedPacketsInfo;
         }
 
-        /// <summary>
-        ///     resume a bgm song
-        /// </summary>
-        public void ResumeBGM()
-        {
-            if (_currentBGM?.State.BuffersQueued > 0)
-            {
-                _currentBGM.Start();
-            }
-        }
-
-        /// <summary>
-        ///     pause a bgm song
-        /// </summary>
-        public void PauseBGM()
-        {
-            if (_currentBGM?.State.BuffersQueued > 0)
-            {
-                _currentBGM.Stop();
-            }
-        }
-
-        /// <summary>
-        ///     stop a bgm song
-        /// </summary>
-        public void StopBGM()
-        {
-            if (_currentBGM?.State.BuffersQueued > 0)
-            {
-                _currentBGM.Stop();
-                _currentBGM.DestroyVoice();
-                _currentBGM.Dispose();
-            }
-        }
+        #endregion
 
         #region IDisposable Support
 
@@ -587,9 +598,9 @@ namespace Exomia.Framework.Audio
                     StopFxSounds();
                     StopEnvSounds();
 
-                    _currentBGM?.DestroyVoice();
-                    _currentBGM?.Dispose();
-                    _currentBGM = null;
+                    _currentBgm?.DestroyVoice();
+                    _currentBgm?.Dispose();
+                    _currentBgm = null;
 
                     _fxLinkedSoundList?.Clear();
                     _fxLinkedSoundList = null;
@@ -614,7 +625,7 @@ namespace Exomia.Framework.Audio
 
                     _xAudio2?.Dispose();
                     _xAudio2 = null;
-                    _x3dAudio = null;
+                    _x3DAudio = null;
                 }
 
                 _disposed = true;
@@ -632,6 +643,4 @@ namespace Exomia.Framework.Audio
 
         #endregion
     }
-
-    #endregion
 }

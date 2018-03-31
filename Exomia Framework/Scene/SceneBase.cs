@@ -1,4 +1,26 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -8,59 +30,56 @@ using SharpDX;
 
 namespace Exomia.Framework.Scene
 {
-    /// <summary>
-    ///     SceneBase class
-    /// </summary>
+    /// <inheritdoc cref="IScene" />
+    /// <inheritdoc cref="IInputHandler" />
     public abstract class SceneBase : IScene, IInputHandler
     {
-        #region Constants
-
-        private const int INITIAL_QUEUE_SIZE = 8;
-
-        #endregion
-
         #region Variables
 
-        #region Statics
-
-        #endregion
-
-        public event SceneStateChangedHandler SceneStateChanged;
-
-        private SceneState _state = SceneState.None;
-
-        private bool _isInitialized;
-        private bool _isContentLoaded;
+        private const int INITIAL_QUEUE_SIZE = 8;
+        private readonly List<IContentable> _contentableComponent;
+        private readonly List<IContentable> _currentlyContentableComponent;
 
         private readonly List<IDrawable> _currentlyDrawableComponent;
         private readonly List<IUpdateable> _currentlyUpdateableComponent;
-        private readonly List<IContentable> _currentlyContentableComponent;
 
         private readonly List<IDrawable> _drawableComponent;
-        private readonly List<IUpdateable> _updateableComponent;
-        private readonly List<IContentable> _contentableComponent;
+        private readonly List<IInitializable> _pendingInitializables;
 
         private readonly Dictionary<string, IComponent> _sceneComponents;
-        private readonly List<IInitializable> _pendingInitializables;
+        private readonly List<IUpdateable> _updateableComponent;
 
         private DisposeCollector _collector;
 
-        protected ISceneManager _sceneManager;
-        protected IServiceRegistry _registry;
+        /// <summary>
+        /// </summary>
         protected IInputHandler _inputHandler;
+
+        private bool _isContentLoaded;
+
+        private bool _isInitialized;
+
+        /// <summary>
+        /// </summary>
+        protected IServiceRegistry _registry;
+
+        /// <summary>
+        /// </summary>
+        protected ISceneManager _sceneManager;
+
+        private SceneState _state = SceneState.None;
 
         #endregion
 
         #region Properties
 
-        #region Statics
+        /// <inheritdoc />
+        public string Key { get; }
 
-        #endregion
-
-        public string Key { get; } = string.Empty;
-
+        /// <inheritdoc />
         public bool IsOverlayScene { get; set; } = false;
 
+        /// <inheritdoc />
         public SceneState State
         {
             get { return _state; }
@@ -74,10 +93,13 @@ namespace Exomia.Framework.Scene
             }
         }
 
+        /// <inheritdoc />
         public string[] ReferenceScenes { get; set; } = new string[0];
 
+        /// <inheritdoc />
         public bool Enabled { get; set; } = false;
 
+        /// <inheritdoc />
         public bool Visible { get; set; } = false;
 
         IInputHandler IScene.InputHandler
@@ -109,11 +131,8 @@ namespace Exomia.Framework.Scene
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
-        public SceneBase(string key)
+        /// <inheritdoc />
+        protected SceneBase(string key)
         {
             Key = key;
 
@@ -129,13 +148,7 @@ namespace Exomia.Framework.Scene
             _collector = new DisposeCollector();
         }
 
-        event SceneStateChangedHandler IScene.SceneStateChanged
-        {
-            add { throw new NotImplementedException(); }
-
-            remove { throw new NotImplementedException(); }
-        }
-
+        /// <inheritdoc />
         ~SceneBase()
         {
             Dispose(false);
@@ -145,10 +158,14 @@ namespace Exomia.Framework.Scene
 
         #region Methods
 
-        #region Statics
+        event SceneStateChangedHandler IScene.SceneStateChanged
+        {
+            add { throw new NotImplementedException(); }
 
-        #endregion
+            remove { throw new NotImplementedException(); }
+        }
 
+        /// <inheritdoc />
         public void Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized && _state != SceneState.Initializing)
@@ -169,8 +186,7 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        protected virtual void OnInitialize() { }
-
+        /// <inheritdoc />
         public void LoadContent()
         {
             if (_isInitialized && !_isContentLoaded && _state != SceneState.ContentLoading)
@@ -194,8 +210,7 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        protected virtual void OnLoadContent() { }
-
+        /// <inheritdoc />
         public void UnloadContent()
         {
             if (_isContentLoaded && _state == SceneState.Ready)
@@ -219,12 +234,13 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        protected virtual void OnUnloadContent() { }
-
+        /// <inheritdoc />
         public virtual void Show() { }
 
+        /// <inheritdoc />
         public virtual void ReferenceScenesLoaded() { }
 
+        /// <inheritdoc />
         public virtual void Update(GameTime gameTime)
         {
             lock (_updateableComponent)
@@ -244,11 +260,13 @@ namespace Exomia.Framework.Scene
             _currentlyUpdateableComponent.Clear();
         }
 
+        /// <inheritdoc />
         public bool BeginDraw()
         {
             return Visible;
         }
 
+        /// <inheritdoc />
         public virtual void Draw(GameTime gameTime)
         {
             lock (_drawableComponent)
@@ -269,8 +287,18 @@ namespace Exomia.Framework.Scene
             _currentlyDrawableComponent.Clear();
         }
 
+        /// <inheritdoc />
         public virtual void EndDraw() { }
 
+        /// <summary>
+        /// </summary>
+        public event SceneStateChangedHandler SceneStateChanged;
+
+        /// <summary>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T Add<T>(T item)
         {
             if (item is IComponent component)
@@ -297,15 +325,18 @@ namespace Exomia.Framework.Scene
                 }
             }
 
-            if (item is IContentable contentable && !_contentableComponent.Contains(contentable))
+            lock (_contentableComponent)
             {
-                lock (_contentableComponent)
+                if (item is IContentable contentable && !_contentableComponent.Contains(contentable))
                 {
-                    _contentableComponent.Add(contentable);
-                }
-                if (_isContentLoaded)
-                {
-                    contentable.LoadContent();
+                    lock (_contentableComponent)
+                    {
+                        _contentableComponent.Add(contentable);
+                    }
+                    if (_isContentLoaded)
+                    {
+                        contentable.LoadContent();
+                    }
                 }
             }
 
@@ -313,12 +344,11 @@ namespace Exomia.Framework.Scene
             {
                 lock (_updateableComponent)
                 {
-                    IUpdateable compare = null;
                     bool inserted = false;
                     for (int i = 0; i < _updateableComponent.Count; i++)
                     {
-                        compare = _updateableComponent[i];
-                        if (IUpdateableComparer.s_default.Compare(updateable, compare) <= 0)
+                        IUpdateable compare = _updateableComponent[i];
+                        if (UpdateableComparer.Default.Compare(updateable, compare) <= 0)
                         {
                             _updateableComponent.Insert(i, updateable);
                             inserted = true;
@@ -334,12 +364,11 @@ namespace Exomia.Framework.Scene
             {
                 lock (_drawableComponent)
                 {
-                    IDrawable compare = null;
                     bool inserted = false;
                     for (int i = 0; i < _drawableComponent.Count; i++)
                     {
-                        compare = _drawableComponent[i];
-                        if (IDrawableComparer.s_default.Compare(drawable, compare) <= 0)
+                        IDrawable compare = _drawableComponent[i];
+                        if (DrawableComparer.Default.Compare(drawable, compare) <= 0)
                         {
                             _drawableComponent.Insert(i, drawable);
                             inserted = true;
@@ -359,15 +388,23 @@ namespace Exomia.Framework.Scene
             return item;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T Remove<T>(T item)
         {
-            if (item is IContentable contentable && _contentableComponent.Contains(contentable))
+            lock (_contentableComponent)
             {
-                lock (_contentableComponent)
+                if (item is IContentable contentable && _contentableComponent.Contains(contentable))
                 {
-                    _contentableComponent.Remove(contentable);
+                    lock (_contentableComponent)
+                    {
+                        _contentableComponent.Remove(contentable);
+                    }
+                    contentable.UnloadContent();
                 }
-                contentable.UnloadContent();
             }
 
             if (item is IUpdateable updateable && _updateableComponent.Contains(updateable))
@@ -405,6 +442,23 @@ namespace Exomia.Framework.Scene
             return item;
         }
 
+        /// <summary>
+        /// </summary>
+        protected virtual void OnInitialize() { }
+
+        /// <summary>
+        /// </summary>
+        protected virtual void OnLoadContent() { }
+
+        /// <summary>
+        /// </summary>
+        protected virtual void OnUnloadContent() { }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         protected T ToDispose<T>(T obj) where T : IDisposable
         {
             return _collector.Collect(obj);
@@ -412,13 +466,15 @@ namespace Exomia.Framework.Scene
 
         private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
         {
-            _updateableComponent.Sort(IUpdateableComparer.s_default);
+            _updateableComponent.Sort(UpdateableComparer.Default);
         }
 
         private void UpdateableComponent_UpdateOrderChanged(object sender, EventArgs e)
         {
-            _drawableComponent.Sort(IDrawableComparer.s_default);
+            _drawableComponent.Sort(DrawableComparer.Default);
         }
+
+        #endregion
 
         #region Input Events
 
@@ -427,6 +483,13 @@ namespace Exomia.Framework.Scene
             OnMouseMove(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="buttons"></param>
+        /// <param name="clicks"></param>
+        /// <param name="wheelDelta"></param>
         protected virtual void OnMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
 
         void IInputHandler.Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
@@ -434,6 +497,13 @@ namespace Exomia.Framework.Scene
             OnMouseDown(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="buttons"></param>
+        /// <param name="clicks"></param>
+        /// <param name="wheelDelta"></param>
         protected virtual void OnMouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
 
         void IInputHandler.Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
@@ -441,6 +511,13 @@ namespace Exomia.Framework.Scene
             OnMouseUp(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="buttons"></param>
+        /// <param name="clicks"></param>
+        /// <param name="wheelDelta"></param>
         protected virtual void OnMouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
 
         void IInputHandler.Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
@@ -448,6 +525,13 @@ namespace Exomia.Framework.Scene
             OnMouseClick(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="buttons"></param>
+        /// <param name="clicks"></param>
+        /// <param name="wheelDelta"></param>
         protected virtual void OnMouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
 
         void IInputHandler.Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
@@ -455,6 +539,13 @@ namespace Exomia.Framework.Scene
             OnMouseWheel(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="buttons"></param>
+        /// <param name="clicks"></param>
+        /// <param name="wheelDelta"></param>
         protected virtual void OnMouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
 
         void IInputHandler.Input_KeyUp(int keyValue, bool shift, bool alt, bool ctrl)
@@ -462,6 +553,12 @@ namespace Exomia.Framework.Scene
             OnKeyUp(keyValue, shift, alt, ctrl);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="keyValue"></param>
+        /// <param name="shift"></param>
+        /// <param name="alt"></param>
+        /// <param name="ctrl"></param>
         protected virtual void OnKeyUp(int keyValue, bool shift, bool alt, bool ctrl) { }
 
         void IInputHandler.Input_KeyDown(int keyValue, bool shift, bool alt, bool ctrl)
@@ -469,6 +566,12 @@ namespace Exomia.Framework.Scene
             OnKeyDown(keyValue, shift, alt, ctrl);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="keyValue"></param>
+        /// <param name="shift"></param>
+        /// <param name="alt"></param>
+        /// <param name="ctrl"></param>
         protected virtual void OnKeyDown(int keyValue, bool shift, bool alt, bool ctrl) { }
 
         void IInputHandler.Input_KeyPress(char key)
@@ -476,9 +579,10 @@ namespace Exomia.Framework.Scene
             OnKeyPress(key);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="key"></param>
         protected virtual void OnKeyPress(char key) { }
-
-        #endregion
 
         #endregion
 

@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 
@@ -16,22 +40,34 @@ namespace Exomia.Framework.Tools
 
     public static class Easing
     {
+        #region Nested
+
         public static class Linear
         {
+            #region Methods
+
             public static float EaseNone(float t, float b, float c, float d)
             {
                 return c * t / d + b;
             }
+
+            #endregion
         }
 
         public static class Bounce
         {
+            #region Variables
+
             private const float B1 = 1.0f / 2.75f;
             private const float B2 = 1.5f / 2.75f;
             private const float B3 = 2.0f / 2.75f;
             private const float B4 = 2.25f / 2.75f;
             private const float B5 = 2.5f / 2.75f;
             private const float B6 = 2.625f / 2.75f;
+
+            #endregion
+
+            #region Methods
 
             public static float EaseIn(float t, float b, float c, float d)
             {
@@ -60,10 +96,14 @@ namespace Exomia.Framework.Tools
                 if (t < d / 2) { return EaseIn(t * 2, 0, c, d) * .5f + b; }
                 return EaseOut(t * 2 - d, 0, c, d) * .5f + c * .5f + b;
             }
+
+            #endregion
         }
 
         public static class Circle
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return -c * ((float)Math.Sqrt(1 - (t /= d) * t) - 1) + b;
@@ -79,10 +119,14 @@ namespace Exomia.Framework.Tools
                 if ((t /= d / 2) < 1) { return -c / 2 * ((float)Math.Sqrt(1 - t * t) - 1) + b; }
                 return c / 2 * ((float)Math.Sqrt(1 - (t -= 2) * t) + 1) + b;
             }
+
+            #endregion
         }
 
         public static class Cubic
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return c * (t /= d) * t * t + b;
@@ -98,10 +142,14 @@ namespace Exomia.Framework.Tools
                 if ((t /= d / 2) < 1) { return c / 2 * t * t * t + b; }
                 return c / 2 * ((t -= 2) * t * t + 2) + b;
             }
+
+            #endregion
         }
 
         public static class Quad
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return c * (t /= d) * t + b;
@@ -117,10 +165,14 @@ namespace Exomia.Framework.Tools
                 if ((t /= d / 2) < 1) { return c / 2 * t * t + b; }
                 return -c / 2 * (--t * (t - 2) - 1) + b;
             }
+
+            #endregion
         }
 
         public static class Quart
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return c * (t /= d) * t * t * t + b;
@@ -136,10 +188,14 @@ namespace Exomia.Framework.Tools
                 if ((t /= d / 2) < 1) { return c / 2 * t * t * t * t + b; }
                 return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
             }
+
+            #endregion
         }
 
         public static class Quint
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return c * (t /= d) * t * t * t * t + b;
@@ -155,10 +211,14 @@ namespace Exomia.Framework.Tools
                 if ((t /= d / 2) < 1) { return c / 2 * t * t * t * t * t + b; }
                 return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
             }
+
+            #endregion
         }
 
         public static class Sine
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return -c * (float)Math.Cos(t / d * (Math.PI / 2)) + c + b;
@@ -173,10 +233,14 @@ namespace Exomia.Framework.Tools
             {
                 return -c / 2 * ((float)Math.Cos(Math.PI * t / d) - 1) + b;
             }
+
+            #endregion
         }
 
         public static class Expo
         {
+            #region Methods
+
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return t == 0 ? b : c * (float)Math.Pow(2, 10 * (t / d - 1)) + b;
@@ -194,6 +258,10 @@ namespace Exomia.Framework.Tools
                 if ((t /= d / 2) < 1) { return c / 2 * (float)Math.Pow(2, 10 * (t - 1)) + b; }
                 return c / 2 * (-(float)Math.Pow(2, -10 * --t) + 2) + b;
             }
+
+            #endregion
         }
+
+        #endregion
     }
 }

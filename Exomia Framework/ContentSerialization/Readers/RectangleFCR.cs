@@ -1,30 +1,66 @@
-﻿using SharpDX;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
     internal sealed class RectangleFCR : AContentSerializationReader<RectangleF>
     {
+        #region Methods
+
         public override RectangleF ReadContext(ContentSerializationContext context)
         {
-            RectangleF result = new RectangleF();
-            result.X = context.Get<float>("X");
-            result.Y = context.Get<float>("Y");
-            result.Width = context.Get<float>("Width");
-            result.Height = context.Get<float>("Height");
-            return result;
+            return new RectangleF
+            {
+                X = context.Get<float>("X"),
+                Y = context.Get<float>("Y"),
+                Width = context.Get<float>("Width"),
+                Height = context.Get<float>("Height")
+            };
+            ;
         }
+
+        #endregion
     }
 
     internal sealed class RectangleCR : AContentSerializationReader<Rectangle>
     {
+        #region Methods
+
         public override Rectangle ReadContext(ContentSerializationContext context)
         {
-            Rectangle result = new Rectangle();
-            result.X = context.Get<int>("X");
-            result.Y = context.Get<int>("Y");
-            result.Width = context.Get<int>("Width");
-            result.Height = context.Get<int>("Height");
-            return result;
+            return new Rectangle
+            {
+                X = context.Get<int>("X"),
+                Y = context.Get<int>("Y"),
+                Width = context.Get<int>("Width"),
+                Height = context.Get<int>("Height")
+            };
+            ;
         }
+
+        #endregion
     }
 }

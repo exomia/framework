@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System;
 using System.Diagnostics;
@@ -14,11 +38,60 @@ namespace Exomia.Framework.Components
 {
     public class DebugComponent : ADrawableComponent
     {
-        #region Constructors
+        #region Variables
 
-        #region Statics
+        private const float SAMPLE_TIME_RATE = 2.0f;
+        private const int MAXIMUM_SAMPLES = (int)(9 / SAMPLE_TIME_RATE) + 1;
+        private const double FRAME_DANGER_THRESHOLD = 1000.0f / 60.0f;
+
+        private SpriteFont _arial12Px;
+
+        private string _cpuInfo = string.Empty;
+        private string _cpuName = string.Empty;
+
+        private PerformanceCounter _cpuPerformanceCounter1;
+        private PerformanceCounter _cpuPerformanceCounter2;
+        private float _elapsed_time;
+
+        private bool _firstCalc;
+        private float _fpsAverage;
+        private float _fpsCurrent;
+        private string _fpsInfo = string.Empty;
+
+        private IGameWindow _gameWindow;
+        private string _gpuName = string.Empty;
+
+        private float _maxFrameTime;
+
+        private Vector2 _position1;
+        private Vector2 _position2;
+
+        private float _processorLoadT1;
+        private float _processorLoadT2;
+        private string _ramInfo = string.Empty;
+        private PerformanceCounter _ramPerformanceCounter1;
+
+        private float _sampleBuffer;
+        private int _sampleCount;
+
+        private SpriteBatch _spriteBatch;
+
+        private string _title = string.Empty;
+        private int _total_frames;
+
+        private float _totalMemoryBytes;
 
         #endregion
+
+        #region Properties
+
+        public bool ShowFullInformation { get; set; } = false;
+
+        public bool EnableTitleInformation { get; set; } = false;
+
+        #endregion
+
+        #region Constructors
 
         public DebugComponent(string name = "DebugGameSystem")
             : base(name)
@@ -33,130 +106,7 @@ namespace Exomia.Framework.Components
 
         #endregion
 
-        #region Constants
-
-        private const float SAMPLE_TIME_RATE = 2.0f;
-        private const int MAXIMUM_SAMPLES = (int)(9 / SAMPLE_TIME_RATE) + 1;
-        private const double FRAME_DANGER_THRESHOLD = 1000.0f / 60.0f;
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        private SpriteFont _arial12px;
-
-        private bool _firstCalc;
-
-        private float _totalMemoryBytes;
-        private float _elapsed_time;
-        private int _total_frames;
-        private float _fpsCurrent;
-        private float _fpsAverage;
-
-        private float _processorLoadT1;
-        private float _processorLoadT2;
-
-        private string _title = string.Empty;
-
-        private string _cpuInfo = string.Empty;
-        private string _ramInfo = string.Empty;
-        private string _fpsInfo = string.Empty;
-        private string _cpuName = string.Empty;
-        private string _gpuName = string.Empty;
-
-        private float _sampleBuffer;
-        private int _sampleCount;
-
-        private float _maxFrameTime;
-
-        private IGameWindow _gameWindow;
-
-        private SpriteBatch _spriteBatch;
-
-        private Vector2 _position1;
-        private Vector2 _position2;
-
-        private PerformanceCounter _cpuPerformanceCounter1;
-        private PerformanceCounter _cpuPerformanceCounter2;
-        private PerformanceCounter _ramPerformanceCounter1;
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        public bool ShowFullInformation { get; set; } = false;
-
-        public bool EnableTitleInformation { get; set; } = false;
-
-        #endregion
-
         #region Methods
-
-        #region Statics
-
-        #endregion
-
-        protected override void OnInitialize(IServiceRegistry registry)
-        {
-            IGameWindow gameWindow = registry.GetService<IGameWindow>();
-
-            _title = gameWindow.Title;
-
-            if (gameWindow != null)
-            {
-                _gameWindow = gameWindow;
-            }
-
-            string pName = Process.GetCurrentProcess().ProcessName;
-            _cpuPerformanceCounter1 = new PerformanceCounter(nameof(Process), "% Processor Time", pName, true);
-            _processorLoadT1 = _cpuPerformanceCounter1.NextValue() / Environment.ProcessorCount;
-
-            _cpuPerformanceCounter2 = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
-            _processorLoadT2 = _cpuPerformanceCounter2.NextValue();
-
-            _ramPerformanceCounter1 = new PerformanceCounter(nameof(Process), "Working Set", pName, true);
-            _totalMemoryBytes = (long)_ramPerformanceCounter1.NextValue();
-
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _position1 = new Vector2(10, 20);
-            _position2 = new Vector2(10, 80);
-
-            Diagnostic.GetCpuProperty(nameof(Name), out _cpuName);
-            Diagnostic.GetGpuProperty(nameof(Name), out _gpuName);
-        }
-
-        protected override void OnLoadContent()
-        {
-            using (MemoryStream ms = new MemoryStream(Resources.arial_ansi_12px))
-            {
-                if (!ExomiaCryptography.Decrypt(ms, out Stream stream))
-                {
-                    throw new IOException("resource 'arial_ansi_12px' failed to decrypt");
-                }
-
-                _arial12px = ToDispose(ContentSerializer.Read<SpriteFont>(stream)) ??
-                             throw new NullReferenceException(nameof(_arial12px));
-                if (_arial12px.ImageData == null)
-                {
-                    throw new NullReferenceException("_arial12px.ImageData");
-                }
-
-                using (MemoryStream ms2 = new MemoryStream(_arial12px.ImageData))
-                {
-                    ms2.Position = 0;
-                    _arial12px.Texture = Texture.Load(GraphicsDevice.Device, ms2);
-                }
-            }
-        }
 
         public override void Update(GameTime gameTime)
         {
@@ -216,17 +166,12 @@ namespace Exomia.Framework.Components
 
             if (ShowFullInformation)
             {
-                _spriteBatch.DrawText(_arial12px, $"{_cpuInfo}\n\n{_ramInfo}", _position1, Color.White, 0.0f);
+                _spriteBatch.DrawText(_arial12Px, $"{_cpuInfo}\n\n{_ramInfo}", _position1, Color.White, 0.0f);
             }
 
-            if (_fpsCurrent <= FRAME_DANGER_THRESHOLD)
-            {
-                _spriteBatch.DrawText(_arial12px, _fpsInfo, _position2, Color.Red, 0.0f);
-            }
-            else
-            {
-                _spriteBatch.DrawText(_arial12px, _fpsInfo, _position2, Color.White, 0.0f);
-            }
+            _spriteBatch.DrawText(
+                _arial12Px, _fpsInfo, _position2, _fpsCurrent <= FRAME_DANGER_THRESHOLD ? Color.Red : Color.White,
+                0.0f);
 
             _spriteBatch.End();
         }
@@ -235,6 +180,55 @@ namespace Exomia.Framework.Components
         {
             _total_frames++;
             base.EndDraw();
+        }
+
+        protected override void OnInitialize(IServiceRegistry registry)
+        {
+            IGameWindow gameWindow = registry.GetService<IGameWindow>();
+            _title = gameWindow.Title;
+            _gameWindow = gameWindow;
+
+            string pName = Process.GetCurrentProcess().ProcessName;
+            _cpuPerformanceCounter1 = new PerformanceCounter(nameof(Process), "% Processor Time", pName, true);
+            _processorLoadT1 = _cpuPerformanceCounter1.NextValue() / Environment.ProcessorCount;
+
+            _cpuPerformanceCounter2 = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
+            _processorLoadT2 = _cpuPerformanceCounter2.NextValue();
+
+            _ramPerformanceCounter1 = new PerformanceCounter(nameof(Process), "Working Set", pName, true);
+            _totalMemoryBytes = (long)_ramPerformanceCounter1.NextValue();
+
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _position1 = new Vector2(10, 20);
+            _position2 = new Vector2(10, 80);
+
+            Diagnostic.Diagnostic.GetCpuProperty(nameof(Name), out _cpuName);
+            Diagnostic.Diagnostic.GetGpuProperty(nameof(Name), out _gpuName);
+        }
+
+        protected override void OnLoadContent()
+        {
+            using (MemoryStream ms = new MemoryStream(Resources.arial_ansi_12px))
+            {
+                if (!ExomiaCryptography.Decrypt(ms, out Stream stream))
+                {
+                    throw new IOException("resource 'arial_ansi_12px' failed to decrypt");
+                }
+
+                _arial12Px = ToDispose(ContentSerializer.Read<SpriteFont>(stream)) ??
+                             throw new NullReferenceException(nameof(_arial12Px));
+                if (_arial12Px.ImageData == null)
+                {
+                    throw new NullReferenceException("_arial12px.ImageData");
+                }
+
+                using (MemoryStream ms2 = new MemoryStream(_arial12Px.ImageData))
+                {
+                    ms2.Position = 0;
+                    _arial12Px.Texture = Texture.Load(GraphicsDevice.Device, ms2);
+                }
+            }
         }
 
         #endregion

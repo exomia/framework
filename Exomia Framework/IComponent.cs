@@ -22,21 +22,19 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
+namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to handle content writing
+    ///     An interface to define a game component.
     /// </summary>
-    public interface IContentSerializationWriter
+    public interface IComponent
     {
-        #region Methods
+        #region Properties
 
         /// <summary>
-        ///     Write the object informations into the context
+        ///     the name of the component
         /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        void Write(ContentSerializationContext context, object obj);
+        string Name { get; }
 
         #endregion
     }

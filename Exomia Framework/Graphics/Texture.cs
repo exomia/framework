@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.IO;
 using Exomia.Framework.Content;
 using SharpDX;
@@ -6,6 +30,7 @@ using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Texture class
     /// </summary>
@@ -14,23 +39,11 @@ namespace Exomia.Framework.Graphics
     {
         #region Variables
 
-        #region Statics
-
-        #endregion
-
         private ShaderResourceView1 _textureView;
 
         #endregion
 
-        #region Constants
-
-        #endregion
-
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     ShaderResourceView1
@@ -62,10 +75,6 @@ namespace Exomia.Framework.Graphics
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         /// <summary>
         ///     Texture construcor
         /// </summary>
@@ -87,6 +96,10 @@ namespace Exomia.Framework.Graphics
             Dispose(false);
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         ///     load a Texture from a given source stream
         /// </summary>
@@ -106,14 +119,6 @@ namespace Exomia.Framework.Graphics
             }
             catch { return null; }
         }
-
-        #endregion
-
-        #region Methods
-
-        #region Statics
-
-        #endregion
 
         #endregion
 
@@ -146,29 +151,14 @@ namespace Exomia.Framework.Graphics
         #endregion
     }
 
+    /// <inheritdoc />
     /// <summary>
     ///     Texture2 class
     /// </summary>
     [ContentReadable(typeof(Texture2ContentReader))]
     public sealed class Texture2 : IDisposable
     {
-        #region Constants
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         /// <summary>
         ///     AtlasIndex
@@ -205,10 +195,6 @@ namespace Exomia.Framework.Graphics
 
         #region Constructors
 
-        #region Statics
-
-        #endregion
-
         internal Texture2(int atlasIndex, string assetName, Rectangle sourceRectangle)
         {
             AtlasIndex = atlasIndex;
@@ -223,14 +209,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
-
-        #region Statics
-
-        #endregion
 
         #endregion
 

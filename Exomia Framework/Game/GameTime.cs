@@ -1,4 +1,28 @@
-﻿#pragma warning disable 1591
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+#pragma warning disable 1591
 
 using System.Diagnostics;
 
@@ -9,52 +33,24 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class GameTime
     {
-        #region Constants
-
-        private const float MAX_FRAME_TIME = 1000.0f / 60.0f;
-
-        #endregion
-
-        #region Constructors
-
-        #region Statics
-
-        #endregion
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="GameTime" /> class.
-        /// </summary>
-        public GameTime()
-        {
-            _baseTime = Stopwatch.GetTimestamp();
-        }
-
-        #endregion
-
         #region Variables
 
-        #region Statics
-
-        #endregion
-
-        private readonly double _countsPerSec = 1.0 / Stopwatch.Frequency;
+        private const float MAX_FRAME_TIME = 1000.0f / 60.0f;
         private readonly double _countsPerMSec = 1000.0 / Stopwatch.Frequency;
 
+        private readonly double _countsPerSec = 1.0 / Stopwatch.Frequency;
+
         private long _baseTime;
-        private long _pausedTime;
-        private long _stopTime;
-        private long _prevTime;
         private long _currTime;
+        private long _pausedTime;
+        private long _prevTime;
 
         private bool _stopped;
+        private long _stopTime;
 
         #endregion
 
         #region Properties
-
-        #region Statics
-
-        #endregion
 
         public float TotalTimeS
         {
@@ -90,20 +86,26 @@ namespace Exomia.Framework.Game
 
         #endregion
 
-        #region Methods
+        #region Constructors
 
-        #region Statics
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="GameTime" /> class.
+        /// </summary>
+        public GameTime()
+        {
+            _baseTime = Stopwatch.GetTimestamp();
+        }
 
         #endregion
+
+        #region Methods
 
         /// <summary>
         ///     reset the gametime
         /// </summary>
         public void Reset()
         {
-            long curTime = Stopwatch.GetTimestamp();
-            _baseTime = curTime;
-            _prevTime = curTime;
+            _prevTime = _baseTime = Stopwatch.GetTimestamp();
             _stopTime = 0;
             _stopped = false;
         }
@@ -113,8 +115,7 @@ namespace Exomia.Framework.Game
         /// </summary>
         public void Start()
         {
-            long startTime = Stopwatch.GetTimestamp();
-            _prevTime = _baseTime;
+            _prevTime = _baseTime = Stopwatch.GetTimestamp();
             if (_stopped)
             {
                 _pausedTime += _baseTime - _stopTime;
@@ -131,8 +132,7 @@ namespace Exomia.Framework.Game
         {
             if (!_stopped)
             {
-                long curTime = Stopwatch.GetTimestamp();
-                _stopTime = curTime;
+                _stopTime = Stopwatch.GetTimestamp();
                 _stopped = true;
             }
         }

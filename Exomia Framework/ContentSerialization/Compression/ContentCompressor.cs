@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.IO;
 using System.IO.Compression;
 
@@ -25,7 +49,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
     /// </summary>
     public static class ContentCompressor
     {
-        #region Constants
+        #region Variables
 
         /// <summary>
         ///     the fefault compressed ds extension
@@ -36,33 +60,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
 
         #endregion
 
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
-        #region Constructors
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Methods
-
-        #region Statics
 
         /// <summary>
         ///     compress a given stream with the given compression mode
@@ -81,10 +79,10 @@ namespace Exomia.Framework.ContentSerialization.Compression
                 switch (mode)
                 {
                     case CompressMode.GZIP:
-                        GZIPCompress(stream, out streamOut);
+                        GzipCompress(stream, out streamOut);
                         return true;
                     case CompressMode.TGC:
-                        TGCCompress(stream, out streamOut);
+                        TgcCompress(stream, out streamOut);
                         return true;
                 }
             }
@@ -109,10 +107,10 @@ namespace Exomia.Framework.ContentSerialization.Compression
                 switch (mode)
                 {
                     case CompressMode.GZIP:
-                        GZIPDecompress(stream, out streamOut);
+                        GzipDecompress(stream, out streamOut);
                         return true;
                     case CompressMode.TGC:
-                        TGCDecompress(stream, out streamOut);
+                        TgcDecompress(stream, out streamOut);
                         return true;
                 }
             }
@@ -120,9 +118,11 @@ namespace Exomia.Framework.ContentSerialization.Compression
             return true;
         }
 
+        #endregion
+
         #region GZIP
 
-        private static void GZIPCompress(Stream stream, out Stream streamOut)
+        private static void GzipCompress(Stream stream, out Stream streamOut)
         {
             streamOut = new MemoryStream();
             using (GZipStream gs = new GZipStream(streamOut, CompressionLevel.Optimal, true))
@@ -137,7 +137,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
             streamOut.Position = 0;
         }
 
-        private static void GZIPDecompress(Stream stream, out Stream streamOut)
+        private static void GzipDecompress(Stream stream, out Stream streamOut)
         {
             streamOut = new MemoryStream();
             using (GZipStream gs = new GZipStream(stream, CompressionMode.Decompress, true))
@@ -156,19 +156,15 @@ namespace Exomia.Framework.ContentSerialization.Compression
 
         #region TGC
 
-        private static void TGCCompress(Stream stream, out Stream streamOut)
+        private static void TgcCompress(Stream stream, out Stream streamOut)
         {
             throw new NotSupportedException();
         }
 
-        private static void TGCDecompress(Stream stream, out Stream streamOut)
+        private static void TgcDecompress(Stream stream, out Stream streamOut)
         {
             throw new NotSupportedException();
         }
-
-        #endregion
-
-        #endregion
 
         #endregion
     }

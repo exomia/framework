@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region MIT License
+
+// Copyright (c) 2018 exomia - Daniel Bätz
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -13,11 +37,26 @@ namespace Exomia.Framework.Graphics
 {
     internal sealed class SpriteBatchAtlas : IDisposable
     {
-        #region Constructors
+        #region Variables
 
-        #region Statics
+        private const int MIN_ATLAS_WIDTH = 2048;
+        private const int MIN_ATLAS_HEIGHT = 2048;
+
+        private const int MAX_ATLAS_WIDTH = 8192;
+        private const int MAX_ATLAS_HEIGHT = 8192;
+        private readonly int _height;
+
+        private readonly object _lockAtlas = new object();
+
+        private readonly Dictionary<string, Rectangle> _sourceRectangles;
+
+        private readonly int _width;
+
+        private Bitmap _atlas;
 
         #endregion
+
+        #region Constructors
 
         public SpriteBatchAtlas(int width, int height)
         {
@@ -37,46 +76,7 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #region Constants
-
-        private const int MIN_ATLAS_WIDTH = 2048;
-        private const int MIN_ATLAS_HEIGHT = 2048;
-
-        private const int MAX_ATLAS_WIDTH = 8192;
-        private const int MAX_ATLAS_HEIGHT = 8192;
-
-        #endregion
-
-        #region Variables
-
-        #region Statics
-
-        #endregion
-
-        private readonly int _width;
-        private readonly int _height;
-
-        private readonly Dictionary<string, Rectangle> _sourceRectangles;
-
-        private Bitmap _atlas;
-
-        private readonly object _lockAtlas = new object();
-
-        #endregion
-
-        #region Properties
-
-        #region Statics
-
-        #endregion
-
-        #endregion
-
         #region Methods
-
-        #region Statics
-
-        #endregion
 
         internal BitmapSource GenerateBitmapSource()
         {
@@ -127,9 +127,7 @@ namespace Exomia.Framework.Graphics
 
         internal bool RemoveTexture(string assetName)
         {
-            Rectangle sourceRectangle = Rectangle.Empty;
-
-            if (!_sourceRectangles.TryGetValue(assetName, out sourceRectangle))
+            if (!_sourceRectangles.TryGetValue(assetName, out Rectangle sourceRectangle))
             {
                 return true;
             }
@@ -149,13 +147,11 @@ namespace Exomia.Framework.Graphics
 
         private bool GetFreeLocation(int width, int height, out int x, out int y)
         {
-            Rectangle sharpSF;
             x = 0;
             y = 0;
-            int ymin = 1;
             for (y = 1; y < _height - 1; y++)
             {
-                ymin = _height - 1;
+                int ymin = _height - 1;
                 for (x = 1; x < _width - 1; x++)
                 {
                     if (x + width > _width - 1)
@@ -163,7 +159,7 @@ namespace Exomia.Framework.Graphics
                         y = ymin;
                         break;
                     }
-                    sharpSF = new Rectangle(x, y, width, height);
+                    Rectangle sharpSF = new Rectangle(x, y, width, height);
 
                     bool intersects = false;
                     foreach (Rectangle sRect in _sourceRectangles.Values)
