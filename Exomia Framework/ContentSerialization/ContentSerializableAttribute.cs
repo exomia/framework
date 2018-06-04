@@ -57,11 +57,11 @@ namespace Exomia.Framework.ContentSerialization
         /// </param>
         public ContentSerializableAttribute(Type reader, Type writer)
         {
-            Reader = Activator.CreateInstance(reader) as IContentSerializationReader ??
+            Reader = System.Activator.CreateInstance(reader) as IContentSerializationReader ??
                      throw new TypeLoadException(
                          "cannot create an instance of IContentSerializationReader from type: " +
                          reader.AssemblyQualifiedName);
-            Writer = Activator.CreateInstance(writer) as IContentSerializationWriter ??
+            Writer = System.Activator.CreateInstance(writer) as IContentSerializationWriter ??
                      throw new TypeLoadException(
                          "cannot create an instance of IContentSerializationWriter from type: " +
                          writer.AssemblyQualifiedName);

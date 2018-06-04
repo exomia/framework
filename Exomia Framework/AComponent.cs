@@ -43,6 +43,9 @@ namespace Exomia.Framework
     {
         #region Variables
 
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
+
         private DisposeCollector _collector;
 
         private bool _enabled;
@@ -176,9 +179,6 @@ namespace Exomia.Framework
                 _isInitialized = true;
             }
         }
-
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
 
         /// <inheritdoc />
         public abstract void Update(GameTime gameTime);

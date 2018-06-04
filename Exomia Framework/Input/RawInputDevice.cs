@@ -38,6 +38,14 @@ namespace Exomia.Framework.Input
     {
         #region Variables
 
+        public event RKeyEventHandler KeyDown;
+        public event RKeyEventHandler KeyUp;
+        public event RKeyEventHandler KeyPress;
+
+        public event RMouseEventHandler MouseMove;
+        public event RMouseEventHandler MouseDown;
+        public event RMouseEventHandler MouseUp;
+
         private readonly HashSet<Keys> _pressedKeys;
 
         private Point _mousePosition = Point.Empty;
@@ -67,14 +75,6 @@ namespace Exomia.Framework.Input
         #endregion
 
         #region Methods
-
-        public event RKeyEventHandler KeyDown;
-        public event RKeyEventHandler KeyUp;
-        public event RKeyEventHandler KeyPress;
-
-        public event RMouseEventHandler MouseMove;
-        public event RMouseEventHandler MouseDown;
-        public event RMouseEventHandler MouseUp;
 
         public void Initialize(IGameWindow window)
         {

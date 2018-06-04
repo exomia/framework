@@ -258,7 +258,7 @@ namespace Exomia.Framework.ContentSerialization
             using (StreamWriter sw = new StreamWriter(assetName, false))
             {
                 Action<string, string> writeHandler = minify
-                    ? ((t, s) => { sw.Write(s); })
+                    ? (t, s) => { sw.Write(s); }
                     : new Action<string, string>((t, s) => { sw.WriteLine($"{t}{s}"); });
 
                 writeHandler(string.Empty, $"[{obj.GetType()}]");

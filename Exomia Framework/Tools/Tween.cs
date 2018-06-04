@@ -34,6 +34,12 @@ namespace Exomia.Framework.Tools
     {
         #region Variables
 
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
+
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
+
         private readonly EasingFunction _callback;
         private readonly float _delay;
         private readonly float _duration;
@@ -135,12 +141,6 @@ namespace Exomia.Framework.Tools
                 item.PropertyInfo.SetValue(_target, Convert.ChangeType(value, item.PropertyInfo.PropertyType), null);
             }
         }
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
 
         #endregion
 

@@ -51,6 +51,11 @@ namespace Exomia.Framework.Game
             FeatureLevel.Level_9_1
         };
 
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.ResizeFinished" />
+        /// </summary>
+        public event ResizeEventHandler ResizeFinished;
+
         private Adapter4 _adapter4;
         private RenderTargetView1 _currentRenderView;
         private Device5 _d3DDevice5;
@@ -132,11 +137,6 @@ namespace Exomia.Framework.Game
         #endregion
 
         #region Methods
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.ResizeFinished" />
-        /// </summary>
-        public event ResizeEventHandler ResizeFinished;
 
         /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)

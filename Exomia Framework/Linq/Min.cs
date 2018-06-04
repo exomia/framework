@@ -41,7 +41,8 @@ namespace Exomia.Framework.Linq
         /// <typeparam name="T">The type to compare the elements of <paramref name="source" /> with.</typeparam>
         /// <returns>The element in the specified sequence with the lowest value.</returns>
         /// <exception cref="T:System.InvalidOperationException">The source sequence is empty.</exception>
-        public static TSource Min<TSource, T>(this IEnumerable<TSource> source, Func<TSource, T> predicate, IComparer<T> comparer = null)
+        public static TSource Min<TSource, T>(this IEnumerable<TSource> source, Func<TSource, T> predicate,
+            IComparer<T> comparer = null)
         {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
@@ -69,7 +70,6 @@ namespace Exomia.Framework.Linq
             }
         }
 
-        
         #endregion
     }
 }

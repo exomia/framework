@@ -149,7 +149,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             int count = GetListCount(dimensionInfo);
 
             Type list = BaseType.MakeGenericType(elementType);
-            object obj = Activator.CreateInstance(list, count);
+            object obj = System.Activator.CreateInstance(list, count);
             AddListContent(stream, readCallback, (dynamic)obj, count);
             stream.ReadTag($"/{key}");
             return obj;
