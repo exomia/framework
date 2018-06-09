@@ -189,6 +189,9 @@
     <Compile Include="IRunable.cs" />
     <Compile Include="IServiceRegistry.cs" />
     <Compile Include="IUpdateable.cs" />
+    <Compile Include="Activator.cs" />
+    <Compile Include="Linq\ForEach.cs" />
+    <Compile Include="Linq\Min.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameGraphicsParameters.cs" />

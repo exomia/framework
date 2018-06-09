@@ -47,7 +47,7 @@ namespace Exomia.Framework.Content
         /// <param name="reader">the content reader type <see cref="T:Exomia.Framework.Content.IContentReader" /></param>
         public ContentReadableAttribute(Type reader)
         {
-            Reader = Activator.CreateInstance(reader) as IContentReader ??
+            Reader = System.Activator.CreateInstance(reader) as IContentReader ??
                      throw new TypeLoadException(
                          "cannot create an instance of IContentReader from type: " + reader.AssemblyQualifiedName);
         }

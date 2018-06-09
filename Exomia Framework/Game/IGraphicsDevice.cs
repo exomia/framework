@@ -36,6 +36,12 @@ namespace Exomia.Framework.Game
 
     public interface IGraphicsDevice : IDisposable
     {
+        #region Variables
+
+        event ResizeEventHandler ResizeFinished;
+
+        #endregion
+
         #region Properties
 
         bool IsInitialized { get; }
@@ -59,8 +65,6 @@ namespace Exomia.Framework.Game
         #endregion
 
         #region Methods
-
-        event ResizeEventHandler ResizeFinished;
 
         void Initialize(ref GameGraphicsParameters parameters);
 

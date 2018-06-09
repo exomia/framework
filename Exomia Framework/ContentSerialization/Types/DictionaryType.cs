@@ -164,7 +164,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             int count = GetDictionaryCount(dimensionInfo);
 
             Type dic = BaseType.MakeGenericType(itk.CreateType(string.Empty), valueType);
-            object obj = Activator.CreateInstance(dic, count);
+            object obj = System.Activator.CreateInstance(dic, count);
             AddDictionaryContent(stream, readCallback, (dynamic)obj, count);
             stream.ReadTag($"/{key}");
             return obj;

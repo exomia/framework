@@ -39,6 +39,20 @@ namespace Exomia.Framework.Tools
     {
         #region Variables
 
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
+
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
+
+        /// <summary>
+        /// </summary>
+        public event TimerEvent TimerTicked;
+
+        /// <summary>
+        /// </summary>
+        public event TimerEvent TimerFinished;
+
         private readonly uint _maxIterations;
         private float _elapsedTime;
 
@@ -134,12 +148,6 @@ namespace Exomia.Framework.Tools
         #region Methods
 
         /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
-
-        /// <inheritdoc />
         public void Update(GameTime gameTime)
         {
             if (!_enabled) { return; }
@@ -157,14 +165,6 @@ namespace Exomia.Framework.Tools
                 }
             }
         }
-
-        /// <summary>
-        /// </summary>
-        public event TimerEvent TimerTicked;
-
-        /// <summary>
-        /// </summary>
-        public event TimerEvent TimerFinished;
 
         /// <summary>
         /// </summary>

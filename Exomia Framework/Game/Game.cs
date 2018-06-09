@@ -54,6 +54,8 @@ namespace Exomia.Framework.Game
         private const int INITIAL_QUEUE_SIZE = 16;
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
 
+        private event EventHandler _isRunningChanged;
+
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
 
@@ -503,8 +505,6 @@ namespace Exomia.Framework.Game
         {
             _graphicsDevice.EndFrame();
         }
-
-        private event EventHandler _isRunningChanged;
 
         private void Renderloop(GameTime gameTime)
         {

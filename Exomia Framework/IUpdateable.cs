@@ -32,6 +32,20 @@ namespace Exomia.Framework
     /// </summary>
     public interface IUpdateable
     {
+        #region Variables
+
+        /// <summary>
+        ///     Occurs when the <see cref="UpdateOrder" /> property changes.
+        /// </summary>
+        event EventHandler<EventArgs> UpdateOrderChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="Enabled" /> property changes.
+        /// </summary>
+        event EventHandler<EventArgs> EnabledChanged;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -49,16 +63,6 @@ namespace Exomia.Framework
         #endregion
 
         #region Methods
-
-        /// <summary>
-        ///     Occurs when the <see cref="UpdateOrder" /> property changes.
-        /// </summary>
-        event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <summary>
-        ///     Occurs when the <see cref="Enabled" /> property changes.
-        /// </summary>
-        event EventHandler<EventArgs> EnabledChanged;
 
         /// <summary>
         ///     This method is called when this game component is updated.

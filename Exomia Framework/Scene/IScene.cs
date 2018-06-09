@@ -45,6 +45,12 @@ namespace Exomia.Framework.Scene
 
     internal interface IScene : IInitializable, IContentable, IDisposable
     {
+        #region Variables
+
+        event SceneStateChangedHandler SceneStateChanged;
+
+        #endregion
+
         #region Properties
 
         string Key { get; }
@@ -72,8 +78,6 @@ namespace Exomia.Framework.Scene
         #endregion
 
         #region Methods
-
-        event SceneStateChangedHandler SceneStateChanged;
 
         /// <summary>
         ///     Is called than the scene is showed

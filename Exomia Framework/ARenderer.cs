@@ -37,6 +37,9 @@ namespace Exomia.Framework
     {
         #region Variables
 
+        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs> VisibleChanged;
+
         private int _drawOrder;
 
         private bool _visible;
@@ -95,9 +98,6 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         public abstract void Dispose();
-
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
 
         /// <inheritdoc />
         public virtual bool BeginDraw()

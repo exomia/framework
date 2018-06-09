@@ -37,6 +37,18 @@ namespace Exomia.Framework.Scene
         #region Variables
 
         private const int INITIAL_QUEUE_SIZE = 8;
+
+        /// <summary>
+        /// </summary>
+        public event SceneStateChangedHandler SceneStateChanged;
+
+        event SceneStateChangedHandler IScene.SceneStateChanged
+        {
+            add { throw new NotImplementedException(); }
+
+            remove { throw new NotImplementedException(); }
+        }
+
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
 
@@ -157,13 +169,6 @@ namespace Exomia.Framework.Scene
         #endregion
 
         #region Methods
-
-        event SceneStateChangedHandler IScene.SceneStateChanged
-        {
-            add { throw new NotImplementedException(); }
-
-            remove { throw new NotImplementedException(); }
-        }
 
         /// <inheritdoc />
         public void Initialize(IServiceRegistry registry)
@@ -289,10 +294,6 @@ namespace Exomia.Framework.Scene
 
         /// <inheritdoc />
         public virtual void EndDraw() { }
-
-        /// <summary>
-        /// </summary>
-        public event SceneStateChangedHandler SceneStateChanged;
 
         /// <summary>
         /// </summary>

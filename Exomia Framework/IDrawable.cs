@@ -32,6 +32,20 @@ namespace Exomia.Framework
     /// </summary>
     public interface IDrawable
     {
+        #region Variables
+
+        /// <summary>
+        ///     Occurs when the <see cref="DrawOrder" /> property changes.
+        /// </summary>
+        event EventHandler<EventArgs> DrawOrderChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="Visible" /> property changes.
+        /// </summary>
+        event EventHandler<EventArgs> VisibleChanged;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -49,16 +63,6 @@ namespace Exomia.Framework
         #endregion
 
         #region Methods
-
-        /// <summary>
-        ///     Occurs when the <see cref="DrawOrder" /> property changes.
-        /// </summary>
-        event EventHandler<EventArgs> DrawOrderChanged;
-
-        /// <summary>
-        ///     Occurs when the <see cref="Visible" /> property changes.
-        /// </summary>
-        event EventHandler<EventArgs> VisibleChanged;
 
         /// <summary>
         ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
