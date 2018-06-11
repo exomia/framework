@@ -134,6 +134,7 @@
     <Compile Include="Audio\LinkedSoundList.cs" />
     <Compile Include="Audio\Sound.cs" />
     <Compile Include="Buffers\ArrayPool.cs" />
+    <Compile Include="Buffers\CircularBuffer.cs" />
     <Compile Include="Collections\LinkedList.cs" />
     <Compile Include="Collections\List.cs" />
     <Compile Include="Components\DebugComponent.cs" />

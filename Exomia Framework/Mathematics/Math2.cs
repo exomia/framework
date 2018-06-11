@@ -350,6 +350,73 @@ namespace Exomia.Framework.Mathematics
             return t * t * t * (t * (t * 6 - 15) + 10);
         }
 
+        /// <summary>
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, it is returned unchanged.
+        ///     If it is negative or zero, zero is returned.
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int RoundUpToPowerOfTwo(int value)
+        {
+            return value <= 0 ? 0 : (int)RoundUpToPowerOfTwo((uint)value);
+        }
+
+        /// <summary>
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, or zero, it is returned unchanged.
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint RoundUpToPowerOfTwo(uint value)
+        {
+            if (value > 0x80000000)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            value--;
+            value |= value >> 1;
+            value |= value >> 2;
+            value |= value >> 4;
+            value |= value >> 8;
+            value |= value >> 16;
+            return value + 1;
+        }
+
+        /// <summary>
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, it is returned unchanged.
+        ///     If it is negative or zero, zero is returned.
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long RoundUpToPowerOfTwo(long value)
+        {
+            return value <= 0 ? 0 : (long)RoundUpToPowerOfTwo((ulong)value);
+        }
+
+        /// <summary>
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, or zero, it is returned unchanged.
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong RoundUpToPowerOfTwo(ulong value)
+        {
+            if (value > 0x8000000000000000)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            value--;
+            value |= value >> 1;
+            value |= value >> 2;
+            value |= value >> 4;
+            value |= value >> 8;
+            value |= value >> 16;
+            value |= value >> 32;
+            return value + 1;
+        }
+
         #endregion
     }
 }
