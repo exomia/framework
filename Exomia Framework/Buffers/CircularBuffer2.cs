@@ -26,16 +26,19 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Buffers
 {
     /// <summary>
-    ///     CircularBuffer class
+    ///     CircularBuffer2 is an optimized version of <see cref="CircularBuffer {T}" /> for performance-critical use.
     /// </summary>
     /// <typeparam name="T">any</typeparam>
-    public class CircularBuffer<T>
+    public class CircularBuffer2<T>
     {
         private readonly T[] _buffer;
+
+        private readonly int _mask;
 
         private int _head;
         private int _tail;
@@ -75,8 +78,7 @@ namespace Exomia.Framework.Buffers
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
-
-                index = (_tail + index) % _buffer.Length;
+                index = (_tail + index) & _mask;
                 T buffer = _buffer[index];
                 _buffer[index] = default;
                 return buffer;
@@ -88,7 +90,7 @@ namespace Exomia.Framework.Buffers
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
-                _buffer[(_tail + index) % _buffer.Length] = value;
+                _buffer[(_tail + index) & _mask] = value;
             }
         }
 
@@ -97,14 +99,17 @@ namespace Exomia.Framework.Buffers
         /// </summary>
         /// <param name="capacity">Buffer capacity. Must be positive.</param>
         /// <param name="items">Items to fill buffer with. Items length must be less or equal than capacity.</param>
-        public CircularBuffer(int capacity = 1024, T[] items = null)
+        public CircularBuffer2(int capacity = 1024, T[] items = null)
         {
             if (capacity < 1)
             {
                 throw new ArgumentException(
-                    @"Circular buffer cannot have negative or zero capacity.", nameof(capacity));
+                    @"Circular buffer cannot have zero capacity.", nameof(capacity));
             }
-            _buffer = new T[capacity];
+            capacity = Math2.RoundUpToPowerOfTwo(capacity);
+            _mask = capacity - 1;
+
+            _buffer = new T[capacity + 1];
 
             if (items != null)
             {
@@ -149,9 +154,9 @@ namespace Exomia.Framework.Buffers
                     throw new InvalidOperationException("empty circular buffer");
                 }
 
-                T item = _buffer[_tail];
-                _buffer[_tail] = default;
-                _tail = (_tail + 1) % _buffer.Length;
+                int index = _tail++ & _mask;
+                T item = _buffer[index];
+                _buffer[index] = default;
                 _size--;
 
                 return item;
@@ -163,7 +168,7 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     get the last element from the buffer and return its value
+        ///     get the last element and return its value
         /// </summary>
         /// <returns>value of the last element</returns>
         /// <exception cref="InvalidOperationException">if the buffer is empty</exception>
@@ -179,9 +184,9 @@ namespace Exomia.Framework.Buffers
                     throw new InvalidOperationException("empty circular buffer");
                 }
 
-                ref T item = ref _buffer[_tail];
-                _buffer[_tail] = default;
-                _tail = (_tail + 1) % _buffer.Length;
+                int index = _tail++ & _mask;
+                ref T item = ref _buffer[index];
+                _buffer[index] = default;
                 _size--;
 
                 return ref item;
@@ -210,7 +215,7 @@ namespace Exomia.Framework.Buffers
                     throw new InvalidOperationException("empty circular buffer");
                 }
 
-                return _buffer[_tail];
+                return _buffer[_tail & _mask];
             }
             finally
             {
@@ -236,7 +241,7 @@ namespace Exomia.Framework.Buffers
                     throw new InvalidOperationException("empty circular buffer");
                 }
 
-                return ref _buffer[_tail];
+                return ref _buffer[_tail & _mask];
             }
             finally
             {
@@ -256,13 +261,9 @@ namespace Exomia.Framework.Buffers
             {
                 _thisLock.Enter(ref lockTaken);
 
-                _buffer[_head] = toAdd;
-                _head = (_head + 1) % _buffer.Length;
+                _buffer[_head++ & _mask] = toAdd;
 
-                if (_size == _buffer.Length)
-                {
-                    _tail = (_tail + 1) % _buffer.Length;
-                }
+                if (_size == _buffer.Length) { _tail++; }
                 else { _size++; }
             }
             finally
