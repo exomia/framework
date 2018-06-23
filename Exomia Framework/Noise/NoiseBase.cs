@@ -32,8 +32,6 @@ namespace Exomia.Framework.Noise
 {
     public abstract class NoiseBase : INoise
     {
-        #region Variables
-
         protected const int X_PRIME = 1103;
         protected const int Y_PRIME = 29401;
         protected const int Z_PRIME = 6833;
@@ -88,10 +86,6 @@ namespace Exomia.Framework.Noise
 
         protected int _seed;
 
-        #endregion
-
-        #region Constructors
-
         protected NoiseBase(int seed, float frequency)
             : this(seed, frequency, 0, 0f, 0f, NoiseInterpolationType.Linear, NoiseFractalType.None) { }
 
@@ -116,10 +110,6 @@ namespace Exomia.Framework.Noise
 
             CalculateFractalBounding();
         }
-
-        #endregion
-
-        #region Methods
 
         /// <inheritdoc />
         public float[] GenerateNoise1D(int x, int xmax)
@@ -174,8 +164,6 @@ namespace Exomia.Framework.Noise
             }
             _fractalBounding = 1.0f / ampFractal;
         }
-
-        #endregion
 
         #region Hasing
 

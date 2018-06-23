@@ -93,8 +93,6 @@ namespace Exomia.Framework.Input
     /// </summary>
     public interface IInputDevice
     {
-        #region Variables
-
         /// <summary>
         ///     called than a key is down once
         /// </summary>
@@ -134,10 +132,6 @@ namespace Exomia.Framework.Input
         ///     called if the wheeldelta is changed
         /// </summary>
         event MouseEventHandler MouseWheel;
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     check if a specified mouse button is down
@@ -201,7 +195,5 @@ namespace Exomia.Framework.Input
         /// <param name="keyValues">keyValues</param>
         /// <returns><c>true</c> if one of the specified keyValues is up; <c>false</c> otherwise</returns>
         bool IsKeyUp(params int[] keyValues);
-
-        #endregion
     }
 }

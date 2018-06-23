@@ -35,8 +35,6 @@ namespace Exomia.Framework.Scene
 
     public interface ISceneManager
     {
-        #region Methods
-
         bool AddScene(SceneBase scene, bool initialize = true);
 
         bool RemoveScene(string key);
@@ -49,7 +47,5 @@ namespace Exomia.Framework.Scene
         bool GetScene(string key, out SceneBase scene);
 
         SceneState GetSceneState(string key);
-
-        #endregion
     }
 }

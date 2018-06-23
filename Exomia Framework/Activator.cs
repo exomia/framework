@@ -42,8 +42,6 @@ namespace Exomia.Framework
     /// </summary>
     public static class Activator
     {
-        #region Methods
-
         /// <summary>
         ///     Get a compiled lambda expression that can then be used
         ///     to repeatedly create instances of that type using the constructor that
@@ -121,7 +119,5 @@ namespace Exomia.Framework
                             nameof(constructorParameters)), argsExpressions), param)
                 .Compile();
         }
-
-        #endregion
     }
 }

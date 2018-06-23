@@ -28,30 +28,16 @@ namespace Exomia.Framework.Audio
 {
     internal sealed class LinkedSoundList
     {
-        #region Variables
-
         private Sound _tail;
-
-        #endregion
-
-        #region Properties
 
         public int Capacity { get; }
 
         public int Count { get; private set; }
 
-        #endregion
-
-        #region Constructors
-
         public LinkedSoundList(int capacity = int.MaxValue)
         {
             Capacity = capacity;
         }
-
-        #endregion
-
-        #region Methods
 
         public void Add(Sound sound)
         {
@@ -112,7 +98,5 @@ namespace Exomia.Framework.Audio
                 end = end.Previous;
             }
         }
-
-        #endregion
     }
 }

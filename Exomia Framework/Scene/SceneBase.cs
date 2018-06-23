@@ -34,20 +34,23 @@ namespace Exomia.Framework.Scene
     /// <inheritdoc cref="IInputHandler" />
     public abstract class SceneBase : IScene, IInputHandler
     {
-        #region Variables
-
         private const int INITIAL_QUEUE_SIZE = 8;
 
         /// <summary>
         /// </summary>
         public event SceneStateChangedHandler SceneStateChanged;
 
-        event SceneStateChangedHandler IScene.SceneStateChanged
-        {
-            add { throw new NotImplementedException(); }
+        /// <summary>
+        /// </summary>
+        protected IInputHandler _inputHandler;
 
-            remove { throw new NotImplementedException(); }
-        }
+        /// <summary>
+        /// </summary>
+        protected IServiceRegistry _registry;
+
+        /// <summary>
+        /// </summary>
+        protected ISceneManager _sceneManager;
 
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
@@ -63,27 +66,55 @@ namespace Exomia.Framework.Scene
 
         private DisposeCollector _collector;
 
-        /// <summary>
-        /// </summary>
-        protected IInputHandler _inputHandler;
-
         private bool _isContentLoaded;
 
         private bool _isInitialized;
 
-        /// <summary>
-        /// </summary>
-        protected IServiceRegistry _registry;
-
-        /// <summary>
-        /// </summary>
-        protected ISceneManager _sceneManager;
-
         private SceneState _state = SceneState.None;
 
-        #endregion
+        /// <summary>
+        ///     set the current input handler for the scene
+        /// </summary>
+        protected IInputHandler InputHandler
+        {
+            set
+            {
+                if (_inputHandler != value)
+                {
+                    _inputHandler = value;
+                }
+            }
+        }
 
-        #region Properties
+        /// <inheritdoc />
+        protected SceneBase(string key)
+        {
+            Key = key;
+
+            _sceneComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
+
+            _collector = new DisposeCollector();
+        }
+
+        /// <inheritdoc />
+        ~SceneBase()
+        {
+            Dispose(false);
+        }
+
+        event SceneStateChangedHandler IScene.SceneStateChanged
+        {
+            add { throw new NotImplementedException(); }
+
+            remove { throw new NotImplementedException(); }
+        }
 
         /// <inheritdoc />
         public string Key { get; }
@@ -119,56 +150,11 @@ namespace Exomia.Framework.Scene
             get { return _inputHandler; }
         }
 
-        /// <summary>
-        ///     set the current input handler for the scene
-        /// </summary>
-        protected IInputHandler InputHandler
-        {
-            set
-            {
-                if (_inputHandler != value)
-                {
-                    _inputHandler = value;
-                }
-            }
-        }
-
         ISceneManager IScene.SceneManager
         {
             get { return _sceneManager; }
             set { _sceneManager = value; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <inheritdoc />
-        protected SceneBase(string key)
-        {
-            Key = key;
-
-            _sceneComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-
-            _collector = new DisposeCollector();
-        }
-
-        /// <inheritdoc />
-        ~SceneBase()
-        {
-            Dispose(false);
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <inheritdoc />
         public void Initialize(IServiceRegistry registry)
@@ -474,8 +460,6 @@ namespace Exomia.Framework.Scene
         {
             _drawableComponent.Sort(DrawableComparer.Default);
         }
-
-        #endregion
 
         #region Input Events
 

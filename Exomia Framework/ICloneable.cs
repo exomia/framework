@@ -29,14 +29,10 @@ namespace Exomia.Framework
     /// </summary>
     public interface ICloneable
     {
-        #region Methods
-
         /// <summary>
         ///     returns a deep copy of the object
         /// </summary>
         /// <returns>a new deep copied object</returns>
         object Clone();
-
-        #endregion
     }
 }

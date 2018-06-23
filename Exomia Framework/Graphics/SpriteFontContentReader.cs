@@ -32,8 +32,6 @@ namespace Exomia.Framework.Graphics
 {
     internal sealed class SpriteFontContentReader : IContentReader
     {
-        #region Methods
-
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont font = ContentSerializer.Read<SpriteFont>(parameters.Stream);
@@ -60,14 +58,10 @@ namespace Exomia.Framework.Graphics
 
             return font;
         }
-
-        #endregion
     }
 
     internal sealed class SpriteFont2ContentReader : IContentReader
     {
-        #region Methods
-
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont2 font = ContentSerializer.Read<SpriteFont2>(parameters.Stream);
@@ -96,7 +90,5 @@ namespace Exomia.Framework.Graphics
 
             return font;
         }
-
-        #endregion
     }
 }

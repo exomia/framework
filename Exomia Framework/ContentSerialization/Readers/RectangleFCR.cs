@@ -28,8 +28,6 @@ namespace Exomia.Framework.ContentSerialization.Readers
 {
     internal sealed class RectangleFCR : AContentSerializationReader<RectangleF>
     {
-        #region Methods
-
         public override RectangleF ReadContext(ContentSerializationContext context)
         {
             return new RectangleF
@@ -39,16 +37,11 @@ namespace Exomia.Framework.ContentSerialization.Readers
                 Width = context.Get<float>("Width"),
                 Height = context.Get<float>("Height")
             };
-            ;
         }
-
-        #endregion
     }
 
     internal sealed class RectangleCR : AContentSerializationReader<Rectangle>
     {
-        #region Methods
-
         public override Rectangle ReadContext(ContentSerializationContext context)
         {
             return new Rectangle
@@ -58,9 +51,6 @@ namespace Exomia.Framework.ContentSerialization.Readers
                 Width = context.Get<int>("Width"),
                 Height = context.Get<int>("Height")
             };
-            ;
         }
-
-        #endregion
     }
 }

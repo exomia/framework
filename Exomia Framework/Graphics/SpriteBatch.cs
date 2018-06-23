@@ -58,8 +58,6 @@ namespace Exomia.Framework.Graphics
 
     public sealed class SpriteBatch : IDisposable
     {
-        #region Variables
-
         private const int MAX_BATCH_SIZE = 4096;
         private const int INITIAL_QUEUE_SIZE = 128;
         private const int VERTICES_PER_SPRITE = 4;
@@ -126,10 +124,6 @@ namespace Exomia.Framework.Graphics
         private VertexShader _vertexShader;
         private Matrix _viewMatrix;
 
-        #endregion
-
-        #region Constructors
-
         static SpriteBatch()
         {
             if (MAX_INDEX_COUNT > ushort.MaxValue)
@@ -190,10 +184,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
 
         public void Resize(Size2F size)
         {
@@ -605,10 +595,6 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        #endregion
-
-        #region Nested
-
         [StructLayout(LayoutKind.Explicit, Size = 64)]
         private struct ConstantFrameBuffer
         {
@@ -659,8 +645,6 @@ namespace Exomia.Framework.Graphics
             [FieldOffset(32)] public float U;
             [FieldOffset(36)] public float V;
         }
-
-        #endregion
 
         #region Drawing
 

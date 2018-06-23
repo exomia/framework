@@ -40,8 +40,6 @@ namespace Exomia.Framework.Video
 {
     public sealed class VideoPlayer : ADrawableComponent
     {
-        #region Variables
-
         private readonly ManualResetEvent _eventReadyToPlay = new ManualResetEvent(false);
         private readonly Texture2D _outputTexture;
         private string _assetName;
@@ -55,10 +53,6 @@ namespace Exomia.Framework.Video
         private MediaEngineEx _mediaEngineEx;
         private SpriteBatch _spriteBatch;
         private Texture _texture;
-
-        #endregion
-
-        #region Properties
 
         public Color BackgroundColor
         {
@@ -141,20 +135,12 @@ namespace Exomia.Framework.Video
             }
         }
 
-        #endregion
-
-        #region Constructors
-
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
             _outputTexture = TextureHelper.CreateTexture(device, width, height);
             _backgroundColor = Color.Transparent;
         }
-
-        #endregion
-
-        #region Methods
 
         [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
         private static extern bool SetEvent(IntPtr hEvent);
@@ -305,7 +291,5 @@ namespace Exomia.Framework.Video
                     break;
             }
         }
-
-        #endregion
     }
 }

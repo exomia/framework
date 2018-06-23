@@ -38,8 +38,6 @@ namespace Exomia.Framework.Audio
     /// </summary>
     public sealed class AudioManager : IDisposable
     {
-        #region Variables
-
         private readonly int _inputChannelCount = 2;
         private readonly int _inputSampleRate = 44100;
 
@@ -66,10 +64,6 @@ namespace Exomia.Framework.Audio
         private X3DAudio _x3DAudio;
 
         private XAudio2 _xAudio2;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     ListenerPosition
@@ -154,10 +148,6 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="AudioManager" /> class.
         /// </summary>
@@ -222,10 +212,6 @@ namespace Exomia.Framework.Audio
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     load a sound from a given stream and returns the sound id
@@ -571,18 +557,12 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        #endregion
-
-        #region Nested
-
         private struct SoundBuffer
         {
             public AudioBuffer AudioBuffer;
             public WaveFormat Format;
             public uint[] DecodedPacketsInfo;
         }
-
-        #endregion
 
         #region IDisposable Support
 

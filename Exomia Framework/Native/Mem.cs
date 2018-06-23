@@ -33,8 +33,6 @@ namespace Exomia.Framework.Native
     /// </summary>
     public static unsafe class Mem
     {
-        #region Methods
-
         /// <summary>
         ///     memcpy call
         ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
@@ -130,7 +128,5 @@ namespace Exomia.Framework.Native
             void* dest,
             int value,
             int count);
-
-        #endregion
     }
 }

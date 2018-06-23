@@ -32,7 +32,13 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// </summary>
     internal sealed class ArrayType : IType
     {
-        #region Properties
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public ArrayType()
+        {
+            BaseType = typeof(Array);
+        }
 
         /// <summary>
         ///     TypeName without System
@@ -55,22 +61,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             get { return false; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public ArrayType()
-        {
-            BaseType = typeof(Array);
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
@@ -167,8 +157,6 @@ namespace Exomia.Framework.ContentSerialization.Types
             }
             else { throw new InvalidCastException(nameof(content)); }
         }
-
-        #endregion
 
         #region WriteHelper
 

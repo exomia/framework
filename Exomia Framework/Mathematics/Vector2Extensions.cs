@@ -33,8 +33,6 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public static class Vector2Extensions
     {
-        #region Methods
-
         /// <summary>
         ///     rotate a vectort by an angle (in radian)
         /// </summary>
@@ -96,7 +94,5 @@ namespace Exomia.Framework.Mathematics
             float length = vec1.Length() * vec2.Length();
             return Math.Cos(scalar / length);
         }
-
-        #endregion
     }
 }

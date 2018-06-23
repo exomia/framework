@@ -37,8 +37,6 @@ namespace Exomia.Framework.Graphics
 {
     internal sealed class SpriteBatchAtlas : IDisposable
     {
-        #region Variables
-
         private const int MIN_ATLAS_WIDTH = 2048;
         private const int MIN_ATLAS_HEIGHT = 2048;
 
@@ -53,10 +51,6 @@ namespace Exomia.Framework.Graphics
         private readonly int _width;
 
         private Bitmap _atlas;
-
-        #endregion
-
-        #region Constructors
 
         public SpriteBatchAtlas(int width, int height)
         {
@@ -73,10 +67,6 @@ namespace Exomia.Framework.Graphics
 
             _atlas = new Bitmap(width, height);
         }
-
-        #endregion
-
-        #region Methods
 
         internal BitmapSource GenerateBitmapSource()
         {
@@ -190,8 +180,6 @@ namespace Exomia.Framework.Graphics
 
             return false;
         }
-
-        #endregion
 
         #region IDisposable Support
 

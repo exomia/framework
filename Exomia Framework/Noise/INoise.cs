@@ -76,8 +76,6 @@ namespace Exomia.Framework.Noise
     /// </summary>
     public interface INoise
     {
-        #region Methods
-
         /// <summary>
         ///     generates a 1-dimensional noise array in range from -1 to 1
         /// </summary>
@@ -131,7 +129,5 @@ namespace Exomia.Framework.Noise
         /// <param name="z"></param>
         /// <returns>noise in range from -1 to 1</returns>
         float Noise3D(int x, int y, int z);
-
-        #endregion
     }
 }

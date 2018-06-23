@@ -38,8 +38,6 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class GraphicsDevice : IGraphicsDevice
     {
-        #region Variables
-
         private static readonly FeatureLevel[] s_featureLevels =
         {
             FeatureLevel.Level_11_1,
@@ -50,11 +48,6 @@ namespace Exomia.Framework.Game
             FeatureLevel.Level_9_2,
             FeatureLevel.Level_9_1
         };
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.ResizeFinished" />
-        /// </summary>
-        public event ResizeEventHandler ResizeFinished;
 
         private Adapter4 _adapter4;
         private RenderTargetView1 _currentRenderView;
@@ -75,9 +68,10 @@ namespace Exomia.Framework.Game
 
         private int _vSync;
 
-        #endregion
-
-        #region Properties
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.ResizeFinished" />
+        /// </summary>
+        public event ResizeEventHandler ResizeFinished;
 
         /// <inheritdoc />
         public bool IsInitialized { get; private set; }
@@ -133,10 +127,6 @@ namespace Exomia.Framework.Game
 
         /// <inheritdoc />
         public ViewportF Viewport { get; private set; }
-
-        #endregion
-
-        #region Methods
 
         /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
@@ -447,10 +437,6 @@ namespace Exomia.Framework.Game
             ResizeFinished?.Invoke(Viewport);
         }
 
-        #endregion
-
-        #region Nested
-
         private struct ResizeParameters
         {
             public int Width;
@@ -458,8 +444,6 @@ namespace Exomia.Framework.Game
             public int BufferCount;
             public SwapChainFlags SwapChainFlags;
         }
-
-        #endregion
 
         #region IDisposable Support
 

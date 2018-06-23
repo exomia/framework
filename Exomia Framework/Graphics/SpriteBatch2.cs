@@ -42,8 +42,6 @@ namespace Exomia.Framework.Graphics
 {
     public sealed class SpriteBatch2 : IDisposable
     {
-        #region Variables
-
         private const int MAX_BATCH_SIZE = 4096;
         private const int VERTICES_PER_SPRITE = 4;
         private const int INDICES_PER_SPRITE = 6;
@@ -109,10 +107,6 @@ namespace Exomia.Framework.Graphics
         private VertexShader _vertexShader;
         private Matrix _viewMatrix;
 
-        #endregion
-
-        #region Constructors
-
         static SpriteBatch2()
         {
             if (MAX_INDEX_COUNT > ushort.MaxValue)
@@ -176,10 +170,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
 
         public void GenerateTexture2DArray()
         {
@@ -579,10 +569,6 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        #endregion
-
-        #region Nested
-
         [StructLayout(LayoutKind.Explicit, Size = 64)]
         private struct ConstantFrameBuffer
         {
@@ -619,8 +605,6 @@ namespace Exomia.Framework.Graphics
             [FieldOffset(36)] public float V;
             [FieldOffset(40)] public float I;
         }
-
-        #endregion
 
         #region Drawing
 

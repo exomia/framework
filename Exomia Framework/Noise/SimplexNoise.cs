@@ -30,18 +30,12 @@ namespace Exomia.Framework.Noise
 {
     public class SimplexNoise : NoiseBase
     {
-        #region Variables
-
         private const float F2 = 1.0f / 2.0f;
         private const float G2 = 1.0f / 4.0f;
 
         private const float F3 = 1.0f / 3.0f;
         private const float G3 = 1.0f / 6.0f;
         private const float G33 = G3 * 3f - 1f;
-
-        #endregion
-
-        #region Constructors
 
         public SimplexNoise(int seed, float frequency, int octaves,
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
@@ -52,10 +46,6 @@ namespace Exomia.Framework.Noise
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
             : base(seed, frequency, octaves, lacunarity, gain, noiseInterpolationType, noiseFractalType) { }
-
-        #endregion
-
-        #region Methods
 
         //TODO: TEST!
         protected override float Single(int seed, double x)
@@ -250,7 +240,5 @@ namespace Exomia.Framework.Noise
 
             return (float)(32.0 * (n0 + n1 + n2 + n3));
         }
-
-        #endregion
     }
 }

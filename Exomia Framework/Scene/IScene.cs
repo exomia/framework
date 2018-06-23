@@ -45,13 +45,7 @@ namespace Exomia.Framework.Scene
 
     internal interface IScene : IInitializable, IContentable, IDisposable
     {
-        #region Variables
-
         event SceneStateChangedHandler SceneStateChanged;
-
-        #endregion
-
-        #region Properties
 
         string Key { get; }
         bool IsOverlayScene { get; set; }
@@ -74,10 +68,6 @@ namespace Exomia.Framework.Scene
         /// </summary>
         /// <value><c>true</c> if this drawable component is visible; <c>false</c> otherwise.</value>
         bool Visible { get; set; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Is called than the scene is showed
@@ -111,7 +101,5 @@ namespace Exomia.Framework.Scene
         ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
         /// </summary>
         void EndDraw();
-
-        #endregion
     }
 }

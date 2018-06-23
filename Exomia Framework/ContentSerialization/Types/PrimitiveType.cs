@@ -33,7 +33,17 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// </summary>
     internal sealed class PrimitiveType<T> : IType where T : struct
     {
-        #region Properties
+        /// <summary>
+        ///     constructor PrimitiveType{T}
+        /// </summary>
+        public PrimitiveType()
+        {
+            BaseType = typeof(T);
+            if (!BaseType.IsPrimitive)
+            {
+                throw new NotSupportedException("typeof(T) isn't a primitive type -> " + BaseType.FullName);
+            }
+        }
 
         /// <summary>
         ///     TypeName without System
@@ -56,26 +66,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             get { return true; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     constructor PrimitiveType{T}
-        /// </summary>
-        public PrimitiveType()
-        {
-            BaseType = typeof(T);
-            if (!BaseType.IsPrimitive)
-            {
-                throw new NotSupportedException("typeof(T) isn't a primitive type -> " + BaseType.FullName);
-            }
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
@@ -141,7 +131,5 @@ namespace Exomia.Framework.ContentSerialization.Types
                 tabSpace,
                 $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content}[/{(useTypeInfo ? key : string.Empty)}]");
         }
-
-        #endregion
     }
 }

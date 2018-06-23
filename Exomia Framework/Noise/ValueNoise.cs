@@ -30,8 +30,6 @@ namespace Exomia.Framework.Noise
 {
     public class ValueNoise : NoiseBase
     {
-        #region Constructors
-
         public ValueNoise(int seed, float frequency, int octaves,
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
@@ -41,10 +39,6 @@ namespace Exomia.Framework.Noise
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
             : base(seed, frequency, octaves, lacunarity, gain, noiseInterpolationType, noiseFractalType) { }
-
-        #endregion
-
-        #region Methods
 
         protected override float Single(int seed, double x)
         {
@@ -140,7 +134,5 @@ namespace Exomia.Framework.Noise
 
             return Math2.Lerp(yf0, yf1, zs);
         }
-
-        #endregion
     }
 }

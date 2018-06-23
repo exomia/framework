@@ -31,8 +31,6 @@ namespace Exomia.Framework.ContentSerialization
     /// <typeparam name="T">type to write</typeparam>
     public abstract class AContentSerializationWriter<T> : IContentSerializationWriter
     {
-        #region Methods
-
         /// <inheritdoc />
         public void Write(ContentSerializationContext context, object obj)
         {
@@ -45,7 +43,5 @@ namespace Exomia.Framework.ContentSerialization
         /// <param name="context">ref Context</param>
         /// <param name="obj">Object</param>
         public abstract void WriteContext(ContentSerializationContext context, T obj);
-
-        #endregion
     }
 }

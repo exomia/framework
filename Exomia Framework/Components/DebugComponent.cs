@@ -38,8 +38,6 @@ namespace Exomia.Framework.Components
 {
     public class DebugComponent : ADrawableComponent
     {
-        #region Variables
-
         private const float SAMPLE_TIME_RATE = 2.0f;
         private const int MAXIMUM_SAMPLES = (int)(9 / SAMPLE_TIME_RATE) + 1;
         private const double FRAME_DANGER_THRESHOLD = 1000.0f / 60.0f;
@@ -81,17 +79,9 @@ namespace Exomia.Framework.Components
 
         private float _totalMemoryBytes;
 
-        #endregion
-
-        #region Properties
-
         public bool ShowFullInformation { get; set; } = false;
 
         public bool EnableTitleInformation { get; set; } = false;
-
-        #endregion
-
-        #region Constructors
 
         public DebugComponent(string name = "DebugGameSystem")
             : base(name)
@@ -103,10 +93,6 @@ namespace Exomia.Framework.Components
             _fpsCurrent = 0.0f;
             _fpsAverage = -1;
         }
-
-        #endregion
-
-        #region Methods
 
         public override void Update(GameTime gameTime)
         {
@@ -230,7 +216,5 @@ namespace Exomia.Framework.Components
                 }
             }
         }
-
-        #endregion
     }
 }

@@ -31,8 +31,6 @@ namespace Exomia.Framework.Content
     /// </summary>
     public interface IContentResolver
     {
-        #region Methods
-
         /// <summary>
         ///     Checks if the specified asset name exists.
         /// </summary>
@@ -46,7 +44,5 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">Name of the asset.</param>
         /// <returns>A Stream of the asset. This value can be null if this resolver was not able to locate the asset.</returns>
         Stream Resolve(string assetName);
-
-        #endregion
     }
 }

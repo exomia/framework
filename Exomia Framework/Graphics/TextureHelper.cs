@@ -36,13 +36,7 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public static class TextureHelper
     {
-        #region Variables
-
         private static readonly ImagingFactory s_imgfactory = new ImagingFactory();
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// </summary>
@@ -164,7 +158,5 @@ namespace Exomia.Framework.Graphics
                 return texArray;
             }
         }
-
-        #endregion
     }
 }

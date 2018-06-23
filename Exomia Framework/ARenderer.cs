@@ -35,21 +35,27 @@ namespace Exomia.Framework
     /// <inheritdoc cref="IDisposable" />
     public abstract class ARenderer : IComponent, IInitializable, IDrawable, IDisposable
     {
-        #region Variables
-
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
-
         private int _drawOrder;
 
         private bool _visible;
 
-        #endregion
-
-        #region Properties
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ARenderer" /> class.
+        /// </summary>
+        /// <param name="name">name</param>
+        protected ARenderer(string name)
+        {
+            Name = name;
+        }
 
         /// <inheritdoc />
         public string Name { get; }
+
+        /// <inheritdoc />
+        public abstract void Dispose();
+
+        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs> VisibleChanged;
 
         /// <inheritdoc />
         public bool Visible
@@ -79,26 +85,6 @@ namespace Exomia.Framework
             }
         }
 
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ARenderer" /> class.
-        /// </summary>
-        /// <param name="name">name</param>
-        protected ARenderer(string name)
-        {
-            Name = name;
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <inheritdoc />
-        public abstract void Dispose();
-
         /// <inheritdoc />
         public virtual bool BeginDraw()
         {
@@ -113,7 +99,5 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         public virtual void Initialize(IServiceRegistry registry) { }
-
-        #endregion
     }
 }

@@ -33,8 +33,6 @@ namespace Exomia.Framework.Collections
 {
     public sealed class List<T>
     {
-        #region Variables
-
         private const int DEFAULT_CAPACITY = 8;
         private const int MAX_CAPACITY = 0X7FEFFFFF;
 
@@ -43,10 +41,6 @@ namespace Exomia.Framework.Collections
         private readonly int _sizeOf;
 
         private T[] _items;
-
-        #endregion
-
-        #region Properties
 
         public int Capacity
         {
@@ -93,10 +87,6 @@ namespace Exomia.Framework.Collections
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { _items[index] = value; }
         }
-
-        #endregion
-
-        #region Constructors
 
         public List()
         {
@@ -145,10 +135,6 @@ namespace Exomia.Framework.Collections
                 }
             }
         }
-
-        #endregion
-
-        #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int index)
@@ -352,7 +338,5 @@ namespace Exomia.Framework.Collections
                 _items = newItems;
             }
         }
-
-        #endregion
     }
 }

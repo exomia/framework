@@ -29,15 +29,11 @@ namespace Exomia.Framework.ContentSerialization
     /// </summary>
     public interface IContentSerializationWriter
     {
-        #region Methods
-
         /// <summary>
         ///     Write the object informations into the context
         /// </summary>
         /// <param name="context">ref Context</param>
         /// <param name="obj">Object</param>
         void Write(ContentSerializationContext context, object obj);
-
-        #endregion
     }
 }

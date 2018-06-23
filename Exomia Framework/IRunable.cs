@@ -29,16 +29,10 @@ namespace Exomia.Framework
     /// </summary>
     public interface IRunnable
     {
-        #region Properties
-
         /// <summary>
         ///     return true if the object is running
         /// </summary>
         bool IsRunning { get; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     starts the run
@@ -49,7 +43,5 @@ namespace Exomia.Framework
         ///     shutdown the run
         /// </summary>
         void Shutdown();
-
-        #endregion
     }
 }

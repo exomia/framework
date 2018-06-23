@@ -33,7 +33,13 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// </summary>
     internal sealed class DictionaryType : IType
     {
-        #region Properties
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public DictionaryType()
+        {
+            BaseType = typeof(Dictionary<,>);
+        }
 
         /// <summary>
         ///     TypeName without System
@@ -56,22 +62,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             get { return false; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public DictionaryType()
-        {
-            BaseType = typeof(Dictionary<,>);
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
@@ -218,8 +208,6 @@ namespace Exomia.Framework.ContentSerialization.Types
             ForeachDictionaryDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
             writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
         }
-
-        #endregion
 
         #region ReaderHelper
 

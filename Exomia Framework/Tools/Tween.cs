@@ -32,14 +32,6 @@ namespace Exomia.Framework.Tools
     /// <inheritdoc />
     public sealed class Tween : IUpdateable
     {
-        #region Variables
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
-
         private readonly EasingFunction _callback;
         private readonly float _delay;
         private readonly float _duration;
@@ -54,9 +46,37 @@ namespace Exomia.Framework.Tools
         private float _time;
         private int _updateOrder;
 
-        #endregion
+        /// <inheritdoc />
+        public Tween(object target, object values, float duration, float delay, EasingFunction callback)
+        {
+            if (values == null) { throw new ArgumentNullException(nameof(values)); }
 
-        #region Properties
+            _target = target ?? throw new ArgumentNullException(nameof(target));
+            _duration = duration;
+            _delay = delay;
+            _callback = callback;
+
+            _items = new List<TweenItem>();
+
+            Type valueType = values.GetType();
+            Type targetType = target.GetType();
+
+            foreach (PropertyInfo info in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                PropertyInfo info2 = targetType.GetProperty(info.Name);
+                if (info2 == null) { return; }
+                float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float));
+                float to = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float));
+
+                _items.Add(new TweenItem(from, to, info2));
+            }
+        }
+
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
+
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
 
         /// <inheritdoc />
         public bool Enabled
@@ -86,40 +106,6 @@ namespace Exomia.Framework.Tools
             }
         }
 
-        #endregion
-
-        #region Constructors
-
-        /// <inheritdoc />
-        public Tween(object target, object values, float duration, float delay, EasingFunction callback)
-        {
-            if (values == null) { throw new ArgumentNullException(nameof(values)); }
-
-            _target = target ?? throw new ArgumentNullException(nameof(target));
-            _duration = duration;
-            _delay = delay;
-            _callback = callback;
-
-            _items = new List<TweenItem>();
-
-            Type valueType = values.GetType();
-            Type targetType = target.GetType();
-
-            foreach (PropertyInfo info in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-            {
-                PropertyInfo info2 = targetType.GetProperty(info.Name);
-                if (info2 == null) { return; }
-                float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float));
-                float to = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float));
-
-                _items.Add(new TweenItem(from, to, info2));
-            }
-        }
-
-        #endregion
-
-        #region Methods
-
         /// <inheritdoc />
         public void Update(GameTime gameTime)
         {
@@ -142,21 +128,11 @@ namespace Exomia.Framework.Tools
             }
         }
 
-        #endregion
-
-        #region Nested
-
         private class TweenItem
         {
-            #region Properties
-
             public float From { get; }
             public float To { get; }
             public PropertyInfo PropertyInfo { get; }
-
-            #endregion
-
-            #region Constructors
 
             public TweenItem(float from, float to, PropertyInfo info)
             {
@@ -164,10 +140,6 @@ namespace Exomia.Framework.Tools
                 To = to;
                 PropertyInfo = info;
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

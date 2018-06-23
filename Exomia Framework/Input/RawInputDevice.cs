@@ -36,16 +36,6 @@ namespace Exomia.Framework.Input
 {
     public sealed class RawInputDevice : IRawInputDevice, IDisposable
     {
-        #region Variables
-
-        public event RKeyEventHandler KeyDown;
-        public event RKeyEventHandler KeyUp;
-        public event RKeyEventHandler KeyPress;
-
-        public event RMouseEventHandler MouseMove;
-        public event RMouseEventHandler MouseDown;
-        public event RMouseEventHandler MouseUp;
-
         private readonly HashSet<Keys> _pressedKeys;
 
         private Point _mousePosition = Point.Empty;
@@ -56,10 +46,6 @@ namespace Exomia.Framework.Input
         private RMouseButtons _pressedMouseButtons = 0;
 
         private IGameWindow _window;
-
-        #endregion
-
-        #region Constructors
 
         public RawInputDevice()
         {
@@ -72,9 +58,13 @@ namespace Exomia.Framework.Input
             Device.MouseInput += Device_MouseInput;
         }
 
-        #endregion
+        public event RKeyEventHandler KeyDown;
+        public event RKeyEventHandler KeyUp;
+        public event RKeyEventHandler KeyPress;
 
-        #region Methods
+        public event RMouseEventHandler MouseMove;
+        public event RMouseEventHandler MouseDown;
+        public event RMouseEventHandler MouseUp;
 
         public void Initialize(IGameWindow window)
         {
@@ -102,8 +92,6 @@ namespace Exomia.Framework.Input
             _mousePosition = e.Location;
             MouseMove?.Invoke(e.X, e.Y, _pressedMouseButtons, 1, e.Delta);
         }
-
-        #endregion
 
         //TODO: CHANGE TO FORM INPUT INSTEAD OF RAW INPUT
 

@@ -41,8 +41,6 @@ namespace Exomia.Framework.Security
             Bit256 = 256
         }
 
-        #region Variables
-
         public const string DEFAULT_CRYPT_EXTENSION = ".ds1";
 
         private const int ITERATIONS = 1000;
@@ -51,10 +49,6 @@ namespace Exomia.Framework.Security
 
         private static readonly byte[] s_saltBytes = Encoding.ASCII.GetBytes("fVJrgEUuCYOuHXNcyMw4euKSXymKUjmb");
         private static readonly byte[] s_secureKey = Encoding.ASCII.GetBytes("e7b5c571-0a24-4d5f-8c4a-800157b3fd17");
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Encrypt's a given file and outputs a stream
@@ -191,7 +185,5 @@ namespace Exomia.Framework.Security
             catch { return false; }
             return true;
         }
-
-        #endregion
     }
 }

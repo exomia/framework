@@ -33,8 +33,6 @@ namespace Exomia.Framework.Native
     /// </summary>
     public static class Debugger
     {
-        #region Methods
-
         /// <summary>
         ///     detects if a native debugger is attached
         /// </summary>
@@ -47,7 +45,5 @@ namespace Exomia.Framework.Native
         public static extern bool CheckRemoteDebuggerPresent(
             IntPtr hProcess,
             [MarshalAs(UnmanagedType.Bool)] ref bool isDebuggerPresent);
-
-        #endregion
     }
 }

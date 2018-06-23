@@ -27,12 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+// TODO: REDESIGN
 namespace Exomia.Framework.Collections
 {
     public sealed class LinkedList<T>
     {
-        #region Properties
-
         public uint Count { get; private set; }
 
         public LinkedListNode First
@@ -41,10 +40,6 @@ namespace Exomia.Framework.Collections
         }
 
         public LinkedListNode Last { get; private set; }
-
-        #endregion
-
-        #region Constructors
 
         public LinkedList() { }
 
@@ -56,10 +51,6 @@ namespace Exomia.Framework.Collections
                 AddLast(item);
             }
         }
-
-        #endregion
-
-        #region Methods
 
         public LinkedListNode AddFirst(in T item)
         {
@@ -131,30 +122,16 @@ namespace Exomia.Framework.Collections
             }
         }
 
-        #endregion
-
-        #region Nested
-
         public sealed class LinkedListNode
         {
-            #region Variables
-
             internal T Item;
             internal LinkedListNode Next;
             internal LinkedListNode Previous;
-
-            #endregion
-
-            #region Constructors
 
             internal LinkedListNode(in T value)
             {
                 Item = value;
             }
-
-            #endregion
-
-            #region Methods
 
             internal void Invalidate()
             {
@@ -162,10 +139,6 @@ namespace Exomia.Framework.Collections
                 Next = null;
                 Previous = null;
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

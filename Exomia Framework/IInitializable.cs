@@ -29,8 +29,6 @@ namespace Exomia.Framework
     /// </summary>
     public interface IInitializable
     {
-        #region Methods
-
         /// <summary>
         ///     This method is called when the component is added to the game.
         /// </summary>
@@ -39,7 +37,5 @@ namespace Exomia.Framework
         ///     resources.
         /// </remarks>
         void Initialize(IServiceRegistry registry);
-
-        #endregion
     }
 }

@@ -36,8 +36,6 @@ namespace Exomia.Framework.Content
     /// <inheritdoc />
     public sealed class ContentManager : IContentManager
     {
-        #region Variables
-
         private const int INITIAL_QUEUE_SIZE = 16;
 
         private readonly Dictionary<AssetKey, object> _assetLockers;
@@ -48,34 +46,6 @@ namespace Exomia.Framework.Content
         private readonly List<IContentResolver> _registeredContentResolvers;
 
         private string _rootDirectory;
-
-        #endregion
-
-        #region Properties
-
-        public string RootDirectory
-        {
-            get { return _rootDirectory; }
-            set
-            {
-                lock (_loadedAssets)
-                {
-                    if (_loadedAssets.Count > 0)
-                    {
-                        throw new InvalidOperationException(
-                            "RootDirectory cannot be changed when a ContentManager has already assets loaded");
-                    }
-                }
-
-                _rootDirectory = value;
-            }
-        }
-
-        public IServiceRegistry ServiceRegistry { get; }
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ContentManager" /> class.
@@ -119,9 +89,25 @@ namespace Exomia.Framework.Content
             Dispose(false);
         }
 
-        #endregion
+        public string RootDirectory
+        {
+            get { return _rootDirectory; }
+            set
+            {
+                lock (_loadedAssets)
+                {
+                    if (_loadedAssets.Count > 0)
+                    {
+                        throw new InvalidOperationException(
+                            "RootDirectory cannot be changed when a ContentManager has already assets loaded");
+                    }
+                }
 
-        #region Methods
+                _rootDirectory = value;
+            }
+        }
+
+        public IServiceRegistry ServiceRegistry { get; }
 
         /// <inheritdoc />
         public bool AddContentResolver(IContentResolver resolver)
@@ -397,10 +383,6 @@ namespace Exomia.Framework.Content
             return result;
         }
 
-        #endregion
-
-        #region Nested
-
         private struct AssetKey : IEquatable<AssetKey>
         {
             public AssetKey(Type assetType, string assetName)
@@ -440,8 +422,6 @@ namespace Exomia.Framework.Content
                 return !left.Equals(right);
             }
         }
-
-        #endregion
 
         #region IDisposable Support
 

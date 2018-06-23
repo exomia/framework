@@ -29,14 +29,8 @@ namespace Exomia.Framework.ContentSerialization
 {
     internal sealed class CSStreamReader : IDisposable
     {
-        #region Variables
-
         private readonly Stream _stream;
         private int _line = 1;
-
-        #endregion
-
-        #region Properties
 
         public long Index { get; private set; }
 
@@ -45,18 +39,10 @@ namespace Exomia.Framework.ContentSerialization
             get { return _line; }
         }
 
-        #endregion
-
-        #region Constructors
-
         internal CSStreamReader(Stream stream)
         {
             _stream = stream ?? throw new ArgumentNullException(nameof(stream));
         }
-
-        #endregion
-
-        #region Methods
 
         public void Dispose()
         {
@@ -80,7 +66,5 @@ namespace Exomia.Framework.ContentSerialization
             c = '\0';
             return false;
         }
-
-        #endregion
     }
 }

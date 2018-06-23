@@ -32,8 +32,6 @@ namespace Exomia.Framework.Content.Resolver
     /// <inheritdoc />
     internal sealed class DSFileStreamContentResolver : IContentResolver
     {
-        #region Methods
-
         public bool Exists(string assetName)
         {
             if (!Path.HasExtension(assetName))
@@ -92,7 +90,7 @@ namespace Exomia.Framework.Content.Resolver
             {
                 if (ExomiaCryptography.Decrypt(assetName, out Stream stream))
                 {
-                    if (ContentCompressor.DecompressStream(stream, out Stream stream2, CompressMode.GZIP))
+                    if (ContentCompressor.DecompressStream(stream, out Stream stream2, CompressMode.Gzip))
                     {
                         return stream2;
                     }
@@ -105,7 +103,5 @@ namespace Exomia.Framework.Content.Resolver
 
             return null;
         }
-
-        #endregion
     }
 }

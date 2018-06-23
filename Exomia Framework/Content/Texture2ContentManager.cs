@@ -38,8 +38,6 @@ namespace Exomia.Framework.Content
     /// <inheritdoc />
     public sealed class Texture2ContentManager : ITexture2ContentManager
     {
-        #region Variables
-
         private const int INITIAL_QUEUE_SIZE = 8;
         private const int ATLAS_WIDTH = 1024 * 8;
         private const int ATLAS_HEIGHT = 1024 * 8;
@@ -56,25 +54,13 @@ namespace Exomia.Framework.Content
 
         private Texture _texture;
 
-        #endregion
-
-        #region Properties
-
-        /// <inheritdoc />
-        public bool IsTextureInvalid { get; private set; }
-
-        #endregion
-
-        #region Constructors
-
         ~Texture2ContentManager()
         {
             Dispose(false);
         }
 
-        #endregion
-
-        #region Methods
+        /// <inheritdoc />
+        public bool IsTextureInvalid { get; private set; }
 
         /// <inheritdoc />
         public Texture2 AddTexture(Stream stream, string assetName, int startIndex = 0)
@@ -175,8 +161,6 @@ namespace Exomia.Framework.Content
                 _atlases.Add(_atlasesIndex++, new SpriteBatchAtlas(ATLAS_WIDTH, ATLAS_HEIGHT));
             }
         }
-
-        #endregion
 
         #region IDisposable Support
 

@@ -32,13 +32,7 @@ namespace Exomia.Framework.Content
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class ContentReadableAttribute : Attribute
     {
-        #region Properties
-
         internal IContentReader Reader { get; }
-
-        #endregion
-
-        #region Constructors
 
         /// <inheritdoc />
         /// <summary>
@@ -51,7 +45,5 @@ namespace Exomia.Framework.Content
                      throw new TypeLoadException(
                          "cannot create an instance of IContentReader from type: " + reader.AssemblyQualifiedName);
         }
-
-        #endregion
     }
 }

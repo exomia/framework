@@ -32,17 +32,11 @@ namespace Exomia.Framework.Buffers
 {
     public sealed class ArrayPool<T>
     {
-        #region Variables
-
         private readonly int _bufferLength;
         private readonly T[][] _buffers;
         private int _index;
 
         private SpinLock _lock;
-
-        #endregion
-
-        #region Constructors
 
         public ArrayPool(int bufferLength, int numberOfBuffers = 10)
         {
@@ -53,10 +47,6 @@ namespace Exomia.Framework.Buffers
             _lock = new SpinLock(Debugger.IsAttached);
             _buffers = new T[numberOfBuffers][];
         }
-
-        #endregion
-
-        #region Methods
 
         public T[] Rent()
         {
@@ -111,7 +101,5 @@ namespace Exomia.Framework.Buffers
                 }
             }
         }
-
-        #endregion
     }
 }

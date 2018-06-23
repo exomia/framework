@@ -33,8 +33,6 @@ namespace Exomia.Framework.ContentSerialization
 {
     internal static class CSExtensions
     {
-        #region Variables
-
         private static readonly Regex s_innerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9.+,\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)?)>$",
             RegexOptions.Compiled | RegexOptions.Singleline);
@@ -49,10 +47,6 @@ namespace Exomia.Framework.ContentSerialization
 
         private static readonly Regex s_kvInfoMatcher = new Regex(
             "^([a-zA-Z0-9-]+)?:(\\([0-9,]+\\))?$", RegexOptions.Compiled | RegexOptions.Singleline);
-
-        #endregion
-
-        #region Methods
 
         internal static void GetInnerType(this string typeInfo, out string baseTypeinfo, out string genericTypeInfo)
         {
@@ -327,7 +321,5 @@ namespace Exomia.Framework.ContentSerialization
             }
             throw new CSReaderException($"ERROR: NO KEY FOUND! -> {sb}");
         }
-
-        #endregion
     }
 }

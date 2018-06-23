@@ -27,40 +27,24 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework
 {
-    /// <summary>
-    ///     base implementation of a <see cref="IServiceRegistry" /> interface
-    /// </summary>
+    /// <inheritdoc />
     public sealed class ServiceRegistry : IServiceRegistry
     {
-        #region Variables
-
         private readonly Dictionary<Type, object> _registeredServices;
 
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ServiceRegistry" /> class.
-        /// </summary>
+        /// <inheritdoc />
         public ServiceRegistry()
         {
             _registeredServices = new Dictionary<Type, object>();
         }
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        ///     <see cref="IServiceRegistry.AddService(Type, object)" />
-        /// </summary>
+        /// <inheritdoc />
         public void AddService(Type type, object provider)
         {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
             if (provider == null) { throw new ArgumentNullException(nameof(provider)); }
 
-            if (!type.IsAssignableFrom(provider.GetType()))
+            if (!type.IsInstanceOfType(provider))
             {
                 throw new ArgumentException(
                     $"Service [{provider.GetType().FullName}] must be assignable to [{type.GetType().FullName}]");
@@ -76,25 +60,20 @@ namespace Exomia.Framework
             }
         }
 
-        /// <summary>
-        ///     <see cref="IServiceRegistry.AddService{T}(T)" />
-        /// </summary>
+        /// <inheritdoc />
         public void AddService<T>(T provider)
         {
             AddService(typeof(T), provider);
         }
 
-        /// <summary>
-        ///     <see cref="IServiceRegistry.GetService(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public object GetService(Type type)
         {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
 
-            object obj = null;
             lock (_registeredServices)
             {
-                if (_registeredServices.TryGetValue(type, out obj))
+                if (_registeredServices.TryGetValue(type, out object obj))
                 {
                     return obj;
                 }
@@ -103,17 +82,13 @@ namespace Exomia.Framework
             throw new ArgumentException($"Service of type {type} is not registered.");
         }
 
-        /// <summary>
-        ///     <see cref="IServiceRegistry.GetService{T}" />
-        /// </summary>
+        /// <inheritdoc />
         public T GetService<T>()
         {
             return (T)GetService(typeof(T));
         }
 
-        /// <summary>
-        ///     <see cref="IServiceRegistry.RemoveService(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public bool RemoveService(Type type)
         {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
@@ -123,7 +98,5 @@ namespace Exomia.Framework
                 return _registeredServices.Remove(type);
             }
         }
-
-        #endregion
     }
 }

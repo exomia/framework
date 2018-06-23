@@ -28,16 +28,10 @@ namespace Exomia.Framework.ContentSerialization.Types
 {
     internal interface IType
     {
-        #region Properties
-
         string TypeName { get; }
         Type BaseType { get; }
 
         bool IsPrimitive { get; }
-
-        #endregion
-
-        #region Methods
 
         string CreateTypeInfo(Type type);
 
@@ -47,7 +41,5 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
             bool useTypeInfo = true);
-
-        #endregion
     }
 }

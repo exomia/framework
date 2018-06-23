@@ -32,8 +32,6 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public sealed class Random2
     {
-        #region Variables
-
         private const float SINGLE_UNIT_INT = 1.0f / int.MaxValue;
         private const double REAL_UNIT_INT = 1.0 / int.MaxValue;
 
@@ -47,10 +45,6 @@ namespace Exomia.Framework.Mathematics
         public static Random2 Default = new Random2();
 
         private uint _x, _y, _z, _w;
-
-        #endregion
-
-        #region Constructors
 
         /// <inheritdoc />
         public Random2()
@@ -66,10 +60,6 @@ namespace Exomia.Framework.Mathematics
             _z = Z;
             _w = W;
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Gets the next random byte value.
@@ -397,7 +387,5 @@ namespace Exomia.Framework.Mathematics
                 Next(min.B, max.B),
                 Next(min.A, max.A));
         }
-
-        #endregion
     }
 }

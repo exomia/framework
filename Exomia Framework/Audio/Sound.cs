@@ -29,13 +29,9 @@ namespace Exomia.Framework.Audio
 {
     internal sealed class Sound
     {
-        #region Variables
-
         internal Emitter Emitter;
         internal Sound Next = null;
         internal Sound Previous = null;
         internal SourceVoice SourceVoice;
-
-        #endregion
     }
 }

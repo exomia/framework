@@ -29,8 +29,6 @@ namespace Exomia.Framework.Input
     /// </summary>
     public interface IInputHandler
     {
-        #region Methods
-
         /// <summary>
         ///     called than the mouse moved
         /// </summary>
@@ -104,7 +102,5 @@ namespace Exomia.Framework.Input
         /// <param name="alt"><c>true</c> if alt key is down; <c>false</c> otherwise.</param>
         /// <param name="ctrl"><c>true</c> if ctrl key is down; <c>false</c> otherwise.</param>
         void Input_KeyDown(int keyValue, bool shift, bool alt, bool ctrl);
-
-        #endregion
     }
 }

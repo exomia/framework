@@ -29,8 +29,6 @@ namespace Exomia.Framework.Linq
 {
     public static partial class LinqExt
     {
-        #region Methods
-
         /// <summary>
         ///     Returns the element which has the minimum value in a generic sequence.
         /// </summary>
@@ -69,7 +67,5 @@ namespace Exomia.Framework.Linq
                 return r;
             }
         }
-
-        #endregion
     }
 }

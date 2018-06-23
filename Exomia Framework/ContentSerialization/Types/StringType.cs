@@ -33,7 +33,13 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// </summary>
     internal sealed class StringType : IType
     {
-        #region Properties
+        /// <summary>
+        ///     constructor StringType
+        /// </summary>
+        public StringType()
+        {
+            BaseType = typeof(string);
+        }
 
         /// <summary>
         ///     TypeName without System
@@ -56,22 +62,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             get { return true; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     constructor StringType
-        /// </summary>
-        public StringType()
-        {
-            BaseType = typeof(string);
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
@@ -134,7 +124,5 @@ namespace Exomia.Framework.ContentSerialization.Types
                 tabSpace,
                 $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content.ToString().Replace("\\", "\\\\").Replace("[", "\\[").Replace("]", "\\]")}[/{(useTypeInfo ? key : string.Empty)}]");
         }
-
-        #endregion
     }
 }

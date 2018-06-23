@@ -49,8 +49,6 @@ namespace Exomia.Framework.Game
     /// </summary>
     public abstract class Game : IRunnable, IDisposable
     {
-        #region Variables
-
         private const int INITIAL_QUEUE_SIZE = 16;
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
 
@@ -82,23 +80,6 @@ namespace Exomia.Framework.Game
 
         private bool _shutdown;
 
-        #endregion
-
-        #region Properties
-
-        public bool IsRunning
-        {
-            get { return _isRunning; }
-            set
-            {
-                if (_isRunning != value)
-                {
-                    _isRunning = value;
-                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
         public bool IsFixedTimeStep { get; set; } = false;
 
         public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
@@ -121,10 +102,6 @@ namespace Exomia.Framework.Game
         {
             get { return _gameWindow; }
         }
-
-        #endregion
-
-        #region Constructors
 
         /// <inheritdoc />
         /// <summary>
@@ -186,9 +163,18 @@ namespace Exomia.Framework.Game
             Dispose(false);
         }
 
-        #endregion
-
-        #region Methods
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                if (_isRunning != value)
+                {
+                    _isRunning = value;
+                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <inheritdoc />
         public void Run()
@@ -670,8 +656,6 @@ namespace Exomia.Framework.Game
                 _drawableComponent.Sort(DrawableComparer.Default);
             }
         }
-
-        #endregion
 
         #region Timer2
 

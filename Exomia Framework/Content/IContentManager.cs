@@ -32,8 +32,6 @@ namespace Exomia.Framework.Content
     /// </summary>
     public interface IContentManager : IDisposable
     {
-        #region Properties
-
         /// <summary>
         ///     ServiceRegistry
         /// </summary>
@@ -43,10 +41,6 @@ namespace Exomia.Framework.Content
         ///     RootDirectory
         /// </summary>
         string RootDirectory { get; set; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     add a new content resolver to the list.
@@ -126,7 +120,5 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">The asset name</param>
         /// <returns><c>true</c> if the asset exists and was unloaded, <c>false</c> otherwise.</returns>
         bool Unload(Type assetType, string assetName);
-
-        #endregion
     }
 }

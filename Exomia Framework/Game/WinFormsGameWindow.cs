@@ -35,13 +35,18 @@ namespace Exomia.Framework.Game
 {
     public sealed class WinFormsGameWindow : IWinFormsGameWindow
     {
-        #region Variables
-
         private RenderForm _renderForm;
 
-        #endregion
+        public WinFormsGameWindow(string title)
+        {
+            _renderForm = new RenderForm(title)
+                { FormBorderStyle = FormBorderStyle.FixedSingle };
+        }
 
-        #region Properties
+        ~WinFormsGameWindow()
+        {
+            Dispose(false);
+        }
 
         public bool IsInitialized { get; private set; }
 
@@ -65,25 +70,6 @@ namespace Exomia.Framework.Game
         {
             get { return _renderForm; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        public WinFormsGameWindow(string title)
-        {
-            _renderForm = new RenderForm(title)
-                { FormBorderStyle = FormBorderStyle.FixedSingle };
-        }
-
-        ~WinFormsGameWindow()
-        {
-            Dispose(false);
-        }
-
-        #endregion
-
-        #region Methods
 
         public void Initialize(ref GameGraphicsParameters parameters)
         {
@@ -124,8 +110,6 @@ namespace Exomia.Framework.Game
             }
             _renderForm.ClientSize = new Size(Width = width, Height = height);
         }
-
-        #endregion
 
         #region IDisposable Support
 

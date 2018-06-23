@@ -34,8 +34,6 @@ namespace Exomia.Framework.Security
 {
     public static class DecryptionHelper
     {
-        #region Methods
-
         public static SpriteFont2 ToSpriteFont2(this Stream stream, ITexture2ContentManager manager)
         {
             if (manager == null) { throw new InvalidOperationException("Unable to retrieve a ITextureContentManager"); }
@@ -78,7 +76,5 @@ namespace Exomia.Framework.Security
 
             return font2;
         }
-
-        #endregion
     }
 }

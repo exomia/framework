@@ -33,13 +33,7 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public static class Math2
     {
-        #region Variables
-
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Maps a value from l1 to u1 to l2 to u2
@@ -302,54 +296,6 @@ namespace Exomia.Framework.Mathematics
                    Matrix.Translation(position.X, position.Y, 0);
         }
 
-        #endregion
-
-        #region Curves
-
-        /// <summary>
-        ///     Hermite Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveHermite(float t)
-        {
-            return t * t * (3 - 2 * t);
-        }
-
-        /// <summary>
-        ///     Quintic Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveQuintic(float t)
-        {
-            return t * t * t * (t * (t * 6 - 15) + 10);
-        }
-
-        /// <summary>
-        ///     Hermite Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CurveHermite(double t)
-        {
-            return t * t * (3 - 2 * t);
-        }
-
-        /// <summary>
-        ///     Quintic Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CurveQuintic(double t)
-        {
-            return t * t * t * (t * (t * 6 - 15) + 10);
-        }
-
         /// <summary>
         ///     Rounds the given value up to a power of two.
         ///     If it is already a power of two, it is returned unchanged.
@@ -415,6 +361,52 @@ namespace Exomia.Framework.Mathematics
             value |= value >> 16;
             value |= value >> 32;
             return value + 1;
+        }
+
+        #region Curves
+
+        /// <summary>
+        ///     Hermite Curve
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CurveHermite(float t)
+        {
+            return t * t * (3 - 2 * t);
+        }
+
+        /// <summary>
+        ///     Quintic Curve
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CurveQuintic(float t)
+        {
+            return t * t * t * (t * (t * 6 - 15) + 10);
+        }
+
+        /// <summary>
+        ///     Hermite Curve
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double CurveHermite(double t)
+        {
+            return t * t * (3 - 2 * t);
+        }
+
+        /// <summary>
+        ///     Quintic Curve
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double CurveQuintic(double t)
+        {
+            return t * t * t * (t * (t * 6 - 15) + 10);
         }
 
         #endregion

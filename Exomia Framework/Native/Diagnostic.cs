@@ -31,8 +31,6 @@ namespace Exomia.Framework.Native
 {
     public static class Diagnostic
     {
-        #region Methods
-
         /// <summary>
         ///     <see href=">https://msdn.microsoft.com/en-us/library/ms724400(VS.85).aspx" />
         /// </summary>
@@ -55,10 +53,6 @@ namespace Exomia.Framework.Native
             out FILETIME lpKernelTime,
             out FILETIME lpUserTime);
 
-        #endregion
-
-        #region Nested
-
         [StructLayout(LayoutKind.Sequential)]
         public struct FILETIME
         {
@@ -70,7 +64,5 @@ namespace Exomia.Framework.Native
                 get { return ((ulong)DwHighDateTime << 32) + DwLowDateTime; }
             }
         }
-
-        #endregion
     }
 }

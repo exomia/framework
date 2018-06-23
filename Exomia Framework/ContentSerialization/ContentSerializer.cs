@@ -39,8 +39,6 @@ namespace Exomia.Framework.ContentSerialization
     /// </summary>
     public static class ContentSerializer
     {
-        #region Variables
-
         internal const string TABSPACE = "\t";
 
         /// <summary>
@@ -56,10 +54,6 @@ namespace Exomia.Framework.ContentSerialization
 
         internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
         internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
-
-        #endregion
-
-        #region Constructors
 
         static ContentSerializer()
         {
@@ -157,10 +151,6 @@ namespace Exomia.Framework.ContentSerialization
             #endregion
         }
 
-        #endregion
-
-        #region Methods
-
         /// <summary>
         ///     Adds a new content pipeline reader to the content pipeline
         /// </summary>
@@ -232,8 +222,6 @@ namespace Exomia.Framework.ContentSerialization
                 s_assemblies.Add(assemblyName, assembly);
             }
         }
-
-        #endregion
 
         #region ContentWriter
 
