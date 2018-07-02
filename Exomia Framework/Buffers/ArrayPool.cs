@@ -52,7 +52,7 @@ namespace Exomia.Framework.Buffers
         {
             T[] buffer = null;
 
-            bool lockTaken = false, allocateBuffer = false;
+            bool lockTaken = false;
             try
             {
                 _lock.Enter(ref lockTaken);
@@ -61,7 +61,6 @@ namespace Exomia.Framework.Buffers
                 {
                     buffer = _buffers[_index];
                     _buffers[_index++] = null;
-                    allocateBuffer = buffer == null;
                 }
             }
             finally
@@ -72,7 +71,7 @@ namespace Exomia.Framework.Buffers
                 }
             }
 
-            return !allocateBuffer ? buffer : new T[_bufferLength];
+            return buffer ?? new T[_bufferLength];
         }
 
         public void Return(T[] array, bool clearArray)
