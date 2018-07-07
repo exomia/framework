@@ -1,4 +1,5 @@
 ## Custom
+create-wiki.sh
 nuget-push.sh
 merge-development.sh
 

@@ -1,0 +1,3 @@
+[submodule "framework.wiki"]
+	path = framework.wiki
+	url = https://github.com/exomia/framework.wiki.git
