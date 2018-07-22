@@ -127,6 +127,12 @@ namespace Exomia.Framework.Game
         public ViewportF Viewport { get; private set; }
 
         /// <inheritdoc />
+        ~GraphicsDevice()
+        {
+            Dispose(false);
+        }
+
+        /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
         {
             if (IsInitialized) { return; }
@@ -468,6 +474,7 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
         /// </summary>
