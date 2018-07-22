@@ -92,10 +92,10 @@ namespace Exomia.Framework.Video
 
         public double PlaybackPosition
         {
-            get { return _mediaEngineEx?.CurrentTime ?? 0.0; }
+            get { return _mediaEngineEx?.GetCurrentTime() ?? 0.0; }
             set
             {
-                if (_mediaEngineEx != null) { _mediaEngineEx.CurrentTime = value; }
+                _mediaEngineEx?.SetCurrentTime(value);
             }
         }
 
@@ -117,21 +117,20 @@ namespace Exomia.Framework.Video
         {
             get
             {
-                if (_mediaEngineEx != null) { return _mediaEngineEx.Muted; }
-                return false;
+                return _mediaEngineEx?.GetMuted() ?? false;
             }
             set
             {
-                if (_mediaEngineEx != null) { _mediaEngineEx.Muted = value; }
+                _mediaEngineEx?.SetMuted(value);
             }
         }
 
         public double Volume
         {
-            get { return _mediaEngineEx?.Volume ?? 0.0; }
+            get { return _mediaEngineEx?.GetVolume() ?? 0.0; }
             set
             {
-                if (_mediaEngineEx != null) { _mediaEngineEx.Volume = value; }
+                _mediaEngineEx?.SetVolume(value);
             }
         }
 
