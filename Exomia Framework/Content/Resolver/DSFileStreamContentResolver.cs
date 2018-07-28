@@ -30,7 +30,7 @@ using Exomia.Framework.Security;
 namespace Exomia.Framework.Content.Resolver
 {
     /// <inheritdoc />
-    internal sealed class DSFileStreamContentResolver : IContentResolver
+    sealed class DSFileStreamContentResolver : IContentResolver
     {
         public bool Exists(string assetName)
         {

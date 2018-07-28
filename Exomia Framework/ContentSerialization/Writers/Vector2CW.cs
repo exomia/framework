@@ -27,7 +27,7 @@ using SharpDX;
 namespace Exomia.Framework.ContentSerialization.Writers
 {
     /// <inheritdoc />
-    internal sealed class Vector2CW : AContentSerializationWriter<Vector2>
+    sealed class Vector2CW : AContentSerializationWriter<Vector2>
     {
         public override void WriteContext(ContentSerializationContext context, Vector2 obj)
         {

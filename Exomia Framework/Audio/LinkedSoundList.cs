@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework.Audio
 {
-    internal sealed class LinkedSoundList
+    sealed class LinkedSoundList
     {
         private Sound _tail;
 

@@ -93,10 +93,7 @@ namespace Exomia.Framework.Video
         public double PlaybackPosition
         {
             get { return _mediaEngineEx?.GetCurrentTime() ?? 0.0; }
-            set
-            {
-                _mediaEngineEx?.SetCurrentTime(value);
-            }
+            set { _mediaEngineEx?.SetCurrentTime(value); }
         }
 
         public double Duration
@@ -115,23 +112,14 @@ namespace Exomia.Framework.Video
 
         public bool Mute
         {
-            get
-            {
-                return _mediaEngineEx?.GetMuted() ?? false;
-            }
-            set
-            {
-                _mediaEngineEx?.SetMuted(value);
-            }
+            get { return _mediaEngineEx?.GetMuted() ?? false; }
+            set { _mediaEngineEx?.SetMuted(value); }
         }
 
         public double Volume
         {
             get { return _mediaEngineEx?.GetVolume() ?? 0.0; }
-            set
-            {
-                _mediaEngineEx?.SetVolume(value);
-            }
+            set { _mediaEngineEx?.SetVolume(value); }
         }
 
         public VideoPlayer(Device5 device, int width, int height)

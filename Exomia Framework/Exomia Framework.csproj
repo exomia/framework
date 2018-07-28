@@ -194,6 +194,7 @@
     <Compile Include="Activator.cs" />
     <Compile Include="Linq\ForEach.cs" />
     <Compile Include="Linq\Min.cs" />
+    <Compile Include="Linq\Sum.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameGraphicsParameters.cs" />

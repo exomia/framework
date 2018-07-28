@@ -26,7 +26,7 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Writers
 {
-    internal sealed class ColorCW : AContentSerializationWriter<Color>
+    sealed class ColorCW : AContentSerializationWriter<Color>
     {
         public override void WriteContext(ContentSerializationContext context, Color obj)
         {

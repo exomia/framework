@@ -30,7 +30,7 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// <summary>
     ///     ArrayType class
     /// </summary>
-    internal sealed class ArrayType : IType
+    sealed class ArrayType : IType
     {
         /// <summary>
         ///     constructor EnumType

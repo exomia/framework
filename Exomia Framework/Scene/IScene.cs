@@ -43,7 +43,7 @@ namespace Exomia.Framework.Scene
 
     public delegate void SceneStateChangedHandler(SceneBase scene, SceneState current);
 
-    internal interface IScene : IInitializable, IContentable, IDisposable
+    interface IScene : IInitializable, IContentable, IDisposable
     {
         event SceneStateChangedHandler SceneStateChanged;
 

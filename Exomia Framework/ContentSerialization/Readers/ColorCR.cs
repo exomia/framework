@@ -26,7 +26,7 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    internal sealed class ColorCR : AContentSerializationReader<Color>
+    sealed class ColorCR : AContentSerializationReader<Color>
     {
         public override Color ReadContext(ContentSerializationContext context)
         {

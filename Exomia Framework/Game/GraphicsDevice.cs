@@ -27,6 +27,8 @@ using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using Device = SharpDX.Direct3D11.Device;
+using Device4 = SharpDX.DXGI.Device4;
 
 namespace Exomia.Framework.Game
 {
@@ -53,7 +55,7 @@ namespace Exomia.Framework.Game
         private DeviceContext4 _d3DDeviceContext;
 
         private DepthStencilView _depthStencilView;
-        private SharpDX.DXGI.Device4 _dxgiDevice4;
+        private Device4 _dxgiDevice4;
         private Factory5 _dxgiFactory;
 
         private bool _needResize;
@@ -65,6 +67,12 @@ namespace Exomia.Framework.Game
         private SwapChain4 _swapChain4;
 
         private int _vSync;
+
+        /// <inheritdoc />
+        ~GraphicsDevice()
+        {
+            Dispose(false);
+        }
 
         /// <summary>
         ///     <see cref="IGraphicsDevice.ResizeFinished" />
@@ -118,19 +126,13 @@ namespace Exomia.Framework.Game
         }
 
         /// <inheritdoc />
-        public SharpDX.DXGI.Device4 DXGIDevice
+        public Device4 DXGIDevice
         {
             get { return _dxgiDevice4; }
         }
 
         /// <inheritdoc />
         public ViewportF Viewport { get; private set; }
-
-        /// <inheritdoc />
-        ~GraphicsDevice()
-        {
-            Dispose(false);
-        }
 
         /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
@@ -189,7 +191,7 @@ namespace Exomia.Framework.Game
                 break;
             }
 
-            SharpDX.Direct3D11.Device defaultDevice = null;
+            Device defaultDevice = null;
 
             if (_adapter4 != null)
             {
@@ -222,11 +224,11 @@ namespace Exomia.Framework.Game
                 Console.WriteLine($"Rotation:\t\t{_output.Description.Rotation}");
                 Console.WriteLine($"----------------------------------------\n");
 
-                defaultDevice = new SharpDX.Direct3D11.Device(_adapter4, parameters.DeviceCreationFlags, s_featureLevels);
+                defaultDevice = new Device(_adapter4, parameters.DeviceCreationFlags, s_featureLevels);
             }
             else
             {
-                defaultDevice = new SharpDX.Direct3D11.Device(parameters.DriverType, parameters.DeviceCreationFlags, s_featureLevels);
+                defaultDevice = new Device(parameters.DriverType, parameters.DeviceCreationFlags, s_featureLevels);
             }
 
             _d3DDevice5 = defaultDevice.QueryInterface<Device5>();
@@ -262,7 +264,7 @@ namespace Exomia.Framework.Game
             _swapChain4 = swapChain.QueryInterface<SwapChain4>();
             swapChain.Dispose();
 
-            _dxgiDevice4 = _d3DDevice5.QueryInterface<SharpDX.DXGI.Device4>();
+            _dxgiDevice4 = _d3DDevice5.QueryInterface<Device4>();
 
             _resizeParameters = new ResizeParameters
             {

@@ -31,7 +31,7 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// <summary>
     ///     PType{T} class
     /// </summary>
-    internal sealed class PrimitiveType<T> : IType where T : struct
+    sealed class PrimitiveType<T> : IType where T : struct
     {
         /// <summary>
         ///     constructor PrimitiveType{T}

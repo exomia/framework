@@ -31,7 +31,7 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// <summary>
     ///     StringType class
     /// </summary>
-    internal sealed class StringType : IType
+    sealed class StringType : IType
     {
         /// <summary>
         ///     constructor StringType

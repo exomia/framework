@@ -27,7 +27,7 @@ using System.Management;
 
 namespace Exomia.Framework.Diagnostic
 {
-    internal static class Diagnostic
+    static class Diagnostic
     {
         internal static bool GetCpuInformation(out string outS)
         {

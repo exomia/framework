@@ -1563,7 +1563,7 @@ namespace Exomia.Framework.Graphics
         #endregion
     }
 
-    internal sealed class SpriteFontCW : AContentSerializationWriter<SpriteFont>
+    sealed class SpriteFontCW : AContentSerializationWriter<SpriteFont>
     {
         public override void WriteContext(ContentSerializationContext context, SpriteFont obj)
         {
@@ -1586,7 +1586,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class SpriteFontGlyphCW : AContentSerializationWriter<SpriteFont.Glyph>
+    sealed class SpriteFontGlyphCW : AContentSerializationWriter<SpriteFont.Glyph>
     {
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Glyph obj)
         {
@@ -1598,7 +1598,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class SpriteFontKerningCW : AContentSerializationWriter<SpriteFont.Kerning>
+    sealed class SpriteFontKerningCW : AContentSerializationWriter<SpriteFont.Kerning>
     {
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Kerning obj)
         {
@@ -1608,7 +1608,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class SpriteFontCR : AContentSerializationReader<SpriteFont>
+    sealed class SpriteFontCR : AContentSerializationReader<SpriteFont>
     {
         public override SpriteFont ReadContext(ContentSerializationContext context)
         {
@@ -1633,7 +1633,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class SpriteFontGlyphCR : AContentSerializationReader<SpriteFont.Glyph>
+    sealed class SpriteFontGlyphCR : AContentSerializationReader<SpriteFont.Glyph>
     {
         public override SpriteFont.Glyph ReadContext(ContentSerializationContext context)
         {
@@ -1648,7 +1648,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class SpriteFontKerningCR : AContentSerializationReader<SpriteFont.Kerning>
+    sealed class SpriteFontKerningCR : AContentSerializationReader<SpriteFont.Kerning>
     {
         public override SpriteFont.Kerning ReadContext(ContentSerializationContext context)
         {

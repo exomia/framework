@@ -784,7 +784,7 @@ namespace Exomia.Framework.Game
 
     #region Camparer
 
-    internal struct DrawableComparer : IComparer<IDrawable>
+    struct DrawableComparer : IComparer<IDrawable>
     {
         public static readonly DrawableComparer Default = new DrawableComparer();
 
@@ -809,7 +809,7 @@ namespace Exomia.Framework.Game
         }
     }
 
-    internal struct UpdateableComparer : IComparer<IUpdateable>
+    struct UpdateableComparer : IComparer<IUpdateable>
     {
         public static readonly UpdateableComparer Default = new UpdateableComparer();
 

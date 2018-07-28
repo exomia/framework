@@ -35,7 +35,7 @@ using Rectangle = SharpDX.Rectangle;
 
 namespace Exomia.Framework.Graphics
 {
-    internal sealed class SpriteBatchAtlas : IDisposable
+    sealed class SpriteBatchAtlas : IDisposable
     {
         private const int MIN_ATLAS_WIDTH = 2048;
         private const int MIN_ATLAS_HEIGHT = 2048;

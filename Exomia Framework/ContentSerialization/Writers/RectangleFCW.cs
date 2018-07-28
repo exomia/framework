@@ -27,7 +27,7 @@ using SharpDX;
 namespace Exomia.Framework.ContentSerialization.Writers
 {
     /// <inheritdoc />
-    internal sealed class RectangleFCW : AContentSerializationWriter<RectangleF>
+    sealed class RectangleFCW : AContentSerializationWriter<RectangleF>
     {
         public override void WriteContext(ContentSerializationContext context, RectangleF obj)
         {
@@ -39,7 +39,7 @@ namespace Exomia.Framework.ContentSerialization.Writers
     }
 
     /// <inheritdoc />
-    internal sealed class RectangleCW : AContentSerializationWriter<Rectangle>
+    sealed class RectangleCW : AContentSerializationWriter<Rectangle>
     {
         public override void WriteContext(ContentSerializationContext context, Rectangle obj)
         {

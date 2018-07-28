@@ -30,7 +30,7 @@ using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Graphics
 {
-    internal sealed class SpriteFontContentReader : IContentReader
+    sealed class SpriteFontContentReader : IContentReader
     {
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
@@ -60,7 +60,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class SpriteFont2ContentReader : IContentReader
+    sealed class SpriteFont2ContentReader : IContentReader
     {
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {

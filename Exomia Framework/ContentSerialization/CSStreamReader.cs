@@ -27,7 +27,7 @@ using System.IO;
 
 namespace Exomia.Framework.ContentSerialization
 {
-    internal sealed class CSStreamReader : IDisposable
+    sealed class CSStreamReader : IDisposable
     {
         private readonly Stream _stream;
         private int _line = 1;

@@ -27,7 +27,7 @@ using SharpDX.XAudio2;
 
 namespace Exomia.Framework.Audio
 {
-    internal sealed class Sound
+    sealed class Sound
     {
         internal Emitter Emitter;
         internal Sound Next = null;

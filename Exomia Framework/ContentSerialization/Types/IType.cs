@@ -26,7 +26,7 @@ using System;
 
 namespace Exomia.Framework.ContentSerialization.Types
 {
-    internal interface IType
+    interface IType
     {
         string TypeName { get; }
         Type BaseType { get; }

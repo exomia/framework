@@ -28,7 +28,7 @@ using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Graphics
 {
-    internal sealed class TextureContentReader : IContentReader
+    sealed class TextureContentReader : IContentReader
     {
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
@@ -38,7 +38,7 @@ namespace Exomia.Framework.Graphics
         }
     }
 
-    internal sealed class Texture2ContentReader : IContentReader
+    sealed class Texture2ContentReader : IContentReader
     {
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {

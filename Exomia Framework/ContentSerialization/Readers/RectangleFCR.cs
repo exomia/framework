@@ -26,7 +26,7 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    internal sealed class RectangleFCR : AContentSerializationReader<RectangleF>
+    sealed class RectangleFCR : AContentSerializationReader<RectangleF>
     {
         public override RectangleF ReadContext(ContentSerializationContext context)
         {
@@ -40,7 +40,7 @@ namespace Exomia.Framework.ContentSerialization.Readers
         }
     }
 
-    internal sealed class RectangleCR : AContentSerializationReader<Rectangle>
+    sealed class RectangleCR : AContentSerializationReader<Rectangle>
     {
         public override Rectangle ReadContext(ContentSerializationContext context)
         {

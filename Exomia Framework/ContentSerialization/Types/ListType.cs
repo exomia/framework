@@ -31,7 +31,7 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// <summary>
     ///     ListType class
     /// </summary>
-    internal sealed class ListType : IType
+    sealed class ListType : IType
     {
         /// <summary>
         ///     constructor EnumType

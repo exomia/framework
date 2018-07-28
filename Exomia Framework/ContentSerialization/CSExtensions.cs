@@ -31,7 +31,7 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.ContentSerialization
 {
-    internal static class CSExtensions
+    static class CSExtensions
     {
         private static readonly Regex s_innerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9.+,\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)?)>$",

@@ -26,7 +26,7 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    internal sealed class Vector2CR : AContentSerializationReader<Vector2>
+    sealed class Vector2CR : AContentSerializationReader<Vector2>
     {
         public override Vector2 ReadContext(ContentSerializationContext context)
         {

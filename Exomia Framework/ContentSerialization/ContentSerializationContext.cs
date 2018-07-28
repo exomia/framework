@@ -88,7 +88,7 @@ namespace Exomia.Framework.ContentSerialization
         }
     }
 
-    internal struct ContentSerializationContextValue
+    struct ContentSerializationContextValue
     {
         public Type Type;
         public object Object;
