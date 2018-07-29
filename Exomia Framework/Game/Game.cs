@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
@@ -103,19 +104,14 @@ namespace Exomia.Framework.Game
             get { return _gameWindow; }
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Game.Game" /> class.
-        /// </summary>
-        protected Game()
-            : this(string.Empty) { }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Game" /> class.
         /// </summary>
         /// <param name="title">title</param>
-        protected Game(string title)
+        /// <param name="gcLatencyMode">GCLatencyMode</param>
+        protected Game(string title = "", GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
         {
+            GCSettings.LatencyMode = gcLatencyMode;
 #if DEBUG
             /*string info = "";
             Diagnostic.DSDiagnostic.GetCPUInformation(out info);
