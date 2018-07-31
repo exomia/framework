@@ -62,17 +62,20 @@ namespace Exomia.Framework.Linq
             ParameterExpression iExpr = Expression.Variable(typeof(int));
             ParameterExpression rExpr = Expression.Variable(typeof(T));
             LabelTarget breakLabel = Expression.Label(typeof(T));
-            return Expression.Lambda<Func<T[], T>>(Expression.Block(
-                new[] { rExpr, iExpr },
-                Expression.Loop(
-                    Expression.IfThenElse(
-                        Expression.LessThan(iExpr, Expression.ArrayLength(arrayExpr)),
-                        Expression.Block(
-                            Expression.Assign(rExpr, Expression.Add(rExpr, Expression.ArrayAccess(arrayExpr, iExpr))),
-                            Expression.Assign(iExpr, Expression.Increment(iExpr))),
-                        Expression.Break(breakLabel, rExpr)
-                    ),
-                    breakLabel)), arrayExpr).Compile(false);
+            return Expression.Lambda<Func<T[], T>>(
+                    Expression.Block(
+                        new[] { rExpr, iExpr },
+                        Expression.Loop(
+                            Expression.IfThenElse(
+                                Expression.LessThan(iExpr, Expression.ArrayLength(arrayExpr)),
+                                Expression.Block(
+                                    Expression.Assign(
+                                        rExpr, Expression.Add(rExpr, Expression.ArrayAccess(arrayExpr, iExpr))),
+                                    Expression.Assign(iExpr, Expression.Increment(iExpr))),
+                                Expression.Break(breakLabel, rExpr)
+                            ),
+                            breakLabel)), arrayExpr)
+                .Compile(false);
         }
 
         private static Func<IEnumerable<T>, T> __sum()
@@ -85,18 +88,22 @@ namespace Exomia.Framework.Linq
             ParameterExpression rExpr = Expression.Variable(elementType, "result");
             ParameterExpression enumeratorVar = Expression.Variable(enumeratorType);
             MethodCallExpression moveNextCall = Expression.Call(
-                enumeratorVar, typeof(IEnumerator).GetMethod("MoveNext"));
+                enumeratorVar, typeof(IEnumerator).GetMethod("MoveNext") ?? throw new InvalidOperationException());
             LabelTarget breakLabel = Expression.Label(elementType);
-            return Expression.Lambda<Func<IEnumerable<T>, T>>(Expression.Block(
-                new[] { enumeratorVar, rExpr },
-                Expression.Assign(enumeratorVar, Expression.Call(arrayExpr, enumerableType.GetMethod("GetEnumerator"))),
-                Expression.Loop(
-                    Expression.IfThenElse(
-                        Expression.Equal(moveNextCall, Expression.Constant(true)),
-                        Expression.Assign(rExpr, Expression.Add(rExpr, Expression.Property(enumeratorVar, "Current"))),
-                        Expression.Break(breakLabel, rExpr)
-                    ),
-                    breakLabel)), arrayExpr).Compile(false);
+            return Expression.Lambda<Func<IEnumerable<T>, T>>(
+                    Expression.Block(
+                        new[] { enumeratorVar, rExpr },
+                        Expression.Assign(
+                            enumeratorVar, Expression.Call(arrayExpr, enumerableType.GetMethod("GetEnumerator") ?? throw new InvalidOperationException())),
+                        Expression.Loop(
+                            Expression.IfThenElse(
+                                Expression.Equal(moveNextCall, Expression.Constant(true)),
+                                Expression.Assign(
+                                    rExpr, Expression.Add(rExpr, Expression.Property(enumeratorVar, "Current"))),
+                                Expression.Break(breakLabel, rExpr)
+                            ),
+                            breakLabel)), arrayExpr)
+                .Compile(false);
         }
     }
 }

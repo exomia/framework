@@ -398,6 +398,7 @@ namespace Exomia.Framework.Graphics
             cBuffer.WorldViewProjection = worldViewProjection;
 
             _context.UpdateSubresource(ref cBuffer, _perFrameBuffer);
+
             //TODO: working?
             //_context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
         }
@@ -510,16 +511,19 @@ namespace Exomia.Framework.Graphics
             VertexPositionColorTexture* vpctPtr, float deltaX, float deltaY)
         {
             Vector2 origin = spriteInfo.Origin;
+
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (spriteInfo.Source.Width != 0f)
             {
                 origin.X /= spriteInfo.Source.Width;
-            } 
+            }
+
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (spriteInfo.Source.Height != 0f)
             {
                 origin.Y /= spriteInfo.Source.Height;
             }
+
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (spriteInfo.Rotation == 0f)
             {
@@ -670,6 +674,7 @@ namespace Exomia.Framework.Graphics
             in Vector2 origin, float opacity, float layerDepth)
         {
             Vector2[] vertex = null;
+
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (rotation == 0.0f)
             {
@@ -686,11 +691,13 @@ namespace Exomia.Framework.Graphics
                 vertex = new Vector2[4];
 
                 Vector2 o = origin;
+
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (destinationRectangle.Width == 0f)
                 {
                     o.X /= destinationRectangle.Width;
                 }
+
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (destinationRectangle.Height == 0f)
                 {
