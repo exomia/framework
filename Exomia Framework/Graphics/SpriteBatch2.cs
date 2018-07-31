@@ -396,10 +396,13 @@ namespace Exomia.Framework.Graphics
             Matrix worldViewProjection = _transformMatrix * _viewMatrix * _projectionMatrix;
             worldViewProjection.Transpose();
 
-            ConstantFrameBuffer cBuffer = new ConstantFrameBuffer
-                { WorldViewProjection = worldViewProjection };
+            ConstantFrameBuffer cBuffer;
+            cBuffer.WorldViewProjection = worldViewProjection;
 
             _context.UpdateSubresource(ref cBuffer, _perFrameBuffer);
+
+            //TODO: working?
+            //_context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
         }
 
         private void FlushBatch()
@@ -439,6 +442,7 @@ namespace Exomia.Framework.Graphics
                         {
                             for (int i = 0; i < middle; i++)
                             {
+                                // ReSharper disable once AccessToModifiedClosure
                                 int index = i + offset;
                                 if (_spriteSortMode != SpriteSortMode.Deferred)
                                 {
@@ -452,6 +456,7 @@ namespace Exomia.Framework.Graphics
                         {
                             for (int i = middle; i < batchSize; i++)
                             {
+                                // ReSharper disable once AccessToModifiedClosure
                                 int index = i + offset;
                                 if (_spriteSortMode != SpriteSortMode.Deferred)
                                 {
@@ -487,8 +492,17 @@ namespace Exomia.Framework.Graphics
             VertexPositionColorTexture* vpctPtr, float deltaX, float deltaY)
         {
             Vector2 origin = spriteInfo.Origin;
-            origin.X /= spriteInfo.Source.Width == 0f ? float.Epsilon : spriteInfo.Source.Width;
-            origin.Y /= spriteInfo.Source.Height == 0f ? float.Epsilon : spriteInfo.Source.Height;
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Source.Width != 0f)
+            {
+                origin.X /= spriteInfo.Source.Width;
+            }
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Source.Height != 0f)
+            {
+                origin.Y /= spriteInfo.Source.Height;
+            }
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (spriteInfo.Rotation == 0f)
             {
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
@@ -617,10 +631,10 @@ namespace Exomia.Framework.Graphics
         }
 
         public void DrawRectangle(in RectangleF destinationRectangle, in Color color, float lineWidth, float rotation,
-            Vector2 origin, float opacity, float layerDepth)
+            in Vector2 origin, float opacity, float layerDepth)
         {
             Vector2[] vertex = null;
-
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (rotation == 0.0f)
             {
                 vertex = new Vector2[4]
@@ -635,18 +649,25 @@ namespace Exomia.Framework.Graphics
             {
                 vertex = new Vector2[4];
 
-                origin.X /= destinationRectangle.Width == 0f ? float.Epsilon : destinationRectangle.Width;
-                origin.Y /= destinationRectangle.Height == 0f ? float.Epsilon : destinationRectangle.Height;
+                Vector2 o = origin;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (destinationRectangle.Width == 0f)
+                {
+                    o.X /= destinationRectangle.Width;
+                }
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (destinationRectangle.Height == 0f)
+                {
+                    o.X /= destinationRectangle.Height;
+                }
 
                 float cos = (float)Math.Cos(rotation);
                 float sin = (float)Math.Sin(rotation);
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
                 {
-                    Vector2 pos = Vector2.Zero;
-
                     Vector2 corner = s_corner_offsets[j];
-                    float posX = (corner.X - origin.X) * destinationRectangle.Width;
-                    float posY = (corner.Y - origin.Y) * destinationRectangle.Height;
+                    float posX = (corner.X - o.X) * destinationRectangle.Width;
+                    float posY = (corner.Y - o.Y) * destinationRectangle.Height;
 
                     vertex[j] = new Vector2(
                         destinationRectangle.X + posX * cos - posY * sin,
