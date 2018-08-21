@@ -221,9 +221,6 @@
     <Compile Include="Mathematics\NumericExtensions.cs" />
     <Compile Include="Mathematics\Random2.cs" />
     <Compile Include="Mathematics\Vector2Extensions.cs" />
-    <Compile Include="Native\Debugger.cs" />
-    <Compile Include="Native\Diagnostic.cs" />
-    <Compile Include="Native\Mem.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Noise\NoiseBase.cs" />
     <Compile Include="Noise\PerlinNoise.cs" />

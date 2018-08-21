@@ -204,13 +204,12 @@ namespace Exomia.Framework.Game
                     if (!isWindowExiting)
                     {
                         isWindowExiting = true;
+                        Shutdown();
                     }
                 };
-                while (!isWindowExiting && !_shutdown)
-                {
-                    Renderloop(gameTime);
-                }
             }
+
+            Renderloop(gameTime);
 
             UnloadContent();
         }
@@ -488,44 +487,57 @@ namespace Exomia.Framework.Game
             _graphicsDevice.EndFrame();
         }
 
+        private const int WM_QUIT = 0x0012;
+        private const int PM_REMOVE = 0x0001;
         private void Renderloop(GameTime gameTime)
         {
-            _stopwatch.Restart();
+            MSG msg;
+            msg.hwnd = IntPtr.Zero;
+            msg.message = 0;
+            msg.lParam = IntPtr.Zero;
+            msg.wParam = IntPtr.Zero;
+            msg.time = 0;
+            msg.pt = Point.Zero;
 
-            if (PeekMessage(out MSG msg, IntPtr.Zero, 0, 0, 0x0001) != 0)
+            while (!_shutdown && msg.message != WM_QUIT)
             {
-                Message message = Message.Create(msg.hwnd, msg.message, msg.wParam, msg.lParam);
-                if (!Application.FilterMessage(ref message))
+                _stopwatch.Restart();
+
+                if (PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
                 {
-                    TranslateMessage(ref msg);
-                    DispatchMessage(ref msg);
-                }
-            }
-
-            if (!_isRunning)
-            {
-                Thread.Sleep(16);
-                return;
-            }
-
-            gameTime.Tick();
-            Update(gameTime);
-            if (BeginFrame())
-            {
-                Draw(gameTime);
-                EndFrame();
-            }
-
-            if (IsFixedTimeStep)
-            {
-                //SLEEP
-                while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
-                {
-                    Thread.Sleep(1);
+                    Message message = Message.Create(msg.hwnd, msg.message, msg.wParam, msg.lParam);
+                    if (!Application.FilterMessage(ref message))
+                    {
+                        TranslateMessage(ref msg);
+                        DispatchMessage(ref msg);
+                    }
                 }
 
-                //IDLE
-                while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                if (!_isRunning)
+                {
+                    Thread.Sleep(16);
+                    continue;
+                }
+
+                gameTime.Tick();
+                Update(gameTime);
+                if (BeginFrame())
+                {
+                    Draw(gameTime);
+                    EndFrame();
+                }
+
+                if (IsFixedTimeStep)
+                {
+                    //SLEEP
+                    while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
+                    {
+                        Thread.Sleep(1);
+                    }
+
+                    //IDLE
+                    while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                }
             }
         }
 
@@ -754,12 +766,12 @@ namespace Exomia.Framework.Game
         [StructLayout(LayoutKind.Sequential)]
         private struct MSG
         {
-            public readonly IntPtr hwnd;
-            public readonly int message;
-            public readonly IntPtr wParam;
-            public readonly IntPtr lParam;
-            public readonly int time;
-            public readonly Point pt;
+            public IntPtr hwnd;
+            public int message;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public Point pt;
         }
 
         [SuppressUnmanagedCodeSecurity]

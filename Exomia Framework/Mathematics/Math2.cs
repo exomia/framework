@@ -191,7 +191,7 @@ namespace Exomia.Framework.Mathematics
         ///     Returns the smallest integer greater than or equal to the specified floating-point number.
         /// </summary>
         /// <param name="f">A floating-point number with single precision</param>
-        /// <returns>The smalles integer, which is greater than or equal to f.</returns>
+        /// <returns>The smallest integer, which is greater than or equal to f.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Ceiling(double f)
         {
