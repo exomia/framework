@@ -219,54 +219,46 @@ namespace Exomia.Framework.Input
 
         #region MouseHelper
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonDown(MouseButtons)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsMouseButtonDown(MouseButtons button)
         {
             return (_pressedMouseButtons & button) == button;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonDown(MouseButtons[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsMouseButtonDown(params MouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (IsMouseButtonDown(buttons[i])) { return true; }
             }
             return false;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonUp(MouseButtons)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsMouseButtonUp(MouseButtons button)
         {
-            return !((_pressedMouseButtons & button) == button);
+            return (_pressedMouseButtons & button) != button;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonUp(MouseButtons[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsMouseButtonUp(params MouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (IsMouseButtonUp(buttons[i])) { return true; }
             }
             return false;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.SetMousePosition(int, int)" />
-        /// </summary>
+        /// <inheritdoc />
         public void SetMousePosition(int x, int y)
         {
-            if (_window != null && _window.RenderForm != null)
+            if (_window?.RenderForm != null)
             {
                 Cursor.Position = _window.RenderForm.PointToScreen(new Point(x, y));
             }
@@ -276,42 +268,36 @@ namespace Exomia.Framework.Input
 
         #region KeyboardHelper
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyDown(int)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyDown(int keyValue)
         {
             return _pressedKeys.Contains(keyValue);
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyDown(int[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsKeyDown(params int[] keyValues)
         {
-            for (int i = 0; i < keyValues.Length; i++)
+            int l = keyValues.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (_pressedKeys.Contains(keyValues[i])) { return true; }
             }
             return false;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyUp(int)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyUp(int keyValues)
         {
             return !_pressedKeys.Contains(keyValues);
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyUp(int[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsKeyUp(params int[] keyValues)
         {
-            for (int i = 0; i < keyValues.Length; i++)
+            int l = keyValues.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (!_pressedKeys.Contains(keyValues[i])) { return true; }
             }

@@ -96,7 +96,7 @@ namespace Exomia.Framework.Security
                             CryptoStream cs = new CryptoStream(outStream, encryptor, CryptoStreamMode.Write);
                             byte[] buffer = new byte[BUFFER_SIZE];
                             int count = -1;
-                            while ((count = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            while ((count = stream.Read(buffer, 0, BUFFER_SIZE)) > 0)
                             {
                                 cs.Write(buffer, 0, count);
                             }
@@ -118,7 +118,8 @@ namespace Exomia.Framework.Security
             byte[] hash = md5.ComputeHash(inputBytes);
 
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
+            int l = hash.Length;
+            for (int i = 0; i < l; i++)
             {
                 sb.Append(hash[i].ToString("x2"));
             }
@@ -172,7 +173,7 @@ namespace Exomia.Framework.Security
                             CryptoStream cs = new CryptoStream(outStream, decryptor, CryptoStreamMode.Write);
                             byte[] buffer = new byte[BUFFER_SIZE];
                             int count = -1;
-                            while ((count = inStream.Read(buffer, 0, buffer.Length)) > 0)
+                            while ((count = inStream.Read(buffer, 0, BUFFER_SIZE)) > 0)
                             {
                                 cs.Write(buffer, 0, count);
                             }

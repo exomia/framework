@@ -276,7 +276,8 @@ namespace Exomia.Framework.Graphics
 
             int key = 0;
 
-            for (int i = 0; i < text.Length; i++)
+            int l = text.Length;
+            for (int i = 0; i < l; i++)
             {
                 char c = text[i];
                 switch (c)
@@ -603,7 +604,8 @@ namespace Exomia.Framework.Graphics
 
             int key = 0;
 
-            for (int i = 0; i < text.Length; i++)
+            int l = text.Length;
+            for (int i = 0; i < l; i++)
             {
                 char c = text[i];
                 switch (c)
@@ -1032,7 +1034,8 @@ namespace Exomia.Framework.Graphics
 
             int key = 0;
 
-            for (int i = 0; i < text.Length; i++)
+            int l = text.Length;
+            for (int i = 0; i < l; i++)
             {
                 char c = text[i];
                 switch (c)
@@ -1359,7 +1362,8 @@ namespace Exomia.Framework.Graphics
 
             int key = 0;
 
-            for (int i = 0; i < text.Length; i++)
+            int l = text.Length;
+            for (int i = 0; i < l; i++)
             {
                 char c = text[i];
                 switch (c)
@@ -1618,16 +1622,12 @@ namespace Exomia.Framework.Graphics
                 Size = context.Get<int>("Size"),
                 Bold = context.Get<bool>("Bold"),
                 Italic = context.Get<bool>("Italic"),
-
                 DefaultCharacter = context.Get<int>("DefaultCharacter"),
                 LineSpacing = context.Get<int>("LineSpacing"),
-
                 SpacingX = context.Get<int>("SpacingX"),
                 SpacingY = context.Get<int>("SpacingY"),
-
                 Glyphs = context.Get<Dictionary<int, SpriteFont.Glyph>>("Glyphs"),
                 Kernings = context.Get<Dictionary<int, SpriteFont.Kerning>>("Kernings"),
-
                 ImageData = Convert.FromBase64String(context.Get<string>("ImageData"))
             };
         }

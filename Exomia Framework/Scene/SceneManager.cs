@@ -150,7 +150,8 @@ namespace Exomia.Framework.Scene
                     Task.Factory.StartNew(
                         () =>
                         {
-                            for (int i = _scenesToUnload.Count - 1; i >= 0; i--)
+                            int c = _scenesToUnload.Count - 1;
+                            for (int i = c; i >= 0; i--)
                             {
                                 IScene uScene = _scenesToUnload[i];
 
@@ -161,7 +162,8 @@ namespace Exomia.Framework.Scene
                                 }
 
                                 bool isReferenced = false;
-                                for (int k = 0; k < scene.ReferenceScenes.Length; k++)
+                                int l = scene.ReferenceScenes.Length;
+                                for (int k = 0; k < l; k++)
                                 {
                                     string referenceSceneKey = scene.ReferenceScenes[k];
                                     if (referenceSceneKey == uScene.Key)
@@ -184,7 +186,8 @@ namespace Exomia.Framework.Scene
                 Task.Factory.StartNew(
                     () =>
                     {
-                        for (int i = 0; i < scene.ReferenceScenes.Length; i++)
+                        int l = scene.ReferenceScenes.Length;
+                        for (int i = 0; i < l; i++)
                         {
                             string referenceSceneKey = scene.ReferenceScenes[i];
                             if (!GetScene(referenceSceneKey, out SceneBase rScene))

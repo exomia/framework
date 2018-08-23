@@ -336,9 +336,7 @@ namespace Exomia.Framework.Content
             object result;
             ContentReaderParameters parameters = new ContentReaderParameters
             {
-                AssetName = assetName,
-                AssetType = assetType,
-                Stream = stream
+                AssetName = assetName, AssetType = assetType, Stream = stream
             };
 
             try

@@ -254,7 +254,7 @@ namespace Exomia.Framework.ContentSerialization
                         break;
                 }
             }
-            throw new CSReaderException($"ERROR: NO START TAG FOUND -> '[:]'");
+            throw new CSReaderException("ERROR: NO START TAG FOUND -> \'[:]\'");
         }
 
         private static void ReadTagInner(this CSStreamReader stream, string content)

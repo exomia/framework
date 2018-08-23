@@ -101,16 +101,12 @@ namespace Exomia.Framework.ContentSerialization.Types
                             throw new CSReaderException($"ERROR: AN ENUM CAN't BE A GENERIC TYPE -> {genericTypeInfo}");
                         }
 
-                        try
+                        Type enumType = bti.CreateType();
+                        if (enumType.IsEnum)
                         {
-                            Type enumType = bti.CreateType();
-                            if (enumType.IsEnum)
-                            {
-                                return Enum.Parse(enumType, sb.ToString());
-                            }
-                            throw new CSReaderException($"ERROR: BASETYPE ISN'T AN ENUM TYPE -> {bti}");
+                            return Enum.Parse(enumType, sb.ToString());
                         }
-                        catch { throw; }
+                        throw new CSReaderException($"ERROR: BASETYPE ISN'T AN ENUM TYPE -> {bti}");
                     }
                     case ']':
                         throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");

@@ -39,8 +39,7 @@ namespace Exomia.Framework.Game
 
         public WinFormsGameWindow(string title)
         {
-            _renderForm = new RenderForm(title)
-                { FormBorderStyle = FormBorderStyle.FixedSingle };
+            _renderForm = new RenderForm(title) { FormBorderStyle = FormBorderStyle.FixedSingle };
         }
 
         ~WinFormsGameWindow()

@@ -168,7 +168,8 @@ namespace Exomia.Framework.Input
 
         public bool IsMouseButtonDown(params RMouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 //if (_pressedMouseButtons.Contains(buttons[i])) { return true; }
                 if (IsMouseButtonDown(buttons[i])) { return true; }
@@ -183,7 +184,8 @@ namespace Exomia.Framework.Input
 
         public bool IsKeyUp(params RMouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (!IsMouseButtonDown(buttons[i])) { return true; }
             }
@@ -235,7 +237,8 @@ namespace Exomia.Framework.Input
 
         public bool IsKeyDown(params Keys[] key)
         {
-            for (int i = 0; i < key.Length; i++)
+            int l = key.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (_pressedKeys.Contains(key[i])) { return true; }
             }
@@ -249,7 +252,8 @@ namespace Exomia.Framework.Input
 
         public bool IsKeyUp(params Keys[] key)
         {
-            for (int i = 0; i < key.Length; i++)
+            int l = key.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (!_pressedKeys.Contains(key[i])) { return true; }
             }

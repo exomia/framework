@@ -274,21 +274,13 @@ namespace Exomia.Framework.ContentSerialization
                 if (s_types.TryGetValue(ctxt.Value.Type.Name.ToUpper(), out IType it) ||
                     s_types.TryGetValue(ctxt.Value.Type.BaseType.Name.ToUpper(), out it))
                 {
-                    try
-                    {
-                        it.Write(writeHandler, tabSpace, ctxt.Key, ctxt.Value.Object);
-                    }
-                    catch { throw; }
+                    it.Write(writeHandler, tabSpace, ctxt.Key, ctxt.Value.Object);
                 }
                 else
                 {
-                    try
-                    {
-                        writeHandler(tabSpace, $"[{ctxt.Key}:{ctxt.Value.Type}]");
-                        Write(writeHandler, tabSpace + TABSPACE, ctxt.Value.Object, ctxt.Value.Type);
-                        writeHandler(tabSpace, $"[/{ctxt.Key}]");
-                    }
-                    catch { throw; }
+                    writeHandler(tabSpace, $"[{ctxt.Key}:{ctxt.Value.Type}]");
+                    Write(writeHandler, tabSpace + TABSPACE, ctxt.Value.Object, ctxt.Value.Type);
+                    writeHandler(tabSpace, $"[/{ctxt.Key}]");
                 }
             }
         }
@@ -363,11 +355,7 @@ namespace Exomia.Framework.ContentSerialization
                             {
                                 if (it.IsPrimitive)
                                 {
-                                    try
-                                    {
-                                        context.Set(key, it.Read(stream, key, string.Empty, string.Empty), it.BaseType);
-                                    }
-                                    catch { throw; }
+                                    context.Set(key, it.Read(stream, key, string.Empty, string.Empty), it.BaseType);
                                 }
                                 else
                                 {
@@ -376,23 +364,15 @@ namespace Exomia.Framework.ContentSerialization
                                         throw new CSReaderException(
                                             $"ERROR: NO GENERIC TYPE INFO DEFINED -> {baseTypeInfo}<GENERIC_TYPE_INFO>");
                                     }
-                                    try
-                                    {
-                                        context.Set(
-                                            key, it.Read(stream, key, genericTypeInfo, dimensionInfo), it.BaseType);
-                                    }
-                                    catch { throw; }
+                                    context.Set(
+                                        key, it.Read(stream, key, genericTypeInfo, dimensionInfo), it.BaseType);
                                 }
                             }
                             else
                             {
-                                try
-                                {
-                                    Type type = baseTypeInfo.CreateType();
-                                    object obj = Read(stream, type, key);
-                                    context.Set(key, obj, type);
-                                }
-                                catch { throw; }
+                                Type type = baseTypeInfo.CreateType();
+                                object obj = Read(stream, type, key);
+                                context.Set(key, obj, type);
                             }
                         }
                         else

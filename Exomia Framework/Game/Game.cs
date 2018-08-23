@@ -53,6 +53,9 @@ namespace Exomia.Framework.Game
         private const int INITIAL_QUEUE_SIZE = 16;
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
 
+        private const int WM_QUIT = 0x0012;
+        private const int PM_REMOVE = 0x0001;
+
         private event EventHandler _isRunningChanged;
 
         private readonly List<IContentable> _contentableComponent;
@@ -487,8 +490,6 @@ namespace Exomia.Framework.Game
             _graphicsDevice.EndFrame();
         }
 
-        private const int WM_QUIT = 0x0012;
-        private const int PM_REMOVE = 0x0001;
         private void Renderloop(GameTime gameTime)
         {
             MSG msg;

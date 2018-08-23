@@ -94,7 +94,10 @@ namespace Exomia.Framework.Linq
                     Expression.Block(
                         new[] { enumeratorVar, rExpr },
                         Expression.Assign(
-                            enumeratorVar, Expression.Call(arrayExpr, enumerableType.GetMethod("GetEnumerator") ?? throw new InvalidOperationException())),
+                            enumeratorVar,
+                            Expression.Call(
+                                arrayExpr,
+                                enumerableType.GetMethod("GetEnumerator") ?? throw new InvalidOperationException())),
                         Expression.Loop(
                             Expression.IfThenElse(
                                 Expression.Equal(moveNextCall, Expression.Constant(true)),

@@ -108,7 +108,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             }
             if (string.IsNullOrEmpty(genericTypeInfo))
             {
-                throw new CSReaderException($"ERROR: NO GENERIC TYPE INFO DEFINED -> LIST<GENERIC_TYPE_INFO>");
+                throw new CSReaderException("ERROR: NO GENERIC TYPE INFO DEFINED -> LIST<GENERIC_TYPE_INFO>");
             }
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
@@ -120,11 +120,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                 elementType = it.CreateType(gti);
                 readCallback = (s, d) =>
                 {
-                    try
-                    {
-                        return it.Read(stream, string.Empty, gti, d);
-                    }
-                    catch { throw; }
+                    return it.Read(stream, string.Empty, gti, d);
                 };
             }
             else
@@ -152,11 +148,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             bool useTypeInfo = true)
         {
             //[key:type]content[/key]
-            try
-            {
-                Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
-            }
-            catch { throw; }
+            Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
         }
 
         #region WriteHelper

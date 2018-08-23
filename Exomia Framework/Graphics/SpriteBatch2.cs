@@ -143,7 +143,8 @@ namespace Exomia.Framework.Graphics
                 ResourceOptionFlags.None, 0);
 
             _vertexInputLayout = new InputLayout(
-                _device, s_vertexShaderByteCode, new[]
+                _device, s_vertexShaderByteCode,
+                new[]
                 {
                     new InputElement("SV_POSITION", 0, Format.R32G32B32A32_Float, 0, 0),
                     new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 16, 0),
@@ -276,7 +277,8 @@ namespace Exomia.Framework.Graphics
             if (device == null) { return; }
 
             _defaultSamplerState = new SamplerState(
-                device, new SamplerStateDescription
+                device,
+                new SamplerStateDescription
                 {
                     AddressU = TextureAddressMode.Wrap,
                     AddressV = TextureAddressMode.Wrap,
@@ -306,7 +308,8 @@ namespace Exomia.Framework.Graphics
             _defaultBlendState = new BlendState(device, description) { DebugName = "AlphaBlend" };
 
             _defaultDepthStencilState = new DepthStencilState(
-                device, new DepthStencilStateDescription
+                device,
+                new DepthStencilStateDescription
                 {
                     IsDepthEnabled = false,
                     DepthWriteMask = DepthWriteMask.All,
@@ -331,7 +334,8 @@ namespace Exomia.Framework.Graphics
                 });
 
             _defaultRasterizerState = new RasterizerState(
-                device, new RasterizerStateDescription
+                device,
+                new RasterizerStateDescription
                 {
                     FillMode = FillMode.Solid,
                     CullMode = CullMode.Back,
@@ -346,7 +350,8 @@ namespace Exomia.Framework.Graphics
                 });
 
             _defaultRasterizerScissorEnabledState = new RasterizerState(
-                device, new RasterizerStateDescription
+                device,
+                new RasterizerStateDescription
                 {
                     FillMode = FillMode.Solid,
                     CullMode = CullMode.Back,
@@ -729,11 +734,12 @@ namespace Exomia.Framework.Graphics
         {
             if (vertex.Length > 1)
             {
-                for (int i = 0; i < vertex.Length - 1; i++)
+                int l = vertex.Length - 1;
+                for (int i = 0; i < l; i++)
                 {
                     DrawLine(vertex[i], vertex[i + 1], color, lineWidth, opacity, layerDepth);
                 }
-                DrawLine(vertex[vertex.Length - 1], vertex[0], color, lineWidth, opacity, layerDepth);
+                DrawLine(vertex[l], vertex[0], color, lineWidth, opacity, layerDepth);
             }
         }
 

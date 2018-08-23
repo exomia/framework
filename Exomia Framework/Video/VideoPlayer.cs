@@ -227,8 +227,7 @@ namespace Exomia.Framework.Video
 
             MediaEngineAttributes attributes = new MediaEngineAttributes
             {
-                DxgiManager = _dxgiDeviceManager,
-                VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
+                DxgiManager = _dxgiDeviceManager, VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
             };
 
             using (MediaEngineClassFactory factory = new MediaEngineClassFactory())

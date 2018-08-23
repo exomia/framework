@@ -230,7 +230,8 @@ namespace Exomia.Framework.Audio
                 };
                 soundStream.Close();
                 _soundBuffer.Add(
-                    _soundBufferIndex, new SoundBuffer
+                    _soundBufferIndex,
+                    new SoundBuffer
                     {
                         AudioBuffer = audioBuffer,
                         Format = soundStream.Format,
@@ -464,14 +465,16 @@ namespace Exomia.Framework.Audio
             ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr> onFXEnd = null)
         {
             PlaySound(
-                soundID, new Emitter
+                soundID,
+                new Emitter
                 {
                     ChannelCount = 1,
-                    VolumeCurve = new[]
-                    {
-                        new CurvePoint { Distance = 0.0f, DspSetting = 1.0f },
-                        new CurvePoint { Distance = 1.0f, DspSetting = 0.0f }
-                    },
+                    VolumeCurve =
+                        new[]
+                        {
+                            new CurvePoint { Distance = 0.0f, DspSetting = 1.0f },
+                            new CurvePoint { Distance = 1.0f, DspSetting = 0.0f }
+                        },
                     CurveDistanceScaler = maxDistanance,
                     OrientFront = Vector3.UnitZ,
                     OrientTop = Vector3.UnitY,
@@ -493,11 +496,7 @@ namespace Exomia.Framework.Audio
             sourceVoice.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
             sourceVoice.SetOutputVoices(voiceSendDescriptor);
 
-            Sound sound = new Sound
-            {
-                SourceVoice = sourceVoice,
-                Emitter = emitter
-            };
+            Sound sound = new Sound { SourceVoice = sourceVoice, Emitter = emitter };
 
             list.Add(sound);
 

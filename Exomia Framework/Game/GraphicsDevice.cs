@@ -195,7 +195,7 @@ namespace Exomia.Framework.Game
 
             if (_adapter4 != null)
             {
-                Console.WriteLine($"------- GRAPHIC CARD INFORMATION -------");
+                Console.WriteLine("------- GRAPHIC CARD INFORMATION -------");
                 Console.WriteLine(
                     $"Description:\t\t{_adapter4.Description2.Description.TrimEnd('\t', ' ', '\r', '\n', (char)0)}");
                 Console.WriteLine($"DeviceId:\t\t{_adapter4.Description2.DeviceId}");
@@ -222,7 +222,7 @@ namespace Exomia.Framework.Game
                 Console.WriteLine($"MonitorHandle:\t\t{_output.Description.MonitorHandle}");
                 Console.WriteLine($"IsAttachedToDesktop:\t{_output.Description.IsAttachedToDesktop}");
                 Console.WriteLine($"Rotation:\t\t{_output.Description.Rotation}");
-                Console.WriteLine($"----------------------------------------\n");
+                Console.WriteLine("----------------------------------------\n");
 
                 defaultDevice = new Device(_adapter4, parameters.DeviceCreationFlags, s_featureLevels);
             }
@@ -411,7 +411,8 @@ namespace Exomia.Framework.Game
                 renderView.Dispose();
 
                 using (Texture2D depthBuffer = new Texture2D(
-                    _d3DDevice5, new Texture2DDescription
+                    _d3DDevice5,
+                    new Texture2DDescription
                     {
                         Format = Format.D24_UNorm_S8_UInt,
                         ArraySize = 1,

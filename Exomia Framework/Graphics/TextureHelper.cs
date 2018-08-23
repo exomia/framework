@@ -72,7 +72,8 @@ namespace Exomia.Framework.Graphics
                     {
                         bitmapSource.CopyPixels(stride, buffer);
                         return new Texture2D(
-                            device, new Texture2DDescription
+                            device,
+                            new Texture2DDescription
                             {
                                 Width = bitmapSource.Size.Width,
                                 Height = bitmapSource.Size.Height,
@@ -103,7 +104,8 @@ namespace Exomia.Framework.Graphics
             lock (device)
             {
                 return new Texture2D(
-                    device, new Texture2DDescription
+                    device,
+                    new Texture2DDescription
                     {
                         Width = width,
                         Height = height,
@@ -127,7 +129,8 @@ namespace Exomia.Framework.Graphics
             lock (device)
             {
                 Texture2D texArray = new Texture2D(
-                    device, new Texture2DDescription
+                    device,
+                    new Texture2DDescription
                     {
                         Width = width,
                         Height = height,
