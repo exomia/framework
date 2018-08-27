@@ -11,6 +11,8 @@
     <AssemblyName>Exomia.Framework</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,6 +86,9 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Exomia.Native, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Exomia.Native.1.0.0\lib\net471\Exomia.Native.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.1.0\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -181,6 +186,8 @@
     <Compile Include="AComponent.cs" />
     <Compile Include="ADrawableComponent.cs" />
     <Compile Include="ARenderer.cs" />
+    <Compile Include="Graphics\SpriteSort\ISpriteSort.cs" />
+    <Compile Include="Graphics\SpriteSort\SpriteMergeSort.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="IContentable.cs" />
@@ -263,4 +270,11 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Exomia.Native.1.0.0\build\net471\Exomia.Native.targets" Condition="Exists('..\packages\Exomia.Native.1.0.0\build\net471\Exomia.Native.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Exomia.Native.1.0.0\build\net471\Exomia.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Exomia.Native.1.0.0\build\net471\Exomia.Native.targets'))" />
+  </Target>
 </Project>

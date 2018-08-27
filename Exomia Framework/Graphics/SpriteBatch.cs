@@ -26,10 +26,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Exomia.Framework.Game;
+using Exomia.Framework.Graphics.SpriteSort;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -87,6 +89,7 @@ namespace Exomia.Framework.Graphics
         private readonly VertexBufferBinding _vertexBufferBinding;
 
         private readonly InputLayout _vertexInputLayout;
+        private readonly ISpriteSort _spriteSort;
 
         private BlendState _blendState;
 
@@ -108,9 +111,9 @@ namespace Exomia.Framework.Graphics
         private RasterizerState _rasterizerState;
         private SamplerState _samplerState;
 
-        private Rectangle _scissoRectangle;
+        private Rectangle _scissorRectangle;
 
-        private int[] _sortIndices, _tempSortBuffer;
+        private int[] _sortIndices;
         private SpriteInfo[] _spriteQueue, _sortedSprites;
 
         private int _spriteQueueCount;
@@ -145,15 +148,27 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteBatch" /> class.
         /// </summary>
-        public SpriteBatch(IGraphicsDevice iDevice)
+        public SpriteBatch(IGraphicsDevice iDevice, SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
         {
             _device = iDevice.Device;
             _context = iDevice.DeviceContext;
+
+            switch (sortAlgorithm)
+            {
+                case SpriteSortAlgorithm.MergeSort:
+                    _spriteSort = new SpriteMergeSort();
+                    break;
+                default:
+                    throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm));
+            }
 
             Initialize(_device);
 
             _spriteQueue = new SpriteInfo[MAX_BATCH_SIZE];
             _spriteTextures = new TextureInfo[MAX_BATCH_SIZE];
+
+            _sortIndices = new int[_spriteQueue.Length];
+            _sortedSprites = new SpriteInfo[_spriteQueue.Length];
 
             _indexBuffer = Buffer.Create(
                 _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable, CpuAccessFlags.None,
@@ -176,7 +191,7 @@ namespace Exomia.Framework.Graphics
                 _device, sizeof(float) * 4 * 4 * 1, ResourceUsage.Default, BindFlags.ConstantBuffer,
                 CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
-            iDevice.ResizeFinished += IDevice_onResizeFinsihed;
+            iDevice.ResizeFinished += IDevice_onResizeFinished;
 
             Resize(iDevice.Viewport);
         }
@@ -230,7 +245,7 @@ namespace Exomia.Framework.Graphics
             _viewMatrix = viewMatrix ?? Matrix.Identity;
 
             _isScissorEnabled = scissorRectangle.HasValue;
-            _scissoRectangle = scissorRectangle ?? Rectangle.Empty;
+            _scissorRectangle = scissorRectangle ?? Rectangle.Empty;
 
             _isBeginCalled = true;
         }
@@ -264,7 +279,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        private void IDevice_onResizeFinsihed(ViewportF viewport)
+        private void IDevice_onResizeFinished(ViewportF viewport)
         {
             Resize(viewport);
         }
@@ -383,7 +398,7 @@ namespace Exomia.Framework.Graphics
             {
                 _context.Rasterizer.State = _rasterizerState ?? _defaultRasterizerScissorEnabledState;
                 _context.Rasterizer.SetScissorRectangle(
-                    _scissoRectangle.Left, _scissoRectangle.Top, _scissoRectangle.Right, _scissoRectangle.Bottom);
+                    _scissorRectangle.Left, _scissorRectangle.Top, _scissorRectangle.Right, _scissorRectangle.Bottom);
             }
 
             _context.PixelShader.SetSampler(0, _samplerState ?? _defaultSamplerState);
@@ -414,7 +429,24 @@ namespace Exomia.Framework.Graphics
 
             if (_spriteSortMode != SpriteSortMode.Deferred)
             {
-                SortSprites();
+                for (int i = 0; i < _spriteQueueCount; ++i)
+                {
+                    _sortIndices[i] = i;
+                }
+
+                switch (_spriteSortMode)
+                {
+                    case SpriteSortMode.Texture:
+                        _spriteSort.Sort(_spriteTextures, _sortIndices, 0, _spriteQueueCount);
+                        break;
+                    case SpriteSortMode.BackToFront:
+                        _spriteSort.SortBf(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
+                        break;
+                    case SpriteSortMode.FrontToBack:
+                        _spriteSort.SortFb(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
+                        break;
+                    default: throw new InvalidEnumArgumentException(nameof(SpriteSortMode));
+                }
                 spriteQueueForBatch = _sortedSprites;
             }
             else
@@ -484,6 +516,8 @@ namespace Exomia.Framework.Graphics
                                 for (int i = 0; i < middle; i++)
                                 {
                                     UpdateVertexFromSpriteInfoParallel(
+
+                                        // ReSharper disable once AccessToModifiedClosure
                                         ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
                                 }
                             },
@@ -492,6 +526,8 @@ namespace Exomia.Framework.Graphics
                                 for (int i = middle; i < batchSize; i++)
                                 {
                                     UpdateVertexFromSpriteInfoParallel(
+
+                                        // ReSharper disable once AccessToModifiedClosure
                                         ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
                                 }
                             });
@@ -584,43 +620,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        private void SortSprites()
-        {
-            if (_sortIndices == null || _sortIndices.Length < _spriteQueueCount)
-            {
-                _sortIndices = new int[_spriteQueueCount];
-                _tempSortBuffer = new int[_spriteQueueCount];
-                _sortedSprites = new SpriteInfo[_spriteQueueCount];
-            }
-
-            //TODO: NEEDED!?
-            for (int i = 0; i < _spriteQueueCount; i++)
-            {
-                _sortIndices[i] = i;
-            }
-
-            switch (_spriteSortMode)
-            {
-                case SpriteSortMode.Texture:
-                    MergeSortTextureInfoParallel(
-                        _spriteTextures, _sortIndices, 0, _spriteQueueCount - 1, _tempSortBuffer);
-                    break;
-                case SpriteSortMode.BackToFront:
-                case SpriteSortMode.FrontToBack:
-                    MergeSortSpriteInfoParallel(_spriteQueue, _sortIndices, 0, _spriteQueueCount - 1, _tempSortBuffer);
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 64)]
-        private struct ConstantFrameBuffer
-        {
-            [FieldOffset(0)] public Matrix WorldViewProjection;
-        }
-
-        private struct TextureInfo
+        internal struct TextureInfo
         {
             public ShaderResourceView View { get; }
             public int Width { get; }
@@ -636,7 +636,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        private struct SpriteInfo
+        internal struct SpriteInfo
         {
             public RectangleF Source;
             public RectangleF Destination;
@@ -646,6 +646,12 @@ namespace Exomia.Framework.Graphics
             public SpriteEffects SpriteEffects;
             public Color Color;
             public float Opacity;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = 64)]
+        private struct ConstantFrameBuffer
+        {
+            [FieldOffset(0)] public Matrix WorldViewProjection;
         }
 
         [StructLayout(LayoutKind.Explicit, Size = 40)]
@@ -940,6 +946,8 @@ namespace Exomia.Framework.Graphics
 
             if (_spriteQueueCount >= _spriteQueue.Length)
             {
+                _sortIndices = new int[_spriteQueue.Length * 2];
+                _sortedSprites = new SpriteInfo[_spriteQueue.Length * 2];
                 Array.Resize(ref _spriteQueue, _spriteQueue.Length * 2);
             }
 
@@ -1083,160 +1091,6 @@ namespace Exomia.Framework.Graphics
         }
 
         #endregion
-
-        #endregion
-
-        #region Sorting
-
-        private void MergeSortSpriteInfo(SpriteInfo[] sInfo, int[] arr, int left, int right, int[] tempArray)
-        {
-            if (left < right)
-            {
-                int middle = (left + right) >> 1;
-                MergeSortSpriteInfo(sInfo, arr, left, middle, tempArray);
-                MergeSortSpriteInfo(sInfo, arr, middle + 1, right, tempArray);
-                MergeSpriteInfo(sInfo, arr, left, middle, middle + 1, right, tempArray);
-            }
-        }
-
-        private void MergeSortSpriteInfoParallel(SpriteInfo[] sInfo, int[] arr, int left, int right, int[] tempArray)
-        {
-            if (left < right)
-            {
-                int middle = (left + right) >> 1;
-                if (right - left > SEQUENTIAL_THRESHOLD)
-                {
-                    Parallel.Invoke(
-                        () => MergeSortSpriteInfoParallel(sInfo, arr, left, middle, tempArray),
-                        () => MergeSortSpriteInfoParallel(sInfo, arr, middle + 1, right, tempArray));
-                }
-                else
-                {
-                    MergeSortSpriteInfo(sInfo, arr, left, middle, tempArray);
-                    MergeSortSpriteInfo(sInfo, arr, middle + 1, right, tempArray);
-                }
-                MergeSpriteInfo(sInfo, arr, left, middle, middle + 1, right, tempArray);
-            }
-        }
-
-        private void MergeSpriteInfo(SpriteInfo[] sInfo, int[] arr, int left, int middle, int middle1, int right,
-            int[] tempArray)
-        {
-            int oldPosition = left;
-            int size = right - left + 1;
-
-            int i = 0;
-            while (left <= middle && middle1 <= right)
-            {
-                switch (_spriteSortMode)
-                {
-                    case SpriteSortMode.BackToFront:
-                        if (sInfo[arr[left]].Depth >= sInfo[arr[middle1]].Depth)
-                        {
-                            tempArray[oldPosition + i++] = arr[left++];
-                        }
-                        else
-                        {
-                            tempArray[oldPosition + i++] = arr[middle1++];
-                        }
-                        break;
-                    case SpriteSortMode.FrontToBack:
-                        if (sInfo[arr[left]].Depth <= sInfo[arr[middle1]].Depth)
-                        {
-                            tempArray[oldPosition + i++] = arr[left++];
-                        }
-                        else
-                        {
-                            tempArray[oldPosition + i++] = arr[middle1++];
-                        }
-                        break;
-                }
-            }
-            if (left > middle)
-            {
-                for (int j = middle1; j <= right; j++)
-                {
-                    tempArray[oldPosition + i++] = arr[middle1++];
-                }
-            }
-            else
-            {
-                for (int j = left; j <= middle; j++)
-                {
-                    tempArray[oldPosition + i++] = arr[left++];
-                }
-            }
-            System.Buffer.BlockCopy(
-                tempArray, sizeof(int) * oldPosition, arr, sizeof(int) * oldPosition, sizeof(int) * size);
-        }
-
-        private void MergeSortTextureInfo(TextureInfo[] tInfo, int[] arr, int left, int right, int[] tempArray)
-        {
-            if (left < right)
-            {
-                int middle = (left + right) >> 1;
-                MergeSortTextureInfo(tInfo, arr, left, middle, tempArray);
-                MergeSortTextureInfo(tInfo, arr, middle + 1, right, tempArray);
-                MergeTextureInfo(tInfo, arr, left, middle, middle + 1, right, tempArray);
-            }
-        }
-
-        private void MergeSortTextureInfoParallel(TextureInfo[] tInfo, int[] arr, int left, int right, int[] tempArray)
-        {
-            if (left < right)
-            {
-                int middle = (left + right) >> 1;
-                if (right - left > SEQUENTIAL_THRESHOLD)
-                {
-                    Parallel.Invoke(
-                        () => MergeSortTextureInfoParallel(tInfo, arr, left, middle, tempArray),
-                        () => MergeSortTextureInfoParallel(tInfo, arr, middle + 1, right, tempArray));
-                }
-                else
-                {
-                    MergeSortTextureInfo(tInfo, arr, left, middle, tempArray);
-                    MergeSortTextureInfo(tInfo, arr, middle + 1, right, tempArray);
-                }
-                MergeTextureInfo(tInfo, arr, left, middle, middle + 1, right, tempArray);
-            }
-        }
-
-        private void MergeTextureInfo(TextureInfo[] tInfo, int[] arr, int left, int middle, int middle1, int right,
-            int[] tempArray)
-        {
-            int oldPosition = left;
-            int size = right - left + 1;
-
-            int i = 0;
-            while (left <= middle && middle1 <= right)
-            {
-                if (tInfo[arr[left]].Ptr64 >= tInfo[arr[middle1]].Ptr64)
-                {
-                    tempArray[oldPosition + i++] = arr[left++];
-                }
-                else
-                {
-                    tempArray[oldPosition + i++] = arr[middle1++];
-                }
-            }
-            if (left > middle)
-            {
-                for (int j = middle1; j <= right; j++)
-                {
-                    tempArray[oldPosition + i++] = arr[middle1++];
-                }
-            }
-            else
-            {
-                for (int j = left; j <= middle; j++)
-                {
-                    tempArray[oldPosition + i++] = arr[left++];
-                }
-            }
-
-            System.Buffer.BlockCopy(
-                tempArray, sizeof(int) * oldPosition, arr, sizeof(int) * oldPosition, sizeof(int) * size);
-        }
 
         #endregion
 
