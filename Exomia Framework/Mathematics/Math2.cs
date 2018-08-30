@@ -363,6 +363,213 @@ namespace Exomia.Framework.Mathematics
             return value + 1;
         }
 
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Sqrt(long value)
+        {
+            if (value < 0) { throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative"); }
+            return Sqrt((ulong)value);
+        }
+
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        public static uint Sqrt(ulong value)
+        {
+            if (value == 0)
+            {
+                return 0;
+            }
+
+            uint g = 0;
+            int bshft = Log2Floor(value) >> 1;
+            uint b = 1u << bshft;
+            do
+            {
+                ulong temp = (ulong)(g + g + b) << bshft;
+
+                if (value >= temp)
+                {
+                    g += b;
+                    value -= temp;
+                }
+                b >>= 1;
+            } while (bshft-- > 0);
+
+            return g;
+        }
+
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Sqrt(int value)
+        {
+            if (value < 0) { throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative"); }
+            return (int)Sqrt((uint)value);
+        }
+
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        public static uint Sqrt(uint value)
+        {
+            if (value == 0)
+            {
+                return 0;
+            }
+
+            uint g = 0;
+            int bshft = Log2Floor(value) >> 1;
+            uint b = 1u << bshft;
+            do
+            {
+                uint temp = (g + g + b) << bshft;
+                if (value >= temp)
+                {
+                    g += b;
+                    value -= temp;
+                }
+                b >>= 1;
+            } while (bshft-- > 0);
+
+            return g;
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(byte x)
+        {
+            int y = x;
+            y -= (y >> 1) & 0x55;
+            y = ((y >> 2) & 0x33) + (y & 0x33);
+            return (y & 0x0F) + (y >> 4);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(ushort x)
+        {
+            int y = x;
+            y -= (y >> 1) & 0x5555;
+            y = ((y >> 2) & 0x3333) + (y & 0x3333);
+            y = ((y >> 4) + y) & 0x0F0F;
+            return (y + (y >> 8)) & 0x001F;
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountOnes(int x)
+        {
+            return CountOnes((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(uint x)
+        {
+            x -= (x >> 1) & 0x55555555;
+            x = ((x >> 2) & 0x33333333) + (x & 0x33333333);
+            x = ((x >> 4) + x) & 0x0F0F0F0F;
+            x += x >> 8;
+            return (int)((x + (x >> 16)) & 0x0000003F);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountOnes(long x)
+        {
+            return CountOnes((ulong)x);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(ulong x)
+        {
+            x -= (x >> 1) & 0x5555555555555555u;
+            x = ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
+            x = ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
+            x += x >> 8;
+            x += x >> 16;
+            return ((int)x + (int)(x >> 32)) & 0x0000007F;
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        public static int Log2Floor(uint x)
+        {
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            return CountOnes(x | (x >> 16)) - 1;
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(int x)
+        {
+            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            return Log2Floor((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(ulong x)
+        {
+            uint xHi = (uint)(x >> 32);
+            if (xHi != 0)
+            {
+                return 32 + Log2Floor(xHi);
+            }
+            return Log2Floor((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(long x)
+        {
+            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            return Log2Floor((ulong)x);
+        }
+
         #region Curves
 
         /// <summary>

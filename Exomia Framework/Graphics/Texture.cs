@@ -66,7 +66,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Texture construcor
+        ///     Texture constructor
         /// </summary>
         /// <param name="textureView">ShaderResourceView1</param>
         /// <param name="width">width</param>

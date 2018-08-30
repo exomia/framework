@@ -376,7 +376,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     adds a IDisposable object to the disposecollector
+        ///     adds a IDisposable object to the dispose collector
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -390,7 +390,7 @@ namespace Exomia.Framework.Game
         ///     get a game system by name
         /// </summary>
         /// <param name="name">the game system name</param>
-        /// <param name="system">out found gamesystem</param>
+        /// <param name="system">out found game system</param>
         /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
         public bool GetComponent(string name, out IComponent system)
         {
@@ -440,10 +440,10 @@ namespace Exomia.Framework.Game
 
             for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
             {
-                IUpdateable updatable = _currentlyUpdateableComponent[i];
-                if (updatable.Enabled)
+                IUpdateable updateable = _currentlyUpdateableComponent[i];
+                if (updateable.Enabled)
                 {
-                    updatable.Update(gameTime);
+                    updateable.Update(gameTime);
                 }
             }
 
