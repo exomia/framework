@@ -125,20 +125,19 @@ namespace Exomia.Framework.Mathematics
         /// <returns>b^e</returns>
         public static double Pow(double b, int e)
         {
-            if (e < 0) { throw new ArgumentException("e must be positive", nameof(e)); }
+            if (e < 0) { throw new ArgumentException($"{nameof(e)} must be positive", nameof(e)); }
 
-            while (true)
+            double result = 1;
+            while (e != 0)
             {
-                if (e == 0) { return 1; }
-                if (b == 0) { return 0; }
-                if ((e & 1) == 0)
+                if ((e & 1) == 1)
                 {
-                    b = b * b;
-                    e = e >> 1;
-                    continue;
+                    result *= b;
                 }
-                return b * Pow(b * b, e >> 1);
+                e >>= 1;
+                b *= b;
             }
+            return result;
         }
 
         /// <summary>
@@ -149,20 +148,19 @@ namespace Exomia.Framework.Mathematics
         /// <returns>b^e</returns>
         public static float Pow(float b, int e)
         {
-            if (e < 0) { throw new ArgumentException("e must be positive", nameof(e)); }
+            if (e < 0) { throw new ArgumentException($"{nameof(e)} must be positive", nameof(e)); }
 
-            while (true)
+            float result = 1;
+            while (e != 0)
             {
-                if (e == 0) { return 1; }
-                if (b == 0) { return 0; }
-                if ((e & 1) == 0)
+                if ((e & 1) == 1)
                 {
-                    b = b * b;
-                    e = e >> 1;
-                    continue;
+                    result *= b;
                 }
-                return b * Pow(b * b, e >> 1);
+                e >>= 1;
+                b *= b;
             }
+            return result;
         }
 
         /// <summary>
