@@ -78,8 +78,7 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">Full asset name (with its extension)</param>
         /// <returns>``0.</returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
-        ///     If the asset was not found from all <see cref="IContentResolver" />
-        ///     .
+        ///     If the asset was not found from all <see cref="IContentResolver" />.
         /// </exception>
         /// <exception cref="NotSupportedException">If no content reader was suitable to decode the asset.</exception>
         T Load<T>(string assetName);
@@ -91,8 +90,7 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">Full asset name (with its extension)</param>
         /// <returns>Asset</returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
-        ///     If the asset was not found from all <see cref="IContentResolver" />
-        ///     .
+        ///     If the asset was not found from all <see cref="IContentResolver" />.
         /// </exception>
         /// <exception cref="NotSupportedException">If no content reader was suitable to decode the asset.</exception>
         object Load(Type assetType, string assetName);
