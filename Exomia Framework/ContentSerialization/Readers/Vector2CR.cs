@@ -26,20 +26,11 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    internal sealed class Vector2CR : AContentSerializationReader<Vector2>
+    sealed class Vector2CR : AContentSerializationReader<Vector2>
     {
-        #region Methods
-
         public override Vector2 ReadContext(ContentSerializationContext context)
         {
-            return new Vector2
-            {
-                X = context.Get<float>("X"),
-                Y = context.Get<float>("Y")
-            };
-            ;
+            return new Vector2 { X = context.Get<float>("X"), Y = context.Get<float>("Y") };
         }
-
-        #endregion
     }
 }

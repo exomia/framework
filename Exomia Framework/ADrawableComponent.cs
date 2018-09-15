@@ -36,18 +36,27 @@ namespace Exomia.Framework
     /// </summary>
     public abstract class ADrawableComponent : AComponent, IDrawable
     {
-        #region Variables
-
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
-
         private int _drawOrder;
 
         private bool _visible;
 
-        #endregion
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
+        /// </summary>
+        /// <param name="name">name</param>
+        protected ADrawableComponent(string name)
+            : base(name) { }
 
-        #region Properties
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="name">name</param>
+        protected ADrawableComponent(Game.Game game, string name)
+            : base(game, name) { }
+
+        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs> VisibleChanged;
 
         /// <inheritdoc />
         public bool Visible
@@ -77,29 +86,6 @@ namespace Exomia.Framework
             }
         }
 
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
-        /// </summary>
-        /// <param name="name">name</param>
-        protected ADrawableComponent(string name)
-            : base(name) { }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
-        /// </summary>
-        /// <param name="game">The game.</param>
-        /// <param name="name">name</param>
-        protected ADrawableComponent(Game.Game game, string name)
-            : base(game, name) { }
-
-        #endregion
-
-        #region Methods
-
         /// <inheritdoc />
         public virtual bool BeginDraw()
         {
@@ -111,7 +97,5 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         public virtual void EndDraw() { }
-
-        #endregion
     }
 }

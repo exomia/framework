@@ -25,24 +25,18 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Exomia.Framework.Mathematics
+namespace Exomia.Framework.Mathematics.Extensions.Numeric
 {
     /// <summary>
     ///     adds extensions for numerical types
     /// </summary>
     public static class NumericExtensions
     {
-        #region Variables
-
         private const double PI_OVER_180_D = Math.PI / 180.0;
         private const float PI_OVER_180_F = (float)(Math.PI / 180.0);
 
         private const double I80_OVER_PI_D = 180.0 / Math.PI;
         private const float I80_OVER_PI_F = (float)(180.0 / Math.PI);
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Convert to Radians.
@@ -98,7 +92,5 @@ namespace Exomia.Framework.Mathematics
         {
             return value * I80_OVER_PI_F;
         }
-
-        #endregion
     }
 }

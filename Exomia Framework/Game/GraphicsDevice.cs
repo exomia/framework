@@ -38,23 +38,11 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class GraphicsDevice : IGraphicsDevice
     {
-        #region Variables
-
         private static readonly FeatureLevel[] s_featureLevels =
         {
-            FeatureLevel.Level_11_1,
-            FeatureLevel.Level_11_0,
-            FeatureLevel.Level_10_1,
-            FeatureLevel.Level_10_0,
-            FeatureLevel.Level_9_3,
-            FeatureLevel.Level_9_2,
-            FeatureLevel.Level_9_1
+            FeatureLevel.Level_11_1, FeatureLevel.Level_11_0, FeatureLevel.Level_10_1, FeatureLevel.Level_10_0,
+            FeatureLevel.Level_9_3, FeatureLevel.Level_9_2, FeatureLevel.Level_9_1
         };
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.ResizeFinished" />
-        /// </summary>
-        public event ResizeEventHandler ResizeFinished;
 
         private Adapter4 _adapter4;
         private RenderTargetView1 _currentRenderView;
@@ -75,9 +63,16 @@ namespace Exomia.Framework.Game
 
         private int _vSync;
 
-        #endregion
+        /// <inheritdoc />
+        ~GraphicsDevice()
+        {
+            Dispose(false);
+        }
 
-        #region Properties
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.ResizeFinished" />
+        /// </summary>
+        public event ResizeEventHandler ResizeFinished;
 
         /// <inheritdoc />
         public bool IsInitialized { get; private set; }
@@ -134,10 +129,6 @@ namespace Exomia.Framework.Game
         /// <inheritdoc />
         public ViewportF Viewport { get; private set; }
 
-        #endregion
-
-        #region Methods
-
         /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
         {
@@ -187,7 +178,7 @@ namespace Exomia.Framework.Game
                         > modeDescription.RefreshRate.Numerator / modeDescription.RefreshRate.Denominator)
                     {
                         modeDescription = mdesc;
-                        _output = output;
+                        _output         = output;
                     }
                 }
 
@@ -199,7 +190,7 @@ namespace Exomia.Framework.Game
 
             if (_adapter4 != null)
             {
-                Console.WriteLine($"------- GRAPHIC CARD INFORMATION -------");
+                Console.WriteLine("------- GRAPHIC CARD INFORMATION -------");
                 Console.WriteLine(
                     $"Description:\t\t{_adapter4.Description2.Description.TrimEnd('\t', ' ', '\r', '\n', (char)0)}");
                 Console.WriteLine($"DeviceId:\t\t{_adapter4.Description2.DeviceId}");
@@ -226,7 +217,7 @@ namespace Exomia.Framework.Game
                 Console.WriteLine($"MonitorHandle:\t\t{_output.Description.MonitorHandle}");
                 Console.WriteLine($"IsAttachedToDesktop:\t{_output.Description.IsAttachedToDesktop}");
                 Console.WriteLine($"Rotation:\t\t{_output.Description.Rotation}");
-                Console.WriteLine($"----------------------------------------\n");
+                Console.WriteLine("----------------------------------------\n");
 
                 defaultDevice = new Device(_adapter4, parameters.DeviceCreationFlags, s_featureLevels);
             }
@@ -254,14 +245,14 @@ namespace Exomia.Framework.Game
 
             SwapChainDescription swapChainDescription = new SwapChainDescription
             {
-                BufferCount = parameters.BufferCount,
-                ModeDescription = modeDescription,
-                IsWindowed = true,
-                OutputHandle = parameters.Handle,
+                BufferCount       = parameters.BufferCount,
+                ModeDescription   = modeDescription,
+                IsWindowed        = true,
+                OutputHandle      = parameters.Handle,
                 SampleDescription = sampleDescription,
-                SwapEffect = parameters.SwapEffect,
-                Usage = parameters.Usage,
-                Flags = parameters.SwapChainFlags
+                SwapEffect        = parameters.SwapEffect,
+                Usage             = parameters.Usage,
+                Flags             = parameters.SwapChainFlags
             };
 
             SwapChain swapChain = new SwapChain(_dxgiFactory, _d3DDevice5, swapChainDescription);
@@ -272,9 +263,9 @@ namespace Exomia.Framework.Game
 
             _resizeParameters = new ResizeParameters
             {
-                BufferCount = parameters.BufferCount,
-                Width = parameters.Width,
-                Height = parameters.Height,
+                BufferCount    = parameters.BufferCount,
+                Width          = parameters.Width,
+                Height         = parameters.Height,
                 SwapChainFlags = parameters.SwapChainFlags
             };
 
@@ -292,9 +283,9 @@ namespace Exomia.Framework.Game
         {
             _resizeParameters = new ResizeParameters
             {
-                BufferCount = parameters.BufferCount,
-                Width = parameters.Width,
-                Height = parameters.Height,
+                BufferCount    = parameters.BufferCount,
+                Width          = parameters.Width,
+                Height         = parameters.Height,
                 SwapChainFlags = parameters.SwapChainFlags
             };
             _needResize = true;
@@ -307,9 +298,9 @@ namespace Exomia.Framework.Game
         {
             _resizeParameters = new ResizeParameters
             {
-                BufferCount = _swapChain4.Description1.BufferCount,
-                Width = width,
-                Height = height,
+                BufferCount    = _swapChain4.Description1.BufferCount,
+                Width          = width,
+                Height         = height,
                 SwapChainFlags = _swapChain4.Description1.Flags
             };
             _needResize = true;
@@ -409,24 +400,25 @@ namespace Exomia.Framework.Game
                 RenderTargetView renderView;
                 using (Texture2D backBuffer = _swapChain4.GetBackBuffer<Texture2D>(0))
                 {
-                    renderView = new RenderTargetView(_d3DDevice5, backBuffer);
+                    renderView   = new RenderTargetView(_d3DDevice5, backBuffer);
                     _renderView1 = renderView.QueryInterface<RenderTargetView1>();
                 }
                 renderView.Dispose();
 
                 using (Texture2D depthBuffer = new Texture2D(
-                    _d3DDevice5, new Texture2DDescription
+                    _d3DDevice5,
+                    new Texture2DDescription
                     {
-                        Format = Format.D24_UNorm_S8_UInt,
-                        ArraySize = 1,
-                        MipLevels = 1,
-                        Width = args.Width,
-                        Height = args.Height,
+                        Format            = Format.D24_UNorm_S8_UInt,
+                        ArraySize         = 1,
+                        MipLevels         = 1,
+                        Width             = args.Width,
+                        Height            = args.Height,
                         SampleDescription = _swapChain4.Description.SampleDescription,
-                        BindFlags = BindFlags.DepthStencil,
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        OptionFlags = ResourceOptionFlags.None,
-                        Usage = ResourceUsage.Default
+                        BindFlags         = BindFlags.DepthStencil,
+                        CpuAccessFlags    = CpuAccessFlags.None,
+                        OptionFlags       = ResourceOptionFlags.None,
+                        Usage             = ResourceUsage.Default
                     }))
                 {
                     _depthStencilView = new DepthStencilView(
@@ -447,10 +439,6 @@ namespace Exomia.Framework.Game
             ResizeFinished?.Invoke(Viewport);
         }
 
-        #endregion
-
-        #region Nested
-
         private struct ResizeParameters
         {
             public int Width;
@@ -458,8 +446,6 @@ namespace Exomia.Framework.Game
             public int BufferCount;
             public SwapChainFlags SwapChainFlags;
         }
-
-        #endregion
 
         #region IDisposable Support
 
@@ -486,6 +472,7 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
         /// </summary>

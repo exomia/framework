@@ -30,11 +30,12 @@ using SharpDX;
 
 namespace Exomia.Framework
 {
+    /// <inheritdoc cref="IFormattable" />
     /// <summary>
     ///     Represents a two dimensional mathematical index.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
-    public struct Index2
+    public struct Index2 : IFormattable
     {
         /// <summary>
         ///     A <see cref="Index2" /> with all of its components set to zero.

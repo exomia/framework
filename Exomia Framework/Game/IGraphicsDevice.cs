@@ -36,13 +36,7 @@ namespace Exomia.Framework.Game
 
     public interface IGraphicsDevice : IDisposable
     {
-        #region Variables
-
         event ResizeEventHandler ResizeFinished;
-
-        #endregion
-
-        #region Properties
 
         bool IsInitialized { get; }
         bool VSync { get; set; }
@@ -62,10 +56,6 @@ namespace Exomia.Framework.Game
 
         ViewportF Viewport { get; }
 
-        #endregion
-
-        #region Methods
-
         void Initialize(ref GameGraphicsParameters parameters);
 
         void Resize(ref GameGraphicsParameters parameters);
@@ -81,7 +71,5 @@ namespace Exomia.Framework.Game
 
         void SetFullscreenState(bool state, Output output = null);
         bool GetFullscreenState();
-
-        #endregion
     }
 }

@@ -32,8 +32,6 @@ namespace Exomia.Framework.ContentSerialization.Exceptions
     /// </summary>
     public sealed class CSContextKeyException : ArgumentException
     {
-        #region Constructors
-
         /// <inheritdoc />
         /// <summary>
         ///     constructor
@@ -67,7 +65,5 @@ namespace Exomia.Framework.ContentSerialization.Exceptions
         /// </summary>
         public CSContextKeyException(string message, string paramName, Exception innerException)
             : base(message, paramName, innerException) { }
-
-        #endregion
     }
 }

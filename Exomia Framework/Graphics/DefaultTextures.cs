@@ -34,8 +34,6 @@ namespace Exomia.Framework.Graphics
 {
     public static class DefaultTextures
     {
-        #region Variables
-
         private const string WHITE_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAEElEQVR42mP8/5+BgRFEAAAYAQP/58fuIwAAAABJRU5ErkJggg==";
 
@@ -50,10 +48,6 @@ namespace Exomia.Framework.Graphics
 
         private static bool s_isInitialized;
         private static bool s_isInitialized2;
-
-        #endregion
-
-        #region Properties
 
         public static Texture WhiteTexture
         {
@@ -74,10 +68,6 @@ namespace Exomia.Framework.Graphics
         {
             get { return s_blackTexture2; }
         }
-
-        #endregion
-
-        #region Methods
 
         internal static void InitializeTextures(Device5 device)
         {
@@ -103,7 +93,7 @@ namespace Exomia.Framework.Graphics
             if (!s_isInitialized2)
             {
                 s_isInitialized2 = true;
-                s_disposedValue = false;
+                s_disposedValue  = false;
 
                 using (Stream stream = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
@@ -116,8 +106,6 @@ namespace Exomia.Framework.Graphics
                 }
             }
         }
-
-        #endregion
 
         #region IDisposable Support
 
@@ -135,7 +123,7 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref s_whiteTexture2);
                 }
 
-                s_isInitialized = false;
+                s_isInitialized  = false;
                 s_isInitialized2 = false;
 
                 s_disposedValue = true;

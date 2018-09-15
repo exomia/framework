@@ -30,9 +30,15 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// <summary>
     ///     ArrayType class
     /// </summary>
-    internal sealed class ArrayType : IType
+    sealed class ArrayType : IType
     {
-        #region Properties
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public ArrayType()
+        {
+            BaseType = typeof(Array);
+        }
 
         /// <summary>
         ///     TypeName without System
@@ -55,22 +61,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             get { return false; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public ArrayType()
-        {
-            BaseType = typeof(Array);
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
@@ -110,7 +100,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             }
             if (string.IsNullOrEmpty(genericTypeInfo))
             {
-                throw new CSReaderException($"ERROR: NO GENERIC TYPE INFO DEFINED -> ARRAY<GENERIC_TYPE_INFO>");
+                throw new CSReaderException("ERROR: NO GENERIC TYPE INFO DEFINED -> ARRAY<GENERIC_TYPE_INFO>");
             }
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
@@ -122,11 +112,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                 elementType = it.CreateType(gti);
                 readCallback = (s, d) =>
                 {
-                    try
-                    {
-                        return it.Read(stream, string.Empty, gti, d);
-                    }
-                    catch { throw; }
+                    return it.Read(stream, string.Empty, gti, d);
                 };
             }
             else
@@ -168,8 +154,6 @@ namespace Exomia.Framework.ContentSerialization.Types
             else { throw new InvalidCastException(nameof(content)); }
         }
 
-        #endregion
-
         #region WriteHelper
 
         private static string CreateArrayDimensionInfo(Array arr)
@@ -200,23 +184,15 @@ namespace Exomia.Framework.ContentSerialization.Types
                     if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
                         ContentSerializer.s_types.TryGetValue(elementType.BaseType.Name.ToUpper(), out it))
                     {
-                        try
-                        {
-                            it.Write(writeHandler, tabSpace, string.Empty, arr.GetValue(indices), false);
-                        }
-                        catch { throw; }
+                        it.Write(writeHandler, tabSpace, string.Empty, arr.GetValue(indices), false);
                     }
                     else
                     {
-                        try
-                        {
-                            writeHandler(tabSpace, "[:]");
-                            ContentSerializer.Write(
-                                writeHandler, tabSpace + ContentSerializer.TABSPACE, arr.GetValue(indices),
-                                elementType);
-                            writeHandler(tabSpace, "[/]");
-                        }
-                        catch { throw; }
+                        writeHandler(tabSpace, "[:]");
+                        ContentSerializer.Write(
+                            writeHandler, tabSpace + ContentSerializer.TABSPACE, arr.GetValue(indices),
+                            elementType);
+                        writeHandler(tabSpace, "[/]");
                     }
                 }
             }
@@ -275,11 +251,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                 }
                 else
                 {
-                    try
-                    {
-                        arr.SetValue(readCallback(stream, dimensionInfo), indices);
-                    }
-                    catch { throw; }
+                    arr.SetValue(readCallback(stream, dimensionInfo), indices);
                 }
             }
         }

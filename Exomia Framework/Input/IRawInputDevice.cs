@@ -53,8 +53,6 @@ namespace Exomia.Framework.Input
 
     public interface IRawInputDevice
     {
-        #region Variables
-
         event RKeyEventHandler KeyDown;
         event RKeyEventHandler KeyUp;
         event RKeyEventHandler KeyPress;
@@ -63,15 +61,7 @@ namespace Exomia.Framework.Input
         event RMouseEventHandler MouseDown;
         event RMouseEventHandler MouseUp;
 
-        #endregion
-
-        #region Properties
-
         int WheelData { get; }
-
-        #endregion
-
-        #region Methods
 
         void Initialize(IGameWindow window);
         void Initialize(Panel panel);
@@ -87,7 +77,5 @@ namespace Exomia.Framework.Input
         bool IsKeyUp(Keys key);
         bool IsKeyDown(params Keys[] key);
         bool IsKeyUp(params Keys[] key);
-
-        #endregion
     }
 }

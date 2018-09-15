@@ -38,7 +38,40 @@ namespace Exomia.Framework.Input
     /// </summary>
     public sealed class WinFormsInputDevice : IInputDevice, IDisposable
     {
-        #region Variables
+        private readonly HashSet<int> _pressedKeys = new HashSet<int>();
+
+        private readonly IWinFormsGameWindow _window;
+
+        private Point _mousePosition = Point.Empty;
+
+        private MouseButtons _pressedMouseButtons = MouseButtons.None;
+
+        /// <summary>
+        ///     WinFormsInputDevice constuctor
+        /// </summary>
+        /// <param name="window">IWinFormsGameWindow</param>
+        public WinFormsInputDevice(IWinFormsGameWindow window)
+        {
+            _window = window ?? throw new ArgumentNullException(nameof(window));
+
+            _window.RenderForm.MouseMove  += Renderform_MouseMove;
+            _window.RenderForm.MouseClick += RenderForm_MouseClick;
+            _window.RenderForm.MouseDown  += RenderForm_MouseDown;
+            _window.RenderForm.MouseUp    += RenderForm_MouseUp;
+            _window.RenderForm.MouseWheel += RenderForm_MouseWheel;
+
+            _window.RenderForm.KeyDown  += RenderForm_KeyDown;
+            _window.RenderForm.KeyUp    += RenderForm_KeyUp;
+            _window.RenderForm.KeyPress += RenderForm_KeyPress;
+        }
+
+        /// <summary>
+        ///     WinFormsInputDevice destructor
+        /// </summary>
+        ~WinFormsInputDevice()
+        {
+            Dispose(false);
+        }
 
         /// <inheritdoc />
         public event KeyEventHandler KeyDown;
@@ -63,47 +96,6 @@ namespace Exomia.Framework.Input
 
         /// <inheritdoc />
         public event MouseEventHandler MouseWheel;
-
-        private readonly HashSet<int> _pressedKeys = new HashSet<int>();
-
-        private readonly IWinFormsGameWindow _window;
-
-        private Point _mousePosition = Point.Empty;
-
-        private MouseButtons _pressedMouseButtons = MouseButtons.None;
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     WinFormsInputDevice constuctor
-        /// </summary>
-        /// <param name="window">IWinFormsGameWindow</param>
-        public WinFormsInputDevice(IWinFormsGameWindow window)
-        {
-            _window = window ?? throw new ArgumentNullException(nameof(window));
-
-            _window.RenderForm.MouseMove += Renderform_MouseMove;
-            _window.RenderForm.MouseClick += RenderForm_MouseClick;
-            _window.RenderForm.MouseDown += RenderForm_MouseDown;
-            _window.RenderForm.MouseUp += RenderForm_MouseUp;
-            _window.RenderForm.MouseWheel += RenderForm_MouseWheel;
-
-            _window.RenderForm.KeyDown += RenderForm_KeyDown;
-            _window.RenderForm.KeyUp += RenderForm_KeyUp;
-            _window.RenderForm.KeyPress += RenderForm_KeyPress;
-        }
-
-        /// <summary>
-        ///     WinFormsInputDevice destructor
-        /// </summary>
-        ~WinFormsInputDevice()
-        {
-            Dispose(false);
-        }
-
-        #endregion
 
         #region Device MouseInput
 
@@ -227,54 +219,46 @@ namespace Exomia.Framework.Input
 
         #region MouseHelper
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonDown(MouseButtons)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsMouseButtonDown(MouseButtons button)
         {
             return (_pressedMouseButtons & button) == button;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonDown(MouseButtons[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsMouseButtonDown(params MouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (IsMouseButtonDown(buttons[i])) { return true; }
             }
             return false;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonUp(MouseButtons)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsMouseButtonUp(MouseButtons button)
         {
-            return !((_pressedMouseButtons & button) == button);
+            return (_pressedMouseButtons & button) != button;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsMouseButtonUp(MouseButtons[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsMouseButtonUp(params MouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (IsMouseButtonUp(buttons[i])) { return true; }
             }
             return false;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.SetMousePosition(int, int)" />
-        /// </summary>
+        /// <inheritdoc />
         public void SetMousePosition(int x, int y)
         {
-            if (_window != null && _window.RenderForm != null)
+            if (_window?.RenderForm != null)
             {
                 Cursor.Position = _window.RenderForm.PointToScreen(new Point(x, y));
             }
@@ -284,42 +268,36 @@ namespace Exomia.Framework.Input
 
         #region KeyboardHelper
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyDown(int)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyDown(int keyValue)
         {
             return _pressedKeys.Contains(keyValue);
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyDown(int[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsKeyDown(params int[] keyValues)
         {
-            for (int i = 0; i < keyValues.Length; i++)
+            int l = keyValues.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (_pressedKeys.Contains(keyValues[i])) { return true; }
             }
             return false;
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyUp(int)" />
-        /// </summary>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyUp(int keyValues)
         {
             return !_pressedKeys.Contains(keyValues);
         }
 
-        /// <summary>
-        ///     <see cref="IInputDevice.IsKeyUp(int[])" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsKeyUp(params int[] keyValues)
         {
-            for (int i = 0; i < keyValues.Length; i++)
+            int l = keyValues.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (!_pressedKeys.Contains(keyValues[i])) { return true; }
             }
@@ -340,14 +318,14 @@ namespace Exomia.Framework.Input
                 {
                     if (_window != null)
                     {
-                        _window.RenderForm.MouseMove -= Renderform_MouseMove;
+                        _window.RenderForm.MouseMove  -= Renderform_MouseMove;
                         _window.RenderForm.MouseClick -= RenderForm_MouseClick;
-                        _window.RenderForm.MouseDown -= RenderForm_MouseDown;
-                        _window.RenderForm.MouseUp -= RenderForm_MouseUp;
+                        _window.RenderForm.MouseDown  -= RenderForm_MouseDown;
+                        _window.RenderForm.MouseUp    -= RenderForm_MouseUp;
                         _window.RenderForm.MouseWheel -= RenderForm_MouseWheel;
 
-                        _window.RenderForm.KeyDown -= RenderForm_KeyDown;
-                        _window.RenderForm.KeyUp -= RenderForm_KeyUp;
+                        _window.RenderForm.KeyDown  -= RenderForm_KeyDown;
+                        _window.RenderForm.KeyUp    -= RenderForm_KeyUp;
                         _window.RenderForm.KeyPress -= RenderForm_KeyPress;
                     }
                 }

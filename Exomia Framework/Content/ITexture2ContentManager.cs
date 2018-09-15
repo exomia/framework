@@ -35,16 +35,10 @@ namespace Exomia.Framework.Content
     /// </summary>
     public interface ITexture2ContentManager : IDisposable
     {
-        #region Properties
-
         /// <summary>
         ///     returns true if the texture is invalid
         /// </summary>
         bool IsTextureInvalid { get; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     add a new texture from a given asset
@@ -84,7 +78,5 @@ namespace Exomia.Framework.Content
         ///     resets the content manager
         /// </summary>
         void Reset();
-
-        #endregion
     }
 }

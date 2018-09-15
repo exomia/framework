@@ -31,8 +31,6 @@ namespace Exomia.Framework
     /// </summary>
     public interface IServiceRegistry
     {
-        #region Methods
-
         /// <summary>
         ///     Gets the service object of specified type.
         /// </summary>
@@ -77,7 +75,5 @@ namespace Exomia.Framework
         /// <param name="type">The type of service.</param>
         /// <returns><b>true</b> if succesfully removed; <b>false</b> otherwise</returns>
         bool RemoveService(Type type);
-
-        #endregion
     }
 }

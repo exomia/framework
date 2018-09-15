@@ -31,10 +31,8 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.ContentSerialization
 {
-    internal static class CSExtensions
+    static class CSExtensions
     {
-        #region Variables
-
         private static readonly Regex s_innerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9.+,\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)?)>$",
             RegexOptions.Compiled | RegexOptions.Singleline);
@@ -49,10 +47,6 @@ namespace Exomia.Framework.ContentSerialization
 
         private static readonly Regex s_kvInfoMatcher = new Regex(
             "^([a-zA-Z0-9-]+)?:(\\([0-9,]+\\))?$", RegexOptions.Compiled | RegexOptions.Singleline);
-
-        #endregion
-
-        #region Methods
 
         internal static void GetInnerType(this string typeInfo, out string baseTypeinfo, out string genericTypeInfo)
         {
@@ -146,10 +140,10 @@ namespace Exomia.Framework.ContentSerialization
                         Match match = s_keyInfoMatcher.Match(buffer);
                         if (!match.Success)
                         {
-                            key = buffer;
-                            baseTypeInfo = string.Empty;
+                            key             = buffer;
+                            baseTypeInfo    = string.Empty;
                             genericTypeInfo = string.Empty;
-                            dimensionInfo = string.Empty;
+                            dimensionInfo   = string.Empty;
                             return false;
                         }
 
@@ -260,7 +254,7 @@ namespace Exomia.Framework.ContentSerialization
                         break;
                 }
             }
-            throw new CSReaderException($"ERROR: NO START TAG FOUND -> '[:]'");
+            throw new CSReaderException("ERROR: NO START TAG FOUND -> \'[:]\'");
         }
 
         private static void ReadTagInner(this CSStreamReader stream, string content)
@@ -327,7 +321,5 @@ namespace Exomia.Framework.ContentSerialization
             }
             throw new CSReaderException($"ERROR: NO KEY FOUND! -> {sb}");
         }
-
-        #endregion
     }
 }

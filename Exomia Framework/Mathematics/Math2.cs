@@ -31,15 +31,9 @@ namespace Exomia.Framework.Mathematics
     /// <summary>
     ///     Math2 static class
     /// </summary>
-    public static class Math2
+    public static partial class Math2
     {
-        #region Variables
-
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Maps a value from l1 to u1 to l2 to u2
@@ -131,20 +125,19 @@ namespace Exomia.Framework.Mathematics
         /// <returns>b^e</returns>
         public static double Pow(double b, int e)
         {
-            if (e < 0) { throw new ArgumentException("e must be positive", nameof(e)); }
+            if (e < 0) { throw new ArgumentException($"{nameof(e)} must be positive", nameof(e)); }
 
-            while (true)
+            double result = 1;
+            while (e != 0)
             {
-                if (e == 0) { return 1; }
-                if (b == 0) { return 0; }
-                if ((e & 1) == 0)
+                if ((e & 1) == 1)
                 {
-                    b = b * b;
-                    e = e >> 1;
-                    continue;
+                    result *= b;
                 }
-                return b * Pow(b * b, e >> 1);
+                e >>= 1;
+                b *=  b;
             }
+            return result;
         }
 
         /// <summary>
@@ -155,20 +148,19 @@ namespace Exomia.Framework.Mathematics
         /// <returns>b^e</returns>
         public static float Pow(float b, int e)
         {
-            if (e < 0) { throw new ArgumentException("e must be positive", nameof(e)); }
+            if (e < 0) { throw new ArgumentException($"{nameof(e)} must be positive", nameof(e)); }
 
-            while (true)
+            float result = 1;
+            while (e != 0)
             {
-                if (e == 0) { return 1; }
-                if (b == 0) { return 0; }
-                if ((e & 1) == 0)
+                if ((e & 1) == 1)
                 {
-                    b = b * b;
-                    e = e >> 1;
-                    continue;
+                    result *= b;
                 }
-                return b * Pow(b * b, e >> 1);
+                e >>= 1;
+                b *=  b;
             }
+            return result;
         }
 
         /// <summary>
@@ -197,7 +189,7 @@ namespace Exomia.Framework.Mathematics
         ///     Returns the smallest integer greater than or equal to the specified floating-point number.
         /// </summary>
         /// <param name="f">A floating-point number with single precision</param>
-        /// <returns>The smalles integer, which is greater than or equal to f.</returns>
+        /// <returns>The smallest integer, which is greater than or equal to f.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Ceiling(double f)
         {
@@ -205,151 +197,277 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     creates an axis aligned bounding box
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, it is returned unchanged.
+        ///     If it is negative or zero, zero is returned.
         /// </summary>
-        /// <param name="transform">transform</param>
-        /// <param name="width">width</param>
-        /// <param name="height">height</param>
-        /// <param name="aabb">out aabb</param>
-        public static void CreateAABB(in Matrix transform, float width, float height, out RectangleF aabb)
-        {
-            Vector2 leftTop = Vector2.Zero.Transform(transform);
-            Vector2 rightTop = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom = new Vector2(0, height).Transform(transform);
-            Vector2 rightBottom = new Vector2(width, height).Transform(transform);
-
-            Vector2 min = new Vector2(
-                Math.Min(leftTop.X, Math.Min(rightTop.X, Math.Min(leftBottom.X, rightBottom.X))),
-                Math.Min(leftTop.Y, Math.Min(rightTop.Y, Math.Min(leftBottom.Y, rightBottom.Y))));
-            Vector2 max = new Vector2(
-                Math.Max(leftTop.X, Math.Max(rightTop.X, Math.Max(leftBottom.X, rightBottom.X))),
-                Math.Max(leftTop.Y, Math.Max(rightTop.Y, Math.Max(leftBottom.Y, rightBottom.Y))));
-
-            aabb = new RectangleF(min.X, min.Y, max.X - min.X, max.Y - min.Y);
-        }
-
-        /// <summary>
-        ///     creates an axis aligned bounding box
-        /// </summary>
-        /// <param name="transform">transform</param>
-        /// <param name="width">width</param>
-        /// <param name="height">height</param>
-        /// <returns>axis aligned bounding box</returns>
-        public static RectangleF CreateAABB(in Matrix transform, float width, float height)
-        {
-            Vector2 leftTop = Vector2.Zero.Transform(transform);
-            Vector2 rightTop = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom = new Vector2(0, height).Transform(transform);
-            Vector2 rightBottom = new Vector2(width, height).Transform(transform);
-
-            Vector2 min = new Vector2(
-                Math.Min(leftTop.X, Math.Min(rightTop.X, Math.Min(leftBottom.X, rightBottom.X))),
-                Math.Min(leftTop.Y, Math.Min(rightTop.Y, Math.Min(leftBottom.Y, rightBottom.Y))));
-            Vector2 max = new Vector2(
-                Math.Max(leftTop.X, Math.Max(rightTop.X, Math.Max(leftBottom.X, rightBottom.X))),
-                Math.Max(leftTop.Y, Math.Max(rightTop.Y, Math.Max(leftBottom.Y, rightBottom.Y))));
-
-            return new RectangleF(min.X, min.Y, max.X - min.X, max.Y - min.Y);
-        }
-
-        /// <summary>
-        ///     creates an axis aligned bounding box
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <param name="width">width</param>
-        /// <param name="height">height</param>
-        /// <returns>axis aligned bounding box</returns>
-        public static RectangleF CreateAABB(in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation,
-            float width, float height)
-        {
-            return CreateAABB(CalculateTransformMatrix(position, origin, scale, rotation), width, height);
-        }
-
-        /// <summary>
-        ///     calculates a transform matrix
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <param name="transform">out transform matrix</param>
-        public static void CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
-            float rotation, out Matrix transform)
-        {
-            transform = Matrix.Translation(-origin.X, -origin.Y, 0) *
-                        Matrix.RotationZ(rotation) *
-                        Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                        Matrix.Translation(position.X, position.Y, 0);
-        }
-
-        /// <summary>
-        ///     calculates a transform matrix
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <returns>transform matrix</returns>
-        public static Matrix CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
-            float rotation)
-        {
-            return Matrix.Translation(-origin.X, -origin.Y, 0) *
-                   Matrix.RotationZ(rotation) *
-                   Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                   Matrix.Translation(position.X, position.Y, 0);
-        }
-
-        #endregion
-
-        #region Curves
-
-        /// <summary>
-        ///     Hermite Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveHermite(float t)
+        public static int RoundUpToPowerOfTwo(int value)
         {
-            return t * t * (3 - 2 * t);
+            return value <= 0 ? 0 : (int)RoundUpToPowerOfTwo((uint)value);
         }
 
         /// <summary>
-        ///     Quintic Curve
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, or zero, it is returned unchanged.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveQuintic(float t)
+        public static uint RoundUpToPowerOfTwo(uint value)
         {
-            return t * t * t * (t * (t * 6 - 15) + 10);
+            if (value > 0x80000000)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            value--;
+            value |= value >> 1;
+            value |= value >> 2;
+            value |= value >> 4;
+            value |= value >> 8;
+            value |= value >> 16;
+            return value + 1;
         }
 
         /// <summary>
-        ///     Hermite Curve
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, it is returned unchanged.
+        ///     If it is negative or zero, zero is returned.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CurveHermite(double t)
+        public static long RoundUpToPowerOfTwo(long value)
         {
-            return t * t * (3 - 2 * t);
+            return value <= 0 ? 0 : (long)RoundUpToPowerOfTwo((ulong)value);
         }
 
         /// <summary>
-        ///     Quintic Curve
+        ///     Rounds the given value up to a power of two.
+        ///     If it is already a power of two, or zero, it is returned unchanged.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CurveQuintic(double t)
+        public static ulong RoundUpToPowerOfTwo(ulong value)
         {
-            return t * t * t * (t * (t * 6 - 15) + 10);
+            if (value > 0x8000000000000000)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            value--;
+            value |= value >> 1;
+            value |= value >> 2;
+            value |= value >> 4;
+            value |= value >> 8;
+            value |= value >> 16;
+            value |= value >> 32;
+            return value + 1;
         }
 
-        #endregion
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Sqrt(long value)
+        {
+            if (value < 0) { throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative"); }
+            return Sqrt((ulong)value);
+        }
+
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        public static uint Sqrt(ulong value)
+        {
+            if (value == 0)
+            {
+                return 0;
+            }
+
+            uint g = 0;
+            int bshft = Log2Floor(value) >> 1;
+            uint b = 1u << bshft;
+            do
+            {
+                ulong temp = (ulong)(g + g + b) << bshft;
+
+                if (value >= temp)
+                {
+                    g     += b;
+                    value -= temp;
+                }
+                b >>= 1;
+            } while (bshft-- > 0);
+
+            return g;
+        }
+
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Sqrt(int value)
+        {
+            if (value < 0) { throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative"); }
+            return (int)Sqrt((uint)value);
+        }
+
+        /// <summary>
+        ///     Returns the square root of a specified number.
+        /// </summary>
+        /// <param name="value">The number whose square root is to be found.</param>
+        /// <returns>the square root</returns>
+        public static uint Sqrt(uint value)
+        {
+            if (value == 0)
+            {
+                return 0;
+            }
+
+            uint g = 0;
+            int bshft = Log2Floor(value) >> 1;
+            uint b = 1u << bshft;
+            do
+            {
+                uint temp = (g + g + b) << bshft;
+                if (value >= temp)
+                {
+                    g     += b;
+                    value -= temp;
+                }
+                b >>= 1;
+            } while (bshft-- > 0);
+
+            return g;
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(byte x)
+        {
+            int y = x;
+            y -= (y >> 1) & 0x55;
+            y =  ((y >> 2) & 0x33) + (y & 0x33);
+            return (y & 0x0F) + (y >> 4);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(ushort x)
+        {
+            int y = x;
+            y -= (y >> 1) & 0x5555;
+            y =  ((y >> 2) & 0x3333) + (y & 0x3333);
+            y =  ((y >> 4) + y) & 0x0F0F;
+            return (y + (y >> 8)) & 0x001F;
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountOnes(int x)
+        {
+            return CountOnes((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(uint x)
+        {
+            x -= (x >> 1) & 0x55555555;
+            x =  ((x >> 2) & 0x33333333) + (x & 0x33333333);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F;
+            x += x >> 8;
+            return (int)((x + (x >> 16)) & 0x0000003F);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountOnes(long x)
+        {
+            return CountOnes((ulong)x);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(ulong x)
+        {
+            x -= (x >> 1) & 0x5555555555555555u;
+            x =  ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
+            x += x >> 8;
+            x += x >> 16;
+            return ((int)x + (int)(x >> 32)) & 0x0000007F;
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        public static int Log2Floor(uint x)
+        {
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            return CountOnes(x | (x >> 16)) - 1;
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(int x)
+        {
+            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            return Log2Floor((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(ulong x)
+        {
+            uint xHi = (uint)(x >> 32);
+            if (xHi != 0)
+            {
+                return 32 + Log2Floor(xHi);
+            }
+            return Log2Floor((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(long x)
+        {
+            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            return Log2Floor((ulong)x);
+        }
     }
 }

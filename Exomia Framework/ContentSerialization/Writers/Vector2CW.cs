@@ -27,16 +27,12 @@ using SharpDX;
 namespace Exomia.Framework.ContentSerialization.Writers
 {
     /// <inheritdoc />
-    internal sealed class Vector2CW : AContentSerializationWriter<Vector2>
+    sealed class Vector2CW : AContentSerializationWriter<Vector2>
     {
-        #region Methods
-
         public override void WriteContext(ContentSerializationContext context, Vector2 obj)
         {
             context.Set("X", obj.X);
             context.Set("Y", obj.Y);
         }
-
-        #endregion
     }
 }

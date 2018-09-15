@@ -27,10 +27,8 @@ using System.Management;
 
 namespace Exomia.Framework.Diagnostic
 {
-    internal static class Diagnostic
+    static class Diagnostic
     {
-        #region Methods
-
         internal static bool GetCpuInformation(out string outS)
         {
             return ReadHwClassInformation("Win32_Processor", out outS);
@@ -98,7 +96,5 @@ namespace Exomia.Framework.Diagnostic
             }
             return false;
         }
-
-        #endregion
     }
 }

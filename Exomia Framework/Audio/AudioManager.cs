@@ -38,8 +38,6 @@ namespace Exomia.Framework.Audio
     /// </summary>
     public sealed class AudioManager : IDisposable
     {
-        #region Variables
-
         private readonly int _inputChannelCount = 2;
         private readonly int _inputSampleRate = 44100;
 
@@ -66,10 +64,6 @@ namespace Exomia.Framework.Audio
         private X3DAudio _x3DAudio;
 
         private XAudio2 _xAudio2;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     ListenerPosition
@@ -154,10 +148,6 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="AudioManager" /> class.
         /// </summary>
@@ -172,8 +162,8 @@ namespace Exomia.Framework.Audio
             {
                 throw new ArgumentException("fxSoundPoolLimit must be bigger than 0");
             }
-            _soundBuffer = new Dictionary<int, SoundBuffer>(128);
-            _fxLinkedSoundList = new LinkedSoundList(fxSoundPoolLimit);
+            _soundBuffer        = new Dictionary<int, SoundBuffer>(128);
+            _fxLinkedSoundList  = new LinkedSoundList(fxSoundPoolLimit);
             _envLinkedSoundList = new LinkedSoundList(int.MaxValue);
 
 #if DEBUG
@@ -203,7 +193,7 @@ namespace Exomia.Framework.Audio
 
             _masteringVoice.GetVoiceDetails(out VoiceDetails details);
             _inputChannelCount = details.InputChannelCount;
-            _inputSampleRate = details.InputSampleRate;
+            _inputSampleRate   = details.InputSampleRate;
 
             _fxSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, _inputSampleRate);
             _fxSubmixVoice.SetVolume(_fxVolume);
@@ -211,7 +201,7 @@ namespace Exomia.Framework.Audio
             _envSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, _inputSampleRate);
             _envSubmixVoice.SetVolume(_envVolume);
 
-            _fxVoiceSendDescriptor = new VoiceSendDescriptor(VoiceSendFlags.None, _fxSubmixVoice);
+            _fxVoiceSendDescriptor  = new VoiceSendDescriptor(VoiceSendFlags.None, _fxSubmixVoice);
             _envVoiceSendDescriptor = new VoiceSendDescriptor(VoiceSendFlags.None, _envSubmixVoice);
         }
 
@@ -222,10 +212,6 @@ namespace Exomia.Framework.Audio
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     load a sound from a given stream and returns the sound id
@@ -238,16 +224,17 @@ namespace Exomia.Framework.Audio
             {
                 AudioBuffer audioBuffer = new AudioBuffer
                 {
-                    Stream = soundStream.ToDataStream(),
+                    Stream     = soundStream.ToDataStream(),
                     AudioBytes = (int)soundStream.Length,
-                    Flags = BufferFlags.EndOfStream
+                    Flags      = BufferFlags.EndOfStream
                 };
                 soundStream.Close();
                 _soundBuffer.Add(
-                    _soundBufferIndex, new SoundBuffer
+                    _soundBufferIndex,
+                    new SoundBuffer
                     {
-                        AudioBuffer = audioBuffer,
-                        Format = soundStream.Format,
+                        AudioBuffer        = audioBuffer,
+                        Format             = soundStream.Format,
                         DecodedPacketsInfo = soundStream.DecodedPacketsInfo
                     });
             }
@@ -478,19 +465,21 @@ namespace Exomia.Framework.Audio
             ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr> onFXEnd = null)
         {
             PlaySound(
-                soundID, new Emitter
+                soundID,
+                new Emitter
                 {
                     ChannelCount = 1,
-                    VolumeCurve = new[]
-                    {
-                        new CurvePoint { Distance = 0.0f, DspSetting = 1.0f },
-                        new CurvePoint { Distance = 1.0f, DspSetting = 0.0f }
-                    },
+                    VolumeCurve =
+                        new[]
+                        {
+                            new CurvePoint { Distance = 0.0f, DspSetting = 1.0f },
+                            new CurvePoint { Distance = 1.0f, DspSetting = 0.0f }
+                        },
                     CurveDistanceScaler = maxDistanance,
-                    OrientFront = Vector3.UnitZ,
-                    OrientTop = Vector3.UnitY,
-                    Position = emitterPos,
-                    Velocity = new Vector3(0, 0, 0)
+                    OrientFront         = Vector3.UnitZ,
+                    OrientTop           = Vector3.UnitY,
+                    Position            = emitterPos,
+                    Velocity            = new Vector3(0, 0, 0)
                 }, volume, list, ref voiceSendDescriptor, onFXEnd);
         }
 
@@ -507,11 +496,7 @@ namespace Exomia.Framework.Audio
             sourceVoice.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
             sourceVoice.SetOutputVoices(voiceSendDescriptor);
 
-            Sound sound = new Sound
-            {
-                SourceVoice = sourceVoice,
-                Emitter = emitter
-            };
+            Sound sound = new Sound { SourceVoice = sourceVoice, Emitter = emitter };
 
             list.Add(sound);
 
@@ -571,18 +556,12 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        #endregion
-
-        #region Nested
-
         private struct SoundBuffer
         {
             public AudioBuffer AudioBuffer;
             public WaveFormat Format;
             public uint[] DecodedPacketsInfo;
         }
-
-        #endregion
 
         #region IDisposable Support
 
@@ -624,7 +603,7 @@ namespace Exomia.Framework.Audio
                     _masteringVoice = null;
 
                     _xAudio2?.Dispose();
-                    _xAudio2 = null;
+                    _xAudio2  = null;
                     _x3DAudio = null;
                 }
 

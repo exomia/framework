@@ -41,28 +41,18 @@ namespace Exomia.Framework
     /// </summary>
     public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
-        #region Variables
+        protected bool _isContentLoaded;
 
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
+        protected bool _isInitialized;
 
         private DisposeCollector _collector;
 
         private bool _enabled;
-        protected bool _isContentLoaded;
-
-        protected bool _isInitialized;
         private int _updateOrder;
 
-        #endregion
-
-        #region Properties
-
-        public string Name { get; }
-
         /// <summary>
-        ///     Gets the <see cref="Game" /> associated with this <see cref="AComponent" />. This value can be null in a mock
-        ///     environment.
+        ///     Gets the <see cref="Game" /> associated with this <see cref="AComponent" />.
+        ///     This value can be null in a mockenvironment.
         /// </summary>
         /// <value>The game.</value>
         public Game.Game Game { get; }
@@ -78,6 +68,72 @@ namespace Exomia.Framework
         /// </summary>
         /// <value>The graphics device.</value>
         protected IGraphicsDevice GraphicsDevice { get; private set; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AComponent" /> class.
+        /// </summary>
+        /// <param name="name">The component name.</param>
+        protected AComponent(string name)
+        {
+            Name       = name;
+            _collector = new DisposeCollector();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AComponent" /> class.
+        /// </summary>
+        protected AComponent(Game.Game game, string name)
+            : this(name)
+        {
+            Game = game;
+        }
+
+        /// <summary>
+        ///     destructor
+        /// </summary>
+        ~AComponent()
+        {
+            Dispose(false);
+        }
+
+        public string Name { get; }
+
+        /// <inheritdoc />
+        public void LoadContent()
+        {
+            if (_isInitialized && !_isContentLoaded)
+            {
+                OnLoadContent();
+                _isContentLoaded = true;
+            }
+        }
+
+        /// <inheritdoc />
+        public void UnloadContent()
+        {
+            if (_isContentLoaded)
+            {
+                OnUnloadContent();
+                _isContentLoaded = false;
+            }
+        }
+
+        /// <inheritdoc />
+        public void Initialize(IServiceRegistry registry)
+        {
+            if (!_isInitialized)
+            {
+                Content        = registry.GetService<IContentManager>();
+                GraphicsDevice = registry.GetService<IGraphicsDevice>();
+
+                OnInitialize(registry);
+                _isInitialized = true;
+            }
+        }
+
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
         /// <inheritdoc />
         public bool Enabled
@@ -107,79 +163,6 @@ namespace Exomia.Framework
             }
         }
 
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AComponent" /> class.
-        /// </summary>
-        /// <param name="name">The component name.</param>
-        protected AComponent(string name)
-        {
-            Name = name;
-            _collector = new DisposeCollector();
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AComponent" /> class.
-        /// </summary>
-        /// <param name="game">The game.</param>
-        /// <param name="name">The component name.</param>
-        protected AComponent(Game.Game game, string name)
-            : this(name)
-        {
-            Game = game;
-        }
-
-        /// <summary>
-        ///     destructor
-        /// </summary>
-        ~AComponent()
-        {
-            Dispose(false);
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <inheritdoc />
-        public void LoadContent()
-        {
-            if (_isInitialized && !_isContentLoaded)
-            {
-                OnLoadContent();
-                _isContentLoaded = true;
-            }
-        }
-
-        /// <inheritdoc />
-        public void UnloadContent()
-        {
-            if (_isContentLoaded)
-            {
-                OnUnloadContent();
-                _isContentLoaded = false;
-            }
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
-        {
-            if (!_isInitialized)
-            {
-                // Gets the Content Manager
-                Content = registry.GetService<IContentManager>();
-
-                // Gets the graphics device
-                GraphicsDevice = registry.GetService<IGraphicsDevice>();
-
-                OnInitialize(registry);
-                _isInitialized = true;
-            }
-        }
-
         /// <inheritdoc />
         public abstract void Update(GameTime gameTime);
 
@@ -200,12 +183,11 @@ namespace Exomia.Framework
             return _collector.Collect(obj);
         }
 
-        #endregion
-
         #region IDisposable Support
 
         protected bool _disposed;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
         /// </summary>

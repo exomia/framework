@@ -31,8 +31,6 @@ namespace Exomia.Framework.Game
 {
     public interface IGameWindow : IDisposable
     {
-        #region Properties
-
         bool IsInitialized { get; }
 
         int Width { get; }
@@ -41,23 +39,13 @@ namespace Exomia.Framework.Game
 
         string Title { get; set; }
 
-        #endregion
-
-        #region Methods
-
         void Initialize(ref GameGraphicsParameters parameters);
 
         void Resize(int width, int height);
-
-        #endregion
     }
 
     public interface IWinFormsGameWindow : IGameWindow
     {
-        #region Properties
-
         RenderForm RenderForm { get; }
-
-        #endregion
     }
 }

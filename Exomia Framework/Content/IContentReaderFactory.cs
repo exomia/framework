@@ -32,8 +32,6 @@ namespace Exomia.Framework.Content
     /// </summary>
     public interface IContentReaderFactory
     {
-        #region Methods
-
         /// <summary>
         ///     Returns an instance of a <see cref="IContentReader" /> for loading the specified type or null if not handled by
         ///     this factory.
@@ -43,7 +41,5 @@ namespace Exomia.Framework.Content
         /// >
         /// <returns><c>true</c> if a <see cref="IContentReader" /> is returned; <c>false</c> otherwise</returns>
         bool TryCreate(Type type, out IContentReader reader);
-
-        #endregion
     }
 }

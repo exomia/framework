@@ -37,14 +37,6 @@ namespace Exomia.Framework.Tools
     /// </summary>
     public sealed class Timer2 : IUpdateable
     {
-        #region Variables
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
-
         /// <summary>
         /// </summary>
         public event TimerEvent TimerTicked;
@@ -59,51 +51,15 @@ namespace Exomia.Framework.Tools
         private bool _enabled;
         private int _updateOrder;
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         ///     Gets or sets the timer tick(time in ms after a timer Tick occurs)
         /// </summary>
         public float TimerTick { get; set; }
 
-        /// <inheritdoc />
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public int UpdateOrder
-        {
-            get { return _updateOrder; }
-            set
-            {
-                if (_updateOrder != value)
-                {
-                    _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
         /// <summary>
         ///     Gets the current iteration or 0 if maxIteration = 0
         /// </summary>
         public uint CurrentIteration { get; private set; }
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Timer2" /> class.
@@ -112,7 +68,7 @@ namespace Exomia.Framework.Tools
         /// <param name="maxIterations">set the max iteration count for this timer or 0 for unlimited</param>
         public Timer2(float tick, uint maxIterations = 0)
         {
-            TimerTick = tick;
+            TimerTick      = tick;
             _maxIterations = maxIterations;
         }
 
@@ -143,9 +99,39 @@ namespace Exomia.Framework.Tools
             TimerFinished += finishedCallback;
         }
 
-        #endregion
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
-        #region Methods
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
+
+        /// <inheritdoc />
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public int UpdateOrder
+        {
+            get { return _updateOrder; }
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <inheritdoc />
         public void Update(GameTime gameTime)
@@ -170,11 +156,9 @@ namespace Exomia.Framework.Tools
         /// </summary>
         public void Reset()
         {
-            _elapsedTime = 0;
+            _elapsedTime     = 0;
             CurrentIteration = 0;
-            _enabled = true;
+            _enabled         = true;
         }
-
-        #endregion
     }
 }

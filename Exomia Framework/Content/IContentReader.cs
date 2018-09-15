@@ -29,8 +29,6 @@ namespace Exomia.Framework.Content
     /// </summary>
     public interface IContentReader
     {
-        #region Methods
-
         /// <summary>
         ///     Reads the content of a particular data from a stream.
         /// </summary>
@@ -38,7 +36,5 @@ namespace Exomia.Framework.Content
         /// <param name="parameters"></param>
         /// <returns>The data decoded from the stream, or null if the kind of asset is not supported by this content reader.</returns>
         object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters);
-
-        #endregion
     }
 }

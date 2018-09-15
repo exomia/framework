@@ -26,41 +26,31 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    internal sealed class RectangleFCR : AContentSerializationReader<RectangleF>
+    sealed class RectangleFCR : AContentSerializationReader<RectangleF>
     {
-        #region Methods
-
         public override RectangleF ReadContext(ContentSerializationContext context)
         {
             return new RectangleF
             {
-                X = context.Get<float>("X"),
-                Y = context.Get<float>("Y"),
-                Width = context.Get<float>("Width"),
+                X      = context.Get<float>("X"),
+                Y      = context.Get<float>("Y"),
+                Width  = context.Get<float>("Width"),
                 Height = context.Get<float>("Height")
             };
-            ;
         }
-
-        #endregion
     }
 
-    internal sealed class RectangleCR : AContentSerializationReader<Rectangle>
+    sealed class RectangleCR : AContentSerializationReader<Rectangle>
     {
-        #region Methods
-
         public override Rectangle ReadContext(ContentSerializationContext context)
         {
             return new Rectangle
             {
-                X = context.Get<int>("X"),
-                Y = context.Get<int>("Y"),
-                Width = context.Get<int>("Width"),
+                X      = context.Get<int>("X"),
+                Y      = context.Get<int>("Y"),
+                Width  = context.Get<int>("Width"),
                 Height = context.Get<int>("Height")
             };
-            ;
         }
-
-        #endregion
     }
 }

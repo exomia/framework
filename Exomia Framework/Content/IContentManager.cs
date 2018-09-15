@@ -32,8 +32,6 @@ namespace Exomia.Framework.Content
     /// </summary>
     public interface IContentManager : IDisposable
     {
-        #region Properties
-
         /// <summary>
         ///     ServiceRegistry
         /// </summary>
@@ -43,10 +41,6 @@ namespace Exomia.Framework.Content
         ///     RootDirectory
         /// </summary>
         string RootDirectory { get; set; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     add a new content resolver to the list.
@@ -84,8 +78,7 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">Full asset name (with its extension)</param>
         /// <returns>``0.</returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
-        ///     If the asset was not found from all <see cref="IContentResolver" />
-        ///     .
+        ///     If the asset was not found from all <see cref="IContentResolver" />.
         /// </exception>
         /// <exception cref="NotSupportedException">If no content reader was suitable to decode the asset.</exception>
         T Load<T>(string assetName);
@@ -97,8 +90,7 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">Full asset name (with its extension)</param>
         /// <returns>Asset</returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
-        ///     If the asset was not found from all <see cref="IContentResolver" />
-        ///     .
+        ///     If the asset was not found from all <see cref="IContentResolver" />.
         /// </exception>
         /// <exception cref="NotSupportedException">If no content reader was suitable to decode the asset.</exception>
         object Load(Type assetType, string assetName);
@@ -126,7 +118,5 @@ namespace Exomia.Framework.Content
         /// <param name="assetName">The asset name</param>
         /// <returns><c>true</c> if the asset exists and was unloaded, <c>false</c> otherwise.</returns>
         bool Unload(Type assetType, string assetName);
-
-        #endregion
     }
 }

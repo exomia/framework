@@ -29,13 +29,9 @@ namespace Exomia.Framework
     /// </summary>
     public interface IComponent
     {
-        #region Properties
-
         /// <summary>
         ///     the name of the component
         /// </summary>
         string Name { get; }
-
-        #endregion
     }
 }

@@ -37,13 +37,7 @@ namespace Exomia.Framework.Graphics
     [ContentReadable(typeof(TextureContentReader))]
     public sealed class Texture : IDisposable
     {
-        #region Variables
-
         private ShaderResourceView1 _textureView;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     ShaderResourceView1
@@ -71,12 +65,8 @@ namespace Exomia.Framework.Graphics
             get { return _textureView.NativePointer; }
         }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
-        ///     Texture construcor
+        ///     Texture constructor
         /// </summary>
         /// <param name="textureView">ShaderResourceView1</param>
         /// <param name="width">width</param>
@@ -84,8 +74,8 @@ namespace Exomia.Framework.Graphics
         public Texture(ShaderResourceView1 textureView, int width, int height)
         {
             _textureView = textureView;
-            Width = width;
-            Height = height;
+            Width        = width;
+            Height       = height;
         }
 
         /// <summary>
@@ -95,10 +85,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     load a Texture from a given source stream
@@ -119,8 +105,6 @@ namespace Exomia.Framework.Graphics
             }
             catch { return null; }
         }
-
-        #endregion
 
         #region IDisposable Support
 
@@ -158,8 +142,6 @@ namespace Exomia.Framework.Graphics
     [ContentReadable(typeof(Texture2ContentReader))]
     public sealed class Texture2 : IDisposable
     {
-        #region Properties
-
         /// <summary>
         ///     AtlasIndex
         /// </summary>
@@ -191,14 +173,10 @@ namespace Exomia.Framework.Graphics
             get { return SourceRectangle.Height; }
         }
 
-        #endregion
-
-        #region Constructors
-
         internal Texture2(int atlasIndex, string assetName, Rectangle sourceRectangle)
         {
-            AtlasIndex = atlasIndex;
-            AssetName = assetName;
+            AtlasIndex      = atlasIndex;
+            AssetName       = assetName;
             SourceRectangle = sourceRectangle;
         }
 
@@ -209,8 +187,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
 
         #region IDisposable Support
 

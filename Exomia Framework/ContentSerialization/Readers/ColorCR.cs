@@ -26,10 +26,8 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    internal sealed class ColorCR : AContentSerializationReader<Color>
+    sealed class ColorCR : AContentSerializationReader<Color>
     {
-        #region Methods
-
         public override Color ReadContext(ContentSerializationContext context)
         {
             return new Color
@@ -41,7 +39,5 @@ namespace Exomia.Framework.ContentSerialization.Readers
             };
             ;
         }
-
-        #endregion
     }
 }

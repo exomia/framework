@@ -31,8 +31,6 @@ namespace Exomia.Framework.ContentSerialization
     /// <typeparam name="T">type to read</typeparam>
     public abstract class AContentSerializationReader<T> : IContentSerializationReader
     {
-        #region Methods
-
         /// <inheritdoc />
         public object Read(ContentSerializationContext context)
         {
@@ -45,7 +43,5 @@ namespace Exomia.Framework.ContentSerialization
         /// <param name="context">Context</param>
         /// <returns>new T</returns>
         public abstract T ReadContext(ContentSerializationContext context);
-
-        #endregion
     }
 }

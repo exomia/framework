@@ -33,15 +33,9 @@ namespace Exomia.Framework.ContentSerialization
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class ContentSerializableAttribute : Attribute
     {
-        #region Properties
-
         internal IContentSerializationReader Reader { get; }
 
         internal IContentSerializationWriter Writer { get; }
-
-        #endregion
-
-        #region Constructors
 
         /// <inheritdoc />
         /// <summary>
@@ -66,7 +60,5 @@ namespace Exomia.Framework.ContentSerialization
                          "cannot create an instance of IContentSerializationWriter from type: " +
                          writer.AssemblyQualifiedName);
         }
-
-        #endregion
     }
 }

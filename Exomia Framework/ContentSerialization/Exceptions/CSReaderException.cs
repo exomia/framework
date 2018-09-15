@@ -32,8 +32,6 @@ namespace Exomia.Framework.ContentSerialization.Exceptions
     /// </summary>
     public sealed class CSReaderException : Exception
     {
-        #region Constructors
-
         /// <inheritdoc />
         /// <summary>
         ///     constructor
@@ -53,7 +51,5 @@ namespace Exomia.Framework.ContentSerialization.Exceptions
         /// </summary>
         public CSReaderException(string message, Exception innerException)
             : base(message, innerException) { }
-
-        #endregion
     }
 }

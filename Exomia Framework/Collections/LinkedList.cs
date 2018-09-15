@@ -27,12 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+// TODO: REDESIGN
 namespace Exomia.Framework.Collections
 {
     public sealed class LinkedList<T>
     {
-        #region Properties
-
         public uint Count { get; private set; }
 
         public LinkedListNode First
@@ -41,10 +40,6 @@ namespace Exomia.Framework.Collections
         }
 
         public LinkedListNode Last { get; private set; }
-
-        #endregion
-
-        #region Constructors
 
         public LinkedList() { }
 
@@ -57,25 +52,21 @@ namespace Exomia.Framework.Collections
             }
         }
 
-        #endregion
-
-        #region Methods
-
         public LinkedListNode AddFirst(in T item)
         {
             LinkedListNode node = new LinkedListNode(item);
             if (Last == null)
             {
-                node.Next = node;
+                node.Next     = node;
                 node.Previous = node;
-                Last = node;
+                Last          = node;
             }
             else
             {
-                node.Next = Last.Next;
-                node.Previous = Last;
+                node.Next          = Last.Next;
+                node.Previous      = Last;
                 Last.Next.Previous = node;
-                Last.Next = node;
+                Last.Next          = node;
             }
             Count++;
             return node;
@@ -114,7 +105,7 @@ namespace Exomia.Framework.Collections
 
         public void Clear()
         {
-            Last = null;
+            Last  = null;
             Count = 0;
         }
 
@@ -131,41 +122,23 @@ namespace Exomia.Framework.Collections
             }
         }
 
-        #endregion
-
-        #region Nested
-
         public sealed class LinkedListNode
         {
-            #region Variables
-
             internal T Item;
             internal LinkedListNode Next;
             internal LinkedListNode Previous;
-
-            #endregion
-
-            #region Constructors
 
             internal LinkedListNode(in T value)
             {
                 Item = value;
             }
 
-            #endregion
-
-            #region Methods
-
             internal void Invalidate()
             {
-                Item = default;
-                Next = null;
+                Item     = default;
+                Next     = null;
                 Previous = null;
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

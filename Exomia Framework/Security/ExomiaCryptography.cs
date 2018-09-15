@@ -41,8 +41,6 @@ namespace Exomia.Framework.Security
             Bit256 = 256
         }
 
-        #region Variables
-
         public const string DEFAULT_CRYPT_EXTENSION = ".ds1";
 
         private const int ITERATIONS = 1000;
@@ -51,10 +49,6 @@ namespace Exomia.Framework.Security
 
         private static readonly byte[] s_saltBytes = Encoding.ASCII.GetBytes("fVJrgEUuCYOuHXNcyMw4euKSXymKUjmb");
         private static readonly byte[] s_secureKey = Encoding.ASCII.GetBytes("e7b5c571-0a24-4d5f-8c4a-800157b3fd17");
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Encrypt's a given file and outputs a stream
@@ -95,14 +89,14 @@ namespace Exomia.Framework.Security
                         rijndael.BlockSize = (int)mode;
 
                         rijndael.Key = key.GetBytes(rijndael.KeySize / 8);
-                        rijndael.IV = key.GetBytes(rijndael.BlockSize / 8);
+                        rijndael.IV  = key.GetBytes(rijndael.BlockSize / 8);
 
                         using (ICryptoTransform encryptor = rijndael.CreateEncryptor(rijndael.Key, rijndael.IV))
                         {
                             CryptoStream cs = new CryptoStream(outStream, encryptor, CryptoStreamMode.Write);
                             byte[] buffer = new byte[BUFFER_SIZE];
                             int count = -1;
-                            while ((count = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            while ((count = stream.Read(buffer, 0, BUFFER_SIZE)) > 0)
                             {
                                 cs.Write(buffer, 0, count);
                             }
@@ -124,7 +118,8 @@ namespace Exomia.Framework.Security
             byte[] hash = md5.ComputeHash(inputBytes);
 
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
+            int l = hash.Length;
+            for (int i = 0; i < l; i++)
             {
                 sb.Append(hash[i].ToString("x2"));
             }
@@ -170,7 +165,7 @@ namespace Exomia.Framework.Security
                         rijndael.BlockSize = (int)mode;
 
                         rijndael.Key = key.GetBytes(rijndael.KeySize / 8);
-                        rijndael.IV = key.GetBytes(rijndael.BlockSize / 8);
+                        rijndael.IV  = key.GetBytes(rijndael.BlockSize / 8);
 
                         inStream.Position = 0;
                         using (ICryptoTransform decryptor = rijndael.CreateDecryptor(rijndael.Key, rijndael.IV))
@@ -178,7 +173,7 @@ namespace Exomia.Framework.Security
                             CryptoStream cs = new CryptoStream(outStream, decryptor, CryptoStreamMode.Write);
                             byte[] buffer = new byte[BUFFER_SIZE];
                             int count = -1;
-                            while ((count = inStream.Read(buffer, 0, buffer.Length)) > 0)
+                            while ((count = inStream.Read(buffer, 0, BUFFER_SIZE)) > 0)
                             {
                                 cs.Write(buffer, 0, count);
                             }
@@ -191,7 +186,5 @@ namespace Exomia.Framework.Security
             catch { return false; }
             return true;
         }
-
-        #endregion
     }
 }

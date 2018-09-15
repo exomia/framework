@@ -36,16 +36,6 @@ namespace Exomia.Framework.Input
 {
     public sealed class RawInputDevice : IRawInputDevice, IDisposable
     {
-        #region Variables
-
-        public event RKeyEventHandler KeyDown;
-        public event RKeyEventHandler KeyUp;
-        public event RKeyEventHandler KeyPress;
-
-        public event RMouseEventHandler MouseMove;
-        public event RMouseEventHandler MouseDown;
-        public event RMouseEventHandler MouseUp;
-
         private readonly HashSet<Keys> _pressedKeys;
 
         private Point _mousePosition = Point.Empty;
@@ -56,10 +46,6 @@ namespace Exomia.Framework.Input
         private RMouseButtons _pressedMouseButtons = 0;
 
         private IGameWindow _window;
-
-        #endregion
-
-        #region Constructors
 
         public RawInputDevice()
         {
@@ -72,9 +58,13 @@ namespace Exomia.Framework.Input
             Device.MouseInput += Device_MouseInput;
         }
 
-        #endregion
+        public event RKeyEventHandler KeyDown;
+        public event RKeyEventHandler KeyUp;
+        public event RKeyEventHandler KeyPress;
 
-        #region Methods
+        public event RMouseEventHandler MouseMove;
+        public event RMouseEventHandler MouseDown;
+        public event RMouseEventHandler MouseUp;
 
         public void Initialize(IGameWindow window)
         {
@@ -87,13 +77,13 @@ namespace Exomia.Framework.Input
 
         public void Initialize(Panel panel)
         {
-            _panel = panel;
+            _panel           =  panel;
             _panel.MouseMove += Renderform_MouseMove;
         }
 
         public void EndUpdate()
         {
-            WheelData = _mouseWheelDataBuffer;
+            WheelData             = _mouseWheelDataBuffer;
             _mouseWheelDataBuffer = 0;
         }
 
@@ -102,8 +92,6 @@ namespace Exomia.Framework.Input
             _mousePosition = e.Location;
             MouseMove?.Invoke(e.X, e.Y, _pressedMouseButtons, 1, e.Delta);
         }
-
-        #endregion
 
         //TODO: CHANGE TO FORM INPUT INSTEAD OF RAW INPUT
 
@@ -180,7 +168,8 @@ namespace Exomia.Framework.Input
 
         public bool IsMouseButtonDown(params RMouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 //if (_pressedMouseButtons.Contains(buttons[i])) { return true; }
                 if (IsMouseButtonDown(buttons[i])) { return true; }
@@ -195,7 +184,8 @@ namespace Exomia.Framework.Input
 
         public bool IsKeyUp(params RMouseButtons[] buttons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            int l = buttons.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (!IsMouseButtonDown(buttons[i])) { return true; }
             }
@@ -247,7 +237,8 @@ namespace Exomia.Framework.Input
 
         public bool IsKeyDown(params Keys[] key)
         {
-            for (int i = 0; i < key.Length; i++)
+            int l = key.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (_pressedKeys.Contains(key[i])) { return true; }
             }
@@ -261,7 +252,8 @@ namespace Exomia.Framework.Input
 
         public bool IsKeyUp(params Keys[] key)
         {
-            for (int i = 0; i < key.Length; i++)
+            int l = key.Length;
+            for (int i = 0; i < l; i++)
             {
                 if (!_pressedKeys.Contains(key[i])) { return true; }
             }
@@ -281,7 +273,7 @@ namespace Exomia.Framework.Input
                 if (disposing) { }
 
                 Device.KeyboardInput -= Device_KeyboardInput;
-                Device.MouseInput -= Device_MouseInput;
+                Device.MouseInput    -= Device_MouseInput;
 
                 if (_window != null)
                 {

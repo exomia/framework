@@ -31,9 +31,15 @@ namespace Exomia.Framework.ContentSerialization.Types
     /// <summary>
     ///     EnumType class
     /// </summary>
-    internal sealed class EnumType : IType
+    sealed class EnumType : IType
     {
-        #region Properties
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public EnumType()
+        {
+            BaseType = typeof(Enum);
+        }
 
         /// <summary>
         ///     TypeName without System
@@ -56,22 +62,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             get { return false; }
         }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public EnumType()
-        {
-            BaseType = typeof(Enum);
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="IType.CreateType(string)" />
@@ -111,16 +101,12 @@ namespace Exomia.Framework.ContentSerialization.Types
                             throw new CSReaderException($"ERROR: AN ENUM CAN't BE A GENERIC TYPE -> {genericTypeInfo}");
                         }
 
-                        try
+                        Type enumType = bti.CreateType();
+                        if (enumType.IsEnum)
                         {
-                            Type enumType = bti.CreateType();
-                            if (enumType.IsEnum)
-                            {
-                                return Enum.Parse(enumType, sb.ToString());
-                            }
-                            throw new CSReaderException($"ERROR: BASETYPE ISN'T AN ENUM TYPE -> {bti}");
+                            return Enum.Parse(enumType, sb.ToString());
                         }
-                        catch { throw; }
+                        throw new CSReaderException($"ERROR: BASETYPE ISN'T AN ENUM TYPE -> {bti}");
                     }
                     case ']':
                         throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");
@@ -142,7 +128,5 @@ namespace Exomia.Framework.ContentSerialization.Types
                 tabSpace,
                 $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}]{content}[/{(useTypeInfo ? key : string.Empty)}]");
         }
-
-        #endregion
     }
 }

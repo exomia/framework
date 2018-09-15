@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
@@ -49,10 +50,11 @@ namespace Exomia.Framework.Game
     /// </summary>
     public abstract class Game : IRunnable, IDisposable
     {
-        #region Variables
-
         private const int INITIAL_QUEUE_SIZE = 16;
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+
+        private const int WM_QUIT = 0x0012;
+        private const int PM_REMOVE = 0x0001;
 
         private event EventHandler _isRunningChanged;
 
@@ -82,23 +84,6 @@ namespace Exomia.Framework.Game
 
         private bool _shutdown;
 
-        #endregion
-
-        #region Properties
-
-        public bool IsRunning
-        {
-            get { return _isRunning; }
-            set
-            {
-                if (_isRunning != value)
-                {
-                    _isRunning = value;
-                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
         public bool IsFixedTimeStep { get; set; } = false;
 
         public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
@@ -122,23 +107,14 @@ namespace Exomia.Framework.Game
             get { return _gameWindow; }
         }
 
-        #endregion
-
-        #region Constructors
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Game.Game" /> class.
-        /// </summary>
-        protected Game()
-            : this(string.Empty) { }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Game" /> class.
         /// </summary>
         /// <param name="title">title</param>
-        protected Game(string title)
+        /// <param name="gcLatencyMode">GCLatencyMode</param>
+        protected Game(string title = "", GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
         {
+            GCSettings.LatencyMode = gcLatencyMode;
 #if DEBUG
             /*string info = "";
             Diagnostic.DSDiagnostic.GetCPUInformation(out info);
@@ -147,8 +123,8 @@ namespace Exomia.Framework.Game
             Console.WriteLine(info);*/
 #endif
 
-            Services = new ServiceRegistry();
-            _gameWindow = new WinFormsGameWindow(title);
+            Services        = new ServiceRegistry();
+            _gameWindow     = new WinFormsGameWindow(title);
             _graphicsDevice = new GraphicsDevice();
             _contentManager = new ContentManager(Services);
 
@@ -157,22 +133,22 @@ namespace Exomia.Framework.Game
             Services.AddService(_contentManager);
             Services.AddService(_gameWindow);
 
-            _gameComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
 
 #if DEBUG
             ADrawableComponent component = new DebugComponent { ShowFullInformation = true };
-            component.Enabled = true;
-            component.Visible = true;
-            component.DrawOrder = 0;
+            component.Enabled     = true;
+            component.Visible     = true;
+            component.DrawOrder   = 0;
             component.UpdateOrder = 0;
             Add(component);
 #endif
@@ -186,9 +162,18 @@ namespace Exomia.Framework.Game
             Dispose(false);
         }
 
-        #endregion
-
-        #region Methods
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                if (_isRunning != value)
+                {
+                    _isRunning = value;
+                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <inheritdoc />
         public void Run()
@@ -222,13 +207,12 @@ namespace Exomia.Framework.Game
                     if (!isWindowExiting)
                     {
                         isWindowExiting = true;
+                        Shutdown();
                     }
                 };
-                while (!isWindowExiting && !_shutdown)
-                {
-                    Renderloop(gameTime);
-                }
             }
+
+            Renderloop(gameTime);
 
             UnloadContent();
         }
@@ -392,7 +376,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     adds a IDisposable object to the disposecollector
+        ///     adds a IDisposable object to the dispose collector
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -406,7 +390,7 @@ namespace Exomia.Framework.Game
         ///     get a game system by name
         /// </summary>
         /// <param name="name">the game system name</param>
-        /// <param name="system">out found gamesystem</param>
+        /// <param name="system">out found game system</param>
         /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
         public bool GetComponent(string name, out IComponent system)
         {
@@ -456,10 +440,10 @@ namespace Exomia.Framework.Game
 
             for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
             {
-                IUpdateable updatable = _currentlyUpdateableComponent[i];
-                if (updatable.Enabled)
+                IUpdateable updateable = _currentlyUpdateableComponent[i];
+                if (updateable.Enabled)
                 {
-                    updatable.Update(gameTime);
+                    updateable.Update(gameTime);
                 }
             }
 
@@ -508,42 +492,53 @@ namespace Exomia.Framework.Game
 
         private void Renderloop(GameTime gameTime)
         {
-            _stopwatch.Restart();
+            MSG msg;
+            msg.hwnd    = IntPtr.Zero;
+            msg.message = 0;
+            msg.lParam  = IntPtr.Zero;
+            msg.wParam  = IntPtr.Zero;
+            msg.time    = 0;
+            msg.pt      = Point.Zero;
 
-            if (PeekMessage(out MSG msg, IntPtr.Zero, 0, 0, 0x0001) != 0)
+            while (!_shutdown && msg.message != WM_QUIT)
             {
-                Message message = Message.Create(msg.hwnd, msg.message, msg.wParam, msg.lParam);
-                if (!Application.FilterMessage(ref message))
+                _stopwatch.Restart();
+
+                if (PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
                 {
-                    TranslateMessage(ref msg);
-                    DispatchMessage(ref msg);
-                }
-            }
-
-            if (!_isRunning)
-            {
-                Thread.Sleep(16);
-                return;
-            }
-
-            gameTime.Tick();
-            Update(gameTime);
-            if (BeginFrame())
-            {
-                Draw(gameTime);
-                EndFrame();
-            }
-
-            if (IsFixedTimeStep)
-            {
-                //SLEEP
-                while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
-                {
-                    Thread.Sleep(1);
+                    Message message = Message.Create(msg.hwnd, msg.message, msg.wParam, msg.lParam);
+                    if (!Application.FilterMessage(ref message))
+                    {
+                        TranslateMessage(ref msg);
+                        DispatchMessage(ref msg);
+                    }
                 }
 
-                //IDLE
-                while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                if (!_isRunning)
+                {
+                    Thread.Sleep(16);
+                    continue;
+                }
+
+                gameTime.Tick();
+                Update(gameTime);
+                if (BeginFrame())
+                {
+                    Draw(gameTime);
+                    EndFrame();
+                }
+
+                if (IsFixedTimeStep)
+                {
+                    //SLEEP
+                    while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
+                    {
+                        Thread.Sleep(1);
+                    }
+
+                    //IDLE
+                    while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                }
             }
         }
 
@@ -560,21 +555,21 @@ namespace Exomia.Framework.Game
                 DeviceCreationFlags =
                     DeviceCreationFlags.BgraSupport,
 #endif
-                DPI = new Vector2(96.0f, 96.0f),
-                DriverType = DriverType.Hardware,
-                Format = Format.B8G8R8A8_UNorm,
-                Width = 1024,
-                Height = 768,
-                IsWindowed = true,
-                IsMouseVisible = false,
-                Rational = new Rational(60, 1),
-                SwapChainFlags = SwapChainFlags.AllowModeSwitch,
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput,
-                UseVSync = false,
+                DPI                    = new Vector2(96.0f, 96.0f),
+                DriverType             = DriverType.Hardware,
+                Format                 = Format.B8G8R8A8_UNorm,
+                Width                  = 1024,
+                Height                 = 768,
+                IsWindowed             = true,
+                IsMouseVisible         = false,
+                Rational               = new Rational(60, 1),
+                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
+                SwapEffect             = SwapEffect.Discard,
+                Usage                  = Usage.RenderTargetOutput,
+                UseVSync               = false,
                 WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
-                EnableMultiSampling = false,
-                MultiSampleCount = MultiSampleCount.None
+                EnableMultiSampling    = false,
+                MultiSampleCount       = MultiSampleCount.None
             };
 
             OnInitializeGameGraphicsParameters(ref parameters);
@@ -670,8 +665,6 @@ namespace Exomia.Framework.Game
                 _drawableComponent.Sort(DrawableComparer.Default);
             }
         }
-
-        #endregion
 
         #region Timer2
 
@@ -774,12 +767,12 @@ namespace Exomia.Framework.Game
         [StructLayout(LayoutKind.Sequential)]
         private struct MSG
         {
-            public readonly IntPtr hwnd;
-            public readonly int message;
-            public readonly IntPtr wParam;
-            public readonly IntPtr lParam;
-            public readonly int time;
-            public readonly Point pt;
+            public IntPtr hwnd;
+            public int message;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public Point pt;
         }
 
         [SuppressUnmanagedCodeSecurity]
@@ -800,7 +793,7 @@ namespace Exomia.Framework.Game
 
     #region Camparer
 
-    internal struct DrawableComparer : IComparer<IDrawable>
+    struct DrawableComparer : IComparer<IDrawable>
     {
         public static readonly DrawableComparer Default = new DrawableComparer();
 
@@ -825,7 +818,7 @@ namespace Exomia.Framework.Game
         }
     }
 
-    internal struct UpdateableComparer : IComparer<IUpdateable>
+    struct UpdateableComparer : IComparer<IUpdateable>
     {
         public static readonly UpdateableComparer Default = new UpdateableComparer();
 

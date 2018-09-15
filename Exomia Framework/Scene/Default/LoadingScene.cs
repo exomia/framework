@@ -30,13 +30,7 @@ namespace Exomia.Framework.Scene.Default
     /// <inheritdoc />
     public class LoadingScene : SceneBase
     {
-        #region Variables
-
         private readonly SceneBase _sceneToLoad;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoadingScene" /> class.
@@ -48,10 +42,6 @@ namespace Exomia.Framework.Scene.Default
         {
             _sceneToLoad = sceneToLoad ?? throw new ArgumentNullException(nameof(sceneToLoad));
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     <see cref="SceneBase.Show" />
@@ -98,7 +88,5 @@ namespace Exomia.Framework.Scene.Default
                 }
             }
         }
-
-        #endregion
     }
 }

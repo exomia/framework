@@ -35,10 +35,8 @@ using Rectangle = SharpDX.Rectangle;
 
 namespace Exomia.Framework.Graphics
 {
-    internal sealed class SpriteBatchAtlas : IDisposable
+    sealed class SpriteBatchAtlas : IDisposable
     {
-        #region Variables
-
         private const int MIN_ATLAS_WIDTH = 2048;
         private const int MIN_ATLAS_HEIGHT = 2048;
 
@@ -54,29 +52,21 @@ namespace Exomia.Framework.Graphics
 
         private Bitmap _atlas;
 
-        #endregion
-
-        #region Constructors
-
         public SpriteBatchAtlas(int width, int height)
         {
-            if (width < MIN_ATLAS_WIDTH) { width = MIN_ATLAS_WIDTH; }
+            if (width < MIN_ATLAS_WIDTH) { width    = MIN_ATLAS_WIDTH; }
             if (height < MIN_ATLAS_HEIGHT) { height = MIN_ATLAS_HEIGHT; }
 
-            if (width > MAX_ATLAS_WIDTH) { width = MAX_ATLAS_WIDTH; }
+            if (width > MAX_ATLAS_WIDTH) { width    = MAX_ATLAS_WIDTH; }
             if (height > MAX_ATLAS_HEIGHT) { height = MAX_ATLAS_HEIGHT; }
 
-            _width = width;
+            _width  = width;
             _height = height;
 
             _sourceRectangles = new Dictionary<string, Rectangle>(16);
 
             _atlas = new Bitmap(width, height);
         }
-
-        #endregion
-
-        #region Methods
 
         internal BitmapSource GenerateBitmapSource()
         {
@@ -190,8 +180,6 @@ namespace Exomia.Framework.Graphics
 
             return false;
         }
-
-        #endregion
 
         #region IDisposable Support
 

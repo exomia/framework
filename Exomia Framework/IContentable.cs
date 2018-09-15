@@ -29,8 +29,6 @@ namespace Exomia.Framework
     /// </summary>
     public interface IContentable
     {
-        #region Methods
-
         /// <summary>
         ///     Loads the content.
         /// </summary>
@@ -40,7 +38,5 @@ namespace Exomia.Framework
         ///     Called when graphics resources need to be unloaded.
         /// </summary>
         void UnloadContent();
-
-        #endregion
     }
 }

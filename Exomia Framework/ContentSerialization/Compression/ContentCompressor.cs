@@ -36,12 +36,12 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// <summary>
         ///     gzip (default)
         /// </summary>
-        GZIP,
+        Gzip,
 
         /// <summary>
         ///     not supported
         /// </summary>
-        TGC
+        Tgc
     }
 
     /// <summary>
@@ -49,18 +49,12 @@ namespace Exomia.Framework.ContentSerialization.Compression
     /// </summary>
     public static class ContentCompressor
     {
-        #region Variables
-
         /// <summary>
         ///     the fefault compressed ds extension
         /// </summary>
         public const string DEFAULT_COMPRESSED_EXTENSION = ".ds2";
 
         private const int BUFFER_SIZE = 2048;
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     compress a given stream with the given compression mode
@@ -69,7 +63,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// <param name="streamOut">than finished the compressed out stream</param>
         /// <param name="mode">the compression mode</param>
         /// <returns><c>true</c> if successfully compressed the stream; <c>false</c> otherwise.</returns>
-        public static bool CompressStream(Stream stream, out Stream streamOut, CompressMode mode = CompressMode.GZIP)
+        public static bool CompressStream(Stream stream, out Stream streamOut, CompressMode mode = CompressMode.Gzip)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
             streamOut = null;
@@ -78,10 +72,10 @@ namespace Exomia.Framework.ContentSerialization.Compression
                 stream.Position = 0;
                 switch (mode)
                 {
-                    case CompressMode.GZIP:
+                    case CompressMode.Gzip:
                         GzipCompress(stream, out streamOut);
                         return true;
-                    case CompressMode.TGC:
+                    case CompressMode.Tgc:
                         TgcCompress(stream, out streamOut);
                         return true;
                 }
@@ -97,7 +91,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// <param name="streamOut">than finished the decompressed out stream</param>
         /// <param name="mode">the compression mode</param>
         /// <returns><c>true</c> if successfully decompressed the stream; <c>false</c> otherwise.</returns>
-        public static bool DecompressStream(Stream stream, out Stream streamOut, CompressMode mode = CompressMode.GZIP)
+        public static bool DecompressStream(Stream stream, out Stream streamOut, CompressMode mode = CompressMode.Gzip)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
             streamOut = null;
@@ -106,10 +100,10 @@ namespace Exomia.Framework.ContentSerialization.Compression
                 stream.Position = 0;
                 switch (mode)
                 {
-                    case CompressMode.GZIP:
+                    case CompressMode.Gzip:
                         GzipDecompress(stream, out streamOut);
                         return true;
-                    case CompressMode.TGC:
+                    case CompressMode.Tgc:
                         TgcDecompress(stream, out streamOut);
                         return true;
                 }
@@ -117,8 +111,6 @@ namespace Exomia.Framework.ContentSerialization.Compression
             catch { return false; }
             return true;
         }
-
-        #endregion
 
         #region GZIP
 

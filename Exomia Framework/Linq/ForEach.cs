@@ -32,8 +32,6 @@ namespace Exomia.Framework.Linq
     /// </summary>
     public static partial class LinqExt
     {
-        #region Methods
-
         /// <summary>
         ///     Immediately executes the given action on each element in the source sequence.
         /// </summary>
@@ -72,7 +70,5 @@ namespace Exomia.Framework.Linq
                 action(element, index++);
             }
         }
-
-        #endregion
     }
 }

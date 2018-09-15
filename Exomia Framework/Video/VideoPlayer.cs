@@ -40,8 +40,6 @@ namespace Exomia.Framework.Video
 {
     public sealed class VideoPlayer : ADrawableComponent
     {
-        #region Variables
-
         private readonly ManualResetEvent _eventReadyToPlay = new ManualResetEvent(false);
         private readonly Texture2D _outputTexture;
         private string _assetName;
@@ -55,10 +53,6 @@ namespace Exomia.Framework.Video
         private MediaEngineEx _mediaEngineEx;
         private SpriteBatch _spriteBatch;
         private Texture _texture;
-
-        #endregion
-
-        #region Properties
 
         public Color BackgroundColor
         {
@@ -98,11 +92,8 @@ namespace Exomia.Framework.Video
 
         public double PlaybackPosition
         {
-            get { return _mediaEngineEx?.CurrentTime ?? 0.0; }
-            set
-            {
-                if (_mediaEngineEx != null) { _mediaEngineEx.CurrentTime = value; }
-            }
+            get { return _mediaEngineEx?.GetCurrentTime() ?? 0.0; }
+            set { _mediaEngineEx?.SetCurrentTime(value); }
         }
 
         public double Duration
@@ -121,40 +112,22 @@ namespace Exomia.Framework.Video
 
         public bool Mute
         {
-            get
-            {
-                if (_mediaEngineEx != null) { return _mediaEngineEx.Muted; }
-                return false;
-            }
-            set
-            {
-                if (_mediaEngineEx != null) { _mediaEngineEx.Muted = value; }
-            }
+            get { return _mediaEngineEx?.GetMuted() ?? false; }
+            set { _mediaEngineEx?.SetMuted(value); }
         }
 
         public double Volume
         {
-            get { return _mediaEngineEx?.Volume ?? 0.0; }
-            set
-            {
-                if (_mediaEngineEx != null) { _mediaEngineEx.Volume = value; }
-            }
+            get { return _mediaEngineEx?.GetVolume() ?? 0.0; }
+            set { _mediaEngineEx?.SetVolume(value); }
         }
-
-        #endregion
-
-        #region Constructors
 
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
-            _outputTexture = TextureHelper.CreateTexture(device, width, height);
+            _outputTexture   = TextureHelper.CreateTexture(device, width, height);
             _backgroundColor = Color.Transparent;
         }
-
-        #endregion
-
-        #region Methods
 
         [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
         private static extern bool SetEvent(IntPtr hEvent);
@@ -215,7 +188,7 @@ namespace Exomia.Framework.Video
                 if (_isEndOfStream)
                 {
                     PlaybackPosition = 0;
-                    _isPlaying = true;
+                    _isPlaying       = true;
                 }
                 else
                 {
@@ -254,8 +227,7 @@ namespace Exomia.Framework.Video
 
             MediaEngineAttributes attributes = new MediaEngineAttributes
             {
-                DxgiManager = _dxgiDeviceManager,
-                VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
+                DxgiManager = _dxgiDeviceManager, VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
             };
 
             using (MediaEngineClassFactory factory = new MediaEngineClassFactory())
@@ -270,7 +242,7 @@ namespace Exomia.Framework.Video
         private void Stop()
         {
             _isVideoStopped = true;
-            _isPlaying = false;
+            _isPlaying      = false;
         }
 
         private void OnMediaEngineEvent(MediaEngineEvent mediaEvent, long param1, int param2)
@@ -305,7 +277,5 @@ namespace Exomia.Framework.Video
                     break;
             }
         }
-
-        #endregion
     }
 }

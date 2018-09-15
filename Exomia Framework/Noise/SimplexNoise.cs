@@ -30,18 +30,12 @@ namespace Exomia.Framework.Noise
 {
     public class SimplexNoise : NoiseBase
     {
-        #region Variables
-
         private const float F2 = 1.0f / 2.0f;
         private const float G2 = 1.0f / 4.0f;
 
         private const float F3 = 1.0f / 3.0f;
         private const float G3 = 1.0f / 6.0f;
         private const float G33 = G3 * 3f - 1f;
-
-        #endregion
-
-        #region Constructors
 
         public SimplexNoise(int seed, float frequency, int octaves,
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
@@ -52,10 +46,6 @@ namespace Exomia.Framework.Noise
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
             : base(seed, frequency, octaves, lacunarity, gain, noiseInterpolationType, noiseFractalType) { }
-
-        #endregion
-
-        #region Methods
 
         //TODO: TEST!
         protected override float Single(int seed, double x)
@@ -105,24 +95,24 @@ namespace Exomia.Framework.Noise
             if (t < 0) { n0 = 0; }
             else
             {
-                t *= t;
-                n0 = t * t * GradCoord2D(seed, i, j, x0, y0);
+                t  *= t;
+                n0 =  t * t * GradCoord2D(seed, i, j, x0, y0);
             }
 
             t = 0.5f - x1 * x1 - y1 * y1;
             if (t < 0) { n1 = 0; }
             else
             {
-                t *= t;
-                n1 = t * t * GradCoord2D(seed, i + i1, j + j1, x1, y1);
+                t  *= t;
+                n1 =  t * t * GradCoord2D(seed, i + i1, j + j1, x1, y1);
             }
 
             t = 0.5f - x2 * x2 - y2 * y2;
             if (t < 0) { n2 = 0; }
             else
             {
-                t *= t;
-                n2 = t * t * GradCoord2D(seed, i + 1, j + 1, x2, y2);
+                t  *= t;
+                n2 =  t * t * GradCoord2D(seed, i + 1, j + 1, x2, y2);
             }
 
             return (float)(50.0 * (n0 + n1 + n2));
@@ -220,37 +210,35 @@ namespace Exomia.Framework.Noise
             if (t < 0) { n0 = 0; }
             else
             {
-                t *= t;
-                n0 = t * t * GradCoord3D(seed, i, j, k, x0, y0, z0);
+                t  *= t;
+                n0 =  t * t * GradCoord3D(seed, i, j, k, x0, y0, z0);
             }
 
             t = 0.6f - x1 * x1 - y1 * y1 - z1 * z1;
             if (t < 0) { n1 = 0; }
             else
             {
-                t *= t;
-                n1 = t * t * GradCoord3D(seed, i + i1, j + j1, k + k1, x1, y1, z1);
+                t  *= t;
+                n1 =  t * t * GradCoord3D(seed, i + i1, j + j1, k + k1, x1, y1, z1);
             }
 
             t = 0.6f - x2 * x2 - y2 * y2 - z2 * z2;
             if (t < 0) { n2 = 0; }
             else
             {
-                t *= t;
-                n2 = t * t * GradCoord3D(seed, i + i2, j + j2, k + k2, x2, y2, z2);
+                t  *= t;
+                n2 =  t * t * GradCoord3D(seed, i + i2, j + j2, k + k2, x2, y2, z2);
             }
 
             t = 0.6f - x3 * x3 - y3 * y3 - z3 * z3;
             if (t < 0) { n3 = 0; }
             else
             {
-                t *= t;
-                n3 = t * t * GradCoord3D(seed, i + 1, j + 1, k + 1, x3, y3, z3);
+                t  *= t;
+                n3 =  t * t * GradCoord3D(seed, i + 1, j + 1, k + 1, x3, y3, z3);
             }
 
             return (float)(32.0 * (n0 + n1 + n2 + n3));
         }
-
-        #endregion
     }
 }

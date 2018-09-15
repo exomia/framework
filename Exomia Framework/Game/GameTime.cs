@@ -33,8 +33,6 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class GameTime
     {
-        #region Variables
-
         private const float MAX_FRAME_TIME = 1000.0f / 60.0f;
         private readonly double _countsPerMSec = 1000.0 / Stopwatch.Frequency;
 
@@ -47,10 +45,6 @@ namespace Exomia.Framework.Game
 
         private bool _stopped;
         private long _stopTime;
-
-        #endregion
-
-        #region Properties
 
         public float TotalTimeS
         {
@@ -84,10 +78,6 @@ namespace Exomia.Framework.Game
 
         public float AbsoluteDeltaTimeS { get; private set; }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameTime" /> class.
         /// </summary>
@@ -96,10 +86,6 @@ namespace Exomia.Framework.Game
             _baseTime = Stopwatch.GetTimestamp();
         }
 
-        #endregion
-
-        #region Methods
-
         /// <summary>
         ///     reset the gametime
         /// </summary>
@@ -107,7 +93,7 @@ namespace Exomia.Framework.Game
         {
             _prevTime = _baseTime = Stopwatch.GetTimestamp();
             _stopTime = 0;
-            _stopped = false;
+            _stopped  = false;
         }
 
         /// <summary>
@@ -119,8 +105,8 @@ namespace Exomia.Framework.Game
             if (_stopped)
             {
                 _pausedTime += _baseTime - _stopTime;
-                _stopTime = 0;
-                _stopped = false;
+                _stopTime   =  0;
+                _stopped    =  false;
             }
             Tick();
         }
@@ -133,7 +119,7 @@ namespace Exomia.Framework.Game
             if (!_stopped)
             {
                 _stopTime = Stopwatch.GetTimestamp();
-                _stopped = true;
+                _stopped  = true;
             }
         }
 
@@ -144,22 +130,20 @@ namespace Exomia.Framework.Game
                 AbsoluteDeltaTimeS = AbsoluteDeltaTimeMS = DeltaTimeS = DeltaTimeMS = 0;
                 return;
             }
-            _currTime = Stopwatch.GetTimestamp();
+            _currTime   = Stopwatch.GetTimestamp();
             DeltaTimeMS = (float)((_currTime - _prevTime) * _countsPerMSec);
 
             if (DeltaTimeMS < 0) { DeltaTimeMS = 0; }
 
             AbsoluteDeltaTimeMS = DeltaTimeMS;
-            AbsoluteDeltaTimeS = DeltaTimeMS / 1000.0f;
+            AbsoluteDeltaTimeS  = DeltaTimeMS / 1000.0f;
 
             if (DeltaTimeMS > MAX_FRAME_TIME)
             {
                 DeltaTimeMS = MAX_FRAME_TIME;
             }
             DeltaTimeS = DeltaTimeMS / 1000.0f;
-            _prevTime = _currTime;
+            _prevTime  = _currTime;
         }
-
-        #endregion
     }
 }

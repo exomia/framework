@@ -32,8 +32,6 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public sealed class Random2
     {
-        #region Variables
-
         private const float SINGLE_UNIT_INT = 1.0f / int.MaxValue;
         private const double REAL_UNIT_INT = 1.0 / int.MaxValue;
 
@@ -47,10 +45,6 @@ namespace Exomia.Framework.Mathematics
         public static Random2 Default = new Random2();
 
         private uint _x, _y, _z, _w;
-
-        #endregion
-
-        #region Constructors
 
         /// <inheritdoc />
         public Random2()
@@ -66,10 +60,6 @@ namespace Exomia.Framework.Mathematics
             _z = Z;
             _w = W;
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Gets the next random byte value.
@@ -259,7 +249,8 @@ namespace Exomia.Framework.Mathematics
             uint x = _x, y = _y, z = _z, w = _w;
             int i = 0;
             uint t;
-            for (int bound = buffer.Length - 3; i < bound;)
+            int l = buffer.Length;
+            for (int bound = l - 3; i < bound;)
             {
                 t = x ^ (x << 11);
                 x = y;
@@ -273,7 +264,7 @@ namespace Exomia.Framework.Mathematics
                 buffer[i++] = (byte)(w >> 24);
             }
 
-            if (i < buffer.Length)
+            if (i < l)
             {
                 t = x ^ (x << 11);
                 x = y;
@@ -282,13 +273,13 @@ namespace Exomia.Framework.Mathematics
                 w = w ^ (w >> 19) ^ t ^ (t >> 8);
 
                 buffer[i++] = (byte)w;
-                if (i < buffer.Length)
+                if (i < l)
                 {
                     buffer[i++] = (byte)(w >> 8);
-                    if (i < buffer.Length)
+                    if (i < l)
                     {
                         buffer[i++] = (byte)(w >> 16);
-                        if (i < buffer.Length)
+                        if (i < l)
                         {
                             buffer[i] = (byte)(w >> 24);
                         }
@@ -307,7 +298,8 @@ namespace Exomia.Framework.Mathematics
         /// <param name="buffer">the byte array to fill with random values</param>
         public unsafe void NextBytesUnsafe(byte[] buffer)
         {
-            if (buffer.Length % 8 != 0)
+            int l = buffer.Length;
+            if (l % 8 != 0)
             {
                 throw new ArgumentException("Buffer length must be divisible by 8", nameof(buffer));
             }
@@ -317,18 +309,18 @@ namespace Exomia.Framework.Mathematics
             fixed (byte* pByte0 = buffer)
             {
                 uint* pDWord = (uint*)pByte0;
-                for (int i = 0, len = buffer.Length >> 2; i < len; i += 2)
+                for (int i = 0, len = l >> 2; i < len; i += 2)
                 {
                     uint t = x ^ (x << 11);
-                    x = y;
-                    y = z;
-                    z = w;
+                    x         = y;
+                    y         = z;
+                    z         = w;
                     pDWord[i] = w = w ^ (w >> 19) ^ t ^ (t >> 8);
 
-                    t = x ^ (x << 11);
-                    x = y;
-                    y = z;
-                    z = w;
+                    t             = x ^ (x << 11);
+                    x             = y;
+                    y             = z;
+                    z             = w;
                     pDWord[i + 1] = w = w ^ (w >> 19) ^ t ^ (t >> 8);
                 }
             }
@@ -397,7 +389,5 @@ namespace Exomia.Framework.Mathematics
                 Next(min.B, max.B),
                 Next(min.A, max.A));
         }
-
-        #endregion
     }
 }

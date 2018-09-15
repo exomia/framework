@@ -31,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
+using Exomia.Framework.Graphics.SpriteSort;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -42,8 +43,6 @@ namespace Exomia.Framework.Graphics
 {
     public sealed class SpriteBatch2 : IDisposable
     {
-        #region Variables
-
         private const int MAX_BATCH_SIZE = 4096;
         private const int VERTICES_PER_SPRITE = 4;
         private const int INDICES_PER_SPRITE = 6;
@@ -70,6 +69,7 @@ namespace Exomia.Framework.Graphics
         private readonly VertexBufferBinding _vertexBufferBinding;
 
         private readonly InputLayout _vertexInputLayout;
+        private readonly ISpriteSort _spriteSort;
 
         private BlendState _blendState;
 
@@ -92,9 +92,9 @@ namespace Exomia.Framework.Graphics
         private RasterizerState _rasterizerState;
         private SamplerState _samplerState;
 
-        private Rectangle _scissoRectangle;
+        private Rectangle _scissorRectangle;
 
-        private int[] _sortIndices, _tempSortBuffer;
+        private int[] _sortIndices;
         private SpriteInfo[] _spriteQueue;
 
         private int _spriteQueueCount;
@@ -108,10 +108,6 @@ namespace Exomia.Framework.Graphics
 
         private VertexShader _vertexShader;
         private Matrix _viewMatrix;
-
-        #endregion
-
-        #region Constructors
 
         static SpriteBatch2()
         {
@@ -134,11 +130,21 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteBatch2" /> class.
         /// </summary>
-        public SpriteBatch2(IGraphicsDevice iDevice, ITexture2ContentManager manager)
+        public SpriteBatch2(IGraphicsDevice iDevice, ITexture2ContentManager manager,
+            SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
         {
-            _device = iDevice?.Device ?? throw new NullReferenceException(nameof(iDevice));
+            _device  = iDevice?.Device ?? throw new NullReferenceException(nameof(iDevice));
             _context = iDevice?.DeviceContext ?? throw new NullReferenceException(nameof(iDevice));
             _manager = manager ?? throw new NullReferenceException(nameof(manager));
+
+            switch (sortAlgorithm)
+            {
+                case SpriteSortAlgorithm.MergeSort:
+                    _spriteSort = new SpriteMergeSort();
+                    break;
+                default:
+                    throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm));
+            }
 
             Initialize(_device);
 
@@ -149,7 +155,8 @@ namespace Exomia.Framework.Graphics
                 ResourceOptionFlags.None, 0);
 
             _vertexInputLayout = new InputLayout(
-                _device, s_vertexShaderByteCode, new[]
+                _device, ShaderByteCode.VertexShaderByteCode2,
+                new[]
                 {
                     new InputElement("SV_POSITION", 0, Format.R32G32B32A32_Float, 0, 0),
                     new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 16, 0),
@@ -176,10 +183,6 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region Methods
 
         public void GenerateTexture2DArray()
         {
@@ -230,16 +233,16 @@ namespace Exomia.Framework.Graphics
                 throw new InvalidOperationException("End must be called before begin");
             }
 
-            _spriteSortMode = sortMode;
-            _blendState = blendState;
-            _samplerState = samplerState;
+            _spriteSortMode    = sortMode;
+            _blendState        = blendState;
+            _samplerState      = samplerState;
             _depthStencilState = depthStencilState;
-            _rasterizerState = rasterizerState;
-            _transformMatrix = transformMatrix ?? Matrix.Identity;
-            _viewMatrix = viewMatrix ?? Matrix.Identity;
+            _rasterizerState   = rasterizerState;
+            _transformMatrix   = transformMatrix ?? Matrix.Identity;
+            _viewMatrix        = viewMatrix ?? Matrix.Identity;
 
             _isScissorEnabled = scissorRectangle.HasValue;
-            _scissoRectangle = scissorRectangle ?? Rectangle.Empty;
+            _scissorRectangle = scissorRectangle ?? Rectangle.Empty;
 
             _isBeginCalled = true;
         }
@@ -277,8 +280,8 @@ namespace Exomia.Framework.Graphics
 
         private void InitializeShaders(Device5 device)
         {
-            _vertexShader = new VertexShader(device, s_vertexShaderByteCode);
-            _pixelShader = new PixelShader(device, s_pixelShaderByteCode);
+            _vertexShader = new VertexShader(device, ShaderByteCode.VertexShaderByteCode2);
+            _pixelShader  = new PixelShader(device, ShaderByteCode.PixelShaderByteCode2);
         }
 
         private void InitializeStates(Device5 device)
@@ -286,87 +289,91 @@ namespace Exomia.Framework.Graphics
             if (device == null) { return; }
 
             _defaultSamplerState = new SamplerState(
-                device, new SamplerStateDescription
+                device,
+                new SamplerStateDescription
                 {
-                    AddressU = TextureAddressMode.Wrap,
-                    AddressV = TextureAddressMode.Wrap,
-                    AddressW = TextureAddressMode.Wrap,
-                    BorderColor = Color.White,
+                    AddressU           = TextureAddressMode.Wrap,
+                    AddressV           = TextureAddressMode.Wrap,
+                    AddressW           = TextureAddressMode.Wrap,
+                    BorderColor        = Color.White,
                     ComparisonFunction = Comparison.Always,
-                    Filter = Filter.ComparisonMinMagMipLinear,
-                    MaximumAnisotropy = 16,
-                    MaximumLod = float.MaxValue,
-                    MinimumLod = 0,
-                    MipLodBias = 0.0f
+                    Filter             = Filter.ComparisonMinMagMipLinear,
+                    MaximumAnisotropy  = 16,
+                    MaximumLod         = float.MaxValue,
+                    MinimumLod         = 0,
+                    MipLodBias         = 0.0f
                 });
 
             BlendStateDescription description =
                 new BlendStateDescription { AlphaToCoverageEnable = false, IndependentBlendEnable = false };
             description.RenderTarget[0] = new RenderTargetBlendDescription
             {
-                IsBlendEnabled = true,
-                SourceBlend = BlendOption.One,
-                DestinationBlend = BlendOption.InverseSourceAlpha,
-                BlendOperation = BlendOperation.Add,
-                SourceAlphaBlend = BlendOption.Zero,
+                IsBlendEnabled        = true,
+                SourceBlend           = BlendOption.One,
+                DestinationBlend      = BlendOption.InverseSourceAlpha,
+                BlendOperation        = BlendOperation.Add,
+                SourceAlphaBlend      = BlendOption.Zero,
                 DestinationAlphaBlend = BlendOption.Zero,
-                AlphaBlendOperation = BlendOperation.Add,
+                AlphaBlendOperation   = BlendOperation.Add,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All
             };
             _defaultBlendState = new BlendState(device, description) { DebugName = "AlphaBlend" };
 
             _defaultDepthStencilState = new DepthStencilState(
-                device, new DepthStencilStateDescription
+                device,
+                new DepthStencilStateDescription
                 {
-                    IsDepthEnabled = false,
-                    DepthWriteMask = DepthWriteMask.All,
-                    DepthComparison = Comparison.LessEqual,
+                    IsDepthEnabled   = false,
+                    DepthWriteMask   = DepthWriteMask.All,
+                    DepthComparison  = Comparison.LessEqual,
                     IsStencilEnabled = false,
-                    StencilReadMask = 0xFF,
+                    StencilReadMask  = 0xFF,
                     StencilWriteMask = 0xFF,
                     FrontFace = new DepthStencilOperationDescription
                     {
-                        FailOperation = StencilOperation.Keep,
+                        FailOperation      = StencilOperation.Keep,
                         DepthFailOperation = StencilOperation.Increment,
-                        PassOperation = StencilOperation.Keep,
-                        Comparison = Comparison.Always
+                        PassOperation      = StencilOperation.Keep,
+                        Comparison         = Comparison.Always
                     },
                     BackFace = new DepthStencilOperationDescription
                     {
-                        FailOperation = StencilOperation.Keep,
+                        FailOperation      = StencilOperation.Keep,
                         DepthFailOperation = StencilOperation.Decrement,
-                        PassOperation = StencilOperation.Keep,
-                        Comparison = Comparison.Always
+                        PassOperation      = StencilOperation.Keep,
+                        Comparison         = Comparison.Always
                     }
                 });
 
             _defaultRasterizerState = new RasterizerState(
-                device, new RasterizerStateDescription
+                device,
+                new RasterizerStateDescription
                 {
-                    FillMode = FillMode.Solid,
-                    CullMode = CullMode.Back,
-                    IsFrontCounterClockwise = false,
-                    DepthBias = 0,
-                    DepthBiasClamp = 0,
-                    SlopeScaledDepthBias = 0,
-                    IsDepthClipEnabled = false,
-                    IsScissorEnabled = false,
-                    IsMultisampleEnabled = true,
+                    FillMode                 = FillMode.Solid,
+                    CullMode                 = CullMode.Back,
+                    IsFrontCounterClockwise  = false,
+                    DepthBias                = 0,
+                    DepthBiasClamp           = 0,
+                    SlopeScaledDepthBias     = 0,
+                    IsDepthClipEnabled       = false,
+                    IsScissorEnabled         = false,
+                    IsMultisampleEnabled     = true,
                     IsAntialiasedLineEnabled = true
                 });
 
             _defaultRasterizerScissorEnabledState = new RasterizerState(
-                device, new RasterizerStateDescription
+                device,
+                new RasterizerStateDescription
                 {
-                    FillMode = FillMode.Solid,
-                    CullMode = CullMode.Back,
-                    IsFrontCounterClockwise = false,
-                    DepthBias = 0,
-                    DepthBiasClamp = 0,
-                    SlopeScaledDepthBias = 0,
-                    IsDepthClipEnabled = false,
-                    IsScissorEnabled = true,
-                    IsMultisampleEnabled = true,
+                    FillMode                 = FillMode.Solid,
+                    CullMode                 = CullMode.Back,
+                    IsFrontCounterClockwise  = false,
+                    DepthBias                = 0,
+                    DepthBiasClamp           = 0,
+                    SlopeScaledDepthBias     = 0,
+                    IsDepthClipEnabled       = false,
+                    IsScissorEnabled         = true,
+                    IsMultisampleEnabled     = true,
                     IsAntialiasedLineEnabled = true
                 });
         }
@@ -390,13 +397,13 @@ namespace Exomia.Framework.Graphics
             {
                 _context.Rasterizer.State = _rasterizerState ?? _defaultRasterizerScissorEnabledState;
                 _context.Rasterizer.SetScissorRectangle(
-                    _scissoRectangle.Left, _scissoRectangle.Top, _scissoRectangle.Right, _scissoRectangle.Bottom);
+                    _scissorRectangle.Left, _scissorRectangle.Top, _scissorRectangle.Right, _scissorRectangle.Bottom);
             }
 
             _context.PixelShader.SetSampler(0, _samplerState ?? _defaultSamplerState);
 
             _context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            _context.InputAssembler.InputLayout = _vertexInputLayout;
+            _context.InputAssembler.InputLayout       = _vertexInputLayout;
 
             _context.VertexShader.SetConstantBuffer(0, _perFrameBuffer);
 
@@ -406,17 +413,33 @@ namespace Exomia.Framework.Graphics
             Matrix worldViewProjection = _transformMatrix * _viewMatrix * _projectionMatrix;
             worldViewProjection.Transpose();
 
-            ConstantFrameBuffer cBuffer = new ConstantFrameBuffer
-                { WorldViewProjection = worldViewProjection };
+            ConstantFrameBuffer cBuffer;
+            cBuffer.WorldViewProjection = worldViewProjection;
 
             _context.UpdateSubresource(ref cBuffer, _perFrameBuffer);
+
+            //TODO: working?
+            //_context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
         }
 
         private void FlushBatch()
         {
-            if (_spriteSortMode != SpriteSortMode.Deferred)
+            switch (_spriteSortMode)
             {
-                SortSprites();
+                case SpriteSortMode.BackToFront:
+                    for (int i = 0; i < _spriteQueueCount; ++i)
+                    {
+                        _sortIndices[i] = i;
+                    }
+                    _spriteSort.SortBf(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
+                    break;
+                case SpriteSortMode.FrontToBack:
+                    for (int i = 0; i < _spriteQueueCount; ++i)
+                    {
+                        _sortIndices[i] = i;
+                    }
+                    _spriteSort.SortFb(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
+                    break;
             }
 
             DrawBatchPerTexture(_spriteQueue, 0, _spriteQueueCount);
@@ -449,6 +472,7 @@ namespace Exomia.Framework.Graphics
                         {
                             for (int i = 0; i < middle; i++)
                             {
+                                // ReSharper disable once AccessToModifiedClosure
                                 int index = i + offset;
                                 if (_spriteSortMode != SpriteSortMode.Deferred)
                                 {
@@ -462,6 +486,7 @@ namespace Exomia.Framework.Graphics
                         {
                             for (int i = middle; i < batchSize; i++)
                             {
+                                // ReSharper disable once AccessToModifiedClosure
                                 int index = i + offset;
                                 if (_spriteSortMode != SpriteSortMode.Deferred)
                                 {
@@ -489,7 +514,7 @@ namespace Exomia.Framework.Graphics
                 _context.DrawIndexed(INDICES_PER_SPRITE * batchSize, 0, 0);
 
                 offset += batchSize;
-                count -= batchSize;
+                count  -= batchSize;
             }
         }
 
@@ -497,8 +522,20 @@ namespace Exomia.Framework.Graphics
             VertexPositionColorTexture* vpctPtr, float deltaX, float deltaY)
         {
             Vector2 origin = spriteInfo.Origin;
-            origin.X /= spriteInfo.Source.Width == 0f ? float.Epsilon : spriteInfo.Source.Width;
-            origin.Y /= spriteInfo.Source.Height == 0f ? float.Epsilon : spriteInfo.Source.Height;
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Source.Width != 0f)
+            {
+                origin.X /= spriteInfo.Source.Width;
+            }
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Source.Height != 0f)
+            {
+                origin.Y /= spriteInfo.Source.Height;
+            }
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (spriteInfo.Rotation == 0f)
             {
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
@@ -519,7 +556,7 @@ namespace Exomia.Framework.Graphics
                     vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
-                    corner = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
+                    corner    = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
                     vertex->U = (spriteInfo.Source.X + corner.X * spriteInfo.Source.Width) * deltaX;
                     vertex->V = (spriteInfo.Source.Y + corner.Y * spriteInfo.Source.Height) * deltaY;
                     vertex->I = spriteInfo.Index;
@@ -547,7 +584,7 @@ namespace Exomia.Framework.Graphics
                     vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
-                    corner = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
+                    corner    = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
                     vertex->U = (spriteInfo.Source.X + corner.X * spriteInfo.Source.Width) * deltaX;
                     vertex->V = (spriteInfo.Source.Y + corner.Y * spriteInfo.Source.Height) * deltaY;
                     vertex->I = spriteInfo.Index;
@@ -555,41 +592,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        private void SortSprites()
-        {
-            if (_sortIndices == null || _sortIndices.Length < _spriteQueueCount)
-            {
-                _sortIndices = new int[_spriteQueueCount];
-                _tempSortBuffer = new int[_spriteQueueCount];
-            }
-
-            for (int i = 0; i < _spriteQueueCount; i++)
-            {
-                _sortIndices[i] = i;
-            }
-
-            switch (_spriteSortMode)
-            {
-                case SpriteSortMode.BackToFront:
-                case SpriteSortMode.FrontToBack:
-                    MergeSortSpriteInfoParallel(_spriteQueue, _sortIndices, 0, _spriteQueueCount - 1, _tempSortBuffer);
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        #endregion
-
-        #region Nested
-
-        [StructLayout(LayoutKind.Explicit, Size = 64)]
-        private struct ConstantFrameBuffer
-        {
-            [FieldOffset(0)] public Matrix WorldViewProjection;
-        }
-
-        private struct SpriteInfo
+        internal struct SpriteInfo
         {
             public RectangleF Source;
             public RectangleF Destination;
@@ -602,25 +605,49 @@ namespace Exomia.Framework.Graphics
             public int Index;
         }
 
+        [StructLayout(LayoutKind.Explicit, Size = 64)]
+        private struct ConstantFrameBuffer
+        {
+            [FieldOffset(0)]
+            public Matrix WorldViewProjection;
+        }
+
         [StructLayout(LayoutKind.Explicit, Size = 44)]
         private struct VertexPositionColorTexture
         {
-            [FieldOffset(0)] public float X;
-            [FieldOffset(4)] public float Y;
-            [FieldOffset(8)] public float Z;
-            [FieldOffset(12)] public float W;
+            [FieldOffset(0)]
+            public float X;
 
-            [FieldOffset(16)] public float R;
-            [FieldOffset(20)] public float G;
-            [FieldOffset(24)] public float B;
-            [FieldOffset(28)] public float A;
+            [FieldOffset(4)]
+            public float Y;
 
-            [FieldOffset(32)] public float U;
-            [FieldOffset(36)] public float V;
-            [FieldOffset(40)] public float I;
+            [FieldOffset(8)]
+            public float Z;
+
+            [FieldOffset(12)]
+            public float W;
+
+            [FieldOffset(16)]
+            public float R;
+
+            [FieldOffset(20)]
+            public float G;
+
+            [FieldOffset(24)]
+            public float B;
+
+            [FieldOffset(28)]
+            public float A;
+
+            [FieldOffset(32)]
+            public float U;
+
+            [FieldOffset(36)]
+            public float V;
+
+            [FieldOffset(40)]
+            public float I;
         }
-
-        #endregion
 
         #region Drawing
 
@@ -633,17 +660,16 @@ namespace Exomia.Framework.Graphics
         }
 
         public void DrawRectangle(in RectangleF destinationRectangle, in Color color, float lineWidth, float rotation,
-            Vector2 origin, float opacity, float layerDepth)
+            in Vector2 origin, float opacity, float layerDepth)
         {
             Vector2[] vertex = null;
 
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (rotation == 0.0f)
             {
                 vertex = new Vector2[4]
                 {
-                    destinationRectangle.TopLeft,
-                    destinationRectangle.TopRight,
-                    destinationRectangle.BottomRight,
+                    destinationRectangle.TopLeft, destinationRectangle.TopRight, destinationRectangle.BottomRight,
                     destinationRectangle.BottomLeft
                 };
             }
@@ -651,18 +677,27 @@ namespace Exomia.Framework.Graphics
             {
                 vertex = new Vector2[4];
 
-                origin.X /= destinationRectangle.Width == 0f ? float.Epsilon : destinationRectangle.Width;
-                origin.Y /= destinationRectangle.Height == 0f ? float.Epsilon : destinationRectangle.Height;
+                Vector2 o = origin;
+
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (destinationRectangle.Width == 0f)
+                {
+                    o.X /= destinationRectangle.Width;
+                }
+
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (destinationRectangle.Height == 0f)
+                {
+                    o.X /= destinationRectangle.Height;
+                }
 
                 float cos = (float)Math.Cos(rotation);
                 float sin = (float)Math.Sin(rotation);
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
                 {
-                    Vector2 pos = Vector2.Zero;
-
                     Vector2 corner = s_corner_offsets[j];
-                    float posX = (corner.X - origin.X) * destinationRectangle.Width;
-                    float posY = (corner.Y - origin.Y) * destinationRectangle.Height;
+                    float posX = (corner.X - o.X) * destinationRectangle.Width;
+                    float posY = (corner.Y - o.Y) * destinationRectangle.Height;
 
                     vertex[j] = new Vector2(
                         destinationRectangle.X + posX * cos - posY * sin,
@@ -718,11 +753,12 @@ namespace Exomia.Framework.Graphics
         {
             if (vertex.Length > 1)
             {
-                for (int i = 0; i < vertex.Length - 1; i++)
+                int l = vertex.Length - 1;
+                for (int i = 0; i < l; i++)
                 {
                     DrawLine(vertex[i], vertex[i + 1], color, lineWidth, opacity, layerDepth);
                 }
-                DrawLine(vertex[vertex.Length - 1], vertex[0], color, lineWidth, opacity, layerDepth);
+                DrawLine(vertex[l], vertex[0], color, lineWidth, opacity, layerDepth);
             }
         }
 
@@ -742,8 +778,8 @@ namespace Exomia.Framework.Graphics
 
             for (int i = 0; i < segments; i++)
             {
-                vertex[i] = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-                theta += increment;
+                vertex[i] =  center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
+                theta     += increment;
             }
 
             DrawPolygon(vertex, color, lineWidth, opacity, layerDepth);
@@ -892,6 +928,7 @@ namespace Exomia.Framework.Graphics
 
             if (_spriteQueueCount >= _spriteQueue.Length)
             {
+                _sortIndices = new int[_spriteQueue.Length * 2];
                 Array.Resize(ref _spriteQueue, _spriteQueue.Length * 2);
             }
 
@@ -906,15 +943,15 @@ namespace Exomia.Framework.Graphics
                     {
                         spriteInfo->Source.X = texture.SourceRectangle.X + rectangle.X + 0.5f;
                         spriteInfo->Source.Y = texture.SourceRectangle.Y + rectangle.Y + 0.5f;
-                        width = rectangle.Width - 1.0f;
-                        height = rectangle.Height - 1.0f;
+                        width                = rectangle.Width - 1.0f;
+                        height               = rectangle.Height - 1.0f;
                     }
                     else
                     {
                         spriteInfo->Source.X = texture.SourceRectangle.X + rectangle.X;
                         spriteInfo->Source.Y = texture.SourceRectangle.Y + rectangle.Y;
-                        width = rectangle.Width;
-                        height = rectangle.Height;
+                        width                = rectangle.Width;
+                        height               = rectangle.Height;
                     }
                 }
                 else
@@ -924,36 +961,36 @@ namespace Exomia.Framework.Graphics
                     {
                         spriteInfo->Source.X = rectangle.X + 0.5f;
                         spriteInfo->Source.Y = rectangle.Y + 0.5f;
-                        width = rectangle.Width - 1.0f;
-                        height = rectangle.Height - 1.0f;
+                        width                = rectangle.Width - 1.0f;
+                        height               = rectangle.Height - 1.0f;
                     }
                     else
                     {
                         spriteInfo->Source.X = rectangle.X;
                         spriteInfo->Source.Y = rectangle.Y;
-                        width = rectangle.Width;
-                        height = rectangle.Height;
+                        width                = rectangle.Width;
+                        height               = rectangle.Height;
                     }
                 }
 
-                spriteInfo->Source.Width = width;
+                spriteInfo->Source.Width  = width;
                 spriteInfo->Source.Height = height;
 
                 spriteInfo->Destination = destination;
                 if (scaleDestination)
                 {
-                    spriteInfo->Destination.Width *= width;
+                    spriteInfo->Destination.Width  *= width;
                     spriteInfo->Destination.Height *= height;
                 }
 
-                spriteInfo->Index = texture.AtlasIndex;
-                spriteInfo->Origin.X = origin.X;
-                spriteInfo->Origin.Y = origin.Y;
-                spriteInfo->Rotation = rotation;
-                spriteInfo->Depth = depth;
+                spriteInfo->Index         = texture.AtlasIndex;
+                spriteInfo->Origin.X      = origin.X;
+                spriteInfo->Origin.Y      = origin.Y;
+                spriteInfo->Rotation      = rotation;
+                spriteInfo->Depth         = depth;
                 spriteInfo->SpriteEffects = effects;
-                spriteInfo->Color = color;
-                spriteInfo->Opacity = opacity;
+                spriteInfo->Color         = color;
+                spriteInfo->Opacity       = opacity;
             }
         }
 
@@ -1028,92 +1065,6 @@ namespace Exomia.Framework.Graphics
 
         #endregion
 
-        #region Sorting
-
-        private void MergeSortSpriteInfo(SpriteInfo[] sInfo, int[] arr, int left, int right, int[] tempArray)
-        {
-            if (left < right)
-            {
-                int middle = (left + right) >> 1;
-                MergeSortSpriteInfo(sInfo, arr, left, middle, tempArray);
-                MergeSortSpriteInfo(sInfo, arr, middle + 1, right, tempArray);
-                MergeSpriteInfo(sInfo, arr, left, middle, middle + 1, right, tempArray);
-            }
-        }
-
-        private void MergeSortSpriteInfoParallel(SpriteInfo[] sInfo, int[] arr, int left, int right, int[] tempArray)
-        {
-            if (left < right)
-            {
-                int middle = (left + right) >> 1;
-                if (right - left > SEQUENTIAL_THRESHOLD)
-                {
-                    Parallel.Invoke(
-                        () => MergeSortSpriteInfoParallel(sInfo, arr, left, middle, tempArray),
-                        () => MergeSortSpriteInfoParallel(sInfo, arr, middle + 1, right, tempArray));
-                }
-                else
-                {
-                    MergeSortSpriteInfo(sInfo, arr, left, middle, tempArray);
-                    MergeSortSpriteInfo(sInfo, arr, middle + 1, right, tempArray);
-                }
-                MergeSpriteInfo(sInfo, arr, left, middle, middle + 1, right, tempArray);
-            }
-        }
-
-        private void MergeSpriteInfo(SpriteInfo[] sInfo, int[] arr, int left, int middle, int middle1, int right,
-            int[] tempArray)
-        {
-            int oldPosition = left;
-            int size = right - left + 1;
-
-            int i = 0;
-            while (left <= middle && middle1 <= right)
-            {
-                switch (_spriteSortMode)
-                {
-                    case SpriteSortMode.BackToFront:
-                        if (sInfo[arr[left]].Depth >= sInfo[arr[middle1]].Depth)
-                        {
-                            tempArray[oldPosition + i++] = arr[left++];
-                        }
-                        else
-                        {
-                            tempArray[oldPosition + i++] = arr[middle1++];
-                        }
-                        break;
-                    case SpriteSortMode.FrontToBack:
-                        if (sInfo[arr[left]].Depth <= sInfo[arr[middle1]].Depth)
-                        {
-                            tempArray[oldPosition + i++] = arr[left++];
-                        }
-                        else
-                        {
-                            tempArray[oldPosition + i++] = arr[middle1++];
-                        }
-                        break;
-                }
-            }
-            if (left > middle)
-            {
-                for (int j = middle1; j <= right; j++)
-                {
-                    tempArray[oldPosition + i++] = arr[middle1++];
-                }
-            }
-            else
-            {
-                for (int j = left; j <= middle; j++)
-                {
-                    tempArray[oldPosition + i++] = arr[left++];
-                }
-            }
-            System.Buffer.BlockCopy(
-                tempArray, sizeof(int) * oldPosition, arr, sizeof(int) * oldPosition, sizeof(int) * size);
-        }
-
-        #endregion
-
         #region IDisposable Support
 
         private bool _disposed;
@@ -1148,1794 +1099,6 @@ namespace Exomia.Framework.Graphics
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        #endregion
-
-        #region ShaderByteCodes
-
-        private static readonly byte[] s_vertexShaderByteCode =
-        {
-            68,
-            88,
-            66,
-            67,
-            193,
-            41,
-            167,
-            231,
-            222,
-            242,
-            129,
-            53,
-            212,
-            74,
-            158,
-            107,
-            19,
-            181,
-            108,
-            178,
-            1,
-            0,
-            0,
-            0,
-            12,
-            4,
-            0,
-            0,
-            5,
-            0,
-            0,
-            0,
-            52,
-            0,
-            0,
-            0,
-            88,
-            1,
-            0,
-            0,
-            204,
-            1,
-            0,
-            0,
-            64,
-            2,
-            0,
-            0,
-            112,
-            3,
-            0,
-            0,
-            82,
-            68,
-            69,
-            70,
-            28,
-            1,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            104,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            60,
-            0,
-            0,
-            0,
-            0,
-            5,
-            254,
-            255,
-            0,
-            193,
-            0,
-            0,
-            244,
-            0,
-            0,
-            0,
-            82,
-            68,
-            49,
-            49,
-            60,
-            0,
-            0,
-            0,
-            24,
-            0,
-            0,
-            0,
-            32,
-            0,
-            0,
-            0,
-            40,
-            0,
-            0,
-            0,
-            36,
-            0,
-            0,
-            0,
-            12,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            92,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            80,
-            101,
-            114,
-            70,
-            114,
-            97,
-            109,
-            101,
-            0,
-            171,
-            171,
-            171,
-            92,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            128,
-            0,
-            0,
-            0,
-            64,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            168,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            64,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            208,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            255,
-            255,
-            255,
-            255,
-            0,
-            0,
-            0,
-            0,
-            255,
-            255,
-            255,
-            255,
-            0,
-            0,
-            0,
-            0,
-            103,
-            95,
-            87,
-            111,
-            114,
-            108,
-            100,
-            86,
-            105,
-            101,
-            119,
-            80,
-            114,
-            111,
-            106,
-            101,
-            99,
-            116,
-            105,
-            111,
-            110,
-            77,
-            97,
-            116,
-            114,
-            105,
-            120,
-            0,
-            102,
-            108,
-            111,
-            97,
-            116,
-            52,
-            120,
-            52,
-            0,
-            171,
-            171,
-            171,
-            3,
-            0,
-            3,
-            0,
-            4,
-            0,
-            4,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            196,
-            0,
-            0,
-            0,
-            77,
-            105,
-            99,
-            114,
-            111,
-            115,
-            111,
-            102,
-            116,
-            32,
-            40,
-            82,
-            41,
-            32,
-            72,
-            76,
-            83,
-            76,
-            32,
-            83,
-            104,
-            97,
-            100,
-            101,
-            114,
-            32,
-            67,
-            111,
-            109,
-            112,
-            105,
-            108,
-            101,
-            114,
-            32,
-            49,
-            48,
-            46,
-            49,
-            0,
-            73,
-            83,
-            71,
-            78,
-            108,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            8,
-            0,
-            0,
-            0,
-            80,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            15,
-            15,
-            0,
-            0,
-            92,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            15,
-            15,
-            0,
-            0,
-            98,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            7,
-            7,
-            0,
-            0,
-            83,
-            86,
-            95,
-            80,
-            79,
-            83,
-            73,
-            84,
-            73,
-            79,
-            78,
-            0,
-            67,
-            79,
-            76,
-            79,
-            82,
-            0,
-            84,
-            69,
-            88,
-            67,
-            79,
-            79,
-            82,
-            68,
-            0,
-            171,
-            79,
-            83,
-            71,
-            78,
-            108,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            8,
-            0,
-            0,
-            0,
-            80,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            15,
-            0,
-            0,
-            0,
-            92,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            15,
-            0,
-            0,
-            0,
-            98,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            7,
-            8,
-            0,
-            0,
-            83,
-            86,
-            95,
-            80,
-            79,
-            83,
-            73,
-            84,
-            73,
-            79,
-            78,
-            0,
-            67,
-            79,
-            76,
-            79,
-            82,
-            0,
-            84,
-            69,
-            88,
-            67,
-            79,
-            79,
-            82,
-            68,
-            0,
-            171,
-            83,
-            72,
-            69,
-            88,
-            40,
-            1,
-            0,
-            0,
-            80,
-            0,
-            1,
-            0,
-            74,
-            0,
-            0,
-            0,
-            106,
-            8,
-            0,
-            1,
-            89,
-            0,
-            0,
-            4,
-            70,
-            142,
-            32,
-            0,
-            0,
-            0,
-            0,
-            0,
-            4,
-            0,
-            0,
-            0,
-            95,
-            0,
-            0,
-            3,
-            242,
-            16,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            95,
-            0,
-            0,
-            3,
-            242,
-            16,
-            16,
-            0,
-            1,
-            0,
-            0,
-            0,
-            95,
-            0,
-            0,
-            3,
-            114,
-            16,
-            16,
-            0,
-            2,
-            0,
-            0,
-            0,
-            103,
-            0,
-            0,
-            4,
-            242,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            101,
-            0,
-            0,
-            3,
-            242,
-            32,
-            16,
-            0,
-            1,
-            0,
-            0,
-            0,
-            101,
-            0,
-            0,
-            3,
-            114,
-            32,
-            16,
-            0,
-            2,
-            0,
-            0,
-            0,
-            17,
-            0,
-            0,
-            8,
-            18,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            30,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            142,
-            32,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            17,
-            0,
-            0,
-            8,
-            34,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            30,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            142,
-            32,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            17,
-            0,
-            0,
-            8,
-            66,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            30,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            142,
-            32,
-            0,
-            0,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            17,
-            0,
-            0,
-            8,
-            130,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            30,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            142,
-            32,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            56,
-            0,
-            0,
-            10,
-            242,
-            32,
-            16,
-            0,
-            1,
-            0,
-            0,
-            0,
-            70,
-            30,
-            16,
-            0,
-            1,
-            0,
-            0,
-            0,
-            2,
-            64,
-            0,
-            0,
-            129,
-            128,
-            128,
-            59,
-            129,
-            128,
-            128,
-            59,
-            129,
-            128,
-            128,
-            59,
-            129,
-            128,
-            128,
-            59,
-            54,
-            0,
-            0,
-            5,
-            114,
-            32,
-            16,
-            0,
-            2,
-            0,
-            0,
-            0,
-            70,
-            18,
-            16,
-            0,
-            2,
-            0,
-            0,
-            0,
-            62,
-            0,
-            0,
-            1,
-            83,
-            84,
-            65,
-            84,
-            148,
-            0,
-            0,
-            0,
-            7,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            6,
-            0,
-            0,
-            0,
-            5,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        };
-
-        private static readonly byte[] s_pixelShaderByteCode =
-        {
-            68,
-            88,
-            66,
-            67,
-            244,
-            58,
-            132,
-            71,
-            254,
-            234,
-            26,
-            88,
-            180,
-            238,
-            178,
-            127,
-            135,
-            200,
-            161,
-            50,
-            1,
-            0,
-            0,
-            0,
-            228,
-            2,
-            0,
-            0,
-            5,
-            0,
-            0,
-            0,
-            52,
-            0,
-            0,
-            0,
-            248,
-            0,
-            0,
-            0,
-            108,
-            1,
-            0,
-            0,
-            160,
-            1,
-            0,
-            0,
-            72,
-            2,
-            0,
-            0,
-            82,
-            68,
-            69,
-            70,
-            188,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            60,
-            0,
-            0,
-            0,
-            0,
-            5,
-            255,
-            255,
-            0,
-            193,
-            0,
-            0,
-            145,
-            0,
-            0,
-            0,
-            82,
-            68,
-            49,
-            49,
-            60,
-            0,
-            0,
-            0,
-            24,
-            0,
-            0,
-            0,
-            32,
-            0,
-            0,
-            0,
-            40,
-            0,
-            0,
-            0,
-            36,
-            0,
-            0,
-            0,
-            12,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            124,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            134,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            5,
-            0,
-            0,
-            0,
-            5,
-            0,
-            0,
-            0,
-            255,
-            255,
-            255,
-            255,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            13,
-            0,
-            0,
-            0,
-            103,
-            95,
-            83,
-            97,
-            109,
-            112,
-            108,
-            101,
-            114,
-            0,
-            103,
-            95,
-            84,
-            101,
-            120,
-            116,
-            117,
-            114,
-            101,
-            115,
-            0,
-            77,
-            105,
-            99,
-            114,
-            111,
-            115,
-            111,
-            102,
-            116,
-            32,
-            40,
-            82,
-            41,
-            32,
-            72,
-            76,
-            83,
-            76,
-            32,
-            83,
-            104,
-            97,
-            100,
-            101,
-            114,
-            32,
-            67,
-            111,
-            109,
-            112,
-            105,
-            108,
-            101,
-            114,
-            32,
-            49,
-            48,
-            46,
-            49,
-            0,
-            171,
-            171,
-            171,
-            73,
-            83,
-            71,
-            78,
-            108,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            8,
-            0,
-            0,
-            0,
-            80,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            15,
-            0,
-            0,
-            0,
-            92,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            15,
-            15,
-            0,
-            0,
-            98,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            2,
-            0,
-            0,
-            0,
-            7,
-            7,
-            0,
-            0,
-            83,
-            86,
-            95,
-            80,
-            79,
-            83,
-            73,
-            84,
-            73,
-            79,
-            78,
-            0,
-            67,
-            79,
-            76,
-            79,
-            82,
-            0,
-            84,
-            69,
-            88,
-            67,
-            79,
-            79,
-            82,
-            68,
-            0,
-            171,
-            79,
-            83,
-            71,
-            78,
-            44,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            8,
-            0,
-            0,
-            0,
-            32,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            15,
-            0,
-            0,
-            0,
-            83,
-            86,
-            95,
-            84,
-            65,
-            82,
-            71,
-            69,
-            84,
-            0,
-            171,
-            171,
-            83,
-            72,
-            69,
-            88,
-            160,
-            0,
-            0,
-            0,
-            80,
-            0,
-            0,
-            0,
-            40,
-            0,
-            0,
-            0,
-            106,
-            8,
-            0,
-            1,
-            90,
-            0,
-            0,
-            3,
-            0,
-            96,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            88,
-            64,
-            0,
-            4,
-            0,
-            112,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            85,
-            85,
-            0,
-            0,
-            98,
-            16,
-            0,
-            3,
-            242,
-            16,
-            16,
-            0,
-            1,
-            0,
-            0,
-            0,
-            98,
-            16,
-            0,
-            3,
-            114,
-            16,
-            16,
-            0,
-            2,
-            0,
-            0,
-            0,
-            101,
-            0,
-            0,
-            3,
-            242,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            104,
-            0,
-            0,
-            2,
-            1,
-            0,
-            0,
-            0,
-            69,
-            0,
-            0,
-            139,
-            2,
-            2,
-            0,
-            128,
-            67,
-            85,
-            21,
-            0,
-            242,
-            0,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            18,
-            16,
-            0,
-            2,
-            0,
-            0,
-            0,
-            70,
-            126,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            96,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            56,
-            0,
-            0,
-            7,
-            242,
-            32,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            14,
-            16,
-            0,
-            0,
-            0,
-            0,
-            0,
-            70,
-            30,
-            16,
-            0,
-            1,
-            0,
-            0,
-            0,
-            62,
-            0,
-            0,
-            1,
-            83,
-            84,
-            65,
-            84,
-            148,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        };
 
         #endregion
     }

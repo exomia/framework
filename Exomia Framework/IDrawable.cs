@@ -32,8 +32,6 @@ namespace Exomia.Framework
     /// </summary>
     public interface IDrawable
     {
-        #region Variables
-
         /// <summary>
         ///     Occurs when the <see cref="DrawOrder" /> property changes.
         /// </summary>
@@ -43,10 +41,6 @@ namespace Exomia.Framework
         ///     Occurs when the <see cref="Visible" /> property changes.
         /// </summary>
         event EventHandler<EventArgs> VisibleChanged;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets a value indicating whether the <see cref="Draw" /> method should be called by <see cref="Game" />.
@@ -59,10 +53,6 @@ namespace Exomia.Framework
         /// </summary>
         /// <value>The draw order.</value>
         int DrawOrder { get; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
@@ -80,7 +70,5 @@ namespace Exomia.Framework
         ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
         /// </summary>
         void EndDraw();
-
-        #endregion
     }
 }

@@ -33,14 +33,8 @@ namespace Exomia.Framework.ContentSerialization
     /// </summary>
     public class ContentSerializationContext
     {
-        #region Properties
-
         internal Dictionary<string, ContentSerializationContextValue> Content { get; } =
             new Dictionary<string, ContentSerializationContextValue>();
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Returns the key Value of the given key
@@ -92,18 +86,16 @@ namespace Exomia.Framework.ContentSerialization
                     "the context already contains a key with name: '" + key + "'", nameof(key));
             }
         }
-
-        #endregion
     }
 
-    internal struct ContentSerializationContextValue
+    struct ContentSerializationContextValue
     {
         public Type Type;
         public object Object;
 
         public ContentSerializationContextValue(Type type, object obj)
         {
-            Type = type;
+            Type   = type;
             Object = obj;
         }
     }

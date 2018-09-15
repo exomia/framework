@@ -32,8 +32,6 @@ namespace Exomia.Framework.Noise
 {
     public abstract class NoiseBase : INoise
     {
-        #region Variables
-
         protected const int X_PRIME = 1103;
         protected const int Y_PRIME = 29401;
         protected const int Z_PRIME = 6833;
@@ -45,33 +43,17 @@ namespace Exomia.Framework.Noise
 
         protected static readonly Vector2[] Grad_2D =
         {
-            new Vector2(-1.0f, -1.0f),
-            new Vector2(1.0f, -1.0f),
-            new Vector2(-1.0f, 1.0f),
-            new Vector2(1.0f, 1.0f),
-            new Vector2(0.0f, -1.0f),
-            new Vector2(-1.0f, 0.0f),
-            new Vector2(0.0f, 1.0f),
-            new Vector2(1.0f, 0.0f)
+            new Vector2(-1.0f, -1.0f), new Vector2(1.0f, -1.0f), new Vector2(-1.0f, 1.0f), new Vector2(1.0f, 1.0f),
+            new Vector2(0.0f, -1.0f), new Vector2(-1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f)
         };
 
         protected static readonly Vector3[] Grad_3D =
         {
-            new Vector3(1.0f, 1.0f, 0.0f),
-            new Vector3(-1.0f, 1.0f, 0.0f),
-            new Vector3(1.0f, -1.0f, 0.0f),
-            new Vector3(-1.0f, -1.0f, 0.0f),
-            new Vector3(1.0f, 0.0f, 1.0f),
-            new Vector3(-1.0f, 0.0f, 1.0f),
-            new Vector3(1.0f, 0.0f, -1.0f),
-            new Vector3(-1.0f, 0.0f, -1.0f),
-            new Vector3(0.0f, 1.0f, 1.0f),
-            new Vector3(0.0f, -1.0f, 1.0f),
-            new Vector3(0.0f, 1.0f, -1.0f),
-            new Vector3(0.0f, -1.0f, -1.0f),
-            new Vector3(1.0f, 1.0f, 0.0f),
-            new Vector3(0.0f, -1.0f, 1.0f),
-            new Vector3(-1.0f, 1.0f, 0.0f),
+            new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f),
+            new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(1.0f, 0.0f, 1.0f), new Vector3(-1.0f, 0.0f, 1.0f),
+            new Vector3(1.0f, 0.0f, -1.0f), new Vector3(-1.0f, 0.0f, -1.0f), new Vector3(0.0f, 1.0f, 1.0f),
+            new Vector3(0.0f, -1.0f, 1.0f), new Vector3(0.0f, 1.0f, -1.0f), new Vector3(0.0f, -1.0f, -1.0f),
+            new Vector3(1.0f, 1.0f, 0.0f), new Vector3(0.0f, -1.0f, 1.0f), new Vector3(-1.0f, 1.0f, 0.0f),
             new Vector3(0.0f, -1.0f, -1.0f)
         };
 
@@ -88,10 +70,6 @@ namespace Exomia.Framework.Noise
 
         protected int _seed;
 
-        #endregion
-
-        #region Constructors
-
         protected NoiseBase(int seed, float frequency)
             : this(seed, frequency, 0, 0f, 0f, NoiseInterpolationType.Linear, NoiseFractalType.None) { }
 
@@ -106,20 +84,16 @@ namespace Exomia.Framework.Noise
         protected NoiseBase(int seed, float frequency, int octaves, float lacunarity, float gain,
             NoiseInterpolationType noiseInterpolationType, NoiseFractalType noiseFractalType)
         {
-            _seed = seed;
-            _frequency = frequency;
-            _octaves = octaves;
-            _lacunarity = lacunarity;
-            _gain = gain;
+            _seed                   = seed;
+            _frequency              = frequency;
+            _octaves                = octaves;
+            _lacunarity             = lacunarity;
+            _gain                   = gain;
             _noiseInterpolationType = noiseInterpolationType;
-            _noiseFractalType = noiseFractalType;
+            _noiseFractalType       = noiseFractalType;
 
             CalculateFractalBounding();
         }
-
-        #endregion
-
-        #region Methods
 
         /// <inheritdoc />
         public float[] GenerateNoise1D(int x, int xmax)
@@ -170,12 +144,10 @@ namespace Exomia.Framework.Noise
             for (int i = 1; i < _octaves; i++)
             {
                 ampFractal += amp;
-                amp *= _gain;
+                amp        *= _gain;
             }
             _fractalBounding = 1.0f / ampFractal;
         }
-
-        #endregion
 
         #region Hasing
 

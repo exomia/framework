@@ -32,8 +32,6 @@ namespace Exomia.Framework.Content.Exceptions
     /// </summary>
     public class AssetNotFoundException : Exception
     {
-        #region Constructors
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Content.Exceptions.AssetNotFoundException" />
@@ -60,7 +58,5 @@ namespace Exomia.Framework.Content.Exceptions
         /// <param name="innerException">The inner exception.</param>
         public AssetNotFoundException(string message, Exception innerException)
             : base(message, innerException) { }
-
-        #endregion
     }
 }

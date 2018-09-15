@@ -30,10 +30,8 @@ using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Graphics
 {
-    internal sealed class SpriteFontContentReader : IContentReader
+    sealed class SpriteFontContentReader : IContentReader
     {
-        #region Methods
-
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont font = ContentSerializer.Read<SpriteFont>(parameters.Stream);
@@ -52,7 +50,7 @@ namespace Exomia.Framework.Graphics
             {
                 using (MemoryStream ms = new MemoryStream(font.ImageData))
                 {
-                    ms.Position = 0;
+                    ms.Position  = 0;
                     font.Texture = Texture.Load(graphicsDevice.Device, ms);
                 }
             }
@@ -60,14 +58,10 @@ namespace Exomia.Framework.Graphics
 
             return font;
         }
-
-        #endregion
     }
 
-    internal sealed class SpriteFont2ContentReader : IContentReader
+    sealed class SpriteFont2ContentReader : IContentReader
     {
-        #region Methods
-
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont2 font = ContentSerializer.Read<SpriteFont2>(parameters.Stream);
@@ -88,7 +82,7 @@ namespace Exomia.Framework.Graphics
             {
                 using (MemoryStream ms = new MemoryStream(font.ImageData))
                 {
-                    ms.Position = 0;
+                    ms.Position   = 0;
                     font.Texture2 = manager.AddTexture(ms, parameters.AssetName);
                 }
             }
@@ -96,7 +90,5 @@ namespace Exomia.Framework.Graphics
 
             return font;
         }
-
-        #endregion
     }
 }

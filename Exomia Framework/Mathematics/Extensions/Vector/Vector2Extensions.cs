@@ -26,17 +26,15 @@ using System;
 using System.Runtime.CompilerServices;
 using SharpDX;
 
-namespace Exomia.Framework.Mathematics
+namespace Exomia.Framework.Mathematics.Extensions.Vector
 {
     /// <summary>
     ///     Vector2Extensions static class
     /// </summary>
     public static class Vector2Extensions
     {
-        #region Methods
-
         /// <summary>
-        ///     rotate a vectort by an angle (in radian)
+        ///     rotate a vector by an angle (in radian)
         /// </summary>
         /// <param name="vec">this vec</param>
         /// <param name="angle">angle</param>
@@ -96,7 +94,5 @@ namespace Exomia.Framework.Mathematics
             float length = vec1.Length() * vec2.Length();
             return Math.Cos(scalar / length);
         }
-
-        #endregion
     }
 }
