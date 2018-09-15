@@ -186,6 +186,10 @@
     <Compile Include="AComponent.cs" />
     <Compile Include="ADrawableComponent.cs" />
     <Compile Include="ARenderer.cs" />
+    <Compile Include="Graphics\ShaderByteCode.cs" />
+    <Compile Include="Graphics\SpriteFont2.cs" />
+    <Compile Include="Graphics\SpriteFontCR.cs" />
+    <Compile Include="Graphics\SpriteFontCW.cs" />
     <Compile Include="Graphics\SpriteSort\ISpriteSort.cs" />
     <Compile Include="Graphics\SpriteSort\SpriteMergeSort.cs" />
     <Compile Include="ICloneable.cs" />
@@ -202,6 +206,7 @@
     <Compile Include="Linq\ForEach.cs" />
     <Compile Include="Linq\Min.cs" />
     <Compile Include="Linq\Sum.cs" />
+    <Compile Include="Mathematics\Math2.Curves.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameGraphicsParameters.cs" />
@@ -225,9 +230,9 @@
     <Compile Include="Input\RawInputDevice.cs" />
     <Compile Include="Input\WinFormsInputDevice.cs" />
     <Compile Include="Mathematics\Math2.cs" />
-    <Compile Include="Mathematics\NumericExtensions.cs" />
+    <Compile Include="Mathematics\Extensions\Numeric\NumericExtensions.cs" />
     <Compile Include="Mathematics\Random2.cs" />
-    <Compile Include="Mathematics\Vector2Extensions.cs" />
+    <Compile Include="Mathematics\Extensions\Vector\Vector2Extensions.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Noise\NoiseBase.cs" />
     <Compile Include="Noise\PerlinNoise.cs" />
@@ -253,6 +258,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".dispose" />
+    <Compile Include="Mathematics\Math2.MV.cs" />
     <None Include="packages.config" />
     <None Include="Resources\arial_ansi_12px.ds1" />
     <None Include="Resources\arial_ansi_12px.ds2" />

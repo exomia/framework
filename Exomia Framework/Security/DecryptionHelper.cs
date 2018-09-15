@@ -49,26 +49,26 @@ namespace Exomia.Framework.Security
 
             SpriteFont2 font2 = new SpriteFont2
             {
-                Bold = font.Bold,
-                DefaultCharacter = font.DefaultCharacter,
-                DefaultGlyph = font.DefaultGlyph,
-                Face = font.Face,
-                Glyphs = font.Glyphs,
+                Bold                    = font.Bold,
+                DefaultCharacter        = font.DefaultCharacter,
+                DefaultGlyph            = font.DefaultGlyph,
+                Face                    = font.Face,
+                Glyphs                  = font.Glyphs,
                 IgnoreUnknownCharacters = font.IgnoreUnknownCharacters,
-                ImageData = font.ImageData,
-                Italic = font.Italic,
-                Kernings = font.Kernings,
-                LineSpacing = font.LineSpacing,
-                Size = font.Size,
-                SpacingX = font.SpacingX,
-                SpacingY = font.SpacingY
+                ImageData               = font.ImageData,
+                Italic                  = font.Italic,
+                Kernings                = font.Kernings,
+                LineSpacing             = font.LineSpacing,
+                Size                    = font.Size,
+                SpacingX                = font.SpacingX,
+                SpacingY                = font.SpacingY
             };
 
             try
             {
                 using (MemoryStream ms = new MemoryStream(font2.ImageData))
                 {
-                    ms.Position = 0;
+                    ms.Position    = 0;
                     font2.Texture2 = manager.AddTexture(ms, font2.Face + font.Size);
                 }
             }

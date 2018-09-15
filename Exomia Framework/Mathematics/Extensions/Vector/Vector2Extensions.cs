@@ -26,7 +26,7 @@ using System;
 using System.Runtime.CompilerServices;
 using SharpDX;
 
-namespace Exomia.Framework.Mathematics
+namespace Exomia.Framework.Mathematics.Extensions.Vector
 {
     /// <summary>
     ///     Vector2Extensions static class
@@ -34,7 +34,7 @@ namespace Exomia.Framework.Mathematics
     public static class Vector2Extensions
     {
         /// <summary>
-        ///     rotate a vectort by an angle (in radian)
+        ///     rotate a vector by an angle (in radian)
         /// </summary>
         /// <param name="vec">this vec</param>
         /// <param name="angle">angle</param>

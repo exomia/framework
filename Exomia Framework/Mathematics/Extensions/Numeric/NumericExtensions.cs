@@ -25,7 +25,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Exomia.Framework.Mathematics
+namespace Exomia.Framework.Mathematics.Extensions.Numeric
 {
     /// <summary>
     ///     adds extensions for numerical types

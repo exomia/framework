@@ -32,9 +32,9 @@ namespace Exomia.Framework.ContentSerialization.Readers
         {
             return new RectangleF
             {
-                X = context.Get<float>("X"),
-                Y = context.Get<float>("Y"),
-                Width = context.Get<float>("Width"),
+                X      = context.Get<float>("X"),
+                Y      = context.Get<float>("Y"),
+                Width  = context.Get<float>("Width"),
                 Height = context.Get<float>("Height")
             };
         }
@@ -46,9 +46,9 @@ namespace Exomia.Framework.ContentSerialization.Readers
         {
             return new Rectangle
             {
-                X = context.Get<int>("X"),
-                Y = context.Get<int>("Y"),
-                Width = context.Get<int>("Width"),
+                X      = context.Get<int>("X"),
+                Y      = context.Get<int>("Y"),
+                Width  = context.Get<int>("Width"),
                 Height = context.Get<int>("Height")
             };
         }

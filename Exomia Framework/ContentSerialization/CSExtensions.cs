@@ -140,10 +140,10 @@ namespace Exomia.Framework.ContentSerialization
                         Match match = s_keyInfoMatcher.Match(buffer);
                         if (!match.Success)
                         {
-                            key = buffer;
-                            baseTypeInfo = string.Empty;
+                            key             = buffer;
+                            baseTypeInfo    = string.Empty;
                             genericTypeInfo = string.Empty;
-                            dimensionInfo = string.Empty;
+                            dimensionInfo   = string.Empty;
                             return false;
                         }
 

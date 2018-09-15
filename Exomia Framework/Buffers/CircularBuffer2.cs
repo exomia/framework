@@ -107,7 +107,7 @@ namespace Exomia.Framework.Buffers
                     @"Circular buffer cannot have zero capacity.", nameof(capacity));
             }
             capacity = Math2.RoundUpToPowerOfTwo(capacity);
-            _mask = capacity - 1;
+            _mask    = capacity - 1;
 
             _buffer = new T[capacity + 1];
 

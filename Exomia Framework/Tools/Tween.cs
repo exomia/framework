@@ -51,9 +51,9 @@ namespace Exomia.Framework.Tools
         {
             if (values == null) { throw new ArgumentNullException(nameof(values)); }
 
-            _target = target ?? throw new ArgumentNullException(nameof(target));
+            _target   = target ?? throw new ArgumentNullException(nameof(target));
             _duration = duration;
-            _delay = delay;
+            _delay    = delay;
             _callback = callback;
 
             _items = new List<TweenItem>();
@@ -116,7 +116,7 @@ namespace Exomia.Framework.Tools
 
             if (_time > _duration)
             {
-                _time = _duration;
+                _time    = _duration;
                 _enabled = false;
             }
 
@@ -136,8 +136,8 @@ namespace Exomia.Framework.Tools
 
             public TweenItem(float from, float to, PropertyInfo info)
             {
-                From = from;
-                To = to;
+                From         = from;
+                To           = to;
                 PropertyInfo = info;
             }
         }

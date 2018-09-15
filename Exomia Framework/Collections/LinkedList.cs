@@ -57,16 +57,16 @@ namespace Exomia.Framework.Collections
             LinkedListNode node = new LinkedListNode(item);
             if (Last == null)
             {
-                node.Next = node;
+                node.Next     = node;
                 node.Previous = node;
-                Last = node;
+                Last          = node;
             }
             else
             {
-                node.Next = Last.Next;
-                node.Previous = Last;
+                node.Next          = Last.Next;
+                node.Previous      = Last;
                 Last.Next.Previous = node;
-                Last.Next = node;
+                Last.Next          = node;
             }
             Count++;
             return node;
@@ -105,7 +105,7 @@ namespace Exomia.Framework.Collections
 
         public void Clear()
         {
-            Last = null;
+            Last  = null;
             Count = 0;
         }
 
@@ -135,8 +135,8 @@ namespace Exomia.Framework.Collections
 
             internal void Invalidate()
             {
-                Item = default;
-                Next = null;
+                Item     = default;
+                Next     = null;
                 Previous = null;
             }
         }

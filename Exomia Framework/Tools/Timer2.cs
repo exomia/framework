@@ -68,7 +68,7 @@ namespace Exomia.Framework.Tools
         /// <param name="maxIterations">set the max iteration count for this timer or 0 for unlimited</param>
         public Timer2(float tick, uint maxIterations = 0)
         {
-            TimerTick = tick;
+            TimerTick      = tick;
             _maxIterations = maxIterations;
         }
 
@@ -156,9 +156,9 @@ namespace Exomia.Framework.Tools
         /// </summary>
         public void Reset()
         {
-            _elapsedTime = 0;
+            _elapsedTime     = 0;
             CurrentIteration = 0;
-            _enabled = true;
+            _enabled         = true;
         }
     }
 }

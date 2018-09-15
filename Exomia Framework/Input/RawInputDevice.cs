@@ -77,13 +77,13 @@ namespace Exomia.Framework.Input
 
         public void Initialize(Panel panel)
         {
-            _panel = panel;
+            _panel           =  panel;
             _panel.MouseMove += Renderform_MouseMove;
         }
 
         public void EndUpdate()
         {
-            WheelData = _mouseWheelDataBuffer;
+            WheelData             = _mouseWheelDataBuffer;
             _mouseWheelDataBuffer = 0;
         }
 
@@ -273,7 +273,7 @@ namespace Exomia.Framework.Input
                 if (disposing) { }
 
                 Device.KeyboardInput -= Device_KeyboardInput;
-                Device.MouseInput -= Device_MouseInput;
+                Device.MouseInput    -= Device_MouseInput;
 
                 if (_window != null)
                 {

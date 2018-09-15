@@ -90,20 +90,20 @@ namespace Exomia.Framework.Collections
 
         public List()
         {
-            _items = s_emptyArray;
+            _items  = s_emptyArray;
             _sizeOf = Marshal.SizeOf<T>();
         }
 
         public List(uint capacity)
         {
-            _items = capacity == 0 ? s_emptyArray : new T[capacity];
+            _items  = capacity == 0 ? s_emptyArray : new T[capacity];
             _sizeOf = Marshal.SizeOf<T>();
         }
 
         public List(int capacity)
         {
             if (capacity < 0) { throw new ArgumentOutOfRangeException(nameof(capacity)); }
-            _items = capacity == 0 ? s_emptyArray : new T[capacity];
+            _items  = capacity == 0 ? s_emptyArray : new T[capacity];
             _sizeOf = Marshal.SizeOf<T>();
         }
 
@@ -123,7 +123,7 @@ namespace Exomia.Framework.Collections
             }
             else
             {
-                Count = 0;
+                Count  = 0;
                 _items = s_emptyArray;
 
                 using (IEnumerator<T> en = collection.GetEnumerator())
@@ -331,7 +331,7 @@ namespace Exomia.Framework.Collections
             {
                 int newCapacity = _items.Length == 0 ? DEFAULT_CAPACITY : _items.Length * 2;
                 if (newCapacity > MAX_CAPACITY) { newCapacity = MAX_CAPACITY; }
-                if (newCapacity < min) { newCapacity = min; }
+                if (newCapacity < min) { newCapacity          = min; }
 
                 T[] newItems = new T[newCapacity];
                 if (Count > 0) { Buffer.BlockCopy(_items, 0, newItems, 0, Count * _sizeOf); }

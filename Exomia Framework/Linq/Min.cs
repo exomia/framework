@@ -60,7 +60,7 @@ namespace Exomia.Framework.Linq
                     if (c.Compare(v, min) < 0)
                     {
                         min = v;
-                        r = enumerator.Current;
+                        r   = enumerator.Current;
                     }
                 }
 

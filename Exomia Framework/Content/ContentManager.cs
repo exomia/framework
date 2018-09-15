@@ -55,11 +55,11 @@ namespace Exomia.Framework.Content
         {
             ServiceRegistry = serviceRegistry ?? throw new ArgumentNullException(nameof(serviceRegistry));
 
-            _loadedAssets = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
-            _registeredContentResolvers = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
-            _registeredContentReaders = new Dictionary<Type, IContentReader>(INITIAL_QUEUE_SIZE);
+            _loadedAssets                     = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
+            _registeredContentResolvers       = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
+            _registeredContentReaders         = new Dictionary<Type, IContentReader>(INITIAL_QUEUE_SIZE);
             _registeredContentReaderFactories = new List<IContentReaderFactory>(INITIAL_QUEUE_SIZE);
-            _assetLockers = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
+            _assetLockers                     = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
 
             AddContentResolver(new DSFileStreamContentResolver());
 
@@ -334,10 +334,8 @@ namespace Exomia.Framework.Content
         private object LoadAssetWithDynamicContentReader(Type assetType, string assetName, Stream stream)
         {
             object result;
-            ContentReaderParameters parameters = new ContentReaderParameters
-            {
-                AssetName = assetName, AssetType = assetType, Stream = stream
-            };
+            ContentReaderParameters parameters =
+                new ContentReaderParameters { AssetName = assetName, AssetType = assetType, Stream = stream };
 
             try
             {

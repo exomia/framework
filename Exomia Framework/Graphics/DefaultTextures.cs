@@ -93,7 +93,7 @@ namespace Exomia.Framework.Graphics
             if (!s_isInitialized2)
             {
                 s_isInitialized2 = true;
-                s_disposedValue = false;
+                s_disposedValue  = false;
 
                 using (Stream stream = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
@@ -123,7 +123,7 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref s_whiteTexture2);
                 }
 
-                s_isInitialized = false;
+                s_isInitialized  = false;
                 s_isInitialized2 = false;
 
                 s_disposedValue = true;

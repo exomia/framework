@@ -75,7 +75,7 @@ namespace Exomia.Framework
         /// <param name="name">The component name.</param>
         protected AComponent(string name)
         {
-            Name = name;
+            Name       = name;
             _collector = new DisposeCollector();
         }
 
@@ -124,7 +124,7 @@ namespace Exomia.Framework
         {
             if (!_isInitialized)
             {
-                Content = registry.GetService<IContentManager>();
+                Content        = registry.GetService<IContentManager>();
                 GraphicsDevice = registry.GetService<IGraphicsDevice>();
 
                 OnInitialize(registry);

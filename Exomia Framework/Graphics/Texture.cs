@@ -74,8 +74,8 @@ namespace Exomia.Framework.Graphics
         public Texture(ShaderResourceView1 textureView, int width, int height)
         {
             _textureView = textureView;
-            Width = width;
-            Height = height;
+            Width        = width;
+            Height       = height;
         }
 
         /// <summary>
@@ -175,8 +175,8 @@ namespace Exomia.Framework.Graphics
 
         internal Texture2(int atlasIndex, string assetName, Rectangle sourceRectangle)
         {
-            AtlasIndex = atlasIndex;
-            AssetName = assetName;
+            AtlasIndex      = atlasIndex;
+            AssetName       = assetName;
             SourceRectangle = sourceRectangle;
         }
 

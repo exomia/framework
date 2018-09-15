@@ -75,15 +75,15 @@ namespace Exomia.Framework.Graphics
                             device,
                             new Texture2DDescription
                             {
-                                Width = bitmapSource.Size.Width,
-                                Height = bitmapSource.Size.Height,
-                                ArraySize = 1,
-                                BindFlags = BindFlags.ShaderResource,
-                                Usage = ResourceUsage.Immutable,
-                                CpuAccessFlags = CpuAccessFlags.None,
-                                Format = Format.R8G8B8A8_UNorm,
-                                MipLevels = 1,
-                                OptionFlags = ResourceOptionFlags.None,
+                                Width             = bitmapSource.Size.Width,
+                                Height            = bitmapSource.Size.Height,
+                                ArraySize         = 1,
+                                BindFlags         = BindFlags.ShaderResource,
+                                Usage             = ResourceUsage.Immutable,
+                                CpuAccessFlags    = CpuAccessFlags.None,
+                                Format            = Format.R8G8B8A8_UNorm,
+                                MipLevels         = 1,
+                                OptionFlags       = ResourceOptionFlags.None,
                                 SampleDescription = new SampleDescription(1, 0)
                             }, new DataRectangle(buffer.DataPointer, stride));
                     }
@@ -107,15 +107,15 @@ namespace Exomia.Framework.Graphics
                     device,
                     new Texture2DDescription
                     {
-                        Width = width,
-                        Height = height,
-                        ArraySize = 1,
-                        BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
-                        Usage = ResourceUsage.Default,
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        Format = format,
-                        MipLevels = 1,
-                        OptionFlags = ResourceOptionFlags.None,
+                        Width             = width,
+                        Height            = height,
+                        ArraySize         = 1,
+                        BindFlags         = BindFlags.RenderTarget | BindFlags.ShaderResource,
+                        Usage             = ResourceUsage.Default,
+                        CpuAccessFlags    = CpuAccessFlags.None,
+                        Format            = format,
+                        MipLevels         = 1,
+                        OptionFlags       = ResourceOptionFlags.None,
                         SampleDescription = new SampleDescription(1, 0)
                     });
             }
@@ -132,15 +132,15 @@ namespace Exomia.Framework.Graphics
                     device,
                     new Texture2DDescription
                     {
-                        Width = width,
-                        Height = height,
-                        ArraySize = bitmapSources.Length,
-                        BindFlags = BindFlags.ShaderResource,
-                        Usage = ResourceUsage.Default,
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        Format = Format.R8G8B8A8_UNorm,
-                        MipLevels = 1,
-                        OptionFlags = ResourceOptionFlags.None,
+                        Width             = width,
+                        Height            = height,
+                        ArraySize         = bitmapSources.Length,
+                        BindFlags         = BindFlags.ShaderResource,
+                        Usage             = ResourceUsage.Default,
+                        CpuAccessFlags    = CpuAccessFlags.None,
+                        Format            = Format.R8G8B8A8_UNorm,
+                        MipLevels         = 1,
+                        OptionFlags       = ResourceOptionFlags.None,
                         SampleDescription = new SampleDescription(1, 0)
                     });
 

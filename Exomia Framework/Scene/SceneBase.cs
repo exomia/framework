@@ -91,13 +91,13 @@ namespace Exomia.Framework.Scene
         {
             Key = key;
 
-            _sceneComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _sceneComponents               = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
@@ -161,7 +161,7 @@ namespace Exomia.Framework.Scene
         {
             if (!_isInitialized && _state != SceneState.Initializing)
             {
-                State = SceneState.Initializing;
+                State     = SceneState.Initializing;
                 _registry = registry;
 
                 OnInitialize();
@@ -172,7 +172,7 @@ namespace Exomia.Framework.Scene
                     _pendingInitializables.RemoveAt(0);
                 }
 
-                State = SceneState.StandBy;
+                State          = SceneState.StandBy;
                 _isInitialized = true;
             }
         }
@@ -197,7 +197,7 @@ namespace Exomia.Framework.Scene
 
                 _currentlyContentableComponent.Clear();
                 _isContentLoaded = true;
-                State = SceneState.Ready;
+                State            = SceneState.Ready;
             }
         }
 
@@ -221,7 +221,7 @@ namespace Exomia.Framework.Scene
 
                 _currentlyContentableComponent.Clear();
                 _isContentLoaded = false;
-                State = SceneState.StandBy;
+                State            = SceneState.StandBy;
             }
         }
 
@@ -610,7 +610,7 @@ namespace Exomia.Framework.Scene
                     _collector.DisposeAndClear();
                     _collector = null;
                 }
-                State = SceneState.None;
+                State     = SceneState.None;
                 _disposed = true;
             }
         }

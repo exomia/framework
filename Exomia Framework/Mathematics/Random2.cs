@@ -312,15 +312,15 @@ namespace Exomia.Framework.Mathematics
                 for (int i = 0, len = l >> 2; i < len; i += 2)
                 {
                     uint t = x ^ (x << 11);
-                    x = y;
-                    y = z;
-                    z = w;
+                    x         = y;
+                    y         = z;
+                    z         = w;
                     pDWord[i] = w = w ^ (w >> 19) ^ t ^ (t >> 8);
 
-                    t = x ^ (x << 11);
-                    x = y;
-                    y = z;
-                    z = w;
+                    t             = x ^ (x << 11);
+                    x             = y;
+                    y             = z;
+                    z             = w;
                     pDWord[i + 1] = w = w ^ (w >> 19) ^ t ^ (t >> 8);
                 }
             }

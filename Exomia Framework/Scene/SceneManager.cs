@@ -62,13 +62,13 @@ namespace Exomia.Framework.Scene
             : base(game, name)
         {
             if (startScene == null) { throw new ArgumentNullException(nameof(startScene)); }
-            _scenes = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
+            _scenes        = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
             _currentScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
 
-            _currentUpdateableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _currentDrawableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentUpdateableScenes    = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentDrawableScenes      = new List<SceneBase>(INITIAL_QUEUE_SIZE);
             _pendingInitializableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _scenesToUnload = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _scenesToUnload             = new List<SceneBase>(INITIAL_QUEUE_SIZE);
 
             AddScene(startScene, true);
         }
@@ -283,15 +283,16 @@ namespace Exomia.Framework.Scene
         protected override void OnInitialize(IServiceRegistry registry)
         {
             _registry = registry;
-            _input = registry.GetService<IInputDevice>() ?? throw new NullReferenceException("No IInputDevice found.");
+            _input = registry.GetService<IInputDevice>() ??
+                     throw new NullReferenceException("No IInputDevice found.");
 
-            _input.MouseMove += Input_MouseMove;
-            _input.MouseDown += Input_MouseDown;
-            _input.MouseUp += Input_MouseUp;
+            _input.MouseMove  += Input_MouseMove;
+            _input.MouseDown  += Input_MouseDown;
+            _input.MouseUp    += Input_MouseUp;
             _input.MouseWheel += Input_MouseWheel;
 
-            _input.KeyDown += Input_KeyDown;
-            _input.KeyUp += Input_KeyUp;
+            _input.KeyDown  += Input_KeyDown;
+            _input.KeyUp    += Input_KeyUp;
             _input.KeyPress += Input_KeyPress;
 
             lock (_pendingInitializableScenes)
@@ -316,13 +317,13 @@ namespace Exomia.Framework.Scene
             {
                 _currentScenes.Clear();
 
-                _input.MouseMove -= Input_MouseMove;
-                _input.MouseDown -= Input_MouseDown;
-                _input.MouseUp -= Input_MouseUp;
+                _input.MouseMove  -= Input_MouseMove;
+                _input.MouseDown  -= Input_MouseDown;
+                _input.MouseUp    -= Input_MouseUp;
                 _input.MouseWheel -= Input_MouseWheel;
 
-                _input.KeyDown -= Input_KeyDown;
-                _input.KeyUp -= Input_KeyUp;
+                _input.KeyDown  -= Input_KeyDown;
+                _input.KeyUp    -= Input_KeyUp;
                 _input.KeyPress -= Input_KeyPress;
 
                 foreach (IScene scene in _scenes.Values)

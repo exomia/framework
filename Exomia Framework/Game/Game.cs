@@ -123,8 +123,8 @@ namespace Exomia.Framework.Game
             Console.WriteLine(info);*/
 #endif
 
-            Services = new ServiceRegistry();
-            _gameWindow = new WinFormsGameWindow(title);
+            Services        = new ServiceRegistry();
+            _gameWindow     = new WinFormsGameWindow(title);
             _graphicsDevice = new GraphicsDevice();
             _contentManager = new ContentManager(Services);
 
@@ -133,22 +133,22 @@ namespace Exomia.Framework.Game
             Services.AddService(_contentManager);
             Services.AddService(_gameWindow);
 
-            _gameComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
 
 #if DEBUG
             ADrawableComponent component = new DebugComponent { ShowFullInformation = true };
-            component.Enabled = true;
-            component.Visible = true;
-            component.DrawOrder = 0;
+            component.Enabled     = true;
+            component.Visible     = true;
+            component.DrawOrder   = 0;
             component.UpdateOrder = 0;
             Add(component);
 #endif
@@ -493,12 +493,12 @@ namespace Exomia.Framework.Game
         private void Renderloop(GameTime gameTime)
         {
             MSG msg;
-            msg.hwnd = IntPtr.Zero;
+            msg.hwnd    = IntPtr.Zero;
             msg.message = 0;
-            msg.lParam = IntPtr.Zero;
-            msg.wParam = IntPtr.Zero;
-            msg.time = 0;
-            msg.pt = Point.Zero;
+            msg.lParam  = IntPtr.Zero;
+            msg.wParam  = IntPtr.Zero;
+            msg.time    = 0;
+            msg.pt      = Point.Zero;
 
             while (!_shutdown && msg.message != WM_QUIT)
             {
@@ -555,21 +555,21 @@ namespace Exomia.Framework.Game
                 DeviceCreationFlags =
                     DeviceCreationFlags.BgraSupport,
 #endif
-                DPI = new Vector2(96.0f, 96.0f),
-                DriverType = DriverType.Hardware,
-                Format = Format.B8G8R8A8_UNorm,
-                Width = 1024,
-                Height = 768,
-                IsWindowed = true,
-                IsMouseVisible = false,
-                Rational = new Rational(60, 1),
-                SwapChainFlags = SwapChainFlags.AllowModeSwitch,
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput,
-                UseVSync = false,
+                DPI                    = new Vector2(96.0f, 96.0f),
+                DriverType             = DriverType.Hardware,
+                Format                 = Format.B8G8R8A8_UNorm,
+                Width                  = 1024,
+                Height                 = 768,
+                IsWindowed             = true,
+                IsMouseVisible         = false,
+                Rational               = new Rational(60, 1),
+                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
+                SwapEffect             = SwapEffect.Discard,
+                Usage                  = Usage.RenderTargetOutput,
+                UseVSync               = false,
                 WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
-                EnableMultiSampling = false,
-                MultiSampleCount = MultiSampleCount.None
+                EnableMultiSampling    = false,
+                MultiSampleCount       = MultiSampleCount.None
             };
 
             OnInitializeGameGraphicsParameters(ref parameters);

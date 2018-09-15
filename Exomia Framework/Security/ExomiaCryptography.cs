@@ -89,7 +89,7 @@ namespace Exomia.Framework.Security
                         rijndael.BlockSize = (int)mode;
 
                         rijndael.Key = key.GetBytes(rijndael.KeySize / 8);
-                        rijndael.IV = key.GetBytes(rijndael.BlockSize / 8);
+                        rijndael.IV  = key.GetBytes(rijndael.BlockSize / 8);
 
                         using (ICryptoTransform encryptor = rijndael.CreateEncryptor(rijndael.Key, rijndael.IV))
                         {
@@ -165,7 +165,7 @@ namespace Exomia.Framework.Security
                         rijndael.BlockSize = (int)mode;
 
                         rijndael.Key = key.GetBytes(rijndael.KeySize / 8);
-                        rijndael.IV = key.GetBytes(rijndael.BlockSize / 8);
+                        rijndael.IV  = key.GetBytes(rijndael.BlockSize / 8);
 
                         inStream.Position = 0;
                         using (ICryptoTransform decryptor = rijndael.CreateDecryptor(rijndael.Key, rijndael.IV))

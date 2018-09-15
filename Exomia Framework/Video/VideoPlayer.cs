@@ -125,7 +125,7 @@ namespace Exomia.Framework.Video
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
-            _outputTexture = TextureHelper.CreateTexture(device, width, height);
+            _outputTexture   = TextureHelper.CreateTexture(device, width, height);
             _backgroundColor = Color.Transparent;
         }
 
@@ -188,7 +188,7 @@ namespace Exomia.Framework.Video
                 if (_isEndOfStream)
                 {
                     PlaybackPosition = 0;
-                    _isPlaying = true;
+                    _isPlaying       = true;
                 }
                 else
                 {
@@ -242,7 +242,7 @@ namespace Exomia.Framework.Video
         private void Stop()
         {
             _isVideoStopped = true;
-            _isPlaying = false;
+            _isPlaying      = false;
         }
 
         private void OnMediaEngineEvent(MediaEngineEvent mediaEvent, long param1, int param2)

@@ -31,7 +31,7 @@ namespace Exomia.Framework.Mathematics
     /// <summary>
     ///     Math2 static class
     /// </summary>
-    public static class Math2
+    public static partial class Math2
     {
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
 
@@ -135,7 +135,7 @@ namespace Exomia.Framework.Mathematics
                     result *= b;
                 }
                 e >>= 1;
-                b *= b;
+                b *=  b;
             }
             return result;
         }
@@ -158,7 +158,7 @@ namespace Exomia.Framework.Mathematics
                     result *= b;
                 }
                 e >>= 1;
-                b *= b;
+                b *=  b;
             }
             return result;
         }
@@ -194,104 +194,6 @@ namespace Exomia.Framework.Mathematics
         public static int Ceiling(double f)
         {
             return (int)(L_OFFSET_MAX - (long)(L_OFFSET_MAX - f));
-        }
-
-        /// <summary>
-        ///     creates an axis aligned bounding box
-        /// </summary>
-        /// <param name="transform">transform</param>
-        /// <param name="width">width</param>
-        /// <param name="height">height</param>
-        /// <param name="aabb">out aabb</param>
-        public static void CreateAABB(in Matrix transform, float width, float height, out RectangleF aabb)
-        {
-            Vector2 leftTop = Vector2.Zero.Transform(transform);
-            Vector2 rightTop = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom = new Vector2(0, height).Transform(transform);
-            Vector2 rightBottom = new Vector2(width, height).Transform(transform);
-
-            Vector2 min = new Vector2(
-                Math.Min(leftTop.X, Math.Min(rightTop.X, Math.Min(leftBottom.X, rightBottom.X))),
-                Math.Min(leftTop.Y, Math.Min(rightTop.Y, Math.Min(leftBottom.Y, rightBottom.Y))));
-            Vector2 max = new Vector2(
-                Math.Max(leftTop.X, Math.Max(rightTop.X, Math.Max(leftBottom.X, rightBottom.X))),
-                Math.Max(leftTop.Y, Math.Max(rightTop.Y, Math.Max(leftBottom.Y, rightBottom.Y))));
-
-            aabb = new RectangleF(min.X, min.Y, max.X - min.X, max.Y - min.Y);
-        }
-
-        /// <summary>
-        ///     creates an axis aligned bounding box
-        /// </summary>
-        /// <param name="transform">transform</param>
-        /// <param name="width">width</param>
-        /// <param name="height">height</param>
-        /// <returns>axis aligned bounding box</returns>
-        public static RectangleF CreateAABB(in Matrix transform, float width, float height)
-        {
-            Vector2 leftTop = Vector2.Zero.Transform(transform);
-            Vector2 rightTop = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom = new Vector2(0, height).Transform(transform);
-            Vector2 rightBottom = new Vector2(width, height).Transform(transform);
-
-            Vector2 min = new Vector2(
-                Math.Min(leftTop.X, Math.Min(rightTop.X, Math.Min(leftBottom.X, rightBottom.X))),
-                Math.Min(leftTop.Y, Math.Min(rightTop.Y, Math.Min(leftBottom.Y, rightBottom.Y))));
-            Vector2 max = new Vector2(
-                Math.Max(leftTop.X, Math.Max(rightTop.X, Math.Max(leftBottom.X, rightBottom.X))),
-                Math.Max(leftTop.Y, Math.Max(rightTop.Y, Math.Max(leftBottom.Y, rightBottom.Y))));
-
-            return new RectangleF(min.X, min.Y, max.X - min.X, max.Y - min.Y);
-        }
-
-        /// <summary>
-        ///     creates an axis aligned bounding box
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <param name="width">width</param>
-        /// <param name="height">height</param>
-        /// <returns>axis aligned bounding box</returns>
-        public static RectangleF CreateAABB(in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation,
-            float width, float height)
-        {
-            return CreateAABB(CalculateTransformMatrix(position, origin, scale, rotation), width, height);
-        }
-
-        /// <summary>
-        ///     calculates a transform matrix
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <param name="transform">out transform matrix</param>
-        public static void CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
-            float rotation, out Matrix transform)
-        {
-            transform = Matrix.Translation(-origin.X, -origin.Y, 0) *
-                        Matrix.RotationZ(rotation) *
-                        Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                        Matrix.Translation(position.X, position.Y, 0);
-        }
-
-        /// <summary>
-        ///     calculates a transform matrix
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <returns>transform matrix</returns>
-        public static Matrix CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
-            float rotation)
-        {
-            return Matrix.Translation(-origin.X, -origin.Y, 0) *
-                   Matrix.RotationZ(rotation) *
-                   Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                   Matrix.Translation(position.X, position.Y, 0);
         }
 
         /// <summary>
@@ -394,7 +296,7 @@ namespace Exomia.Framework.Mathematics
 
                 if (value >= temp)
                 {
-                    g += b;
+                    g     += b;
                     value -= temp;
                 }
                 b >>= 1;
@@ -435,7 +337,7 @@ namespace Exomia.Framework.Mathematics
                 uint temp = (g + g + b) << bshft;
                 if (value >= temp)
                 {
-                    g += b;
+                    g     += b;
                     value -= temp;
                 }
                 b >>= 1;
@@ -451,7 +353,7 @@ namespace Exomia.Framework.Mathematics
         {
             int y = x;
             y -= (y >> 1) & 0x55;
-            y = ((y >> 2) & 0x33) + (y & 0x33);
+            y =  ((y >> 2) & 0x33) + (y & 0x33);
             return (y & 0x0F) + (y >> 4);
         }
 
@@ -462,8 +364,8 @@ namespace Exomia.Framework.Mathematics
         {
             int y = x;
             y -= (y >> 1) & 0x5555;
-            y = ((y >> 2) & 0x3333) + (y & 0x3333);
-            y = ((y >> 4) + y) & 0x0F0F;
+            y =  ((y >> 2) & 0x3333) + (y & 0x3333);
+            y =  ((y >> 4) + y) & 0x0F0F;
             return (y + (y >> 8)) & 0x001F;
         }
 
@@ -482,8 +384,8 @@ namespace Exomia.Framework.Mathematics
         public static int CountOnes(uint x)
         {
             x -= (x >> 1) & 0x55555555;
-            x = ((x >> 2) & 0x33333333) + (x & 0x33333333);
-            x = ((x >> 4) + x) & 0x0F0F0F0F;
+            x =  ((x >> 2) & 0x33333333) + (x & 0x33333333);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F;
             x += x >> 8;
             return (int)((x + (x >> 16)) & 0x0000003F);
         }
@@ -503,8 +405,8 @@ namespace Exomia.Framework.Mathematics
         public static int CountOnes(ulong x)
         {
             x -= (x >> 1) & 0x5555555555555555u;
-            x = ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
-            x = ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
+            x =  ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
             x += x >> 8;
             x += x >> 16;
             return ((int)x + (int)(x >> 32)) & 0x0000007F;
@@ -567,53 +469,5 @@ namespace Exomia.Framework.Mathematics
             if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
             return Log2Floor((ulong)x);
         }
-
-        #region Curves
-
-        /// <summary>
-        ///     Hermite Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveHermite(float t)
-        {
-            return t * t * (3 - 2 * t);
-        }
-
-        /// <summary>
-        ///     Quintic Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveQuintic(float t)
-        {
-            return t * t * t * (t * (t * 6 - 15) + 10);
-        }
-
-        /// <summary>
-        ///     Hermite Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CurveHermite(double t)
-        {
-            return t * t * (3 - 2 * t);
-        }
-
-        /// <summary>
-        ///     Quintic Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CurveQuintic(double t)
-        {
-            return t * t * t * (t * (t * 6 - 15) + 10);
-        }
-
-        #endregion
     }
 }

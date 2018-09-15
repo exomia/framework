@@ -151,7 +151,7 @@ namespace Exomia.Framework.Buffers
 
                 T item = _buffer[_tail];
                 _buffer[_tail] = default;
-                _tail = (_tail + 1) % _buffer.Length;
+                _tail          = (_tail + 1) % _buffer.Length;
                 _size--;
 
                 return item;
@@ -181,7 +181,7 @@ namespace Exomia.Framework.Buffers
 
                 ref T item = ref _buffer[_tail];
                 _buffer[_tail] = default;
-                _tail = (_tail + 1) % _buffer.Length;
+                _tail          = (_tail + 1) % _buffer.Length;
                 _size--;
 
                 return ref item;
@@ -257,7 +257,7 @@ namespace Exomia.Framework.Buffers
                 _thisLock.Enter(ref lockTaken);
 
                 _buffer[_head] = toAdd;
-                _head = (_head + 1) % _buffer.Length;
+                _head          = (_head + 1) % _buffer.Length;
 
                 if (_size == _buffer.Length)
                 {

@@ -46,7 +46,7 @@ namespace Exomia.Framework.Audio
                 if (Count + 1 >= Capacity) { return; }
 
                 sound.Previous = _tail;
-                sound.Next = null;
+                sound.Next     = null;
 
                 if (_tail != null)
                 {

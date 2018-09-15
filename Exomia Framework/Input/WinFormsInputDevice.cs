@@ -54,14 +54,14 @@ namespace Exomia.Framework.Input
         {
             _window = window ?? throw new ArgumentNullException(nameof(window));
 
-            _window.RenderForm.MouseMove += Renderform_MouseMove;
+            _window.RenderForm.MouseMove  += Renderform_MouseMove;
             _window.RenderForm.MouseClick += RenderForm_MouseClick;
-            _window.RenderForm.MouseDown += RenderForm_MouseDown;
-            _window.RenderForm.MouseUp += RenderForm_MouseUp;
+            _window.RenderForm.MouseDown  += RenderForm_MouseDown;
+            _window.RenderForm.MouseUp    += RenderForm_MouseUp;
             _window.RenderForm.MouseWheel += RenderForm_MouseWheel;
 
-            _window.RenderForm.KeyDown += RenderForm_KeyDown;
-            _window.RenderForm.KeyUp += RenderForm_KeyUp;
+            _window.RenderForm.KeyDown  += RenderForm_KeyDown;
+            _window.RenderForm.KeyUp    += RenderForm_KeyUp;
             _window.RenderForm.KeyPress += RenderForm_KeyPress;
         }
 
@@ -318,14 +318,14 @@ namespace Exomia.Framework.Input
                 {
                     if (_window != null)
                     {
-                        _window.RenderForm.MouseMove -= Renderform_MouseMove;
+                        _window.RenderForm.MouseMove  -= Renderform_MouseMove;
                         _window.RenderForm.MouseClick -= RenderForm_MouseClick;
-                        _window.RenderForm.MouseDown -= RenderForm_MouseDown;
-                        _window.RenderForm.MouseUp -= RenderForm_MouseUp;
+                        _window.RenderForm.MouseDown  -= RenderForm_MouseDown;
+                        _window.RenderForm.MouseUp    -= RenderForm_MouseUp;
                         _window.RenderForm.MouseWheel -= RenderForm_MouseWheel;
 
-                        _window.RenderForm.KeyDown -= RenderForm_KeyDown;
-                        _window.RenderForm.KeyUp -= RenderForm_KeyUp;
+                        _window.RenderForm.KeyDown  -= RenderForm_KeyDown;
+                        _window.RenderForm.KeyUp    -= RenderForm_KeyUp;
                         _window.RenderForm.KeyPress -= RenderForm_KeyPress;
                     }
                 }

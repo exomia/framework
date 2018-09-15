@@ -95,7 +95,7 @@ namespace Exomia.Framework.ContentSerialization
 
         public ContentSerializationContextValue(Type type, object obj)
         {
-            Type = type;
+            Type   = type;
             Object = obj;
         }
     }

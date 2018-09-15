@@ -87,11 +87,11 @@ namespace Exomia.Framework.Components
             : base(name)
         {
             _totalMemoryBytes = 0;
-            _processorLoadT1 = _processorLoadT2 = 0.0f;
-            _total_frames = 0;
-            _elapsed_time = 0.0f;
-            _fpsCurrent = 0.0f;
-            _fpsAverage = -1;
+            _processorLoadT1  = _processorLoadT2 = 0.0f;
+            _total_frames     = 0;
+            _elapsed_time     = 0.0f;
+            _fpsCurrent       = 0.0f;
+            _fpsAverage       = -1;
         }
 
         public override void Update(GameTime gameTime)
@@ -123,20 +123,20 @@ namespace Exomia.Framework.Components
                 _sampleCount++;
 
                 _elapsed_time -= SAMPLE_TIME_RATE;
-                _total_frames = 0;
+                _total_frames =  0;
 
                 _fpsInfo =
                     $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.AbsoluteDeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
-                _fpsInfo = $"{_gpuName}\n{_fpsInfo}";
+                _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
                 _maxFrameTime = 0;
-                _firstCalc = true;
+                _firstCalc    = true;
             }
 
             if (_sampleCount >= MAXIMUM_SAMPLES)
             {
-                _fpsAverage = _sampleBuffer / _sampleCount;
+                _fpsAverage   = _sampleBuffer / _sampleCount;
                 _sampleBuffer = 0;
-                _sampleCount = 0;
+                _sampleCount  = 0;
             }
         }
 
@@ -171,18 +171,18 @@ namespace Exomia.Framework.Components
         protected override void OnInitialize(IServiceRegistry registry)
         {
             IGameWindow gameWindow = registry.GetService<IGameWindow>();
-            _title = gameWindow.Title;
+            _title      = gameWindow.Title;
             _gameWindow = gameWindow;
 
             string pName = Process.GetCurrentProcess().ProcessName;
             _cpuPerformanceCounter1 = new PerformanceCounter(nameof(Process), "% Processor Time", pName, true);
-            _processorLoadT1 = _cpuPerformanceCounter1.NextValue() / Environment.ProcessorCount;
+            _processorLoadT1        = _cpuPerformanceCounter1.NextValue() / Environment.ProcessorCount;
 
             _cpuPerformanceCounter2 = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
-            _processorLoadT2 = _cpuPerformanceCounter2.NextValue();
+            _processorLoadT2        = _cpuPerformanceCounter2.NextValue();
 
             _ramPerformanceCounter1 = new PerformanceCounter(nameof(Process), "Working Set", pName, true);
-            _totalMemoryBytes = (long)_ramPerformanceCounter1.NextValue();
+            _totalMemoryBytes       = (long)_ramPerformanceCounter1.NextValue();
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -211,7 +211,7 @@ namespace Exomia.Framework.Components
 
                 using (MemoryStream ms2 = new MemoryStream(_arial12Px.ImageData))
                 {
-                    ms2.Position = 0;
+                    ms2.Position       = 0;
                     _arial12Px.Texture = Texture.Load(GraphicsDevice.Device, ms2);
                 }
             }

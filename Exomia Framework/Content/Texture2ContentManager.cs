@@ -148,7 +148,7 @@ namespace Exomia.Framework.Content
         {
             _atlases.Clear();
             _atlasesKeys.Clear();
-            _atlasesIndex = 0;
+            _atlasesIndex    = 0;
             IsTextureInvalid = true;
             _texture?.Dispose();
             _texture = null;

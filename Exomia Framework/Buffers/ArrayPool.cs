@@ -44,8 +44,8 @@ namespace Exomia.Framework.Buffers
             if (numberOfBuffers <= 0) { throw new ArgumentOutOfRangeException(nameof(numberOfBuffers)); }
 
             _bufferLength = bufferLength;
-            _lock = new SpinLock(Debugger.IsAttached);
-            _buffers = new T[numberOfBuffers][];
+            _lock         = new SpinLock(Debugger.IsAttached);
+            _buffers      = new T[numberOfBuffers][];
         }
 
         public T[] Rent()
@@ -59,7 +59,7 @@ namespace Exomia.Framework.Buffers
 
                 if (_index < _buffers.Length)
                 {
-                    buffer = _buffers[_index];
+                    buffer             = _buffers[_index];
                     _buffers[_index++] = null;
                 }
             }

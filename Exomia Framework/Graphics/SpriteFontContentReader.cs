@@ -50,7 +50,7 @@ namespace Exomia.Framework.Graphics
             {
                 using (MemoryStream ms = new MemoryStream(font.ImageData))
                 {
-                    ms.Position = 0;
+                    ms.Position  = 0;
                     font.Texture = Texture.Load(graphicsDevice.Device, ms);
                 }
             }
@@ -82,7 +82,7 @@ namespace Exomia.Framework.Graphics
             {
                 using (MemoryStream ms = new MemoryStream(font.ImageData))
                 {
-                    ms.Position = 0;
+                    ms.Position   = 0;
                     font.Texture2 = manager.AddTexture(ms, parameters.AssetName);
                 }
             }

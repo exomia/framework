@@ -27,6 +27,7 @@ using Exomia.Native;
 
 namespace Exomia.Framework.Graphics.SpriteSort
 {
+    // ReSharper disable ArrangeRedundantParentheses
     sealed unsafe class SpriteMergeSort : ISpriteSort
     {
         private const int SEQUENTIAL_THRESHOLD = 2048;
@@ -113,7 +114,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSortSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -125,7 +126,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSortSpriteInfoParallelFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoParallelFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -146,7 +147,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int middle, int middle1,
+        private static void MergeSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int middle,
+            int middle1,
             int right,
             int* tempArray)
         {
@@ -156,7 +158,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int i = 0;
             while (left <= middle && middle1 <= right)
             {
-                if (sInfo[arr[left]].Depth <= sInfo[arr[middle1]].Depth)
+                if (sInfo[*(arr + left)].Depth <= sInfo[*(arr + middle1)].Depth)
                 {
                     *(tempArray + oldPosition + i++) = *(arr + left++);
                 }
@@ -176,7 +178,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
 
-        private void MergeSortSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -188,7 +190,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSortSpriteInfoParallelBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoParallelBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -209,7 +211,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int middle, int middle1,
+        private static void MergeSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int middle,
+            int middle1,
             int right,
             int* tempArray)
         {
@@ -219,7 +222,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int i = 0;
             while (left <= middle && middle1 <= right)
             {
-                if (sInfo[arr[left]].Depth >= sInfo[arr[middle1]].Depth)
+                if (sInfo[*(arr + left)].Depth >= sInfo[*(arr + middle1)].Depth)
                 {
                     *(tempArray + oldPosition + i++) = *(arr + left++);
                 }
@@ -239,7 +242,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
 
-        private void MergeSortTextureInfo(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int right,
+        private static void MergeSortTextureInfo(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -251,7 +254,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSortTextureInfoParallel(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int right,
+        private static void MergeSortTextureInfoParallel(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -272,7 +275,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeTextureInfo(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int middle, int middle1,
+        private static void MergeTextureInfo(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int middle,
+            int middle1,
             int right,
             int* tempArray)
         {
@@ -302,7 +306,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
 
-        private void MergeSortSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -314,7 +318,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSortSpriteInfoParallelFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoParallelFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left,
+            int right,
             int* tempArray)
         {
             if (left < right)
@@ -335,7 +340,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int middle, int middle1,
+        private static void MergeSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int middle,
+            int middle1,
             int right,
             int* tempArray)
         {
@@ -345,7 +351,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int i = 0;
             while (left <= middle && middle1 <= right)
             {
-                if (sInfo[arr[left]].Depth <= sInfo[arr[middle1]].Depth)
+                if (sInfo[*(arr + left)].Depth <= sInfo[*(arr + middle1)].Depth)
                 {
                     *(tempArray + oldPosition + i++) = *(arr + left++);
                 }
@@ -365,7 +371,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
 
-        private void MergeSortSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int right,
             int* tempArray)
         {
             if (left < right)
@@ -377,7 +383,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSortSpriteInfoParallelBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoParallelBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left,
+            int right,
             int* tempArray)
         {
             if (left < right)
@@ -398,7 +405,8 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
         }
 
-        private void MergeSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int middle, int middle1,
+        private static void MergeSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left, int middle,
+            int middle1,
             int right,
             int* tempArray)
         {
