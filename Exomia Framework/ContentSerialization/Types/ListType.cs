@@ -34,11 +34,16 @@ namespace Exomia.Framework.ContentSerialization.Types
     sealed class ListType : IType
     {
         /// <summary>
-        ///     constructor EnumType
+        ///     typeof(Array)
         /// </summary>
-        public ListType()
+        public Type BaseType { get; }
+
+        /// <summary>
+        ///     <see cref="IType.IsPrimitive()" />
+        /// </summary>
+        public bool IsPrimitive
         {
-            BaseType = typeof(List<>);
+            get { return false; }
         }
 
         /// <summary>
@@ -51,16 +56,11 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <summary>
-        ///     typeof(Array)
+        ///     constructor EnumType
         /// </summary>
-        public Type BaseType { get; }
-
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
-        public bool IsPrimitive
+        public ListType()
         {
-            get { return false; }
+            BaseType = typeof(List<>);
         }
 
         /// <summary>
@@ -87,7 +87,8 @@ namespace Exomia.Framework.ContentSerialization.Types
             {
                 string genericTypeInfo =
                     ContentSerializer.s_types.TryGetValue(gArgs[0].Name.ToUpper(), out IType it)
-                    || ContentSerializer.s_types.TryGetValue(gArgs[0].BaseType.Name.ToUpper(), out it)
+                    || ContentSerializer.s_types.TryGetValue(
+                        (gArgs[0].BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it)
                         ? it.CreateTypeInfo(gArgs[0])
                         : gArgs[0].ToString();
 
@@ -113,8 +114,8 @@ namespace Exomia.Framework.ContentSerialization.Types
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            Type elementType = null;
-            Func<CSStreamReader, string, object> readCallback = null;
+            Type elementType;
+            Func<CSStreamReader, string, object> readCallback;
             if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
             {
                 elementType = it.CreateType(gti);

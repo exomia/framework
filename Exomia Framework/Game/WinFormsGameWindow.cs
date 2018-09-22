@@ -37,21 +37,14 @@ namespace Exomia.Framework.Game
     {
         private RenderForm _renderForm;
 
-        public WinFormsGameWindow(string title)
-        {
-            _renderForm = new RenderForm(title) { FormBorderStyle = FormBorderStyle.FixedSingle };
-        }
-
-        ~WinFormsGameWindow()
-        {
-            Dispose(false);
-        }
+        public int Height { get; private set; }
 
         public bool IsInitialized { get; private set; }
 
-        public int Width { get; private set; }
-
-        public int Height { get; private set; }
+        public RenderForm RenderForm
+        {
+            get { return _renderForm; }
+        }
 
         public string Title
         {
@@ -65,9 +58,16 @@ namespace Exomia.Framework.Game
             }
         }
 
-        public RenderForm RenderForm
+        public int Width { get; private set; }
+
+        public WinFormsGameWindow(string title)
         {
-            get { return _renderForm; }
+            _renderForm = new RenderForm(title) { FormBorderStyle = FormBorderStyle.FixedSingle };
+        }
+
+        ~WinFormsGameWindow()
+        {
+            Dispose(false);
         }
 
         public void Initialize(ref GameGraphicsParameters parameters)

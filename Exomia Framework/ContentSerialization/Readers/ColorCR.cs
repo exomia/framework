@@ -37,7 +37,6 @@ namespace Exomia.Framework.ContentSerialization.Readers
                 G = context.Get<byte>("G"),
                 B = context.Get<byte>("B")
             };
-            ;
         }
     }
 }

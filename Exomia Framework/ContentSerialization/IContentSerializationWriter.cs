@@ -30,7 +30,7 @@ namespace Exomia.Framework.ContentSerialization
     public interface IContentSerializationWriter
     {
         /// <summary>
-        ///     Write the object informations into the context
+        ///     Write the object information into the context
         /// </summary>
         /// <param name="context">ref Context</param>
         /// <param name="obj">Object</param>

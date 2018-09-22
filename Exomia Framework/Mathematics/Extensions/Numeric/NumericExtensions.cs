@@ -39,6 +39,28 @@ namespace Exomia.Framework.Mathematics.Extensions.Numeric
         private const float I80_OVER_PI_F = (float)(180.0 / Math.PI);
 
         /// <summary>
+        ///     Convert to Degrees.
+        /// </summary>
+        /// <param name="value">The value to convert to degrees</param>
+        /// <returns>The value in degrees</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToDegree(this double value)
+        {
+            return value * I80_OVER_PI_D;
+        }
+
+        /// <summary>
+        ///     Convert to Degrees.
+        /// </summary>
+        /// <param name="value">The value to convert to degrees</param>
+        /// <returns>The value in degrees</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToDegree(this float value)
+        {
+            return value * I80_OVER_PI_F;
+        }
+
+        /// <summary>
         ///     Convert to Radians.
         /// </summary>
         /// <param name="value">The value to convert to radians</param>
@@ -69,28 +91,6 @@ namespace Exomia.Framework.Mathematics.Extensions.Numeric
         public static double ToRadians(this int value)
         {
             return PI_OVER_180_D * value;
-        }
-
-        /// <summary>
-        ///     Convert to Degrees.
-        /// </summary>
-        /// <param name="value">The value to convert to degrees</param>
-        /// <returns>The value in degrees</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double ToDegree(this double value)
-        {
-            return value * I80_OVER_PI_D;
-        }
-
-        /// <summary>
-        ///     Convert to Degrees.
-        /// </summary>
-        /// <param name="value">The value to convert to degrees</param>
-        /// <returns>The value in degrees</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToDegree(this float value)
-        {
-            return value * I80_OVER_PI_F;
         }
     }
 }

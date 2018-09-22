@@ -47,7 +47,7 @@ namespace Exomia.Framework
         ///     to repeatedly create instances of that type using the constructor that
         ///     the compiled lambda expression was created from.
         /// </summary>
-        /// <typeparam name="TDelegate">The type of object that the compiled lamda expression will create.</typeparam>
+        /// <typeparam name="TDelegate">The type of object that the compiled lambda expression will create.</typeparam>
         /// <returns>A compiled lambda expression in the form of a delegate.</returns>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="NullReferenceException"></exception>
@@ -89,7 +89,7 @@ namespace Exomia.Framework
         ///     the compiled lambda expression was created from.
         ///     Uses the constructor that matches the constructor parameters passed in.
         /// </summary>
-        /// <typeparam name="TRes">The type of object that the compiled lamda expression will create.</typeparam>
+        /// <typeparam name="TRes">The type of object that the compiled lambda expression will create.</typeparam>
         /// <param name="constructorParameters">An ordered array of the parameters the constructor takes.</param>
         /// <returns>A compiled lambda expression in the form of a delegate.</returns>
         /// <exception cref="ArgumentException">

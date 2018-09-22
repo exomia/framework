@@ -34,11 +34,16 @@ namespace Exomia.Framework.ContentSerialization.Types
     sealed class DictionaryType : IType
     {
         /// <summary>
-        ///     constructor EnumType
+        ///     typeof(Array)
         /// </summary>
-        public DictionaryType()
+        public Type BaseType { get; }
+
+        /// <summary>
+        ///     <see cref="IType.IsPrimitive()" />
+        /// </summary>
+        public bool IsPrimitive
         {
-            BaseType = typeof(Dictionary<,>);
+            get { return false; }
         }
 
         /// <summary>
@@ -51,16 +56,11 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <summary>
-        ///     typeof(Array)
+        ///     constructor EnumType
         /// </summary>
-        public Type BaseType { get; }
-
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
-        public bool IsPrimitive
+        public DictionaryType()
         {
-            get { return false; }
+            BaseType = typeof(Dictionary<,>);
         }
 
         /// <summary>
@@ -96,7 +96,8 @@ namespace Exomia.Framework.ContentSerialization.Types
                             $"the type of '{gArgs[0]}' is not supported as dictionary key");
                 string genericTypeInfo2 =
                     ContentSerializer.s_types.TryGetValue(gArgs[1].Name.ToUpper(), out IType itv) ||
-                    ContentSerializer.s_types.TryGetValue(gArgs[1].BaseType.Name.ToUpper(), out itv)
+                    ContentSerializer.s_types.TryGetValue(
+                        (gArgs[1].BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out itv)
                         ? itv.CreateTypeInfo(gArgs[1])
                         : gArgs[1].ToString();
 
@@ -128,8 +129,8 @@ namespace Exomia.Framework.ContentSerialization.Types
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
-            Type valueType = null;
-            Func<CSStreamReader, string, object> readCallback = null;
+            Type valueType;
+            Func<CSStreamReader, string, object> readCallback;
             if (ContentSerializer.s_types.TryGetValue(vbti, out IType it))
             {
                 valueType = it.CreateType(vgti);
@@ -175,7 +176,8 @@ namespace Exomia.Framework.ContentSerialization.Types
             {
                 Type elementType = entry.Value.GetType();
                 if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
-                    ContentSerializer.s_types.TryGetValue(elementType.BaseType.Name.ToUpper(), out it))
+                    ContentSerializer.s_types.TryGetValue(
+                        (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it))
                 {
                     it.Write(writeHandler, tabSpace, entry.Key.ToString(), entry.Value, false);
                 }
@@ -205,17 +207,17 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         private static int GetDictionaryCount(string dictionaryTypeInfo)
         {
-            string start = "(";
-            string end = ")";
+            const string START = "(";
+            const string END = ")";
 
-            int sIndex = dictionaryTypeInfo.IndexOf(start);
+            int sIndex = dictionaryTypeInfo.IndexOf(START, StringComparison.Ordinal);
             if (sIndex == -1)
             {
                 throw new CSTypeException("No dimension start definition found in '" + dictionaryTypeInfo + "'");
             }
-            sIndex += start.Length;
+            sIndex += START.Length;
 
-            int eIndex = dictionaryTypeInfo.LastIndexOf(end);
+            int eIndex = dictionaryTypeInfo.LastIndexOf(END, StringComparison.Ordinal);
             if (eIndex == -1)
             {
                 throw new CSTypeException("No dimension end definition found in '" + dictionaryTypeInfo + "'");

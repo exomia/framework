@@ -41,8 +41,10 @@ namespace Exomia.Framework
     /// </summary>
     public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
-        protected bool _isContentLoaded;
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
+        protected bool _isContentLoaded;
         protected bool _isInitialized;
 
         private DisposeCollector _collector;
@@ -50,12 +52,42 @@ namespace Exomia.Framework
         private bool _enabled;
         private int _updateOrder;
 
+        /// <inheritdoc />
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public int UpdateOrder
+        {
+            get { return _updateOrder; }
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         /// <summary>
         ///     Gets the <see cref="Game" /> associated with this <see cref="AComponent" />.
-        ///     This value can be null in a mockenvironment.
+        ///     This value can be null in a mock environment.
         /// </summary>
         /// <value>The game.</value>
         public Game.Game Game { get; }
+
+        public string Name { get; }
 
         /// <summary>
         ///     Gets the content manager.
@@ -97,8 +129,6 @@ namespace Exomia.Framework
             Dispose(false);
         }
 
-        public string Name { get; }
-
         /// <inheritdoc />
         public void LoadContent()
         {
@@ -129,37 +159,6 @@ namespace Exomia.Framework
 
                 OnInitialize(registry);
                 _isInitialized = true;
-            }
-        }
-
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <inheritdoc />
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public int UpdateOrder
-        {
-            get { return _updateOrder; }
-            set
-            {
-                if (_updateOrder != value)
-                {
-                    _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
-                }
             }
         }
 

@@ -34,15 +34,16 @@ namespace Exomia.Framework.ContentSerialization.Types
     sealed class PrimitiveType<T> : IType where T : struct
     {
         /// <summary>
-        ///     constructor PrimitiveType{T}
+        ///     typeof(Array)
         /// </summary>
-        public PrimitiveType()
+        public Type BaseType { get; }
+
+        /// <summary>
+        ///     <see cref="IType.IsPrimitive()" />
+        /// </summary>
+        public bool IsPrimitive
         {
-            BaseType = typeof(T);
-            if (!BaseType.IsPrimitive)
-            {
-                throw new NotSupportedException("typeof(T) isn't a primitive type -> " + BaseType.FullName);
-            }
+            get { return true; }
         }
 
         /// <summary>
@@ -55,16 +56,15 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <summary>
-        ///     typeof(Array)
+        ///     constructor PrimitiveType{T}
         /// </summary>
-        public Type BaseType { get; }
-
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
-        public bool IsPrimitive
+        public PrimitiveType()
         {
-            get { return true; }
+            BaseType = typeof(T);
+            if (!BaseType.IsPrimitive)
+            {
+                throw new NotSupportedException("typeof(T) isn't a primitive type -> " + BaseType.FullName);
+            }
         }
 
         /// <summary>

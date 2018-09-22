@@ -38,6 +38,30 @@ namespace Exomia.Framework.Input
     /// </summary>
     public sealed class WinFormsInputDevice : IInputDevice, IDisposable
     {
+        /// <inheritdoc />
+        public event KeyEventHandler KeyDown;
+
+        /// <inheritdoc />
+        public event KeyPressEventHandler KeyPress;
+
+        /// <inheritdoc />
+        public event KeyEventHandler KeyUp;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseClick;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseDown;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseMove;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseUp;
+
+        /// <inheritdoc />
+        public event MouseEventHandler MouseWheel;
+
         private readonly HashSet<int> _pressedKeys = new HashSet<int>();
 
         private readonly IWinFormsGameWindow _window;
@@ -72,30 +96,6 @@ namespace Exomia.Framework.Input
         {
             Dispose(false);
         }
-
-        /// <inheritdoc />
-        public event KeyEventHandler KeyDown;
-
-        /// <inheritdoc />
-        public event KeyEventHandler KeyUp;
-
-        /// <inheritdoc />
-        public event KeyPressEventHandler KeyPress;
-
-        /// <inheritdoc />
-        public event MouseEventHandler MouseMove;
-
-        /// <inheritdoc />
-        public event MouseEventHandler MouseDown;
-
-        /// <inheritdoc />
-        public event MouseEventHandler MouseUp;
-
-        /// <inheritdoc />
-        public event MouseEventHandler MouseClick;
-
-        /// <inheritdoc />
-        public event MouseEventHandler MouseWheel;
 
         #region Device MouseInput
 

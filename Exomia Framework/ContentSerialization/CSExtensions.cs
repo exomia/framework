@@ -48,45 +48,6 @@ namespace Exomia.Framework.ContentSerialization
         private static readonly Regex s_kvInfoMatcher = new Regex(
             "^([a-zA-Z0-9-]+)?:(\\([0-9,]+\\))?$", RegexOptions.Compiled | RegexOptions.Singleline);
 
-        internal static void GetInnerType(this string typeInfo, out string baseTypeinfo, out string genericTypeInfo)
-        {
-            Match match = s_innerTypeMatcher.Match(typeInfo);
-            if (!match.Success)
-            {
-                throw new CSReaderException($"ERROR: TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
-            }
-
-            baseTypeinfo = match.Groups[1].Success
-                ? match.Groups[1].Value
-                : throw new CSReaderException($"ERROR: TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
-
-            genericTypeInfo = match.Groups[2].Success
-                ? match.Groups[2].Value
-                : string.Empty;
-        }
-
-        internal static void GetKeyValueInnerType(this string typeInfo, out string keyBaseTypeInfo,
-            out string valueBaseTypeinfo, out string valueGenericTypeInfo)
-        {
-            Match match = s_valueInnerTypeMatcher.Match(typeInfo);
-            if (!match.Success)
-            {
-                throw new CSReaderException($"ERROR: KEY VALUE TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
-            }
-
-            keyBaseTypeInfo = match.Groups[1].Success
-                ? match.Groups[1].Value
-                : throw new CSReaderException($"ERROR: KEY VALUE TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
-
-            valueBaseTypeinfo = match.Groups[2].Success
-                ? match.Groups[2].Value
-                : throw new CSReaderException($"ERROR: KEY VALUE TYPEINFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
-
-            valueGenericTypeInfo = match.Groups[3].Success
-                ? match.Groups[3].Value
-                : string.Empty;
-        }
-
         internal static Type CreateType(this string typeInfo)
         {
             Type t = Type.GetType(typeInfo);
@@ -98,6 +59,73 @@ namespace Exomia.Framework.ContentSerialization
                 if (t != null) { return t; }
             }
             throw new CSTypeException("Can't create type of: '" + typeInfo + "'");
+        }
+
+        internal static void GetInnerType(this string typeInfo, out string baseTypeInfo, out string genericTypeInfo)
+        {
+            Match match = s_innerTypeMatcher.Match(typeInfo);
+            if (!match.Success)
+            {
+                throw new CSReaderException($"ERROR: TYPE INFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
+            }
+
+            baseTypeInfo = match.Groups[1].Success
+                ? match.Groups[1].Value
+                : throw new CSReaderException($"ERROR: TYPE INFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
+
+            genericTypeInfo = match.Groups[2].Success
+                ? match.Groups[2].Value
+                : string.Empty;
+        }
+
+        internal static void GetKeyValueInnerType(this string typeInfo, out string keyBaseTypeInfo,
+            out string valueBaseTypeInfo, out string valueGenericTypeInfo)
+        {
+            Match match = s_valueInnerTypeMatcher.Match(typeInfo);
+            if (!match.Success)
+            {
+                throw new CSReaderException($"ERROR: KEY VALUE TYPE INFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
+            }
+
+            keyBaseTypeInfo = match.Groups[1].Success
+                ? match.Groups[1].Value
+                : throw new CSReaderException($"ERROR: KEY VALUE TYPE INFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
+
+            valueBaseTypeInfo = match.Groups[2].Success
+                ? match.Groups[2].Value
+                : throw new CSReaderException($"ERROR: KEY VALUE TYPE INFO DOES NOT MATCH CONDITIONS! -> {typeInfo}");
+
+            valueGenericTypeInfo = match.Groups[3].Success
+                ? match.Groups[3].Value
+                : string.Empty;
+        }
+
+        internal static void ReadEndTag(this CSStreamReader stream, string key)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            while (stream.ReadChar(out char c))
+            {
+                switch (c)
+                {
+                    case ']':
+                    {
+                        string buffer = sb.ToString();
+                        if ($"/{key}" == buffer)
+                        {
+                            return;
+                        }
+                        throw new CSReaderException($"ERROR: INVALID END TAG DEFINITION! -> '{buffer}' != '/{key}'");
+                    }
+                    case '\n':
+                    case '\r':
+                    case '[':
+                    case '\t':
+                        throw new CSReaderException($"ERROR: INVALID END TAG DEFINITION! -> invalid char '{c}'");
+                }
+                sb.Append(c);
+            }
+            throw new CSReaderException($"ERROR: NO END TAG FOUND! -> {sb}");
         }
 
         internal static void ReadObjectStartTag(this CSStreamReader stream, string key)
@@ -113,7 +141,7 @@ namespace Exomia.Framework.ContentSerialization
                     {
                         string buffer = sb.ToString();
                         if (buffer == $"[{key}]") { return; }
-                        throw new CSReaderException($"ERROR: INVALID STARTTAG FOUND! -> '{buffer}' != '[{key}]'");
+                        throw new CSReaderException($"ERROR: INVALID START TAG FOUND! -> '{buffer}' != '[{key}]'");
                     }
                     case '\n':
                     case '\r':
@@ -153,7 +181,7 @@ namespace Exomia.Framework.ContentSerialization
 
                         baseTypeInfo = match.Groups[2].Success
                             ? match.Groups[2].Value
-                            : throw new CSReaderException($"ERROR: BASETYPE DOES NOT MATCH CONDITIONS! -> '{buffer}'");
+                            : throw new CSReaderException($"ERROR: BASE TYPE DOES NOT MATCH CONDITIONS! -> '{buffer}'");
 
                         genericTypeInfo = match.Groups[3].Success
                             ? match.Groups[3].Value
@@ -173,61 +201,6 @@ namespace Exomia.Framework.ContentSerialization
                 sb.Append(c);
             }
             throw new CSReaderException($"ERROR: NO KEY FOUND! -> {sb}");
-        }
-
-        internal static void ReadEndTag(this CSStreamReader stream, string key)
-        {
-            StringBuilder sb = new StringBuilder(32);
-
-            while (stream.ReadChar(out char c))
-            {
-                switch (c)
-                {
-                    case ']':
-                    {
-                        string buffer = sb.ToString();
-                        if ($"/{key}" == buffer)
-                        {
-                            return;
-                        }
-                        throw new CSReaderException($"ERROR: INVALID ENDTAG DEFINITION! -> '{buffer}' != '/{key}'");
-                    }
-                    case '\n':
-                    case '\r':
-                    case '[':
-                    case '\t':
-                        throw new CSReaderException($"ERROR: INVALID ENDTAG DEFINITION! -> invalid char '{c}'");
-                }
-                sb.Append(c);
-            }
-            throw new CSReaderException($"ERROR: NO ENDTAG FOUND! -> {sb}");
-        }
-
-        internal static void ReadTag(this CSStreamReader stream, string content)
-        {
-            while (stream.ReadChar(out char c))
-            {
-                switch (c)
-                {
-                    case '[':
-                    {
-                        stream.ReadTagInner(content);
-                        return;
-                    }
-                    case '/':
-                        throw new CSReaderException($"ERROR: INVALID TAG! -> invalid char '{c}'!");
-                    case '\n':
-                    case '\r':
-                    case '\t':
-                    case ' ':
-                        break;
-                    default:
-                        Console.WriteLine(
-                            $"WARNING: invalid char '{c}' found near line {stream.Line} -> index {stream.Index}!");
-                        break;
-                }
-            }
-            throw new CSReaderException($"ERROR: NO TAG FOUND -> '{content}'");
         }
 
         internal static void ReadStartTag(this CSStreamReader stream, out string key, out string dimensionInfo)
@@ -257,29 +230,31 @@ namespace Exomia.Framework.ContentSerialization
             throw new CSReaderException("ERROR: NO START TAG FOUND -> \'[:]\'");
         }
 
-        private static void ReadTagInner(this CSStreamReader stream, string content)
+        internal static void ReadTag(this CSStreamReader stream, string content)
         {
-            StringBuilder sb = new StringBuilder(128);
-
             while (stream.ReadChar(out char c))
             {
                 switch (c)
                 {
-                    case ']':
-                    {
-                        string buffer = sb.ToString();
-                        if (buffer == content) { return; }
-                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> '{buffer}' != '{content}'");
-                    }
-                    case '\n':
                     case '[':
+                    {
+                        stream.ReadTagInner(content);
+                        return;
+                    }
+                    case '/':
+                        throw new CSReaderException($"ERROR: INVALID TAG! -> invalid char '{c}'!");
+                    case '\n':
                     case '\r':
                     case '\t':
-                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> invalid char '{c}'");
+                    case ' ':
+                        break;
+                    default:
+                        Console.WriteLine(
+                            $"WARNING: invalid char '{c}' found near line {stream.Line} -> index {stream.Index}!");
+                        break;
                 }
-                sb.Append(c);
             }
-            throw new CSReaderException($"ERROR: NO KEY FOUND! -> '{sb}'");
+            throw new CSReaderException($"ERROR: NO TAG FOUND -> '{content}'");
         }
 
         private static void ReadStartTagInner(this CSStreamReader stream, out string key, out string dimensionInfo)
@@ -320,6 +295,31 @@ namespace Exomia.Framework.ContentSerialization
                 sb.Append(c);
             }
             throw new CSReaderException($"ERROR: NO KEY FOUND! -> {sb}");
+        }
+
+        private static void ReadTagInner(this CSStreamReader stream, string content)
+        {
+            StringBuilder sb = new StringBuilder(128);
+
+            while (stream.ReadChar(out char c))
+            {
+                switch (c)
+                {
+                    case ']':
+                    {
+                        string buffer = sb.ToString();
+                        if (buffer == content) { return; }
+                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> '{buffer}' != '{content}'");
+                    }
+                    case '\n':
+                    case '[':
+                    case '\r':
+                    case '\t':
+                        throw new CSReaderException($"ERROR: INVALID TAG DEFINITION! -> invalid char '{c}'");
+                }
+                sb.Append(c);
+            }
+            throw new CSReaderException($"ERROR: NO KEY FOUND! -> '{sb}'");
         }
     }
 }

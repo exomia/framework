@@ -29,9 +29,18 @@ namespace Exomia.Framework.Audio
 {
     sealed class Sound
     {
-        internal Emitter Emitter;
+        internal readonly Emitter Emitter;
+        internal readonly SourceVoice SourceVoice;
         internal Sound Next = null;
         internal Sound Previous = null;
-        internal SourceVoice SourceVoice;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Sound" /> class.
+        /// </summary>
+        public Sound(Emitter emitter, SourceVoice sourceVoice)
+        {
+            Emitter     = emitter;
+            SourceVoice = sourceVoice;
+        }
     }
 }

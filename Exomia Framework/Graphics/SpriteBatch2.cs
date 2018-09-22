@@ -49,7 +49,6 @@ namespace Exomia.Framework.Graphics
         private const int MAX_VERTEX_COUNT = MAX_BATCH_SIZE * VERTICES_PER_SPRITE;
         private const int MAX_INDEX_COUNT = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
 
-        private const int SEQUENTIAL_THRESHOLD = 2048;
         private const int BATCH_SEQUENTIAL_THRESHOLD = 512;
 
         private const int VERTEX_STRIDE = sizeof(float) * 11;
@@ -66,10 +65,10 @@ namespace Exomia.Framework.Graphics
         private readonly Device5 _device;
 
         private readonly ITexture2ContentManager _manager;
+        private readonly ISpriteSort _spriteSort;
         private readonly VertexBufferBinding _vertexBufferBinding;
 
         private readonly InputLayout _vertexInputLayout;
-        private readonly ISpriteSort _spriteSort;
 
         private BlendState _blendState;
 
@@ -112,9 +111,12 @@ namespace Exomia.Framework.Graphics
         static SpriteBatch2()
         {
             if (MAX_INDEX_COUNT > ushort.MaxValue)
+#pragma warning disable 162
             {
+                // ReSharper disable once NotResolvedInText
                 throw new ArgumentOutOfRangeException("MAX_INDEX_COUNT->MAX_BATCH_SIZE");
             }
+#pragma warning restore 162
             s_indices = new ushort[MAX_INDEX_COUNT];
             for (int i = 0, k = 0; i < MAX_INDEX_COUNT; i += 6, k += VERTICES_PER_SPRITE)
             {
@@ -134,7 +136,7 @@ namespace Exomia.Framework.Graphics
             SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
         {
             _device  = iDevice?.Device ?? throw new NullReferenceException(nameof(iDevice));
-            _context = iDevice?.DeviceContext ?? throw new NullReferenceException(nameof(iDevice));
+            _context = iDevice.DeviceContext ?? throw new NullReferenceException(nameof(iDevice));
             _manager = manager ?? throw new NullReferenceException(nameof(manager));
 
             switch (sortAlgorithm)
@@ -184,40 +186,6 @@ namespace Exomia.Framework.Graphics
             Dispose(false);
         }
 
-        public void GenerateTexture2DArray()
-        {
-            if (_manager.GenerateTexture2DArray(_device, out Texture texture))
-            {
-                Interlocked.Exchange(ref _texture2DArray, texture)?.Dispose();
-                _isTextureGenerated = true;
-            }
-        }
-
-        public void Resize(Size2F size)
-        {
-            Resize(size.Width, size.Height);
-        }
-
-        public void Resize(ViewportF viewport)
-        {
-            Resize(viewport.Width, viewport.Height);
-        }
-
-        public void Resize(float width, float height)
-        {
-            float xRatio = width > 0 ? 1f / width : 0f;
-            float yRatio = height > 0 ? -1f / height : 0f;
-            _projectionMatrix = new Matrix
-            {
-                M11 = xRatio * 2f,
-                M22 = yRatio * 2f,
-                M33 = 1f,
-                M44 = 1f,
-                M41 = -1f,
-                M42 = 1f
-            };
-        }
-
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred, BlendState blendState = null,
             SamplerState samplerState = null, DepthStencilState depthStencilState = null,
             RasterizerState rasterizerState = null, Matrix? transformMatrix = null, Matrix? viewMatrix = null,
@@ -262,6 +230,136 @@ namespace Exomia.Framework.Graphics
             _isBeginCalled = false;
         }
 
+        public void GenerateTexture2DArray()
+        {
+            if (_manager.GenerateTexture2DArray(_device, out Texture texture))
+            {
+                Interlocked.Exchange(ref _texture2DArray, texture)?.Dispose();
+                _isTextureGenerated = true;
+            }
+        }
+
+        public void Resize(Size2F size)
+        {
+            Resize(size.Width, size.Height);
+        }
+
+        public void Resize(ViewportF viewport)
+        {
+            Resize(viewport.Width, viewport.Height);
+        }
+
+        public void Resize(float width, float height)
+        {
+            float xRatio = width > 0 ? 1f / width : 0f;
+            float yRatio = height > 0 ? -1f / height : 0f;
+            _projectionMatrix = new Matrix
+            {
+                M11 = xRatio * 2f,
+                M22 = yRatio * 2f,
+                M33 = 1f,
+                M44 = 1f,
+                M41 = -1f,
+                M42 = 1f
+            };
+        }
+
+        private unsafe void DrawBatchPerTexture(SpriteInfo[] sprites, int offset, int count)
+        {
+            _context.PixelShader.SetShaderResource(0, _texture2DArray.TextureView);
+
+            float deltaX = 1.0f / _texture2DArray.Width;
+            float deltaY = 1.0f / _texture2DArray.Height;
+            while (count > 0)
+            {
+                int batchSize = count;
+                if (batchSize > MAX_BATCH_SIZE)
+                {
+                    batchSize = MAX_BATCH_SIZE;
+                }
+
+                DataBox box = _context.MapSubresource(_vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
+                VertexPositionColorTexture* vpctPtr = (VertexPositionColorTexture*)box.DataPointer;
+
+                if (batchSize > BATCH_SEQUENTIAL_THRESHOLD)
+                {
+                    int middle = batchSize >> 1;
+                    Parallel.Invoke(
+                        () =>
+                        {
+                            for (int i = 0; i < middle; i++)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                int index = i + offset;
+                                if (_spriteSortMode != SpriteSortMode.Deferred)
+                                {
+                                    index = _sortIndices[index];
+                                }
+                                UpdateVertexFromSpriteInfoParallel(
+                                    ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
+                            }
+                        },
+                        () =>
+                        {
+                            for (int i = middle; i < batchSize; i++)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                int index = i + offset;
+                                if (_spriteSortMode != SpriteSortMode.Deferred)
+                                {
+                                    index = _sortIndices[index];
+                                }
+                                UpdateVertexFromSpriteInfoParallel(
+                                    ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
+                            }
+                        });
+                }
+                else
+                {
+                    for (int i = 0; i < batchSize; i++)
+                    {
+                        int index = i + offset;
+                        if (_spriteSortMode != SpriteSortMode.Deferred)
+                        {
+                            index = _sortIndices[index];
+                        }
+                        UpdateVertexFromSpriteInfoParallel(ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
+                    }
+                }
+
+                _context.UnmapSubresource(_vertexBuffer, 0);
+                _context.DrawIndexed(INDICES_PER_SPRITE * batchSize, 0, 0);
+
+                offset += batchSize;
+                count  -= batchSize;
+            }
+        }
+
+        private void FlushBatch()
+        {
+            switch (_spriteSortMode)
+            {
+                case SpriteSortMode.BackToFront:
+                    for (int i = 0; i < _spriteQueueCount; ++i)
+                    {
+                        _sortIndices[i] = i;
+                    }
+                    _spriteSort.SortBf(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
+                    break;
+                case SpriteSortMode.FrontToBack:
+                    for (int i = 0; i < _spriteQueueCount; ++i)
+                    {
+                        _sortIndices[i] = i;
+                    }
+                    _spriteSort.SortFb(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
+                    break;
+            }
+
+            DrawBatchPerTexture(_spriteQueue, 0, _spriteQueueCount);
+
+            _spriteQueueCount = 0;
+        }
+
         private void IDevice_onResizeFinished(ViewportF viewport)
         {
             Resize(viewport);
@@ -276,6 +374,11 @@ namespace Exomia.Framework.Graphics
                 InitializeStates(device);
                 InitializeDefaultTextures(device);
             }
+        }
+
+        private void InitializeDefaultTextures(Device5 device)
+        {
+            DefaultTextures.InitializeTextures2(_manager);
         }
 
         private void InitializeShaders(Device5 device)
@@ -378,11 +481,6 @@ namespace Exomia.Framework.Graphics
                 });
         }
 
-        private void InitializeDefaultTextures(Device5 device)
-        {
-            DefaultTextures.InitializeTextures2(_manager);
-        }
-
         private void PrepareForRendering()
         {
             _context.VertexShader.Set(_vertexShader);
@@ -420,102 +518,6 @@ namespace Exomia.Framework.Graphics
 
             //TODO: working?
             //_context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
-        }
-
-        private void FlushBatch()
-        {
-            switch (_spriteSortMode)
-            {
-                case SpriteSortMode.BackToFront:
-                    for (int i = 0; i < _spriteQueueCount; ++i)
-                    {
-                        _sortIndices[i] = i;
-                    }
-                    _spriteSort.SortBf(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
-                    break;
-                case SpriteSortMode.FrontToBack:
-                    for (int i = 0; i < _spriteQueueCount; ++i)
-                    {
-                        _sortIndices[i] = i;
-                    }
-                    _spriteSort.SortFb(_spriteQueue, _sortIndices, 0, _spriteQueueCount);
-                    break;
-            }
-
-            DrawBatchPerTexture(_spriteQueue, 0, _spriteQueueCount);
-
-            _spriteQueueCount = 0;
-        }
-
-        private unsafe void DrawBatchPerTexture(SpriteInfo[] sprites, int offset, int count)
-        {
-            _context.PixelShader.SetShaderResource(0, _texture2DArray.TextureView);
-
-            float deltaX = 1.0f / _texture2DArray.Width;
-            float deltaY = 1.0f / _texture2DArray.Height;
-            while (count > 0)
-            {
-                int batchSize = count;
-                if (batchSize > MAX_BATCH_SIZE)
-                {
-                    batchSize = MAX_BATCH_SIZE;
-                }
-
-                DataBox box = _context.MapSubresource(_vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-                VertexPositionColorTexture* vpctPtr = (VertexPositionColorTexture*)box.DataPointer;
-
-                if (batchSize > BATCH_SEQUENTIAL_THRESHOLD)
-                {
-                    int middle = batchSize >> 1;
-                    Parallel.Invoke(
-                        () =>
-                        {
-                            for (int i = 0; i < middle; i++)
-                            {
-                                // ReSharper disable once AccessToModifiedClosure
-                                int index = i + offset;
-                                if (_spriteSortMode != SpriteSortMode.Deferred)
-                                {
-                                    index = _sortIndices[index];
-                                }
-                                UpdateVertexFromSpriteInfoParallel(
-                                    ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
-                            }
-                        },
-                        () =>
-                        {
-                            for (int i = middle; i < batchSize; i++)
-                            {
-                                // ReSharper disable once AccessToModifiedClosure
-                                int index = i + offset;
-                                if (_spriteSortMode != SpriteSortMode.Deferred)
-                                {
-                                    index = _sortIndices[index];
-                                }
-                                UpdateVertexFromSpriteInfoParallel(
-                                    ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
-                            }
-                        });
-                }
-                else
-                {
-                    for (int i = 0; i < batchSize; i++)
-                    {
-                        int index = i + offset;
-                        if (_spriteSortMode != SpriteSortMode.Deferred)
-                        {
-                            index = _sortIndices[index];
-                        }
-                        UpdateVertexFromSpriteInfoParallel(ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
-                    }
-                }
-
-                _context.UnmapSubresource(_vertexBuffer, 0);
-                _context.DrawIndexed(INDICES_PER_SPRITE * batchSize, 0, 0);
-
-                offset += batchSize;
-                count  -= batchSize;
-            }
         }
 
         private unsafe void UpdateVertexFromSpriteInfoParallel(ref SpriteInfo spriteInfo,
@@ -662,7 +664,7 @@ namespace Exomia.Framework.Graphics
         public void DrawRectangle(in RectangleF destinationRectangle, in Color color, float lineWidth, float rotation,
             in Vector2 origin, float opacity, float layerDepth)
         {
-            Vector2[] vertex = null;
+            Vector2[] vertex;
 
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (rotation == 0.0f)

@@ -47,43 +47,27 @@ namespace Exomia.Framework.Scene
     {
         event SceneStateChangedHandler SceneStateChanged;
 
-        string Key { get; }
-        bool IsOverlayScene { get; set; }
-        SceneState State { get; }
-
-        string[] ReferenceScenes { get; }
-
-        ISceneManager SceneManager { get; set; }
-
-        IInputHandler InputHandler { get; }
-
         /// <summary>
         ///     Gets a value indicating whether the scene component's Update method should be called.
         /// </summary>
         /// <value><c>true</c> if update is enabled; <c>false</c> otherwise.</value>
         bool Enabled { get; set; }
 
+        IInputHandler InputHandler { get; }
+        bool IsOverlayScene { get; set; }
+
+        string Key { get; }
+
+        string[] ReferenceScenes { get; }
+
+        ISceneManager SceneManager { get; set; }
+        SceneState State { get; }
+
         /// <summary>
         ///     Gets a value indicating whether the <see cref="Draw" /> method should be called./>.
         /// </summary>
         /// <value><c>true</c> if this drawable component is visible; <c>false</c> otherwise.</value>
         bool Visible { get; set; }
-
-        /// <summary>
-        ///     Is called than the scene is showed
-        /// </summary>
-        void Show();
-
-        /// <summary>
-        ///     Is called than all ReferenceScenes are loaded.
-        /// </summary>
-        void ReferenceScenesLoaded();
-
-        /// <summary>
-        ///     This method is called when this game component is updated.
-        /// </summary>
-        /// <param name="gameTime">The current timing.</param>
-        void Update(GameTime gameTime);
 
         /// <summary>
         ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
@@ -101,5 +85,21 @@ namespace Exomia.Framework.Scene
         ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
         /// </summary>
         void EndDraw();
+
+        /// <summary>
+        ///     Is called than all ReferenceScenes are loaded.
+        /// </summary>
+        void ReferenceScenesLoaded();
+
+        /// <summary>
+        ///     Is called than the scene is showed
+        /// </summary>
+        void Show();
+
+        /// <summary>
+        ///     This method is called when this game component is updated.
+        /// </summary>
+        /// <param name="gameTime">The current timing.</param>
+        void Update(GameTime gameTime);
     }
 }

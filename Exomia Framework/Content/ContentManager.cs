@@ -47,6 +47,26 @@ namespace Exomia.Framework.Content
 
         private string _rootDirectory;
 
+        public string RootDirectory
+        {
+            get { return _rootDirectory; }
+            set
+            {
+                lock (_loadedAssets)
+                {
+                    if (_loadedAssets.Count > 0)
+                    {
+                        throw new InvalidOperationException(
+                            "RootDirectory cannot be changed when a ContentManager has already assets loaded");
+                    }
+                }
+
+                _rootDirectory = value;
+            }
+        }
+
+        public IServiceRegistry ServiceRegistry { get; }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ContentManager" /> class.
         /// </summary>
@@ -72,7 +92,7 @@ namespace Exomia.Framework.Content
 
                 foreach (Type t in a.GetTypes())
                 {
-                    ContentReadableAttribute attribute = null;
+                    ContentReadableAttribute attribute;
                     if ((attribute = t.GetCustomAttribute<ContentReadableAttribute>(false)) != null)
                     {
                         AddContentReader(t, attribute.Reader);
@@ -87,38 +107,6 @@ namespace Exomia.Framework.Content
         ~ContentManager()
         {
             Dispose(false);
-        }
-
-        public string RootDirectory
-        {
-            get { return _rootDirectory; }
-            set
-            {
-                lock (_loadedAssets)
-                {
-                    if (_loadedAssets.Count > 0)
-                    {
-                        throw new InvalidOperationException(
-                            "RootDirectory cannot be changed when a ContentManager has already assets loaded");
-                    }
-                }
-
-                _rootDirectory = value;
-            }
-        }
-
-        public IServiceRegistry ServiceRegistry { get; }
-
-        /// <inheritdoc />
-        public bool AddContentResolver(IContentResolver resolver)
-        {
-            lock (_registeredContentResolvers)
-            {
-                if (_registeredContentResolvers.Contains(resolver)) { return false; }
-                _registeredContentResolvers.Add(resolver);
-            }
-
-            return true;
         }
 
         /// <inheritdoc />
@@ -140,6 +128,18 @@ namespace Exomia.Framework.Content
                 if (_registeredContentReaderFactories.Contains(factory)) { return false; }
                 _registeredContentReaderFactories.Add(factory);
             }
+            return true;
+        }
+
+        /// <inheritdoc />
+        public bool AddContentResolver(IContentResolver resolver)
+        {
+            lock (_registeredContentResolvers)
+            {
+                if (_registeredContentResolvers.Contains(resolver)) { return false; }
+                _registeredContentResolvers.Add(resolver);
+            }
+
             return true;
         }
 
@@ -186,16 +186,13 @@ namespace Exomia.Framework.Content
                 throw new ArgumentNullException(nameof(assetType));
             }
 
-            object result = null;
+            object result;
             AssetKey assetKey = new AssetKey(assetType, assetName);
             lock (GetAssetLocker(assetKey, true))
             {
-                lock (_loadedAssets)
+                if (_loadedAssets.TryGetValue(assetKey, out result))
                 {
-                    if (_loadedAssets.TryGetValue(assetKey, out result))
-                    {
-                        return result;
-                    }
+                    return result;
                 }
 
                 string assetPath = Path.Combine(_rootDirectory ?? string.Empty, assetName);
@@ -256,7 +253,7 @@ namespace Exomia.Framework.Content
             object assetLockerRead = GetAssetLocker(assetKey, false);
             if (assetLockerRead == null) { return false; }
 
-            object asset = null;
+            object asset;
 
             lock (assetLockerRead)
             {
@@ -285,19 +282,6 @@ namespace Exomia.Framework.Content
         public bool Unload<T>(string assetName)
         {
             return Unload(typeof(T), assetName);
-        }
-
-        private object GetAssetLocker(AssetKey assetKey, bool create)
-        {
-            lock (_assetLockers)
-            {
-                if (!_assetLockers.TryGetValue(assetKey, out object assetLockerRead) && create)
-                {
-                    assetLockerRead = new object();
-                    _assetLockers.Add(assetKey, assetLockerRead);
-                }
-                return assetLockerRead;
-            }
         }
 
         private Stream FindStream(string assetName)
@@ -329,6 +313,19 @@ namespace Exomia.Framework.Content
             }
 
             return stream ?? throw new AssetNotFoundException(assetName, lastException);
+        }
+
+        private object GetAssetLocker(AssetKey assetKey, bool create)
+        {
+            lock (_assetLockers)
+            {
+                if (!_assetLockers.TryGetValue(assetKey, out object assetLockerRead) && create)
+                {
+                    assetLockerRead = new object();
+                    _assetLockers.Add(assetKey, assetLockerRead);
+                }
+                return assetLockerRead;
+            }
         }
 
         private object LoadAssetWithDynamicContentReader(Type assetType, string assetName, Stream stream)
@@ -429,10 +426,22 @@ namespace Exomia.Framework.Content
             {
                 if (disposing)
                 {
-                    _loadedAssets.Clear();
-                    _registeredContentReaderFactories.Clear();
-                    _registeredContentReaders.Clear();
-                    _registeredContentResolvers.Clear();
+                    lock (_loadedAssets)
+                    {
+                        _loadedAssets.Clear();
+                    }
+                    lock (_registeredContentReaderFactories)
+                    {
+                        _registeredContentReaderFactories.Clear();
+                    }
+                    lock (_registeredContentReaders)
+                    {
+                        _registeredContentReaders.Clear();
+                    }
+                    lock (_registeredContentResolvers)
+                    {
+                        _registeredContentResolvers.Clear();
+                    }
                 }
 
                 _disposed = true;

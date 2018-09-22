@@ -28,13 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime;
-using System.Runtime.InteropServices;
-using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using Exomia.Framework.Components;
 using Exomia.Framework.Content;
 using Exomia.Framework.Tools;
+using Exomia.Framework.WinApi;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -84,28 +83,41 @@ namespace Exomia.Framework.Game
 
         private bool _shutdown;
 
-        public bool IsFixedTimeStep { get; set; } = false;
-
-        public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
+        public IContentManager Content
+        {
+            get { return _contentManager; }
+        }
 
         public GameGraphicsParameters GameGraphicsParameters { get; private set; }
+
+        public IGameWindow GameWindow
+        {
+            get { return _gameWindow; }
+        }
 
         public IGraphicsDevice GraphicsDevice
         {
             get { return _graphicsDevice; }
         }
 
+        public bool IsFixedTimeStep { get; set; } = false;
+
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                if (_isRunning != value)
+                {
+                    _isRunning = value;
+                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         public IServiceRegistry Services { get; }
 
-        public IContentManager Content
-        {
-            get { return _contentManager; }
-        }
-
-        public IGameWindow GameWindow
-        {
-            get { return _gameWindow; }
-        }
+        public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Game" /> class.
@@ -160,19 +172,6 @@ namespace Exomia.Framework.Game
         ~Game()
         {
             Dispose(false);
-        }
-
-        public bool IsRunning
-        {
-            get { return _isRunning; }
-            set
-            {
-                if (_isRunning != value)
-                {
-                    _isRunning = value;
-                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
         }
 
         /// <inheritdoc />
@@ -255,6 +254,7 @@ namespace Exomia.Framework.Game
                 }
             }
 
+            // ReSharper disable once InconsistentlySynchronizedField
             if (item is IContentable contentable && !_contentableComponent.Contains(contentable))
             {
                 lock (_contentableComponent)
@@ -267,6 +267,7 @@ namespace Exomia.Framework.Game
                 }
             }
 
+            // ReSharper disable once InconsistentlySynchronizedField
             if (item is IUpdateable updateable && !_updateableComponent.Contains(updateable))
             {
                 lock (_updateableComponent)
@@ -287,6 +288,7 @@ namespace Exomia.Framework.Game
                 updateable.UpdateOrderChanged += UpdateableComponent_UpdateOrderChanged;
             }
 
+            // ReSharper disable once InconsistentlySynchronizedField
             if (item is IDrawable drawable && !_drawableComponent.Contains(drawable))
             {
                 lock (_drawableComponent)
@@ -315,6 +317,17 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
+        ///     get a game system by name
+        /// </summary>
+        /// <param name="name">the game system name</param>
+        /// <param name="system">out found game system</param>
+        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
+        public bool GetComponent(string name, out IComponent system)
+        {
+            return _gameComponents.TryGetValue(name, out system);
+        }
+
+        /// <summary>
         ///     add a new game system
         /// </summary>
         /// <typeparam name="T">T</typeparam>
@@ -322,40 +335,34 @@ namespace Exomia.Framework.Game
         /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
         public T Remove<T>(T item)
         {
-            lock (_contentableComponent)
+            // ReSharper disable once InconsistentlySynchronizedField
+            if (item is IContentable contentable && _contentableComponent.Contains(contentable))
             {
-                if (item is IContentable contentable && _contentableComponent.Contains(contentable))
+                lock (_contentableComponent)
                 {
-                    lock (_contentableComponent)
-                    {
-                        _contentableComponent.Remove(contentable);
-                    }
-                    contentable.UnloadContent();
+                    _contentableComponent.Remove(contentable);
                 }
+                contentable.UnloadContent();
             }
 
-            lock (_updateableComponent)
+            // ReSharper disable once InconsistentlySynchronizedField
+            if (item is IUpdateable updateable && _updateableComponent.Contains(updateable))
             {
-                if (item is IUpdateable updateable && _updateableComponent.Contains(updateable))
+                lock (_updateableComponent)
                 {
-                    lock (_updateableComponent)
-                    {
-                        _updateableComponent.Remove(updateable);
-                    }
-                    updateable.UpdateOrderChanged -= UpdateableComponent_UpdateOrderChanged;
+                    _updateableComponent.Remove(updateable);
                 }
+                updateable.UpdateOrderChanged -= UpdateableComponent_UpdateOrderChanged;
             }
 
-            lock (_drawableComponent)
+            // ReSharper disable once InconsistentlySynchronizedField
+            if (item is IDrawable drawable && _drawableComponent.Contains(drawable))
             {
-                if (item is IDrawable drawable && _drawableComponent.Contains(drawable))
+                lock (_drawableComponent)
                 {
-                    lock (_drawableComponent)
-                    {
-                        _drawableComponent.Remove(drawable);
-                    }
-                    drawable.DrawOrderChanged -= DrawableComponent_DrawOrderChanged;
+                    _drawableComponent.Remove(drawable);
                 }
+                drawable.DrawOrderChanged -= DrawableComponent_DrawOrderChanged;
             }
 
             if (item is IComponent component1 && _gameComponents.ContainsKey(component1.Name))
@@ -387,21 +394,49 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     get a game system by name
+        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
         /// </summary>
-        /// <param name="name">the game system name</param>
-        /// <param name="system">out found game system</param>
-        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
-        public bool GetComponent(string name, out IComponent system)
+        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
+        protected virtual bool BeginFrame()
         {
-            return _gameComponents.TryGetValue(name, out system);
+            return _graphicsDevice.BeginFrame();
         }
 
         /// <summary>
-        ///     Initialize game graphics parameters
+        ///     draws the current scene
         /// </summary>
-        /// <param name="parameters"></param>
-        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
+        protected virtual void Draw(GameTime gameTime)
+        {
+            lock (_drawableComponent)
+            {
+                _currentlyDrawableComponent.AddRange(_drawableComponent);
+            }
+
+            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
+            {
+                IDrawable drawable = _currentlyDrawableComponent[i];
+                if (drawable.BeginDraw())
+                {
+                    drawable.Draw(gameTime);
+                    drawable.EndDraw();
+                }
+            }
+
+            _currentlyDrawableComponent.Clear();
+        }
+
+        /// <summary>
+        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
+        /// </summary>
+        protected virtual void EndFrame()
+        {
+            _graphicsDevice.EndFrame();
+        }
+
+        /// <summary>
+        ///     Called after Initialize but before LoadContent.
+        /// </summary>
+        protected virtual void OnAfterInitialize() { }
 
         /// <summary>
         ///     Called before Initialize.
@@ -414,9 +449,10 @@ namespace Exomia.Framework.Game
         protected virtual void OnInitialize() { }
 
         /// <summary>
-        ///     Called after Initialize but before LoadContent.
+        ///     Initialize game graphics parameters
         /// </summary>
-        protected virtual void OnAfterInitialize() { }
+        /// <param name="parameters"></param>
+        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
 
         /// <summary>
         ///     Called once to perform user-defined loading
@@ -450,95 +486,24 @@ namespace Exomia.Framework.Game
             _currentlyUpdateableComponent.Clear();
         }
 
-        /// <summary>
-        ///     draws the current scene
-        /// </summary>
-        protected virtual void Draw(GameTime gameTime)
+        private void BeginInitialize()
         {
-            lock (_drawableComponent)
+            if (!_isInitialized)
             {
-                _currentlyDrawableComponent.AddRange(_drawableComponent);
+                InitializeGameGraphicsParameters();
+                OnBeforeInitialize();
+                OnInitialize();
+                InitializePendingInitializations();
+                _isInitialized = true;
+                OnAfterInitialize();
             }
+        }
 
-            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
+        private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
+        {
+            lock (_updateableComponent)
             {
-                IDrawable drawable = _currentlyDrawableComponent[i];
-                if (drawable.BeginDraw())
-                {
-                    drawable.Draw(gameTime);
-                    drawable.EndDraw();
-                }
-            }
-
-            _currentlyDrawableComponent.Clear();
-        }
-
-        /// <summary>
-        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
-        /// </summary>
-        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
-        protected virtual bool BeginFrame()
-        {
-            return _graphicsDevice.BeginFrame();
-        }
-
-        /// <summary>
-        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
-        /// </summary>
-        protected virtual void EndFrame()
-        {
-            _graphicsDevice.EndFrame();
-        }
-
-        private void Renderloop(GameTime gameTime)
-        {
-            MSG msg;
-            msg.hwnd    = IntPtr.Zero;
-            msg.message = 0;
-            msg.lParam  = IntPtr.Zero;
-            msg.wParam  = IntPtr.Zero;
-            msg.time    = 0;
-            msg.pt      = Point.Zero;
-
-            while (!_shutdown && msg.message != WM_QUIT)
-            {
-                _stopwatch.Restart();
-
-                if (PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
-                {
-                    Message message = Message.Create(msg.hwnd, msg.message, msg.wParam, msg.lParam);
-                    if (!Application.FilterMessage(ref message))
-                    {
-                        TranslateMessage(ref msg);
-                        DispatchMessage(ref msg);
-                    }
-                }
-
-                if (!_isRunning)
-                {
-                    Thread.Sleep(16);
-                    continue;
-                }
-
-                gameTime.Tick();
-                Update(gameTime);
-                if (BeginFrame())
-                {
-                    Draw(gameTime);
-                    EndFrame();
-                }
-
-                if (IsFixedTimeStep)
-                {
-                    //SLEEP
-                    while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
-                    {
-                        Thread.Sleep(1);
-                    }
-
-                    //IDLE
-                    while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
-                }
+                _updateableComponent.Sort(UpdateableComparer.Default);
             }
         }
 
@@ -580,19 +545,6 @@ namespace Exomia.Framework.Game
             GameGraphicsParameters = parameters;
         }
 
-        private void BeginInitialize()
-        {
-            if (!_isInitialized)
-            {
-                InitializeGameGraphicsParameters();
-                OnBeforeInitialize();
-                OnInitialize();
-                InitializePendingInitializations();
-                _isInitialized = true;
-                OnAfterInitialize();
-            }
-        }
-
         private void InitializePendingInitializations()
         {
             while (_pendingInitializables.Count != 0)
@@ -626,6 +578,58 @@ namespace Exomia.Framework.Game
             }
         }
 
+        private void Renderloop(GameTime gameTime)
+        {
+            User32.MSG msg;
+            msg.hWnd    = IntPtr.Zero;
+            msg.message = 0;
+            msg.lParam  = IntPtr.Zero;
+            msg.wParam  = IntPtr.Zero;
+            msg.time    = 0;
+            msg.pt      = Point.Zero;
+
+            while (!_shutdown && msg.message != WM_QUIT)
+            {
+                _stopwatch.Restart();
+
+                if (User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
+                {
+                    Message message = Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
+                    if (!Application.FilterMessage(ref message))
+                    {
+                        User32.TranslateMessage(ref msg);
+                        User32.DispatchMessage(ref msg);
+                    }
+                }
+
+                if (!_isRunning)
+                {
+                    Thread.Sleep(16);
+                    continue;
+                }
+
+                gameTime.Tick();
+                Update(gameTime);
+                if (BeginFrame())
+                {
+                    Draw(gameTime);
+                    EndFrame();
+                }
+
+                if (IsFixedTimeStep)
+                {
+                    //SLEEP
+                    while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
+                    {
+                        Thread.Sleep(1);
+                    }
+
+                    //IDLE
+                    while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                }
+            }
+        }
+
         /// <summary>
         ///     Unloads the content.
         /// </summary>
@@ -647,14 +651,6 @@ namespace Exomia.Framework.Game
 
                 OnUnloadContent();
                 _isContentLoaded = false;
-            }
-        }
-
-        private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
-        {
-            lock (_updateableComponent)
-            {
-                _updateableComponent.Sort(UpdateableComparer.Default);
             }
         }
 
@@ -761,87 +757,5 @@ namespace Exomia.Framework.Game
         protected virtual void OnDispose(bool disposing) { }
 
         #endregion
-
-        #region EXTERN
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MSG
-        {
-            public IntPtr hwnd;
-            public int message;
-            public IntPtr wParam;
-            public IntPtr lParam;
-            public uint time;
-            public Point pt;
-        }
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport("User32.dll", SetLastError = true)]
-        private static extern int PeekMessage(out MSG lpMsg, IntPtr hwnd, uint wMsgFilterMin, uint wMsgFilterMax,
-            uint wRemoveMsg);
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport("User32.dll", SetLastError = true)]
-        private static extern int DispatchMessage(ref MSG lpMsg);
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport("User32.dll", SetLastError = true)]
-        private static extern int TranslateMessage(ref MSG lpMsg);
-
-        #endregion
     }
-
-    #region Camparer
-
-    struct DrawableComparer : IComparer<IDrawable>
-    {
-        public static readonly DrawableComparer Default = new DrawableComparer();
-
-        public int Compare(IDrawable left, IDrawable right)
-        {
-            if (Equals(left, right))
-            {
-                return 0;
-            }
-
-            if (left == null)
-            {
-                return 1;
-            }
-
-            if (right == null)
-            {
-                return -1;
-            }
-
-            return left.DrawOrder < right.DrawOrder ? 1 : -1;
-        }
-    }
-
-    struct UpdateableComparer : IComparer<IUpdateable>
-    {
-        public static readonly UpdateableComparer Default = new UpdateableComparer();
-
-        public int Compare(IUpdateable left, IUpdateable right)
-        {
-            if (Equals(left, right))
-            {
-                return 0;
-            }
-
-            if (left == null)
-            {
-                return 1;
-            }
-
-            if (right == null)
-            {
-                return -1;
-            }
-
-            return left.UpdateOrder < right.UpdateOrder ? 1 : -1;
-        }
-    }
-
-    #endregion
 }

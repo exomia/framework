@@ -33,36 +33,21 @@ namespace Exomia.Framework.ContentSerialization.Exceptions
     public sealed class CSContextKeyException : ArgumentException
     {
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSContextKeyException() { }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSContextKeyException(string message)
             : base(message) { }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSContextKeyException(string message, string paramName)
             : base(message, paramName) { }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSContextKeyException(string message, Exception innerException)
             : base(message, innerException) { }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSContextKeyException(string message, string paramName, Exception innerException)
             : base(message, paramName, innerException) { }
     }

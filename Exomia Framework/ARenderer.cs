@@ -35,27 +35,28 @@ namespace Exomia.Framework
     /// <inheritdoc cref="IDisposable" />
     public abstract class ARenderer : IComponent, IInitializable, IDrawable, IDisposable
     {
+        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs> VisibleChanged;
         private int _drawOrder;
 
         private bool _visible;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ARenderer" /> class.
-        /// </summary>
-        /// <param name="name">name</param>
-        protected ARenderer(string name)
+        /// <inheritdoc />
+        public int DrawOrder
         {
-            Name = name;
+            get { return _drawOrder; }
+            set
+            {
+                if (_drawOrder != value)
+                {
+                    _drawOrder = value;
+                    DrawOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         /// <inheritdoc />
         public string Name { get; }
-
-        /// <inheritdoc />
-        public abstract void Dispose();
-
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
 
         /// <inheritdoc />
         public bool Visible
@@ -71,19 +72,17 @@ namespace Exomia.Framework
             }
         }
 
-        /// <inheritdoc />
-        public int DrawOrder
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ARenderer" /> class.
+        /// </summary>
+        /// <param name="name">name</param>
+        protected ARenderer(string name)
         {
-            get { return _drawOrder; }
-            set
-            {
-                if (_drawOrder != value)
-                {
-                    _drawOrder = value;
-                    DrawOrderChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            Name = name;
         }
+
+        /// <inheritdoc />
+        public abstract void Dispose();
 
         /// <inheritdoc />
         public virtual bool BeginDraw()

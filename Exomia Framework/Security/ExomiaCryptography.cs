@@ -95,7 +95,7 @@ namespace Exomia.Framework.Security
                         {
                             CryptoStream cs = new CryptoStream(outStream, encryptor, CryptoStreamMode.Write);
                             byte[] buffer = new byte[BUFFER_SIZE];
-                            int count = -1;
+                            int count;
                             while ((count = stream.Read(buffer, 0, BUFFER_SIZE)) > 0)
                             {
                                 cs.Write(buffer, 0, count);
@@ -172,7 +172,7 @@ namespace Exomia.Framework.Security
                         {
                             CryptoStream cs = new CryptoStream(outStream, decryptor, CryptoStreamMode.Write);
                             byte[] buffer = new byte[BUFFER_SIZE];
-                            int count = -1;
+                            int count;
                             while ((count = inStream.Read(buffer, 0, BUFFER_SIZE)) > 0)
                             {
                                 cs.Write(buffer, 0, count);

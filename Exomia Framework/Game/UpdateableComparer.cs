@@ -22,26 +22,32 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
-{
-    /// <inheritdoc />
-    /// <summary>
-    ///     abstract implementation for an <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
-    /// </summary>
-    /// <typeparam name="T">type to write</typeparam>
-    public abstract class AContentSerializationWriter<T> : IContentSerializationWriter
-    {
-        /// <inheritdoc />
-        public void Write(ContentSerializationContext context, object obj)
-        {
-            WriteContext(context, (T)obj);
-        }
+using System.Collections.Generic;
 
-        /// <summary>
-        ///     Write the object (of type T) information into the context
-        /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        public abstract void WriteContext(ContentSerializationContext context, T obj);
+namespace Exomia.Framework.Game
+{
+    sealed class UpdateableComparer : IComparer<IUpdateable>
+    {
+        public static readonly UpdateableComparer Default = new UpdateableComparer();
+
+        public int Compare(IUpdateable left, IUpdateable right)
+        {
+            if (Equals(left, right))
+            {
+                return 0;
+            }
+
+            if (left == null)
+            {
+                return 1;
+            }
+
+            if (right == null)
+            {
+                return -1;
+            }
+
+            return left.UpdateOrder < right.UpdateOrder ? 1 : -1;
+        }
     }
 }

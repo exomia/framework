@@ -44,6 +44,11 @@ namespace Exomia.Framework.Game
             FeatureLevel.Level_9_3, FeatureLevel.Level_9_2, FeatureLevel.Level_9_1
         };
 
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.ResizeFinished" />
+        /// </summary>
+        public event ResizeEventHandler ResizeFinished;
+
         private Adapter4 _adapter4;
         private RenderTargetView1 _currentRenderView;
         private Device5 _d3DDevice5;
@@ -64,27 +69,6 @@ namespace Exomia.Framework.Game
         private int _vSync;
 
         /// <inheritdoc />
-        ~GraphicsDevice()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.ResizeFinished" />
-        /// </summary>
-        public event ResizeEventHandler ResizeFinished;
-
-        /// <inheritdoc />
-        public bool IsInitialized { get; private set; }
-
-        /// <inheritdoc />
-        public bool VSync
-        {
-            get { return _vSync != 0; }
-            set { _vSync = value ? 1 : 0; }
-        }
-
-        /// <inheritdoc />
         public Adapter4 Adapter
         {
             get { return _adapter4; }
@@ -103,9 +87,9 @@ namespace Exomia.Framework.Game
         }
 
         /// <inheritdoc />
-        public RenderTargetView1 RenderView
+        public Device4 DxgiDevice
         {
-            get { return _renderView1; }
+            get { return _dxgiDevice4; }
         }
 
         /// <inheritdoc />
@@ -115,19 +99,90 @@ namespace Exomia.Framework.Game
         }
 
         /// <inheritdoc />
+        public bool IsInitialized { get; private set; }
+
+        /// <inheritdoc />
+        public RenderTargetView1 RenderView
+        {
+            get { return _renderView1; }
+        }
+
+        /// <inheritdoc />
         public SwapChain4 SwapChain
         {
             get { return _swapChain4; }
         }
 
         /// <inheritdoc />
-        public Device4 DXGIDevice
+        public ViewportF Viewport { get; private set; }
+
+        /// <inheritdoc />
+        public bool VSync
         {
-            get { return _dxgiDevice4; }
+            get { return _vSync != 0; }
+            set { _vSync = value ? 1 : 0; }
         }
 
         /// <inheritdoc />
-        public ViewportF Viewport { get; private set; }
+        ~GraphicsDevice()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.BeginFrame" />
+        /// </summary>
+        public bool BeginFrame()
+        {
+            if (_needResize)
+            {
+                Resize(_resizeParameters);
+                _needResize = false;
+            }
+            return IsInitialized;
+        }
+
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.Clear()" />
+        /// </summary>
+        public void Clear()
+        {
+            lock (_d3DDevice5)
+            {
+                _d3DDeviceContext.ClearRenderTargetView(_currentRenderView, Color.CornflowerBlue);
+                _d3DDeviceContext.ClearDepthStencilView(
+                    _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            }
+        }
+
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.Clear(Color)" />
+        /// </summary>
+        public void Clear(Color color)
+        {
+            lock (_d3DDevice5)
+            {
+                _d3DDeviceContext.ClearRenderTargetView(_currentRenderView, color);
+                _d3DDeviceContext.ClearDepthStencilView(
+                    _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            }
+        }
+
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.EndFrame" />
+        /// </summary>
+        public void EndFrame()
+        {
+            _swapChain4.Present(_vSync, PresentFlags.None);
+        }
+
+        /// <summary>
+        ///     <see cref="IGraphicsDevice.GetFullscreenState" />
+        /// </summary>
+        public bool GetFullscreenState()
+        {
+            return _swapChain4.IsFullScreen;
+        }
 
         /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
@@ -162,7 +217,7 @@ namespace Exomia.Framework.Game
                 Adapter4 a4 = _dxgiFactory.GetAdapter1(i).QueryInterface<Adapter4>();
                 if (a4 == null) { continue; }
 
-                int outputCount = 0;
+                int outputCount;
                 if ((outputCount = a4.GetOutputCount()) <= 0) { continue; }
 
                 for (int o = 0; o < outputCount; o++)
@@ -171,13 +226,13 @@ namespace Exomia.Framework.Game
                     output.GetClosestMatchingMode(
                         null,
                         modeDescription,
-                        out ModeDescription mdesc);
+                        out ModeDescription desc);
 
                     if (o == 0
-                        || mdesc.RefreshRate.Numerator / mdesc.RefreshRate.Denominator
+                        || desc.RefreshRate.Numerator / desc.RefreshRate.Denominator
                         > modeDescription.RefreshRate.Numerator / modeDescription.RefreshRate.Denominator)
                     {
-                        modeDescription = mdesc;
+                        modeDescription = desc;
                         _output         = output;
                     }
                 }
@@ -186,7 +241,7 @@ namespace Exomia.Framework.Game
                 break;
             }
 
-            Device defaultDevice = null;
+            Device defaultDevice;
 
             if (_adapter4 != null)
             {
@@ -307,49 +362,13 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     <see cref="IGraphicsDevice.BeginFrame" />
+        ///     <see cref="IGraphicsDevice.SetFullscreenState(bool, Output)" />
         /// </summary>
-        public bool BeginFrame()
+        public void SetFullscreenState(bool state, Output output = null)
         {
-            if (_needResize)
+            if (_swapChain4.IsFullScreen != state)
             {
-                Resize(_resizeParameters);
-                _needResize = false;
-            }
-            return IsInitialized;
-        }
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.EndFrame" />
-        /// </summary>
-        public void EndFrame()
-        {
-            _swapChain4.Present(_vSync, PresentFlags.None);
-        }
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Clear()" />
-        /// </summary>
-        public void Clear()
-        {
-            lock (_d3DDevice5)
-            {
-                _d3DDeviceContext.ClearRenderTargetView(_currentRenderView, Color.CornflowerBlue);
-                _d3DDeviceContext.ClearDepthStencilView(
-                    _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
-            }
-        }
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Clear(Color)" />
-        /// </summary>
-        public void Clear(Color color)
-        {
-            lock (_d3DDevice5)
-            {
-                _d3DDeviceContext.ClearRenderTargetView(_currentRenderView, color);
-                _d3DDeviceContext.ClearDepthStencilView(
-                    _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+                _swapChain4.SetFullscreenState(state, output);
             }
         }
 
@@ -363,25 +382,6 @@ namespace Exomia.Framework.Game
                 _currentRenderView = target ?? _renderView1;
                 _d3DDeviceContext.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
             }
-        }
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.SetFullscreenState(bool, Output)" />
-        /// </summary>
-        public void SetFullscreenState(bool state, Output output = null)
-        {
-            if (_swapChain4.IsFullScreen != state)
-            {
-                _swapChain4.SetFullscreenState(state, output);
-            }
-        }
-
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.GetFullscreenState" />
-        /// </summary>
-        public bool GetFullscreenState()
-        {
-            return _swapChain4.IsFullScreen;
         }
 
         private void Resize(ResizeParameters args)

@@ -49,24 +49,24 @@ namespace Exomia.Framework.Graphics
         private static bool s_isInitialized;
         private static bool s_isInitialized2;
 
-        public static Texture WhiteTexture
-        {
-            get { return s_whiteTexture; }
-        }
-
         public static Texture BlackTexture
         {
             get { return s_blackTexture; }
         }
 
-        public static Texture2 WhiteTexture2
-        {
-            get { return s_whiteTexture2; }
-        }
-
         public static Texture2 BlackTexture2
         {
             get { return s_blackTexture2; }
+        }
+
+        public static Texture WhiteTexture
+        {
+            get { return s_whiteTexture; }
+        }
+
+        public static Texture2 WhiteTexture2
+        {
+            get { return s_whiteTexture2; }
         }
 
         internal static void InitializeTextures(Device5 device)

@@ -38,8 +38,8 @@ namespace Exomia.Framework.Buffers
         private readonly T[] _buffer;
 
         private int _head;
-        private int _tail;
         private int _size;
+        private int _tail;
 
         private SpinLock _thisLock;
 

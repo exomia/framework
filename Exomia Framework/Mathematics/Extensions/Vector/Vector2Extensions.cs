@@ -34,16 +34,16 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
     public static class Vector2Extensions
     {
         /// <summary>
-        ///     rotate a vector by an angle (in radian)
+        ///     calculate the angle between two vectors
         /// </summary>
-        /// <param name="vec">this vec</param>
-        /// <param name="angle">angle</param>
-        /// <returns>new rotated vector2</returns>
-        public static Vector2 Rotate(this Vector2 vec, double angle)
+        /// <param name="vec1">this vec1</param>
+        /// <param name="vec2">vec2</param>
+        /// <returns>angle between the two vectors in radians</returns>
+        public static double AngleBetween(this Vector2 vec1, in Vector2 vec2)
         {
-            double sin = Math.Sin(angle);
-            double cos = Math.Cos(angle);
-            return new Vector2((float)(vec.X * cos - vec.Y * sin), (float)(vec.X * sin + vec.Y * cos));
+            float scalar = vec1.X * vec2.X + vec1.Y * vec2.Y;
+            float length = vec1.Length() * vec2.Length();
+            return Math.Cos(scalar / length);
         }
 
         /// <summary>
@@ -69,6 +69,19 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
+        ///     rotate a vector by an angle (in radian)
+        /// </summary>
+        /// <param name="vec">this vec</param>
+        /// <param name="angle">angle</param>
+        /// <returns>new rotated vector2</returns>
+        public static Vector2 Rotate(this Vector2 vec, double angle)
+        {
+            double sin = Math.Sin(angle);
+            double cos = Math.Cos(angle);
+            return new Vector2((float)(vec.X * cos - vec.Y * sin), (float)(vec.X * sin + vec.Y * cos));
+        }
+
+        /// <summary>
         ///     transforms the vector with a transform matrix
         /// </summary>
         /// <param name="vec">this vec</param>
@@ -80,19 +93,6 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
             return new Vector2(
                 vec.X * transform.M11 + vec.Y * transform.M21 + transform.M41,
                 vec.X * transform.M12 + vec.Y * transform.M22 + transform.M42);
-        }
-
-        /// <summary>
-        ///     calculate the angle between two vectors
-        /// </summary>
-        /// <param name="vec1">this vec1</param>
-        /// <param name="vec2">vec2</param>
-        /// <returns>angle between the two vectors in radians</returns>
-        public static double AngleBetween(this Vector2 vec1, in Vector2 vec2)
-        {
-            float scalar = vec1.X * vec2.X + vec1.Y * vec2.Y;
-            float length = vec1.Length() * vec2.Length();
-            return Math.Cos(scalar / length);
         }
     }
 }

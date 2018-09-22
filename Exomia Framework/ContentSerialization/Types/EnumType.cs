@@ -34,23 +34,6 @@ namespace Exomia.Framework.ContentSerialization.Types
     sealed class EnumType : IType
     {
         /// <summary>
-        ///     constructor EnumType
-        /// </summary>
-        public EnumType()
-        {
-            BaseType = typeof(Enum);
-        }
-
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
-        public string TypeName
-        {
-            get { return BaseType.Name.ToUpper(); }
-        }
-
-        /// <summary>
         ///     typeof(Array)
         /// </summary>
         public Type BaseType { get; }
@@ -64,11 +47,28 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <summary>
+        ///     TypeName without System
+        ///     !ALL UPPER CASE!
+        /// </summary>
+        public string TypeName
+        {
+            get { return BaseType.Name.ToUpper(); }
+        }
+
+        /// <summary>
+        ///     constructor EnumType
+        /// </summary>
+        public EnumType()
+        {
+            BaseType = typeof(Enum);
+        }
+
+        /// <summary>
         ///     <see cref="IType.CreateType(string)" />
         /// </summary>
         public Type CreateType(string genericTypeInfo)
         {
-            genericTypeInfo.GetInnerType(out string bti, out string gti);
+            genericTypeInfo.GetInnerType(out string bti, out _);
             return bti.CreateType();
         }
 
@@ -106,7 +106,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                         {
                             return Enum.Parse(enumType, sb.ToString());
                         }
-                        throw new CSReaderException($"ERROR: BASETYPE ISN'T AN ENUM TYPE -> {bti}");
+                        throw new CSReaderException($"ERROR: BASE TYPE ISN'T AN ENUM TYPE -> {bti}");
                     }
                     case ']':
                         throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");

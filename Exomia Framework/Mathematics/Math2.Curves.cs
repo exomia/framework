@@ -40,17 +40,6 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Quintic Curve
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CurveQuintic(float t)
-        {
-            return t * t * t * (t * (t * 6 - 15) + 10);
-        }
-
-        /// <summary>
         ///     Hermite Curve
         /// </summary>
         /// <param name="t"></param>
@@ -59,6 +48,17 @@ namespace Exomia.Framework.Mathematics
         public static double CurveHermite(double t)
         {
             return t * t * (3 - 2 * t);
+        }
+
+        /// <summary>
+        ///     Quintic Curve
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CurveQuintic(float t)
+        {
+            return t * t * t * (t * (t * 6 - 15) + 10);
         }
 
         /// <summary>

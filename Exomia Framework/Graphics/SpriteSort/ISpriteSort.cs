@@ -38,13 +38,13 @@ namespace Exomia.Framework.Graphics.SpriteSort
     interface ISpriteSort
     {
         /// <summary>
-        ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
+        ///     sort a given array of <see cref="SpriteBatch.TextureInfo" /> into a given indirect index array
         /// </summary>
-        /// <param name="sInfo"></param>
+        /// <param name="tInfo"></param>
         /// <param name="arr"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        void SortFb(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
+        void Sort(SpriteBatch.TextureInfo[] tInfo, int[] arr, int offset, int length);
 
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
@@ -62,7 +62,16 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="arr"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        void SortFb(SpriteBatch2.SpriteInfo[] sInfo, int[] arr, int offset, int length);
+        void SortBf(SpriteBatch2.SpriteInfo[] sInfo, int[] arr, int offset, int length);
+
+        /// <summary>
+        ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
+        /// </summary>
+        /// <param name="sInfo"></param>
+        /// <param name="arr"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        void SortFb(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
 
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch2.SpriteInfo" /> into a given indirect index array
@@ -71,15 +80,6 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="arr"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        void SortBf(SpriteBatch2.SpriteInfo[] sInfo, int[] arr, int offset, int length);
-
-        /// <summary>
-        ///     sort a given array of <see cref="SpriteBatch.TextureInfo" /> into a given indirect index array
-        /// </summary>
-        /// <param name="tInfo"></param>
-        /// <param name="arr"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        void Sort(SpriteBatch.TextureInfo[] tInfo, int[] arr, int offset, int length);
+        void SortFb(SpriteBatch2.SpriteInfo[] sInfo, int[] arr, int offset, int length);
     }
 }

@@ -22,6 +22,7 @@
 
 #endregion
 
+using System;
 using System.IO;
 using Exomia.Framework.ContentSerialization;
 using Exomia.Framework.ContentSerialization.Compression;
@@ -59,7 +60,7 @@ namespace Exomia.Framework.Content.Resolver
 
         public Stream Resolve(string assetName)
         {
-            if (!Path.HasExtension(assetName))
+            if (!Path.HasExtension(assetName ?? throw new NullReferenceException(nameof(assetName))))
             {
                 if (File.Exists(assetName + ContentSerializer.DEFAULT_EXTENSION))
                 {
@@ -90,7 +91,7 @@ namespace Exomia.Framework.Content.Resolver
             {
                 if (ExomiaCryptography.Decrypt(assetName, out Stream stream))
                 {
-                    if (ContentCompressor.DecompressStream(stream, out Stream stream2, CompressMode.Gzip))
+                    if (ContentCompressor.DecompressStream(stream, out Stream stream2))
                     {
                         return stream2;
                     }

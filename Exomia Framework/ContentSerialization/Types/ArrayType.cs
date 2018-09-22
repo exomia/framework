@@ -33,11 +33,16 @@ namespace Exomia.Framework.ContentSerialization.Types
     sealed class ArrayType : IType
     {
         /// <summary>
-        ///     constructor EnumType
+        ///     typeof(Array)
         /// </summary>
-        public ArrayType()
+        public Type BaseType { get; }
+
+        /// <summary>
+        ///     <see cref="IType.IsPrimitive()" />
+        /// </summary>
+        public bool IsPrimitive
         {
-            BaseType = typeof(Array);
+            get { return false; }
         }
 
         /// <summary>
@@ -50,16 +55,11 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <summary>
-        ///     typeof(Array)
+        ///     constructor EnumType
         /// </summary>
-        public Type BaseType { get; }
-
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
-        public bool IsPrimitive
+        public ArrayType()
         {
-            get { return false; }
+            BaseType = typeof(Array);
         }
 
         /// <summary>
@@ -79,10 +79,11 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// </summary>
         public string CreateTypeInfo(Type type)
         {
-            Type elementType = type.GetElementType();
+            Type elementType = type.GetElementType() ?? throw new NullReferenceException();
             string genericTypeInfo =
                 ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
-                ContentSerializer.s_types.TryGetValue(elementType.BaseType.Name.ToUpper(), out it)
+                ContentSerializer.s_types.TryGetValue(
+                    (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it)
                     ? it.CreateTypeInfo(elementType)
                     : elementType.ToString();
             return $"{TypeName}<{genericTypeInfo}>";
@@ -105,8 +106,8 @@ namespace Exomia.Framework.ContentSerialization.Types
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            Type elementType = null;
-            Func<CSStreamReader, string, object> readCallback = null;
+            Type elementType;
+            Func<CSStreamReader, string, object> readCallback;
             if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
             {
                 elementType = it.CreateType(gti);
@@ -182,7 +183,8 @@ namespace Exomia.Framework.ContentSerialization.Types
                 else
                 {
                     if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
-                        ContentSerializer.s_types.TryGetValue(elementType.BaseType.Name.ToUpper(), out it))
+                        ContentSerializer.s_types.TryGetValue(
+                            (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it))
                     {
                         it.Write(writeHandler, tabSpace, string.Empty, arr.GetValue(indices), false);
                     }
@@ -204,17 +206,17 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         private static int[] GetArrayDimensionInfo(string arrayTypeInfo)
         {
-            const string start = "(";
-            const string end = ")";
+            const string START = "(";
+            const string END = ")";
 
-            int sIndex = arrayTypeInfo.IndexOf(start, StringComparison.Ordinal);
+            int sIndex = arrayTypeInfo.IndexOf(START, StringComparison.Ordinal);
             if (sIndex == -1)
             {
                 throw new CSTypeException("No dimension start definition found in '" + arrayTypeInfo + "'");
             }
-            sIndex += start.Length;
+            sIndex += START.Length;
 
-            int eIndex = arrayTypeInfo.LastIndexOf(end, StringComparison.Ordinal);
+            int eIndex = arrayTypeInfo.LastIndexOf(END, StringComparison.Ordinal);
             if (eIndex == -1)
             {
                 throw new CSTypeException("No dimension end definition found in '" + arrayTypeInfo + "'");
@@ -242,7 +244,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             {
                 indices[currentDimension] = i;
 
-                stream.ReadStartTag(out string key, out string dimensionInfo);
+                stream.ReadStartTag(out _, out string dimensionInfo);
 
                 if (currentDimension + 1 < dimensions.Length)
                 {

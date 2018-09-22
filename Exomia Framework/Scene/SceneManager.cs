@@ -104,6 +104,28 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
+        public bool GetScene(string key, out SceneBase scene)
+        {
+            return _scenes.TryGetValue(key, out scene);
+        }
+
+        /// <inheritdoc />
+        public SceneState GetSceneState(string key)
+        {
+            if (_scenes.TryGetValue(key, out SceneBase scene))
+            {
+                return scene.State;
+            }
+            throw new NullReferenceException("no scene with key: '" + key + "' found.");
+        }
+
+        /// <inheritdoc />
+        public bool HideScene(string key)
+        {
+            return _scenes.TryGetValue(key, out SceneBase scene) && HideScene(scene);
+        }
+
+        /// <inheritdoc />
         public bool RemoveScene(string key)
         {
             if (!_scenes.TryGetValue(key, out SceneBase scene))
@@ -118,12 +140,6 @@ namespace Exomia.Framework.Scene
             scene.Dispose();
 
             return true;
-        }
-
-        /// <inheritdoc />
-        public bool HideScene(string key)
-        {
-            return _scenes.TryGetValue(key, out SceneBase scene) && HideScene(scene);
         }
 
         /// <inheritdoc />
@@ -221,19 +237,26 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public bool GetScene(string key, out SceneBase scene)
+        public override void Draw(GameTime gameTime)
         {
-            return _scenes.TryGetValue(key, out scene);
-        }
-
-        /// <inheritdoc />
-        public SceneState GetSceneState(string key)
-        {
-            if (_scenes.TryGetValue(key, out SceneBase scene))
+            lock (_currentDrawableScenes)
             {
-                return scene.State;
+                _currentDrawableScenes.AddRange(_currentScenes);
             }
-            throw new NullReferenceException("no scene with key: '" + key + "' found.");
+            for (int i = 0; i < _currentDrawableScenes.Count; i++)
+            {
+                IScene scene = _currentDrawableScenes[i];
+                if (scene.State == SceneState.Ready)
+                {
+                    if (scene.BeginDraw())
+                    {
+                        scene.Draw(gameTime);
+                        scene.EndDraw();
+                    }
+                }
+            }
+
+            _currentDrawableScenes.Clear();
         }
 
         /// <inheritdoc />
@@ -257,26 +280,29 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public override void Draw(GameTime gameTime)
+        protected override void OnDispose(bool dispose)
         {
-            lock (_currentDrawableScenes)
+            if (dispose)
             {
-                _currentDrawableScenes.AddRange(_currentScenes);
-            }
-            for (int i = 0; i < _currentDrawableScenes.Count; i++)
-            {
-                IScene scene = _currentDrawableScenes[i];
-                if (scene.State == SceneState.Ready)
-                {
-                    if (scene.BeginDraw())
-                    {
-                        scene.Draw(gameTime);
-                        scene.EndDraw();
-                    }
-                }
-            }
+                _currentScenes.Clear();
 
-            _currentDrawableScenes.Clear();
+                _input.MouseMove  -= Input_MouseMove;
+                _input.MouseDown  -= Input_MouseDown;
+                _input.MouseUp    -= Input_MouseUp;
+                _input.MouseWheel -= Input_MouseWheel;
+
+                _input.KeyDown  -= Input_KeyDown;
+                _input.KeyUp    -= Input_KeyUp;
+                _input.KeyPress -= Input_KeyPress;
+
+                foreach (IScene scene in _scenes.Values)
+                {
+                    scene.UnloadContent();
+                    scene.Dispose();
+                }
+
+                _scenes.Clear();
+            }
         }
 
         /// <inheritdoc />
@@ -307,32 +333,6 @@ namespace Exomia.Framework.Scene
                     _pendingInitializableScenes[0].Initialize(registry);
                     _pendingInitializableScenes.RemoveAt(0);
                 }
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void OnDispose(bool dispose)
-        {
-            if (dispose)
-            {
-                _currentScenes.Clear();
-
-                _input.MouseMove  -= Input_MouseMove;
-                _input.MouseDown  -= Input_MouseDown;
-                _input.MouseUp    -= Input_MouseUp;
-                _input.MouseWheel -= Input_MouseWheel;
-
-                _input.KeyDown  -= Input_KeyDown;
-                _input.KeyUp    -= Input_KeyUp;
-                _input.KeyPress -= Input_KeyPress;
-
-                foreach (IScene scene in _scenes.Values)
-                {
-                    scene.UnloadContent();
-                    scene.Dispose();
-                }
-
-                _scenes.Clear();
             }
         }
 

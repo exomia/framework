@@ -43,16 +43,16 @@ namespace Exomia.Framework
         event EventHandler<EventArgs> VisibleChanged;
 
         /// <summary>
-        ///     Gets a value indicating whether the <see cref="Draw" /> method should be called by <see cref="Game" />.
-        /// </summary>
-        /// <value><c>true</c> if this drawable component is visible; otherwise, <c>false</c>.</value>
-        bool Visible { get; }
-
-        /// <summary>
         ///     Gets the draw order relative to other objects. <see cref="IDrawable" /> objects with a lower value are drawn first.
         /// </summary>
         /// <value>The draw order.</value>
         int DrawOrder { get; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the <see cref="Draw" /> method should be called by <see cref="Game" />.
+        /// </summary>
+        /// <value><c>true</c> if this drawable component is visible; otherwise, <c>false</c>.</value>
+        bool Visible { get; }
 
         /// <summary>
         ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.

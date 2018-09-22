@@ -36,27 +36,25 @@ namespace Exomia.Framework
     /// </summary>
     public abstract class ADrawableComponent : AComponent, IDrawable
     {
-        private int _drawOrder;
-
-        private bool _visible;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
-        /// </summary>
-        /// <param name="name">name</param>
-        protected ADrawableComponent(string name)
-            : base(name) { }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ADrawableComponent" /> class.
-        /// </summary>
-        /// <param name="game">The game.</param>
-        /// <param name="name">name</param>
-        protected ADrawableComponent(Game.Game game, string name)
-            : base(game, name) { }
-
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
+
+        private int _drawOrder;
+        private bool _visible;
+
+        /// <inheritdoc />
+        public int DrawOrder
+        {
+            get { return _drawOrder; }
+            set
+            {
+                if (_drawOrder != value)
+                {
+                    _drawOrder = value;
+                    DrawOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <inheritdoc />
         public bool Visible
@@ -73,18 +71,12 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public int DrawOrder
-        {
-            get { return _drawOrder; }
-            set
-            {
-                if (_drawOrder != value)
-                {
-                    _drawOrder = value;
-                    DrawOrderChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        protected ADrawableComponent(string name)
+            : base(name) { }
+
+        /// <inheritdoc />
+        protected ADrawableComponent(Game.Game game, string name)
+            : base(game, name) { }
 
         /// <inheritdoc />
         public virtual bool BeginDraw()

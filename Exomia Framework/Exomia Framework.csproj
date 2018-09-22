@@ -186,6 +186,8 @@
     <Compile Include="AComponent.cs" />
     <Compile Include="ADrawableComponent.cs" />
     <Compile Include="ARenderer.cs" />
+    <Compile Include="Game\DrawableComparer.cs" />
+    <Compile Include="Game\UpdateableComparer.cs" />
     <Compile Include="Graphics\ShaderByteCode.cs" />
     <Compile Include="Graphics\SpriteFont2.cs" />
     <Compile Include="Graphics\SpriteFontCR.cs" />
@@ -255,6 +257,8 @@
     <Compile Include="Tools\Timer2.cs" />
     <Compile Include="Tools\Tween.cs" />
     <Compile Include="Video\VideoPlayer.cs" />
+    <Compile Include="WinApi\Kernel32.cs" />
+    <Compile Include="WinApi\User32.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".dispose" />

@@ -40,14 +40,6 @@ namespace Exomia.Framework.Tools
 
     public static class Easing
     {
-        public static class Linear
-        {
-            public static float EaseNone(float t, float b, float c, float d)
-            {
-                return c * t / d + b;
-            }
-        }
-
         public static class Bounce
         {
             private const float B1 = 1.0f / 2.75f;
@@ -60,6 +52,12 @@ namespace Exomia.Framework.Tools
             public static float EaseIn(float t, float b, float c, float d)
             {
                 return c - EaseOut(d - t, 0, c, d) + b;
+            }
+
+            public static float EaseInOut(float t, float b, float c, float d)
+            {
+                if (t < d / 2) { return EaseIn(t * 2, 0, c, d) * .5f + b; }
+                return EaseOut(t * 2 - d, 0, c, d) * .5f + c * .5f + b;
             }
 
             public static float EaseOut(float t, float b, float c, float d)
@@ -78,12 +76,6 @@ namespace Exomia.Framework.Tools
                 }
                 return c * (7.5625f * (t -= B6) * t + .984375f) + b;
             }
-
-            public static float EaseInOut(float t, float b, float c, float d)
-            {
-                if (t < d / 2) { return EaseIn(t * 2, 0, c, d) * .5f + b; }
-                return EaseOut(t * 2 - d, 0, c, d) * .5f + c * .5f + b;
-            }
         }
 
         public static class Circle
@@ -93,15 +85,15 @@ namespace Exomia.Framework.Tools
                 return -c * ((float)Math.Sqrt(1 - (t /= d) * t) - 1) + b;
             }
 
-            public static float EaseOut(float t, float b, float c, float d)
-            {
-                return c * (float)Math.Sqrt(1 - (t = t / d - 1) * t) + b;
-            }
-
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return -c / 2 * ((float)Math.Sqrt(1 - t * t) - 1) + b; }
                 return c / 2 * ((float)Math.Sqrt(1 - (t -= 2) * t) + 1) + b;
+            }
+
+            public static float EaseOut(float t, float b, float c, float d)
+            {
+                return c * (float)Math.Sqrt(1 - (t = t / d - 1) * t) + b;
             }
         }
 
@@ -112,90 +104,15 @@ namespace Exomia.Framework.Tools
                 return c * (t /= d) * t * t + b;
             }
 
-            public static float EaseOut(float t, float b, float c, float d)
-            {
-                return c * ((t = t / d - 1) * t * t + 1) + b;
-            }
-
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return c / 2 * t * t * t + b; }
                 return c / 2 * ((t -= 2) * t * t + 2) + b;
             }
-        }
-
-        public static class Quad
-        {
-            public static float EaseIn(float t, float b, float c, float d)
-            {
-                return c * (t /= d) * t + b;
-            }
 
             public static float EaseOut(float t, float b, float c, float d)
             {
-                return -c * (t /= d) * (t - 2) + b;
-            }
-
-            public static float EaseInOut(float t, float b, float c, float d)
-            {
-                if ((t /= d / 2) < 1) { return c / 2 * t * t + b; }
-                return -c / 2 * (--t * (t - 2) - 1) + b;
-            }
-        }
-
-        public static class Quart
-        {
-            public static float EaseIn(float t, float b, float c, float d)
-            {
-                return c * (t /= d) * t * t * t + b;
-            }
-
-            public static float EaseOut(float t, float b, float c, float d)
-            {
-                return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-            }
-
-            public static float EaseInOut(float t, float b, float c, float d)
-            {
-                if ((t /= d / 2) < 1) { return c / 2 * t * t * t * t + b; }
-                return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
-            }
-        }
-
-        public static class Quint
-        {
-            public static float EaseIn(float t, float b, float c, float d)
-            {
-                return c * (t /= d) * t * t * t * t + b;
-            }
-
-            public static float EaseOut(float t, float b, float c, float d)
-            {
-                return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
-            }
-
-            public static float EaseInOut(float t, float b, float c, float d)
-            {
-                if ((t /= d / 2) < 1) { return c / 2 * t * t * t * t * t + b; }
-                return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
-            }
-        }
-
-        public static class Sine
-        {
-            public static float EaseIn(float t, float b, float c, float d)
-            {
-                return -c * (float)Math.Cos(t / d * (Math.PI / 2)) + c + b;
-            }
-
-            public static float EaseOut(float t, float b, float c, float d)
-            {
-                return c * (float)Math.Sin(t / d * (Math.PI / 2)) + b;
-            }
-
-            public static float EaseInOut(float t, float b, float c, float d)
-            {
-                return -c / 2 * ((float)Math.Cos(Math.PI * t / d) - 1) + b;
+                return c * ((t = t / d - 1) * t * t + 1) + b;
             }
         }
 
@@ -206,17 +123,100 @@ namespace Exomia.Framework.Tools
                 return t == 0 ? b : c * (float)Math.Pow(2, 10 * (t / d - 1)) + b;
             }
 
-            public static float EaseOut(float t, float b, float c, float d)
-            {
-                return t == d ? b + c : c * (-(float)Math.Pow(2, -10 * t / d) + 1) + b;
-            }
-
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if (t == 0) { return b; }
                 if (t == d) { return b + c; }
                 if ((t /= d / 2) < 1) { return c / 2 * (float)Math.Pow(2, 10 * (t - 1)) + b; }
                 return c / 2 * (-(float)Math.Pow(2, -10 * --t) + 2) + b;
+            }
+
+            public static float EaseOut(float t, float b, float c, float d)
+            {
+                return t == d ? b + c : c * (-(float)Math.Pow(2, -10 * t / d) + 1) + b;
+            }
+        }
+
+        public static class Linear
+        {
+            public static float EaseNone(float t, float b, float c, float d)
+            {
+                return c * t / d + b;
+            }
+        }
+
+        public static class Quad
+        {
+            public static float EaseIn(float t, float b, float c, float d)
+            {
+                return c * (t /= d) * t + b;
+            }
+
+            public static float EaseInOut(float t, float b, float c, float d)
+            {
+                if ((t /= d / 2) < 1) { return c / 2 * t * t + b; }
+                return -c / 2 * (--t * (t - 2) - 1) + b;
+            }
+
+            public static float EaseOut(float t, float b, float c, float d)
+            {
+                return -c * (t /= d) * (t - 2) + b;
+            }
+        }
+
+        public static class Quart
+        {
+            public static float EaseIn(float t, float b, float c, float d)
+            {
+                return c * (t /= d) * t * t * t + b;
+            }
+
+            public static float EaseInOut(float t, float b, float c, float d)
+            {
+                if ((t /= d / 2) < 1) { return c / 2 * t * t * t * t + b; }
+                return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
+            }
+
+            public static float EaseOut(float t, float b, float c, float d)
+            {
+                return -c * ((t = t / d - 1) * t * t * t - 1) + b;
+            }
+        }
+
+        public static class Quint
+        {
+            public static float EaseIn(float t, float b, float c, float d)
+            {
+                return c * (t /= d) * t * t * t * t + b;
+            }
+
+            public static float EaseInOut(float t, float b, float c, float d)
+            {
+                if ((t /= d / 2) < 1) { return c / 2 * t * t * t * t * t + b; }
+                return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
+            }
+
+            public static float EaseOut(float t, float b, float c, float d)
+            {
+                return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+            }
+        }
+
+        public static class Sine
+        {
+            public static float EaseIn(float t, float b, float c, float d)
+            {
+                return -c * (float)Math.Cos(t / d * (Math.PI / 2)) + c + b;
+            }
+
+            public static float EaseInOut(float t, float b, float c, float d)
+            {
+                return -c / 2 * ((float)Math.Cos(Math.PI * t / d) - 1) + b;
+            }
+
+            public static float EaseOut(float t, float b, float c, float d)
+            {
+                return c * (float)Math.Sin(t / d * (Math.PI / 2)) + b;
             }
         }
     }

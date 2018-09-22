@@ -24,6 +24,7 @@
 
 #pragma warning disable 1591
 
+using System;
 using System.Windows.Forms;
 using Exomia.Framework.Game;
 using SharpDX.RawInput;
@@ -34,6 +35,7 @@ namespace Exomia.Framework.Input
 
     public delegate void RMouseEventHandler(int x, int y, RMouseButtons buttons, int clicks, int wheelDelta);
 
+    [Flags]
     public enum RMouseButtons
     {
         Left = 1 << 0,
@@ -43,6 +45,7 @@ namespace Exomia.Framework.Input
         Button5 = 1 << 4
     }
 
+    [Flags]
     public enum RSpecialKeys
     {
         None = 1 << 0,
@@ -54,28 +57,28 @@ namespace Exomia.Framework.Input
     public interface IRawInputDevice
     {
         event RKeyEventHandler KeyDown;
-        event RKeyEventHandler KeyUp;
         event RKeyEventHandler KeyPress;
+        event RKeyEventHandler KeyUp;
+        event RMouseEventHandler MouseDown;
 
         event RMouseEventHandler MouseMove;
-        event RMouseEventHandler MouseDown;
         event RMouseEventHandler MouseUp;
 
         int WheelData { get; }
 
+        void EndUpdate();
+
         void Initialize(IGameWindow window);
         void Initialize(Panel panel);
 
-        void EndUpdate();
+        bool IsKeyDown(Keys key);
+        bool IsKeyDown(params Keys[] key);
+        bool IsKeyUp(RMouseButtons button);
+        bool IsKeyUp(params RMouseButtons[] buttons);
+        bool IsKeyUp(Keys key);
+        bool IsKeyUp(params Keys[] key);
 
         bool IsMouseButtonDown(RMouseButtons button);
         bool IsMouseButtonDown(params RMouseButtons[] buttons);
-        bool IsKeyUp(RMouseButtons button);
-        bool IsKeyUp(params RMouseButtons[] buttons);
-
-        bool IsKeyDown(Keys key);
-        bool IsKeyUp(Keys key);
-        bool IsKeyDown(params Keys[] key);
-        bool IsKeyUp(params Keys[] key);
     }
 }

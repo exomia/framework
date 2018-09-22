@@ -37,6 +37,7 @@ namespace Exomia.Framework.Scene
         private const int INITIAL_QUEUE_SIZE = 8;
 
         /// <summary>
+        ///     SceneStateChanged
         /// </summary>
         public event SceneStateChangedHandler SceneStateChanged;
 
@@ -72,6 +73,35 @@ namespace Exomia.Framework.Scene
 
         private SceneState _state = SceneState.None;
 
+        /// <inheritdoc />
+        public bool Enabled { get; set; } = false;
+
+        /// <inheritdoc />
+        public bool IsOverlayScene { get; set; } = false;
+
+        /// <inheritdoc />
+        public string Key { get; }
+
+        /// <inheritdoc />
+        public string[] ReferenceScenes { get; set; } = new string[0];
+
+        /// <inheritdoc />
+        public SceneState State
+        {
+            get { return _state; }
+            protected set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    SceneStateChanged?.Invoke(this, value);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool Visible { get; set; } = false;
+
         /// <summary>
         ///     set the current input handler for the scene
         /// </summary>
@@ -84,6 +114,17 @@ namespace Exomia.Framework.Scene
                     _inputHandler = value;
                 }
             }
+        }
+
+        IInputHandler IScene.InputHandler
+        {
+            get { return _inputHandler; }
+        }
+
+        ISceneManager IScene.SceneManager
+        {
+            get { return _sceneManager; }
+            set { _sceneManager = value; }
         }
 
         /// <inheritdoc />
@@ -107,74 +148,6 @@ namespace Exomia.Framework.Scene
         ~SceneBase()
         {
             Dispose(false);
-        }
-
-        event SceneStateChangedHandler IScene.SceneStateChanged
-        {
-            add { throw new NotImplementedException(); }
-
-            remove { throw new NotImplementedException(); }
-        }
-
-        /// <inheritdoc />
-        public string Key { get; }
-
-        /// <inheritdoc />
-        public bool IsOverlayScene { get; set; } = false;
-
-        /// <inheritdoc />
-        public SceneState State
-        {
-            get { return _state; }
-            protected set
-            {
-                if (_state != value)
-                {
-                    _state = value;
-                    SceneStateChanged?.Invoke(this, value);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public string[] ReferenceScenes { get; set; } = new string[0];
-
-        /// <inheritdoc />
-        public bool Enabled { get; set; } = false;
-
-        /// <inheritdoc />
-        public bool Visible { get; set; } = false;
-
-        IInputHandler IScene.InputHandler
-        {
-            get { return _inputHandler; }
-        }
-
-        ISceneManager IScene.SceneManager
-        {
-            get { return _sceneManager; }
-            set { _sceneManager = value; }
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
-        {
-            if (!_isInitialized && _state != SceneState.Initializing)
-            {
-                State     = SceneState.Initializing;
-                _registry = registry;
-
-                OnInitialize();
-
-                while (_pendingInitializables.Count != 0)
-                {
-                    _pendingInitializables[0].Initialize(registry);
-                    _pendingInitializables.RemoveAt(0);
-                }
-
-                State          = SceneState.StandBy;
-                _isInitialized = true;
-            }
         }
 
         /// <inheritdoc />
@@ -226,29 +199,24 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public virtual void Show() { }
-
-        /// <inheritdoc />
-        public virtual void ReferenceScenesLoaded() { }
-
-        /// <inheritdoc />
-        public virtual void Update(GameTime gameTime)
+        public void Initialize(IServiceRegistry registry)
         {
-            lock (_updateableComponent)
+            if (!_isInitialized && _state != SceneState.Initializing)
             {
-                _currentlyUpdateableComponent.AddRange(_updateableComponent);
-            }
+                State     = SceneState.Initializing;
+                _registry = registry;
 
-            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
-            {
-                IUpdateable updatable = _currentlyUpdateableComponent[i];
-                if (updatable.Enabled)
+                OnInitialize();
+
+                while (_pendingInitializables.Count != 0)
                 {
-                    updatable.Update(gameTime);
+                    _pendingInitializables[0].Initialize(registry);
+                    _pendingInitializables.RemoveAt(0);
                 }
-            }
 
-            _currentlyUpdateableComponent.Clear();
+                State          = SceneState.StandBy;
+                _isInitialized = true;
+            }
         }
 
         /// <inheritdoc />
@@ -280,6 +248,32 @@ namespace Exomia.Framework.Scene
 
         /// <inheritdoc />
         public virtual void EndDraw() { }
+
+        /// <inheritdoc />
+        public virtual void ReferenceScenesLoaded() { }
+
+        /// <inheritdoc />
+        public virtual void Show() { }
+
+        /// <inheritdoc />
+        public virtual void Update(GameTime gameTime)
+        {
+            lock (_updateableComponent)
+            {
+                _currentlyUpdateableComponent.AddRange(_updateableComponent);
+            }
+
+            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
+            {
+                IUpdateable updateable = _currentlyUpdateableComponent[i];
+                if (updateable.Enabled)
+                {
+                    updateable.Update(gameTime);
+                }
+            }
+
+            _currentlyUpdateableComponent.Clear();
+        }
 
         /// <summary>
         /// </summary>

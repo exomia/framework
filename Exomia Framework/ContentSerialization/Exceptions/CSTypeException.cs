@@ -33,22 +33,13 @@ namespace Exomia.Framework.ContentSerialization.Exceptions
     public sealed class CSTypeException : Exception
     {
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSTypeException() { }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSTypeException(string message)
             : base(message) { }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     constructor
-        /// </summary>
         public CSTypeException(string message, Exception innerException)
             : base(message, innerException) { }
     }

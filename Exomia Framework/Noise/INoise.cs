@@ -85,13 +85,6 @@ namespace Exomia.Framework.Noise
         float[] GenerateNoise1D(int x, int xmax);
 
         /// <summary>
-        ///     generates a noise
-        /// </summary>
-        /// <param name="x"></param>
-        /// <returns>noise in range from -1 to 1</returns>
-        float Noise1D(int x);
-
-        /// <summary>
         ///     generates a 2-dimensional noise array in range from -1 to 1
         /// </summary>
         /// <param name="x"></param>
@@ -100,14 +93,6 @@ namespace Exomia.Framework.Noise
         /// <param name="ymax"></param>
         /// <returns>2-dimensional noise array in range from -1 to 1</returns>
         float[,] GenerateNoise2D(int x, int y, int xmax, int ymax);
-
-        /// <summary>
-        ///     generates a noise
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns>noise in range from -1 to 1</returns>
-        float Noise2D(int x, int y);
 
         /// <summary>
         ///     generates a 3-dimensional noise array in range from -1 to 1
@@ -120,6 +105,21 @@ namespace Exomia.Framework.Noise
         /// <param name="zmax"></param>
         /// <returns>3-dimensional noise array in range from -1 to 1</returns>
         float[,,] GenerateNoise3D(int x, int y, int z, int xmax, int ymax, int zmax);
+
+        /// <summary>
+        ///     generates a noise
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns>noise in range from -1 to 1</returns>
+        float Noise1D(int x);
+
+        /// <summary>
+        ///     generates a noise
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>noise in range from -1 to 1</returns>
+        float Noise2D(int x, int y);
 
         /// <summary>
         ///     generates a noise

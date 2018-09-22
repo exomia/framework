@@ -36,33 +36,102 @@ namespace Exomia.Framework.Mathematics
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
 
         /// <summary>
-        ///     Maps a value from l1 to u1 to l2 to u2
+        ///     calculates the absolute value of x
         /// </summary>
-        /// <param name="v">Value </param>
-        /// <param name="l1">Lower 1</param>
-        /// <param name="u1">Upper 1</param>
-        /// <param name="l2">Lower 2</param>
-        /// <param name="u2">Upper 2</param>
-        /// <returns>maped value</returns>
+        /// <param name="x">value</param>
+        /// <returns>positive x</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Map(float v, float l1, float u1, float l2, float u2)
+        public static int Abs(int x)
         {
-            return (v - l1) / (u1 - l1) * (u2 - l2) + l2;
+            return (x + (x >> 31)) ^ (x >> 31);
         }
 
         /// <summary>
-        ///     Maps a value from l1 to u1 to l2 to u2
+        ///     Returns the smallest integer greater than or equal to the specified floating-point number.
         /// </summary>
-        /// <param name="v">Value </param>
-        /// <param name="l1">Lower 1</param>
-        /// <param name="u1">Upper 1</param>
-        /// <param name="l2">Lower 2</param>
-        /// <param name="u2">Upper 2</param>
-        /// <returns>maped value</returns>
+        /// <param name="f">A floating-point number with single precision</param>
+        /// <returns>The smallest integer, which is greater than or equal to f.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Map(double v, double l1, double u1, double l2, double u2)
+        public static int Ceiling(double f)
         {
-            return (v - l1) / (u1 - l1) * (u2 - l2) + l2;
+            return (int)(L_OFFSET_MAX - (long)(L_OFFSET_MAX - f));
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(byte x)
+        {
+            int y = x;
+            y -= (y >> 1) & 0x55;
+            y =  ((y >> 2) & 0x33) + (y & 0x33);
+            return (y & 0x0F) + (y >> 4);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(ushort x)
+        {
+            int y = x;
+            y -= (y >> 1) & 0x5555;
+            y =  ((y >> 2) & 0x3333) + (y & 0x3333);
+            y =  ((y >> 4) + y) & 0x0F0F;
+            return (y + (y >> 8)) & 0x001F;
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountOnes(int x)
+        {
+            return CountOnes((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(uint x)
+        {
+            x -= (x >> 1) & 0x55555555;
+            x =  ((x >> 2) & 0x33333333) + (x & 0x33333333);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F;
+            x += x >> 8;
+            return (int)((x + (x >> 16)) & 0x0000003F);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountOnes(long x)
+        {
+            return CountOnes((ulong)x);
+        }
+
+        /// <summary>
+        ///     Returns the number of 'on' bits in x
+        /// </summary>
+        public static int CountOnes(ulong x)
+        {
+            x -= (x >> 1) & 0x5555555555555555u;
+            x =  ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
+            x += x >> 8;
+            x += x >> 16;
+            return ((int)x + (int)(x >> 32)) & 0x0000007F;
+        }
+
+        /// <summary>
+        ///     Returns the largest integer less than or equal to the specified floating-point number.
+        /// </summary>
+        /// <param name="f">A floating-point number with single precision</param>
+        /// <returns>The largest integer, which is less than or equal to f.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Floor(double f)
+        {
+            return (int)((long)(f + L_OFFSET_MAX) - L_OFFSET_MAX);
         }
 
         /// <summary>
@@ -118,6 +187,94 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        public static int Log2Floor(uint x)
+        {
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            return CountOnes(x | (x >> 16)) - 1;
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(int x)
+        {
+            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            return Log2Floor((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(ulong x)
+        {
+            uint xHi = (uint)(x >> 32);
+            if (xHi != 0)
+            {
+                return 32 + Log2Floor(xHi);
+            }
+            return Log2Floor((uint)x);
+        }
+
+        /// <summary>
+        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
+        /// </summary>
+        /// <remarks>
+        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2Floor(long x)
+        {
+            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            return Log2Floor((ulong)x);
+        }
+
+        /// <summary>
+        ///     Maps a value from l1 to u1 to l2 to u2
+        /// </summary>
+        /// <param name="v">Value </param>
+        /// <param name="l1">Lower 1</param>
+        /// <param name="u1">Upper 1</param>
+        /// <param name="l2">Lower 2</param>
+        /// <param name="u2">Upper 2</param>
+        /// <returns>maped value</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Map(float v, float l1, float u1, float l2, float u2)
+        {
+            return (v - l1) / (u1 - l1) * (u2 - l2) + l2;
+        }
+
+        /// <summary>
+        ///     Maps a value from l1 to u1 to l2 to u2
+        /// </summary>
+        /// <param name="v">Value </param>
+        /// <param name="l1">Lower 1</param>
+        /// <param name="u1">Upper 1</param>
+        /// <param name="l2">Lower 2</param>
+        /// <param name="u2">Upper 2</param>
+        /// <returns>maped value</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Map(double v, double l1, double u1, double l2, double u2)
+        {
+            return (v - l1) / (u1 - l1) * (u2 - l2) + l2;
+        }
+
+        /// <summary>
         ///     raise b to the power of e
         /// </summary>
         /// <param name="b">base</param>
@@ -161,39 +318,6 @@ namespace Exomia.Framework.Mathematics
                 b *=  b;
             }
             return result;
-        }
-
-        /// <summary>
-        ///     calculates the absolute value of x
-        /// </summary>
-        /// <param name="x">value</param>
-        /// <returns>positive x</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Abs(int x)
-        {
-            return (x + (x >> 31)) ^ (x >> 31);
-        }
-
-        /// <summary>
-        ///     Returns the largest integer less than or equal to the specified floating-point number.
-        /// </summary>
-        /// <param name="f">A floating-point number with single precision</param>
-        /// <returns>The largest integer, which is less than or equal to f.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Floor(double f)
-        {
-            return (int)((long)(f + L_OFFSET_MAX) - L_OFFSET_MAX);
-        }
-
-        /// <summary>
-        ///     Returns the smallest integer greater than or equal to the specified floating-point number.
-        /// </summary>
-        /// <param name="f">A floating-point number with single precision</param>
-        /// <returns>The smallest integer, which is greater than or equal to f.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Ceiling(double f)
-        {
-            return (int)(L_OFFSET_MAX - (long)(L_OFFSET_MAX - f));
         }
 
         /// <summary>
@@ -344,130 +468,6 @@ namespace Exomia.Framework.Mathematics
             } while (bshft-- > 0);
 
             return g;
-        }
-
-        /// <summary>
-        ///     Returns the number of 'on' bits in x
-        /// </summary>
-        public static int CountOnes(byte x)
-        {
-            int y = x;
-            y -= (y >> 1) & 0x55;
-            y =  ((y >> 2) & 0x33) + (y & 0x33);
-            return (y & 0x0F) + (y >> 4);
-        }
-
-        /// <summary>
-        ///     Returns the number of 'on' bits in x
-        /// </summary>
-        public static int CountOnes(ushort x)
-        {
-            int y = x;
-            y -= (y >> 1) & 0x5555;
-            y =  ((y >> 2) & 0x3333) + (y & 0x3333);
-            y =  ((y >> 4) + y) & 0x0F0F;
-            return (y + (y >> 8)) & 0x001F;
-        }
-
-        /// <summary>
-        ///     Returns the number of 'on' bits in x
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountOnes(int x)
-        {
-            return CountOnes((uint)x);
-        }
-
-        /// <summary>
-        ///     Returns the number of 'on' bits in x
-        /// </summary>
-        public static int CountOnes(uint x)
-        {
-            x -= (x >> 1) & 0x55555555;
-            x =  ((x >> 2) & 0x33333333) + (x & 0x33333333);
-            x =  ((x >> 4) + x) & 0x0F0F0F0F;
-            x += x >> 8;
-            return (int)((x + (x >> 16)) & 0x0000003F);
-        }
-
-        /// <summary>
-        ///     Returns the number of 'on' bits in x
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountOnes(long x)
-        {
-            return CountOnes((ulong)x);
-        }
-
-        /// <summary>
-        ///     Returns the number of 'on' bits in x
-        /// </summary>
-        public static int CountOnes(ulong x)
-        {
-            x -= (x >> 1) & 0x5555555555555555u;
-            x =  ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
-            x =  ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
-            x += x >> 8;
-            x += x >> 16;
-            return ((int)x + (int)(x >> 32)) & 0x0000007F;
-        }
-
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
-        /// </summary>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
-        public static int Log2Floor(uint x)
-        {
-            x |= x >> 1;
-            x |= x >> 2;
-            x |= x >> 4;
-            x |= x >> 8;
-            return CountOnes(x | (x >> 16)) - 1;
-        }
-
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
-        /// </summary>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Log2Floor(int x)
-        {
-            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
-            return Log2Floor((uint)x);
-        }
-
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
-        /// </summary>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Log2Floor(ulong x)
-        {
-            uint xHi = (uint)(x >> 32);
-            if (xHi != 0)
-            {
-                return 32 + Log2Floor(xHi);
-            }
-            return Log2Floor((uint)x);
-        }
-
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9
-        /// </summary>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Log2Floor(long x)
-        {
-            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
-            return Log2Floor((ulong)x);
         }
     }
 }

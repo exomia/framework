@@ -36,6 +36,13 @@ namespace Exomia.Framework.Input
 {
     public sealed class RawInputDevice : IRawInputDevice, IDisposable
     {
+        public event RKeyEventHandler KeyDown;
+        public event RKeyEventHandler KeyPress;
+        public event RKeyEventHandler KeyUp;
+        public event RMouseEventHandler MouseDown;
+
+        public event RMouseEventHandler MouseMove;
+        public event RMouseEventHandler MouseUp;
         private readonly HashSet<Keys> _pressedKeys;
 
         private Point _mousePosition = Point.Empty;
@@ -58,36 +65,28 @@ namespace Exomia.Framework.Input
             Device.MouseInput += Device_MouseInput;
         }
 
-        public event RKeyEventHandler KeyDown;
-        public event RKeyEventHandler KeyUp;
-        public event RKeyEventHandler KeyPress;
-
-        public event RMouseEventHandler MouseMove;
-        public event RMouseEventHandler MouseDown;
-        public event RMouseEventHandler MouseUp;
-
-        public void Initialize(IGameWindow window)
-        {
-            _window = window;
-            if (_window is IWinFormsGameWindow formsWindow)
-            {
-                formsWindow.RenderForm.MouseMove += Renderform_MouseMove;
-            }
-        }
-
-        public void Initialize(Panel panel)
-        {
-            _panel           =  panel;
-            _panel.MouseMove += Renderform_MouseMove;
-        }
-
         public void EndUpdate()
         {
             WheelData             = _mouseWheelDataBuffer;
             _mouseWheelDataBuffer = 0;
         }
 
-        private void Renderform_MouseMove(object sender, MouseEventArgs e)
+        public void Initialize(IGameWindow window)
+        {
+            _window = window;
+            if (_window is IWinFormsGameWindow formsWindow)
+            {
+                formsWindow.RenderForm.MouseMove += RenderForm_MouseMove;
+            }
+        }
+
+        public void Initialize(Panel panel)
+        {
+            _panel           =  panel;
+            _panel.MouseMove += RenderForm_MouseMove;
+        }
+
+        private void RenderForm_MouseMove(object sender, MouseEventArgs e)
         {
             _mousePosition = e.Location;
             MouseMove?.Invoke(e.X, e.Y, _pressedMouseButtons, 1, e.Delta);
@@ -279,12 +278,12 @@ namespace Exomia.Framework.Input
                 {
                     if (_window is IWinFormsGameWindow formsWindow)
                     {
-                        formsWindow.RenderForm.MouseMove -= Renderform_MouseMove;
+                        formsWindow.RenderForm.MouseMove -= RenderForm_MouseMove;
                     }
                 }
                 if (_panel != null)
                 {
-                    _panel.MouseMove -= Renderform_MouseMove;
+                    _panel.MouseMove -= RenderForm_MouseMove;
                 }
 
                 _disposedValue = true;

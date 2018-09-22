@@ -22,26 +22,38 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
-{
-    /// <inheritdoc />
-    /// <summary>
-    ///     abstract implementation for an <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
-    /// </summary>
-    /// <typeparam name="T">type to write</typeparam>
-    public abstract class AContentSerializationWriter<T> : IContentSerializationWriter
-    {
-        /// <inheritdoc />
-        public void Write(ContentSerializationContext context, object obj)
-        {
-            WriteContext(context, (T)obj);
-        }
+using System;
+using System.Runtime.InteropServices;
+using System.Security;
+using SharpDX;
 
-        /// <summary>
-        ///     Write the object (of type T) information into the context
-        /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        public abstract void WriteContext(ContentSerializationContext context, T obj);
+namespace Exomia.Framework.WinApi
+{
+    static class User32
+    {
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("User32.dll", SetLastError = true)]
+        internal static extern int DispatchMessage(ref MSG lpMsg);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("User32.dll", SetLastError = true)]
+        internal static extern int PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin,
+            uint wMsgFilterMax,
+            uint wRemoveMsg);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("User32.dll", SetLastError = true)]
+        internal static extern int TranslateMessage(ref MSG lpMsg);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct MSG
+        {
+            public IntPtr hWnd;
+            public int message;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public Point pt;
+        }
     }
 }

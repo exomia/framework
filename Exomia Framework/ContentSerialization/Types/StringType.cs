@@ -34,11 +34,16 @@ namespace Exomia.Framework.ContentSerialization.Types
     sealed class StringType : IType
     {
         /// <summary>
-        ///     constructor StringType
+        ///     typeof(Array)
         /// </summary>
-        public StringType()
+        public Type BaseType { get; }
+
+        /// <summary>
+        ///     <see cref="IType.IsPrimitive()" />
+        /// </summary>
+        public bool IsPrimitive
         {
-            BaseType = typeof(string);
+            get { return true; }
         }
 
         /// <summary>
@@ -51,16 +56,11 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <summary>
-        ///     typeof(Array)
+        ///     constructor StringType
         /// </summary>
-        public Type BaseType { get; }
-
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
-        public bool IsPrimitive
+        public StringType()
         {
-            get { return true; }
+            BaseType = typeof(string);
         }
 
         /// <summary>

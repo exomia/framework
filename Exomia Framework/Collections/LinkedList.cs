@@ -77,32 +77,6 @@ namespace Exomia.Framework.Collections
             return Last = AddFirst(item);
         }
 
-        public void RemoveFirst()
-        {
-            if (Last == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(Last.Next);
-        }
-
-        public void RemoveLast()
-        {
-            if (Last == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(Last);
-        }
-
-        public void Remove(LinkedListNode item)
-        {
-            if (item == null) { throw new ArgumentNullException(nameof(item)); }
-            if (item.Next == item) { Last = null; }
-            else
-            {
-                item.Previous.Next = item.Next;
-                item.Next.Previous = item.Previous;
-                if (Last == item) { Last = item.Previous; }
-            }
-            item.Invalidate();
-            Count--;
-        }
-
         public void Clear()
         {
             Last  = null;
@@ -120,6 +94,32 @@ namespace Exomia.Framework.Collections
                     node = node.Next;
                 } while (node != Last.Next);
             }
+        }
+
+        public void Remove(LinkedListNode item)
+        {
+            if (item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item.Next == item) { Last = null; }
+            else
+            {
+                item.Previous.Next = item.Next;
+                item.Next.Previous = item.Previous;
+                if (Last == item) { Last = item.Previous; }
+            }
+            item.Invalidate();
+            Count--;
+        }
+
+        public void RemoveFirst()
+        {
+            if (Last == null) { throw new InvalidOperationException("the linked list is empty."); }
+            Remove(Last.Next);
+        }
+
+        public void RemoveLast()
+        {
+            if (Last == null) { throw new InvalidOperationException("the linked list is empty."); }
+            Remove(Last);
         }
 
         public sealed class LinkedListNode
