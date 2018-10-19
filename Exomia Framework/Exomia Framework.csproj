@@ -275,8 +275,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Graphics\HLSL\PositionColorTexture.hlsl" />
-    <Content Include="Graphics\HLSL\PositionColorTexture2.hlsl" />
+    <None Include="Graphics\HLSL\PositionColorTexture.hlsl" />
+    <None Include="Graphics\HLSL\PositionColorTexture2.hlsl" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
