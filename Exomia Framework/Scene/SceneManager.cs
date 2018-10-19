@@ -24,11 +24,11 @@
 
 #pragma warning disable 1591
 
-using Exomia.Framework.Game;
-using Exomia.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Exomia.Framework.Game;
+using Exomia.Framework.Input;
 
 namespace Exomia.Framework.Scene
 {
@@ -62,13 +62,13 @@ namespace Exomia.Framework.Scene
             : base(game, name)
         {
             if (startScene == null) { throw new ArgumentNullException(nameof(startScene)); }
-            _scenes = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
+            _scenes        = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
             _currentScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
 
-            _currentUpdateableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _currentDrawableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentUpdateableScenes    = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentDrawableScenes      = new List<SceneBase>(INITIAL_QUEUE_SIZE);
             _pendingInitializableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _scenesToUnload = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _scenesToUnload             = new List<SceneBase>(INITIAL_QUEUE_SIZE);
 
             AddScene(startScene, true);
         }
@@ -119,7 +119,6 @@ namespace Exomia.Framework.Scene
             throw new NullReferenceException($"no scene with key: '{key}' found.");
         }
 
-
         /// <inheritdoc />
         public bool RemoveScene(string key)
         {
@@ -129,7 +128,7 @@ namespace Exomia.Framework.Scene
             }
 
             HideScene(scene);
-            
+
             _scenes.Remove(key);
             scene.UnloadContent();
             scene.Dispose();
@@ -192,7 +191,7 @@ namespace Exomia.Framework.Scene
                 scene.Show();
 
                 Task.Factory.StartNew(
-                    () => 
+                    () =>
                     {
                         for (int i = scene.ReferenceScenes.Length - 1; i >= 0; --i)
                         {
@@ -226,6 +225,12 @@ namespace Exomia.Framework.Scene
             return !_scenes.TryGetValue(key, out scene) ? ShowSceneResult.NoScene : ShowScene(scene);
         }
 
+        /// <inheritdoc />
+        public bool HideScene(string key)
+        {
+            return _scenes.TryGetValue(key, out SceneBase scene) && HideScene(scene);
+        }
+
         public bool HideScene(SceneBase scene)
         {
             lock (_currentScenes)
@@ -241,42 +246,6 @@ namespace Exomia.Framework.Scene
                     _inputHandler = null;
                 }
                 return true;
-            }
-        }
-
-        /// <inheritdoc />
-        public bool HideScene(string key)
-        {
-            return _scenes.TryGetValue(key, out SceneBase scene) && HideScene(scene);
-        }
-
-        /// <inheritdoc />
-        protected override void OnInitialize(IServiceRegistry registry)
-        {
-            _registry = registry;
-            _input = registry.GetService<IInputDevice>() ??
-                     throw new NullReferenceException("No IInputDevice found.");
-
-            _input.MouseMove += Input_MouseMove;
-            _input.MouseDown += Input_MouseDown;
-            _input.MouseUp += Input_MouseUp;
-            _input.MouseWheel += Input_MouseWheel;
-
-            _input.KeyDown += Input_KeyDown;
-            _input.KeyUp += Input_KeyUp;
-            _input.KeyPress += Input_KeyPress;
-
-            lock (_pendingInitializableScenes)
-            {
-                _pendingInitializableScenes[0].Initialize(registry);
-                _pendingInitializableScenes[0].LoadContent();
-                _pendingInitializableScenes.RemoveAt(0);
-
-                while (_pendingInitializableScenes.Count != 0)
-                {
-                    _pendingInitializableScenes[0].Initialize(registry);
-                    _pendingInitializableScenes.RemoveAt(0);
-                }
             }
         }
 
@@ -319,6 +288,37 @@ namespace Exomia.Framework.Scene
 
             _currentDrawableScenes.Clear();
         }
+
+        /// <inheritdoc />
+        protected override void OnInitialize(IServiceRegistry registry)
+        {
+            _registry = registry;
+            _input = registry.GetService<IInputDevice>() ??
+                     throw new NullReferenceException("No IInputDevice found.");
+
+            _input.MouseMove  += Input_MouseMove;
+            _input.MouseDown  += Input_MouseDown;
+            _input.MouseUp    += Input_MouseUp;
+            _input.MouseWheel += Input_MouseWheel;
+
+            _input.KeyDown  += Input_KeyDown;
+            _input.KeyUp    += Input_KeyUp;
+            _input.KeyPress += Input_KeyPress;
+
+            lock (_pendingInitializableScenes)
+            {
+                _pendingInitializableScenes[0].Initialize(registry);
+                _pendingInitializableScenes[0].LoadContent();
+                _pendingInitializableScenes.RemoveAt(0);
+
+                while (_pendingInitializableScenes.Count != 0)
+                {
+                    _pendingInitializableScenes[0].Initialize(registry);
+                    _pendingInitializableScenes.RemoveAt(0);
+                }
+            }
+        }
+
         /// <inheritdoc />
         protected override void OnDispose(bool dispose)
         {
@@ -329,13 +329,13 @@ namespace Exomia.Framework.Scene
                     _currentScenes.Clear();
                 }
 
-                _input.MouseMove -= Input_MouseMove;
-                _input.MouseDown -= Input_MouseDown;
-                _input.MouseUp -= Input_MouseUp;
+                _input.MouseMove  -= Input_MouseMove;
+                _input.MouseDown  -= Input_MouseDown;
+                _input.MouseUp    -= Input_MouseUp;
                 _input.MouseWheel -= Input_MouseWheel;
 
-                _input.KeyDown -= Input_KeyDown;
-                _input.KeyUp -= Input_KeyUp;
+                _input.KeyDown  -= Input_KeyDown;
+                _input.KeyUp    -= Input_KeyUp;
                 _input.KeyPress -= Input_KeyPress;
 
                 foreach (IScene scene in _scenes.Values)
