@@ -37,15 +37,15 @@ namespace Exomia.Framework.Scene
     {
         bool AddScene(SceneBase scene, bool initialize = true);
 
-        bool RemoveScene(string key);
-
-        bool HideScene(string key);
-
-        ShowSceneResult ShowScene(SceneBase scene);
-        ShowSceneResult ShowScene(string key, out SceneBase scene);
-
         bool GetScene(string key, out SceneBase scene);
 
         SceneState GetSceneState(string key);
+
+        bool HideScene(string key);
+
+        bool RemoveScene(string key);
+
+        ShowSceneResult ShowScene(SceneBase scene);
+        ShowSceneResult ShowScene(string key, out SceneBase scene);
     }
 }

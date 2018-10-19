@@ -31,6 +31,10 @@ using System.Runtime.InteropServices;
 
 namespace Exomia.Framework.Collections
 {
+    /// <summary>
+    ///     List class
+    /// </summary>
+    /// <typeparam name="T">any</typeparam>
     public sealed class List<T>
     {
         private const int DEFAULT_CAPACITY = 8;
@@ -137,6 +141,40 @@ namespace Exomia.Framework.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add(in T item)
+        {
+            if (Count == _items.Length) { EnsureCapacity(Count + 1); }
+            _items[Count++] = item;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
+        {
+            if (Count > 0)
+            {
+                Array.Clear(_items, 0, Count);
+                Count = 0;
+            }
+        }
+
+        public bool Contains(in T item)
+        {
+            if (item == null)
+            {
+                for (int i = 0; i < Count; ++i)
+                {
+                    if (_items[i] == null) { return true; }
+                }
+                return false;
+            }
+            for (int i = 0; i < Count; ++i)
+            {
+                if (_items[i].Equals(item)) { return true; }
+            }
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int index)
         {
             return ref _items[index];
@@ -149,10 +187,30 @@ namespace Exomia.Framework.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(in T item)
+        public List<T> GetRange(int index, int count)
         {
-            if (Count == _items.Length) { EnsureCapacity(Count + 1); }
-            _items[Count++] = item;
+            List<T> list = new List<T>(count);
+            Buffer.BlockCopy(_items, index, list._items, 0, count * _sizeOf);
+            list.Count = count;
+            return list;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int IndexOf(in T item)
+        {
+            return Array.IndexOf(_items, item, 0, Count);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int IndexOf(in T item, int index)
+        {
+            return Array.IndexOf(_items, item, index, Count - index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int IndexOf(in T item, int index, int count)
+        {
+            return Array.IndexOf(_items, item, index, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -162,6 +220,24 @@ namespace Exomia.Framework.Collections
             if (index < Count) { Buffer.BlockCopy(_items, index, _items, index + 1, (Count - index) * _sizeOf); }
             _items[index] = item;
             Count++;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int LastIndexOf(in T item)
+        {
+            return Array.LastIndexOf(_items, item, 0, Count);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int LastIndexOf(in T item, int index)
+        {
+            return Array.LastIndexOf(_items, item, index, Count - index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int LastIndexOf(in T item, int index, int count)
+        {
+            return Array.LastIndexOf(_items, item, index, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -196,78 +272,6 @@ namespace Exomia.Framework.Collections
                 }
                 Array.Clear(_items, Count, count);
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            if (Count > 0)
-            {
-                Array.Clear(_items, 0, Count);
-                Count = 0;
-            }
-        }
-
-        public bool Contains(in T item)
-        {
-            if (item == null)
-            {
-                for (int i = 0; i < Count; ++i)
-                {
-                    if (_items[i] == null) { return true; }
-                }
-                return false;
-            }
-            for (int i = 0; i < Count; ++i)
-            {
-                if (_items[i].Equals(item)) { return true; }
-            }
-            return false;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public List<T> GetRange(int index, int count)
-        {
-            List<T> list = new List<T>(count);
-            Buffer.BlockCopy(_items, index, list._items, 0, count * _sizeOf);
-            list.Count = count;
-            return list;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(in T item)
-        {
-            return Array.IndexOf(_items, item, 0, Count);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(in T item, int index)
-        {
-            return Array.IndexOf(_items, item, index, Count - index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(in T item, int index, int count)
-        {
-            return Array.IndexOf(_items, item, index, count);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LastIndexOf(in T item)
-        {
-            return Array.LastIndexOf(_items, item, 0, Count);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LastIndexOf(in T item, int index)
-        {
-            return Array.LastIndexOf(_items, item, index, Count - index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LastIndexOf(in T item, int index, int count)
-        {
-            return Array.LastIndexOf(_items, item, index, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

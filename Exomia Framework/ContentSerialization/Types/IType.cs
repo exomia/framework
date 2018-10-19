@@ -28,14 +28,14 @@ namespace Exomia.Framework.ContentSerialization.Types
 {
     interface IType
     {
-        string TypeName { get; }
         Type BaseType { get; }
 
         bool IsPrimitive { get; }
-
-        string CreateTypeInfo(Type type);
+        string TypeName { get; }
 
         Type CreateType(string genericTypeInfo);
+
+        string CreateTypeInfo(Type type);
 
         object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo);
 

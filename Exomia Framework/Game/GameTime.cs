@@ -46,17 +46,13 @@ namespace Exomia.Framework.Game
         private bool _stopped;
         private long _stopTime;
 
-        public float TotalTimeS
-        {
-            get
-            {
-                if (_stopped)
-                {
-                    return (float)((_stopTime - _pausedTime - _baseTime) * _countsPerSec);
-                }
-                return (float)((_currTime - _pausedTime - _baseTime) * _countsPerSec);
-            }
-        }
+        public float AbsoluteDeltaTimeMS { get; private set; }
+
+        public float AbsoluteDeltaTimeS { get; private set; }
+
+        public float DeltaTimeMS { get; private set; }
+
+        public float DeltaTimeS { get; private set; }
 
         public float TotalTimeMS
         {
@@ -70,13 +66,17 @@ namespace Exomia.Framework.Game
             }
         }
 
-        public float DeltaTimeS { get; private set; }
-
-        public float DeltaTimeMS { get; private set; }
-
-        public float AbsoluteDeltaTimeMS { get; private set; }
-
-        public float AbsoluteDeltaTimeS { get; private set; }
+        public float TotalTimeS
+        {
+            get
+            {
+                if (_stopped)
+                {
+                    return (float)((_stopTime - _pausedTime - _baseTime) * _countsPerSec);
+                }
+                return (float)((_currTime - _pausedTime - _baseTime) * _countsPerSec);
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameTime" /> class.
@@ -87,7 +87,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     reset the gametime
+        ///     reset the game time
         /// </summary>
         public void Reset()
         {
@@ -97,7 +97,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     start the gametime
+        ///     start the game time
         /// </summary>
         public void Start()
         {
@@ -112,7 +112,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     stop the gametime
+        ///     stop the game time
         /// </summary>
         public void Stop()
         {

@@ -22,26 +22,14 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentSerialization
-{
-    /// <inheritdoc />
-    /// <summary>
-    ///     abstract implementation for an <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
-    /// </summary>
-    /// <typeparam name="T">type to write</typeparam>
-    public abstract class AContentSerializationWriter<T> : IContentSerializationWriter
-    {
-        /// <inheritdoc />
-        public void Write(ContentSerializationContext context, object obj)
-        {
-            WriteContext(context, (T)obj);
-        }
+using System;
+using System.Runtime.InteropServices;
 
-        /// <summary>
-        ///     Write the object (of type T) information into the context
-        /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
-        public abstract void WriteContext(ContentSerializationContext context, T obj);
+namespace Exomia.Framework.WinApi
+{
+    static class Kernel32
+    {
+        [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
+        internal static extern bool SetEvent(IntPtr hEvent);
     }
 }

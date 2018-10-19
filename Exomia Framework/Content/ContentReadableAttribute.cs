@@ -43,7 +43,7 @@ namespace Exomia.Framework.Content
         {
             Reader = System.Activator.CreateInstance(reader) as IContentReader ??
                      throw new TypeLoadException(
-                         "cannot create an instance of IContentReader from type: " + reader.AssemblyQualifiedName);
+                         "can not create an instance of IContentReader from type: " + reader.AssemblyQualifiedName);
         }
     }
 }

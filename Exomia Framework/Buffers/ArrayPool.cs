@@ -30,6 +30,10 @@ using System.Threading;
 
 namespace Exomia.Framework.Buffers
 {
+    /// <summary>
+    ///     ArrayPool class
+    /// </summary>
+    /// <typeparam name="T">any</typeparam>
     public sealed class ArrayPool<T>
     {
         private readonly int _bufferLength;

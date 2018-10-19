@@ -47,7 +47,7 @@ namespace Exomia.Framework
             if (!type.IsInstanceOfType(provider))
             {
                 throw new ArgumentException(
-                    $"Service [{provider.GetType().FullName}] must be assignable to [{type.GetType().FullName}]");
+                    $"Service [{provider.GetType().FullName}] must be assignable to [{type.FullName}]");
             }
 
             lock (_registeredServices)

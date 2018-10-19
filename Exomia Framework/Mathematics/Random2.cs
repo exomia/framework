@@ -111,6 +111,15 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
+        ///     Gets the next random angle value.
+        /// </summary>
+        /// <returns>A random angle value.</returns>
+        public float NextAngle()
+        {
+            return (float)NextDouble(-Math.PI, Math.PI);
+        }
+
+        /// <summary>
         ///     Gets the next random byte value.
         /// </summary>
         /// <returns>A random byte value between 0 and 255.</returns>
@@ -152,92 +161,6 @@ namespace Exomia.Framework.Mathematics
             _z = _w;
             return (byte)(min + REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) *
                           (max - min));
-        }
-
-        /// <summary>
-        ///     Gets the next random double value.
-        /// </summary>
-        /// <returns>A random double value between 0 and 1.</returns>
-        public double NextDouble()
-        {
-            uint t = _x ^ (_x << 11);
-            _x = _y;
-            _y = _z;
-            _z = _w;
-            return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
-        }
-
-        /// <summary>
-        ///     Gets the next random double value which is greater than zero and less than or equal to
-        ///     the specified maximum value.
-        /// </summary>
-        /// <param name="max">The inclusive maximum value.</param>
-        /// <returns>A random double value between zero and the specified maximum value.</returns>
-        public double NextDouble(double max)
-        {
-            uint t = _x ^ (_x << 11);
-            _x = _y;
-            _y = _z;
-            _z = _w;
-            return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
-        }
-
-        /// <summary>
-        ///     Gets the next random double value between the specified minimum and maximum values.
-        /// </summary>
-        /// <param name="min">The inclusive minimum value.</param>
-        /// <param name="max">The inclusive maximum value.</param>
-        /// <returns>A random double value between the specified minimum and maximum values.</returns>
-        public double NextDouble(double min, double max)
-        {
-            uint t = _x ^ (_x << 11);
-            _x = _y;
-            _y = _z;
-            _z = _w;
-            return min + REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min);
-        }
-
-        /// <summary>
-        ///     Gets the next random single value.
-        /// </summary>
-        /// <returns>A random single value between 0 and 1.</returns>
-        public float NextSingle()
-        {
-            uint t = _x ^ (_x << 11);
-            _x = _y;
-            _y = _z;
-            _z = _w;
-            return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
-        }
-
-        /// <summary>
-        ///     Gets the next random single value which is greater than zero and less than or equal to
-        ///     the specified maximum value.
-        /// </summary>
-        /// <param name="max">The exclusive maximum value.</param>
-        /// <returns>A random single value between zero and the specified maximum value.</returns>
-        public float NextSingle(float max)
-        {
-            uint t = _x ^ (_x << 11);
-            _x = _y;
-            _y = _z;
-            _z = _w;
-            return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
-        }
-
-        /// <summary>
-        ///     Gets the next random single value between the specified minimum and maximum values.
-        /// </summary>
-        /// <param name="min">The inclusive minimum value.</param>
-        /// <param name="max">The inclusive maximum value.</param>
-        /// <returns>A random single value between the specified minimum and maximum values.</returns>
-        public float NextSingle(float min, float max)
-        {
-            uint t = _x ^ (_x << 11);
-            _x = _y;
-            _y = _z;
-            _z = _w;
-            return min + SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min);
         }
 
         /// <summary>
@@ -332,36 +255,6 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Gets the next random angle value.
-        /// </summary>
-        /// <returns>A random angle value.</returns>
-        public float NextAngle()
-        {
-            return (float)NextDouble(-Math.PI, Math.PI);
-        }
-
-        /// <summary>
-        ///     Gets the next random unit vector.
-        /// </summary>
-        /// <returns>A random unit vector.</returns>
-        public Vector2 NextUnitVector()
-        {
-            float angle = NextAngle();
-            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-        }
-
-        /// <summary>
-        ///     Gets the next random unit vector.
-        /// </summary>
-        /// <returns>A random unit vector.</returns>
-        public unsafe void NextUnitVector(Vector2* vector)
-        {
-            float angle = NextAngle();
-            vector->X = (float)Math.Cos(angle);
-            vector->Y = (float)Math.Sin(angle);
-        }
-
-        /// <summary>
         ///     Gets the next random color.
         ///     Note: alpha = 255
         /// </summary>
@@ -388,6 +281,113 @@ namespace Exomia.Framework.Mathematics
                 Next(min.G, max.G),
                 Next(min.B, max.B),
                 Next(min.A, max.A));
+        }
+
+        /// <summary>
+        ///     Gets the next random double value.
+        /// </summary>
+        /// <returns>A random double value between 0 and 1.</returns>
+        public double NextDouble()
+        {
+            uint t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
+        }
+
+        /// <summary>
+        ///     Gets the next random double value which is greater than zero and less than or equal to
+        ///     the specified maximum value.
+        /// </summary>
+        /// <param name="max">The inclusive maximum value.</param>
+        /// <returns>A random double value between zero and the specified maximum value.</returns>
+        public double NextDouble(double max)
+        {
+            uint t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
+        }
+
+        /// <summary>
+        ///     Gets the next random double value between the specified minimum and maximum values.
+        /// </summary>
+        /// <param name="min">The inclusive minimum value.</param>
+        /// <param name="max">The inclusive maximum value.</param>
+        /// <returns>A random double value between the specified minimum and maximum values.</returns>
+        public double NextDouble(double min, double max)
+        {
+            uint t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return min + REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min);
+        }
+
+        /// <summary>
+        ///     Gets the next random single value.
+        /// </summary>
+        /// <returns>A random single value between 0 and 1.</returns>
+        public float NextSingle()
+        {
+            uint t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
+        }
+
+        /// <summary>
+        ///     Gets the next random single value which is greater than zero and less than or equal to
+        ///     the specified maximum value.
+        /// </summary>
+        /// <param name="max">The exclusive maximum value.</param>
+        /// <returns>A random single value between zero and the specified maximum value.</returns>
+        public float NextSingle(float max)
+        {
+            uint t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
+        }
+
+        /// <summary>
+        ///     Gets the next random single value between the specified minimum and maximum values.
+        /// </summary>
+        /// <param name="min">The inclusive minimum value.</param>
+        /// <param name="max">The inclusive maximum value.</param>
+        /// <returns>A random single value between the specified minimum and maximum values.</returns>
+        public float NextSingle(float min, float max)
+        {
+            uint t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return min + SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min);
+        }
+
+        /// <summary>
+        ///     Gets the next random unit vector.
+        /// </summary>
+        /// <returns>A random unit vector.</returns>
+        public Vector2 NextUnitVector()
+        {
+            float angle = NextAngle();
+            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+        }
+
+        /// <summary>
+        ///     Gets the next random unit vector.
+        /// </summary>
+        /// <returns>A random unit vector.</returns>
+        public unsafe void NextUnitVector(Vector2* vector)
+        {
+            float angle = NextAngle();
+            vector->X = (float)Math.Cos(angle);
+            vector->Y = (float)Math.Sin(angle);
         }
     }
 }

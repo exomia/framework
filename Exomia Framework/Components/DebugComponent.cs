@@ -79,9 +79,9 @@ namespace Exomia.Framework.Components
 
         private float _totalMemoryBytes;
 
-        public bool ShowFullInformation { get; set; } = false;
-
         public bool EnableTitleInformation { get; set; } = false;
+
+        public bool ShowFullInformation { get; set; } = false;
 
         public DebugComponent(string name = "DebugGameSystem")
             : base(name)
@@ -92,6 +92,34 @@ namespace Exomia.Framework.Components
             _elapsed_time     = 0.0f;
             _fpsCurrent       = 0.0f;
             _fpsAverage       = -1;
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (!_firstCalc) { return; }
+            if (EnableTitleInformation)
+            {
+                _gameWindow.Title = _title + " " + _fpsInfo;
+            }
+
+            _spriteBatch.Begin();
+
+            if (ShowFullInformation)
+            {
+                _spriteBatch.DrawText(_arial12Px, $"{_cpuInfo}\n\n{_ramInfo}", _position1, Color.White, 0.0f);
+            }
+
+            _spriteBatch.DrawText(
+                _arial12Px, _fpsInfo, _position2, _fpsCurrent <= FRAME_DANGER_THRESHOLD ? Color.Red : Color.White,
+                0.0f);
+
+            _spriteBatch.End();
+        }
+
+        public override void EndDraw()
+        {
+            _total_frames++;
+            base.EndDraw();
         }
 
         public override void Update(GameTime gameTime)
@@ -126,6 +154,8 @@ namespace Exomia.Framework.Components
                 _total_frames =  0;
 
                 _fpsInfo =
+
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
                     $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.AbsoluteDeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
                 _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
                 _maxFrameTime = 0;
@@ -138,34 +168,6 @@ namespace Exomia.Framework.Components
                 _sampleBuffer = 0;
                 _sampleCount  = 0;
             }
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            if (!_firstCalc) { return; }
-            if (EnableTitleInformation)
-            {
-                _gameWindow.Title = _title + " " + _fpsInfo;
-            }
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred);
-
-            if (ShowFullInformation)
-            {
-                _spriteBatch.DrawText(_arial12Px, $"{_cpuInfo}\n\n{_ramInfo}", _position1, Color.White, 0.0f);
-            }
-
-            _spriteBatch.DrawText(
-                _arial12Px, _fpsInfo, _position2, _fpsCurrent <= FRAME_DANGER_THRESHOLD ? Color.Red : Color.White,
-                0.0f);
-
-            _spriteBatch.End();
-        }
-
-        public override void EndDraw()
-        {
-            _total_frames++;
-            base.EndDraw();
         }
 
         protected override void OnInitialize(IServiceRegistry registry)

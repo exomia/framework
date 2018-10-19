@@ -36,7 +36,37 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public static class TextureHelper
     {
-        private static readonly ImagingFactory s_imgfactory = new ImagingFactory();
+        private static readonly ImagingFactory s_imgFactory = new ImagingFactory();
+
+        /// <summary>
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static Texture2D CreateTexture(Device5 device, int width, int height,
+            Format format = Format.B8G8R8A8_UNorm)
+        {
+            lock (device)
+            {
+                return new Texture2D(
+                    device,
+                    new Texture2DDescription
+                    {
+                        Width             = width,
+                        Height            = height,
+                        ArraySize         = 1,
+                        BindFlags         = BindFlags.RenderTarget | BindFlags.ShaderResource,
+                        Usage             = ResourceUsage.Default,
+                        CpuAccessFlags    = CpuAccessFlags.None,
+                        Format            = format,
+                        MipLevels         = 1,
+                        OptionFlags       = ResourceOptionFlags.None,
+                        SampleDescription = new SampleDescription(1, 0)
+                    });
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -44,8 +74,8 @@ namespace Exomia.Framework.Graphics
         /// <returns></returns>
         public static BitmapSource LoadBitmap(Stream stream)
         {
-            BitmapDecoder bitmapDecoder = new BitmapDecoder(s_imgfactory, stream, DecodeOptions.CacheOnDemand);
-            FormatConverter formatConverter = new FormatConverter(s_imgfactory);
+            BitmapDecoder bitmapDecoder = new BitmapDecoder(s_imgFactory, stream, DecodeOptions.CacheOnDemand);
+            FormatConverter formatConverter = new FormatConverter(s_imgFactory);
             formatConverter.Initialize(
                 bitmapDecoder.GetFrame(0),
                 PixelFormat.Format32bppPRGBA,
@@ -88,36 +118,6 @@ namespace Exomia.Framework.Graphics
                             }, new DataRectangle(buffer.DataPointer, stride));
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="device"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static Texture2D CreateTexture(Device5 device, int width, int height,
-            Format format = Format.B8G8R8A8_UNorm)
-        {
-            lock (device)
-            {
-                return new Texture2D(
-                    device,
-                    new Texture2DDescription
-                    {
-                        Width             = width,
-                        Height            = height,
-                        ArraySize         = 1,
-                        BindFlags         = BindFlags.RenderTarget | BindFlags.ShaderResource,
-                        Usage             = ResourceUsage.Default,
-                        CpuAccessFlags    = CpuAccessFlags.None,
-                        Format            = format,
-                        MipLevels         = 1,
-                        OptionFlags       = ResourceOptionFlags.None,
-                        SampleDescription = new SampleDescription(1, 0)
-                    });
             }
         }
 

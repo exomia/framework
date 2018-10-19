@@ -116,12 +116,12 @@ namespace Exomia.Framework.Game
         public Vector2 DPI;
 
         /// <summary>
-        ///     enables the multisampling
+        ///     enables the multi sampling
         /// </summary>
         public bool EnableMultiSampling;
 
         /// <summary>
-        ///     define the multisample count
+        ///     define the multi sample count
         /// </summary>
         public MultiSampleCount MultiSampleCount;
     }
@@ -139,16 +139,16 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     msaa x2
         /// </summary>
-        MSAA_x2 = 2,
+        MsaaX2 = 2,
 
         /// <summary>
         ///     msaa x4
         /// </summary>
-        MSAA_x4 = 4,
+        MsaaX4 = 4,
 
         /// <summary>
         ///     msaa x8
         /// </summary>
-        MSAA_x8 = 8
+        MsaaX8 = 8
     }
 }

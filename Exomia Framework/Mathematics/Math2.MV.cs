@@ -31,6 +31,40 @@ namespace Exomia.Framework.Mathematics
     public static partial class Math2
     {
         /// <summary>
+        ///     calculates a transform matrix
+        /// </summary>
+        /// <param name="position">position</param>
+        /// <param name="origin">origin</param>
+        /// <param name="scale">scale</param>
+        /// <param name="rotation">rotation</param>
+        /// <param name="transform">out transform matrix</param>
+        public static void CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
+            float rotation, out Matrix transform)
+        {
+            transform = Matrix.Translation(-origin.X, -origin.Y, 0) *
+                        Matrix.RotationZ(rotation) *
+                        Matrix.Scaling(scale.X, scale.Y, 0.0f) *
+                        Matrix.Translation(position.X, position.Y, 0);
+        }
+
+        /// <summary>
+        ///     calculates a transform matrix
+        /// </summary>
+        /// <param name="position">position</param>
+        /// <param name="origin">origin</param>
+        /// <param name="scale">scale</param>
+        /// <param name="rotation">rotation</param>
+        /// <returns>transform matrix</returns>
+        public static Matrix CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
+            float rotation)
+        {
+            return Matrix.Translation(-origin.X, -origin.Y, 0) *
+                   Matrix.RotationZ(rotation) *
+                   Matrix.Scaling(scale.X, scale.Y, 0.0f) *
+                   Matrix.Translation(position.X, position.Y, 0);
+        }
+
+        /// <summary>
         ///     creates an axis aligned bounding box
         /// </summary>
         /// <param name="transform">transform</param>
@@ -92,40 +126,6 @@ namespace Exomia.Framework.Mathematics
             float width, float height)
         {
             return CreateAABB(CalculateTransformMatrix(position, origin, scale, rotation), width, height);
-        }
-
-        /// <summary>
-        ///     calculates a transform matrix
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <param name="transform">out transform matrix</param>
-        public static void CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
-            float rotation, out Matrix transform)
-        {
-            transform = Matrix.Translation(-origin.X, -origin.Y, 0) *
-                        Matrix.RotationZ(rotation) *
-                        Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                        Matrix.Translation(position.X, position.Y, 0);
-        }
-
-        /// <summary>
-        ///     calculates a transform matrix
-        /// </summary>
-        /// <param name="position">position</param>
-        /// <param name="origin">origin</param>
-        /// <param name="scale">scale</param>
-        /// <param name="rotation">rotation</param>
-        /// <returns>transform matrix</returns>
-        public static Matrix CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
-            float rotation)
-        {
-            return Matrix.Translation(-origin.X, -origin.Y, 0) *
-                   Matrix.RotationZ(rotation) *
-                   Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                   Matrix.Translation(position.X, position.Y, 0);
         }
     }
 }

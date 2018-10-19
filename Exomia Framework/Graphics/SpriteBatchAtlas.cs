@@ -68,22 +68,6 @@ namespace Exomia.Framework.Graphics
             _atlas = new Bitmap(width, height);
         }
 
-        internal BitmapSource GenerateBitmapSource()
-        {
-            lock (_lockAtlas)
-            {
-                MemoryStream ms = new MemoryStream();
-                _atlas.Save(ms, ImageFormat.Png);
-                ms.Position = 0;
-                return TextureHelper.LoadBitmap(ms);
-            }
-        }
-
-        internal bool TryGetSourceRectangle(string assetName, out Rectangle sourceRectangle)
-        {
-            return _sourceRectangles.TryGetValue(assetName, out sourceRectangle);
-        }
-
         internal bool AddTexture(Stream stream, string assetName, out Rectangle sourceRectangle)
         {
             sourceRectangle = Rectangle.Empty;
@@ -115,6 +99,17 @@ namespace Exomia.Framework.Graphics
             return false;
         }
 
+        internal BitmapSource GenerateBitmapSource()
+        {
+            lock (_lockAtlas)
+            {
+                MemoryStream ms = new MemoryStream();
+                _atlas.Save(ms, ImageFormat.Png);
+                ms.Position = 0;
+                return TextureHelper.LoadBitmap(ms);
+            }
+        }
+
         internal bool RemoveTexture(string assetName)
         {
             if (!_sourceRectangles.TryGetValue(assetName, out Rectangle sourceRectangle))
@@ -135,6 +130,11 @@ namespace Exomia.Framework.Graphics
             return _sourceRectangles.Remove(assetName);
         }
 
+        internal bool TryGetSourceRectangle(string assetName, out Rectangle sourceRectangle)
+        {
+            return _sourceRectangles.TryGetValue(assetName, out sourceRectangle);
+        }
+
         private bool GetFreeLocation(int width, int height, out int x, out int y)
         {
             x = 0;
@@ -149,12 +149,12 @@ namespace Exomia.Framework.Graphics
                         y = ymin;
                         break;
                     }
-                    Rectangle sharpSF = new Rectangle(x, y, width, height);
+                    Rectangle sharpSf = new Rectangle(x, y, width, height);
 
                     bool intersects = false;
                     foreach (Rectangle sRect in _sourceRectangles.Values)
                     {
-                        if (sRect.Intersects(sharpSF))
+                        if (sRect.Intersects(sharpSf))
                         {
                             x = sRect.X + sRect.Width;
 
@@ -192,11 +192,19 @@ namespace Exomia.Framework.Graphics
                 if (disposing)
                 {
                     /* USER CODE */
-                    Utilities.Dispose(ref _atlas);
+                    lock (_lockAtlas)
+                    {
+                        Utilities.Dispose(ref _atlas);
+                    }
                     _sourceRectangles.Clear();
                 }
                 _disposed = true;
             }
+        }
+
+        ~SpriteBatchAtlas()
+        {
+            Dispose(false);
         }
 
         public void Dispose()

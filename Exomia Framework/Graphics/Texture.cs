@@ -40,19 +40,6 @@ namespace Exomia.Framework.Graphics
         private ShaderResourceView1 _textureView;
 
         /// <summary>
-        ///     ShaderResourceView1
-        /// </summary>
-        public ShaderResourceView1 TextureView
-        {
-            get { return _textureView; }
-        }
-
-        /// <summary>
-        ///     Width
-        /// </summary>
-        public int Width { get; }
-
-        /// <summary>
         ///     Height
         /// </summary>
         public int Height { get; }
@@ -64,6 +51,19 @@ namespace Exomia.Framework.Graphics
         {
             get { return _textureView.NativePointer; }
         }
+
+        /// <summary>
+        ///     ShaderResourceView1
+        /// </summary>
+        public ShaderResourceView1 TextureView
+        {
+            get { return _textureView; }
+        }
+
+        /// <summary>
+        ///     Width
+        /// </summary>
+        public int Width { get; }
 
         /// <summary>
         ///     Texture constructor
@@ -143,14 +143,22 @@ namespace Exomia.Framework.Graphics
     public sealed class Texture2 : IDisposable
     {
         /// <summary>
+        ///     AssetName
+        /// </summary>
+        public string AssetName { get; }
+
+        /// <summary>
         ///     AtlasIndex
         /// </summary>
         public int AtlasIndex { get; }
 
         /// <summary>
-        ///     AssetName
+        ///     Height
         /// </summary>
-        public string AssetName { get; }
+        public int Height
+        {
+            get { return SourceRectangle.Height; }
+        }
 
         /// <summary>
         ///     SourceRectangle
@@ -163,14 +171,6 @@ namespace Exomia.Framework.Graphics
         public int Width
         {
             get { return SourceRectangle.Width; }
-        }
-
-        /// <summary>
-        ///     Height
-        /// </summary>
-        public int Height
-        {
-            get { return SourceRectangle.Height; }
         }
 
         internal Texture2(int atlasIndex, string assetName, Rectangle sourceRectangle)

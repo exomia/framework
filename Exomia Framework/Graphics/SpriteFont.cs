@@ -43,19 +43,9 @@ namespace Exomia.Framework.Graphics
 
         private Texture _texture;
 
-        public bool IgnoreUnknownCharacters { get; set; }
-
-        public string Face { get; set; }
-
-        public int Size { get; set; }
-
         public bool Bold { get; set; }
 
-        public bool Italic { get; set; }
-
-        public byte[] ImageData { get; set; }
-
-        public int LineSpacing { get; set; }
+        public int DefaultCharacter { get; set; } = -1;
 
         public Glyph DefaultGlyph
         {
@@ -63,17 +53,7 @@ namespace Exomia.Framework.Graphics
             set { _defaultGlyph = value; }
         }
 
-        public int DefaultCharacter { get; set; } = -1;
-
-        public int SpacingX { get; set; }
-
-        public int SpacingY { get; set; }
-
-        public Texture Texture
-        {
-            get { return _texture; }
-            set { _texture = value; }
-        }
+        public string Face { get; set; }
 
         public Dictionary<int, Glyph> Glyphs
         {
@@ -91,7 +71,27 @@ namespace Exomia.Framework.Graphics
             }
         }
 
+        public bool IgnoreUnknownCharacters { get; set; }
+
+        public byte[] ImageData { get; set; }
+
+        public bool Italic { get; set; }
+
         public Dictionary<int, Kerning> Kernings { get; set; }
+
+        public int LineSpacing { get; set; }
+
+        public int Size { get; set; }
+
+        public int SpacingX { get; set; }
+
+        public int SpacingY { get; set; }
+
+        public Texture Texture
+        {
+            get { return _texture; }
+            set { _texture = value; }
+        }
 
         public SpriteFont()
         {

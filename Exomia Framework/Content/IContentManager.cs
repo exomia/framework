@@ -33,21 +33,14 @@ namespace Exomia.Framework.Content
     public interface IContentManager : IDisposable
     {
         /// <summary>
-        ///     ServiceRegistry
-        /// </summary>
-        IServiceRegistry ServiceRegistry { get; }
-
-        /// <summary>
         ///     RootDirectory
         /// </summary>
         string RootDirectory { get; set; }
 
         /// <summary>
-        ///     add a new content resolver to the list.
+        ///     ServiceRegistry
         /// </summary>
-        /// <param name="resolver">the content resolver to add</param>
-        /// <returns><c>true</c> if the specified content resolver successfully added, <c>false</c> otherwise</returns>
-        bool AddContentResolver(IContentResolver resolver);
+        IServiceRegistry ServiceRegistry { get; }
 
         /// <summary>
         ///     add a new content reader to the list.
@@ -63,6 +56,13 @@ namespace Exomia.Framework.Content
         /// <param name="factory">the content reader factory to add</param>
         /// <returns><c>true</c> if the specified content reader factory successfully added, <c>false</c> otherwise</returns>
         bool AddContentReaderFactory(IContentReaderFactory factory);
+
+        /// <summary>
+        ///     add a new content resolver to the list.
+        /// </summary>
+        /// <param name="resolver">the content resolver to add</param>
+        /// <returns><c>true</c> if the specified content resolver successfully added, <c>false</c> otherwise</returns>
+        bool AddContentResolver(IContentResolver resolver);
 
         /// <summary>
         ///     Checks if the specified assets exists.

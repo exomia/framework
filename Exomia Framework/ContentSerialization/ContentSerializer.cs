@@ -59,9 +59,7 @@ namespace Exomia.Framework.ContentSerialization
         {
             #region ADD TYPES 
 
-            IType pt = null;
-
-            pt = new PrimitiveType<bool>();
+            IType pt = new PrimitiveType<bool>();
             s_types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<byte>();
@@ -125,7 +123,7 @@ namespace Exomia.Framework.ContentSerialization
 
                 foreach (Type t in a.GetTypes())
                 {
-                    ContentSerializableAttribute attribute = null;
+                    ContentSerializableAttribute attribute;
                     if ((attribute = t.GetCustomAttribute<ContentSerializableAttribute>(false)) != null)
                     {
                         AddWriter(t, attribute.Writer);
@@ -246,7 +244,11 @@ namespace Exomia.Framework.ContentSerialization
             using (StreamWriter sw = new StreamWriter(assetName, false))
             {
                 Action<string, string> writeHandler = minify
+
+                    // ReSharper disable once AccessToDisposedClosure
                     ? (t, s) => { sw.Write(s); }
+
+                    // ReSharper disable once AccessToDisposedClosure
                     : new Action<string, string>((t, s) => { sw.WriteLine($"{t}{s}"); });
 
                 writeHandler(string.Empty, $"[{obj.GetType()}]");

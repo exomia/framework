@@ -31,13 +31,12 @@ namespace Exomia.Framework.Game
 {
     public interface IGameWindow : IDisposable
     {
+        int Height { get; }
         bool IsInitialized { get; }
 
-        int Width { get; }
-
-        int Height { get; }
-
         string Title { get; set; }
+
+        int Width { get; }
 
         void Initialize(ref GameGraphicsParameters parameters);
 

@@ -36,12 +36,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// <summary>
         ///     gzip (default)
         /// </summary>
-        Gzip,
-
-        /// <summary>
-        ///     not supported
-        /// </summary>
-        Tgc
+        Gzip
     }
 
     /// <summary>
@@ -61,23 +56,22 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// </summary>
         /// <param name="stream">the stream to compress</param>
         /// <param name="streamOut">than finished the compressed out stream</param>
-        /// <param name="mode">the compression mode</param>
+        /// <param name="compressMode">the compression mode</param>
         /// <returns><c>true</c> if successfully compressed the stream; <c>false</c> otherwise.</returns>
-        public static bool CompressStream(Stream stream, out Stream streamOut, CompressMode mode = CompressMode.Gzip)
+        public static bool CompressStream(Stream stream, out Stream streamOut,
+            CompressMode compressMode = CompressMode.Gzip)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
             streamOut = null;
             try
             {
                 stream.Position = 0;
-                switch (mode)
+                switch (compressMode)
                 {
                     case CompressMode.Gzip:
                         GzipCompress(stream, out streamOut);
-                        return true;
-                    case CompressMode.Tgc:
-                        TgcCompress(stream, out streamOut);
-                        return true;
+                        break;
+                    default: throw new ArgumentException("no compression method found", nameof(compressMode));
                 }
             }
             catch { return false; }
@@ -89,23 +83,22 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// </summary>
         /// <param name="stream">the stream to compress</param>
         /// <param name="streamOut">than finished the decompressed out stream</param>
-        /// <param name="mode">the compression mode</param>
+        /// <param name="compressMode">the compression mode</param>
         /// <returns><c>true</c> if successfully decompressed the stream; <c>false</c> otherwise.</returns>
-        public static bool DecompressStream(Stream stream, out Stream streamOut, CompressMode mode = CompressMode.Gzip)
+        public static bool DecompressStream(Stream stream, out Stream streamOut,
+            CompressMode compressMode = CompressMode.Gzip)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
             streamOut = null;
             try
             {
                 stream.Position = 0;
-                switch (mode)
+                switch (compressMode)
                 {
                     case CompressMode.Gzip:
                         GzipDecompress(stream, out streamOut);
-                        return true;
-                    case CompressMode.Tgc:
-                        TgcDecompress(stream, out streamOut);
-                        return true;
+                        break;
+                    default: throw new ArgumentException("no compression method found", nameof(compressMode));
                 }
             }
             catch { return false; }
@@ -120,7 +113,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
             using (GZipStream gs = new GZipStream(streamOut, CompressionLevel.Optimal, true))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
-                int count = -1;
+                int count;
                 while ((count = stream.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     gs.Write(buffer, 0, count);
@@ -135,27 +128,13 @@ namespace Exomia.Framework.ContentSerialization.Compression
             using (GZipStream gs = new GZipStream(stream, CompressionMode.Decompress, true))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
-                int count = -1;
+                int count;
                 while ((count = gs.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     streamOut.Write(buffer, 0, count);
                 }
             }
             streamOut.Position = 0;
-        }
-
-        #endregion
-
-        #region TGC
-
-        private static void TgcCompress(Stream stream, out Stream streamOut)
-        {
-            throw new NotSupportedException();
-        }
-
-        private static void TgcDecompress(Stream stream, out Stream streamOut)
-        {
-            throw new NotSupportedException();
         }
 
         #endregion

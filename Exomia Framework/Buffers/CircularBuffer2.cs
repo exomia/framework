@@ -41,8 +41,8 @@ namespace Exomia.Framework.Buffers
         private readonly int _mask;
 
         private int _head;
-        private int _tail;
         private int _size;
+        private int _tail;
 
         private SpinLock _thisLock;
 

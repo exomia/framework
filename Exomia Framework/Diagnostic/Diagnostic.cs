@@ -29,9 +29,24 @@ namespace Exomia.Framework.Diagnostic
 {
     static class Diagnostic
     {
+        internal static bool GetBoardInformation(out string outS)
+        {
+            return ReadHwClassInformation("Win32_BaseBoard", out outS);
+        }
+
+        internal static bool GetBoardProperty(string propertyName, out string outS)
+        {
+            return ReadHwClassProperty("Win32_BaseBoard", propertyName, out outS);
+        }
+
         internal static bool GetCpuInformation(out string outS)
         {
             return ReadHwClassInformation("Win32_Processor", out outS);
+        }
+
+        internal static bool GetCpuProperty(string propertyName, out string outS)
+        {
+            return ReadHwClassProperty("Win32_Processor", propertyName, out outS);
         }
 
         internal static bool GetGpuInformation(out string outS)
@@ -39,9 +54,9 @@ namespace Exomia.Framework.Diagnostic
             return ReadHwClassInformation("Win32_VideoController", out outS);
         }
 
-        internal static bool GetBoardInformation(out string outS)
+        internal static bool GetGpuProperty(string propertyName, out string outS)
         {
-            return ReadHwClassInformation("Win32_BaseBoard", out outS);
+            return ReadHwClassProperty("Win32_VideoController", propertyName, out outS);
         }
 
         internal static bool ReadHwClassInformation(string hwClass, out string outS)
@@ -65,32 +80,17 @@ namespace Exomia.Framework.Diagnostic
             return true;
         }
 
-        internal static bool GetCpuProperty(string propertyeName, out string outS)
-        {
-            return ReadHwClassProperty("Win32_Processor", propertyeName, out outS);
-        }
-
-        internal static bool GetGpuProperty(string propertyeName, out string outS)
-        {
-            return ReadHwClassProperty("Win32_VideoController", propertyeName, out outS);
-        }
-
-        internal static bool GetBoardProperty(string propertyeName, out string outS)
-        {
-            return ReadHwClassProperty("Win32_BaseBoard", propertyeName, out outS);
-        }
-
-        internal static bool ReadHwClassProperty(string hwClass, string propertyeName, out string outS)
+        internal static bool ReadHwClassProperty(string hwClass, string propertyName, out string outS)
         {
             outS = string.Empty;
             using (ManagementObjectSearcher searcher =
-                new ManagementObjectSearcher($"select {propertyeName} from {hwClass}"))
+                new ManagementObjectSearcher($"select {propertyName} from {hwClass}"))
             {
                 ManagementObjectCollection moc = searcher.Get();
                 if (moc.Count <= 0) { return false; }
                 foreach (ManagementBaseObject share in moc)
                 {
-                    outS = share[propertyeName].ToString();
+                    outS = share[propertyName].ToString();
                     if (!string.IsNullOrEmpty(outS)) { return true; }
                 }
             }

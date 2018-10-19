@@ -33,14 +33,14 @@ namespace Exomia.Framework
     public interface IUpdateable
     {
         /// <summary>
-        ///     Occurs when the <see cref="UpdateOrder" /> property changes.
-        /// </summary>
-        event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <summary>
         ///     Occurs when the <see cref="Enabled" /> property changes.
         /// </summary>
         event EventHandler<EventArgs> EnabledChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="UpdateOrder" /> property changes.
+        /// </summary>
+        event EventHandler<EventArgs> UpdateOrderChanged;
 
         /// <summary>
         ///     Gets a value indicating whether the game component's Update method should be called.

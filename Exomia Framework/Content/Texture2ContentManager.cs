@@ -54,13 +54,13 @@ namespace Exomia.Framework.Content
 
         private Texture _texture;
 
+        /// <inheritdoc />
+        public bool IsTextureInvalid { get; private set; }
+
         ~Texture2ContentManager()
         {
             Dispose(false);
         }
-
-        /// <inheritdoc />
-        public bool IsTextureInvalid { get; private set; }
 
         /// <inheritdoc />
         public Texture2 AddTexture(Stream stream, string assetName, int startIndex = 0)

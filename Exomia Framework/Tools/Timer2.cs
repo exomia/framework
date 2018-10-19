@@ -37,13 +37,19 @@ namespace Exomia.Framework.Tools
     /// </summary>
     public sealed class Timer2 : IUpdateable
     {
-        /// <summary>
-        /// </summary>
-        public event TimerEvent TimerTicked;
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> EnabledChanged;
 
         /// <summary>
         /// </summary>
         public event TimerEvent TimerFinished;
+
+        /// <summary>
+        /// </summary>
+        public event TimerEvent TimerTicked;
+
+        /// <inheritdoc />
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
         private readonly uint _maxIterations;
         private float _elapsedTime;
@@ -52,14 +58,42 @@ namespace Exomia.Framework.Tools
         private int _updateOrder;
 
         /// <summary>
+        ///     Gets the current iteration or 0 if maxIteration = 0
+        /// </summary>
+        public uint CurrentIteration { get; private set; }
+
+        /// <inheritdoc />
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the timer tick(time in ms after a timer Tick occurs)
         /// </summary>
         public float TimerTick { get; set; }
 
-        /// <summary>
-        ///     Gets the current iteration or 0 if maxIteration = 0
-        /// </summary>
-        public uint CurrentIteration { get; private set; }
+        /// <inheritdoc />
+        public int UpdateOrder
+        {
+            get { return _updateOrder; }
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Timer2" /> class.
@@ -97,40 +131,6 @@ namespace Exomia.Framework.Tools
             : this(tick, tickCallback, maxIterations)
         {
             TimerFinished += finishedCallback;
-        }
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
-
-        /// <inheritdoc />
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public int UpdateOrder
-        {
-            get { return _updateOrder; }
-            set
-            {
-                if (_updateOrder != value)
-                {
-                    _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
         }
 
         /// <inheritdoc />

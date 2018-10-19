@@ -28,22 +28,37 @@ namespace Exomia.Framework.Audio
 {
     sealed class LinkedSoundList
     {
+        private readonly int _capacity;
+
+        private readonly object _thisLock;
         private Sound _tail;
+        private int _count;
 
-        public int Capacity { get; }
+        public int Capacity
+        {
+            // ReSharper disable once InconsistentlySynchronizedField
+            get { return _capacity; }
+        }
 
-        public int Count { get; private set; }
+        public int Count
+        {
+            // ReSharper disable once InconsistentlySynchronizedField
+            get { return _count; }
+        }
 
         public LinkedSoundList(int capacity = int.MaxValue)
         {
-            Capacity = capacity;
+            _capacity = capacity;
+            _count    = 0;
+            _thisLock = new object();
         }
 
         public void Add(Sound sound)
         {
-            lock (this)
+            lock (_thisLock)
             {
-                if (Count + 1 >= Capacity) { return; }
+                if (_count + 1 >= _capacity) { return; }
+                _count++;
 
                 sound.Previous = _tail;
                 sound.Next     = null;
@@ -53,15 +68,33 @@ namespace Exomia.Framework.Audio
                     _tail.Next = sound;
                 }
                 _tail = sound;
+            }
+        }
 
-                Count++;
+        public void Clear()
+        {
+            _tail = null;
+
+            // ReSharper disable once InconsistentlySynchronizedField
+            _count = 0;
+        }
+
+        public IEnumerable<Sound> Enumerate()
+        {
+            Sound end = _tail;
+            while (end != null)
+            {
+                yield return end;
+                end = end.Previous;
             }
         }
 
         public void Remove(Sound sound)
         {
-            lock (this)
+            lock (_thisLock)
             {
+                _count--;
+
                 if (sound.Next != null)
                 {
                     if (sound.Previous != null)
@@ -79,23 +112,6 @@ namespace Exomia.Framework.Audio
                     }
                     sound.Previous.Next = sound.Next;
                 }
-                Count--;
-            }
-        }
-
-        public void Clear()
-        {
-            _tail = null;
-            Count = 0;
-        }
-
-        public IEnumerable<Sound> Enumerate()
-        {
-            Sound end = _tail;
-            while (end != null)
-            {
-                yield return end;
-                end = end.Previous;
             }
         }
     }

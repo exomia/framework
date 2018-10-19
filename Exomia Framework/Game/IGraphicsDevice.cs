@@ -38,38 +38,38 @@ namespace Exomia.Framework.Game
     {
         event ResizeEventHandler ResizeFinished;
 
-        bool IsInitialized { get; }
-        bool VSync { get; set; }
-
         Adapter4 Adapter { get; }
 
         Device5 Device { get; }
         DeviceContext4 DeviceContext { get; }
 
-        RenderTargetView1 RenderView { get; }
-
-        Device4 DXGIDevice { get; }
-
-        SwapChain4 SwapChain { get; }
+        Device4 DxgiDevice { get; }
 
         Factory5 Factory { get; }
 
+        bool IsInitialized { get; }
+
+        RenderTargetView1 RenderView { get; }
+
+        SwapChain4 SwapChain { get; }
+
         ViewportF Viewport { get; }
+        bool VSync { get; set; }
+
+        bool BeginFrame();
+
+        void Clear();
+        void Clear(Color color);
+        void EndFrame();
+        bool GetFullscreenState();
 
         void Initialize(ref GameGraphicsParameters parameters);
 
         void Resize(ref GameGraphicsParameters parameters);
         void Resize(int width, int height);
 
-        bool BeginFrame();
-        void EndFrame();
-
-        void Clear();
-        void Clear(Color color);
+        void SetFullscreenState(bool state, Output output = null);
 
         void SetRenderTarget(RenderTargetView1 target);
-
-        void SetFullscreenState(bool state, Output output = null);
-        bool GetFullscreenState();
     }
 }
