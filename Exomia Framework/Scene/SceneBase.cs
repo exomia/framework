@@ -22,11 +22,11 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using SharpDX;
-using System;
-using System.Collections.Generic;
 
 namespace Exomia.Framework.Scene
 {
@@ -131,37 +131,16 @@ namespace Exomia.Framework.Scene
         {
             Key = key;
 
-            _sceneComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _sceneComponents               = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
-        {
-            if (!_isInitialized && _state != SceneState.Initializing)
-            {
-                State = SceneState.Initializing;
-                _registry = registry;
-
-                OnInitialize();
-
-                while (_pendingInitializables.Count != 0)
-                {
-                    _pendingInitializables[0].Initialize(registry);
-                    _pendingInitializables.RemoveAt(0);
-                }
-
-                State = SceneState.StandBy;
-                _isInitialized = true;
-            }
         }
 
         /// <inheritdoc />
@@ -184,13 +163,9 @@ namespace Exomia.Framework.Scene
 
                 _currentlyContentableComponent.Clear();
                 _isContentLoaded = true;
-                State = SceneState.Ready;
+                State            = SceneState.Ready;
             }
         }
-
-        /// <summary>
-        /// </summary>
-        protected virtual void OnLoadContent() { }
 
         /// <inheritdoc />
         public void UnloadContent()
@@ -212,39 +187,30 @@ namespace Exomia.Framework.Scene
 
                 _currentlyContentableComponent.Clear();
                 _isContentLoaded = false;
-                State = SceneState.StandBy;
+                State            = SceneState.StandBy;
             }
         }
 
-        /// <summary>
-        /// </summary>
-        protected virtual void OnUnloadContent() { }
-
-        /// <summary>
-        /// </summary>
-        protected virtual void OnInitialize() { }
-
-        void IScene.ReferenceScenesLoaded()
+        /// <inheritdoc />
+        public void Initialize(IServiceRegistry registry)
         {
-            OnReferenceScenesLoaded();
+            if (!_isInitialized && _state != SceneState.Initializing)
+            {
+                State     = SceneState.Initializing;
+                _registry = registry;
+
+                OnInitialize();
+
+                while (_pendingInitializables.Count != 0)
+                {
+                    _pendingInitializables[0].Initialize(registry);
+                    _pendingInitializables.RemoveAt(0);
+                }
+
+                State          = SceneState.StandBy;
+                _isInitialized = true;
+            }
         }
-
-        /// <summary>
-        /// called than all referenced scenes are loaded.
-        /// </summary>
-        protected virtual void OnReferenceScenesLoaded() { }
-
-        void IScene.Show(SceneBase comingFrom, object[] payload)
-        {
-            OnShow(comingFrom, payload);
-        }
-
-        /// <summary>
-        /// called than a scene is shown
-        /// </summary>
-        /// <param name="comingFrom">coming from</param>
-        /// <param name="payload">payload</param>
-        protected virtual void OnShow(SceneBase comingFrom, object[] payload) { }
 
         /// <inheritdoc />
         public virtual void Update(GameTime gameTime)
@@ -295,6 +261,16 @@ namespace Exomia.Framework.Scene
 
         /// <inheritdoc />
         public virtual void EndDraw() { }
+
+        void IScene.ReferenceScenesLoaded()
+        {
+            OnReferenceScenesLoaded();
+        }
+
+        void IScene.Show(SceneBase comingFrom, object[] payload)
+        {
+            OnShow(comingFrom, payload);
+        }
 
         /// <summary>
         /// </summary>
@@ -444,6 +420,37 @@ namespace Exomia.Framework.Scene
             return item;
         }
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return
+                $"Scene {Key}\nReferences ({string.Join(", ", ReferenceScenes)})\nState: {State}\nIsOverLayScene: {IsOverlayScene}";
+        }
+
+        /// <summary>
+        /// </summary>
+        protected virtual void OnLoadContent() { }
+
+        /// <summary>
+        /// </summary>
+        protected virtual void OnUnloadContent() { }
+
+        /// <summary>
+        /// </summary>
+        protected virtual void OnInitialize() { }
+
+        /// <summary>
+        ///     called than all referenced scenes are loaded.
+        /// </summary>
+        protected virtual void OnReferenceScenesLoaded() { }
+
+        /// <summary>
+        ///     called than a scene is shown
+        /// </summary>
+        /// <param name="comingFrom">coming from</param>
+        /// <param name="payload">payload</param>
+        protected virtual void OnShow(SceneBase comingFrom, object[] payload) { }
+
         /// <summary>
         /// </summary>
         /// <param name="obj"></param>
@@ -574,12 +581,6 @@ namespace Exomia.Framework.Scene
 
         #endregion
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"Scene {Key}\nReferences ({string.Join(", ", ReferenceScenes)})\nState: {State}\nIsOverLayScene: {IsOverlayScene}";
-        }
-
         #region IDisposable Support
 
         /// <summary>
@@ -625,7 +626,7 @@ namespace Exomia.Framework.Scene
                     _collector.DisposeAndClear();
                     _collector = null;
                 }
-                State = SceneState.None;
+                State     = SceneState.None;
                 _disposed = true;
             }
         }
