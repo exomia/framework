@@ -45,7 +45,7 @@ namespace Exomia.Framework.Scene
 
         bool RemoveScene(string key);
 
-        ShowSceneResult ShowScene(SceneBase scene);
-        ShowSceneResult ShowScene(string key, out SceneBase scene);
+        ShowSceneResult ShowScene(SceneBase scene, params object[] payload);
+        ShowSceneResult ShowScene(string key, out SceneBase scene, params object[] payload);
     }
 }

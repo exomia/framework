@@ -43,10 +43,8 @@ namespace Exomia.Framework.Scene.Default
             _sceneToLoad = sceneToLoad ?? throw new ArgumentNullException(nameof(sceneToLoad));
         }
 
-        /// <summary>
-        ///     <see cref="SceneBase.Show" />
-        /// </summary>
-        public override void Show()
+        /// <inheritdoc />
+        protected override void OnShow(SceneBase comingFrom, object[] payload)
         {
             if (_sceneToLoad.State == SceneState.None)
             {

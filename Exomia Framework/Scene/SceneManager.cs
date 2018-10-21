@@ -137,11 +137,11 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public ShowSceneResult ShowScene(SceneBase scene)
+        public ShowSceneResult ShowScene(SceneBase s, params object[] payload)
         {
             lock (this)
             {
-                if (scene == null) { return ShowSceneResult.NoScene; }
+                if (!(s is IScene scene)) { return ShowSceneResult.NoScene; }
                 switch (scene.State)
                 {
                     case SceneState.ContentLoading:
@@ -188,7 +188,7 @@ namespace Exomia.Framework.Scene
                         });
                 }
 
-                scene.Show();
+                scene.Show(_currentScenes.Count > 0 ? _currentScenes[0] : null, payload);
 
                 Task.Factory.StartNew(
                     () =>
@@ -208,11 +208,11 @@ namespace Exomia.Framework.Scene
                         scene.ReferenceScenesLoaded();
                     });
 
-                _inputHandler = (scene as IScene).InputHandler ?? scene;
+                _inputHandler = scene?.InputHandler ?? scene;
 
                 lock (_currentScenes)
                 {
-                    _currentScenes.Add(scene);
+                    _currentScenes.Add(s);
                 }
 
                 return scene.State == SceneState.Ready ? ShowSceneResult.Success : ShowSceneResult.NotReady;
@@ -220,9 +220,9 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public ShowSceneResult ShowScene(string key, out SceneBase scene)
+        public ShowSceneResult ShowScene(string key, out SceneBase scene, params object[] payload)
         {
-            return !_scenes.TryGetValue(key, out scene) ? ShowSceneResult.NoScene : ShowScene(scene);
+            return !_scenes.TryGetValue(key, out scene) ? ShowSceneResult.NoScene : ShowScene(scene, payload);
         }
 
         /// <inheritdoc />

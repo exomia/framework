@@ -43,7 +43,7 @@ namespace Exomia.Framework.Scene
 
     public delegate void SceneStateChangedHandler(SceneBase scene, SceneState current);
 
-    interface IScene : IInitializable, IContentable, IDisposable
+    interface IScene : IInitializable, IContentable, IInputHandler, IDisposable
     {
         event SceneStateChangedHandler SceneStateChanged;
 
@@ -94,7 +94,9 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     Is called than the scene is showed
         /// </summary>
-        void Show();
+        /// <param name="comingFrom">coming from</param>
+        /// <param name="payload">payload</param>
+        void Show(SceneBase comingFrom, object[] payload);
 
         /// <summary>
         ///     This method is called when this game component is updated.
