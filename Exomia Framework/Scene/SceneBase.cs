@@ -32,7 +32,7 @@ namespace Exomia.Framework.Scene
 {
     /// <inheritdoc cref="IScene" />
     /// <inheritdoc cref="IInputHandler" />
-    public abstract class SceneBase : IScene, IInputHandler
+    public abstract class SceneBase : IScene
     {
         private const int INITIAL_QUEUE_SIZE = 8;
 
@@ -67,9 +67,8 @@ namespace Exomia.Framework.Scene
 
         private DisposeCollector _collector;
 
-        private bool _isContentLoaded;
-
         private bool _isInitialized;
+        private bool _isContentLoaded;
 
         private SceneState _state = SceneState.None;
 
@@ -145,12 +144,6 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        ~SceneBase()
-        {
-            Dispose(false);
-        }
-
-        /// <inheritdoc />
         public void LoadContent()
         {
             if (_isInitialized && !_isContentLoaded && _state != SceneState.ContentLoading)
@@ -220,6 +213,26 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
+        public virtual void Update(GameTime gameTime)
+        {
+            lock (_updateableComponent)
+            {
+                _currentlyUpdateableComponent.AddRange(_updateableComponent);
+            }
+
+            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
+            {
+                IUpdateable updateable = _currentlyUpdateableComponent[i];
+                if (updateable.Enabled)
+                {
+                    updateable.Update(gameTime);
+                }
+            }
+
+            _currentlyUpdateableComponent.Clear();
+        }
+
+        /// <inheritdoc />
         public bool BeginDraw()
         {
             return Visible;
@@ -249,30 +262,14 @@ namespace Exomia.Framework.Scene
         /// <inheritdoc />
         public virtual void EndDraw() { }
 
-        /// <inheritdoc />
-        public virtual void ReferenceScenesLoaded() { }
-
-        /// <inheritdoc />
-        public virtual void Show() { }
-
-        /// <inheritdoc />
-        public virtual void Update(GameTime gameTime)
+        void IScene.ReferenceScenesLoaded()
         {
-            lock (_updateableComponent)
-            {
-                _currentlyUpdateableComponent.AddRange(_updateableComponent);
-            }
+            OnReferenceScenesLoaded();
+        }
 
-            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
-            {
-                IUpdateable updateable = _currentlyUpdateableComponent[i];
-                if (updateable.Enabled)
-                {
-                    updateable.Update(gameTime);
-                }
-            }
-
-            _currentlyUpdateableComponent.Clear();
+        void IScene.Show(SceneBase comingFrom, object[] payload)
+        {
+            OnShow(comingFrom, payload);
         }
 
         /// <summary>
@@ -423,9 +420,12 @@ namespace Exomia.Framework.Scene
             return item;
         }
 
-        /// <summary>
-        /// </summary>
-        protected virtual void OnInitialize() { }
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return
+                $"Scene {Key}\nReferences ({string.Join(", ", ReferenceScenes)})\nState: {State}\nIsOverLayScene: {IsOverlayScene}";
+        }
 
         /// <summary>
         /// </summary>
@@ -434,6 +434,22 @@ namespace Exomia.Framework.Scene
         /// <summary>
         /// </summary>
         protected virtual void OnUnloadContent() { }
+
+        /// <summary>
+        /// </summary>
+        protected virtual void OnInitialize() { }
+
+        /// <summary>
+        ///     called than all referenced scenes are loaded.
+        /// </summary>
+        protected virtual void OnReferenceScenesLoaded() { }
+
+        /// <summary>
+        ///     called than a scene is shown
+        /// </summary>
+        /// <param name="comingFrom">coming from</param>
+        /// <param name="payload">payload</param>
+        protected virtual void OnShow(SceneBase comingFrom, object[] payload) { }
 
         /// <summary>
         /// </summary>
@@ -579,6 +595,12 @@ namespace Exomia.Framework.Scene
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        ~SceneBase()
+        {
+            Dispose(false);
         }
 
         private void Dispose(bool disposing)
