@@ -24,9 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.IO;
-using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.WinApi;
@@ -35,6 +32,9 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.MediaFoundation;
+using System;
+using System.IO;
+using System.Threading;
 
 namespace Exomia.Framework.Video
 {
@@ -106,26 +106,26 @@ namespace Exomia.Framework.Video
 
         public bool Mute
         {
-            get { return _mediaEngineEx?.GetMuted() ?? false; }
-            set { _mediaEngineEx?.SetMuted(value); }
+            get { return _mediaEngineEx?.Muted ?? false; }
+            set { _mediaEngineEx.Muted = true; }
         }
 
         public double PlaybackPosition
         {
-            get { return _mediaEngineEx?.GetCurrentTime() ?? 0.0; }
-            set { _mediaEngineEx?.SetCurrentTime(value); }
+            get { return _mediaEngineEx?.CurrentTime ?? 0.0; }
+            set { _mediaEngineEx.CurrentTime = value; }
         }
 
         public double Volume
         {
-            get { return _mediaEngineEx?.GetVolume() ?? 0.0; }
-            set { _mediaEngineEx?.SetVolume(value); }
+            get { return _mediaEngineEx?.Volume ?? 0.0; }
+            set { _mediaEngineEx.Volume = value; }
         }
 
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
-            _outputTexture   = TextureHelper.CreateTexture(device, width, height);
+            _outputTexture = TextureHelper.CreateTexture(device, width, height);
             _backgroundColor = Color.Transparent;
         }
 
@@ -155,7 +155,7 @@ namespace Exomia.Framework.Video
                 if (_isEndOfStream)
                 {
                     PlaybackPosition = 0;
-                    _isPlaying       = true;
+                    _isPlaying = true;
                 }
                 else
                 {
@@ -224,7 +224,8 @@ namespace Exomia.Framework.Video
 
             MediaEngineAttributes attributes = new MediaEngineAttributes
             {
-                DxgiManager = _dxgiDeviceManager, VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
+                DxgiManager = _dxgiDeviceManager,
+                VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
             };
 
             using (MediaEngineClassFactory factory = new MediaEngineClassFactory())
@@ -272,7 +273,7 @@ namespace Exomia.Framework.Video
         private void Stop()
         {
             _isVideoStopped = true;
-            _isPlaying      = false;
+            _isPlaying = false;
         }
     }
 }
