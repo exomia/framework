@@ -541,13 +541,7 @@ namespace Exomia.Framework.Graphics
             Matrix worldViewProjection = _transformMatrix * _viewMatrix * _projectionMatrix;
             worldViewProjection.Transpose();
 
-            ConstantFrameBuffer cBuffer;
-            cBuffer.WorldViewProjection = worldViewProjection;
-
-            _context.UpdateSubresource(ref cBuffer, _perFrameBuffer);
-
-            //TODO: working?
-            //_context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
+            _context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
         }
 
         private unsafe void UpdateVertexFromSpriteInfoParallel(ref SpriteInfo spriteInfo,
@@ -650,13 +644,6 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        [StructLayout(LayoutKind.Explicit, Size = 64)]
-        private struct ConstantFrameBuffer
-        {
-            [FieldOffset(0)]
-            public Matrix WorldViewProjection;
-        }
-
         [StructLayout(LayoutKind.Explicit, Size = 40)]
         private struct VertexPositionColorTexture
         {
@@ -722,15 +709,15 @@ namespace Exomia.Framework.Graphics
                 Vector2 o = origin;
 
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (destinationRectangle.Width == 0f)
+                if (destinationRectangle.Width != 0f)
                 {
                     o.X /= destinationRectangle.Width;
                 }
 
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (destinationRectangle.Height == 0f)
+                if (destinationRectangle.Height != 0f)
                 {
-                    o.X /= destinationRectangle.Height;
+                    o.Y /= destinationRectangle.Height;
                 }
 
                 float cos = (float)Math.Cos(rotation);
@@ -809,8 +796,8 @@ namespace Exomia.Framework.Graphics
         {
             Vector2[] vertex = new Vector2[segments];
 
-            double increment = Math.PI * 2.0 / segments;
-            double theta = 0.0;
+            float increment = MathUtil.TwoPi / segments;
+            float theta = 0.0f;
 
             for (int i = 0; i < segments; i++)
             {
@@ -954,7 +941,7 @@ namespace Exomia.Framework.Graphics
         {
             if (texture.TextureView == null || texture.TexturePointer == IntPtr.Zero)
             {
-                throw new ArgumentNullException("shaderResourceView");
+                throw new ArgumentNullException(nameof(texture));
             }
 
             if (!_isBeginCalled)

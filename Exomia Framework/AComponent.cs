@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
@@ -41,11 +39,21 @@ namespace Exomia.Framework
     /// </summary>
     public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
+        /// <inheritdoc />
         public event EventHandler<EventArgs> EnabledChanged;
+
+        /// <inheritdoc />
         public event EventHandler<EventArgs> UpdateOrderChanged;
 
-        protected bool _isContentLoaded;
+        /// <summary>
+        ///     flag to identify if the component is already initialized
+        /// </summary>
         protected bool _isInitialized;
+
+        /// <summary>
+        ///     flag to identify if the content is already loaded
+        /// </summary>
+        protected bool _isContentLoaded;
 
         private DisposeCollector _collector;
 
@@ -87,6 +95,7 @@ namespace Exomia.Framework
         /// <value>The game.</value>
         public Game.Game Game { get; }
 
+        /// <inheritdoc />
         public string Name { get; }
 
         /// <summary>
@@ -119,14 +128,6 @@ namespace Exomia.Framework
             : this(name)
         {
             Game = game;
-        }
-
-        /// <summary>
-        ///     destructor
-        /// </summary>
-        ~AComponent()
-        {
-            Dispose(false);
         }
 
         /// <inheritdoc />
@@ -165,10 +166,20 @@ namespace Exomia.Framework
         /// <inheritdoc />
         public abstract void Update(GameTime gameTime);
 
+        /// <summary>
+        ///     called than the component is initialized (once)
+        /// </summary>
+        /// <param name="registry">IServiceRegistry</param>
         protected virtual void OnInitialize(IServiceRegistry registry) { }
 
+        /// <summary>
+        ///     called than the component should load the content
+        /// </summary>
         protected virtual void OnLoadContent() { }
 
+        /// <summary>
+        ///     called than the component should unload the content
+        /// </summary>
         protected virtual void OnUnloadContent() { }
 
         /// <summary>
@@ -184,6 +195,9 @@ namespace Exomia.Framework
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     flag to identify if the component is already disposed
+        /// </summary>
         protected bool _disposed;
 
         /// <inheritdoc />
@@ -209,6 +223,12 @@ namespace Exomia.Framework
                 }
                 _disposed = true;
             }
+        }
+
+        /// <inheritdoc />
+        ~AComponent()
+        {
+            Dispose(false);
         }
 
         /// <summary>

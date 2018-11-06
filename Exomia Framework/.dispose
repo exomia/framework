@@ -24,6 +24,12 @@ private void Dispose(bool disposing)
     }
 }
 
+/// <inheritdoc />
+~<CLASSNAME>()
+{
+    Dispose(false);
+}
+
 /// <summary>
 /// called then the instance is disposing
 /// </summary>
@@ -44,6 +50,13 @@ void Dispose(bool disposing)
         _disposed = true;
     }
 }
+
+/// <inheritdoc />
+~<CLASSNAME>()
+{
+    Dispose(false);
+}
+
 
 /// <summary>
 /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources. 
