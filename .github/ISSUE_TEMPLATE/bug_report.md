@@ -1,4 +1,4 @@
----
+﻿---
 name: Bug report
 about: Create a report to help us improve
 
@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 Steps to reproduce the behavior:
 ```csharp
-// Your calls to exomia/serialization here
+// Your calls to exomia/framework here
 ```
 **Any logs, error output, etc?**
 (If it’s long, please paste to https://ghostbin.com/ or sth. similar and insert the link here.)
