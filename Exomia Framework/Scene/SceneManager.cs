@@ -299,6 +299,7 @@ namespace Exomia.Framework.Scene
             _input.MouseMove  += Input_MouseMove;
             _input.MouseDown  += Input_MouseDown;
             _input.MouseUp    += Input_MouseUp;
+            _input.MouseClick += Input_MouseClick;
             _input.MouseWheel += Input_MouseWheel;
 
             _input.KeyDown  += Input_KeyDown;
@@ -332,6 +333,7 @@ namespace Exomia.Framework.Scene
                 _input.MouseMove  -= Input_MouseMove;
                 _input.MouseDown  -= Input_MouseDown;
                 _input.MouseUp    -= Input_MouseUp;
+                _input.MouseClick -= Input_MouseClick;
                 _input.MouseWheel -= Input_MouseWheel;
 
                 _input.KeyDown  -= Input_KeyDown;
