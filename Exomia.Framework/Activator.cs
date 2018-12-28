@@ -53,14 +53,9 @@ namespace Exomia.Framework
         /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="InvalidCastException"></exception>
         public static TDelegate GetCreator<TDelegate>()
-            where TDelegate : class
+            where TDelegate : Delegate
         {
             Type dType = typeof(TDelegate);
-            if (!dType.IsSubclassOf(typeof(Delegate)))
-            {
-                throw new NotSupportedException($"System.Delegate is not assignable from {dType}.");
-            }
-
             MethodInfo mi = dType.GetMethod("Invoke") ?? throw new NullReferenceException("get method Invoke");
             if (mi.ReturnType == typeof(void)) { throw new NotSupportedException("invalid return type (void)"); }
 

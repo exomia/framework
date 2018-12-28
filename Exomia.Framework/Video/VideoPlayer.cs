@@ -24,6 +24,9 @@
 
 #pragma warning disable 1591
 
+using System;
+using System.IO;
+using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.WinApi;
@@ -32,9 +35,6 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.MediaFoundation;
-using System;
-using System.IO;
-using System.Threading;
 
 namespace Exomia.Framework.Video
 {
@@ -125,7 +125,7 @@ namespace Exomia.Framework.Video
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
-            _outputTexture = TextureHelper.CreateTexture(device, width, height);
+            _outputTexture   = TextureHelper.CreateTexture(device, width, height);
             _backgroundColor = Color.Transparent;
         }
 
@@ -155,7 +155,7 @@ namespace Exomia.Framework.Video
                 if (_isEndOfStream)
                 {
                     PlaybackPosition = 0;
-                    _isPlaying = true;
+                    _isPlaying       = true;
                 }
                 else
                 {
@@ -224,8 +224,7 @@ namespace Exomia.Framework.Video
 
             MediaEngineAttributes attributes = new MediaEngineAttributes
             {
-                DxgiManager = _dxgiDeviceManager,
-                VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
+                DxgiManager = _dxgiDeviceManager, VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
             };
 
             using (MediaEngineClassFactory factory = new MediaEngineClassFactory())
@@ -273,7 +272,7 @@ namespace Exomia.Framework.Video
         private void Stop()
         {
             _isVideoStopped = true;
-            _isPlaying = false;
+            _isPlaying      = false;
         }
     }
 }
