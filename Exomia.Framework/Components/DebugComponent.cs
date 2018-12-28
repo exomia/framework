@@ -27,10 +27,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Exomia.Framework.ContentSerialization;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
-using Exomia.Framework.Properties;
 using Exomia.Framework.Security;
 using SharpDX;
 
@@ -197,7 +197,12 @@ namespace Exomia.Framework.Components
 
         protected override void OnLoadContent()
         {
-            using (MemoryStream ms = new MemoryStream(Resources.arial_ansi_12px))
+            Assembly asm = Assembly.GetAssembly(typeof(DebugComponent));
+            foreach (string t in asm.GetManifestResourceNames())
+            {
+                Console.WriteLine(t);
+            }
+            using (Stream ms = asm.GetManifestResourceStream("Exomia.Framework.Resources.arial_ansi_12px.ds1"))
             {
                 if (!ExomiaCryptography.Decrypt(ms, out Stream stream))
                 {
