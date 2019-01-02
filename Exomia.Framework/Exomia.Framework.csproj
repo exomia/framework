@@ -75,12 +75,12 @@
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <PackageReference Include="Exomia.Native" Version="1.0.0.5"/>
+    <PackageReference Include="Exomia.Native" Version="1.0.0.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Exomia.Native" Version="1.0.0.5" Condition="'$(Platform)'=='AnyCPU'"/>
-    <PackageReference Include="Exomia.Native.$(Platform)" Version="1.0.0.5" Condition="'$(Platform)'!='AnyCPU'"/>
+    <PackageReference Include="Exomia.Native" Version="1.0.0.5" Condition="'$(Platform)'=='AnyCPU'" />
+    <PackageReference Include="Exomia.Native.$(Platform)" Version="1.0.0.5" Condition="'$(Platform)'!='AnyCPU'" />
   </ItemGroup>
 
 </Project>
