@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -583,8 +583,8 @@ namespace Exomia.Framework.Graphics
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
                     corner    = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
-                    vertex->U = (spriteInfo.Source.X + corner.X * spriteInfo.Source.Width) * deltaX;
-                    vertex->V = (spriteInfo.Source.Y + corner.Y * spriteInfo.Source.Height) * deltaY;
+                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
+                    vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
                 }
             }
             else
@@ -599,8 +599,8 @@ namespace Exomia.Framework.Graphics
                     float posX = (corner.X - origin.X) * spriteInfo.Destination.Width;
                     float posY = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
 
-                    vertex->X = spriteInfo.Destination.X + posX * cos - posY * sin;
-                    vertex->Y = spriteInfo.Destination.Y + posX * sin + posY * cos;
+                    vertex->X = (spriteInfo.Destination.X + (posX * cos)) - (posY * sin);
+                    vertex->Y = spriteInfo.Destination.Y + (posX * sin) + (posY * cos);
                     vertex->Z = spriteInfo.Depth;
                     vertex->W = 1.0f;
 
@@ -610,8 +610,8 @@ namespace Exomia.Framework.Graphics
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
                     corner    = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
-                    vertex->U = (spriteInfo.Source.X + corner.X * spriteInfo.Source.Width) * deltaX;
-                    vertex->V = (spriteInfo.Source.Y + corner.Y * spriteInfo.Source.Height) * deltaY;
+                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
+                    vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
                 }
             }
         }
@@ -729,8 +729,8 @@ namespace Exomia.Framework.Graphics
                     float posY = (corner.Y - o.Y) * destinationRectangle.Height;
 
                     vertex[j] = new Vector2(
-                        destinationRectangle.X + posX * cos - posY * sin,
-                        destinationRectangle.Y + posX * sin + posY * cos);
+                        (destinationRectangle.X + (posX * cos)) - (posY * sin),
+                        destinationRectangle.Y + (posX * sin) + (posY * cos));
                 }
             }
 
@@ -801,7 +801,7 @@ namespace Exomia.Framework.Graphics
 
             for (int i = 0; i < segments; i++)
             {
-                vertex[i] =  center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
+                vertex[i] =  center + (radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta)));
                 theta     += increment;
             }
 

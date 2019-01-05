@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         /// <returns>angle between the two vectors in radians</returns>
         public static double AngleBetween(this Vector2 vec1, in Vector2 vec2)
         {
-            float scalar = vec1.X * vec2.X + vec1.Y * vec2.Y;
+            float scalar = (vec1.X * vec2.X) + (vec1.Y * vec2.Y);
             float length = vec1.Length() * vec2.Length();
             return Math.Cos(scalar / length);
         }
@@ -78,7 +78,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         {
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
-            return new Vector2((float)(vec.X * cos - vec.Y * sin), (float)(vec.X * sin + vec.Y * cos));
+            return new Vector2((float)((vec.X * cos) - (vec.Y * sin)), (float)((vec.X * sin) + (vec.Y * cos)));
         }
 
         /// <summary>
@@ -91,8 +91,8 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         public static Vector2 Transform(this Vector2 vec, in Matrix transform)
         {
             return new Vector2(
-                vec.X * transform.M11 + vec.Y * transform.M21 + transform.M41,
-                vec.X * transform.M12 + vec.Y * transform.M22 + transform.M42);
+                (vec.X * transform.M11) + (vec.Y * transform.M21) + transform.M41,
+                (vec.X * transform.M12) + (vec.Y * transform.M22) + transform.M42);
         }
     }
 }

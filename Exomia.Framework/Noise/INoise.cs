@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -80,19 +80,19 @@ namespace Exomia.Framework.Noise
         ///     generates a 1-dimensional noise array in range from -1 to 1
         /// </summary>
         /// <param name="x"></param>
-        /// <param name="xmax"></param>
+        /// <param name="xMax"></param>
         /// <returns>1-dimensional noise array in range from -1 to 1</returns>
-        float[] GenerateNoise1D(int x, int xmax);
+        float[] GenerateNoise1D(int x, int xMax);
 
         /// <summary>
         ///     generates a 2-dimensional noise array in range from -1 to 1
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        /// <param name="xmax"></param>
-        /// <param name="ymax"></param>
+        /// <param name="xMax"></param>
+        /// <param name="yMax"></param>
         /// <returns>2-dimensional noise array in range from -1 to 1</returns>
-        float[,] GenerateNoise2D(int x, int y, int xmax, int ymax);
+        float[,] GenerateNoise2D(int x, int y, int xMax, int yMax);
 
         /// <summary>
         ///     generates a 3-dimensional noise array in range from -1 to 1
@@ -100,11 +100,11 @@ namespace Exomia.Framework.Noise
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        /// <param name="xmax"></param>
-        /// <param name="ymax"></param>
-        /// <param name="zmax"></param>
+        /// <param name="xMax"></param>
+        /// <param name="yMax"></param>
+        /// <param name="zMax"></param>
         /// <returns>3-dimensional noise array in range from -1 to 1</returns>
-        float[,,] GenerateNoise3D(int x, int y, int z, int xmax, int ymax, int zmax);
+        float[,,] GenerateNoise3D(int x, int y, int z, int xMax, int yMax, int zMax);
 
         /// <summary>
         ///     generates a noise

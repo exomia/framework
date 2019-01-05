@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -144,7 +144,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Lerp(byte a, byte b, double t)
         {
-            return (byte)(a + t * (b - a));
+            return (byte)(a + (t * (b - a)));
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Lerp(float a, float b, double t)
         {
-            return (float)(a + t * (b - a));
+            return (float)(a + (t * (b - a)));
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Lerp(double a, double b, double t)
         {
-            return a + t * (b - a);
+            return a + (t * (b - a));
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Map(float v, float l1, float u1, float l2, float u2)
         {
-            return (v - l1) / (u1 - l1) * (u2 - l2) + l2;
+            return (((v - l1) / (u1 - l1)) * (u2 - l2)) + l2;
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Map(double v, double l1, double u1, double l2, double u2)
         {
-            return (v - l1) / (u1 - l1) * (u2 - l2) + l2;
+            return (((v - l1) / (u1 - l1)) * (u2 - l2)) + l2;
         }
 
         /// <summary>

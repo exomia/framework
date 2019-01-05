@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,26 +23,21 @@
 #endregion
 
 using System.IO;
+using Exomia.Framework.ContentSerialization;
 
-namespace Exomia.Framework.Content
+namespace Exomia.Framework.Content.Resolver
 {
-    /// <summary>
-    ///     A content resolver is in charge of locating a stream from an asset name.
-    /// </summary>
-    public interface IContentResolver
+    [ContentResolver(int.MinValue + 1)]
+    sealed class E0FileStreamContentResolver : IContentResolver
     {
-        /// <summary>
-        ///     Checks if the specified asset name exists.
-        /// </summary>
-        /// <param name="assetName">Name of the asset.</param>
-        /// <returns><c>true</c> if the specified asset name exists, <c>false</c> otherwise</returns>
-        bool Exists(string assetName);
+        public bool Exists(string assetName)
+        {
+            return Path.GetExtension(assetName) == ContentSerializer.DEFAULT_EXTENSION && File.Exists(assetName);
+        }
 
-        /// <summary>
-        ///     Resolves the specified asset name to a stream.
-        /// </summary>
-        /// <param name="assetName">Name of the asset.</param>
-        /// <returns>A Stream of the asset. This value can be null if this resolver was not able to locate the asset.</returns>
-        Stream Resolve(string assetName);
+        public Stream Resolve(string assetName)
+        {
+            return new FileStream(assetName, FileMode.Open, FileAccess.Read);
+        }
     }
 }

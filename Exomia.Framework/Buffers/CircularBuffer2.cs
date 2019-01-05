@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -95,7 +95,7 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CircularBuffer{T}" /> class.
+        ///     Initializes a new instance of the <see cref="CircularBuffer2{T}" /> class.
         /// </summary>
         /// <param name="capacity">Buffer capacity. Must be positive.</param>
         /// <param name="items">Items to fill buffer with. Items length must be less or equal than capacity.</param>

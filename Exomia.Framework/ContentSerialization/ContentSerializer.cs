@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ namespace Exomia.Framework.ContentSerialization
         /// <summary>
         ///     DEFAULT_EXTENSION
         /// </summary>
-        public const string DEFAULT_EXTENSION = ".ds0";
+        public const string DEFAULT_EXTENSION = ".e0";
 
         private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders =
             new Dictionary<Type, IContentSerializationReader>();
@@ -239,21 +239,26 @@ namespace Exomia.Framework.ContentSerialization
             if (obj == null) { throw new ArgumentNullException(nameof(obj)); }
             if (string.IsNullOrEmpty(assetName)) { throw new ArgumentNullException(nameof(assetName)); }
 
-            if (!Path.HasExtension(assetName)) { assetName += DEFAULT_EXTENSION; }
-
-            using (StreamWriter sw = new StreamWriter(assetName, false))
+            if (!Path.HasExtension(assetName) || Path.GetExtension(assetName) != DEFAULT_EXTENSION)
             {
-                Action<string, string> writeHandler = minify
+                assetName += DEFAULT_EXTENSION;
+            }
+            using (FileStream fs = new FileStream(assetName, FileMode.Create, FileAccess.Write))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    Action<string, string> writeHandler = minify
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    ? (t, s) => { sw.Write(s); }
+                        // ReSharper disable once AccessToDisposedClosure
+                        ? (t, s) => { sw.Write(s); }
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    : new Action<string, string>((t, s) => { sw.WriteLine($"{t}{s}"); });
+                        // ReSharper disable once AccessToDisposedClosure
+                        : new Action<string, string>((t, s) => { sw.WriteLine($"{t}{s}"); });
 
-                writeHandler(string.Empty, $"[{obj.GetType()}]");
-                Write(writeHandler, TABSPACE, obj, typeof(T));
-                writeHandler(string.Empty, $"[/{obj.GetType()}]");
+                    writeHandler(string.Empty, $"[{obj.GetType()}]");
+                    Write(writeHandler, TABSPACE, obj, typeof(T));
+                    writeHandler(string.Empty, $"[/{obj.GetType()}]");
+                }
             }
         }
 

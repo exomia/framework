@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float CurveHermite(float t)
         {
-            return t * t * (3 - 2 * t);
+            return t * t * (3 - (2 * t));
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CurveHermite(double t)
         {
-            return t * t * (3 - 2 * t);
+            return t * t * (3 - (2 * t));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float CurveQuintic(float t)
         {
-            return t * t * t * (t * (t * 6 - 15) + 10);
+            return t * t * t * ((t * ((t * 6) - 15)) + 10);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CurveQuintic(double t)
         {
-            return t * t * t * (t * (t * 6 - 15) + 10);
+            return t * t * t * ((t * ((t * 6) - 15)) + 10);
         }
     }
 }
