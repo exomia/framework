@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,22 +35,33 @@ namespace Exomia.Framework.Content
         /// <summary>
         ///     Name of the asset currently loaded when using <see cref="IContentManager.Load{T}" />.
         /// </summary>
-        public string AssetName;
+        public string AssetName { get; }
 
         /// <summary>
         ///     Type of the asset currently loaded when using <see cref="IContentManager.Load{T}" />.
         /// </summary>
-        public Type AssetType;
+        public Type AssetType { get; }
 
         /// <summary>
         ///     Stream of the asset to load.
         /// </summary>
-        public Stream Stream;
+        public Stream Stream { get; }
 
         /// <summary>
         ///     This parameter is an out parameter for <see cref="IContentReader.ReadContent" />.
         ///     Set to true to let the ContentManager close the stream once the reader is done.
         /// </summary>
-        public bool KeepStreamOpen;
+        public bool KeepStreamOpen { get; set; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ContentReaderParameters" /> class.
+        /// </summary>
+        public ContentReaderParameters(string assetName, Type assetType, Stream stream, bool keepStreamOpen = false)
+        {
+            AssetName      = assetName;
+            AssetType      = assetType;
+            Stream         = stream;
+            KeepStreamOpen = keepStreamOpen;
+        }
     }
 }

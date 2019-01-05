@@ -4,7 +4,7 @@
     <Authors>exomia</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © 2018 exomia</Copyright>
-    <Version>1.0.0.8</Version>
+    <Version>1.0.0.10</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/exomia/framework/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -16,71 +16,80 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RepositoryType>git</RepositoryType>
     <IncludeBuildOutput>true</IncludeBuildOutput>
-    <PackageOutputPath>.</PackageOutputPath>
+    <PackageOutputPath>.</PackageOutputPath> 
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">DEBUG;TRACE;x86</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">DEBUG;TRACE;$(Platform)</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">TRACE;x86</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">TRACE;$(Platform)</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <PackageId>$(MSBuildProjectName)</PackageId>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <DefineConstants>DEBUG;TRACE;x86</DefineConstants>
-    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PackageId>$(MSBuildProjectName).x64</PackageId>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <DefineConstants>DEBUG;TRACE;x64</DefineConstants>
-    <DocumentationFile></DocumentationFile>
+  
+  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
+    <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
+    <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <PackageId>$(MSBuildProjectName).x86</PackageId>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <DefineConstants>DEBUG;TRACE;x86</DefineConstants>
-    <DocumentationFile></DocumentationFile>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PackageId>$(MSBuildProjectName)</PackageId>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    <DefineConstants>TRACE;x86</DefineConstants>
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PackageId>$(MSBuildProjectName).x64</PackageId>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    <DefineConstants>TRACE;x64</DefineConstants>
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <PackageId>$(MSBuildProjectName).x86</PackageId>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    <DefineConstants>TRACE;x86</DefineConstants>
-    <DocumentationFile></DocumentationFile>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="Resources\arial_ansi_12px.e1" />
+    <None Remove="Resources\arial_ansi_14px.e1" />
+    <None Remove="Resources\arial_ansi_16px.e1" />
+    <None Remove="Resources\arial_ansi_18px.e1" />
+    <None Remove="Resources\arial_ansi_20px.e1" />
+    <None Remove="Resources\arial_ansi_22px.e1" />
+    <None Remove="Resources\arial_ansi_24px.e1" />
+    <None Remove="Resources\arial_ansi_72px.e1" />
+    <None Remove="Resources\arial_ansi_bold_12px.e1" />
+    <None Remove="Resources\arial_ansi_bold_14px.e1" />
+    <None Remove="Resources\arial_ansi_bold_16px.e1" />
+    <None Remove="Resources\arial_ansi_bold_18px.e1" />
+    <None Remove="Resources\arial_ansi_bold_20px.e1" />
+    <None Remove="Resources\arial_ansi_bold_22px.e1" />
+    <None Remove="Resources\arial_ansi_bold_24px.e1" />
+    <None Remove="Resources\arial_ansi_bold_72px.e1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\arial_ansi_12px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_14px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_16px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_18px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_20px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_22px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_24px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_72px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_12px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_14px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_16px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_18px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_20px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_22px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_24px.e1" />
+    <EmbeddedResource Include="Resources\arial_ansi_bold_72px.e1" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Management" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\arial_ansi_12px.ds1" />
-    <EmbeddedResource Include="Resources\arial_ansi_12px.ds2" />
   </ItemGroup>
   
   <ItemGroup>
@@ -98,20 +107,14 @@
     <PackageReference Include="SharpDX.RawInput" Version="4.2.0" />
     <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Exomia.Native" Version="1.0.0.5" Condition="'$(Configuration)'=='Debug'"/>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PackageReference Include="Exomia.Native" Version="1.0.0.5"/>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <PackageReference Include="Exomia.Native.x86" Version="1.0.0.5"/>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PackageReference Include="Exomia.Native.x64" Version="1.0.0.5"/>
-  </ItemGroup>
   
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <PackageReference Include="Exomia.Native" Version="1.0.0.5" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <PackageReference Include="Exomia.Native" Version="1.0.0.5" Condition="'$(Platform)'=='AnyCPU'" />
+    <PackageReference Include="Exomia.Native.$(Platform)" Version="1.0.0.5" Condition="'$(Platform)'!='AnyCPU'" />
+  </ItemGroup>
+
 </Project>

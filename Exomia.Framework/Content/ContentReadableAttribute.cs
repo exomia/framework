@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ using System;
 
 namespace Exomia.Framework.Content
 {
+    /// <inheritdoc />
     /// <summary>
     ///     used to mark a content readable class
     /// </summary>
@@ -43,7 +44,7 @@ namespace Exomia.Framework.Content
         {
             Reader = System.Activator.CreateInstance(reader) as IContentReader ??
                      throw new TypeLoadException(
-                         "can not create an instance of IContentReader from type: " + reader.AssemblyQualifiedName);
+                         $"can not create an instance of {nameof(IContentReader)} from type: {reader.AssemblyQualifiedName}");
         }
     }
 }

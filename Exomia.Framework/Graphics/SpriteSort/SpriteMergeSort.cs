@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -222,7 +222,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int middle1, int right, int* tempArray)
         {
             int oldPosition = left;
-            int size = right - left + 1;
+            int size = (right - left) + 1;
 
             int i = 0;
             while (left <= middle && middle1 <= right)
@@ -238,11 +238,11 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, (right - middle + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, (middle - left + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
@@ -251,7 +251,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int middle1, int right, int* tempArray)
         {
             int oldPosition = left;
-            int size = right - left + 1;
+            int size = (right - left) + 1;
 
             int i = 0;
             while (left <= middle && middle1 <= right)
@@ -267,11 +267,11 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, (right - middle + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, (middle - left + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
@@ -280,7 +280,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int middle1, int right, int* tempArray)
         {
             int oldPosition = left;
-            int size = right - left + 1;
+            int size = (right - left) + 1;
 
             int i = 0;
             while (left <= middle && middle1 <= right)
@@ -296,11 +296,11 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, (right - middle + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, (middle - left + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
@@ -309,7 +309,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int middle1, int right, int* tempArray)
         {
             int oldPosition = left;
-            int size = right - left + 1;
+            int size = (right - left) + 1;
 
             int i = 0;
             while (left <= middle && middle1 <= right)
@@ -325,11 +325,11 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, (right - middle + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, (middle - left + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
@@ -338,7 +338,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             int middle1, int right, int* tempArray)
         {
             int oldPosition = left;
-            int size = right - left + 1;
+            int size = (right - left) + 1;
 
             int i = 0;
             while (left <= middle && middle1 <= right)
@@ -354,11 +354,11 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, (right - middle + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, (middle - left + 1) * sizeof(int));
+                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }

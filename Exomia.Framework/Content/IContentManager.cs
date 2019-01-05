@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
 #endregion
 
 using System;
+using Exomia.Framework.Content.Resolver;
+using Exomia.Framework.Content.Resolver.EmbeddedResource;
 
 namespace Exomia.Framework.Content
 {
@@ -65,6 +67,13 @@ namespace Exomia.Framework.Content
         bool AddContentResolver(IContentResolver resolver);
 
         /// <summary>
+        ///     add a new embedded resource content resolver to the list.
+        /// </summary>
+        /// <param name="resolver">the content resolver to add</param>
+        /// <returns><c>true</c> if the specified content resolver successfully added, <c>false</c> otherwise</returns>
+        bool AddEmbeddedResourceContentResolver(IEmbeddedResourceResolver resolver);
+
+        /// <summary>
         ///     Checks if the specified assets exists.
         /// </summary>
         /// <param name="assetName">The asset name with extension.</param>
@@ -76,24 +85,32 @@ namespace Exomia.Framework.Content
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="assetName">Full asset name (with its extension)</param>
+        /// <param name="fromEmbeddedResource">
+        ///     <c>true</c> if the asset should be loaded from an embedded resource; <c>false</c>
+        ///     otherwise
+        /// </param>
         /// <returns>``0.</returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
         ///     If the asset was not found from all <see cref="IContentResolver" />.
         /// </exception>
         /// <exception cref="NotSupportedException">If no content reader was suitable to decode the asset.</exception>
-        T Load<T>(string assetName);
+        T Load<T>(string assetName, bool fromEmbeddedResource = false);
 
         /// <summary>
         ///     Loads an asset that has been processed by the Content Pipeline.
         /// </summary>
         /// <param name="assetType">Asset Type</param>
         /// <param name="assetName">Full asset name (with its extension)</param>
+        /// <param name="fromEmbeddedResource">
+        ///     <c>true</c> if the asset should be loaded from an embedded resource; <c>false</c>
+        ///     otherwise
+        /// </param>
         /// <returns>Asset</returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
         ///     If the asset was not found from all <see cref="IContentResolver" />.
         /// </exception>
         /// <exception cref="NotSupportedException">If no content reader was suitable to decode the asset.</exception>
-        object Load(Type assetType, string assetName);
+        object Load(Type assetType, string assetName, bool fromEmbeddedResource = false);
 
         /// <summary>
         ///     Unloads all data that was loaded by this ContentManager. All data will be disposed.

@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -213,7 +213,7 @@ namespace Exomia.Framework
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Length()
         {
-            return (float)Math.Sqrt(X * X + Y * Y);
+            return (float)Math.Sqrt((X * X) + (Y * Y));
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Exomia.Framework
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LengthSquared()
         {
-            return X * X + Y * Y;
+            return (X * X) + (Y * Y);
         }
 
         /// <summary>
@@ -491,7 +491,7 @@ namespace Exomia.Framework
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
 
-            result = Math.Sqrt(x * x + y * y);
+            result = Math.Sqrt((x * x) + (y * y));
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace Exomia.Framework
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
 
-            return Math.Sqrt(x * x + y * y);
+            return Math.Sqrt((x * x) + (y * y));
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace Exomia.Framework
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
 
-            result = x * x + y * y;
+            result = (x * x) + (y * y);
         }
 
         /// <summary>
@@ -533,7 +533,7 @@ namespace Exomia.Framework
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
 
-            return x * x + y * y;
+            return (x * x) + (y * y);
         }
 
         /// <summary>
@@ -544,7 +544,7 @@ namespace Exomia.Framework
         /// <param name="result">When the method completes, contains the dot product of the two indicies.</param>
         public static void Dot(ref Index2 left, ref Index2 right, out int result)
         {
-            result = left.X * right.X + left.Y * right.Y;
+            result = (left.X * right.X) + (left.Y * right.Y);
         }
 
         /// <summary>
@@ -555,7 +555,7 @@ namespace Exomia.Framework
         /// <returns>The dot product of the two indicies.</returns>
         public static int Dot(in Index2 left, in Index2 right)
         {
-            return left.X * right.X + left.Y * right.Y;
+            return (left.X * right.X) + (left.Y * right.Y);
         }
 
         /// <summary>

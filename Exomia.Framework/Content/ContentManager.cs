@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Exomia.Framework.Content.Exceptions;
 using Exomia.Framework.Content.Resolver;
+using Exomia.Framework.Content.Resolver.EmbeddedResource;
 
 namespace Exomia.Framework.Content
 {
@@ -44,6 +46,7 @@ namespace Exomia.Framework.Content
         private readonly List<IContentReaderFactory> _registeredContentReaderFactories;
         private readonly Dictionary<Type, IContentReader> _registeredContentReaders;
         private readonly List<IContentResolver> _registeredContentResolvers;
+        private readonly List<IEmbeddedResourceResolver> _registeredEmbeddedResourceResolvers;
 
         private string _rootDirectory;
 
@@ -57,7 +60,7 @@ namespace Exomia.Framework.Content
                     if (_loadedAssets.Count > 0)
                     {
                         throw new InvalidOperationException(
-                            "RootDirectory cannot be changed when a ContentManager has already assets loaded");
+                            $"{nameof(RootDirectory)} cannot be changed when a {nameof(ContentManager)} has already assets loaded");
                     }
                 }
 
@@ -75,13 +78,16 @@ namespace Exomia.Framework.Content
         {
             ServiceRegistry = serviceRegistry ?? throw new ArgumentNullException(nameof(serviceRegistry));
 
-            _loadedAssets                     = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
-            _registeredContentResolvers       = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
-            _registeredContentReaders         = new Dictionary<Type, IContentReader>(INITIAL_QUEUE_SIZE);
-            _registeredContentReaderFactories = new List<IContentReaderFactory>(INITIAL_QUEUE_SIZE);
-            _assetLockers                     = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
+            _loadedAssets                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
+            _registeredContentResolvers          = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
+            _registeredEmbeddedResourceResolvers = new List<IEmbeddedResourceResolver>(INITIAL_QUEUE_SIZE);
+            _registeredContentReaders            = new Dictionary<Type, IContentReader>(INITIAL_QUEUE_SIZE);
+            _registeredContentReaderFactories    = new List<IContentReaderFactory>(INITIAL_QUEUE_SIZE);
+            _assetLockers                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
 
-            AddContentResolver(new DSFileStreamContentResolver());
+            List<(int order, IContentResolver resolver)> resolvers = new List<(int, IContentResolver)>(3);
+            List<(int order, IEmbeddedResourceResolver resolver)> embeddedResourceResolvers =
+                new List<(int, IEmbeddedResourceResolver)>(1);
 
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -92,13 +98,58 @@ namespace Exomia.Framework.Content
 
                 foreach (Type t in a.GetTypes())
                 {
-                    ContentReadableAttribute attribute;
-                    if ((attribute = t.GetCustomAttribute<ContentReadableAttribute>(false)) != null)
+                    if (t.IsClass && !t.IsInterface || t.IsValueType && !t.IsEnum)
                     {
-                        AddContentReader(t, attribute.Reader);
+                        ContentReadableAttribute contentReadableAttribute;
+                        if ((contentReadableAttribute
+                                = t.GetCustomAttribute<ContentReadableAttribute>(false)) != null)
+                        {
+                            AddContentReader(t, contentReadableAttribute.Reader);
+                        }
+                    }
+
+                    if (t.IsClass && !t.IsInterface)
+                    {
+                        if (typeof(IContentResolver).IsAssignableFrom(t))
+                        {
+                            ContentResolverAttribute contentResolverAttribute
+                                = t.GetCustomAttribute<ContentResolverAttribute>(false);
+                            resolvers.Add(
+                                (
+                                    contentResolverAttribute?.Order ?? 0,
+                                    System.Activator.CreateInstance(t)
+                                        as IContentResolver ?? throw new TypeLoadException(
+                                        $"can not create an instance of {nameof(IContentResolver)} from type: {t.AssemblyQualifiedName}")));
+                        }
+
+                        if (typeof(IEmbeddedResourceResolver).IsAssignableFrom(t))
+                        {
+                            ContentResolverAttribute contentResolverAttribute
+                                = t.GetCustomAttribute<ContentResolverAttribute>(false);
+                            embeddedResourceResolvers.Add(
+                                (
+                                    contentResolverAttribute?.Order ?? 0,
+                                    System.Activator.CreateInstance(t)
+                                        as IEmbeddedResourceResolver ?? throw new TypeLoadException(
+                                        $"can not create an instance of {nameof(IEmbeddedResourceResolver)} from type: {t.AssemblyQualifiedName}")));
+                        }
                     }
                 }
             }
+
+            foreach ((_, IContentResolver resolver) in resolvers.OrderBy(t => t.order))
+            {
+                AddContentResolver(resolver);
+            }
+
+            resolvers.Clear();
+
+            foreach ((_, IEmbeddedResourceResolver resolver) in embeddedResourceResolvers.OrderBy(t => t.order))
+            {
+                AddEmbeddedResourceContentResolver(resolver);
+            }
+
+            embeddedResourceResolvers.Clear();
         }
 
         /// <summary>
@@ -144,6 +195,18 @@ namespace Exomia.Framework.Content
         }
 
         /// <inheritdoc />
+        public bool AddEmbeddedResourceContentResolver(IEmbeddedResourceResolver resolver)
+        {
+            lock (_registeredEmbeddedResourceResolvers)
+            {
+                if (_registeredEmbeddedResourceResolvers.Contains(resolver)) { return false; }
+                _registeredEmbeddedResourceResolvers.Add(resolver);
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
         public bool Exists(string assetName)
         {
             if (assetName == null)
@@ -151,7 +214,6 @@ namespace Exomia.Framework.Content
                 throw new ArgumentNullException(nameof(assetName));
             }
 
-            // First, resolve the stream for this asset.
             List<IContentResolver> resolvers;
             lock (_registeredContentResolvers)
             {
@@ -174,7 +236,7 @@ namespace Exomia.Framework.Content
         }
 
         /// <inheritdoc />
-        public object Load(Type assetType, string assetName)
+        public object Load(Type assetType, string assetName, bool fromEmbeddedResource = false)
         {
             if (assetName == null)
             {
@@ -186,31 +248,33 @@ namespace Exomia.Framework.Content
                 throw new ArgumentNullException(nameof(assetType));
             }
 
-            object result;
             AssetKey assetKey = new AssetKey(assetType, assetName);
             lock (GetAssetLocker(assetKey, true))
             {
-                if (_loadedAssets.TryGetValue(assetKey, out result))
+                if (_loadedAssets.TryGetValue(assetKey, out object result))
                 {
                     return result;
                 }
+                result = LoadAssetWithDynamicContentReader(
+                    assetType,
+                    assetName,
+                    fromEmbeddedResource
+                        ? ResolveEmbeddedResourceStream(assetType, assetName)
+                        : ResolveStream(Path.Combine(_rootDirectory ?? string.Empty, assetName)));
 
-                string assetPath = Path.Combine(_rootDirectory ?? string.Empty, assetName);
-                Stream stream = FindStream(assetPath);
-
-                result = LoadAssetWithDynamicContentReader(assetType, assetName, stream);
                 lock (_loadedAssets)
                 {
                     _loadedAssets.Add(assetKey, result);
                 }
+
+                return result;
             }
-            return result;
         }
 
         /// <inheritdoc />
-        public T Load<T>(string assetName)
+        public T Load<T>(string assetName, bool fromEmbeddedResource = false)
         {
-            return (T)Load(typeof(T), assetName);
+            return (T)Load(typeof(T), assetName, fromEmbeddedResource);
         }
 
         /// <inheritdoc />
@@ -284,7 +348,7 @@ namespace Exomia.Framework.Content
             return Unload(typeof(T), assetName);
         }
 
-        private Stream FindStream(string assetName)
+        private Stream ResolveStream(string assetName)
         {
             List<IContentResolver> resolvers;
             lock (_registeredContentResolvers)
@@ -294,10 +358,10 @@ namespace Exomia.Framework.Content
 
             if (resolvers.Count == 0)
             {
-                throw new InvalidOperationException("No resolver registered to this content manager");
+                throw new InvalidOperationException(
+                    $"No {nameof(IContentResolver)} registered to this content manager");
             }
 
-            Stream stream = null;
             Exception lastException = null;
             foreach (IContentResolver contentResolver in resolvers)
             {
@@ -305,14 +369,45 @@ namespace Exomia.Framework.Content
                 {
                     if (contentResolver.Exists(assetName))
                     {
-                        stream = contentResolver.Resolve(assetName);
-                        if (stream != null) { break; }
+                        Stream stream = contentResolver.Resolve(assetName);
+                        if (stream != null) { return stream; }
                     }
                 }
                 catch (Exception ex) { lastException = ex; }
             }
 
-            return stream ?? throw new AssetNotFoundException(assetName, lastException);
+            throw new AssetNotFoundException(assetName, lastException);
+        }
+
+        private Stream ResolveEmbeddedResourceStream(Type assetType, string assetName)
+        {
+            List<IEmbeddedResourceResolver> resolvers;
+            lock (_registeredContentResolvers)
+            {
+                resolvers = new List<IEmbeddedResourceResolver>(_registeredEmbeddedResourceResolvers);
+            }
+
+            if (resolvers.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No {nameof(IEmbeddedResourceResolver)} registered to this content manager");
+            }
+
+            Exception lastException = null;
+            foreach (IEmbeddedResourceResolver contentResolver in resolvers)
+            {
+                try
+                {
+                    if (contentResolver.Exists(assetType, assetName, out Assembly assembly))
+                    {
+                        Stream stream = contentResolver.Resolve(assembly, assetName);
+                        if (stream != null) { return stream; }
+                    }
+                }
+                catch (Exception ex) { lastException = ex; }
+            }
+
+            throw new AssetNotFoundException(assetName, lastException);
         }
 
         private object GetAssetLocker(AssetKey assetKey, bool create)
@@ -330,26 +425,24 @@ namespace Exomia.Framework.Content
 
         private object LoadAssetWithDynamicContentReader(Type assetType, string assetName, Stream stream)
         {
-            object result;
             ContentReaderParameters parameters =
-                new ContentReaderParameters { AssetName = assetName, AssetType = assetType, Stream = stream };
+                new ContentReaderParameters(assetName, assetType, stream);
 
             try
             {
-                IContentReader contentReader;
-                lock (_registeredContentReaders)
+                if (!_registeredContentReaders.TryGetValue(assetType, out IContentReader contentReader))
                 {
-                    if (!_registeredContentReaders.TryGetValue(assetType, out contentReader))
+                    lock (_registeredContentReaderFactories)
                     {
-                        lock (_registeredContentReaderFactories)
+                        foreach (IContentReaderFactory factory in _registeredContentReaderFactories)
                         {
-                            foreach (IContentReaderFactory factory in _registeredContentReaderFactories)
+                            if (factory.TryCreate(assetType, out contentReader))
                             {
-                                if (factory.TryCreate(assetType, out contentReader))
+                                lock (_registeredContentReaders)
                                 {
                                     _registeredContentReaders.Add(assetType, contentReader);
-                                    break;
                                 }
+                                break;
                             }
                         }
                     }
@@ -358,12 +451,12 @@ namespace Exomia.Framework.Content
                 if (contentReader == null)
                 {
                     throw new NotSupportedException(
-                        $"Type [{assetType.FullName}] doesn't provide a ContentReadableAttribute, and there is no registered content reader/factory for it.");
+                        $"Type [{assetType.FullName}] doesn't provide a {nameof(ContentReadableAttribute)}, and there is no registered content reader/factory for it.");
                 }
 
-                result = contentReader.ReadContent(this, ref parameters)
-                         ?? throw new NotSupportedException(
-                             $"Registered ContentReader of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
+                return contentReader.ReadContent(this, ref parameters)
+                       ?? throw new NotSupportedException(
+                           $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
             }
             finally
             {
@@ -372,8 +465,6 @@ namespace Exomia.Framework.Content
                     stream.Dispose();
                 }
             }
-
-            return result;
         }
 
         private struct AssetKey : IEquatable<AssetKey>

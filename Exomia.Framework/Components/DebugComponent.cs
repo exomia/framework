@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,9 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using Exomia.Framework.ContentSerialization;
+using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
-using Exomia.Framework.Security;
 using SharpDX;
 
 namespace Exomia.Framework.Components
@@ -56,6 +53,7 @@ namespace Exomia.Framework.Components
         private float _fpsCurrent;
         private string _fpsInfo = string.Empty;
 
+        private IContentManager _contentManager;
         private IGameWindow _gameWindow;
         private string _gpuName = string.Empty;
 
@@ -172,6 +170,8 @@ namespace Exomia.Framework.Components
 
         protected override void OnInitialize(IServiceRegistry registry)
         {
+            _contentManager = registry.GetService<IContentManager>();
+
             IGameWindow gameWindow = registry.GetService<IGameWindow>();
             _title      = gameWindow.Title;
             _gameWindow = gameWindow;
@@ -197,31 +197,7 @@ namespace Exomia.Framework.Components
 
         protected override void OnLoadContent()
         {
-            Assembly asm = Assembly.GetAssembly(typeof(DebugComponent));
-            foreach (string t in asm.GetManifestResourceNames())
-            {
-                Console.WriteLine(t);
-            }
-            using (Stream ms = asm.GetManifestResourceStream("Exomia.Framework.Resources.arial_ansi_12px.ds1"))
-            {
-                if (!ExomiaCryptography.Decrypt(ms, out Stream stream))
-                {
-                    throw new IOException("resource 'arial_ansi_12px' failed to decrypt");
-                }
-
-                _arial12Px = ToDispose(ContentSerializer.Read<SpriteFont>(stream)) ??
-                             throw new NullReferenceException(nameof(_arial12Px));
-                if (_arial12Px.ImageData == null)
-                {
-                    throw new NullReferenceException("_arial12px.ImageData");
-                }
-
-                using (MemoryStream ms2 = new MemoryStream(_arial12Px.ImageData))
-                {
-                    ms2.Position       = 0;
-                    _arial12Px.Texture = Texture.Load(GraphicsDevice.Device, ms2);
-                }
-            }
+            _arial12Px = _contentManager.Load<SpriteFont>("Resources.arial_ansi_12px.e1", true);
         }
     }
 }

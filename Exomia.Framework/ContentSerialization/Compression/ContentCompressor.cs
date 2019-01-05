@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,19 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 
 namespace Exomia.Framework.ContentSerialization.Compression
 {
     /// <summary>
     ///     CompressMode
     /// </summary>
-    public enum CompressMode
+    public enum CompressMode : byte
     {
         /// <summary>
         ///     gzip (default)
         /// </summary>
-        Gzip
+        Gzip = 1
     }
 
     /// <summary>
@@ -45,11 +46,16 @@ namespace Exomia.Framework.ContentSerialization.Compression
     public static class ContentCompressor
     {
         /// <summary>
-        ///     the fefault compressed ds extension
+        ///     the default compressed e1 extension
         /// </summary>
-        public const string DEFAULT_COMPRESSED_EXTENSION = ".ds2";
+        public const string DEFAULT_COMPRESSED_EXTENSION = ".e1";
 
         private const int BUFFER_SIZE = 2048;
+
+        /// <summary>
+        ///     the magic header for the compressed e1 extension
+        /// </summary>
+        public static readonly byte[] MagicHeader = { 64, 101, 120, 49 };
 
         /// <summary>
         ///     compress a given stream with the given compression mode
@@ -66,10 +72,15 @@ namespace Exomia.Framework.ContentSerialization.Compression
             try
             {
                 stream.Position = 0;
+
+                streamOut = new MemoryStream();
+                streamOut.Write(MagicHeader, 0, MagicHeader.Length);
+                streamOut.WriteByte((byte)compressMode);
+
                 switch (compressMode)
                 {
                     case CompressMode.Gzip:
-                        GzipCompress(stream, out streamOut);
+                        GzipCompress(stream, streamOut);
                         break;
                     default: throw new ArgumentException("no compression method found", nameof(compressMode));
                 }
@@ -83,22 +94,25 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// </summary>
         /// <param name="stream">the stream to compress</param>
         /// <param name="streamOut">than finished the decompressed out stream</param>
-        /// <param name="compressMode">the compression mode</param>
         /// <returns><c>true</c> if successfully decompressed the stream; <c>false</c> otherwise.</returns>
-        public static bool DecompressStream(Stream stream, out Stream streamOut,
-            CompressMode compressMode = CompressMode.Gzip)
+        public static bool DecompressStream(Stream stream, out Stream streamOut)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
             streamOut = null;
             try
             {
                 stream.Position = 0;
-                switch (compressMode)
+
+                byte[] buffer = new byte[MagicHeader.Length];
+                if (stream.Read(buffer, 0, buffer.Length) != MagicHeader.Length
+                    && !MagicHeader.SequenceEqual(buffer)) { return false; }
+
+                switch ((CompressMode)stream.ReadByte())
                 {
                     case CompressMode.Gzip:
                         GzipDecompress(stream, out streamOut);
                         break;
-                    default: throw new ArgumentException("no compression method found", nameof(compressMode));
+                    default: throw new ArgumentException("no compression method found", nameof(stream));
                 }
             }
             catch { return false; }
@@ -107,9 +121,8 @@ namespace Exomia.Framework.ContentSerialization.Compression
 
         #region GZIP
 
-        private static void GzipCompress(Stream stream, out Stream streamOut)
+        private static void GzipCompress(Stream stream, Stream streamOut)
         {
-            streamOut = new MemoryStream();
             using (GZipStream gs = new GZipStream(streamOut, CompressionLevel.Optimal, true))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];

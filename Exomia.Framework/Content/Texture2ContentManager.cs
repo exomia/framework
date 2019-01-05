@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Exomia.Framework.Graphics;
-using Exomia.Framework.Security;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.WIC;
 
 namespace Exomia.Framework.Content
 {
+    //TODO: redesign/remove this file
     /// <inheritdoc />
     public sealed class Texture2ContentManager : ITexture2ContentManager
     {
@@ -65,10 +65,9 @@ namespace Exomia.Framework.Content
         /// <inheritdoc />
         public Texture2 AddTexture(Stream stream, string assetName, int startIndex = 0)
         {
-            Texture2 texture = null;
             lock (_lockAtlas)
             {
-                if (_atlasesKeys.TryGetValue(assetName, out texture))
+                if (_atlasesKeys.TryGetValue(assetName, out Texture2 texture))
                 {
                     return texture;
                 }
@@ -80,7 +79,7 @@ namespace Exomia.Framework.Content
                 {
                     if (_atlases[i].AddTexture(stream, assetName, out Rectangle sourceRect))
                     {
-                        texture = new Texture2(i, assetName, sourceRect);
+                        Texture2 texture = new Texture2(i, assetName, sourceRect);
                         _atlasesKeys.Add(assetName, texture);
                         IsTextureInvalid = true;
                         return texture;
@@ -99,13 +98,6 @@ namespace Exomia.Framework.Content
             {
                 return AddTexture(fs, assetName, startIndex);
             }
-        }
-
-        /// <inheritdoc />
-        public Texture2 AddTexture(Stream stream, out string assetName, int startIndex)
-        {
-            assetName = DateTime.Now.Ticks.ToMD5();
-            return AddTexture(stream, assetName, startIndex);
         }
 
         /// <inheritdoc />

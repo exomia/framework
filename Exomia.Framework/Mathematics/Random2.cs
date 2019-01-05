@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -159,8 +159,8 @@ namespace Exomia.Framework.Mathematics
             _x = _y;
             _y = _z;
             _z = _w;
-            return (byte)(min + REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) *
-                          (max - min));
+            return (byte)(min + (REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) *
+                                 (max - min)));
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace Exomia.Framework.Mathematics
             _x = _y;
             _y = _z;
             _z = _w;
-            return min + REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min);
+            return min + (REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace Exomia.Framework.Mathematics
             _x = _y;
             _y = _z;
             _z = _w;
-            return min + SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min);
+            return min + (SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
         }
 
         /// <summary>

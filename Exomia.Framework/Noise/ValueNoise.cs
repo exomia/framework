@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,28 +22,33 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Noise
 {
+    /// <inheritdoc />
     public class ValueNoise : NoiseBase
     {
+        /// <inheritdoc />
         public ValueNoise(int seed, float frequency, int octaves,
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
-            : base(seed, frequency, octaves, noiseInterpolationType, noiseFractalType) { }
+            : base(
+                seed, frequency, octaves,
+                noiseInterpolationType, noiseFractalType) { }
 
+        /// <inheritdoc />
         public ValueNoise(int seed, float frequency, int octaves, float lacunarity, float gain,
             NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
             NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
-            : base(seed, frequency, octaves, lacunarity, gain, noiseInterpolationType, noiseFractalType) { }
+            : base(
+                seed, frequency, octaves, lacunarity, gain,
+                noiseInterpolationType, noiseFractalType) { }
 
+        /// <inheritdoc />
         protected override float Single(int seed, double x)
         {
             int x0 = Math2.Floor(x);
-            int x1 = x0 + 1;
 
             double xs;
             switch (_noiseInterpolationType)
@@ -60,9 +65,13 @@ namespace Exomia.Framework.Noise
                     break;
             }
 
-            return Math2.Lerp(ValueCoord1D(seed, x0), ValueCoord1D(seed, x1), xs);
+            return Math2.Lerp(
+                ValueCoord1D(seed, x0),
+                ValueCoord1D(seed, x0 + 1),
+                xs);
         }
 
+        /// <inheritdoc />
         protected override float Single(int seed, double x, double y)
         {
             int x0 = Math2.Floor(x);
@@ -88,12 +97,18 @@ namespace Exomia.Framework.Noise
                     break;
             }
 
-            float xf0 = Math2.Lerp(ValueCoord2D(seed, x0, y0), ValueCoord2D(seed, x1, y0), xs);
-            float xf1 = Math2.Lerp(ValueCoord2D(seed, x0, y1), ValueCoord2D(seed, x1, y1), xs);
-
-            return Math2.Lerp(xf0, xf1, ys);
+            return Math2.Lerp(
+                Math2.Lerp(
+                    ValueCoord2D(seed, x0, y0),
+                    ValueCoord2D(seed, x1, y0),
+                    xs),
+                Math2.Lerp(
+                    ValueCoord2D(seed, x0, y1),
+                    ValueCoord2D(seed, x1, y1),
+                    xs), ys);
         }
 
+        /// <inheritdoc />
         protected override float Single(int seed, double x, double y, double z)
         {
             int x0 = Math2.Floor(x);
@@ -124,15 +139,28 @@ namespace Exomia.Framework.Noise
                     break;
             }
 
-            float xf00 = Math2.Lerp(ValueCoord3D(seed, x0, y0, z0), ValueCoord3D(seed, x1, y0, z0), xs);
-            float xf10 = Math2.Lerp(ValueCoord3D(seed, x0, y1, z0), ValueCoord3D(seed, x1, y1, z0), xs);
-            float xf01 = Math2.Lerp(ValueCoord3D(seed, x0, y0, z1), ValueCoord3D(seed, x1, y0, z1), xs);
-            float xf11 = Math2.Lerp(ValueCoord3D(seed, x0, y1, z1), ValueCoord3D(seed, x1, y1, z1), xs);
-
-            float yf0 = Math2.Lerp(xf00, xf10, ys);
-            float yf1 = Math2.Lerp(xf01, xf11, ys);
-
-            return Math2.Lerp(yf0, yf1, zs);
+            return Math2.Lerp(
+                Math2.Lerp(
+                    Math2.Lerp(
+                        ValueCoord3D(seed, x0, y0, z0),
+                        ValueCoord3D(seed, x1, y0, z0),
+                        xs),
+                    Math2.Lerp(
+                        ValueCoord3D(seed, x0, y1, z0),
+                        ValueCoord3D(seed, x1, y1, z0),
+                        xs),
+                    ys),
+                Math2.Lerp(
+                    Math2.Lerp(
+                        ValueCoord3D(seed, x0, y0, z1),
+                        ValueCoord3D(seed, x1, y0, z1),
+                        xs),
+                    Math2.Lerp(
+                        ValueCoord3D(seed, x0, y1, z1),
+                        ValueCoord3D(seed, x1, y1, z1),
+                        xs),
+                    ys),
+                zs);
         }
     }
 }

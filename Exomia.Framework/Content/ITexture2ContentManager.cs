@@ -1,6 +1,6 @@
 ﻿#region MIT License
 
-// Copyright (c) 2018 exomia - Daniel Bätz
+// Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,15 +56,6 @@ namespace Exomia.Framework.Content
         /// <param name="startIndex">start index</param>
         /// <returns>a instance of <see cref="Texture2" /></returns>
         Texture2 AddTexture(Stream stream, string assetName, int startIndex = 0);
-
-        /// <summary>
-        ///     add a new texture from a given stream
-        /// </summary>
-        /// <param name="stream">texture stream</param>
-        /// <param name="assetName">out assetname</param>
-        /// <param name="startIndex">start index</param>
-        /// <returns>a instance of <see cref="Texture2" /></returns>
-        Texture2 AddTexture(Stream stream, out string assetName, int startIndex = 0);
 
         /// <summary>
         ///     generate a texture array from all loaded <see cref="Texture2" /> textures.
