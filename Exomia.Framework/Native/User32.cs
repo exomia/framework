@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using SharpDX;
 
-namespace Exomia.Framework.WinApi
+namespace Exomia.Framework.Native
 {
     static class User32
     {
