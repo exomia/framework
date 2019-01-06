@@ -38,7 +38,6 @@ using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using Message = System.Windows.Forms.Message;
 
 namespace Exomia.Framework.Game
 {
@@ -594,7 +593,7 @@ namespace Exomia.Framework.Game
 
                 if (User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
                 {
-                    Message message = Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
+                    System.Windows.Forms.Message message = System.Windows.Forms.Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
                     if (!Application.FilterMessage(ref message))
                     {
                         User32.TranslateMessage(ref msg);
