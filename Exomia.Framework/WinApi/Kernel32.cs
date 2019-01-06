@@ -24,11 +24,13 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Exomia.Framework.WinApi
 {
     static class Kernel32
     {
+        [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
         internal static extern bool SetEvent(IntPtr hEvent);
     }
