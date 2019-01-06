@@ -38,8 +38,7 @@ namespace Exomia.Framework.Audio
     /// </summary>
     public sealed class AudioManager : IDisposable
     {
-        private readonly int _inputChannelCount = 2;
-        private readonly int _inputSampleRate = 44100;
+        private readonly int _inputChannelCount;
 
         private readonly Listener _listener;
         private float _bgmVolume = 1.0f;
@@ -193,12 +192,11 @@ namespace Exomia.Framework.Audio
 
             _masteringVoice.GetVoiceDetails(out VoiceDetails details);
             _inputChannelCount = details.InputChannelCount;
-            _inputSampleRate   = details.InputSampleRate;
 
-            _fxSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, _inputSampleRate);
+            _fxSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, details.InputSampleRate);
             _fxSubmixVoice.SetVolume(_fxVolume);
 
-            _envSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, _inputSampleRate);
+            _envSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, details.InputSampleRate);
             _envSubmixVoice.SetVolume(_envVolume);
 
             _fxVoiceSendDescriptor  = new VoiceSendDescriptor(VoiceSendFlags.None, _fxSubmixVoice);

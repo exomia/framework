@@ -50,41 +50,54 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Remove="Resources\arial_ansi_12px.e1" />
-    <None Remove="Resources\arial_ansi_14px.e1" />
-    <None Remove="Resources\arial_ansi_16px.e1" />
-    <None Remove="Resources\arial_ansi_18px.e1" />
-    <None Remove="Resources\arial_ansi_20px.e1" />
-    <None Remove="Resources\arial_ansi_22px.e1" />
-    <None Remove="Resources\arial_ansi_24px.e1" />
-    <None Remove="Resources\arial_ansi_72px.e1" />
-    <None Remove="Resources\arial_ansi_bold_12px.e1" />
-    <None Remove="Resources\arial_ansi_bold_14px.e1" />
-    <None Remove="Resources\arial_ansi_bold_16px.e1" />
-    <None Remove="Resources\arial_ansi_bold_18px.e1" />
-    <None Remove="Resources\arial_ansi_bold_20px.e1" />
-    <None Remove="Resources\arial_ansi_bold_22px.e1" />
-    <None Remove="Resources\arial_ansi_bold_24px.e1" />
-    <None Remove="Resources\arial_ansi_bold_72px.e1" />
+    <None Remove="Resources\arial_12px.e1" />
+    <None Remove="Resources\arial_14px.e1" />
+    <None Remove="Resources\arial_16px.e1" />
+    <None Remove="Resources\arial_18px.e1" />
+    <None Remove="Resources\arial_20px.e1" />
+    <None Remove="Resources\arial_22px.e1" />
+    <None Remove="Resources\arial_24px.e1" />
+    <None Remove="Resources\arial_26px.e1" />
+    <None Remove="Resources\arial_28px.e1" />
+    <None Remove="Resources\arial_30px.e1" />
+    <None Remove="Resources\arial_32px.e1" />
+    <None Remove="Resources\arial_34px.e1" />
+    <None Remove="Resources\arial_36px.e1" />
+    <None Remove="Resources\arial_38px.e1" />
+    <None Remove="Resources\arial_40px.e1" />
+    <None Remove="Resources\arial_42px.e1" />
+    <None Remove="Resources\arial_44px.e1" />
+    <None Remove="Resources\arial_46px.e1" />
+    <None Remove="Resources\arial_48px.e1" />
+    <None Remove="Resources\arial_50px.e1" />
+    <None Remove="Resources\arial_52px.e1" />
+    <None Remove="Resources\arial_54px.e1" />
+    <None Remove="Resources\arial_56px.e1" />
+    <None Remove="Resources\arial_58px.e1" />
+    <None Remove="Resources\arial_60px.e1" />
+    <None Remove="Resources\arial_62px.e1" />
+    <None Remove="Resources\arial_64px.e1" />
+    <None Remove="Resources\arial_66px.e1" />
+    <None Remove="Resources\arial_68px.e1" />
+    <None Remove="Resources\arial_70px.e1" />
+    <None Remove="Resources\arial_72px.e1" />
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="Resources\arial_ansi_12px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_14px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_16px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_18px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_20px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_22px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_24px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_72px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_12px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_14px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_16px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_18px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_20px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_22px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_24px.e1" />
-    <EmbeddedResource Include="Resources\arial_ansi_bold_72px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_12px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_14px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_16px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_18px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_20px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_22px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_24px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_26px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_28px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_30px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_32px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_34px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_36px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1" />
   </ItemGroup>
   
   <ItemGroup>

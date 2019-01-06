@@ -197,7 +197,7 @@ namespace Exomia.Framework.Components
 
         protected override void OnLoadContent()
         {
-            _arial12Px = _contentManager.Load<SpriteFont>("Resources.arial_ansi_12px.e1", true);
+            _arial12Px = _contentManager.Load<SpriteFont>("Resources.fonts.arial.arial_12px.e1", true);
         }
     }
 }
