@@ -1,5 +1,4 @@
 ﻿#region MIT License
-
 // Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,21 +18,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 #endregion
 
 using SharpDX;
 
-namespace Exomia.Framework.ContentSerialization.Readers
-{
-    sealed class Vector2CR : AContentSerializationReader<Vector2>
+namespace Exomia.Framework.ContentSerialization.Readers {
+    sealed class Vector3CR : AContentSerializationReader<Vector3>
     {
-        public override Vector2 ReadContext(ContentSerializationContext context)
+        public override Vector3 ReadContext(ContentSerializationContext context)
         {
-            return new Vector2
+            return new Vector3
             {
                 X = context.Get<float>("X"),
-                Y = context.Get<float>("Y")
+                Y = context.Get<float>("Y"),
+                Z = context.Get<float>("Z")
             };
         }
     }
