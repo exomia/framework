@@ -33,10 +33,10 @@ namespace Exomia.Framework.Tools
     public sealed class Tween : IUpdateable
     {
         /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler EnabledChanged;
 
         /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
+        public event EventHandler UpdateOrderChanged;
 
         private readonly EasingFunction _callback;
         private readonly float _delay;
@@ -61,7 +61,7 @@ namespace Exomia.Framework.Tools
                 if (_enabled != value)
                 {
                     _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                    EnabledChanged?.Invoke();
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace Exomia.Framework.Tools
                 if (_updateOrder != value)
                 {
                     _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                    UpdateOrderChanged?.Invoke();
                 }
             }
         }

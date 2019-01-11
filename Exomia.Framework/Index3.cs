@@ -155,8 +155,10 @@ namespace Exomia.Framework
         {
             unchecked
             {
+                // ReSharper disable NonReadonlyMemberInGetHashCode
                 return (((X.GetHashCode() * 307) ^
                          Y.GetHashCode()) * 521) ^ Z.GetHashCode();
+                // ReSharper restore NonReadonlyMemberInGetHashCode
             }
         }
 
@@ -170,8 +172,7 @@ namespace Exomia.Framework
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X:{0} Y:{1} Z:{2}",
-                X, Y, Z);
+                "X:{0} Y:{1} Z:{2}", X, Y, Z);
         }
 
         /// <summary>
@@ -207,8 +208,7 @@ namespace Exomia.Framework
         {
             return string.Format(
                 formatProvider,
-                "X:{0} Y:{1} Z:{2}",
-                X, Y, Z);
+                "X:{0} Y:{1} Z:{2}", X, Y, Z);
         }
 
         /// <inheritdoc />
@@ -256,11 +256,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Adds two indicies.
+        ///     Adds two indices.
         /// </summary>
         /// <param name="left">The first index to add.</param>
         /// <param name="right">The second index to add.</param>
-        /// <param name="result">When the method completes, contains the sum of the two indicies.</param>
+        /// <param name="result">When the method completes, contains the sum of the two indices.</param>
         public static void Add(ref Index3 left, ref Index3 right, out Index3 result)
         {
             result.X = left.X + right.Y;
@@ -269,7 +269,7 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Adds two indicies.
+        ///     Adds two indices.
         /// </summary>
         /// <param name="left">The first index to add.</param>
         /// <param name="right">The second index to add.</param>
@@ -304,11 +304,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Subtracts two indicies.
+        ///     Subtracts two indices.
         /// </summary>
         /// <param name="left">The first index to subtract.</param>
         /// <param name="right">The second index to subtract.</param>
-        /// <param name="result">When the method completes, contains the difference of the two indicies.</param>
+        /// <param name="result">When the method completes, contains the difference of the two indices.</param>
         public static void Subtract(ref Index3 left, ref Index3 right, out Index3 result)
         {
             result.X = left.X - right.X;
@@ -317,11 +317,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Subtracts two indicies.
+        ///     Subtracts two indices.
         /// </summary>
         /// <param name="left">The first index to subtract.</param>
         /// <param name="right">The second index to subtract.</param>
-        /// <returns>The difference of the two indicies.</returns>
+        /// <returns>The difference of the two indices.</returns>
         public static Index3 Subtract(in Index3 left, in Index3 right)
         {
             return new Index3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
@@ -331,7 +331,7 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction
         /// </summary>
         /// <param name="left">The input index</param>
-        /// <param name="right">The scalar value to be subtraced from elements</param>
+        /// <param name="right">The scalar value to be subtracted from elements</param>
         /// <param name="result">The index with subtracted scalar for each element.</param>
         public static void Subtract(ref Index3 left, ref int right, out Index3 result)
         {
@@ -344,7 +344,7 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction
         /// </summary>
         /// <param name="left">The input index</param>
-        /// <param name="right">The scalar value to be subtraced from elements</param>
+        /// <param name="right">The scalar value to be subtracted from elements</param>
         /// <returns>The index with subtracted scalar for each element.</returns>
         public static Index3 Subtract(in Index3 left, int right)
         {
@@ -354,7 +354,7 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise subtraction
         /// </summary>
-        /// <param name="left">The scalar value to be subtraced from elements</param>
+        /// <param name="left">The scalar value to be subtracted from elements</param>
         /// <param name="right">The input index</param>
         /// <param name="result">The index with subtracted scalar for each element.</param>
         public static void Subtract(ref int left, ref Index3 right, out Index3 result)
@@ -367,7 +367,7 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise subtraction
         /// </summary>
-        /// <param name="left">The scalar value to be subtraced from elements</param>
+        /// <param name="left">The scalar value to be subtracted from elements</param>
         /// <param name="right">The input index</param>
         /// <returns>The index with subtracted scalar for each element.</returns>
         public static Index3 Subtract(int left, in Index3 right)
@@ -522,11 +522,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the distance between two indicies.
+        ///     Calculates the distance between two indices.
         /// </summary>
         /// <param name="value1">The first index.</param>
         /// <param name="value2">The second index.</param>
-        /// <param name="result">When the method completes, contains the distance between the two indicies.</param>
+        /// <param name="result">When the method completes, contains the distance between the two indices.</param>
         public static void Distance(ref Index3 value1, ref Index3 value2, out double result)
         {
             int x = value1.X - value2.X;
@@ -537,11 +537,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the distance between two indicies.
+        ///     Calculates the distance between two indices.
         /// </summary>
         /// <param name="value1">The first index.</param>
         /// <param name="value2">The second index.</param>
-        /// <returns>The distance between the two indicies.</returns>
+        /// <returns>The distance between the two indices.</returns>
         public static double Distance(in Index3 value1, in Index3 value2)
         {
             int x = value1.X - value2.X;
@@ -552,11 +552,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the squared distance between two indicies.
+        ///     Calculates the squared distance between two indices.
         /// </summary>
         /// <param name="value1">The first index.</param>
         /// <param name="value2">The second index</param>
-        /// <param name="result">When the method completes, contains the squared distance between the two indicies.</param>
+        /// <param name="result">When the method completes, contains the squared distance between the two indices.</param>
         public static void DistanceSquared(ref Index3 value1, ref Index3 value2, out int result)
         {
             int x = value1.X - value2.X;
@@ -567,11 +567,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the squared distance between two indicies.
+        ///     Calculates the squared distance between two indices.
         /// </summary>
         /// <param name="value1">The first index.</param>
         /// <param name="value2">The second index.</param>
-        /// <returns>The squared distance between the two indicies.</returns>
+        /// <returns>The squared distance between the two indices.</returns>
         public static int DistanceSquared(in Index3 value1, in Index3 value2)
         {
             int x = value1.X - value2.X;
@@ -582,35 +582,35 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the dot product of two indicies.
+        ///     Calculates the dot product of two indices.
         /// </summary>
         /// <param name="left">First source index.</param>
         /// <param name="right">Second source index.</param>
-        /// <param name="result">When the method completes, contains the dot product of the two indicies.</param>
+        /// <param name="result">When the method completes, contains the dot product of the two indices.</param>
         public static void Dot(ref Index3 left, ref Index3 right, out int result)
         {
             result = (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
         }
 
         /// <summary>
-        ///     Calculates the dot product of two indicies.
+        ///     Calculates the dot product of two indices.
         /// </summary>
         /// <param name="left">First source index.</param>
         /// <param name="right">Second source index.</param>
-        /// <returns>The dot product of the two indicies.</returns>
+        /// <returns>The dot product of the two indices.</returns>
         public static int Dot(in Index3 left, in Index3 right)
         {
             return (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
         }
 
         /// <summary>
-        ///     Returns a index containing the largest components of the specified indicies.
+        ///     Returns a index containing the largest components of the specified indices.
         /// </summary>
         /// <param name="left">The first source index.</param>
         /// <param name="right">The second source index.</param>
         /// <param name="result">
         ///     When the method completes, contains an new index composed of the largest components of the source
-        ///     indicies.
+        ///     indices.
         /// </param>
         public static void Max(ref Index3 left, ref Index3 right, out Index3 result)
         {
@@ -620,11 +620,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the largest components of the specified indicies.
+        ///     Returns a index containing the largest components of the specified indices.
         /// </summary>
         /// <param name="left">The first source index.</param>
         /// <param name="right">The second source index.</param>
-        /// <returns>A index containing the largest components of the source indicies.</returns>
+        /// <returns>A index containing the largest components of the source indices.</returns>
         public static Index3 Max(in Index3 left, in Index3 right)
         {
             return new Index3(
@@ -634,13 +634,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the smallest components of the specified indicies.
+        ///     Returns a index containing the smallest components of the specified indices.
         /// </summary>
         /// <param name="left">The first source index.</param>
         /// <param name="right">The second source index.</param>
         /// <param name="result">
         ///     When the method completes, contains an new index composed of the smallest components of the source
-        ///     indicies.
+        ///     indices.
         /// </param>
         public static void Min(ref Index3 left, ref Index3 right, out Index3 result)
         {
@@ -650,11 +650,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the smallest components of the specified indicies.
+        ///     Returns a index containing the smallest components of the specified indices.
         /// </summary>
         /// <param name="left">The first source index.</param>
         /// <param name="right">The second source index.</param>
-        /// <returns>A index containing the smallest components of the source indicies.</returns>
+        /// <returns>A index containing the smallest components of the source indices.</returns>
         public static Index3 Min(in Index3 left, in Index3 right)
         {
             return new Index3(
@@ -664,11 +664,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Adds two indicies.
+        ///     Adds two indices.
         /// </summary>
         /// <param name="left">The first index to add.</param>
         /// <param name="right">The second index to add.</param>
-        /// <returns>The sum of the two indicies.</returns>
+        /// <returns>The sum of the two indices.</returns>
         public static Index3 operator +(in Index3 left, in Index3 right)
         {
             return new Index3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
@@ -707,11 +707,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Subtract two indicies.
+        ///     Subtract two indices.
         /// </summary>
-        /// <param name="left">The first index be subtraced from.</param>
+        /// <param name="left">The first index be subtracted from.</param>
         /// <param name="right">The second index to subtract.</param>
-        /// <returns>The sum of the two indicies.</returns>
+        /// <returns>The sum of the two indices.</returns>
         public static Index3 operator -(in Index3 left, in Index3 right)
         {
             return new Index3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
@@ -721,8 +721,8 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction
         /// </summary>
         /// <param name="value">The input index.</param>
-        /// <param name="scalar">The scalar value to be subtraced from elements</param>
-        /// <returns>The index with subtraced scalar from each element.</returns>
+        /// <param name="scalar">The scalar value to be subtracted from elements</param>
+        /// <returns>The index with subtracted scalar from each element.</returns>
         public static Index3 operator -(in Index3 value, int scalar)
         {
             return new Index3(value.X - scalar, value.Y - scalar, value.Z - scalar);
@@ -732,8 +732,8 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction
         /// </summary>
         /// <param name="value">The input index.</param>
-        /// <param name="scalar">The scalar value to be subtraced from elements</param>
-        /// <returns>The index with subtraced scalar from each element.</returns>
+        /// <param name="scalar">The scalar value to be subtracted from elements</param>
+        /// <returns>The index with subtracted scalar from each element.</returns>
         public static Index3 operator -(int scalar, in Index3 value)
         {
             return new Index3(scalar - value.X, scalar - value.Y, scalar - value.Z);
@@ -755,7 +755,7 @@ namespace Exomia.Framework
         /// </summary>
         /// <param name="left">The first index to multiply.</param>
         /// <param name="right">The second index to multiply.</param>
-        /// <returns>The multiplication of the two indicies.</returns>
+        /// <returns>The multiplication of the two indices.</returns>
         public static Index3 operator *(in Index3 left, in Index3 right)
         {
             return new Index3(left.X * right.X, left.Y * right.Y, left.Z * right.Z);

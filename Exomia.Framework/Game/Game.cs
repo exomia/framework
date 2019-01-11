@@ -54,7 +54,7 @@ namespace Exomia.Framework.Game
         private const int WM_QUIT = 0x0012;
         private const int PM_REMOVE = 0x0001;
 
-        private event EventHandler _isRunningChanged;
+        private event EventHandler<Game, bool> _isRunningChanged;
 
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
@@ -72,9 +72,11 @@ namespace Exomia.Framework.Game
 
         private DisposeCollector _collector;
 
+        private readonly IServiceRegistry _serviceRegistry;
         private IContentManager _contentManager;
         private IGameWindow _gameWindow;
         private IGraphicsDevice _graphicsDevice;
+        
         private bool _isContentLoaded;
 
         private bool _isInitialized;
@@ -82,12 +84,15 @@ namespace Exomia.Framework.Game
 
         private bool _shutdown;
 
+        public IServiceRegistry Services
+        {
+            get { return _serviceRegistry; }
+        }
+
         public IContentManager Content
         {
             get { return _contentManager; }
         }
-
-        public GameGraphicsParameters GameGraphicsParameters { get; private set; }
 
         public IGameWindow GameWindow
         {
@@ -99,6 +104,8 @@ namespace Exomia.Framework.Game
             get { return _graphicsDevice; }
         }
 
+        public GameGraphicsParameters GameGraphicsParameters { get; private set; }
+
         public bool IsFixedTimeStep { get; set; } = false;
 
         public bool IsRunning
@@ -109,12 +116,10 @@ namespace Exomia.Framework.Game
                 if (_isRunning != value)
                 {
                     _isRunning = value;
-                    _isRunningChanged?.Invoke(this, EventArgs.Empty);
+                    _isRunningChanged?.Invoke(this, value);
                 }
             }
         }
-
-        public IServiceRegistry Services { get; }
 
         public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
 
@@ -134,15 +139,15 @@ namespace Exomia.Framework.Game
             Console.WriteLine(info);*/
 #endif
 
-            Services        = new ServiceRegistry();
+            _serviceRegistry = new ServiceRegistry();
             _gameWindow     = new WinFormsGameWindow(title);
             _graphicsDevice = new GraphicsDevice();
-            _contentManager = new ContentManager(Services);
+            _contentManager = new ContentManager(_serviceRegistry);
 
-            Services.AddService(Services);
-            Services.AddService(_graphicsDevice);
-            Services.AddService(_contentManager);
-            Services.AddService(_gameWindow);
+            _serviceRegistry.AddService(_serviceRegistry);
+            _serviceRegistry.AddService(_graphicsDevice);
+            _serviceRegistry.AddService(_contentManager);
+            _serviceRegistry.AddService(_gameWindow);
 
             _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
             _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
@@ -185,9 +190,9 @@ namespace Exomia.Framework.Game
 
             _isRunning = true;
 
-            _isRunningChanged += (s, e) =>
+            _isRunningChanged += (s, v) =>
             {
-                if (_isRunning)
+                if (v)
                 {
                     gameTime.Start();
                 }
@@ -242,7 +247,7 @@ namespace Exomia.Framework.Game
             {
                 if (_isInitialized)
                 {
-                    initializable.Initialize(Services);
+                    initializable.Initialize(_serviceRegistry);
                 }
                 else
                 {
@@ -262,7 +267,7 @@ namespace Exomia.Framework.Game
                 }
                 if (_isInitialized && _isContentLoaded)
                 {
-                    contentable.LoadContent();
+                    contentable.LoadContent(_serviceRegistry);
                 }
             }
 
@@ -341,7 +346,7 @@ namespace Exomia.Framework.Game
                 {
                     _contentableComponent.Remove(contentable);
                 }
-                contentable.UnloadContent();
+                contentable.UnloadContent(_serviceRegistry);
             }
 
             // ReSharper disable once InconsistentlySynchronizedField
@@ -498,14 +503,6 @@ namespace Exomia.Framework.Game
             }
         }
 
-        private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
-        {
-            lock (_updateableComponent)
-            {
-                _updateableComponent.Sort(UpdateableComparer.Default);
-            }
-        }
-
         private void InitializeGameGraphicsParameters()
         {
             GameGraphicsParameters parameters = new GameGraphicsParameters
@@ -548,7 +545,7 @@ namespace Exomia.Framework.Game
         {
             while (_pendingInitializables.Count != 0)
             {
-                _pendingInitializables[0].Initialize(Services);
+                _pendingInitializables[0].Initialize(_serviceRegistry);
                 _pendingInitializables.RemoveAt(0);
             }
         }
@@ -570,7 +567,7 @@ namespace Exomia.Framework.Game
 
                 foreach (IContentable contentable in _currentlyContentableComponent)
                 {
-                    contentable.LoadContent();
+                    contentable.LoadContent(_serviceRegistry);
                 }
 
                 _currentlyContentableComponent.Clear();
@@ -643,7 +640,7 @@ namespace Exomia.Framework.Game
 
                 foreach (IContentable contentable in _currentlyContentableComponent)
                 {
-                    contentable.UnloadContent();
+                    contentable.UnloadContent(_serviceRegistry);
                 }
 
                 _currentlyContentableComponent.Clear();
@@ -653,7 +650,15 @@ namespace Exomia.Framework.Game
             }
         }
 
-        private void UpdateableComponent_UpdateOrderChanged(object sender, EventArgs e)
+        private void UpdateableComponent_UpdateOrderChanged()
+        {
+            lock (_updateableComponent)
+            {
+                _updateableComponent.Sort(UpdateableComparer.Default);
+            }
+        }
+
+        private void DrawableComponent_DrawOrderChanged()
         {
             lock (_drawableComponent)
             {
@@ -673,7 +678,7 @@ namespace Exomia.Framework.Game
             return timer;
         }
 
-        public Timer2 AddTimer(float tick, bool enabled, TimerEvent tickCallback, uint maxIterations = 0,
+        public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback, uint maxIterations = 0,
             bool removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, maxIterations) { Enabled = enabled });
@@ -684,7 +689,7 @@ namespace Exomia.Framework.Game
             return timer;
         }
 
-        public Timer2 AddTimer(float tick, bool enabled, TimerEvent tickCallback, TimerEvent finishedCallback,
+        public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback, EventHandler<Timer2> finishedCallback,
             uint maxIterations, bool removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, finishedCallback, maxIterations) { Enabled = enabled });

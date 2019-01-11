@@ -23,7 +23,6 @@
 #endregion
 
 using System;
-using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using SharpDX;
 
@@ -40,10 +39,10 @@ namespace Exomia.Framework
     public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
         /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler EnabledChanged;
 
         /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
+        public event EventHandler UpdateOrderChanged;
 
         /// <summary>
         ///     flag to identify if the component is already initialized
@@ -69,7 +68,7 @@ namespace Exomia.Framework
                 if (_enabled != value)
                 {
                     _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                    EnabledChanged?.Invoke();
                 }
             }
         }
@@ -83,32 +82,13 @@ namespace Exomia.Framework
                 if (_updateOrder != value)
                 {
                     _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                    UpdateOrderChanged?.Invoke();
                 }
             }
         }
 
-        /// <summary>
-        ///     Gets the <see cref="Game" /> associated with this <see cref="AComponent" />.
-        ///     This value can be null in a mock environment.
-        /// </summary>
-        /// <value>The game.</value>
-        public Game.Game Game { get; }
-
         /// <inheritdoc />
         public string Name { get; }
-
-        /// <summary>
-        ///     Gets the content manager.
-        /// </summary>
-        /// <value>The content.</value>
-        protected IContentManager Content { get; private set; }
-
-        /// <summary>
-        ///     Gets the graphics device.
-        /// </summary>
-        /// <value>The graphics device.</value>
-        protected IGraphicsDevice GraphicsDevice { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AComponent" /> class.
@@ -121,31 +101,21 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AComponent" /> class.
-        /// </summary>
-        protected AComponent(Game.Game game, string name)
-            : this(name)
-        {
-            Game = game;
-        }
-
-        /// <inheritdoc />
-        public void LoadContent()
+        public void LoadContent(IServiceRegistry registry)
         {
             if (_isInitialized && !_isContentLoaded)
             {
-                OnLoadContent();
+                OnLoadContent(registry);
                 _isContentLoaded = true;
             }
         }
 
         /// <inheritdoc />
-        public void UnloadContent()
+        public void UnloadContent(IServiceRegistry registry)
         {
             if (_isContentLoaded)
             {
-                OnUnloadContent();
+                OnUnloadContent(registry);
                 _isContentLoaded = false;
             }
         }
@@ -155,9 +125,6 @@ namespace Exomia.Framework
         {
             if (!_isInitialized)
             {
-                Content        = registry.GetService<IContentManager>();
-                GraphicsDevice = registry.GetService<IGraphicsDevice>();
-
                 OnInitialize(registry);
                 _isInitialized = true;
             }
@@ -175,12 +142,12 @@ namespace Exomia.Framework
         /// <summary>
         ///     called than the component should load the content
         /// </summary>
-        protected virtual void OnLoadContent() { }
+        protected virtual void OnLoadContent(IServiceRegistry registry) { }
 
         /// <summary>
         ///     called than the component should unload the content
         /// </summary>
-        protected virtual void OnUnloadContent() { }
+        protected virtual void OnUnloadContent(IServiceRegistry registry) { }
 
         /// <summary>
         ///     adds a <see cref="IDisposable" /> object to the dispose collector

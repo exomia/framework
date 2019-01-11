@@ -53,6 +53,7 @@ namespace Exomia.Framework.Video
         private MediaEngineEx _mediaEngineEx;
         private SpriteBatch _spriteBatch;
         private Texture _texture;
+        private IGraphicsDevice _graphicsDevice;
 
         public string AssetName
         {
@@ -107,7 +108,7 @@ namespace Exomia.Framework.Video
         public bool Mute
         {
             get { return _mediaEngineEx?.Muted ?? false; }
-            set { _mediaEngineEx.Muted = true; }
+            set { _mediaEngineEx.Muted = value; }
         }
 
         public double PlaybackPosition
@@ -204,8 +205,9 @@ namespace Exomia.Framework.Video
                         new Rectangle(0, 0, _outputTexture.Description.Width, _outputTexture.Description.Height),
                         (ColorBGRA)BackgroundColor);
 
+                    //TODO: draw the texture directly to the _texture's TexturePointer instead of creating every time new one
                     _texture = new Texture(
-                        new ShaderResourceView1(GraphicsDevice.Device, _outputTexture),
+                        new ShaderResourceView1(_graphicsDevice.Device, _outputTexture),
                         _outputTexture.Description.Width, _outputTexture.Description.Height);
                 }
             }
@@ -213,14 +215,17 @@ namespace Exomia.Framework.Video
 
         protected override void OnInitialize(IServiceRegistry registry)
         {
-            _spriteBatch = ToDispose(new SpriteBatch(GraphicsDevice));
+           _graphicsDevice = registry.GetService<IGraphicsDevice>() ??
+                                             throw new System.NullReferenceException(nameof(IGraphicsDevice));
+
+            _spriteBatch = ToDispose(new SpriteBatch(_graphicsDevice));
             MediaManager.Startup();
 
-            DeviceMultithread multithread = GraphicsDevice.Device.QueryInterface<DeviceMultithread>();
+            DeviceMultithread multithread = _graphicsDevice.Device.QueryInterface<DeviceMultithread>();
             multithread.SetMultithreadProtected(true);
 
             _dxgiDeviceManager = ToDispose(new DXGIDeviceManager());
-            _dxgiDeviceManager.ResetDevice(GraphicsDevice.Device);
+            _dxgiDeviceManager.ResetDevice(_graphicsDevice.Device);
 
             MediaEngineAttributes attributes = new MediaEngineAttributes
             {

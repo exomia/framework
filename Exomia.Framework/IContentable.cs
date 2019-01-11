@@ -32,11 +32,11 @@ namespace Exomia.Framework
         /// <summary>
         ///     Loads the content.
         /// </summary>
-        void LoadContent();
+        void LoadContent(IServiceRegistry registry);
 
         /// <summary>
         ///     Called when graphics resources need to be unloaded.
         /// </summary>
-        void UnloadContent();
+        void UnloadContent(IServiceRegistry registry);
     }
 }

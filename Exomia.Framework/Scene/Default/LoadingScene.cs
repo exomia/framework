@@ -32,6 +32,8 @@ namespace Exomia.Framework.Scene.Default
     {
         private readonly SceneBase _sceneToLoad;
 
+        private IServiceRegistry _registry;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoadingScene" /> class.
         /// </summary>
@@ -41,6 +43,12 @@ namespace Exomia.Framework.Scene.Default
             : base(key)
         {
             _sceneToLoad = sceneToLoad ?? throw new ArgumentNullException(nameof(sceneToLoad));
+        }
+
+        /// <inheritdoc />
+        protected override void OnInitialize(IServiceRegistry registry)
+        {
+            _registry = registry;
         }
 
         /// <inheritdoc />
@@ -61,7 +69,7 @@ namespace Exomia.Framework.Scene.Default
                 Task.Factory.StartNew(
                     () =>
                     {
-                        _sceneToLoad.LoadContent();
+                        _sceneToLoad.LoadContent(_registry);
                     });
             }
         }
@@ -73,14 +81,14 @@ namespace Exomia.Framework.Scene.Default
                 Task.Factory.StartNew(
                     () =>
                     {
-                        _sceneToLoad.LoadContent();
+                        _sceneToLoad.LoadContent(_registry);
                     });
             }
             else if (current == SceneState.Ready)
             {
                 _sceneToLoad.SceneStateChanged -= _sceneToLoad_SceneStateChanged;
 
-                if (_sceneManager.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
+                if (SceneManager.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
                 {
                     throw new Exception($"can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
                 }

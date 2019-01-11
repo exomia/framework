@@ -1,5 +1,4 @@
 ﻿#region MIT License
-
 // Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,44 +18,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 #endregion
-
-using Exomia.Framework.Game;
 
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to update a game component
+    ///     Represents the method that will handle an event that has no event data and no sender specified.
     /// </summary>
-    public interface IUpdateable
-    {
-        /// <summary>
-        ///     Occurs when the <see cref="Enabled" /> property changes.
-        /// </summary>
-        event EventHandler EnabledChanged;
+    public delegate void EventHandler();
 
-        /// <summary>
-        ///     Occurs when the <see cref="UpdateOrder" /> property changes.
-        /// </summary>
-        event EventHandler UpdateOrderChanged;
+    /// <summary>
+    ///     Represents the method that will handle an event that has no event data.
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
+    /// <param name="sender"></param>
+    public delegate void EventHandler<in TClass>(TClass sender);
 
-        /// <summary>
-        ///     Gets a value indicating whether the game component's Update method should be called.
-        /// </summary>
-        /// <value><c>true</c> if update is enabled; otherwise, <c>false</c>.</value>
-        bool Enabled { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the update order relative to other game components. Lower values are updated first.
-        /// </summary>
-        /// <value>The update order.</value>
-        int UpdateOrder { get; set; }
-
-        /// <summary>
-        ///     This method is called when this game component is updated.
-        /// </summary>
-        /// <param name="gameTime">The current timing.</param>
-        void Update(GameTime gameTime);
-    }
+    /// <summary>
+    ///     Represents the method that will handle an event when the event provides data.
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
+    /// <typeparam name="TEventArgs"></typeparam>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    public delegate void EventHandler<in TClass, in TEventArgs>(TClass sender, TEventArgs e);
 }

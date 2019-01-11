@@ -73,7 +73,7 @@ namespace Exomia.Framework
         ///     Removes the object providing a specified service.
         /// </summary>
         /// <param name="type">The type of service.</param>
-        /// <returns><b>true</b> if succesfully removed; <b>false</b> otherwise</returns>
+        /// <returns><b>true</b> if successfully removed; <b>false</b> otherwise</returns>
         bool RemoveService(Type type);
     }
 }
