@@ -37,7 +37,7 @@ namespace Exomia.Framework
     {
         public event EventHandler DrawOrderChanged;
         public event EventHandler VisibleChanged;
-        
+
         private int _drawOrder;
         private bool _visible;
 

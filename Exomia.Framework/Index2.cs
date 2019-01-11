@@ -132,6 +132,7 @@ namespace Exomia.Framework
             {
                 // ReSharper disable NonReadonlyMemberInGetHashCode
                 return (X.GetHashCode() * 307) ^ Y.GetHashCode();
+
                 // ReSharper restore NonReadonlyMemberInGetHashCode
             }
         }

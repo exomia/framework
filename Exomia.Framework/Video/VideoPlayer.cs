@@ -215,8 +215,8 @@ namespace Exomia.Framework.Video
 
         protected override void OnInitialize(IServiceRegistry registry)
         {
-           _graphicsDevice = registry.GetService<IGraphicsDevice>() ??
-                                             throw new System.NullReferenceException(nameof(IGraphicsDevice));
+            _graphicsDevice = registry.GetService<IGraphicsDevice>() ??
+                              throw new NullReferenceException(nameof(IGraphicsDevice));
 
             _spriteBatch = ToDispose(new SpriteBatch(_graphicsDevice));
             MediaManager.Startup();

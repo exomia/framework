@@ -38,6 +38,7 @@ using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using Message = System.Windows.Forms.Message;
 
 namespace Exomia.Framework.Game
 {
@@ -70,13 +71,13 @@ namespace Exomia.Framework.Game
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private readonly List<IUpdateable> _updateableComponent;
 
-        private DisposeCollector _collector;
-
         private readonly IServiceRegistry _serviceRegistry;
+
+        private DisposeCollector _collector;
         private IContentManager _contentManager;
         private IGameWindow _gameWindow;
         private IGraphicsDevice _graphicsDevice;
-        
+
         private bool _isContentLoaded;
 
         private bool _isInitialized;
@@ -140,9 +141,9 @@ namespace Exomia.Framework.Game
 #endif
 
             _serviceRegistry = new ServiceRegistry();
-            _gameWindow     = new WinFormsGameWindow(title);
-            _graphicsDevice = new GraphicsDevice();
-            _contentManager = new ContentManager(_serviceRegistry);
+            _gameWindow      = new WinFormsGameWindow(title);
+            _graphicsDevice  = new GraphicsDevice();
+            _contentManager  = new ContentManager(_serviceRegistry);
 
             _serviceRegistry.AddService(_serviceRegistry);
             _serviceRegistry.AddService(_graphicsDevice);
@@ -590,7 +591,7 @@ namespace Exomia.Framework.Game
 
                 if (User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
                 {
-                    System.Windows.Forms.Message message = System.Windows.Forms.Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
+                    Message message = Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
                     if (!Application.FilterMessage(ref message))
                     {
                         User32.TranslateMessage(ref msg);
@@ -689,7 +690,8 @@ namespace Exomia.Framework.Game
             return timer;
         }
 
-        public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback, EventHandler<Timer2> finishedCallback,
+        public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback,
+            EventHandler<Timer2> finishedCallback,
             uint maxIterations, bool removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, finishedCallback, maxIterations) { Enabled = enabled });

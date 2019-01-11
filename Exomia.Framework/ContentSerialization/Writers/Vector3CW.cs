@@ -1,4 +1,5 @@
 ﻿#region MIT License
+
 // Copyright (c) 2019 exomia - Daniel Bätz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,11 +19,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 #endregion
 
 using SharpDX;
 
-namespace Exomia.Framework.ContentSerialization.Writers {
+namespace Exomia.Framework.ContentSerialization.Writers
+{
     sealed class Vector3CW : AContentSerializationWriter<Vector3>
     {
         public override void WriteContext(ContentSerializationContext context, Vector3 obj)

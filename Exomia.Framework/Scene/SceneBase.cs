@@ -41,10 +41,6 @@ namespace Exomia.Framework.Scene
         /// </summary>
         public event SceneStateChangedHandler SceneStateChanged;
 
-        private IInputHandler _inputHandler;
-        private ISceneManager _sceneManager;
-        private IServiceRegistry _registry;
-
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
 
@@ -56,6 +52,10 @@ namespace Exomia.Framework.Scene
 
         private readonly Dictionary<string, IComponent> _sceneComponents;
         private readonly List<IUpdateable> _updateableComponent;
+
+        private IInputHandler _inputHandler;
+        private ISceneManager _sceneManager;
+        private IServiceRegistry _registry;
 
         private DisposeCollector _collector;
 
@@ -107,6 +107,14 @@ namespace Exomia.Framework.Scene
             }
         }
 
+        /// <summary>
+        ///     a instance of <see cref="ISceneManager" /> associated with this instance
+        /// </summary>
+        protected ISceneManager SceneManager
+        {
+            get { return _sceneManager; }
+        }
+
         IInputHandler IScene.InputHandler
         {
             get { return _inputHandler; }
@@ -115,14 +123,6 @@ namespace Exomia.Framework.Scene
         ISceneManager IScene.SceneManager
         {
             set { _sceneManager = value; }
-        }
-
-        /// <summary>
-        ///     a instance of <see cref="ISceneManager"/> associated with this instance
-        /// </summary>
-        protected ISceneManager SceneManager
-        {
-            get { return _sceneManager; }
         }
 
         /// <inheritdoc />
@@ -140,28 +140,6 @@ namespace Exomia.Framework.Scene
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
-        {
-            if (!_isInitialized && _state != SceneState.Initializing)
-            {
-                State = SceneState.Initializing;
-
-                _registry = registry;
-                
-                OnInitialize(registry);
-
-                while (_pendingInitializables.Count != 0)
-                {
-                    _pendingInitializables[0].Initialize(registry);
-                    _pendingInitializables.RemoveAt(0);
-                }
-
-                State          = SceneState.StandBy;
-                _isInitialized = true;
-            }
         }
 
         /// <inheritdoc />
@@ -209,6 +187,28 @@ namespace Exomia.Framework.Scene
                 _currentlyContentableComponent.Clear();
                 _isContentLoaded = false;
                 State            = SceneState.StandBy;
+            }
+        }
+
+        /// <inheritdoc />
+        public void Initialize(IServiceRegistry registry)
+        {
+            if (!_isInitialized && _state != SceneState.Initializing)
+            {
+                State = SceneState.Initializing;
+
+                _registry = registry;
+
+                OnInitialize(registry);
+
+                while (_pendingInitializables.Count != 0)
+                {
+                    _pendingInitializables[0].Initialize(registry);
+                    _pendingInitializables.RemoveAt(0);
+                }
+
+                State          = SceneState.StandBy;
+                _isInitialized = true;
             }
         }
 

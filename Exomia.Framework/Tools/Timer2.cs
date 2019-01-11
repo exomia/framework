@@ -33,10 +33,10 @@ namespace Exomia.Framework.Tools
     {
         /// <inheritdoc />
         public event EventHandler EnabledChanged;
-        
+
         /// <inheritdoc />
         public event EventHandler UpdateOrderChanged;
-        
+
         /// <summary>
         ///     timer finished event
         /// </summary>
@@ -123,7 +123,8 @@ namespace Exomia.Framework.Tools
         /// <param name="tickCallback">callback for each tick event</param>
         /// <param name="finishedCallback">callback for timer finished</param>
         /// <param name="maxIterations">set the max iteration count for this timer or 0 for unlimited</param>
-        public Timer2(float tick, EventHandler<Timer2> tickCallback, EventHandler<Timer2> finishedCallback, uint maxIterations)
+        public Timer2(float tick, EventHandler<Timer2> tickCallback, EventHandler<Timer2> finishedCallback,
+            uint maxIterations)
             : this(tick, tickCallback, maxIterations)
         {
             TimerFinished += finishedCallback;
