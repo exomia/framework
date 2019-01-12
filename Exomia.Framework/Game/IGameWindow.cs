@@ -29,6 +29,10 @@ using SharpDX.Windows;
 
 namespace Exomia.Framework.Game
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     IGameWindow interface
+    /// </summary>
     public interface IGameWindow : IDisposable
     {
         int Height { get; }
@@ -43,6 +47,10 @@ namespace Exomia.Framework.Game
         void Resize(int width, int height);
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    ///     IWinFormsGameWindow interface
+    /// </summary>
     public interface IWinFormsGameWindow : IGameWindow
     {
         RenderForm RenderForm { get; }
