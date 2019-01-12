@@ -13,6 +13,10 @@ PM> Install-Package Exomia.Framework
 
 ## Changelog
 
+### v1.0.0.10
+
+	- breaking change IService registry will be passed to the interface IContentable -> LoadContent and UnloadContent method
+
 ### v1.0.0.7
 
 	- new project configuration
