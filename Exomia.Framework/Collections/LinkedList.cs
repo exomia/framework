@@ -124,7 +124,7 @@ namespace Exomia.Framework.Collections
 
         public sealed class LinkedListNode
         {
-            internal T Item;
+            public T Item;
             internal LinkedListNode Next;
             internal LinkedListNode Previous;
 

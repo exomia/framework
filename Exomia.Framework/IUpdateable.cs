@@ -22,7 +22,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
@@ -35,12 +34,12 @@ namespace Exomia.Framework
         /// <summary>
         ///     Occurs when the <see cref="Enabled" /> property changes.
         /// </summary>
-        event EventHandler<EventArgs> EnabledChanged;
+        event EventHandler EnabledChanged;
 
         /// <summary>
         ///     Occurs when the <see cref="UpdateOrder" /> property changes.
         /// </summary>
-        event EventHandler<EventArgs> UpdateOrderChanged;
+        event EventHandler UpdateOrderChanged;
 
         /// <summary>
         ///     Gets a value indicating whether the game component's Update method should be called.

@@ -22,38 +22,30 @@
 
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using SharpDX;
 
-namespace Exomia.Framework.WinApi
+namespace Exomia.Framework.Native
 {
-    static class User32
+    /// <summary>
+    ///     Memory utils
+    /// </summary>
+    static unsafe class Mem
     {
+        /// <summary>
+        ///     memcpy call
+        ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
+        ///     destination.
+        /// </summary>
+        /// <param name="dest">destination ptr</param>
+        /// <param name="src">source ptr</param>
+        /// <param name="count">count of bytes to copy</param>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("User32.dll", SetLastError = true)]
-        internal static extern int DispatchMessage(ref MSG lpMsg);
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport("User32.dll", SetLastError = true)]
-        internal static extern int PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin,
-            uint wMsgFilterMax,
-            uint wRemoveMsg);
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport("User32.dll", SetLastError = true)]
-        internal static extern int TranslateMessage(ref MSG lpMsg);
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct MSG
-        {
-            public IntPtr hWnd;
-            public int message;
-            public IntPtr wParam;
-            public IntPtr lParam;
-            public uint time;
-            public Point pt;
-        }
+        [DllImport(
+            "msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        public static extern void Cpy(
+            void* dest,
+            void* src,
+            int count);
     }
 }

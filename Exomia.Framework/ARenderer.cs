@@ -35,10 +35,10 @@ namespace Exomia.Framework
     /// <inheritdoc cref="IDisposable" />
     public abstract class ARenderer : IComponent, IInitializable, IDrawable, IDisposable
     {
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
-        private int _drawOrder;
+        public event EventHandler DrawOrderChanged;
+        public event EventHandler VisibleChanged;
 
+        private int _drawOrder;
         private bool _visible;
 
         /// <inheritdoc />
@@ -50,7 +50,7 @@ namespace Exomia.Framework
                 if (_drawOrder != value)
                 {
                     _drawOrder = value;
-                    DrawOrderChanged?.Invoke(this, EventArgs.Empty);
+                    DrawOrderChanged?.Invoke();
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace Exomia.Framework
                 if (_visible != value)
                 {
                     _visible = value;
-                    VisibleChanged?.Invoke(this, EventArgs.Empty);
+                    VisibleChanged?.Invoke();
                 }
             }
         }

@@ -60,7 +60,8 @@ namespace Exomia.Framework.Scene
 
         string[] ReferenceScenes { get; }
 
-        ISceneManager SceneManager { get; set; }
+        ISceneManager SceneManager { set; }
+
         SceneState State { get; }
 
         /// <summary>

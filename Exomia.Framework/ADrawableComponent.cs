@@ -24,7 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
@@ -36,8 +35,8 @@ namespace Exomia.Framework
     /// </summary>
     public abstract class ADrawableComponent : AComponent, IDrawable
     {
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
+        public event EventHandler DrawOrderChanged;
+        public event EventHandler VisibleChanged;
 
         private int _drawOrder;
         private bool _visible;
@@ -51,7 +50,7 @@ namespace Exomia.Framework
                 if (_drawOrder != value)
                 {
                     _drawOrder = value;
-                    DrawOrderChanged?.Invoke(this, EventArgs.Empty);
+                    DrawOrderChanged?.Invoke();
                 }
             }
         }
@@ -65,7 +64,7 @@ namespace Exomia.Framework
                 if (_visible != value)
                 {
                     _visible = value;
-                    VisibleChanged?.Invoke(this, EventArgs.Empty);
+                    VisibleChanged?.Invoke();
                 }
             }
         }
@@ -73,10 +72,6 @@ namespace Exomia.Framework
         /// <inheritdoc />
         protected ADrawableComponent(string name)
             : base(name) { }
-
-        /// <inheritdoc />
-        protected ADrawableComponent(Game.Game game, string name)
-            : base(game, name) { }
 
         /// <inheritdoc />
         public virtual bool BeginDraw()

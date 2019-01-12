@@ -55,7 +55,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// <summary>
         ///     the magic header for the compressed e1 extension
         /// </summary>
-        public static readonly byte[] MagicHeader = { 64, 101, 120, 49 };
+        private static readonly byte[] s_magicHeader = { 64, 101, 120, 49 };
 
         /// <summary>
         ///     compress a given stream with the given compression mode
@@ -74,7 +74,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
                 stream.Position = 0;
 
                 streamOut = new MemoryStream();
-                streamOut.Write(MagicHeader, 0, MagicHeader.Length);
+                streamOut.Write(s_magicHeader, 0, s_magicHeader.Length);
                 streamOut.WriteByte((byte)compressMode);
 
                 switch (compressMode)
@@ -103,9 +103,9 @@ namespace Exomia.Framework.ContentSerialization.Compression
             {
                 stream.Position = 0;
 
-                byte[] buffer = new byte[MagicHeader.Length];
-                if (stream.Read(buffer, 0, buffer.Length) != MagicHeader.Length
-                    && !MagicHeader.SequenceEqual(buffer)) { return false; }
+                byte[] buffer = new byte[s_magicHeader.Length];
+                if (stream.Read(buffer, 0, buffer.Length) != s_magicHeader.Length
+                    && !s_magicHeader.SequenceEqual(buffer)) { return false; }
 
                 switch ((CompressMode)stream.ReadByte())
                 {

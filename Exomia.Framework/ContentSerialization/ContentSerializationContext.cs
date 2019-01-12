@@ -74,8 +74,6 @@ namespace Exomia.Framework.ContentSerialization
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
 
-            //if (obj == null) { throw new ArgumentNullException("obj", "Key: " + key); }
-
             if (!Content.ContainsKey(key))
             {
                 Content.Add(key, new ContentSerializationContextValue(type, obj));

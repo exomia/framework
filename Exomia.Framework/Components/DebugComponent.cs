@@ -53,7 +53,6 @@ namespace Exomia.Framework.Components
         private float _fpsCurrent;
         private string _fpsInfo = string.Empty;
 
-        private IContentManager _contentManager;
         private IGameWindow _gameWindow;
         private string _gpuName = string.Empty;
 
@@ -170,8 +169,6 @@ namespace Exomia.Framework.Components
 
         protected override void OnInitialize(IServiceRegistry registry)
         {
-            _contentManager = registry.GetService<IContentManager>();
-
             IGameWindow gameWindow = registry.GetService<IGameWindow>();
             _title      = gameWindow.Title;
             _gameWindow = gameWindow;
@@ -186,7 +183,8 @@ namespace Exomia.Framework.Components
             _ramPerformanceCounter1 = new PerformanceCounter(nameof(Process), "Working Set", pName, true);
             _totalMemoryBytes       = (long)_ramPerformanceCounter1.NextValue();
 
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(
+                registry.GetService<IGraphicsDevice>() ?? throw new NullReferenceException(nameof(IGraphicsDevice)));
 
             _position1 = new Vector2(10, 20);
             _position2 = new Vector2(10, 80);
@@ -195,9 +193,11 @@ namespace Exomia.Framework.Components
             Diagnostic.Diagnostic.GetGpuProperty(nameof(Name), out _gpuName);
         }
 
-        protected override void OnLoadContent()
+        protected override void OnLoadContent(IServiceRegistry registry)
         {
-            _arial12Px = _contentManager.Load<SpriteFont>("Resources.arial_ansi_12px.e1", true);
+            _arial12Px = (registry.GetService<IContentManager>() ??
+                          throw new NullReferenceException(nameof(IContentManager)))
+                .Load<SpriteFont>("Resources.fonts.arial.arial_12px.e1", true);
         }
     }
 }

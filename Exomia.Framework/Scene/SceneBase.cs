@@ -41,18 +41,6 @@ namespace Exomia.Framework.Scene
         /// </summary>
         public event SceneStateChangedHandler SceneStateChanged;
 
-        /// <summary>
-        /// </summary>
-        protected IInputHandler _inputHandler;
-
-        /// <summary>
-        /// </summary>
-        protected IServiceRegistry _registry;
-
-        /// <summary>
-        /// </summary>
-        protected ISceneManager _sceneManager;
-
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
 
@@ -64,6 +52,10 @@ namespace Exomia.Framework.Scene
 
         private readonly Dictionary<string, IComponent> _sceneComponents;
         private readonly List<IUpdateable> _updateableComponent;
+
+        private IInputHandler _inputHandler;
+        private ISceneManager _sceneManager;
+        private IServiceRegistry _registry;
 
         private DisposeCollector _collector;
 
@@ -115,6 +107,14 @@ namespace Exomia.Framework.Scene
             }
         }
 
+        /// <summary>
+        ///     a instance of <see cref="ISceneManager" /> associated with this instance
+        /// </summary>
+        protected ISceneManager SceneManager
+        {
+            get { return _sceneManager; }
+        }
+
         IInputHandler IScene.InputHandler
         {
             get { return _inputHandler; }
@@ -122,7 +122,6 @@ namespace Exomia.Framework.Scene
 
         ISceneManager IScene.SceneManager
         {
-            get { return _sceneManager; }
             set { _sceneManager = value; }
         }
 
@@ -144,12 +143,12 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public void LoadContent()
+        public void LoadContent(IServiceRegistry registry)
         {
             if (_isInitialized && !_isContentLoaded && _state != SceneState.ContentLoading)
             {
                 State = SceneState.ContentLoading;
-                OnLoadContent();
+                OnLoadContent(registry);
 
                 lock (_contentableComponent)
                 {
@@ -158,7 +157,7 @@ namespace Exomia.Framework.Scene
 
                 foreach (IContentable contentable in _currentlyContentableComponent)
                 {
-                    contentable.LoadContent();
+                    contentable.LoadContent(registry);
                 }
 
                 _currentlyContentableComponent.Clear();
@@ -168,12 +167,12 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public void UnloadContent()
+        public void UnloadContent(IServiceRegistry registry)
         {
             if (_isContentLoaded && _state == SceneState.Ready)
             {
                 State = SceneState.ContentUnloading;
-                OnUnloadContent();
+                OnUnloadContent(registry);
 
                 lock (_contentableComponent)
                 {
@@ -182,7 +181,7 @@ namespace Exomia.Framework.Scene
 
                 foreach (IContentable contentable in _currentlyContentableComponent)
                 {
-                    contentable.UnloadContent();
+                    contentable.UnloadContent(registry);
                 }
 
                 _currentlyContentableComponent.Clear();
@@ -196,10 +195,11 @@ namespace Exomia.Framework.Scene
         {
             if (!_isInitialized && _state != SceneState.Initializing)
             {
-                State     = SceneState.Initializing;
+                State = SceneState.Initializing;
+
                 _registry = registry;
 
-                OnInitialize();
+                OnInitialize(registry);
 
                 while (_pendingInitializables.Count != 0)
                 {
@@ -313,7 +313,7 @@ namespace Exomia.Framework.Scene
                     }
                     if (_isContentLoaded)
                     {
-                        contentable.LoadContent();
+                        contentable.LoadContent(_registry);
                     }
                 }
             }
@@ -381,7 +381,7 @@ namespace Exomia.Framework.Scene
                     {
                         _contentableComponent.Remove(contentable);
                     }
-                    contentable.UnloadContent();
+                    contentable.UnloadContent(_registry);
                 }
             }
 
@@ -429,15 +429,15 @@ namespace Exomia.Framework.Scene
 
         /// <summary>
         /// </summary>
-        protected virtual void OnLoadContent() { }
+        protected virtual void OnInitialize(IServiceRegistry registry) { }
 
         /// <summary>
         /// </summary>
-        protected virtual void OnUnloadContent() { }
+        protected virtual void OnLoadContent(IServiceRegistry registry) { }
 
         /// <summary>
         /// </summary>
-        protected virtual void OnInitialize() { }
+        protected virtual void OnUnloadContent(IServiceRegistry registry) { }
 
         /// <summary>
         ///     called than all referenced scenes are loaded.
@@ -461,14 +461,20 @@ namespace Exomia.Framework.Scene
             return _collector.Collect(obj);
         }
 
-        private void DrawableComponent_DrawOrderChanged(object sender, EventArgs e)
+        private void UpdateableComponent_UpdateOrderChanged()
         {
-            _updateableComponent.Sort(UpdateableComparer.Default);
+            lock (_updateableComponent)
+            {
+                _updateableComponent.Sort(UpdateableComparer.Default);
+            }
         }
 
-        private void UpdateableComponent_UpdateOrderChanged(object sender, EventArgs e)
+        private void DrawableComponent_DrawOrderChanged()
         {
-            _drawableComponent.Sort(DrawableComparer.Default);
+            lock (_updateableComponent)
+            {
+                _drawableComponent.Sort(DrawableComparer.Default);
+            }
         }
 
         #region Input Events

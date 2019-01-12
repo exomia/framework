@@ -43,7 +43,7 @@ namespace Exomia.Framework.Graphics
             IGraphicsDevice graphicsDevice = contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
             if (graphicsDevice == null)
             {
-                throw new InvalidOperationException("Unable to retrieve a IGraphicsDevice");
+                throw new InvalidOperationException($"Unable to retrieve a {nameof(IGraphicsDevice)}");
             }
 
             try
@@ -75,7 +75,7 @@ namespace Exomia.Framework.Graphics
                 contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
             if (manager == null)
             {
-                throw new InvalidOperationException("Unable to retrieve a ITextureContentManager");
+                throw new InvalidOperationException($"Unable to retrieve a {nameof(ITexture2ContentManager)}");
             }
 
             try

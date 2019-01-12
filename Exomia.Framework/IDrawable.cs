@@ -22,7 +22,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
@@ -33,14 +32,14 @@ namespace Exomia.Framework
     public interface IDrawable
     {
         /// <summary>
-        ///     Occurs when the <see cref="DrawOrder" /> property changes.
-        /// </summary>
-        event EventHandler<EventArgs> DrawOrderChanged;
-
-        /// <summary>
         ///     Occurs when the <see cref="Visible" /> property changes.
         /// </summary>
-        event EventHandler<EventArgs> VisibleChanged;
+        event EventHandler VisibleChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="DrawOrder" /> property changes.
+        /// </summary>
+        event EventHandler DrawOrderChanged;
 
         /// <summary>
         ///     Gets the draw order relative to other objects. <see cref="IDrawable" /> objects with a lower value are drawn first.

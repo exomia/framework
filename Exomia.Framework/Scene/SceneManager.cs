@@ -58,8 +58,8 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     Initializes a new instance of the <see cref="SceneManager" /> class.
         /// </summary>
-        public SceneManager(Game.Game game, SceneBase startScene, string name = "SceneManager")
-            : base(game, name)
+        public SceneManager(SceneBase startScene, string name = "SceneManager")
+            : base(name)
         {
             if (startScene == null) { throw new ArgumentNullException(nameof(startScene)); }
             _scenes        = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
@@ -130,7 +130,7 @@ namespace Exomia.Framework.Scene
             HideScene(scene);
 
             _scenes.Remove(key);
-            scene.UnloadContent();
+            scene.UnloadContent(_registry);
             scene.Dispose();
 
             return true;
@@ -181,7 +181,7 @@ namespace Exomia.Framework.Scene
                                 }
                                 if (!isReferenced)
                                 {
-                                    uScene.UnloadContent();
+                                    uScene.UnloadContent(_registry);
                                     _scenesToUnload.RemoveAt(i);
                                 }
                             }
@@ -202,7 +202,7 @@ namespace Exomia.Framework.Scene
                             }
                             if (rScene.State == SceneState.StandBy)
                             {
-                                rScene.LoadContent();
+                                rScene.LoadContent(_registry);
                             }
                         }
                         scene.ReferenceScenesLoaded();
@@ -309,7 +309,7 @@ namespace Exomia.Framework.Scene
             lock (_pendingInitializableScenes)
             {
                 _pendingInitializableScenes[0].Initialize(registry);
-                _pendingInitializableScenes[0].LoadContent();
+                _pendingInitializableScenes[0].LoadContent(registry);
                 _pendingInitializableScenes.RemoveAt(0);
 
                 while (_pendingInitializableScenes.Count != 0)
@@ -342,7 +342,7 @@ namespace Exomia.Framework.Scene
 
                 foreach (IScene scene in _scenes.Values)
                 {
-                    scene.UnloadContent();
+                    scene.UnloadContent(_registry);
                     scene.Dispose();
                 }
 

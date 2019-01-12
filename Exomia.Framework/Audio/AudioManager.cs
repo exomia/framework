@@ -33,13 +33,9 @@ using SharpDX.XAudio2;
 namespace Exomia.Framework.Audio
 {
     /// <inheritdoc />
-    /// <summary>
-    ///     AudioManager class
-    /// </summary>
-    public sealed class AudioManager : IDisposable
+    public sealed class AudioManager : IAudioManager
     {
-        private readonly int _inputChannelCount = 2;
-        private readonly int _inputSampleRate = 44100;
+        private readonly int _inputChannelCount;
 
         private readonly Listener _listener;
         private float _bgmVolume = 1.0f;
@@ -65,9 +61,7 @@ namespace Exomia.Framework.Audio
 
         private XAudio2 _xAudio2;
 
-        /// <summary>
-        ///     BGMVolume
-        /// </summary>
+        /// <inheritdoc />
         public float BgmVolume
         {
             get { return _bgmVolume; }
@@ -81,9 +75,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     EnvironmentVolume
-        /// </summary>
+        /// <inheritdoc />
         public float EnvironmentVolume
         {
             get { return _envVolume; }
@@ -94,9 +86,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     FXVolume
-        /// </summary>
+        /// <inheritdoc />
         public float FxVolume
         {
             get { return _fxVolume; }
@@ -107,9 +97,18 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     ListenerPosition
-        /// </summary>
+        /// <inheritdoc />
+        public float MasterVolume
+        {
+            get { return _masterVolume; }
+            set
+            {
+                _masterVolume = MathUtil.Clamp(value, 0.0f, 1.0f);
+                _masteringVoice?.SetVolume(_masterVolume);
+            }
+        }
+
+        /// <inheritdoc />
         public Vector3 ListenerPosition
         {
             get { return _listener.Position; }
@@ -121,9 +120,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     ListenerVelocity
-        /// </summary>
+        /// <inheritdoc />
         public Vector3 ListenerVelocity
         {
             get { return _listener.Velocity; }
@@ -135,26 +132,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     MasterVolume
-        /// </summary>
-        public float MasterVolume
-        {
-            get { return _masterVolume; }
-            set
-            {
-                _masterVolume = MathUtil.Clamp(value, 0.0f, 1.0f);
-                _masteringVoice?.SetVolume(_masterVolume);
-            }
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AudioManager" /> class.
-        /// </summary>
-        /// <param name="listener"></param>
-        /// <param name="fxSoundPoolLimit"></param>
-        /// <param name="speakers"></param>
-        /// <param name="deviceID"></param>
+        /// <inheritdoc />
         public AudioManager(Listener listener, int fxSoundPoolLimit, Speakers speakers, string deviceID = null)
         {
             _listener = listener;
@@ -193,31 +171,18 @@ namespace Exomia.Framework.Audio
 
             _masteringVoice.GetVoiceDetails(out VoiceDetails details);
             _inputChannelCount = details.InputChannelCount;
-            _inputSampleRate   = details.InputSampleRate;
 
-            _fxSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, _inputSampleRate);
+            _fxSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, details.InputSampleRate);
             _fxSubmixVoice.SetVolume(_fxVolume);
 
-            _envSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, _inputSampleRate);
+            _envSubmixVoice = new SubmixVoice(_xAudio2, _inputChannelCount, details.InputSampleRate);
             _envSubmixVoice.SetVolume(_envVolume);
 
             _fxVoiceSendDescriptor  = new VoiceSendDescriptor(VoiceSendFlags.None, _fxSubmixVoice);
             _envVoiceSendDescriptor = new VoiceSendDescriptor(VoiceSendFlags.None, _envSubmixVoice);
         }
 
-        /// <summary>
-        ///     destructor
-        /// </summary>
-        ~AudioManager()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
-        ///     load a sound from a given stream and returns the sound id
-        /// </summary>
-        /// <param name="stream">sound stream to load the sound from</param>
-        /// <returns>sound id</returns>
+        /// <inheritdoc />
         public int LoadSound(Stream stream)
         {
             using (SoundStream soundStream = new SoundStream(stream))
@@ -241,9 +206,7 @@ namespace Exomia.Framework.Audio
             return _soundBufferIndex++;
         }
 
-        /// <summary>
-        ///     pause a bgm song
-        /// </summary>
+        /// <inheritdoc />
         public void PauseBgm()
         {
             if (_currentBgm?.State.BuffersQueued > 0)
@@ -252,9 +215,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     pause all environment sounds
-        /// </summary>
+        /// <inheritdoc />
         public void PauseEnvSounds()
         {
             foreach (Sound sound in _envLinkedSoundList.Enumerate())
@@ -263,9 +224,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     pause all fx sounds
-        /// </summary>
+        /// <inheritdoc />
         public void PauseFxSounds()
         {
             foreach (Sound sound in _fxLinkedSoundList.Enumerate())
@@ -274,14 +233,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     play an environment sound
-        /// </summary>
-        /// <param name="soundID">the sound id</param>
-        /// <param name="emitterPos">emitter position</param>
-        /// <param name="volume">volume</param>
-        /// <param name="maxDistance">max distance to hear the sound</param>
-        /// <param name="onFxEnd">called than the sound ends</param>
+        /// <inheritdoc />
         public void PlayEnvSound(int soundID, Vector3 emitterPos, float volume, float maxDistance,
             Action<IntPtr> onFxEnd = null)
         {
@@ -289,26 +241,7 @@ namespace Exomia.Framework.Audio
                 soundID, emitterPos, volume, maxDistance, _envLinkedSoundList, ref _envVoiceSendDescriptor, onFxEnd);
         }
 
-        /// <summary>
-        ///     play an environment sound
-        /// </summary>
-        /// <param name="soundID">the sound id</param>
-        /// <param name="emitter">the emitter</param>
-        /// <param name="volume">volume</param>
-        /// <param name="onFxEnd">called than the sound ends</param>
-        public void PlayEnvSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null)
-        {
-            PlaySound(soundID, emitter, volume, _envLinkedSoundList, ref _envVoiceSendDescriptor, onFxEnd);
-        }
-
-        /// <summary>
-        ///     play a fx sound
-        /// </summary>
-        /// <param name="soundID">the sound id</param>
-        /// <param name="emitterPos">emitter position</param>
-        /// <param name="volume">volume</param>
-        /// <param name="maxDistance">max distance to hear the sound</param>
-        /// <param name="onFxEnd">called than the sound ends</param>
+        /// <inheritdoc />
         public void PlayFxSound(int soundID, Vector3 emitterPos, float volume, float maxDistance,
             Action<IntPtr> onFxEnd = null)
         {
@@ -320,13 +253,13 @@ namespace Exomia.Framework.Audio
                 soundID, emitterPos, volume, maxDistance, _fxLinkedSoundList, ref _fxVoiceSendDescriptor, onFxEnd);
         }
 
-        /// <summary>
-        ///     play a fx sound
-        /// </summary>
-        /// <param name="soundID">the sound id</param>
-        /// <param name="emitter">the emitter</param>
-        /// <param name="volume">volume</param>
-        /// <param name="onFxEnd">called than the sound ends</param>
+        /// <inheritdoc />
+        public void PlayEnvSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null)
+        {
+            PlaySound(soundID, emitter, volume, _envLinkedSoundList, ref _envVoiceSendDescriptor, onFxEnd);
+        }
+
+        /// <inheritdoc />
         public void PlayFxSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null)
         {
             if (_fxLinkedSoundList.Count >= _fxLinkedSoundList.Capacity)
@@ -336,9 +269,7 @@ namespace Exomia.Framework.Audio
             PlaySound(soundID, emitter, volume, _fxLinkedSoundList, ref _fxVoiceSendDescriptor, onFxEnd);
         }
 
-        /// <summary>
-        ///     resume a bgm song
-        /// </summary>
+        /// <inheritdoc />
         public void ResumeBgm()
         {
             if (_currentBgm?.State.BuffersQueued > 0)
@@ -347,9 +278,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     resume all environment sounds
-        /// </summary>
+        /// <inheritdoc />
         public void ResumeEnvSounds()
         {
             foreach (Sound sound in _envLinkedSoundList.Enumerate())
@@ -358,9 +287,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     resume all fx sounds
-        /// </summary>
+        /// <inheritdoc />
         public void ResumeFxSounds()
         {
             foreach (Sound sound in _fxLinkedSoundList.Enumerate())
@@ -369,11 +296,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     starts a back ground music song
-        /// </summary>
-        /// <param name="songID">the song id</param>
-        /// <param name="onBgmEnd">called than the song ends</param>
+        /// <inheritdoc />
         public void RunBgm(int songID, Action<IntPtr> onBgmEnd = null)
         {
             if (!_soundBuffer.TryGetValue(songID, out SoundBuffer buffer))
@@ -402,9 +325,7 @@ namespace Exomia.Framework.Audio
             _currentBgm.Start();
         }
 
-        /// <summary>
-        ///     stop a bgm song
-        /// </summary>
+        /// <inheritdoc />
         public void StopBgm()
         {
             if (_currentBgm?.State.BuffersQueued > 0)
@@ -415,9 +336,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     stops all environment sounds
-        /// </summary>
+        /// <inheritdoc />
         public void StopEnvSounds()
         {
             foreach (Sound sound in _envLinkedSoundList.Enumerate())
@@ -428,9 +347,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     stops all fx sounds
-        /// </summary>
+        /// <inheritdoc />
         public void StopFxSounds()
         {
             foreach (Sound sound in _fxLinkedSoundList.Enumerate())
@@ -441,9 +358,7 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     unload all loaded sounds and free resources
-        /// </summary>
+        /// <inheritdoc />
         public void UnloadAll()
         {
             StopBgm();
@@ -451,11 +366,7 @@ namespace Exomia.Framework.Audio
             _soundBufferIndex = 0;
         }
 
-        /// <summary>
-        ///     unload a sound and free resources from a given sound id
-        /// </summary>
-        /// <param name="soundID">the sound id</param>
-        /// <returns><c>true</c>if sound was deleted successfully; <c>false</c> otherwise.</returns>
+        /// <inheritdoc />
         public bool UnloadSound(int soundID)
         {
             return _soundBuffer.Remove(soundID);
@@ -606,6 +517,12 @@ namespace Exomia.Framework.Audio
 
                 _disposed = true;
             }
+        }
+
+        /// <inheritdoc />
+        ~AudioManager()
+        {
+            Dispose(false);
         }
 
         /// <inheritdoc />

@@ -22,14 +22,26 @@
 
 #endregion
 
-using System;
-using System.Runtime.InteropServices;
-
-namespace Exomia.Framework.WinApi
+namespace Exomia.Framework
 {
-    static class Kernel32
-    {
-        [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
-        internal static extern bool SetEvent(IntPtr hEvent);
-    }
+    /// <summary>
+    ///     Represents the method that will handle an event that has no event data and no sender specified.
+    /// </summary>
+    public delegate void EventHandler();
+
+    /// <summary>
+    ///     Represents the method that will handle an event that has no event data.
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
+    /// <param name="sender"></param>
+    public delegate void EventHandler<in TClass>(TClass sender);
+
+    /// <summary>
+    ///     Represents the method that will handle an event when the event provides data.
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
+    /// <typeparam name="TEventArgs"></typeparam>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    public delegate void EventHandler<in TClass, in TEventArgs>(TClass sender, TEventArgs e);
 }

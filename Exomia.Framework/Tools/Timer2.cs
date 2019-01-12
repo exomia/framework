@@ -22,34 +22,30 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Tools
 {
-    /// <summary>
-    /// </summary>
-    /// <param name="timer">sender instance</param>
-    public delegate void TimerEvent(Timer2 timer);
-
     /// <inheritdoc />
     /// <summary>
     /// </summary>
     public sealed class Timer2 : IUpdateable
     {
         /// <inheritdoc />
-        public event EventHandler<EventArgs> EnabledChanged;
-
-        /// <summary>
-        /// </summary>
-        public event TimerEvent TimerFinished;
-
-        /// <summary>
-        /// </summary>
-        public event TimerEvent TimerTicked;
+        public event EventHandler EnabledChanged;
 
         /// <inheritdoc />
-        public event EventHandler<EventArgs> UpdateOrderChanged;
+        public event EventHandler UpdateOrderChanged;
+
+        /// <summary>
+        ///     timer finished event
+        /// </summary>
+        public event EventHandler<Timer2> TimerFinished;
+
+        /// <summary>
+        ///     timer ticked event
+        /// </summary>
+        public event EventHandler<Timer2> TimerTicked;
 
         private readonly uint _maxIterations;
         private float _elapsedTime;
@@ -71,7 +67,7 @@ namespace Exomia.Framework.Tools
                 if (_enabled != value)
                 {
                     _enabled = value;
-                    EnabledChanged?.Invoke(this, EventArgs.Empty);
+                    EnabledChanged?.Invoke();
                 }
             }
         }
@@ -90,7 +86,7 @@ namespace Exomia.Framework.Tools
                 if (_updateOrder != value)
                 {
                     _updateOrder = value;
-                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                    UpdateOrderChanged?.Invoke();
                 }
             }
         }
@@ -113,7 +109,7 @@ namespace Exomia.Framework.Tools
         /// <param name="tick">time in ms after a timer Tick occurs</param>
         /// <param name="tickCallback">callback for each tick event</param>
         /// <param name="maxIterations">set the max iteration count for this timer or 0 for unlimited</param>
-        public Timer2(float tick, TimerEvent tickCallback, uint maxIterations = 0)
+        public Timer2(float tick, EventHandler<Timer2> tickCallback, uint maxIterations = 0)
             : this(tick, maxIterations)
         {
             TimerTicked += tickCallback;
@@ -127,7 +123,8 @@ namespace Exomia.Framework.Tools
         /// <param name="tickCallback">callback for each tick event</param>
         /// <param name="finishedCallback">callback for timer finished</param>
         /// <param name="maxIterations">set the max iteration count for this timer or 0 for unlimited</param>
-        public Timer2(float tick, TimerEvent tickCallback, TimerEvent finishedCallback, uint maxIterations)
+        public Timer2(float tick, EventHandler<Timer2> tickCallback, EventHandler<Timer2> finishedCallback,
+            uint maxIterations)
             : this(tick, tickCallback, maxIterations)
         {
             TimerFinished += finishedCallback;
