@@ -37,6 +37,7 @@ namespace Exomia.Framework.Game
     {
         private RenderForm _renderForm;
 
+        public int Width { get; private set; }
         public int Height { get; private set; }
 
         public bool IsInitialized { get; private set; }
@@ -57,8 +58,6 @@ namespace Exomia.Framework.Game
                 }
             }
         }
-
-        public int Width { get; private set; }
 
         public WinFormsGameWindow(string title)
         {
@@ -100,11 +99,10 @@ namespace Exomia.Framework.Game
             if (_renderForm.InvokeRequired)
             {
                 _renderForm.Invoke(
-                    new MethodInvoker(
-                        () =>
-                        {
-                            Resize(width, height);
-                        }));
+                    (MethodInvoker)delegate
+                    {
+                        Resize(width, height);
+                    });
                 return;
             }
             _renderForm.ClientSize = new Size(Width = width, Height = height);

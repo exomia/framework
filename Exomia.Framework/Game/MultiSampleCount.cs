@@ -22,55 +22,31 @@
 
 #endregion
 
-#pragma warning disable 1591
-
-using System;
-using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Device4 = SharpDX.DXGI.Device4;
-
 namespace Exomia.Framework.Game
 {
-    public delegate void ResizeEventHandler(ViewportF viewport);
-
-    public interface IGraphicsDevice : IDisposable
+    /// <summary>
+    ///     MultiSampleCount enum
+    /// </summary>
+    public enum MultiSampleCount
     {
-        event ResizeEventHandler ResizeFinished;
-        bool IsInitialized { get; }
+        /// <summary>
+        ///     disabled
+        /// </summary>
+        None = 0,
 
-        Adapter4 Adapter { get; }
+        /// <summary>
+        ///     msaa x2
+        /// </summary>
+        MsaaX2 = 2,
 
-        Device5 Device { get; }
+        /// <summary>
+        ///     msaa x4
+        /// </summary>
+        MsaaX4 = 4,
 
-        DeviceContext4 DeviceContext { get; }
-
-        Device4 DxgiDevice { get; }
-
-        Factory5 Factory { get; }
-
-        RenderTargetView1 RenderView { get; }
-
-        SwapChain4 SwapChain { get; }
-
-        ViewportF Viewport { get; }
-
-        bool VSync { get; set; }
-
-        void Initialize(ref GameGraphicsParameters parameters);
-
-        bool BeginFrame();
-        void EndFrame();
-
-        void Clear();
-        void Clear(Color color);
-
-        void Resize(ref GameGraphicsParameters parameters);
-        void Resize(int width, int height);
-
-        void SetFullscreenState(bool state, Output output = null);
-        bool GetFullscreenState();
-
-        void SetRenderTarget(RenderTargetView1 target);
+        /// <summary>
+        ///     msaa x8
+        /// </summary>
+        MsaaX8 = 8
     }
 }

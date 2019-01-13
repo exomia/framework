@@ -121,11 +121,11 @@ namespace Exomia.Framework.Components
 
         public override void Update(GameTime gameTime)
         {
-            _elapsed_time += gameTime.AbsoluteDeltaTimeS;
+            _elapsed_time += gameTime.LimitedDeltaTimeS;
 
-            if (_maxFrameTime < gameTime.AbsoluteDeltaTimeMS)
+            if (_maxFrameTime < gameTime.LimitedDeltaTimeMS)
             {
-                _maxFrameTime = gameTime.AbsoluteDeltaTimeMS;
+                _maxFrameTime = gameTime.LimitedDeltaTimeMS;
             }
 
             if (_elapsed_time >= SAMPLE_TIME_RATE)
@@ -153,7 +153,7 @@ namespace Exomia.Framework.Components
                 _fpsInfo =
 
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.AbsoluteDeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
+                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.LimitedDeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
                 _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
                 _maxFrameTime = 0;
                 _firstCalc    = true;

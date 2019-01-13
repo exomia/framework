@@ -125,30 +125,4 @@ namespace Exomia.Framework.Game
         /// </summary>
         public MultiSampleCount MultiSampleCount;
     }
-
-    /// <summary>
-    ///     MultiSampleCount enum
-    /// </summary>
-    public enum MultiSampleCount
-    {
-        /// <summary>
-        ///     disabled
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        ///     msaa x2
-        /// </summary>
-        MsaaX2 = 2,
-
-        /// <summary>
-        ///     msaa x4
-        /// </summary>
-        MsaaX4 = 4,
-
-        /// <summary>
-        ///     msaa x8
-        /// </summary>
-        MsaaX8 = 8
-    }
 }

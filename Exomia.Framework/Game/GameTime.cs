@@ -46,9 +46,15 @@ namespace Exomia.Framework.Game
         private bool _stopped;
         private long _stopTime;
 
-        public float AbsoluteDeltaTimeMS { get; private set; }
+        /// <summary>
+        ///     this value will be limited to <see cref="MAX_FRAME_TIME" /> (1000.0f / 60.0f)
+        /// </summary>
+        public float LimitedDeltaTimeMS { get; private set; }
 
-        public float AbsoluteDeltaTimeS { get; private set; }
+        /// <summary>
+        ///     this value will be limited to <see cref="MAX_FRAME_TIME" /> (1.0f / 60.0f)
+        /// </summary>
+        public float LimitedDeltaTimeS { get; private set; }
 
         public float DeltaTimeMS { get; private set; }
 
@@ -127,23 +133,23 @@ namespace Exomia.Framework.Game
         {
             if (_stopped)
             {
-                AbsoluteDeltaTimeS = AbsoluteDeltaTimeMS = DeltaTimeS = DeltaTimeMS = 0;
+                LimitedDeltaTimeS = LimitedDeltaTimeMS = DeltaTimeS = DeltaTimeMS = 0;
                 return;
             }
-            _currTime   = Stopwatch.GetTimestamp();
+
+            _currTime = Stopwatch.GetTimestamp();
+
             DeltaTimeMS = (float)((_currTime - _prevTime) * _countsPerMSec);
+            DeltaTimeS  = DeltaTimeMS * 0.001f;
 
-            if (DeltaTimeMS < 0) { DeltaTimeMS = 0; }
-
-            AbsoluteDeltaTimeMS = DeltaTimeMS;
-            AbsoluteDeltaTimeS  = DeltaTimeMS / 1000.0f;
-
-            if (DeltaTimeMS > MAX_FRAME_TIME)
+            LimitedDeltaTimeMS = DeltaTimeMS;
+            if (LimitedDeltaTimeMS > MAX_FRAME_TIME)
             {
-                DeltaTimeMS = MAX_FRAME_TIME;
+                LimitedDeltaTimeMS = MAX_FRAME_TIME;
             }
-            DeltaTimeS = DeltaTimeMS / 1000.0f;
-            _prevTime  = _currTime;
+            LimitedDeltaTimeS = LimitedDeltaTimeMS * 0.001f;
+
+            _prevTime = _currTime;
         }
     }
 }
