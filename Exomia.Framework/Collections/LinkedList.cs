@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 
-// TODO: REDESIGN
 namespace Exomia.Framework.Collections
 {
     public sealed class LinkedList<T>
@@ -96,6 +95,19 @@ namespace Exomia.Framework.Collections
             }
         }
 
+        public void Foreach(Action<LinkedListNode> action)
+        {
+            if (action != null && Last != null)
+            {
+                LinkedListNode node = Last.Next;
+                do
+                {
+                    action(node);
+                    node = node.Next;
+                } while (node != Last.Next);
+            }
+        }
+
         public void Remove(LinkedListNode item)
         {
             if (item == null) { throw new ArgumentNullException(nameof(item)); }
@@ -125,8 +137,8 @@ namespace Exomia.Framework.Collections
         public sealed class LinkedListNode
         {
             public T Item;
-            internal LinkedListNode Next;
-            internal LinkedListNode Previous;
+            public LinkedListNode Next { get; internal set; }
+            public LinkedListNode Previous { get; internal set; }
 
             internal LinkedListNode(in T value)
             {
@@ -135,9 +147,13 @@ namespace Exomia.Framework.Collections
 
             internal void Invalidate()
             {
-                Item     = default;
                 Next     = null;
                 Previous = null;
+            }
+
+            public static implicit operator T(LinkedListNode node)
+            {
+                return node.Item;
             }
         }
     }
