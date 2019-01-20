@@ -32,11 +32,9 @@ using Device4 = SharpDX.DXGI.Device4;
 
 namespace Exomia.Framework.Game
 {
-    public delegate void ResizeEventHandler(ViewportF viewport);
-
     public interface IGraphicsDevice : IDisposable
     {
-        event ResizeEventHandler ResizeFinished;
+        event EventHandler<ViewportF> ResizeFinished;
         bool IsInitialized { get; }
 
         Adapter4 Adapter { get; }

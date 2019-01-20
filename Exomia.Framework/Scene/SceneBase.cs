@@ -39,7 +39,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     SceneStateChanged
         /// </summary>
-        public event SceneStateChangedHandler SceneStateChanged;
+        public event EventHandler<SceneBase, SceneState> SceneStateChanged;
 
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;

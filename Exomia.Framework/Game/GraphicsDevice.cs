@@ -47,7 +47,7 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     <see cref="IGraphicsDevice.ResizeFinished" />
         /// </summary>
-        public event ResizeEventHandler ResizeFinished;
+        public event EventHandler<ViewportF> ResizeFinished;
 
         private Adapter4 _adapter4;
         private RenderTargetView1 _currentRenderView;
