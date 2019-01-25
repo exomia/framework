@@ -148,6 +148,15 @@ namespace Exomia.Framework.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddRange(int index, T[] items)
+        {
+            if (Count + items.Length == _items.Length) { EnsureCapacity(Count + items.Length); }
+            if (index < Count) { Buffer.BlockCopy(_items, index, _items, index + items.Length, (Count - (index + items.Length)) * _sizeOf); }
+            Buffer.BlockCopy(items, 0, _items, index, items.Length * _sizeOf);
+            Count += items.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (Count > 0)

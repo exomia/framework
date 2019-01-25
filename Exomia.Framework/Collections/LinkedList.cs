@@ -25,20 +25,26 @@
 #pragma warning disable 1591
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Exomia.Framework.Collections
 {
-    public sealed class LinkedList<T>
+    public sealed class LinkedList<T> : IEnumerable<T>
     {
+        private LinkedListNode _head;
+
         public uint Count { get; private set; }
 
         public LinkedListNode First
         {
-            get { return Last?.Next; }
+            get { return _head; }
         }
 
-        public LinkedListNode Last { get; private set; }
+        public LinkedListNode Last
+        {
+            get { return _head?.Previous; }
+        }
 
         public LinkedList() { }
 
@@ -54,18 +60,21 @@ namespace Exomia.Framework.Collections
         public LinkedListNode AddFirst(in T item)
         {
             LinkedListNode node = new LinkedListNode(item);
-            if (Last == null)
+            if (_head == null)
             {
-                node.Next     = node;
+                node.Next = node;
                 node.Previous = node;
-                Last          = node;
+                _head = node;
             }
             else
             {
-                node.Next          = Last.Next;
-                node.Previous      = Last;
-                Last.Next.Previous = node;
-                Last.Next          = node;
+                node.Next = _head;
+                node.Previous = _head.Previous;
+
+                _head.Previous.Next = node;
+                _head.Previous = node;
+
+                _head = node;
             }
             Count++;
             return node;
@@ -73,65 +82,97 @@ namespace Exomia.Framework.Collections
 
         public LinkedListNode AddLast(in T item)
         {
-            return Last = AddFirst(item);
+            LinkedListNode node = new LinkedListNode(item);
+            if (_head == null)
+            {
+                node.Next = node;
+                node.Previous = node;
+                _head = node;
+            }
+            else
+            {
+                node.Next = _head;
+                node.Previous = _head.Previous;
+
+                _head.Previous.Next = node;
+                _head.Previous = node;
+            }
+            Count++;
+            return node;
         }
+
 
         public void Clear()
         {
-            Last  = null;
+            _head = null;
             Count = 0;
         }
 
-        public IEnumerable<LinkedListNode> Enumerate()
+        public IEnumerable<LinkedListNode> AsEnumerable()
         {
-            if (Last != null)
+            if (_head != null)
             {
-                LinkedListNode node = Last.Next;
+                LinkedListNode node = _head;
                 do
                 {
                     yield return node;
                     node = node.Next;
-                } while (node != Last.Next);
+                } while (node != _head);
             }
         }
 
-        public void Foreach(Action<LinkedListNode> action)
+        public void ForEach(Action<LinkedListNode> action)
         {
-            if (action != null && Last != null)
+            if (action != null && _head != null)
             {
-                LinkedListNode node = Last.Next;
+                LinkedListNode node = _head;
                 do
                 {
                     action(node);
                     node = node.Next;
-                } while (node != Last.Next);
+                } while (node != _head);
             }
         }
 
-        public void Remove(LinkedListNode item)
+        public void Remove(LinkedListNode node)
         {
-            if (item == null) { throw new ArgumentNullException(nameof(item)); }
-            if (item.Next == item) { Last = null; }
+            if (node == null) { throw new ArgumentNullException(nameof(node)); }
+            if (node.Next == node) { _head = null; }
             else
             {
-                item.Previous.Next = item.Next;
-                item.Next.Previous = item.Previous;
-                if (Last == item) { Last = item.Previous; }
+                node.Previous.Next = node.Next;
+                node.Next.Previous = node.Previous;
+                if (_head == node) { _head = node.Next; }
             }
-            item.Invalidate();
+            node.Invalidate();
             Count--;
         }
 
         public void RemoveFirst()
         {
-            if (Last == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(Last.Next);
+            if (_head == null) { throw new InvalidOperationException("the linked list is empty."); }
+            Remove(_head);
         }
 
         public void RemoveLast()
         {
-            if (Last == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(Last);
+            if (_head == null) { throw new InvalidOperationException("the linked list is empty."); }
+            Remove(_head.Previous);
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+        
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public sealed class LinkedListNode
@@ -147,7 +188,7 @@ namespace Exomia.Framework.Collections
 
             internal void Invalidate()
             {
-                Next     = null;
+                Next = null;
                 Previous = null;
             }
 
@@ -155,6 +196,58 @@ namespace Exomia.Framework.Collections
             {
                 return node.Item;
             }
+        }
+
+        public struct Enumerator : IEnumerator<T>
+        {
+            private readonly LinkedList<T> _list;
+            private LinkedListNode _node;
+            private T _current;
+
+            /// <inheritdoc />
+            public T Current
+            {
+                get { return _current; }
+            }
+
+            /// <inheritdoc />
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            public Enumerator(LinkedList<T> list)
+            {
+                _list = list;
+                _node = list._head;
+                _current = default;
+            }
+
+            /// <inheritdoc />
+            public bool MoveNext()
+            {
+                if (_node == null)
+                {
+                    return false;
+                }
+                _current = _node.Item;
+                _node = _node.Next;
+                if (_node == _list._head)
+                {
+                    _node = null;
+                }
+                return true;
+            }
+
+            /// <inheritdoc />
+            public void Reset()
+            {
+                _current = default;
+                _node = _list._head;
+            }
+
+            /// <inheritdoc />
+            public void Dispose() { }
         }
     }
 }
