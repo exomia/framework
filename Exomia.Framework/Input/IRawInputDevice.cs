@@ -24,10 +24,7 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
-using SharpDX.RawInput;
 
 namespace Exomia.Framework.Input
 {

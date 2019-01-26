@@ -22,14 +22,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using SharpDX;
-using SharpDX.Multimedia;
-using SharpDX.X3DAudio;
-using SharpDX.XAudio2;
-
 namespace Exomia.Framework.Audio
 {
     /// <inheritdoc />

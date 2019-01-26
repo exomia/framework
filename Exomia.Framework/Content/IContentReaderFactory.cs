@@ -22,8 +22,6 @@
 
 #endregion
 
-using System;
-
 namespace Exomia.Framework.Content
 {
     /// <summary>

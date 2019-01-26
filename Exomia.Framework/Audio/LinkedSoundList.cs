@@ -22,12 +22,6 @@
 
 #endregion
 
-using System;
-using SharpDX.X3DAudio;
-using SharpDX.XAudio2;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace Exomia.Framework.Audio
 {
     sealed class LinkedSoundList : IEnumerable<LinkedSoundList.Sound>
@@ -53,7 +47,7 @@ namespace Exomia.Framework.Audio
         public LinkedSoundList(int capacity = int.MaxValue)
         {
             _capacity = capacity;
-            _count = 0;
+            _count    = 0;
             _thisLock = new object();
         }
 
@@ -65,17 +59,17 @@ namespace Exomia.Framework.Audio
 
                 if (_head == null)
                 {
-                    sound.Next = sound;
+                    sound.Next     = sound;
                     sound.Previous = sound;
-                    _head = sound;
+                    _head          = sound;
                 }
                 else
                 {
-                    sound.Next = _head;
+                    sound.Next     = _head;
                     sound.Previous = _head.Previous;
 
                     _head.Previous.Next = sound;
-                    _head.Previous = sound;
+                    _head.Previous      = sound;
                 }
 
                 _count++;
@@ -86,7 +80,7 @@ namespace Exomia.Framework.Audio
         {
             lock (_thisLock)
             {
-                _head = null;
+                _head  = null;
                 _count = 0;
             }
         }
@@ -123,29 +117,6 @@ namespace Exomia.Framework.Audio
             return GetEnumerator();
         }
 
-        internal sealed class Sound
-        {
-            internal readonly Emitter Emitter;
-            internal readonly SourceVoice SourceVoice;
-            internal Sound Next;
-            internal Sound Previous;
-
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="Sound" /> class.
-            /// </summary>
-            public Sound(Emitter emitter, SourceVoice sourceVoice)
-            {
-                Emitter = emitter;
-                SourceVoice = sourceVoice;
-            }
-
-            internal void Invalidate()
-            {
-                Next     = null;
-                Previous = null;
-            }
-        }
-
         public struct Enumerator : IEnumerator<Sound>
         {
             private readonly LinkedSoundList _list;
@@ -165,8 +136,8 @@ namespace Exomia.Framework.Audio
 
             public Enumerator(LinkedSoundList list)
             {
-                _list = list;
-                _node = list._head;
+                _list    = list;
+                _node    = list._head;
                 _current = null;
             }
 
@@ -178,7 +149,7 @@ namespace Exomia.Framework.Audio
                     return false;
                 }
                 _current = _node;
-                _node = _node.Next;
+                _node    = _node.Next;
                 if (_node == _list._head)
                 {
                     _node = null;
@@ -189,12 +160,35 @@ namespace Exomia.Framework.Audio
             /// <inheritdoc />
             public void Reset()
             {
-                _node = _list._head;
+                _node    = _list._head;
                 _current = null;
             }
 
             /// <inheritdoc />
             public void Dispose() { }
+        }
+
+        internal sealed class Sound
+        {
+            internal readonly Emitter Emitter;
+            internal readonly SourceVoice SourceVoice;
+            internal Sound Next;
+            internal Sound Previous;
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="Sound" /> class.
+            /// </summary>
+            public Sound(Emitter emitter, SourceVoice sourceVoice)
+            {
+                Emitter     = emitter;
+                SourceVoice = sourceVoice;
+            }
+
+            internal void Invalidate()
+            {
+                Next     = null;
+                Previous = null;
+            }
         }
     }
 }

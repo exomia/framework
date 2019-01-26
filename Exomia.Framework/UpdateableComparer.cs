@@ -22,8 +22,6 @@
 
 #endregion
 
-using System.Collections.Generic;
-
 namespace Exomia.Framework
 {
     sealed class UpdateableComparer : IComparer<IUpdateable>

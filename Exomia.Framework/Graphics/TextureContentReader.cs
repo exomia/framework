@@ -22,7 +22,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 

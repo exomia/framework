@@ -22,11 +22,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using Exomia.Framework.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.ContentSerialization

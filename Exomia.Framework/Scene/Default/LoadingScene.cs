@@ -22,9 +22,6 @@
 
 #endregion
 
-using System;
-using System.Threading.Tasks;
-
 namespace Exomia.Framework.Scene.Default
 {
     /// <inheritdoc />

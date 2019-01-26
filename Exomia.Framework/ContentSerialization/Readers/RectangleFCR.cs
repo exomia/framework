@@ -22,8 +22,6 @@
 
 #endregion
 
-using SharpDX;
-
 namespace Exomia.Framework.ContentSerialization.Readers
 {
     sealed class RectangleFCR : AContentSerializationReader<RectangleF>

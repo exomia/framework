@@ -22,7 +22,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Content.Resolver;
 using Exomia.Framework.Content.Resolver.EmbeddedResource;
 

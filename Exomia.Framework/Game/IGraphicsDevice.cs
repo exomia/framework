@@ -24,10 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using Device4 = SharpDX.DXGI.Device4;
 
 namespace Exomia.Framework.Game

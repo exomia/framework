@@ -24,7 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
@@ -82,9 +81,6 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public abstract void Dispose();
-
-        /// <inheritdoc />
         public virtual bool BeginDraw()
         {
             return _visible;
@@ -98,5 +94,8 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         public virtual void Initialize(IServiceRegistry registry) { }
+
+        /// <inheritdoc />
+        public abstract void Dispose();
     }
 }

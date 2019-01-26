@@ -24,17 +24,9 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.IO;
-using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Native;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using SharpDX.MediaFoundation;
 
 namespace Exomia.Framework.Video
 {

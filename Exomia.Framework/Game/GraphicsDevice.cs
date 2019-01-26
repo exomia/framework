@@ -22,11 +22,6 @@
 
 #endregion
 
-using System;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Device4 = SharpDX.DXGI.Device4;
 

@@ -22,8 +22,6 @@
 
 #endregion
 
-using System.IO;
-
 namespace Exomia.Framework.Content.Resolver
 {
     /// <summary>

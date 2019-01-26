@@ -22,7 +22,6 @@
 
 #endregion
 
-using System.IO;
 using Exomia.Framework.ContentSerialization;
 
 namespace Exomia.Framework.Content.Resolver

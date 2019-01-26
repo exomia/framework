@@ -24,20 +24,9 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime;
-using System.Threading;
-using System.Windows.Forms;
-using Exomia.Framework.Components;
 using Exomia.Framework.Content;
 using Exomia.Framework.Native;
 using Exomia.Framework.Tools;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using Message = System.Windows.Forms.Message;
 
 namespace Exomia.Framework.Game
@@ -163,9 +152,9 @@ namespace Exomia.Framework.Game
 
 #if DEBUG
             ADrawableComponent component = new DebugComponent { ShowFullInformation = true };
-            component.Enabled     = true;
-            component.Visible     = true;
-            component.DrawOrder   = 0;
+            component.Enabled = true;
+            component.Visible = true;
+            component.DrawOrder = 0;
             component.UpdateOrder = 0;
             Add(component);
 #endif

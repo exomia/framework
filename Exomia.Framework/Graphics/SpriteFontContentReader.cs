@@ -22,8 +22,6 @@
 
 #endregion
 
-using System;
-using System.IO;
 using Exomia.Framework.Content;
 using Exomia.Framework.ContentSerialization;
 using Exomia.Framework.Game;

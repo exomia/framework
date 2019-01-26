@@ -24,8 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-
 namespace Exomia.Framework.Tools
 {
     /// <summary>
@@ -64,7 +62,7 @@ namespace Exomia.Framework.Tools
             {
                 if ((t /= d) < B1)
                 {
-                    return (c * (7.5625f * t * t)) + b;
+                    return (c * 7.5625f * t * t) + b;
                 }
                 if (t < B3)
                 {

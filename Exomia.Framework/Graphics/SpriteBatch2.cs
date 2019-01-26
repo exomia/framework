@@ -24,18 +24,9 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics.SpriteSort;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 

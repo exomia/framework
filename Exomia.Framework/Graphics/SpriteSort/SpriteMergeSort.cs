@@ -22,9 +22,6 @@
 
 #endregion
 
-using System;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Exomia.Framework.Native;
 
 namespace Exomia.Framework.Graphics.SpriteSort

@@ -22,10 +22,7 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using Exomia.Framework.ContentSerialization;
-using SharpDX;
 
 namespace Exomia.Framework.Graphics
 {

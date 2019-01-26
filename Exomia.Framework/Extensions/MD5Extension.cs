@@ -22,9 +22,6 @@
 
 #endregion
 
-using System.Security.Cryptography;
-using System.Text;
-
 namespace Exomia.Framework.Extensions
 {
     /// <summary>

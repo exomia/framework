@@ -22,11 +22,6 @@
 
 #endregion
 
-using System;
-using System.IO;
-using SharpDX;
-using SharpDX.X3DAudio;
-
 namespace Exomia.Framework.Audio
 {
     /// <inheritdoc cref="IDisposable" />

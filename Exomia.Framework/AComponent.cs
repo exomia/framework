@@ -22,9 +22,7 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Game;
-using SharpDX;
 
 namespace Exomia.Framework
 {

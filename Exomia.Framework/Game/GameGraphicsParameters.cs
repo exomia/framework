@@ -22,12 +22,6 @@
 
 #endregion
 
-using System;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-
 namespace Exomia.Framework.Game
 {
     /// <summary>

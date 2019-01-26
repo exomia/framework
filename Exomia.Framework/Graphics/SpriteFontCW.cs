@@ -22,7 +22,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.ContentSerialization;
 
 namespace Exomia.Framework.Graphics

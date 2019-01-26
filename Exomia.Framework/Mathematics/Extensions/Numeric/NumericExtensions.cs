@@ -22,9 +22,6 @@
 
 #endregion
 
-using System;
-using System.Runtime.CompilerServices;
-
 namespace Exomia.Framework.Mathematics.Extensions.Numeric
 {
     /// <summary>

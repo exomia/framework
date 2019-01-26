@@ -22,8 +22,6 @@
 
 #endregion
 
-using SharpDX;
-
 namespace Exomia.Framework.ContentSerialization.Writers
 {
     sealed class ColorCW : AContentSerializationWriter<Color>

@@ -22,12 +22,6 @@
 
 #endregion
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-
 namespace Exomia.Framework.Linq
 {
     public static partial class LinqExt

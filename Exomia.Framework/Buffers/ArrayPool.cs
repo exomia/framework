@@ -24,10 +24,6 @@
 
 #pragma warning disable CS1591
 
-using System;
-using System.Diagnostics;
-using System.Threading;
-
 namespace Exomia.Framework.Buffers
 {
     /// <summary>
@@ -40,7 +36,7 @@ namespace Exomia.Framework.Buffers
         private readonly T[][] _buffers;
         private int _index;
 
-        private SpinLock _lock;
+        private readonly SpinLock _lock;
 
         public ArrayPool(int bufferLength, int numberOfBuffers = 10)
         {

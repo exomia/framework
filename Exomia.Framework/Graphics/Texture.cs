@@ -22,12 +22,6 @@
 
 #endregion
 
-using System;
-using System.IO;
-using Exomia.Framework.Content;
-using SharpDX;
-using SharpDX.Direct3D11;
-
 namespace Exomia.Framework.Graphics
 {
     /// <inheritdoc />

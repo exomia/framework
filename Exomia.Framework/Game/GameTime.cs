@@ -24,8 +24,6 @@
 
 #pragma warning disable 1591
 
-using System.Diagnostics;
-
 namespace Exomia.Framework.Game
 {
     /// <summary>

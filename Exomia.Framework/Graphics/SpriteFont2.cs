@@ -24,13 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Exomia.Framework.Content;
-using Exomia.Framework.ContentSerialization;
-using SharpDX;
-
 namespace Exomia.Framework.Graphics
 {
     [ContentReadable(typeof(SpriteFont2ContentReader))]

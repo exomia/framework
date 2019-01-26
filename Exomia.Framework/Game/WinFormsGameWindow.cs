@@ -24,13 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Drawing;
-using System.Threading;
-using System.Windows.Forms;
-using SharpDX;
-using SharpDX.Windows;
-
 namespace Exomia.Framework.Game
 {
     public sealed class WinFormsGameWindow : IWinFormsGameWindow

@@ -22,10 +22,6 @@
 
 #endregion
 
-using System;
-using System.Runtime.CompilerServices;
-using SharpDX;
-
 namespace Exomia.Framework.Mathematics.Extensions.Vector
 {
     /// <summary>

@@ -22,11 +22,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Input

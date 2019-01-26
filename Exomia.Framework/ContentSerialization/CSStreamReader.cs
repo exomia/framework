@@ -22,9 +22,6 @@
 
 #endregion
 
-using System;
-using System.IO;
-
 namespace Exomia.Framework.ContentSerialization
 {
     sealed class CSStreamReader : IDisposable

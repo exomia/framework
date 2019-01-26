@@ -24,10 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Runtime.CompilerServices;
-using SharpDX;
-
 namespace Exomia.Framework.Noise
 {
     /// <inheritdoc />

@@ -24,10 +24,6 @@
 
 #pragma warning disable 1591
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace Exomia.Framework.Collections
 {
     public sealed class LinkedList<T> : IEnumerable<T>
@@ -62,17 +58,17 @@ namespace Exomia.Framework.Collections
             LinkedListNode node = new LinkedListNode(item);
             if (_head == null)
             {
-                node.Next = node;
+                node.Next     = node;
                 node.Previous = node;
-                _head = node;
+                _head         = node;
             }
             else
             {
-                node.Next = _head;
+                node.Next     = _head;
                 node.Previous = _head.Previous;
 
                 _head.Previous.Next = node;
-                _head.Previous = node;
+                _head.Previous      = node;
 
                 _head = node;
             }
@@ -85,22 +81,21 @@ namespace Exomia.Framework.Collections
             LinkedListNode node = new LinkedListNode(item);
             if (_head == null)
             {
-                node.Next = node;
+                node.Next     = node;
                 node.Previous = node;
-                _head = node;
+                _head         = node;
             }
             else
             {
-                node.Next = _head;
+                node.Next     = _head;
                 node.Previous = _head.Previous;
 
                 _head.Previous.Next = node;
-                _head.Previous = node;
+                _head.Previous      = node;
             }
             Count++;
             return node;
         }
-
 
         public void Clear()
         {
@@ -164,7 +159,7 @@ namespace Exomia.Framework.Collections
         {
             return new Enumerator(this);
         }
-        
+
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
             return GetEnumerator();
@@ -186,15 +181,15 @@ namespace Exomia.Framework.Collections
                 Item = value;
             }
 
-            internal void Invalidate()
-            {
-                Next = null;
-                Previous = null;
-            }
-
             public static implicit operator T(LinkedListNode node)
             {
                 return node.Item;
+            }
+
+            internal void Invalidate()
+            {
+                Next     = null;
+                Previous = null;
             }
         }
 
@@ -218,8 +213,8 @@ namespace Exomia.Framework.Collections
 
             public Enumerator(LinkedList<T> list)
             {
-                _list = list;
-                _node = list._head;
+                _list    = list;
+                _node    = list._head;
                 _current = default;
             }
 
@@ -231,7 +226,7 @@ namespace Exomia.Framework.Collections
                     return false;
                 }
                 _current = _node.Item;
-                _node = _node.Next;
+                _node    = _node.Next;
                 if (_node == _list._head)
                 {
                     _node = null;
@@ -243,7 +238,7 @@ namespace Exomia.Framework.Collections
             public void Reset()
             {
                 _current = default;
-                _node = _list._head;
+                _node    = _list._head;
             }
 
             /// <inheritdoc />

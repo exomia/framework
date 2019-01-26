@@ -22,15 +22,10 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using Exomia.Framework.ContentSerialization.Exceptions;
 using Exomia.Framework.ContentSerialization.Readers;
 using Exomia.Framework.ContentSerialization.Types;
 using Exomia.Framework.ContentSerialization.Writers;
-using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization
 {
