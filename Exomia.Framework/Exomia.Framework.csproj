@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFrameworks>net471;net472</TargetFrameworks>
     <Authors>exomia</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © 2018 exomia</Copyright>
-    <Version>1.0.0.10</Version>
+    <Version>1.0.0.13</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/exomia/framework/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

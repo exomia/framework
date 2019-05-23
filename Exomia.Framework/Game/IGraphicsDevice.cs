@@ -32,43 +32,42 @@ using Device4 = SharpDX.DXGI.Device4;
 
 namespace Exomia.Framework.Game
 {
-    public delegate void ResizeEventHandler(ViewportF viewport);
-
     public interface IGraphicsDevice : IDisposable
     {
-        event ResizeEventHandler ResizeFinished;
+        event EventHandler<ViewportF> ResizeFinished;
+        bool IsInitialized { get; }
 
         Adapter4 Adapter { get; }
 
         Device5 Device { get; }
+
         DeviceContext4 DeviceContext { get; }
 
         Device4 DxgiDevice { get; }
 
         Factory5 Factory { get; }
 
-        bool IsInitialized { get; }
-
         RenderTargetView1 RenderView { get; }
 
         SwapChain4 SwapChain { get; }
 
         ViewportF Viewport { get; }
+
         bool VSync { get; set; }
 
+        void Initialize(ref GameGraphicsParameters parameters);
+
         bool BeginFrame();
+        void EndFrame();
 
         void Clear();
         void Clear(Color color);
-        void EndFrame();
-        bool GetFullscreenState();
-
-        void Initialize(ref GameGraphicsParameters parameters);
 
         void Resize(ref GameGraphicsParameters parameters);
         void Resize(int width, int height);
 
         void SetFullscreenState(bool state, Output output = null);
+        bool GetFullscreenState();
 
         void SetRenderTarget(RenderTargetView1 target);
     }

@@ -24,13 +24,13 @@
 
 using System.Collections.Generic;
 
-namespace Exomia.Framework.Game
+namespace Exomia.Framework
 {
-    sealed class DrawableComparer : IComparer<IDrawable>
+    sealed class UpdateableComparer : IComparer<IUpdateable>
     {
-        public static readonly DrawableComparer Default = new DrawableComparer();
+        public static readonly UpdateableComparer Default = new UpdateableComparer();
 
-        public int Compare(IDrawable left, IDrawable right)
+        public int Compare(IUpdateable left, IUpdateable right)
         {
             if (Equals(left, right))
             {
@@ -47,7 +47,7 @@ namespace Exomia.Framework.Game
                 return -1;
             }
 
-            return left.DrawOrder < right.DrawOrder ? 1 : -1;
+            return left.UpdateOrder < right.UpdateOrder ? 1 : -1;
         }
     }
 }

@@ -70,7 +70,7 @@ namespace Exomia.Framework.Scene
             _pendingInitializableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
             _scenesToUnload             = new List<SceneBase>(INITIAL_QUEUE_SIZE);
 
-            AddScene(startScene, true);
+            AddScene(startScene);
         }
 
         /// <inheritdoc />
@@ -150,6 +150,8 @@ namespace Exomia.Framework.Scene
                     default: throw new Exception($"Scene is in wrong state to be shown {scene.State}");
                 }
 
+                scene.Show(_currentScenes.Count > 0 ? _currentScenes[_currentScenes.Count - 1] : null, payload);
+
                 if (!scene.IsOverlayScene)
                 {
                     lock (_currentScenes)
@@ -187,8 +189,6 @@ namespace Exomia.Framework.Scene
                             }
                         });
                 }
-
-                scene.Show(_currentScenes.Count > 0 ? _currentScenes[0] : null, payload);
 
                 Task.Factory.StartNew(
                     () =>
@@ -239,7 +239,8 @@ namespace Exomia.Framework.Scene
 
                 if (_currentScenes.Count > 0)
                 {
-                    _inputHandler = (_currentScenes[0] as IScene).InputHandler ?? _currentScenes[0];
+                    _inputHandler = (_currentScenes[_currentScenes.Count - 1] as IScene).InputHandler ??
+                                    _currentScenes[_currentScenes.Count - 1];
                 }
                 else
                 {

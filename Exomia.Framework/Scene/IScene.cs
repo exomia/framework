@@ -41,11 +41,9 @@ namespace Exomia.Framework.Scene
         Disposing
     }
 
-    public delegate void SceneStateChangedHandler(SceneBase scene, SceneState current);
-
     interface IScene : IInitializable, IContentable, IInputHandler, IDisposable
     {
-        event SceneStateChangedHandler SceneStateChanged;
+        event EventHandler<SceneBase, SceneState> SceneStateChanged;
 
         /// <summary>
         ///     Gets a value indicating whether the scene component's Update method should be called.

@@ -22,32 +22,31 @@
 
 #endregion
 
-using System.Collections.Generic;
-
 namespace Exomia.Framework.Game
 {
-    sealed class UpdateableComparer : IComparer<IUpdateable>
+    /// <summary>
+    ///     MultiSampleCount enum
+    /// </summary>
+    public enum MultiSampleCount
     {
-        public static readonly UpdateableComparer Default = new UpdateableComparer();
+        /// <summary>
+        ///     disabled
+        /// </summary>
+        None = 0,
 
-        public int Compare(IUpdateable left, IUpdateable right)
-        {
-            if (Equals(left, right))
-            {
-                return 0;
-            }
+        /// <summary>
+        ///     msaa x2
+        /// </summary>
+        MsaaX2 = 2,
 
-            if (left == null)
-            {
-                return 1;
-            }
+        /// <summary>
+        ///     msaa x4
+        /// </summary>
+        MsaaX4 = 4,
 
-            if (right == null)
-            {
-                return -1;
-            }
-
-            return left.UpdateOrder < right.UpdateOrder ? 1 : -1;
-        }
+        /// <summary>
+        ///     msaa x8
+        /// </summary>
+        MsaaX8 = 8
     }
 }

@@ -47,7 +47,7 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     <see cref="IGraphicsDevice.ResizeFinished" />
         /// </summary>
-        public event ResizeEventHandler ResizeFinished;
+        public event EventHandler<ViewportF> ResizeFinished;
 
         private Adapter4 _adapter4;
         private RenderTargetView1 _currentRenderView;
@@ -123,12 +123,6 @@ namespace Exomia.Framework.Game
             set { _vSync = value ? 1 : 0; }
         }
 
-        /// <inheritdoc />
-        ~GraphicsDevice()
-        {
-            Dispose(false);
-        }
-
         /// <summary>
         ///     <see cref="IGraphicsDevice.BeginFrame" />
         /// </summary>
@@ -136,8 +130,8 @@ namespace Exomia.Framework.Game
         {
             if (_needResize)
             {
-                Resize(_resizeParameters);
                 _needResize = false;
+                Resize(_resizeParameters);
             }
             return IsInitialized;
         }
@@ -302,7 +296,7 @@ namespace Exomia.Framework.Game
             {
                 BufferCount       = parameters.BufferCount,
                 ModeDescription   = modeDescription,
-                IsWindowed        = true,
+                IsWindowed        = parameters.IsWindowed,
                 OutputHandle      = parameters.Handle,
                 SampleDescription = sampleDescription,
                 SwapEffect        = parameters.SwapEffect,
@@ -325,8 +319,6 @@ namespace Exomia.Framework.Game
             };
 
             Resize(_resizeParameters);
-
-            SetFullscreenState(!parameters.IsWindowed, _output);
 
             IsInitialized = true;
         }
@@ -470,6 +462,12 @@ namespace Exomia.Framework.Game
                 }
                 _disposed = true;
             }
+        }
+
+        /// <inheritdoc />
+        ~GraphicsDevice()
+        {
+            Dispose(false);
         }
 
         /// <inheritdoc />

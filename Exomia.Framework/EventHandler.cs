@@ -32,9 +32,9 @@ namespace Exomia.Framework
     /// <summary>
     ///     Represents the method that will handle an event that has no event data.
     /// </summary>
-    /// <typeparam name="TClass"></typeparam>
-    /// <param name="sender"></param>
-    public delegate void EventHandler<in TClass>(TClass sender);
+    /// <typeparam name="TEventArgs"></typeparam>
+    /// <param name="e"></param>
+    public delegate void EventHandler<in TEventArgs>(TEventArgs e);
 
     /// <summary>
     ///     Represents the method that will handle an event when the event provides data.

@@ -22,25 +22,32 @@
 
 #endregion
 
-using SharpDX.X3DAudio;
-using SharpDX.XAudio2;
+using System.Collections.Generic;
 
-namespace Exomia.Framework.Audio
+namespace Exomia.Framework
 {
-    sealed class Sound
+    sealed class DrawableComparer : IComparer<IDrawable>
     {
-        internal readonly Emitter Emitter;
-        internal readonly SourceVoice SourceVoice;
-        internal Sound Next = null;
-        internal Sound Previous = null;
+        public static readonly DrawableComparer Default = new DrawableComparer();
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Sound" /> class.
-        /// </summary>
-        public Sound(Emitter emitter, SourceVoice sourceVoice)
+        public int Compare(IDrawable left, IDrawable right)
         {
-            Emitter     = emitter;
-            SourceVoice = sourceVoice;
+            if (Equals(left, right))
+            {
+                return 0;
+            }
+
+            if (left == null)
+            {
+                return 1;
+            }
+
+            if (right == null)
+            {
+                return -1;
+            }
+
+            return left.DrawOrder < right.DrawOrder ? 1 : -1;
         }
     }
 }

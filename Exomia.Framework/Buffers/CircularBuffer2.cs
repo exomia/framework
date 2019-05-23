@@ -40,11 +40,11 @@ namespace Exomia.Framework.Buffers
 
         private readonly int _mask;
 
+        private readonly SpinLock _thisLock;
+
         private int _head;
         private int _size;
         private int _tail;
-
-        private SpinLock _thisLock;
 
         /// <summary>
         ///     Maximum capacity of the buffer.

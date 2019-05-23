@@ -22,16 +22,20 @@
 
 #endregion
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using SharpDX.X3DAudio;
+using SharpDX.XAudio2;
 
 namespace Exomia.Framework.Audio
 {
-    sealed class LinkedSoundList
+    sealed class LinkedSoundList : IEnumerable<LinkedSoundList.Sound>
     {
         private readonly int _capacity;
 
         private readonly object _thisLock;
-        private Sound _tail;
+        private Sound _head;
         private int _count;
 
         public int Capacity
@@ -58,34 +62,32 @@ namespace Exomia.Framework.Audio
             lock (_thisLock)
             {
                 if (_count + 1 >= _capacity) { return; }
-                _count++;
 
-                sound.Previous = _tail;
-                sound.Next     = null;
-
-                if (_tail != null)
+                if (_head == null)
                 {
-                    _tail.Next = sound;
+                    sound.Next     = sound;
+                    sound.Previous = sound;
+                    _head          = sound;
                 }
-                _tail = sound;
+                else
+                {
+                    sound.Next     = _head;
+                    sound.Previous = _head.Previous;
+
+                    _head.Previous.Next = sound;
+                    _head.Previous      = sound;
+                }
+
+                _count++;
             }
         }
 
         public void Clear()
         {
-            _tail = null;
-
-            // ReSharper disable once InconsistentlySynchronizedField
-            _count = 0;
-        }
-
-        public IEnumerable<Sound> Enumerate()
-        {
-            Sound end = _tail;
-            while (end != null)
+            lock (_thisLock)
             {
-                yield return end;
-                end = end.Previous;
+                _head  = null;
+                _count = 0;
             }
         }
 
@@ -93,25 +95,105 @@ namespace Exomia.Framework.Audio
         {
             lock (_thisLock)
             {
-                _count--;
-
-                if (sound.Next != null)
+                if (sound == null) { throw new ArgumentNullException(nameof(sound)); }
+                if (sound.Next == sound) { _head = null; }
+                else
                 {
-                    if (sound.Previous != null)
-                    {
-                        sound.Previous.Next = sound.Next;
-                    }
-                    sound.Next.Previous = sound.Previous;
-                }
-
-                if (sound.Previous != null)
-                {
-                    if (sound.Next != null)
-                    {
-                        sound.Next.Previous = sound.Previous;
-                    }
                     sound.Previous.Next = sound.Next;
+                    sound.Next.Previous = sound.Previous;
+                    if (_head == sound) { _head = sound.Next; }
                 }
+                sound.Invalidate();
+                _count--;
+            }
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        IEnumerator<Sound> IEnumerable<Sound>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public struct Enumerator : IEnumerator<Sound>
+        {
+            private readonly LinkedSoundList _list;
+            private Sound _current, _node;
+
+            /// <inheritdoc />
+            public Sound Current
+            {
+                get { return _current; }
+            }
+
+            /// <inheritdoc />
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            public Enumerator(LinkedSoundList list)
+            {
+                _list    = list;
+                _node    = list._head;
+                _current = null;
+            }
+
+            /// <inheritdoc />
+            public bool MoveNext()
+            {
+                if (_node == null)
+                {
+                    return false;
+                }
+                _current = _node;
+                _node    = _node.Next;
+                if (_node == _list._head)
+                {
+                    _node = null;
+                }
+                return true;
+            }
+
+            /// <inheritdoc />
+            public void Reset()
+            {
+                _node    = _list._head;
+                _current = null;
+            }
+
+            /// <inheritdoc />
+            public void Dispose() { }
+        }
+
+        internal sealed class Sound
+        {
+            internal readonly Emitter Emitter;
+            internal readonly SourceVoice SourceVoice;
+            internal Sound Next;
+            internal Sound Previous;
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="Sound" /> class.
+            /// </summary>
+            public Sound(Emitter emitter, SourceVoice sourceVoice)
+            {
+                Emitter     = emitter;
+                SourceVoice = sourceVoice;
+            }
+
+            internal void Invalidate()
+            {
+                Next     = null;
+                Previous = null;
             }
         }
     }

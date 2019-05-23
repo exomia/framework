@@ -39,7 +39,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     SceneStateChanged
         /// </summary>
-        public event SceneStateChangedHandler SceneStateChanged;
+        public event EventHandler<SceneBase, SceneState> SceneStateChanged;
 
         private readonly List<IContentable> _contentableComponent;
         private readonly List<IContentable> _currentlyContentableComponent;
@@ -98,13 +98,7 @@ namespace Exomia.Framework.Scene
         /// </summary>
         protected IInputHandler InputHandler
         {
-            set
-            {
-                if (_inputHandler != value)
-                {
-                    _inputHandler = value;
-                }
-            }
+            set { _inputHandler = value; }
         }
 
         /// <summary>
@@ -274,9 +268,9 @@ namespace Exomia.Framework.Scene
 
         /// <summary>
         /// </summary>
-        /// <param name="item"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <param name="item">any</param>
+        /// <typeparam name="T">any</typeparam>
+        /// <returns>the passed item</returns>
         public T Add<T>(T item)
         {
             if (item is IComponent component)
@@ -368,9 +362,9 @@ namespace Exomia.Framework.Scene
 
         /// <summary>
         /// </summary>
-        /// <param name="item"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <param name="item">any</param>
+        /// <typeparam name="T">any</typeparam>
+        /// <returns>the passed item</returns>
         public T Remove<T>(T item)
         {
             lock (_contentableComponent)

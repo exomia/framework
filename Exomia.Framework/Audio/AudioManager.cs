@@ -218,7 +218,7 @@ namespace Exomia.Framework.Audio
         /// <inheritdoc />
         public void PauseEnvSounds()
         {
-            foreach (Sound sound in _envLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _envLinkedSoundList)
             {
                 sound.SourceVoice.Stop();
             }
@@ -227,7 +227,7 @@ namespace Exomia.Framework.Audio
         /// <inheritdoc />
         public void PauseFxSounds()
         {
-            foreach (Sound sound in _fxLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _fxLinkedSoundList)
             {
                 sound.SourceVoice.Stop();
             }
@@ -281,7 +281,7 @@ namespace Exomia.Framework.Audio
         /// <inheritdoc />
         public void ResumeEnvSounds()
         {
-            foreach (Sound sound in _envLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _envLinkedSoundList)
             {
                 sound.SourceVoice.Start();
             }
@@ -290,7 +290,7 @@ namespace Exomia.Framework.Audio
         /// <inheritdoc />
         public void ResumeFxSounds()
         {
-            foreach (Sound sound in _fxLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _fxLinkedSoundList)
             {
                 sound.SourceVoice.Start();
             }
@@ -339,7 +339,7 @@ namespace Exomia.Framework.Audio
         /// <inheritdoc />
         public void StopEnvSounds()
         {
-            foreach (Sound sound in _envLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _envLinkedSoundList)
             {
                 sound.SourceVoice.Stop();
                 sound.SourceVoice.DestroyVoice();
@@ -350,7 +350,7 @@ namespace Exomia.Framework.Audio
         /// <inheritdoc />
         public void StopFxSounds()
         {
-            foreach (Sound sound in _fxLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _fxLinkedSoundList)
             {
                 sound.SourceVoice.Stop();
                 sound.SourceVoice.DestroyVoice();
@@ -407,7 +407,7 @@ namespace Exomia.Framework.Audio
             sourceVoice.SubmitSourceBuffer(buffer.AudioBuffer, buffer.DecodedPacketsInfo);
             sourceVoice.SetOutputVoices(voiceSendDescriptor);
 
-            Sound sound = new Sound(emitter, sourceVoice);
+            LinkedSoundList.Sound sound = new LinkedSoundList.Sound(emitter, sourceVoice);
             list.Add(sound);
 
             sourceVoice.BufferEnd += _ =>
@@ -434,7 +434,7 @@ namespace Exomia.Framework.Audio
 
         private void RecalculateEnvSounds()
         {
-            foreach (Sound sound in _envLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _envLinkedSoundList)
             {
                 DspSettings settings = _x3DAudio.Calculate(
                     _listener,
@@ -450,7 +450,7 @@ namespace Exomia.Framework.Audio
 
         private void RecalculateFxSounds()
         {
-            foreach (Sound sound in _fxLinkedSoundList.Enumerate())
+            foreach (LinkedSoundList.Sound sound in _fxLinkedSoundList)
             {
                 DspSettings settings = _x3DAudio.Calculate(
                     _listener,
