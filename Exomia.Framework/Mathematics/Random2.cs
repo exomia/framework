@@ -48,7 +48,7 @@ namespace Exomia.Framework.Mathematics
 
         /// <inheritdoc />
         public Random2()
-            : this((int)DateTime.Now.Ticks) { }
+            : this(DateTime.Now.Ticks ^ Environment.TickCount) { }
 
         /// <summary>
         ///     Random2 constructor
