@@ -22,6 +22,10 @@
 
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Threading;
+
 #pragma warning disable CS1591
 
 namespace Exomia.Framework.Buffers
@@ -34,9 +38,9 @@ namespace Exomia.Framework.Buffers
     {
         private readonly int _bufferLength;
         private readonly T[][] _buffers;
-        private int _index;
 
         private readonly SpinLock _lock;
+        private int _index;
 
         public ArrayPool(int bufferLength, int numberOfBuffers = 10)
         {

@@ -22,6 +22,13 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using SharpDX;
+using SharpDX.WIC;
 using Bitmap = System.Drawing.Bitmap;
 using Color = System.Drawing.Color;
 using Rectangle = SharpDX.Rectangle;

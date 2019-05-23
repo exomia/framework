@@ -22,6 +22,10 @@
 
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Buffers
@@ -36,11 +40,11 @@ namespace Exomia.Framework.Buffers
 
         private readonly int _mask;
 
+        private readonly SpinLock _thisLock;
+
         private int _head;
         private int _size;
         private int _tail;
-
-        private readonly SpinLock _thisLock;
 
         /// <summary>
         ///     Maximum capacity of the buffer.

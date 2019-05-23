@@ -24,6 +24,11 @@
 
 #pragma warning disable 1591
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Exomia.Framework.Content.Exceptions;
 using Exomia.Framework.Content.Resolver;
 using Exomia.Framework.Content.Resolver.EmbeddedResource;

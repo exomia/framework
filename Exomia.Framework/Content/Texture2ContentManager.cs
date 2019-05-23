@@ -24,7 +24,13 @@
 
 #pragma warning disable 1591
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Exomia.Framework.Graphics;
+using SharpDX;
+using SharpDX.Direct3D11;
+using SharpDX.WIC;
 
 namespace Exomia.Framework.Content
 {

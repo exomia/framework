@@ -22,6 +22,11 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 #pragma warning disable 1591
 
 namespace Exomia.Framework.Collections

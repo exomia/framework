@@ -22,6 +22,9 @@
 
 #endregion
 
+using System;
+using System.IO;
+using System.Reflection;
 using Exomia.Framework.ContentSerialization.Compression;
 
 namespace Exomia.Framework.Content.Resolver.EmbeddedResource

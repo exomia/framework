@@ -22,6 +22,10 @@
 
 #endregion
 
+using System;
+using System.Runtime.InteropServices;
+using System.Security;
+
 namespace Exomia.Framework.Native
 {
     static class Kernel32

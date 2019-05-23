@@ -22,7 +22,10 @@
 
 #endregion
 
+using System;
+using System.IO;
 using Exomia.Framework.Graphics;
+using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Content
 {

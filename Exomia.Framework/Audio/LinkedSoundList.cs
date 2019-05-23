@@ -22,6 +22,12 @@
 
 #endregion
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using SharpDX.X3DAudio;
+using SharpDX.XAudio2;
+
 namespace Exomia.Framework.Audio
 {
     sealed class LinkedSoundList : IEnumerable<LinkedSoundList.Sound>

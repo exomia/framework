@@ -22,6 +22,9 @@
 
 #endregion
 
+using System;
+using SharpDX.Windows;
+
 #pragma warning disable 1591
 
 namespace Exomia.Framework.Game

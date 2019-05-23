@@ -24,6 +24,9 @@
 
 #pragma warning disable 1591
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 
@@ -67,7 +70,7 @@ namespace Exomia.Framework.Scene
             _pendingInitializableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
             _scenesToUnload             = new List<SceneBase>(INITIAL_QUEUE_SIZE);
 
-            AddScene(startScene, true);
+            AddScene(startScene);
         }
 
         /// <inheritdoc />

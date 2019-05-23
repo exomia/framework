@@ -22,6 +22,9 @@
 
 #endregion
 
+using System;
+using SharpDX;
+
 namespace Exomia.Framework.Mathematics
 {
     /// <summary>

@@ -22,6 +22,10 @@
 
 #endregion
 
+using System;
+using Exomia.Framework.Mathematics.Extensions.Vector;
+using SharpDX;
+
 namespace Exomia.Framework.Mathematics
 {
     public static partial class Math2

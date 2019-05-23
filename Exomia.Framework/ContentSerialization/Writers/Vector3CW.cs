@@ -22,6 +22,8 @@
 
 #endregion
 
+using SharpDX;
+
 namespace Exomia.Framework.ContentSerialization.Writers
 {
     sealed class Vector3CW : AContentSerializationWriter<Vector3>

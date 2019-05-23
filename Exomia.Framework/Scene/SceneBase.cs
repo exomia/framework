@@ -22,8 +22,11 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
+using SharpDX;
 
 namespace Exomia.Framework.Scene
 {

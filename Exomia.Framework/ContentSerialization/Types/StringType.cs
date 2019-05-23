@@ -22,6 +22,8 @@
 
 #endregion
 
+using System;
+using System.Text;
 using Exomia.Framework.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.ContentSerialization.Types

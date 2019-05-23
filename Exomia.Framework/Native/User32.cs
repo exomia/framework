@@ -22,6 +22,11 @@
 
 #endregion
 
+using System;
+using System.Runtime.InteropServices;
+using System.Security;
+using SharpDX;
+
 namespace Exomia.Framework.Native
 {
     static class User32

@@ -22,6 +22,12 @@
 
 #endregion
 
+using System;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using SharpDX;
+
 namespace Exomia.Framework
 {
     /// <inheritdoc cref="IFormattable" />

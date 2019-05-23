@@ -22,6 +22,11 @@
 
 #endregion
 
+using System.IO;
+using SharpDX;
+using SharpDX.Direct3D11;
+using SharpDX.DXGI;
+using SharpDX.WIC;
 using Resource = SharpDX.Direct3D11.Resource;
 
 namespace Exomia.Framework.Graphics

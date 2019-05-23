@@ -22,6 +22,9 @@
 
 #endregion
 
+using System;
+using System.Management;
+
 namespace Exomia.Framework.Diagnostic
 {
     static class Diagnostic

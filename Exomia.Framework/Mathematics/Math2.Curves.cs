@@ -22,6 +22,8 @@
 
 #endregion
 
+using System.Runtime.CompilerServices;
+
 namespace Exomia.Framework.Mathematics
 {
     public static partial class Math2

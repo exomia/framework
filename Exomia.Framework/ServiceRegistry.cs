@@ -22,6 +22,9 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
+
 namespace Exomia.Framework
 {
     /// <inheritdoc />

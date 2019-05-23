@@ -22,6 +22,8 @@
 
 #endregion
 
+using System;
+
 namespace Exomia.Framework.Input
 {
     /// <summary>

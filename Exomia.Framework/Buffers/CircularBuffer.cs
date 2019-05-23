@@ -22,6 +22,11 @@
 
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading;
+
 namespace Exomia.Framework.Buffers
 {
     /// <summary>
@@ -32,11 +37,11 @@ namespace Exomia.Framework.Buffers
     {
         private readonly T[] _buffer;
 
+        private readonly SpinLock _thisLock;
+
         private int _head;
         private int _size;
         private int _tail;
-
-        private readonly SpinLock _thisLock;
 
         /// <summary>
         ///     Maximum capacity of the buffer.

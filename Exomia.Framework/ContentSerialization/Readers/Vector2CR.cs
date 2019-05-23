@@ -22,6 +22,8 @@
 
 #endregion
 
+using SharpDX;
+
 namespace Exomia.Framework.ContentSerialization.Readers
 {
     sealed class Vector2CR : AContentSerializationReader<Vector2>

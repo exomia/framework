@@ -22,6 +22,10 @@
 
 #endregion
 
+using System;
+using System.IO;
+using System.Reflection;
+
 namespace Exomia.Framework.Content.Resolver.EmbeddedResource
 {
     [ContentResolver(int.MaxValue)]

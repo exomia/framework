@@ -22,6 +22,9 @@
 
 #endregion
 
+using System.Runtime.InteropServices;
+using System.Security;
+
 namespace Exomia.Framework.Native
 {
     /// <summary>

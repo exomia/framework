@@ -22,6 +22,8 @@
 
 #endregion
 
+using System.Diagnostics;
+
 #pragma warning disable 1591
 
 namespace Exomia.Framework.Game
