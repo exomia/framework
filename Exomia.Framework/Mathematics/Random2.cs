@@ -53,10 +53,10 @@ namespace Exomia.Framework.Mathematics
         /// <summary>
         ///     Random2 constructor
         /// </summary>
-        public Random2(int seed)
+        public Random2(long seed)
         {
             _x = (uint)seed;
-            _y = Y;
+            _y = (uint)(seed >> 32) ^ Y;
             _z = Z;
             _w = W;
         }
