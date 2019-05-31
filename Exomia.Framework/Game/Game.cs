@@ -68,7 +68,6 @@ namespace Exomia.Framework.Game
         private readonly Dictionary<string, IComponent> _gameComponents;
         private readonly List<IInitializable> _pendingInitializables;
 
-        private readonly Stopwatch _stopwatch = new Stopwatch();
         private readonly List<IUpdateable> _updateableComponent;
 
         private readonly IServiceRegistry _serviceRegistry;
@@ -186,37 +185,27 @@ namespace Exomia.Framework.Game
 
             LoadContent();
 
-            GameTime gameTime = new GameTime();
-            gameTime.Start();
-
-            _isRunning = true;
-
-            _isRunningChanged += (s, v) =>
+            switch (_gameWindow)
             {
-                if (v)
+                case IWinFormsGameWindow formsWindow:
                 {
-                    gameTime.Start();
-                }
-                else
-                {
-                    gameTime.Stop();
-                }
-            };
-
-            if (_gameWindow is IWinFormsGameWindow formsWindow)
-            {
-                bool isWindowExiting = false;
-                formsWindow.RenderForm.FormClosing += (s, e) =>
-                {
-                    if (!isWindowExiting)
+                    bool isWindowExiting = false;
+                    formsWindow.RenderForm.FormClosing += (s, e) =>
                     {
-                        isWindowExiting = true;
-                        Shutdown();
-                    }
-                };
+                        if (!isWindowExiting)
+                        {
+                            isWindowExiting = true;
+                            Shutdown();
+                        }
+                    };
+                }
+                    break;
+                default:
+                    throw new NotSupportedException(
+                        $"The game window of type {_gameWindow.GetType()} is currently not supported!");
             }
 
-            Renderloop(gameTime);
+            Renderloop();
 
             UnloadContent();
         }
@@ -575,7 +564,7 @@ namespace Exomia.Framework.Game
             }
         }
 
-        private void Renderloop(GameTime gameTime)
+        private void Renderloop()
         {
             User32.MSG msg;
             msg.hWnd    = IntPtr.Zero;
@@ -585,11 +574,27 @@ namespace Exomia.Framework.Game
             msg.time    = 0;
             msg.pt      = Point.Zero;
 
+            Stopwatch stopwatch = new Stopwatch();
+            GameTime gameTime = GameTime.StartNew();
+
+            _isRunning = true;
+            _isRunningChanged += (s, v) =>
+            {
+                if (v)
+                {
+                    gameTime.Start();
+                }
+                else
+                {
+                    gameTime.Stop();
+                }
+            };
+
             while (!_shutdown && msg.message != WM_QUIT)
             {
-                _stopwatch.Restart();
+                stopwatch.Restart();
 
-                if (User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
+                while (User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE))
                 {
                     Message message = Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
                     if (!Application.FilterMessage(ref message))
@@ -605,7 +610,6 @@ namespace Exomia.Framework.Game
                     continue;
                 }
 
-                gameTime.Tick();
                 Update(gameTime);
                 if (BeginFrame())
                 {
@@ -616,14 +620,16 @@ namespace Exomia.Framework.Game
                 if (IsFixedTimeStep)
                 {
                     //SLEEP
-                    while (TargetElapsedTime - _stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
+                    while (TargetElapsedTime - stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
                     {
                         Thread.Sleep(1);
                     }
 
                     //IDLE
-                    while (_stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                    while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
                 }
+
+                gameTime.Tick();
             }
         }
 

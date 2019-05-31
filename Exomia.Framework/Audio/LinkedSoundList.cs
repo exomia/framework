@@ -57,6 +57,16 @@ namespace Exomia.Framework.Audio
             _thisLock = new object();
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator<Sound> IEnumerable<Sound>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         public void Add(Sound sound)
         {
             lock (_thisLock)
@@ -111,16 +121,6 @@ namespace Exomia.Framework.Audio
         public Enumerator GetEnumerator()
         {
             return new Enumerator(this);
-        }
-
-        IEnumerator<Sound> IEnumerable<Sound>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         public struct Enumerator : IEnumerator<Sound>

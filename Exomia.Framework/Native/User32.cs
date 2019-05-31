@@ -37,7 +37,11 @@ namespace Exomia.Framework.Native
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport("User32.dll", SetLastError = true)]
-        internal static extern int PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin,
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool PeekMessage(
+            out MSG lpMsg,
+            IntPtr hWnd,
+            uint wMsgFilterMin,
             uint wMsgFilterMax,
             uint wRemoveMsg);
 

@@ -87,9 +87,14 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameTime" /> class.
         /// </summary>
-        public GameTime()
+        private GameTime()
         {
-            _baseTime = Stopwatch.GetTimestamp();
+            _prevTime = _baseTime = Stopwatch.GetTimestamp();
+        }
+
+        public static GameTime StartNew()
+        {
+            return new GameTime();
         }
 
         /// <summary>

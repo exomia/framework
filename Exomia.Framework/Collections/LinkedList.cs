@@ -57,6 +57,16 @@ namespace Exomia.Framework.Collections
             }
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         public LinkedListNode AddFirst(in T item)
         {
             LinkedListNode node = new LinkedListNode(item);
@@ -162,16 +172,6 @@ namespace Exomia.Framework.Collections
         public Enumerator GetEnumerator()
         {
             return new Enumerator(this);
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         public sealed class LinkedListNode

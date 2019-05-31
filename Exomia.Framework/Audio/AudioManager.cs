@@ -145,7 +145,7 @@ namespace Exomia.Framework.Audio
             _envLinkedSoundList = new LinkedSoundList();
 
 #if DEBUG
-            _xAudio2 = new XAudio2(XAudio2Flags.DebugEngine, ProcessorSpecifier.AnyProcessor, XAudio2Version.Default);
+            _xAudio2 = new XAudio2(XAudio2Flags.DebugEngine, ProcessorSpecifier.AnyProcessor);
 #else
             _xAudio2 = new XAudio2(XAudio2Flags.None, ProcessorSpecifier.AnyProcessor, XAudio2Version.Default);
 #endif
@@ -167,7 +167,7 @@ namespace Exomia.Framework.Audio
                 throw new Exception("can't create MasteringVoice");
             }
             _masteringVoice.SetVolume(_masterVolume);
-            _x3DAudio = new X3DAudio(speakers, X3DAudio.SpeedOfSound / 1000f, X3DAudioVersion.Default);
+            _x3DAudio = new X3DAudio(speakers, X3DAudio.SpeedOfSound / 1000f);
 
             _masteringVoice.GetVoiceDetails(out VoiceDetails details);
             _inputChannelCount = details.InputChannelCount;

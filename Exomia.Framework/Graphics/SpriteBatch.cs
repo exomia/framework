@@ -173,8 +173,7 @@ namespace Exomia.Framework.Graphics
             _sortedSprites = new SpriteInfo[_spriteQueue.Length];
 
             _indexBuffer = Buffer.Create(
-                _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable, CpuAccessFlags.None,
-                ResourceOptionFlags.None, 0);
+                _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable);
 
             _vertexInputLayout = new InputLayout(
                 _device, ShaderByteCode.VertexShaderByteCode1,
