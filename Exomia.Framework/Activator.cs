@@ -72,7 +72,6 @@ namespace Exomia.Framework
                         Expression.New(
                             mi.ReturnType.GetConstructor(pTypes)
                             ?? throw new NullReferenceException(
-
                                 // ReSharper disable once CoVariantArrayConversion (can be disabled cause we do no write operations at run-time)
                                 $"can not create a constructor for {typeof(TDelegate)}"), parameters), parameters)
                     .Compile(), dType);
@@ -110,7 +109,7 @@ namespace Exomia.Framework
                     Expression.New(
                         typeof(TRes).GetConstructor(constructorParameters)
                         ?? throw new ArgumentException(
-                            @"This type does not have a constructor that takes the passed in set of parameters.",
+                            "This type does not have a constructor that takes the passed in set of parameters.",
                             nameof(constructorParameters)), argsExpressions), param)
                 .Compile();
         }
