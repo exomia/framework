@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using Exomia.Framework.Game;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -30,7 +31,7 @@ using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Device4 = SharpDX.DXGI.Device4;
 
-namespace Exomia.Framework.Game
+namespace Exomia.Framework.Graphics
 {
     /// <inheritdoc />
     /// <summary>

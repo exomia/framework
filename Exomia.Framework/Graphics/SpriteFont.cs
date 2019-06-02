@@ -37,6 +37,11 @@ namespace Exomia.Framework.Graphics
     [ContentSerializable(typeof(SpriteFontCR), typeof(SpriteFontCW))]
     public sealed class SpriteFont : IDisposable
     {
+        internal delegate void DrawFont(
+            Texture       texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
+            float         rotation, in Vector2 origin,   float         scale,           float    opacity,
+            SpriteEffects effects,  float      layerDepth);
+
         private Glyph _defaultGlyph;
 
         private Dictionary<int, Glyph> _glyphs;
@@ -107,11 +112,11 @@ namespace Exomia.Framework.Graphics
         [ContentSerializable(typeof(SpriteFontGlyphCR), typeof(SpriteFontGlyphCW))]
         public struct Glyph
         {
-            public int Character;
+            public int       Character;
             public Rectangle Subrect;
-            public int OffsetX;
-            public int OffsetY;
-            public int XAdvance;
+            public int       OffsetX;
+            public int       OffsetY;
+            public int       XAdvance;
         }
 
         [ContentSerializable(typeof(SpriteFontKerningCR), typeof(SpriteFontKerningCW))]
@@ -134,8 +139,8 @@ namespace Exomia.Framework.Graphics
             Vector2 size = Vector2.Zero;
 
             if (start >= end) { return size; }
-            if (end > text.Length) { end = text.Length; }
-            if (start < 0) { start       = 0; }
+            if (end   > text.Length) { end = text.Length; }
+            if (start < 0) { start         = 0; }
 
             float x = 0;
             float y = 0;
@@ -148,50 +153,50 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
-                        }
-                        key |= c;
+                            float nextX = x + glyph.XAdvance + SpacingX;
 
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
+                            float h = y + LineSpacing;
+                            if (nextX + dx > size.X)
+                            {
+                                size.X = nextX;
+                            }
+                            if (h > size.Y)
+                            {
+                                size.Y = h;
+                            }
 
-                        float nextX = x + glyph.XAdvance + SpacingX;
-
-                        float h = y + LineSpacing;
-                        if (nextX + dx > size.X)
-                        {
-                            size.X = nextX;
+                            x = nextX;
                         }
-                        if (h > size.Y)
-                        {
-                            size.Y = h;
-                        }
-
-                        x = nextX;
-                    }
                         break;
                 }
 
@@ -204,8 +209,8 @@ namespace Exomia.Framework.Graphics
         public int HitTest(string text, int start, int end, float xPos, float yPos)
         {
             if (start >= end) { return end; }
-            if (end > text.Length) { end = text.Length; }
-            if (start < 0) { start       = 0; }
+            if (end   > text.Length) { end = text.Length; }
+            if (start < 0) { start         = 0; }
 
             if (xPos < 0) { return -1; }
             if (yPos < 0) { return -1; }
@@ -221,45 +226,45 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+                                glyph = _defaultGlyph;
                             }
-                            glyph = _defaultGlyph;
-                        }
-                        key |= c;
+                            key |= c;
 
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
+                            }
 
-                        float nextX = x + glyph.XAdvance + SpacingX;
-                        float h = y + LineSpacing;
+                            float nextX = x + glyph.XAdvance + SpacingX;
+                            float h     = y                  + LineSpacing;
 
-                        if (xPos >= x && xPos <= nextX + dx && yPos <= h && yPos >= y)
-                        {
-                            if (xPos < (x + nextX + dx) * 0.5f) { return i; }
-                            return i + 1;
+                            if (xPos >= x && xPos <= nextX + dx && yPos <= h && yPos >= y)
+                            {
+                                if (xPos < (x + nextX + dx) * 0.5f) { return i; }
+                                return i + 1;
+                            }
+                            x = nextX;
                         }
-                        x = nextX;
-                    }
                         break;
                 }
                 key <<= 16;
@@ -268,8 +273,9 @@ namespace Exomia.Framework.Graphics
             return end;
         }
 
-        internal void Draw(SpriteBatch spriteBatch, string text, in Vector2 position, in Color color, float rotation,
-            in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
+        internal void Draw(DrawFont   drawCallback, string text, in Vector2 position, in Color color,
+                           float      rotation,
+                           in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
         {
             float x = 0;
             float y = 0;
@@ -283,42 +289,44 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
+                            drawCallback(
+                                         _texture,
+                                         new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY),
+                                         glyph.Subrect,
+                                         color, rotation, origin, 1.0f, opacity, effects, layerDepth);
+
+                            x += glyph.XAdvance + SpacingX;
                         }
-                        key |= c;
-
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
-
-                        spriteBatch.DrawFont(
-                            _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
-                            color, rotation, origin, 1.0f, opacity, effects, layerDepth);
-
-                        x += glyph.XAdvance + SpacingX;
-                    }
                         break;
                 }
 
@@ -326,8 +334,11 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch spriteBatch, string text, int start, int end, in Vector2 position,
-            in Color color, float rotation, in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
+        internal void Draw(DrawFont      drawCallback, string text, int start, int end,
+                           in Vector2    position,
+                           in Color      color, float rotation, in Vector2 origin, float opacity,
+                           SpriteEffects effects,
+                           float         layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -342,42 +353,44 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
+                            drawCallback(
+                                         _texture,
+                                         new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY),
+                                         glyph.Subrect,
+                                         color, rotation, origin, 1.0f, opacity, effects, layerDepth);
+
+                            x += glyph.XAdvance + SpacingX;
                         }
-                        key |= c;
-
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
-
-                        spriteBatch.DrawFont(
-                            _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
-                            color, rotation, origin, 1.0f, opacity, effects, layerDepth);
-
-                        x += glyph.XAdvance + SpacingX;
-                    }
                         break;
                 }
 
@@ -385,9 +398,10 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch spriteBatch, string text, int start, int end, in Vector2 position,
-            in Size2F dimension, in Color color, float rotation, in Vector2 origin, float opacity,
-            SpriteEffects effects, float layerDepth)
+        internal void Draw(DrawFont   drawCallback, string text, int start, int end,
+                           in Vector2 position,
+                           in Size2F  dimension, in Color      color,   float rotation, in Vector2 origin,
+                           float      opacity,   SpriteEffects effects, float layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -402,45 +416,47 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
+                            if (x + dx            + glyph.Subrect.Width  > dimension.Width) { return; }
+                            if (y + glyph.OffsetY + glyph.Subrect.Height > dimension.Height) { return; }
+
+                            drawCallback(
+                                         _texture,
+                                         new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY),
+                                         glyph.Subrect,
+                                         color, rotation, origin, 1.0f, opacity, effects, layerDepth);
+
+                            x += glyph.XAdvance + SpacingX;
                         }
-                        key |= c;
-
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
-
-                        if (x + dx + glyph.Subrect.Width > dimension.Width) { return; }
-                        if (y + glyph.OffsetY + glyph.Subrect.Height > dimension.Height) { return; }
-
-                        spriteBatch.DrawFont(
-                            _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
-                            color, rotation, origin, 1.0f, opacity, effects, layerDepth);
-
-                        x += glyph.XAdvance + SpacingX;
-                    }
                         break;
                 }
 
@@ -462,8 +478,8 @@ namespace Exomia.Framework.Graphics
             Vector2 size = Vector2.Zero;
 
             if (start >= end) { return size; }
-            if (end > text.Length) { end = text.Length; }
-            if (start < 0) { start       = 0; }
+            if (end   > text.Length) { end = text.Length; }
+            if (start < 0) { start         = 0; }
 
             float x = 0;
             float y = 0;
@@ -476,50 +492,50 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
-                        }
-                        key |= c;
+                            float nextX = x + glyph.XAdvance + SpacingX;
 
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
+                            float h = y + LineSpacing;
+                            if (nextX + dx > size.X)
+                            {
+                                size.X = nextX;
+                            }
+                            if (h > size.Y)
+                            {
+                                size.Y = h;
+                            }
 
-                        float nextX = x + glyph.XAdvance + SpacingX;
-
-                        float h = y + LineSpacing;
-                        if (nextX + dx > size.X)
-                        {
-                            size.X = nextX;
+                            x = nextX;
                         }
-                        if (h > size.Y)
-                        {
-                            size.Y = h;
-                        }
-
-                        x = nextX;
-                    }
                         break;
                 }
 
@@ -532,8 +548,8 @@ namespace Exomia.Framework.Graphics
         public int HitTest(StringBuilder text, int start, int end, float xPos, float yPos)
         {
             if (start >= end) { return end; }
-            if (end > text.Length) { end = text.Length; }
-            if (start < 0) { start       = 0; }
+            if (end   > text.Length) { end = text.Length; }
+            if (start < 0) { start         = 0; }
 
             if (xPos < 0) { return -1; }
             if (yPos < 0) { return -1; }
@@ -549,45 +565,45 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+                                glyph = _defaultGlyph;
                             }
-                            glyph = _defaultGlyph;
-                        }
-                        key |= c;
+                            key |= c;
 
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
+                            }
 
-                        float nextX = x + glyph.XAdvance + SpacingX;
-                        float h = y + LineSpacing;
+                            float nextX = x + glyph.XAdvance + SpacingX;
+                            float h     = y                  + LineSpacing;
 
-                        if (xPos >= x && xPos <= nextX + dx && yPos <= h && yPos >= y)
-                        {
-                            if (xPos < (x + nextX + dx) * 0.5f) { return i; }
-                            return i + 1;
+                            if (xPos >= x && xPos <= nextX + dx && yPos <= h && yPos >= y)
+                            {
+                                if (xPos < (x + nextX + dx) * 0.5f) { return i; }
+                                return i + 1;
+                            }
+                            x = nextX;
                         }
-                        x = nextX;
-                    }
                         break;
                 }
                 key <<= 16;
@@ -596,8 +612,9 @@ namespace Exomia.Framework.Graphics
             return end;
         }
 
-        internal void Draw(SpriteBatch spriteBatch, StringBuilder text, in Vector2 position, in Color color,
-            float rotation, in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
+        internal void Draw(DrawFont drawCallback, StringBuilder text,   in Vector2 position, in Color      color,
+                           float    rotation,     in Vector2    origin, float      opacity,  SpriteEffects effects,
+                           float    layerDepth)
         {
             float x = 0;
             float y = 0;
@@ -611,51 +628,55 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
-                    case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
-                        break;
-                    default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            key |= c;
+                            continue;
+                        }
+                    case '\n':
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                            break;
+                        }
+                    default:
+                        {
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
+                            drawCallback(
+                                         _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY),
+                                         glyph.Subrect,
+                                         color, rotation, origin, 1.0f, opacity, effects, layerDepth);
+
+                            x += glyph.XAdvance + SpacingX;
+                            break;
                         }
-                        key |= c;
-
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
-
-                        spriteBatch.DrawFont(
-                            _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
-                            color, rotation, origin, 1.0f, opacity, effects, layerDepth);
-
-                        x += glyph.XAdvance + SpacingX;
-                    }
-                        break;
                 }
 
                 key <<= 16;
             }
         }
 
-        internal void Draw(SpriteBatch spriteBatch, StringBuilder text, int start, int end, in Vector2 position,
-            in Color color, float rotation, in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
+        internal void Draw(DrawFont      drawCallback, StringBuilder text, int start, int end,
+                           in Vector2    position,
+                           in Color      color, float rotation, in Vector2 origin, float opacity,
+                           SpriteEffects effects,
+                           float         layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -670,42 +691,44 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
+                            drawCallback(
+                                         _texture,
+                                         new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY),
+                                         glyph.Subrect,
+                                         color, rotation, origin, 1.0f, opacity, effects, layerDepth);
+
+                            x += glyph.XAdvance + SpacingX;
                         }
-                        key |= c;
-
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
-
-                        spriteBatch.DrawFont(
-                            _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
-                            color, rotation, origin, 1.0f, opacity, effects, layerDepth);
-
-                        x += glyph.XAdvance + SpacingX;
-                    }
                         break;
                 }
 
@@ -713,9 +736,11 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch spriteBatch, StringBuilder text, int start, int end, in Vector2 position,
-            in Size2F dimension, in Color color, float rotation, in Vector2 origin, float opacity,
-            SpriteEffects effects, float layerDepth)
+        internal void Draw(DrawFont      drawCallback, StringBuilder text, int start, int end,
+                           in Vector2    position,
+                           in Size2F     dimension, in Color color, float rotation, in Vector2 origin,
+                           float         opacity,
+                           SpriteEffects effects, float layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -730,45 +755,47 @@ namespace Exomia.Framework.Graphics
                 switch (c)
                 {
                     case '\r':
-                    {
-                        key |= c;
-                        continue;
-                    }
+                        {
+                            key |= c;
+                            continue;
+                        }
                     case '\n':
-                    {
-                        key =  0;
-                        x   =  0;
-                        y   += LineSpacing;
-                    }
+                        {
+                            key =  0;
+                            x   =  0;
+                            y   += LineSpacing;
+                        }
                         break;
                     default:
-                    {
-                        if (!_glyphs.TryGetValue(c, out Glyph glyph))
                         {
-                            if (IgnoreUnknownCharacters)
+                            if (!_glyphs.TryGetValue(c, out Glyph glyph))
                             {
-                                continue;
+                                if (IgnoreUnknownCharacters)
+                                {
+                                    continue;
+                                }
+
+                                glyph = _defaultGlyph;
+                            }
+                            key |= c;
+
+                            float dx = glyph.OffsetX;
+                            if (Kernings.TryGetValue(key, out Kerning kerning))
+                            {
+                                dx += kerning.Offset;
                             }
 
-                            glyph = _defaultGlyph;
+                            if (x + dx            + glyph.Subrect.Width  > dimension.Width) { return; }
+                            if (y + glyph.OffsetY + glyph.Subrect.Height > dimension.Height) { return; }
+
+                            drawCallback(
+                                         _texture,
+                                         new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY),
+                                         glyph.Subrect,
+                                         color, rotation, origin, 1.0f, opacity, effects, layerDepth);
+
+                            x += glyph.XAdvance + SpacingX;
                         }
-                        key |= c;
-
-                        float dx = glyph.OffsetX;
-                        if (Kernings.TryGetValue(key, out Kerning kerning))
-                        {
-                            dx += kerning.Offset;
-                        }
-
-                        if (x + dx + glyph.Subrect.Width > dimension.Width) { return; }
-                        if (y + glyph.OffsetY + glyph.Subrect.Height > dimension.Height) { return; }
-
-                        spriteBatch.DrawFont(
-                            _texture, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
-                            color, rotation, origin, 1.0f, opacity, effects, layerDepth);
-
-                        x += glyph.XAdvance + SpacingX;
-                    }
                         break;
                 }
 

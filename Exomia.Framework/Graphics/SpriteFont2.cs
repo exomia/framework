@@ -37,6 +37,11 @@ namespace Exomia.Framework.Graphics
     [ContentSerializable(typeof(SpriteFontCR), typeof(SpriteFontCW))]
     public sealed class SpriteFont2 : IDisposable
     {
+        internal delegate void DrawFont(
+            Texture2      texture2, in Vector2 position, in Rectangle? sourceRectangle, in Color color,
+            float         rotation, in Vector2 origin,   float         scale,           float    opacity,
+            SpriteEffects effects,  float      layerDepth);
+
         private SpriteFont.Glyph _defaultGlyph;
 
         private Dictionary<int, SpriteFont.Glyph> _glyphs;
@@ -250,7 +255,7 @@ namespace Exomia.Framework.Graphics
             return end;
         }
 
-        internal void Draw(SpriteBatch2 spriteBatch2, string text, Vector2 position, Color color, float rotation,
+        internal void Draw(DrawFont drawCallback, string text, Vector2 position, Color color, float rotation,
             Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
         {
             float x = 0;
@@ -295,7 +300,7 @@ namespace Exomia.Framework.Graphics
                             dx += kerning.Offset;
                         }
 
-                        spriteBatch2.DrawFont(
+                        drawCallback(
                             _texture2, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
@@ -308,7 +313,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch2 spriteBatch2, string text, int start, int end, Vector2 position, Color color,
+        internal void Draw(DrawFont drawCallback, string text, int start, int end, Vector2 position, Color color,
             float rotation, Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
@@ -354,7 +359,7 @@ namespace Exomia.Framework.Graphics
                             dx += kerning.Offset;
                         }
 
-                        spriteBatch2.DrawFont(
+                        drawCallback(
                             _texture2, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
@@ -367,7 +372,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch2 spriteBatch2, string text, int start, int end, Vector2 position,
+        internal void Draw(DrawFont drawCallback, string text, int start, int end, Vector2 position,
             Size2F dimension, Color color, float rotation, Vector2 origin, float opacity, SpriteEffects effects,
             float layerDepth)
         {
@@ -417,7 +422,7 @@ namespace Exomia.Framework.Graphics
                         if (x + dx + glyph.Subrect.Width > dimension.Width) { return; }
                         if (y + glyph.OffsetY + glyph.Subrect.Height > dimension.Height) { return; }
 
-                        spriteBatch2.DrawFont(
+                        drawCallback(
                             _texture2, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
@@ -578,7 +583,7 @@ namespace Exomia.Framework.Graphics
             return end;
         }
 
-        internal void Draw(SpriteBatch2 spriteBatch2, StringBuilder text, in Vector2 position, in Color color,
+        internal void Draw(DrawFont drawCallback, StringBuilder text, in Vector2 position, in Color color,
             float rotation, in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
         {
             float x = 0;
@@ -623,7 +628,7 @@ namespace Exomia.Framework.Graphics
                             dx += kerning.Offset;
                         }
 
-                        spriteBatch2.DrawFont(
+                        drawCallback(
                             _texture2, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
@@ -636,7 +641,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch2 spriteBatch2, StringBuilder text, int start, int end, in Vector2 position,
+        internal void Draw(DrawFont drawCallback, StringBuilder text, int start, int end, in Vector2 position,
             in Color color, float rotation, in Vector2 origin, float opacity, SpriteEffects effects, float layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
@@ -682,7 +687,7 @@ namespace Exomia.Framework.Graphics
                             dx += kerning.Offset;
                         }
 
-                        spriteBatch2.DrawFont(
+                        drawCallback(
                             _texture2, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
@@ -695,7 +700,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        internal void Draw(SpriteBatch2 spriteBatch2, StringBuilder text, int start, int end, in Vector2 position,
+        internal void Draw(DrawFont drawCallback, StringBuilder text, int start, int end, in Vector2 position,
             in Size2F dimension, in Color color, float rotation, in Vector2 origin, float opacity,
             SpriteEffects effects, float layerDepth)
         {
@@ -745,7 +750,7 @@ namespace Exomia.Framework.Graphics
                         if (x + dx + glyph.Subrect.Width > dimension.Width) { return; }
                         if (y + glyph.OffsetY + glyph.Subrect.Height > dimension.Height) { return; }
 
-                        spriteBatch2.DrawFont(
+                        drawCallback(
                             _texture2, new Vector2(position.X + x + dx, position.Y + y + glyph.OffsetY), glyph.Subrect,
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 

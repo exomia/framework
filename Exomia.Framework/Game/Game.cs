@@ -32,6 +32,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Exomia.Framework.Components;
 using Exomia.Framework.Content;
+using Exomia.Framework.Graphics;
 using Exomia.Framework.Native;
 using Exomia.Framework.Tools;
 using SharpDX;
@@ -43,11 +44,10 @@ using Message = System.Windows.Forms.Message;
 namespace Exomia.Framework.Game
 {
     /// <inheritdoc cref="IRunnable" />
-    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     ///     Game class
     /// </summary>
-    public abstract class Game : IRunnable, IDisposable
+    public abstract class Game : IRunnable
     {
         private const int INITIAL_QUEUE_SIZE = 16;
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
@@ -115,13 +115,15 @@ namespace Exomia.Framework.Game
             {
                 if (_isRunning != value)
                 {
-                    _isRunning = value;
                     _isRunningChanged?.Invoke(this, value);
+                    _isRunning = value;
                 }
             }
         }
 
         public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
+
+        #region Game
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Game" /> class.
@@ -140,31 +142,31 @@ namespace Exomia.Framework.Game
 #endif
 
             _serviceRegistry = new ServiceRegistry();
-            _gameWindow      = new WinFormsGameWindow(title);
-            _graphicsDevice  = new GraphicsDevice();
-            _contentManager  = new ContentManager(_serviceRegistry);
+            _gameWindow = new WinFormsGameWindow(title);
+            _graphicsDevice = new GraphicsDevice();
+            _contentManager = new ContentManager(_serviceRegistry);
 
             _serviceRegistry.AddService(_serviceRegistry);
             _serviceRegistry.AddService(_graphicsDevice);
             _serviceRegistry.AddService(_contentManager);
             _serviceRegistry.AddService(_gameWindow);
 
-            _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _gameComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
 
 #if DEBUG
             ADrawableComponent component = new DebugComponent { ShowFullInformation = true };
-            component.Enabled     = true;
-            component.Visible     = true;
-            component.DrawOrder   = 0;
+            component.Enabled = true;
+            component.Visible = true;
+            component.DrawOrder = 0;
             component.UpdateOrder = 0;
             Add(component);
 #endif
@@ -176,44 +178,6 @@ namespace Exomia.Framework.Game
         ~Game()
         {
             Dispose(false);
-        }
-
-        /// <inheritdoc />
-        public void Run()
-        {
-            BeginInitialize();
-
-            LoadContent();
-
-            switch (_gameWindow)
-            {
-                case IWinFormsGameWindow formsWindow:
-                {
-                    bool isWindowExiting = false;
-                    formsWindow.RenderForm.FormClosing += (s, e) =>
-                    {
-                        if (!isWindowExiting)
-                        {
-                            isWindowExiting = true;
-                            Shutdown();
-                        }
-                    };
-                }
-                    break;
-                default:
-                    throw new NotSupportedException(
-                        $"The game window of type {_gameWindow.GetType()} is currently not supported!");
-            }
-
-            Renderloop();
-
-            UnloadContent();
-        }
-
-        /// <inheritdoc />
-        public void Shutdown()
-        {
-            _shutdown = true;
         }
 
         /// <summary>
@@ -307,18 +271,8 @@ namespace Exomia.Framework.Game
             {
                 ToDispose(disposable);
             }
-            return item;
-        }
 
-        /// <summary>
-        ///     get a game system by name
-        /// </summary>
-        /// <param name="name">the game system name</param>
-        /// <param name="system">out found game system</param>
-        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
-        public bool GetComponent(string name, out IComponent system)
-        {
-            return _gameComponents.TryGetValue(name, out system);
+            return item;
         }
 
         /// <summary>
@@ -377,218 +331,100 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     adds a IDisposable object to the dispose collector
+        ///     get a game system by name
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public T ToDispose<T>(T obj) where T : IDisposable
+        /// <param name="name">the game system name</param>
+        /// <param name="system">out found game system</param>
+        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
+        public bool GetComponent(string name, out IComponent system)
         {
-            return _collector.Collect(obj);
+            return _gameComponents.TryGetValue(name, out system);
         }
 
-        /// <summary>
-        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
-        /// </summary>
-        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
-        protected virtual bool BeginFrame()
-        {
-            return _graphicsDevice.BeginFrame();
-        }
+        #endregion
 
-        /// <summary>
-        ///     draws the current scene
-        /// </summary>
-        protected virtual void Draw(GameTime gameTime)
+        #region Run
+
+        /// <inheritdoc />
+        public void Run()
         {
-            lock (_drawableComponent)
+            if (_isRunning)
             {
-                _currentlyDrawableComponent.AddRange(_drawableComponent);
+                throw new InvalidOperationException("Can't run this instance while it is already running");
             }
 
-            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
-            {
-                IDrawable drawable = _currentlyDrawableComponent[i];
-                if (drawable.BeginDraw())
-                {
-                    drawable.Draw(gameTime);
-                    drawable.EndDraw();
-                }
-            }
+            _isRunning = true;
 
-            _currentlyDrawableComponent.Clear();
-        }
-
-        /// <summary>
-        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
-        /// </summary>
-        protected virtual void EndFrame()
-        {
-            _graphicsDevice.EndFrame();
-        }
-
-        /// <summary>
-        ///     Called after Initialize but before LoadContent.
-        /// </summary>
-        protected virtual void OnAfterInitialize() { }
-
-        /// <summary>
-        ///     Called before Initialize.
-        /// </summary>
-        protected virtual void OnBeforeInitialize() { }
-
-        /// <summary>
-        ///     Called after the Game and GraphicsDevice are created.
-        /// </summary>
-        protected virtual void OnInitialize() { }
-
-        /// <summary>
-        ///     Initialize game graphics parameters
-        /// </summary>
-        /// <param name="parameters"></param>
-        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
-
-        /// <summary>
-        ///     Called once to perform user-defined loading
-        /// </summary>
-        protected virtual void OnLoadContent() { }
-
-        /// <summary>
-        ///     Called once do perform user-defined unloading
-        /// </summary>
-        protected virtual void OnUnloadContent() { }
-
-        /// <summary>
-        ///     updates the game logic
-        /// </summary>
-        protected virtual void Update(GameTime gameTime)
-        {
-            lock (_updateableComponent)
-            {
-                _currentlyUpdateableComponent.AddRange(_updateableComponent);
-            }
-
-            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
-            {
-                IUpdateable updateable = _currentlyUpdateableComponent[i];
-                if (updateable.Enabled)
-                {
-                    updateable.Update(gameTime);
-                }
-            }
-
-            _currentlyUpdateableComponent.Clear();
-        }
-
-        private void BeginInitialize()
-        {
             if (!_isInitialized)
             {
-                InitializeGameGraphicsParameters();
-                OnBeforeInitialize();
-                OnInitialize();
-                InitializePendingInitializations();
-                _isInitialized = true;
-                OnAfterInitialize();
-            }
-        }
-
-        private void InitializeGameGraphicsParameters()
-        {
-            GameGraphicsParameters parameters = new GameGraphicsParameters
-            {
-                BufferCount = 1,
-#if DEBUG
-                DeviceCreationFlags =
-                    DeviceCreationFlags.BgraSupport |
-                    DeviceCreationFlags.Debug,
-#else
-                DeviceCreationFlags =
-                    DeviceCreationFlags.BgraSupport,
-#endif
-                DPI                    = new Vector2(96.0f, 96.0f),
-                DriverType             = DriverType.Hardware,
-                Format                 = Format.B8G8R8A8_UNorm,
-                Width                  = 1024,
-                Height                 = 768,
-                IsWindowed             = true,
-                IsMouseVisible         = false,
-                Rational               = new Rational(60, 1),
-                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
-                SwapEffect             = SwapEffect.Discard,
-                Usage                  = Usage.RenderTargetOutput,
-                UseVSync               = false,
-                WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
-                EnableMultiSampling    = false,
-                MultiSampleCount       = MultiSampleCount.None
-            };
-
-            OnInitializeGameGraphicsParameters(ref parameters);
-
-            _gameWindow.Initialize(ref parameters);
-            _graphicsDevice.Initialize(ref parameters);
-
-            GameGraphicsParameters = parameters;
-        }
-
-        private void InitializePendingInitializations()
-        {
-            while (_pendingInitializables.Count != 0)
-            {
-                _pendingInitializables[0].Initialize(_serviceRegistry);
-                _pendingInitializables.RemoveAt(0);
-            }
-        }
-
-        /// <summary>
-        ///     Loads the content.
-        /// </summary>
-        private void LoadContent()
-        {
-            if (!_isContentLoaded)
-            {
-                _isContentLoaded = true;
-                OnLoadContent();
-
-                lock (_contentableComponent)
+                bool isWindowExiting = false;
+                void OnRenderFormOnFormClosing(object s, FormClosingEventArgs e)
                 {
-                    _currentlyContentableComponent.AddRange(_contentableComponent);
+                    if (!isWindowExiting)
+                    {
+                        isWindowExiting = true;
+                        Shutdown();
+                    }
                 }
 
-                foreach (IContentable contentable in _currentlyContentableComponent)
+                switch (_gameWindow)
                 {
-                    contentable.LoadContent(_serviceRegistry);
+                    case IWinFormsGameWindow formsWindow:
+                        {
+                            formsWindow.RenderForm.FormClosing += OnRenderFormOnFormClosing;
+                        }
+                        break;
+                    default:
+                        throw new NotSupportedException(
+                            $"The game window of type {_gameWindow.GetType()} is currently not supported!");
                 }
 
-                _currentlyContentableComponent.Clear();
+                Initialize();
+                LoadContent();
+                Renderloop();
+                UnloadContent();
+                
+                switch (_gameWindow)
+                {
+                    case IWinFormsGameWindow formsWindow:
+                        {
+                            formsWindow.RenderForm.FormClosing -= OnRenderFormOnFormClosing;
+                        }
+                        break;
+                    default:
+                        throw new NotSupportedException(
+                            $"The game window of type {_gameWindow.GetType()} is currently not supported!");
+                }
+
             }
         }
-
+        
+        /// <inheritdoc />
+        public void Shutdown()
+        {
+            _shutdown = true;
+        }
+        
         private void Renderloop()
         {
             User32.MSG msg;
-            msg.hWnd    = IntPtr.Zero;
+            msg.hWnd = IntPtr.Zero;
             msg.message = 0;
-            msg.lParam  = IntPtr.Zero;
-            msg.wParam  = IntPtr.Zero;
-            msg.time    = 0;
-            msg.pt      = Point.Zero;
+            msg.lParam = IntPtr.Zero;
+            msg.wParam = IntPtr.Zero;
+            msg.time = 0;
+            msg.pt = Point.Zero;
 
             Stopwatch stopwatch = new Stopwatch();
             GameTime gameTime = GameTime.StartNew();
 
-            _isRunning = true;
-            _isRunningChanged += (s, v) =>
+            void OnIsRunningChanged(Game s, bool v)
             {
-                if (v)
-                {
-                    gameTime.Start();
-                }
-                else
-                {
-                    gameTime.Stop();
-                }
-            };
+                if (v) { gameTime.Start(); }
+                else { gameTime.Stop(); }
+            }
+
+            _isRunningChanged += OnIsRunningChanged;
 
             while (!_shutdown && msg.message != WM_QUIT)
             {
@@ -631,6 +467,134 @@ namespace Exomia.Framework.Game
 
                 gameTime.Tick();
             }
+
+            _isRunningChanged -= OnIsRunningChanged;
+        }
+
+        #endregion
+
+
+        #region Initialization
+
+        /// <summary>
+        ///     Initialize <see cref="GameGraphicsParameters"/>.
+        ///     Called once before <see cref="OnBeforeInitialize"/> to perform user-defined overrides of <see cref="GameGraphicsParameters"/>.
+        /// </summary>
+        /// <param name="parameters">The <see cref="GameGraphicsParameters"/>.</param>
+        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
+
+        /// <summary>
+        ///   Called once before <see cref="OnInitialize"/> to perform user-defined initialization.
+        /// </summary>
+        protected virtual void OnBeforeInitialize() { }
+
+        /// <summary>
+        ///     Called once after the Game and <see cref="IGraphicsDevice"/> are created to perform user-defined initialization.
+        ///     Called before <see cref="OnAfterInitialize"/>.
+        /// </summary>
+        protected virtual void OnInitialize() { }
+
+        /// <summary>
+        ///     Called once before <see cref="LoadContent"/> to perform user-defined initialization.
+        /// </summary>
+        protected virtual void OnAfterInitialize() { }
+
+        private void InitializeGameGraphicsParameters()
+        {
+            GameGraphicsParameters parameters = new GameGraphicsParameters
+            {
+                BufferCount = 1,
+#if DEBUG
+                DeviceCreationFlags =
+                    DeviceCreationFlags.BgraSupport |
+                    DeviceCreationFlags.Debug,
+#else
+                DeviceCreationFlags =
+                    DeviceCreationFlags.BgraSupport,
+#endif
+                DPI = new Vector2(96.0f, 96.0f),
+                DriverType = DriverType.Hardware,
+                Format = Format.B8G8R8A8_UNorm,
+                Width = 1024,
+                Height = 768,
+                IsWindowed = true,
+                IsMouseVisible = false,
+                Rational = new Rational(60, 1),
+                SwapChainFlags = SwapChainFlags.AllowModeSwitch,
+                SwapEffect = SwapEffect.Discard,
+                Usage = Usage.RenderTargetOutput,
+                UseVSync = false,
+                WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
+                EnableMultiSampling = false,
+                MultiSampleCount = MultiSampleCount.None
+            };
+
+            OnInitializeGameGraphicsParameters(ref parameters);
+
+            _gameWindow.Initialize(ref parameters);
+            _graphicsDevice.Initialize(ref parameters);
+
+            GameGraphicsParameters = parameters;
+        }
+
+        private void InitializePendingInitializations()
+        {
+            while (_pendingInitializables.Count != 0)
+            {
+                _pendingInitializables[0].Initialize(_serviceRegistry);
+                _pendingInitializables.RemoveAt(0);
+            }
+        }
+
+        private void Initialize()
+        {
+            if (!_isInitialized)
+            {
+                InitializeGameGraphicsParameters();
+                OnBeforeInitialize();
+                OnInitialize();
+                InitializePendingInitializations();
+                _isInitialized = true;
+                OnAfterInitialize();
+            }
+        }
+
+        #endregion
+
+        #region Content
+
+        /// <summary>
+        ///     Called once to perform user-defined loading
+        /// </summary>
+        protected virtual void OnLoadContent() { }
+
+        /// <summary>
+        ///     Called once to perform user-defined unloading
+        /// </summary>
+        protected virtual void OnUnloadContent() { }
+
+        /// <summary>
+        ///     Loads the content.
+        /// </summary>
+        private void LoadContent()
+        {
+            if (!_isContentLoaded)
+            {
+                _isContentLoaded = true;
+                OnLoadContent();
+
+                lock (_contentableComponent)
+                {
+                    _currentlyContentableComponent.AddRange(_contentableComponent);
+                }
+
+                foreach (IContentable contentable in _currentlyContentableComponent)
+                {
+                    contentable.LoadContent(_serviceRegistry);
+                }
+
+                _currentlyContentableComponent.Clear();
+            }
         }
 
         /// <summary>
@@ -657,12 +621,82 @@ namespace Exomia.Framework.Game
             }
         }
 
+        #endregion Content
+
+        #region Update
+
+        /// <summary>
+        ///     updates the game logic
+        /// </summary>
+        protected virtual void Update(GameTime gameTime)
+        {
+            lock (_updateableComponent)
+            {
+                _currentlyUpdateableComponent.AddRange(_updateableComponent);
+            }
+
+            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
+            {
+                IUpdateable updateable = _currentlyUpdateableComponent[i];
+                if (updateable.Enabled)
+                {
+                    updateable.Update(gameTime);
+                }
+            }
+
+            _currentlyUpdateableComponent.Clear();
+        }
+
         private void UpdateableComponent_UpdateOrderChanged()
         {
             lock (_updateableComponent)
             {
                 _updateableComponent.Sort(UpdateableComparer.Default);
             }
+        }
+
+        #endregion
+
+        #region Draw
+
+        /// <summary>
+        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
+        /// </summary>
+        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
+        protected virtual bool BeginFrame()
+        {
+            return _graphicsDevice.BeginFrame();
+        }
+
+        /// <summary>
+        ///     draws the current scene
+        /// </summary>
+        protected virtual void Draw(GameTime gameTime)
+        {
+            lock (_drawableComponent)
+            {
+                _currentlyDrawableComponent.AddRange(_drawableComponent);
+            }
+
+            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
+            {
+                IDrawable drawable = _currentlyDrawableComponent[i];
+                if (drawable.BeginDraw())
+                {
+                    drawable.Draw(gameTime);
+                    drawable.EndDraw();
+                }
+            }
+
+            _currentlyDrawableComponent.Clear();
+        }
+
+        /// <summary>
+        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
+        /// </summary>
+        protected virtual void EndFrame()
+        {
+            _graphicsDevice.EndFrame();
         }
 
         private void DrawableComponent_DrawOrderChanged()
@@ -672,6 +706,8 @@ namespace Exomia.Framework.Game
                 _drawableComponent.Sort(DrawableComparer.Default);
             }
         }
+
+        #endregion
 
         #region Timer2
 
@@ -711,6 +747,18 @@ namespace Exomia.Framework.Game
         #endregion
 
         #region IDisposable Support
+
+
+        /// <summary>
+        ///     adds a IDisposable object to the dispose collector
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public T ToDispose<T>(T obj) where T : IDisposable
+        {
+            return _collector.Collect(obj);
+        }
 
         private bool _disposed;
 
