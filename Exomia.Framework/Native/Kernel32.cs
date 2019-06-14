@@ -28,8 +28,18 @@ using System.Security;
 
 namespace Exomia.Framework.Native
 {
+    /// <summary>
+    ///     A kernel 32.
+    /// </summary>
     static class Kernel32
     {
+        /// <summary>
+        ///     Sets an event.
+        /// </summary>
+        /// <param name="hEvent"> The event. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
         internal static extern bool SetEvent(IntPtr hEvent);

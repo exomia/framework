@@ -28,43 +28,34 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization.Types
 {
     /// <summary>
-    ///     ArrayType class
+    ///     ArrayType class.
     /// </summary>
     sealed class ArrayType : IType
     {
-        /// <summary>
-        ///     typeof(Array)
-        /// </summary>
+        /// <inheritdoc />
         public Type BaseType { get; }
 
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsPrimitive
         {
             get { return false; }
         }
 
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
+        /// <inheritdoc />
         public string TypeName
         {
             get { return BaseType.Name.ToUpper(); }
         }
 
         /// <summary>
-        ///     constructor EnumType
+        ///     Initializes a new instance of the <see cref="ArrayType" /> class.
         /// </summary>
         public ArrayType()
         {
             BaseType = typeof(Array);
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateType(string)" />
-        /// </summary>
+        /// <inheritdoc />
         public Type CreateType(string genericTypeInfo)
         {
             genericTypeInfo.GetInnerType(out string bti, out string gti);
@@ -74,24 +65,21 @@ namespace Exomia.Framework.ContentSerialization.Types
                 : bti.CreateType().MakeArrayType();
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateTypeInfo(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public string CreateTypeInfo(Type type)
         {
             Type elementType = type.GetElementType() ?? throw new NullReferenceException();
             string genericTypeInfo =
                 ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
                 ContentSerializer.s_types.TryGetValue(
-                    (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it)
+                    (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
+                    out it)
                     ? it.CreateTypeInfo(elementType)
                     : elementType.ToString();
             return $"{TypeName}<{genericTypeInfo}>";
         }
 
-        /// <summary>
-        ///     <see cref="IType.Read(CSStreamReader, string, string, string)" />
-        /// </summary>
+        /// <inheritdoc />
         public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             if (string.IsNullOrEmpty(dimensionInfo))
@@ -106,7 +94,7 @@ namespace Exomia.Framework.ContentSerialization.Types
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            Type elementType;
+            Type                                 elementType;
             Func<CSStreamReader, string, object> readCallback;
             if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
             {
@@ -126,18 +114,16 @@ namespace Exomia.Framework.ContentSerialization.Types
             }
 
             int[] dimensions = GetArrayDimensionInfo(dimensionInfo);
-            Array arr = Array.CreateInstance(elementType, dimensions);
+            Array arr        = Array.CreateInstance(elementType, dimensions);
             AddArrayContent(stream, readCallback, arr, dimensions, new int[dimensions.Length], 0);
             stream.ReadTag($"/{key}");
 
             return arr;
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
-            bool useTypeInfo = true)
+                          bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
             Type type = content.GetType();
@@ -157,6 +143,13 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #region WriteHelper
 
+        /// <summary>
+        ///     Creates array dimension information.
+        /// </summary>
+        /// <param name="arr"> The array. </param>
+        /// <returns>
+        ///     The new array dimension information.
+        /// </returns>
         private static string CreateArrayDimensionInfo(Array arr)
         {
             string info = string.Empty;
@@ -167,8 +160,18 @@ namespace Exomia.Framework.ContentSerialization.Types
             return info.TrimEnd(',');
         }
 
-        private static void ForArrayDimension(Action<string, string> writeHandler, string tabSpace, Array arr,
-            Type elementType, int dimension, int[] indices)
+        /// <summary>
+        ///     For array dimension.
+        /// </summary>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="arr">          The array. </param>
+        /// <param name="elementType">  Type of the element. </param>
+        /// <param name="dimension">    The dimension. </param>
+        /// <param name="indices">      The indices. </param>
+        /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
+        private static void ForArrayDimension(Action<string, string> writeHandler, string tabSpace,  Array arr,
+                                              Type                   elementType,  int    dimension, int[] indices)
         {
             for (int i = 0; i < arr.GetLength(dimension); i++)
             {
@@ -184,7 +187,8 @@ namespace Exomia.Framework.ContentSerialization.Types
                 {
                     if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
                         ContentSerializer.s_types.TryGetValue(
-                            (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it))
+                            (elementType.BaseType ?? throw new NullReferenceException())
+                            .Name.ToUpper(), out it))
                     {
                         it.Write(writeHandler, tabSpace, string.Empty, arr.GetValue(indices), false);
                     }
@@ -204,10 +208,18 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #region ReaderHelper
 
+        /// <summary>
+        ///     Gets array dimension information.
+        /// </summary>
+        /// <param name="arrayTypeInfo"> Information describing the array type. </param>
+        /// <returns>
+        ///     An array of int.
+        /// </returns>
+        /// <exception cref="CSTypeException"> Thrown when a Create struct Type error condition occurs. </exception>
         private static int[] GetArrayDimensionInfo(string arrayTypeInfo)
         {
             const string START = "(";
-            const string END = ")";
+            const string END   = ")";
 
             int sIndex = arrayTypeInfo.IndexOf(START, StringComparison.Ordinal);
             if (sIndex == -1)
@@ -237,8 +249,19 @@ namespace Exomia.Framework.ContentSerialization.Types
             return buffer;
         }
 
+        /// <summary>
+        ///     Adds an array content.
+        /// </summary>
+        /// <param name="stream">           The stream. </param>
+        /// <param name="readCallback">     The read callback. </param>
+        /// <param name="arr">              The array. </param>
+        /// <param name="dimensions">       The dimensions. </param>
+        /// <param name="indices">          The indices. </param>
+        /// <param name="currentDimension"> The current dimension. </param>
         private static void AddArrayContent(CSStreamReader stream, Func<CSStreamReader, string, object> readCallback,
-            Array arr, int[] dimensions, int[] indices, int currentDimension)
+                                            Array          arr,    int[]                                dimensions,
+                                            int[]          indices,
+                                            int            currentDimension)
         {
             for (int i = 0; i < dimensions[currentDimension]; i++)
             {

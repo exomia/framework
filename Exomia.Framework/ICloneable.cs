@@ -27,12 +27,15 @@ namespace Exomia.Framework
     /// <summary>
     ///     An interface to clone a object.
     /// </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
     public interface ICloneable<out T>
     {
         /// <summary>
-        ///     returns a deep copy of the object
+        ///     returns a deep copy of the object.
         /// </summary>
-        /// <returns>a new deep copied object</returns>
+        /// <returns>
+        ///     a new deep copied object.
+        /// </returns>
         T Clone();
     }
 }

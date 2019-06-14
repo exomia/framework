@@ -28,35 +28,46 @@ using SharpDX;
 
 namespace Exomia.Framework
 {
-    /// <inheritdoc cref="IComponent" />
-    /// <inheritdoc cref="IInitializable" />
-    /// <inheritdoc cref="IContentable" />
-    /// <inheritdoc cref="IUpdateable" />
-    /// <inheritdoc cref="IDisposable" />
     /// <summary>
-    ///     a game component
+    ///     A component.
     /// </summary>
     public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
+        /// <summary>
+        ///     Occurs when Enabled Changed.
+        /// </summary>
         /// <inheritdoc />
         public event EventHandler EnabledChanged;
 
+        /// <summary>
+        ///     Occurs when Update Order Changed.
+        /// </summary>
         /// <inheritdoc />
         public event EventHandler UpdateOrderChanged;
 
         /// <summary>
-        ///     flag to identify if the component is already initialized
+        ///     flag to identify if the component is already initialized.
         /// </summary>
         protected bool _isInitialized;
 
         /// <summary>
-        ///     flag to identify if the content is already loaded
+        ///     flag to identify if the content is already loaded.
         /// </summary>
         protected bool _isContentLoaded;
 
+        /// <summary>
+        ///     The collector.
+        /// </summary>
         private DisposeCollector _collector;
 
+        /// <summary>
+        ///     True to enable, false to disable.
+        /// </summary>
         private bool _enabled;
+
+        /// <summary>
+        ///     The update order.
+        /// </summary>
         private int _updateOrder;
 
         /// <inheritdoc />
@@ -93,7 +104,7 @@ namespace Exomia.Framework
         /// <summary>
         ///     Initializes a new instance of the <see cref="AComponent" /> class.
         /// </summary>
-        /// <param name="name">The component name.</param>
+        /// <param name="name"> The component name. </param>
         protected AComponent(string name)
         {
             Name       = name;
@@ -136,25 +147,29 @@ namespace Exomia.Framework
         /// <summary>
         ///     called than the component is initialized (once)
         /// </summary>
-        /// <param name="registry">IServiceRegistry</param>
+        /// <param name="registry"> IServiceRegistry. </param>
         protected virtual void OnInitialize(IServiceRegistry registry) { }
 
         /// <summary>
-        ///     called than the component should load the content
+        ///     called than the component should load the content.
         /// </summary>
+        /// <param name="registry"> IServiceRegistry. </param>
         protected virtual void OnLoadContent(IServiceRegistry registry) { }
 
         /// <summary>
-        ///     called than the component should unload the content
+        ///     called than the component should unload the content.
         /// </summary>
+        /// <param name="registry"> IServiceRegistry. </param>
         protected virtual void OnUnloadContent(IServiceRegistry registry) { }
 
         /// <summary>
-        ///     adds a <see cref="IDisposable" /> object to the dispose collector
+        ///     adds a <see cref="IDisposable" /> object to the dispose collector.
         /// </summary>
-        /// <typeparam name="T">IDisposable</typeparam>
-        /// <param name="obj">object to add</param>
-        /// <returns>same obj</returns>
+        /// <typeparam name="T"> IDisposable. </typeparam>
+        /// <param name="obj"> object to add. </param>
+        /// <returns>
+        ///     same obj.
+        /// </returns>
         protected T ToDispose<T>(T obj)
         {
             return _collector.Collect(obj);
@@ -163,13 +178,14 @@ namespace Exomia.Framework
         #region IDisposable Support
 
         /// <summary>
-        ///     flag to identify if the component is already disposed
+        ///     flag to identify if the component is already disposed.
         /// </summary>
         protected bool _disposed;
 
         /// <inheritdoc />
         /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
         /// </summary>
         public void Dispose()
         {
@@ -177,6 +193,11 @@ namespace Exomia.Framework
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
+        /// </summary>
+        /// <param name="disposing"> true if user code; false called by finalizer. </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -199,9 +220,9 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     called then the instance is disposing
+        ///     called then the instance is disposing.
         /// </summary>
-        /// <param name="disposing">true if user code; false called by finalizer</param>
+        /// <param name="disposing"> true if user code; false called by finalizer. </param>
         protected virtual void OnDispose(bool disposing) { }
 
         #endregion

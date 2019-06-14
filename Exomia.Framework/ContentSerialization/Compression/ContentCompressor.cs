@@ -30,42 +30,41 @@ using System.Linq;
 namespace Exomia.Framework.ContentSerialization.Compression
 {
     /// <summary>
-    ///     CompressMode
-    /// </summary>
-    public enum CompressMode : byte
-    {
-        /// <summary>
-        ///     gzip (default)
-        /// </summary>
-        Gzip = 1
-    }
-
-    /// <summary>
-    ///     ContentCompressor class
+    ///     ContentCompressor class.
     /// </summary>
     public static class ContentCompressor
     {
         /// <summary>
-        ///     the default compressed e1 extension
+        ///     the default compressed e1 extension.
         /// </summary>
         public const string DEFAULT_COMPRESSED_EXTENSION = ".e1";
 
+        /// <summary>
+        ///     Size of the buffer.
+        /// </summary>
         private const int BUFFER_SIZE = 2048;
 
         /// <summary>
-        ///     the magic header for the compressed e1 extension
+        ///     the magic header for the compressed e1 extension.
         /// </summary>
         private static readonly byte[] s_magicHeader = { 64, 101, 120, 49 };
 
         /// <summary>
-        ///     compress a given stream with the given compression mode
+        ///     compress a given stream with the given compression mode.
         /// </summary>
-        /// <param name="stream">the stream to compress</param>
-        /// <param name="streamOut">than finished the compressed out stream</param>
-        /// <param name="compressMode">the compression mode</param>
-        /// <returns><c>true</c> if successfully compressed the stream; <c>false</c> otherwise.</returns>
-        public static bool CompressStream(Stream stream, out Stream streamOut,
-            CompressMode compressMode = CompressMode.Gzip)
+        /// <param name="stream">       the stream to compress. </param>
+        /// <param name="streamOut">    [out] than finished the compressed out stream. </param>
+        /// <param name="compressMode"> (Optional) the compression mode. </param>
+        /// <returns>
+        ///     <c>true</c> if successfully compressed the stream; <c>false</c> otherwise.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or
+        ///     illegal values.
+        /// </exception>
+        public static bool CompressStream(Stream       stream, out Stream streamOut,
+                                          CompressMode compressMode = CompressMode.Gzip)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
             streamOut = null;
@@ -90,11 +89,18 @@ namespace Exomia.Framework.ContentSerialization.Compression
         }
 
         /// <summary>
-        ///     decompress a given stream with the given compression mode
+        ///     decompress a given stream with the given compression mode.
         /// </summary>
-        /// <param name="stream">the stream to compress</param>
-        /// <param name="streamOut">than finished the decompressed out stream</param>
-        /// <returns><c>true</c> if successfully decompressed the stream; <c>false</c> otherwise.</returns>
+        /// <param name="stream">    the stream to compress. </param>
+        /// <param name="streamOut"> [out] than finished the decompressed out stream. </param>
+        /// <returns>
+        ///     <c>true</c> if successfully decompressed the stream; <c>false</c> otherwise.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or
+        ///     illegal values.
+        /// </exception>
         public static bool DecompressStream(Stream stream, out Stream streamOut)
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
@@ -105,7 +111,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
 
                 byte[] buffer = new byte[s_magicHeader.Length];
                 if (stream.Read(buffer, 0, buffer.Length) != s_magicHeader.Length
-                    && !s_magicHeader.SequenceEqual(buffer)) { return false; }
+                 && !s_magicHeader.SequenceEqual(buffer)) { return false; }
 
                 switch ((CompressMode)stream.ReadByte())
                 {
@@ -121,12 +127,17 @@ namespace Exomia.Framework.ContentSerialization.Compression
 
         #region GZIP
 
+        /// <summary>
+        ///     Gzip compress.
+        /// </summary>
+        /// <param name="stream">    the stream to compress. </param>
+        /// <param name="streamOut"> [out] than finished the compressed out stream. </param>
         private static void GzipCompress(Stream stream, Stream streamOut)
         {
             using (GZipStream gs = new GZipStream(streamOut, CompressionLevel.Optimal, true))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
-                int count;
+                int    count;
                 while ((count = stream.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     gs.Write(buffer, 0, count);
@@ -135,13 +146,18 @@ namespace Exomia.Framework.ContentSerialization.Compression
             streamOut.Position = 0;
         }
 
+        /// <summary>
+        ///     Gzip decompress.
+        /// </summary>
+        /// <param name="stream">    the stream to compress. </param>
+        /// <param name="streamOut"> [out] than finished the compressed out stream. </param>
         private static void GzipDecompress(Stream stream, out Stream streamOut)
         {
             streamOut = new MemoryStream();
             using (GZipStream gs = new GZipStream(stream, CompressionMode.Decompress, true))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
-                int count;
+                int    count;
                 while ((count = gs.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     streamOut.Write(buffer, 0, count);

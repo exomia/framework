@@ -33,12 +33,14 @@ using Device4 = SharpDX.DXGI.Device4;
 
 namespace Exomia.Framework.Graphics
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     GraphicsDevice class
+    ///     The graphics device. This class cannot be inherited.
     /// </summary>
     public sealed class GraphicsDevice : IGraphicsDevice
     {
+        /// <summary>
+        ///     The feature levels.
+        /// </summary>
         private static readonly FeatureLevel[] s_featureLevels =
         {
             FeatureLevel.Level_11_1, FeatureLevel.Level_11_0, FeatureLevel.Level_10_1, FeatureLevel.Level_10_0,
@@ -50,23 +52,69 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         public event EventHandler<ViewportF> ResizeFinished;
 
+        /// <summary>
+        ///     The fourth adapter.
+        /// </summary>
         private Adapter4 _adapter4;
+
+        /// <summary>
+        ///     The current render view.
+        /// </summary>
         private RenderTargetView1 _currentRenderView;
+
+        /// <summary>
+        ///     The fifth d 3 d device.
+        /// </summary>
         private Device5 _d3DDevice5;
+
+        /// <summary>
+        ///     Context for the 3 d device.
+        /// </summary>
         private DeviceContext4 _d3DDeviceContext;
 
+        /// <summary>
+        ///     The depth stencil view.
+        /// </summary>
         private DepthStencilView _depthStencilView;
+
+        /// <summary>
+        ///     The fourth dxgi device.
+        /// </summary>
         private Device4 _dxgiDevice4;
+
+        /// <summary>
+        ///     The dxgi factory.
+        /// </summary>
         private Factory5 _dxgiFactory;
 
+        /// <summary>
+        ///     True to need resize.
+        /// </summary>
         private bool _needResize;
 
+        /// <summary>
+        ///     The output.
+        /// </summary>
         private Output _output;
+
+        /// <summary>
+        ///     The first render view.
+        /// </summary>
         private RenderTargetView1 _renderView1;
 
+        /// <summary>
+        ///     Options for controlling the resize.
+        /// </summary>
         private ResizeParameters _resizeParameters;
+
+        /// <summary>
+        ///     The fourth swap chain.
+        /// </summary>
         private SwapChain4 _swapChain4;
 
+        /// <summary>
+        ///     The synchronise.
+        /// </summary>
         private int _vSync;
 
         /// <inheritdoc />
@@ -124,9 +172,7 @@ namespace Exomia.Framework.Graphics
             set { _vSync = value ? 1 : 0; }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.BeginFrame" />
-        /// </summary>
+        /// <inheritdoc />
         public bool BeginFrame()
         {
             if (_needResize)
@@ -137,9 +183,7 @@ namespace Exomia.Framework.Graphics
             return IsInitialized;
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Clear()" />
-        /// </summary>
+        /// <inheritdoc />
         public void Clear()
         {
             lock (_d3DDevice5)
@@ -150,9 +194,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Clear(Color)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Clear(Color color)
         {
             lock (_d3DDevice5)
@@ -163,17 +205,13 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.EndFrame" />
-        /// </summary>
+        /// <inheritdoc />
         public void EndFrame()
         {
             _swapChain4.Present(_vSync, PresentFlags.None);
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.GetFullscreenState" />
-        /// </summary>
+        /// <inheritdoc />
         public bool GetFullscreenState()
         {
             return _swapChain4.IsFullScreen;
@@ -224,8 +262,8 @@ namespace Exomia.Framework.Graphics
                         out ModeDescription desc);
 
                     if (o == 0
-                        || desc.RefreshRate.Numerator / desc.RefreshRate.Denominator
-                        > modeDescription.RefreshRate.Numerator / modeDescription.RefreshRate.Denominator)
+                     || desc.RefreshRate.Numerator            / desc.RefreshRate.Denominator
+                      > modeDescription.RefreshRate.Numerator / modeDescription.RefreshRate.Denominator)
                     {
                         modeDescription = desc;
                         _output         = output;
@@ -324,9 +362,7 @@ namespace Exomia.Framework.Graphics
             IsInitialized = true;
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Resize(ref GameGraphicsParameters) " />
-        /// </summary>
+        /// <inheritdoc />
         public void Resize(ref GameGraphicsParameters parameters)
         {
             _resizeParameters = new ResizeParameters
@@ -339,9 +375,7 @@ namespace Exomia.Framework.Graphics
             _needResize = true;
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.Resize(int, int)" />
-        /// </summary>
+        //// <inheritdoc/>
         public void Resize(int width, int height)
         {
             _resizeParameters = new ResizeParameters
@@ -354,9 +388,7 @@ namespace Exomia.Framework.Graphics
             _needResize = true;
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.SetFullscreenState(bool, Output)" />
-        /// </summary>
+        /// <inheritdoc />
         public void SetFullscreenState(bool state, Output output = null)
         {
             if (_swapChain4.IsFullScreen != state)
@@ -365,9 +397,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <summary>
-        ///     <see cref="IGraphicsDevice.SetRenderTarget(RenderTargetView1)" />
-        /// </summary>
+        /// <inheritdoc />
         public void SetRenderTarget(RenderTargetView1 target)
         {
             lock (_d3DDevice5)
@@ -377,6 +407,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
+        /// <inheritdoc />
         private void Resize(ResizeParameters args)
         {
             lock (_d3DDevice5)
@@ -417,7 +448,7 @@ namespace Exomia.Framework.Graphics
                     _depthStencilView = new DepthStencilView(
                         _d3DDevice5, depthBuffer, new DepthStencilViewDescription
                         {
-                            Dimension = _swapChain4.Description.SampleDescription.Count > 1 ||
+                            Dimension = _swapChain4.Description.SampleDescription.Count   > 1 ||
                                         _swapChain4.Description.SampleDescription.Quality > 0
                                 ? DepthStencilViewDimension.Texture2DMultisampled
                                 : DepthStencilViewDimension.Texture2D
@@ -432,18 +463,47 @@ namespace Exomia.Framework.Graphics
             ResizeFinished?.Invoke(Viewport);
         }
 
+        /// <summary>
+        ///     A resize parameters.
+        /// </summary>
         private struct ResizeParameters
         {
+            /// <summary>
+            ///     The width.
+            /// </summary>
             public int Width;
+
+            /// <summary>
+            ///     The height.
+            /// </summary>
             public int Height;
+
+            /// <summary>
+            ///     Number of buffers.
+            /// </summary>
             public int BufferCount;
+
+            /// <summary>
+            ///     The swap chain flags.
+            /// </summary>
             public SwapChainFlags SwapChainFlags;
         }
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     True if disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     True to release both managed and unmanaged resources; false to
+        ///     release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -471,10 +531,11 @@ namespace Exomia.Framework.Graphics
             Dispose(false);
         }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
         /// </summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

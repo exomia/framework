@@ -26,12 +26,15 @@ using System;
 using System.IO;
 using Exomia.Framework.Content;
 using Exomia.Framework.ContentSerialization;
-using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Graphics
 {
+    /// <summary>
+    ///     A sprite font content reader. This class cannot be inherited.
+    /// </summary>
     sealed class SpriteFontContentReader : IContentReader
     {
+        /// <inheritdoc />
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont font = ContentSerializer.Read<SpriteFont>(parameters.Stream);
@@ -60,8 +63,12 @@ namespace Exomia.Framework.Graphics
         }
     }
 
+    /// <summary>
+    ///     A sprite font 2 content reader. This class cannot be inherited.
+    /// </summary>
     sealed class SpriteFont2ContentReader : IContentReader
     {
+        /// <inheritdoc />
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont2 font = ContentSerializer.Read<SpriteFont2>(parameters.Stream);

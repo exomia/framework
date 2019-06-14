@@ -28,7 +28,7 @@ using System.IO;
 namespace Exomia.Framework.Content
 {
     /// <summary>
-    ///     ContentReaderParameters struct
+    ///     A content reader parameters.
     /// </summary>
     public struct ContentReaderParameters
     {

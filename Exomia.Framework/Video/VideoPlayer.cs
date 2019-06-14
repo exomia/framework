@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using System.IO;
 using System.Threading;
@@ -38,23 +36,87 @@ using SharpDX.MediaFoundation;
 
 namespace Exomia.Framework.Video
 {
+    /// <summary>
+    ///     A video player. This class cannot be inherited.
+    /// </summary>
     public sealed class VideoPlayer : ADrawableComponent
     {
+        /// <summary>
+        ///     The event ready to play.
+        /// </summary>
         private readonly ManualResetEvent _eventReadyToPlay = new ManualResetEvent(false);
+
+        /// <summary>
+        ///     The output texture.
+        /// </summary>
         private readonly Texture2D _outputTexture;
+
+        /// <summary>
+        ///     Name of the asset.
+        /// </summary>
         private string _assetName;
+
+        /// <summary>
+        ///     The background color.
+        /// </summary>
         private Color _backgroundColor;
+
+        /// <summary>
+        ///     The byte stream.
+        /// </summary>
         private ByteStream _byteStream;
+
+        /// <summary>
+        ///     Manager for dxgi device.
+        /// </summary>
         private DXGIDeviceManager _dxgiDeviceManager;
+
+        /// <summary>
+        ///     True if this object is end of stream.
+        /// </summary>
         private bool _isEndOfStream;
+
+        /// <summary>
+        ///     True if this object is playing.
+        /// </summary>
         private bool _isPlaying;
+
+        /// <summary>
+        ///     True if this object is video stopped.
+        /// </summary>
         private bool _isVideoStopped = true;
+
+        /// <summary>
+        ///     The media engine.
+        /// </summary>
         private MediaEngine _mediaEngine;
+
+        /// <summary>
+        ///     The media engine ex.
+        /// </summary>
         private MediaEngineEx _mediaEngineEx;
+
+        /// <summary>
+        ///     The sprite batch.
+        /// </summary>
         private SpriteBatch _spriteBatch;
+
+        /// <summary>
+        ///     The texture.
+        /// </summary>
         private Texture _texture;
+
+        /// <summary>
+        ///     The graphics device.
+        /// </summary>
         private IGraphicsDevice _graphicsDevice;
 
+        /// <summary>
+        ///     Gets or sets the name of the asset.
+        /// </summary>
+        /// <value>
+        ///     The name of the asset.
+        /// </value>
         public string AssetName
         {
             get { return _assetName; }
@@ -67,6 +129,12 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the color of the background.
+        /// </summary>
+        /// <value>
+        ///     The color of the background.
+        /// </value>
         public Color BackgroundColor
         {
             get { return _backgroundColor; }
@@ -79,6 +147,12 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Gets the duration.
+        /// </summary>
+        /// <value>
+        ///     The duration.
+        /// </value>
         public double Duration
         {
             get
@@ -93,6 +167,12 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether this object is playing.
+        /// </summary>
+        /// <value>
+        ///     True if this object is playing, false if not.
+        /// </value>
         public bool IsPlaying
         {
             get { return _isPlaying; }
@@ -105,24 +185,48 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether the mute.
+        /// </summary>
+        /// <value>
+        ///     True if mute, false if not.
+        /// </value>
         public bool Mute
         {
             get { return _mediaEngineEx?.Muted ?? false; }
             set { _mediaEngineEx.Muted = value; }
         }
 
+        /// <summary>
+        ///     Gets or sets the playback position.
+        /// </summary>
+        /// <value>
+        ///     The playback position.
+        /// </value>
         public double PlaybackPosition
         {
             get { return _mediaEngineEx?.CurrentTime ?? 0.0; }
             set { _mediaEngineEx.CurrentTime = value; }
         }
 
+        /// <summary>
+        ///     Gets or sets the volume.
+        /// </summary>
+        /// <value>
+        ///     The volume.
+        /// </value>
         public double Volume
         {
             get { return _mediaEngineEx?.Volume ?? 0.0; }
             set { _mediaEngineEx.Volume = value; }
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="VideoPlayer" /> class.
+        /// </summary>
+        /// <param name="device"> The device. </param>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
@@ -130,11 +234,13 @@ namespace Exomia.Framework.Video
             _backgroundColor = Color.Transparent;
         }
 
+        /// <inheritdoc />
         public override bool BeginDraw()
         {
             return base.BeginDraw() && !_isVideoStopped && _isInitialized;
         }
 
+        /// <inheritdoc />
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
@@ -142,11 +248,17 @@ namespace Exomia.Framework.Video
             _spriteBatch.End();
         }
 
+        /// <summary>
+        ///     Pauses this object.
+        /// </summary>
         public void Pause()
         {
             _mediaEngineEx?.Pause();
         }
 
+        /// <summary>
+        ///     Plays this object.
+        /// </summary>
         public void Play()
         {
             if (_mediaEngineEx != null)
@@ -167,6 +279,11 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Sets byte stream.
+        /// </summary>
+        /// <param name="stream"> The stream. </param>
+        /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
         public void SetByteStream(Stream stream)
         {
             _byteStream = new ByteStream(stream);
@@ -181,6 +298,9 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Shuts down this object and frees any resources it is using.
+        /// </summary>
         public void Shutdown()
         {
             if (_isInitialized)
@@ -191,6 +311,7 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
             if (_isVideoStopped || !_isInitialized) { return; }
@@ -213,6 +334,7 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <inheritdoc />
         protected override void OnInitialize(IServiceRegistry registry)
         {
             _graphicsDevice = registry.GetService<IGraphicsDevice>() ??
@@ -241,6 +363,12 @@ namespace Exomia.Framework.Video
             _mediaEngineEx = ToDispose(_mediaEngine.QueryInterface<MediaEngineEx>());
         }
 
+        /// <summary>
+        ///     Executes the media engine event action.
+        /// </summary>
+        /// <param name="mediaEvent"> The media event. </param>
+        /// <param name="param1">     The first parameter. </param>
+        /// <param name="param2">     The second parameter. </param>
         private void OnMediaEngineEvent(MediaEngineEvent mediaEvent, long param1, int param2)
         {
             switch (mediaEvent)
@@ -274,6 +402,9 @@ namespace Exomia.Framework.Video
             }
         }
 
+        /// <summary>
+        ///     Stops this object.
+        /// </summary>
         private void Stop()
         {
             _isVideoStopped = true;

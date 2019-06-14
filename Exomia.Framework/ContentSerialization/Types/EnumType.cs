@@ -29,60 +29,47 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization.Types
 {
     /// <summary>
-    ///     EnumType class
+    ///     An enum type. This class cannot be inherited.
     /// </summary>
     sealed class EnumType : IType
     {
-        /// <summary>
-        ///     typeof(Array)
-        /// </summary>
+        /// <inheritdoc />
         public Type BaseType { get; }
 
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsPrimitive
         {
             get { return false; }
         }
 
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
+        /// <inheritdoc />
         public string TypeName
         {
             get { return BaseType.Name.ToUpper(); }
         }
 
         /// <summary>
-        ///     constructor EnumType
+        ///     Initializes a new instance of the <see cref="EnumType" /> class.
         /// </summary>
         public EnumType()
         {
             BaseType = typeof(Enum);
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateType(string)" />
-        /// </summary>
+        /// <inheritdoc />
         public Type CreateType(string genericTypeInfo)
         {
             genericTypeInfo.GetInnerType(out string bti, out _);
             return bti.CreateType();
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateTypeInfo(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public string CreateTypeInfo(Type type)
         {
             return $"{TypeName}<{type}>";
         }
 
-        /// <summary>
-        ///     <see cref="IType.Read(CSStreamReader, string, string, string)" />
-        /// </summary>
+        /// <inheritdoc />
         public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(128);
@@ -92,22 +79,23 @@ namespace Exomia.Framework.ContentSerialization.Types
                 switch (c)
                 {
                     case '[':
-                    {
-                        stream.ReadEndTag(key);
-
-                        genericTypeInfo.GetInnerType(out string bti, out string gti);
-                        if (!string.IsNullOrEmpty(gti))
                         {
-                            throw new CSReaderException($"ERROR: AN ENUM CAN't BE A GENERIC TYPE -> {genericTypeInfo}");
-                        }
+                            stream.ReadEndTag(key);
 
-                        Type enumType = bti.CreateType();
-                        if (enumType.IsEnum)
-                        {
-                            return Enum.Parse(enumType, sb.ToString());
+                            genericTypeInfo.GetInnerType(out string bti, out string gti);
+                            if (!string.IsNullOrEmpty(gti))
+                            {
+                                throw new CSReaderException(
+                                    $"ERROR: AN ENUM CAN't BE A GENERIC TYPE -> {genericTypeInfo}");
+                            }
+
+                            Type enumType = bti.CreateType();
+                            if (enumType.IsEnum)
+                            {
+                                return Enum.Parse(enumType, sb.ToString());
+                            }
+                            throw new CSReaderException($"ERROR: BASE TYPE ISN'T AN ENUM TYPE -> {bti}");
                         }
-                        throw new CSReaderException($"ERROR: BASE TYPE ISN'T AN ENUM TYPE -> {bti}");
-                    }
                     case ']':
                         throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");
                 }
@@ -117,11 +105,9 @@ namespace Exomia.Framework.ContentSerialization.Types
             throw new CSReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
-            bool useTypeInfo = true)
+                          bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
             writeHandler(

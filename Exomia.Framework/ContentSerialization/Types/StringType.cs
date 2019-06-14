@@ -29,59 +29,46 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization.Types
 {
     /// <summary>
-    ///     StringType class
+    ///     StringType class.
     /// </summary>
     sealed class StringType : IType
     {
-        /// <summary>
-        ///     typeof(Array)
-        /// </summary>
+        /// <inheritdoc />
         public Type BaseType { get; }
 
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsPrimitive
         {
             get { return true; }
         }
 
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
+        /// <inheritdoc />
         public string TypeName
         {
             get { return BaseType.Name.ToUpper(); }
         }
 
         /// <summary>
-        ///     constructor StringType
+        ///     Initializes a new instance of the <see cref="StringType" /> class.
         /// </summary>
         public StringType()
         {
             BaseType = typeof(string);
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateType(string)" />
-        /// </summary>
+        /// <inheritdoc />
         public Type CreateType(string genericTypeInfo)
         {
             return BaseType;
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateTypeInfo(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public string CreateTypeInfo(Type type)
         {
             return TypeName;
         }
 
-        /// <summary>
-        ///     <see cref="IType.Read(CSStreamReader, string, string, string)" />
-        /// </summary>
+        /// <inheritdoc />
         public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(128);
@@ -92,18 +79,18 @@ namespace Exomia.Framework.ContentSerialization.Types
                 {
                     //ESCAPE
                     case '\\':
-                    {
-                        if (!stream.ReadChar(out c))
                         {
-                            throw new CSReaderException($"ERROR: UNEXPECTED END OF FILE! - > {sb}");
+                            if (!stream.ReadChar(out c))
+                            {
+                                throw new CSReaderException($"ERROR: UNEXPECTED END OF FILE! - > {sb}");
+                            }
                         }
-                    }
                         break;
                     case '[':
-                    {
-                        stream.ReadEndTag(key);
-                        return sb.ToString();
-                    }
+                        {
+                            stream.ReadEndTag(key);
+                            return sb.ToString();
+                        }
                     case ']':
                         throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");
                 }
@@ -113,11 +100,9 @@ namespace Exomia.Framework.ContentSerialization.Types
             throw new CSReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
-            bool useTypeInfo = true)
+                          bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
             writeHandler(

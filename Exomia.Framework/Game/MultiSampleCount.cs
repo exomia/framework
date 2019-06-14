@@ -25,7 +25,7 @@
 namespace Exomia.Framework.Game
 {
     /// <summary>
-    ///     MultiSampleCount enum
+    ///     MultiSampleCount enum.
     /// </summary>
     public enum MultiSampleCount
     {

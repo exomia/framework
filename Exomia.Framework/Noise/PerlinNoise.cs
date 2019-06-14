@@ -26,21 +26,23 @@ using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Noise
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///     A perlin noise. This class cannot be inherited.
+    /// </summary>
     public sealed class PerlinNoise : NoiseBase
     {
         /// <inheritdoc />
-        public PerlinNoise(int seed, float frequency, int octaves,
-            NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
-            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
+        public PerlinNoise(int                    seed, float frequency, int octaves,
+                           NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
+                           NoiseFractalType       noiseFractalType       = NoiseFractalType.BrownianMotion)
             : base(
                 seed, frequency, octaves,
                 noiseInterpolationType, noiseFractalType) { }
 
         /// <inheritdoc />
-        public PerlinNoise(int seed, float frequency, int octaves, float lacunarity, float gain,
-            NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
-            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
+        public PerlinNoise(int                    seed, float frequency, int octaves, float lacunarity, float gain,
+                           NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
+                           NoiseFractalType       noiseFractalType       = NoiseFractalType.BrownianMotion)
             : base(
                 seed, frequency, octaves, lacunarity, gain,
                 noiseInterpolationType, noiseFractalType) { }

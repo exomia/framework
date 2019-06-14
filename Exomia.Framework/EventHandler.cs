@@ -25,23 +25,24 @@
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     Represents the method that will handle an event that has no event data and no sender specified.
+    ///     Represents the method that will handle an event that has no event data and no sender
+    ///     specified.
     /// </summary>
     public delegate void EventHandler();
 
     /// <summary>
     ///     Represents the method that will handle an event that has no event data.
     /// </summary>
-    /// <typeparam name="TEventArgs"></typeparam>
-    /// <param name="e"></param>
+    /// <typeparam name="TEventArgs"> . </typeparam>
+    /// <param name="e"> . </param>
     public delegate void EventHandler<in TEventArgs>(TEventArgs e);
 
     /// <summary>
     ///     Represents the method that will handle an event when the event provides data.
     /// </summary>
-    /// <typeparam name="TClass"></typeparam>
-    /// <typeparam name="TEventArgs"></typeparam>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
+    /// <typeparam name="TClass">     . </typeparam>
+    /// <typeparam name="TEventArgs"> . </typeparam>
+    /// <param name="sender"> . </param>
+    /// <param name="e">      . </param>
     public delegate void EventHandler<in TClass, in TEventArgs>(TClass sender, TEventArgs e);
 }

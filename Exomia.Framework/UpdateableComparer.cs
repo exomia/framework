@@ -26,10 +26,17 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework
 {
+    /// <summary>
+    ///     An updateable comparer. This class cannot be inherited.
+    /// </summary>
     sealed class UpdateableComparer : IComparer<IUpdateable>
     {
+        /// <summary>
+        ///     The default.
+        /// </summary>
         public static readonly UpdateableComparer Default = new UpdateableComparer();
 
+        /// <inheritdoc />
         public int Compare(IUpdateable left, IUpdateable right)
         {
             if (Equals(left, right))

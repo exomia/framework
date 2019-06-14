@@ -26,7 +26,6 @@ using System;
 
 namespace Exomia.Framework.ContentSerialization.Exceptions
 {
-    /// <inheritdoc />
     /// <summary>
     ///     Thrown than a context exception happen.
     /// </summary>

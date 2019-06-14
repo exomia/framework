@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,69 +43,181 @@ namespace Exomia.Framework.Game
 {
     /// <inheritdoc cref="IRunnable" />
     /// <summary>
-    ///     Game class
+    ///     Game class.
     /// </summary>
     public abstract class Game : IRunnable
     {
+        /// <summary>
+        ///     Initial size of the queue.
+        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 16;
+
+        /// <summary>
+        ///     The fixed timestamp threshold.
+        /// </summary>
         private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
 
+        /// <summary>
+        ///     The wm quit.
+        /// </summary>
         private const int WM_QUIT = 0x0012;
+
+        /// <summary>
+        ///     The pm remove.
+        /// </summary>
         private const int PM_REMOVE = 0x0001;
 
+        /// <summary>
+        ///     Occurs when is Running Changed.
+        /// </summary>
         private event EventHandler<Game, bool> _isRunningChanged;
 
+        /// <summary>
+        ///     The contentable component.
+        /// </summary>
         private readonly List<IContentable> _contentableComponent;
+
+        /// <summary>
+        ///     The currently contentable component.
+        /// </summary>
         private readonly List<IContentable> _currentlyContentableComponent;
 
+        /// <summary>
+        ///     The currently drawable component.
+        /// </summary>
         private readonly List<IDrawable> _currentlyDrawableComponent;
+
+        /// <summary>
+        ///     The currently updateable component.
+        /// </summary>
         private readonly List<IUpdateable> _currentlyUpdateableComponent;
 
+        /// <summary>
+        ///     The drawable component.
+        /// </summary>
         private readonly List<IDrawable> _drawableComponent;
 
+        /// <summary>
+        ///     The game components.
+        /// </summary>
         private readonly Dictionary<string, IComponent> _gameComponents;
+
+        /// <summary>
+        ///     The pending initializables.
+        /// </summary>
         private readonly List<IInitializable> _pendingInitializables;
 
+        /// <summary>
+        ///     The updateable component.
+        /// </summary>
         private readonly List<IUpdateable> _updateableComponent;
 
+        /// <summary>
+        ///     The service registry.
+        /// </summary>
         private readonly IServiceRegistry _serviceRegistry;
 
+        /// <summary>
+        ///     The collector.
+        /// </summary>
         private DisposeCollector _collector;
+
+        /// <summary>
+        ///     Manager for content.
+        /// </summary>
         private IContentManager _contentManager;
+
+        /// <summary>
+        ///     The game window.
+        /// </summary>
         private IGameWindow _gameWindow;
+
+        /// <summary>
+        ///     The graphics device.
+        /// </summary>
         private IGraphicsDevice _graphicsDevice;
 
+        /// <summary>
+        ///     True if this object is content loaded.
+        /// </summary>
         private bool _isContentLoaded;
 
+        /// <summary>
+        ///     True if this object is initialized.
+        /// </summary>
         private bool _isInitialized;
+
+        /// <summary>
+        ///     True if this object is running.
+        /// </summary>
         private bool _isRunning;
 
+        /// <summary>
+        ///     True to shutdown.
+        /// </summary>
         private bool _shutdown;
 
+        /// <summary>
+        ///     Gets the services.
+        /// </summary>
+        /// <value>
+        ///     The services.
+        /// </value>
         public IServiceRegistry Services
         {
             get { return _serviceRegistry; }
         }
 
+        /// <summary>
+        ///     Gets the content.
+        /// </summary>
+        /// <value>
+        ///     The content.
+        /// </value>
         public IContentManager Content
         {
             get { return _contentManager; }
         }
 
+        /// <summary>
+        ///     Gets the game window.
+        /// </summary>
+        /// <value>
+        ///     The game window.
+        /// </value>
         public IGameWindow GameWindow
         {
             get { return _gameWindow; }
         }
 
+        /// <summary>
+        ///     Gets the graphics device.
+        /// </summary>
+        /// <value>
+        ///     The graphics device.
+        /// </value>
         public IGraphicsDevice GraphicsDevice
         {
             get { return _graphicsDevice; }
         }
 
+        /// <summary>
+        ///     Gets options for controlling the game graphics.
+        /// </summary>
+        /// <value>
+        ///     Options that control the game graphics.
+        /// </value>
         public GameGraphicsParameters GameGraphicsParameters { get; private set; }
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether this object is fixed time step.
+        /// </summary>
+        /// <value>
+        ///     True if this object is fixed time step, false if not.
+        /// </value>
         public bool IsFixedTimeStep { get; set; } = false;
 
+        /// <inheritdoc />
         public bool IsRunning
         {
             get { return _isRunning; }
@@ -121,6 +231,12 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the target elapsed time.
+        /// </summary>
+        /// <value>
+        ///     The target elapsed time.
+        /// </value>
         public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
 
         #region Game
@@ -128,8 +244,8 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     Initializes a new instance of the <see cref="Game" /> class.
         /// </summary>
-        /// <param name="title">title</param>
-        /// <param name="gcLatencyMode">GCLatencyMode</param>
+        /// <param name="title">         (Optional) title. </param>
+        /// <param name="gcLatencyMode"> (Optional) GCLatencyMode. </param>
         protected Game(string title = "", GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
         {
             GCSettings.LatencyMode = gcLatencyMode;
@@ -142,38 +258,38 @@ namespace Exomia.Framework.Game
 #endif
 
             _serviceRegistry = new ServiceRegistry();
-            _gameWindow = new WinFormsGameWindow(title);
-            _graphicsDevice = new GraphicsDevice();
-            _contentManager = new ContentManager(_serviceRegistry);
+            _gameWindow      = new WinFormsGameWindow(title);
+            _graphicsDevice  = new GraphicsDevice();
+            _contentManager  = new ContentManager(_serviceRegistry);
 
             _serviceRegistry.AddService(_serviceRegistry);
             _serviceRegistry.AddService(_graphicsDevice);
             _serviceRegistry.AddService(_contentManager);
             _serviceRegistry.AddService(_gameWindow);
 
-            _gameComponents = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
+            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
+            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
 
 #if DEBUG
             ADrawableComponent component = new DebugComponent { ShowFullInformation = true };
-            component.Enabled = true;
-            component.Visible = true;
-            component.DrawOrder = 0;
+            component.Enabled     = true;
+            component.Visible     = true;
+            component.DrawOrder   = 0;
             component.UpdateOrder = 0;
             Add(component);
 #endif
         }
 
         /// <summary>
-        ///     Game destructor
+        ///     Game destructor.
         /// </summary>
         ~Game()
         {
@@ -181,11 +297,13 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     add a new game system
+        ///     add a new game system.
         /// </summary>
-        /// <typeparam name="T">T</typeparam>
-        /// <param name="item">item</param>
-        /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
+        /// <typeparam name="T"> T. </typeparam>
+        /// <param name="item"> item. </param>
+        /// <returns>
+        ///     <c>true</c> if successfully added; <c>false</c> otherwise.
+        /// </returns>
         public T Add<T>(T item)
         {
             if (item is IComponent component)
@@ -276,11 +394,13 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     add a new game system
+        ///     add a new game system.
         /// </summary>
-        /// <typeparam name="T">T</typeparam>
-        /// <param name="item">item</param>
-        /// <returns><c>true</c> if successfully added; <c>false</c> otherwise</returns>
+        /// <typeparam name="T"> T. </typeparam>
+        /// <param name="item"> item. </param>
+        /// <returns>
+        ///     <c>true</c> if successfully added; <c>false</c> otherwise.
+        /// </returns>
         public T Remove<T>(T item)
         {
             // ReSharper disable once InconsistentlySynchronizedField
@@ -331,11 +451,13 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     get a game system by name
+        ///     get a game system by name.
         /// </summary>
-        /// <param name="name">the game system name</param>
-        /// <param name="system">out found game system</param>
-        /// <returns><c>true</c> if found; <c>false</c> otherwise</returns>
+        /// <param name="name">   the game system name. </param>
+        /// <param name="system"> [out] out found game system. </param>
+        /// <returns>
+        ///     <c>true</c> if found; <c>false</c> otherwise.
+        /// </returns>
         public bool GetComponent(string name, out IComponent system)
         {
             return _gameComponents.TryGetValue(name, out system);
@@ -358,6 +480,7 @@ namespace Exomia.Framework.Game
             if (!_isInitialized)
             {
                 bool isWindowExiting = false;
+
                 void OnRenderFormOnFormClosing(object s, FormClosingEventArgs e)
                 {
                     if (!isWindowExiting)
@@ -383,7 +506,7 @@ namespace Exomia.Framework.Game
                 LoadContent();
                 Renderloop();
                 UnloadContent();
-                
+
                 switch (_gameWindow)
                 {
                     case IWinFormsGameWindow formsWindow:
@@ -395,28 +518,30 @@ namespace Exomia.Framework.Game
                         throw new NotSupportedException(
                             $"The game window of type {_gameWindow.GetType()} is currently not supported!");
                 }
-
             }
         }
-        
+
         /// <inheritdoc />
         public void Shutdown()
         {
             _shutdown = true;
         }
-        
+
+        /// <summary>
+        ///     Renderloops this object.
+        /// </summary>
         private void Renderloop()
         {
             User32.MSG msg;
-            msg.hWnd = IntPtr.Zero;
+            msg.hWnd    = IntPtr.Zero;
             msg.message = 0;
-            msg.lParam = IntPtr.Zero;
-            msg.wParam = IntPtr.Zero;
-            msg.time = 0;
-            msg.pt = Point.Zero;
+            msg.lParam  = IntPtr.Zero;
+            msg.wParam  = IntPtr.Zero;
+            msg.time    = 0;
+            msg.pt      = Point.Zero;
 
             Stopwatch stopwatch = new Stopwatch();
-            GameTime gameTime = GameTime.StartNew();
+            GameTime  gameTime  = GameTime.StartNew();
 
             void OnIsRunningChanged(Game s, bool v)
             {
@@ -473,32 +598,35 @@ namespace Exomia.Framework.Game
 
         #endregion
 
-
         #region Initialization
 
         /// <summary>
-        ///     Initialize <see cref="GameGraphicsParameters"/>.
-        ///     Called once before <see cref="OnBeforeInitialize"/> to perform user-defined overrides of <see cref="GameGraphicsParameters"/>.
+        ///     Initialize <see cref="GameGraphicsParameters" />. Called once before
+        ///     <see cref="OnBeforeInitialize" /> to perform user-defined overrides of
+        ///     <see cref="GameGraphicsParameters" />.
         /// </summary>
-        /// <param name="parameters">The <see cref="GameGraphicsParameters"/>.</param>
+        /// <param name="parameters"> [in,out] The <see cref="GameGraphicsParameters" />. </param>
         protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
 
         /// <summary>
-        ///   Called once before <see cref="OnInitialize"/> to perform user-defined initialization.
+        ///     Called once before <see cref="OnInitialize" /> to perform user-defined initialization.
         /// </summary>
         protected virtual void OnBeforeInitialize() { }
 
         /// <summary>
-        ///     Called once after the Game and <see cref="IGraphicsDevice"/> are created to perform user-defined initialization.
-        ///     Called before <see cref="OnAfterInitialize"/>.
+        ///     Called once after the Game and <see cref="IGraphicsDevice" /> are created to perform user-
+        ///     defined initialization. Called before <see cref="OnAfterInitialize" />.
         /// </summary>
         protected virtual void OnInitialize() { }
 
         /// <summary>
-        ///     Called once before <see cref="LoadContent"/> to perform user-defined initialization.
+        ///     Called once before <see cref="LoadContent" /> to perform user-defined initialization.
         /// </summary>
         protected virtual void OnAfterInitialize() { }
 
+        /// <summary>
+        ///     Initializes the game graphics parameters.
+        /// </summary>
         private void InitializeGameGraphicsParameters()
         {
             GameGraphicsParameters parameters = new GameGraphicsParameters
@@ -512,21 +640,21 @@ namespace Exomia.Framework.Game
                 DeviceCreationFlags =
                     DeviceCreationFlags.BgraSupport,
 #endif
-                DPI = new Vector2(96.0f, 96.0f),
-                DriverType = DriverType.Hardware,
-                Format = Format.B8G8R8A8_UNorm,
-                Width = 1024,
-                Height = 768,
-                IsWindowed = true,
-                IsMouseVisible = false,
-                Rational = new Rational(60, 1),
-                SwapChainFlags = SwapChainFlags.AllowModeSwitch,
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput,
-                UseVSync = false,
+                DPI                    = new Vector2(96.0f, 96.0f),
+                DriverType             = DriverType.Hardware,
+                Format                 = Format.B8G8R8A8_UNorm,
+                Width                  = 1024,
+                Height                 = 768,
+                IsWindowed             = true,
+                IsMouseVisible         = false,
+                Rational               = new Rational(60, 1),
+                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
+                SwapEffect             = SwapEffect.Discard,
+                Usage                  = Usage.RenderTargetOutput,
+                UseVSync               = false,
                 WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
-                EnableMultiSampling = false,
-                MultiSampleCount = MultiSampleCount.None
+                EnableMultiSampling    = false,
+                MultiSampleCount       = MultiSampleCount.None
             };
 
             OnInitializeGameGraphicsParameters(ref parameters);
@@ -537,6 +665,9 @@ namespace Exomia.Framework.Game
             GameGraphicsParameters = parameters;
         }
 
+        /// <summary>
+        ///     Initializes the pending initializations.
+        /// </summary>
         private void InitializePendingInitializations()
         {
             while (_pendingInitializables.Count != 0)
@@ -546,6 +677,9 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Initializes this object.
+        /// </summary>
         private void Initialize()
         {
             if (!_isInitialized)
@@ -564,12 +698,12 @@ namespace Exomia.Framework.Game
         #region Content
 
         /// <summary>
-        ///     Called once to perform user-defined loading
+        ///     Called once to perform user-defined loading.
         /// </summary>
         protected virtual void OnLoadContent() { }
 
         /// <summary>
-        ///     Called once to perform user-defined unloading
+        ///     Called once to perform user-defined unloading.
         /// </summary>
         protected virtual void OnUnloadContent() { }
 
@@ -626,8 +760,9 @@ namespace Exomia.Framework.Game
         #region Update
 
         /// <summary>
-        ///     updates the game logic
+        ///     updates the game logic.
         /// </summary>
+        /// <param name="gameTime"> The game time. </param>
         protected virtual void Update(GameTime gameTime)
         {
             lock (_updateableComponent)
@@ -647,6 +782,9 @@ namespace Exomia.Framework.Game
             _currentlyUpdateableComponent.Clear();
         }
 
+        /// <summary>
+        ///     Updateable component update order changed.
+        /// </summary>
         private void UpdateableComponent_UpdateOrderChanged()
         {
             lock (_updateableComponent)
@@ -662,15 +800,19 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
         /// </summary>
-        /// <returns><c>true</c> to continue drawing, false to not call <see cref="Draw" /> and <see cref="EndFrame" /></returns>
+        /// <returns>
+        ///     <c>true</c> to continue drawing, false to not call <see cref="Draw" /> and
+        ///     <see cref="EndFrame" />
+        /// </returns>
         protected virtual bool BeginFrame()
         {
             return _graphicsDevice.BeginFrame();
         }
 
         /// <summary>
-        ///     draws the current scene
+        ///     draws the current scene.
         /// </summary>
+        /// <param name="gameTime"> The game time. </param>
         protected virtual void Draw(GameTime gameTime)
         {
             lock (_drawableComponent)
@@ -699,6 +841,9 @@ namespace Exomia.Framework.Game
             _graphicsDevice.EndFrame();
         }
 
+        /// <summary>
+        ///     Drawable component draw order changed.
+        /// </summary>
         private void DrawableComponent_DrawOrderChanged()
         {
             lock (_drawableComponent)
@@ -711,6 +856,16 @@ namespace Exomia.Framework.Game
 
         #region Timer2
 
+        /// <summary>
+        ///     Adds a timer.
+        /// </summary>
+        /// <param name="tick">                The tick. </param>
+        /// <param name="enabled">             True to enable, false to disable. </param>
+        /// <param name="maxIterations">       (Optional) The maximum iterations. </param>
+        /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
+        /// <returns>
+        ///     A Timer2.
+        /// </returns>
         public Timer2 AddTimer(float tick, bool enabled, uint maxIterations = 0, bool removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, maxIterations) { Enabled = enabled });
@@ -721,8 +876,19 @@ namespace Exomia.Framework.Game
             return timer;
         }
 
+        /// <summary>
+        ///     Adds a timer.
+        /// </summary>
+        /// <param name="tick">                The tick. </param>
+        /// <param name="enabled">             True to enable, false to disable. </param>
+        /// <param name="tickCallback">        The tick callback. </param>
+        /// <param name="maxIterations">       (Optional) The maximum iterations. </param>
+        /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
+        /// <returns>
+        ///     A Timer2.
+        /// </returns>
         public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback, uint maxIterations = 0,
-            bool removeAfterFinished = false)
+                               bool  removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, maxIterations) { Enabled = enabled });
             if (removeAfterFinished)
@@ -732,9 +898,21 @@ namespace Exomia.Framework.Game
             return timer;
         }
 
-        public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback,
-            EventHandler<Timer2> finishedCallback,
-            uint maxIterations, bool removeAfterFinished = false)
+        /// <summary>
+        ///     Adds a timer.
+        /// </summary>
+        /// <param name="tick">                The tick. </param>
+        /// <param name="enabled">             True to enable, false to disable. </param>
+        /// <param name="tickCallback">        The tick callback. </param>
+        /// <param name="finishedCallback">    The finished callback. </param>
+        /// <param name="maxIterations">       The maximum iterations. </param>
+        /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
+        /// <returns>
+        ///     A Timer2.
+        /// </returns>
+        public Timer2 AddTimer(float                tick, bool enabled, EventHandler<Timer2> tickCallback,
+                               EventHandler<Timer2> finishedCallback,
+                               uint                 maxIterations, bool removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, finishedCallback, maxIterations) { Enabled = enabled });
             if (removeAfterFinished)
@@ -748,22 +926,26 @@ namespace Exomia.Framework.Game
 
         #region IDisposable Support
 
-
         /// <summary>
-        ///     adds a IDisposable object to the dispose collector
+        ///     adds a IDisposable object to the dispose collector.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <typeparam name="T"> . </typeparam>
+        /// <param name="obj"> . </param>
+        /// <returns>
+        ///     Obj as a T.
+        /// </returns>
         public T ToDispose<T>(T obj) where T : IDisposable
         {
             return _collector.Collect(obj);
         }
 
+        /// <summary>
+        ///     True if disposed.
+        /// </summary>
         private bool _disposed;
 
         /// <summary>
-        ///     Dispose
+        ///     Dispose.
         /// </summary>
         public void Dispose()
         {
@@ -771,6 +953,10 @@ namespace Exomia.Framework.Game
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        ///     Dispose.
+        /// </summary>
+        /// <param name="disposing"> true for user code; false otherwise. </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -811,9 +997,9 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     called once if disposed was called
+        ///     called once if disposed was called.
         /// </summary>
-        /// <param name="disposing">true for user code; false otherwise</param>
+        /// <param name="disposing"> true for user code; false otherwise. </param>
         protected virtual void OnDispose(bool disposing) { }
 
         #endregion

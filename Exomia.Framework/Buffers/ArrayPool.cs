@@ -31,20 +31,43 @@ using System.Threading;
 namespace Exomia.Framework.Buffers
 {
     /// <summary>
-    ///     ArrayPool class
+    ///     ArrayPool class.
     /// </summary>
-    /// <typeparam name="T">any</typeparam>
+    /// <typeparam name="T"> any. </typeparam>
     public sealed class ArrayPool<T>
     {
+        /// <summary>
+        ///     Length of the buffer.
+        /// </summary>
         private readonly int _bufferLength;
+
+        /// <summary>
+        ///     The buffers.
+        /// </summary>
         private readonly T[][] _buffers;
 
+        /// <summary>
+        ///     The lock.
+        /// </summary>
         private readonly SpinLock _lock;
+
+        /// <summary>
+        ///     The index.
+        /// </summary>
         private int _index;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ArrayPool{T}" /> class.
+        /// </summary>
+        /// <param name="bufferLength">    Length of the buffer. </param>
+        /// <param name="numberOfBuffers"> (Optional) Number of buffers. </param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when one or more arguments are outside
+        ///     the required range.
+        /// </exception>
         public ArrayPool(int bufferLength, int numberOfBuffers = 10)
         {
-            if (bufferLength <= 0) { throw new ArgumentOutOfRangeException(nameof(bufferLength)); }
+            if (bufferLength    <= 0) { throw new ArgumentOutOfRangeException(nameof(bufferLength)); }
             if (numberOfBuffers <= 0) { throw new ArgumentOutOfRangeException(nameof(numberOfBuffers)); }
 
             _bufferLength = bufferLength;
@@ -52,6 +75,12 @@ namespace Exomia.Framework.Buffers
             _buffers      = new T[numberOfBuffers][];
         }
 
+        /// <summary>
+        ///     Gets the rent.
+        /// </summary>
+        /// <returns>
+        ///     A T[].
+        /// </returns>
         public T[] Rent()
         {
             T[] buffer = null;
@@ -78,6 +107,15 @@ namespace Exomia.Framework.Buffers
             return buffer ?? new T[_bufferLength];
         }
 
+        /// <summary>
+        ///     Returns.
+        /// </summary>
+        /// <param name="array">      The array. </param>
+        /// <param name="clearArray"> True to clear array. </param>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or
+        ///     illegal values.
+        /// </exception>
         public void Return(T[] array, bool clearArray)
         {
             if (array.Length != _bufferLength)

@@ -22,23 +22,34 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
 {
-    /// <inheritdoc cref="IComponent" />
-    /// <inheritdoc cref="IInitializable" />
-    /// <inheritdoc cref="IDrawable" />
-    /// <inheritdoc cref="IDisposable" />
+    /// <summary>
+    ///     A renderer.
+    /// </summary>
     public abstract class ARenderer : IComponent, IInitializable, IDrawable, IDisposable
     {
+        /// <summary>
+        ///     Occurs when the <see cref="DrawOrder" /> property changes.
+        /// </summary>
         public event EventHandler DrawOrderChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="Visible" /> property changes.
+        /// </summary>
         public event EventHandler VisibleChanged;
 
+        /// <summary>
+        ///     The draw order.
+        /// </summary>
         private int _drawOrder;
+
+        /// <summary>
+        ///     True to show, false to hide.
+        /// </summary>
         private bool _visible;
 
         /// <inheritdoc />
@@ -75,7 +86,7 @@ namespace Exomia.Framework
         /// <summary>
         ///     Initializes a new instance of the <see cref="ARenderer" /> class.
         /// </summary>
-        /// <param name="name">name</param>
+        /// <param name="name"> name. </param>
         protected ARenderer(string name)
         {
             Name = name;

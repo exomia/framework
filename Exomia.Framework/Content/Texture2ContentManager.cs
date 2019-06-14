@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,28 +33,59 @@ using SharpDX.WIC;
 namespace Exomia.Framework.Content
 {
     //TODO: redesign/remove this file
-    /// <inheritdoc />
+    /// <summary>
+    ///     Manager for texture 2 contents. This class cannot be inherited.
+    /// </summary>
     public sealed class Texture2ContentManager : ITexture2ContentManager
     {
+        /// <summary>
+        ///     Initial size of the queue.
+        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 8;
+
+        /// <summary>
+        ///     Width of the atlas.
+        /// </summary>
         private const int ATLAS_WIDTH = 1024 * 8;
+
+        /// <summary>
+        ///     Height of the atlas.
+        /// </summary>
         private const int ATLAS_HEIGHT = 1024 * 8;
 
+        /// <summary>
+        ///     The atlases.
+        /// </summary>
         private readonly Dictionary<int, SpriteBatchAtlas> _atlases =
             new Dictionary<int, SpriteBatchAtlas>(INITIAL_QUEUE_SIZE);
 
+        /// <summary>
+        ///     The atlases keys.
+        /// </summary>
         private readonly Dictionary<string, Texture2> _atlasesKeys =
             new Dictionary<string, Texture2>(INITIAL_QUEUE_SIZE);
 
+        /// <summary>
+        ///     The lock atlas.
+        /// </summary>
         private readonly object _lockAtlas = new object();
 
+        /// <summary>
+        ///     Zero-based index of the atlases.
+        /// </summary>
         private int _atlasesIndex;
 
+        /// <summary>
+        ///     The texture.
+        /// </summary>
         private Texture _texture;
 
         /// <inheritdoc />
         public bool IsTextureInvalid { get; private set; }
 
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="Texture2ContentManager" /> class.
+        /// </summary>
         ~Texture2ContentManager()
         {
             Dispose(false);
@@ -146,6 +175,9 @@ namespace Exomia.Framework.Content
             _texture = null;
         }
 
+        /// <summary>
+        ///     Adds atlas.
+        /// </summary>
         private void AddAtlas()
         {
             lock (_lockAtlas)
@@ -156,8 +188,19 @@ namespace Exomia.Framework.Content
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     True if disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     True to release both managed and unmanaged resources; false to
+        ///     release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -171,6 +214,10 @@ namespace Exomia.Framework.Content
             }
         }
 
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

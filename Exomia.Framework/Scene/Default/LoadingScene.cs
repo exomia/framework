@@ -27,18 +27,27 @@ using System.Threading.Tasks;
 
 namespace Exomia.Framework.Scene.Default
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///     A loading scene.
+    /// </summary>
     public class LoadingScene : SceneBase
     {
+        /// <summary>
+        ///     The scene to load.
+        /// </summary>
         private readonly SceneBase _sceneToLoad;
 
+        /// <summary>
+        ///     The registry.
+        /// </summary>
         private IServiceRegistry _registry;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoadingScene" /> class.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="sceneToLoad"></param>
+        /// <param name="key">         . </param>
+        /// <param name="sceneToLoad"> . </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public LoadingScene(string key, SceneBase sceneToLoad)
             : base(key)
         {
@@ -74,6 +83,12 @@ namespace Exomia.Framework.Scene.Default
             }
         }
 
+        /// <summary>
+        ///     Scene to load scene state changed.
+        /// </summary>
+        /// <param name="scene">   The scene. </param>
+        /// <param name="current"> The current. </param>
+        /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
         private void _sceneToLoad_SceneStateChanged(IScene scene, SceneState current)
         {
             if (current == SceneState.StandBy)

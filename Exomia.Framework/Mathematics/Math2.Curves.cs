@@ -26,13 +26,18 @@ using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Mathematics
 {
+    /// <content>
+    ///     The mathematics 2.
+    /// </content>
     public static partial class Math2
     {
         /// <summary>
-        ///     Hermite Curve
+        ///     Hermite Curve.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t"> t. </param>
+        /// <returns>
+        ///     A double.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float CurveHermite(float t)
         {
@@ -40,10 +45,12 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Hermite Curve
+        ///     Hermite Curve.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t"> t. </param>
+        /// <returns>
+        ///     A double.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CurveHermite(double t)
         {
@@ -51,10 +58,12 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Quintic Curve
+        ///     Quintic Curve.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t"> t. </param>
+        /// <returns>
+        ///     A float.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float CurveQuintic(float t)
         {
@@ -62,10 +71,12 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Quintic Curve
+        ///     Quintic Curve.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t"> t. </param>
+        /// <returns>
+        ///     A double.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CurveQuintic(double t)
         {

@@ -26,8 +26,12 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
+    /// <summary>
+    ///     A color carriage return. This class cannot be inherited.
+    /// </summary>
     sealed class ColorCR : AContentSerializationReader<Color>
     {
+        /// <inheritdoc />
         public override Color ReadContext(ContentSerializationContext context)
         {
             return new Color

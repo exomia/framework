@@ -26,7 +26,6 @@ using System;
 
 namespace Exomia.Framework.Content
 {
-    /// <inheritdoc />
     /// <summary>
     ///     used to mark a content readable class
     /// </summary>
@@ -35,11 +34,14 @@ namespace Exomia.Framework.Content
     {
         internal IContentReader Reader { get; }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Content.ContentReadableAttribute" /> class.
+        ///     Initializes a new instance of the <see cref="ContentReadableAttribute" /> class.
         /// </summary>
-        /// <param name="reader">the content reader type <see cref="T:Exomia.Framework.Content.IContentReader" /></param>
+        /// <param name="reader">
+        ///     the content reader type
+        ///     <see cref="T:Exomia.Framework.Content.IContentReader" />
+        /// </param>
+        /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
         public ContentReadableAttribute(Type reader)
         {
             Reader = System.Activator.CreateInstance(reader) as IContentReader ??

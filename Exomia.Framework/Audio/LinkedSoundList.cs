@@ -30,26 +30,59 @@ using SharpDX.XAudio2;
 
 namespace Exomia.Framework.Audio
 {
+    /// <summary>
+    ///     List of linked sounds. This class cannot be inherited.
+    /// </summary>
     sealed class LinkedSoundList : IEnumerable<LinkedSoundList.Sound>
     {
+        /// <summary>
+        ///     The capacity.
+        /// </summary>
         private readonly int _capacity;
 
+        /// <summary>
+        ///     this lock.
+        /// </summary>
         private readonly object _thisLock;
+
+        /// <summary>
+        ///     The head.
+        /// </summary>
         private Sound _head;
+
+        /// <summary>
+        ///     Number of.
+        /// </summary>
         private int _count;
 
+        /// <summary>
+        ///     Gets the capacity.
+        /// </summary>
+        /// <value>
+        ///     The capacity.
+        /// </value>
         public int Capacity
         {
             // ReSharper disable once InconsistentlySynchronizedField
             get { return _capacity; }
         }
 
+        /// <summary>
+        ///     Gets the number of.
+        /// </summary>
+        /// <value>
+        ///     The count.
+        /// </value>
         public int Count
         {
             // ReSharper disable once InconsistentlySynchronizedField
             get { return _count; }
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LinkedSoundList" /> class.
+        /// </summary>
+        /// <param name="capacity"> (Optional) The capacity. </param>
         public LinkedSoundList(int capacity = int.MaxValue)
         {
             _capacity = capacity;
@@ -57,16 +90,27 @@ namespace Exomia.Framework.Audio
             _thisLock = new object();
         }
 
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns>
+        ///     The enumerator.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
         IEnumerator<Sound> IEnumerable<Sound>.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <summary>
+        ///     Adds sound.
+        /// </summary>
+        /// <param name="sound"> The sound to remove. </param>
         public void Add(Sound sound)
         {
             lock (_thisLock)
@@ -92,6 +136,9 @@ namespace Exomia.Framework.Audio
             }
         }
 
+        /// <summary>
+        ///     Clears this object to its blank/initial state.
+        /// </summary>
         public void Clear()
         {
             lock (_thisLock)
@@ -101,6 +148,11 @@ namespace Exomia.Framework.Audio
             }
         }
 
+        /// <summary>
+        ///     Removes the given sound.
+        /// </summary>
+        /// <param name="sound"> The sound to remove. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public void Remove(Sound sound)
         {
             lock (_thisLock)
@@ -118,14 +170,33 @@ namespace Exomia.Framework.Audio
             }
         }
 
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns>
+        ///     The enumerator.
+        /// </returns>
         public Enumerator GetEnumerator()
         {
             return new Enumerator(this);
         }
 
+        /// <summary>
+        ///     An enumerator.
+        /// </summary>
         public struct Enumerator : IEnumerator<Sound>
         {
+            /// <summary>
+            ///     The list.
+            /// </summary>
             private readonly LinkedSoundList _list;
+
+            /// <summary>
+            ///     Gets the node.
+            /// </summary>
+            /// <value>
+            ///     The node.
+            /// </value>
             private Sound _current, _node;
 
             /// <inheritdoc />
@@ -140,6 +211,10 @@ namespace Exomia.Framework.Audio
                 get { return Current; }
             }
 
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="LinkedSoundList" /> class.
+            /// </summary>
+            /// <param name="list"> The list. </param>
             public Enumerator(LinkedSoundList list)
             {
                 _list    = list;
@@ -174,22 +249,45 @@ namespace Exomia.Framework.Audio
             public void Dispose() { }
         }
 
+        /// <summary>
+        ///     A sound. This class cannot be inherited.
+        /// </summary>
         internal sealed class Sound
         {
+            /// <summary>
+            ///     The emitter.
+            /// </summary>
             internal readonly Emitter Emitter;
+
+            /// <summary>
+            ///     Source voice.
+            /// </summary>
             internal readonly SourceVoice SourceVoice;
+
+            /// <summary>
+            ///     The next.
+            /// </summary>
             internal Sound Next;
+
+            /// <summary>
+            ///     The previous.
+            /// </summary>
             internal Sound Previous;
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="Sound" /> class.
             /// </summary>
+            /// <param name="emitter">     The emitter. </param>
+            /// <param name="sourceVoice"> Source voice. </param>
             public Sound(Emitter emitter, SourceVoice sourceVoice)
             {
                 Emitter     = emitter;
                 SourceVoice = sourceVoice;
             }
 
+            /// <summary>
+            ///     Invalidates this object.
+            /// </summary>
             internal void Invalidate()
             {
                 Next     = null;

@@ -34,15 +34,20 @@ namespace Exomia.Framework.Content.Resolver
         /// <summary>
         ///     Checks if the specified asset name exists.
         /// </summary>
-        /// <param name="assetName">Name of the asset.</param>
-        /// <returns><c>true</c> if the specified asset name exists; <c>false</c> otherwise</returns>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <returns>
+        ///     <c>true</c> if the specified asset name exists; <c>false</c> otherwise.
+        /// </returns>
         bool Exists(string assetName);
 
         /// <summary>
         ///     Resolves the specified asset name to a stream.
         /// </summary>
-        /// <param name="assetName">Name of the asset.</param>
-        /// <returns>The stream of the asset. This value can be null if this resolver was not able to locate the asset.</returns>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <returns>
+        ///     The stream of the asset. This value can be null if this resolver was not able to locate
+        ///     the asset.
+        /// </returns>
         Stream Resolve(string assetName);
     }
 }

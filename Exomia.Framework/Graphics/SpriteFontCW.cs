@@ -27,8 +27,12 @@ using Exomia.Framework.ContentSerialization;
 
 namespace Exomia.Framework.Graphics
 {
+    /// <summary>
+    ///     A sprite font cw. This class cannot be inherited.
+    /// </summary>
     sealed class SpriteFontCW : AContentSerializationWriter<SpriteFont>
     {
+        /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont obj)
         {
             context.Set("Face", obj.Face);
@@ -50,8 +54,12 @@ namespace Exomia.Framework.Graphics
         }
     }
 
+    /// <summary>
+    ///     A sprite font glyph cw. This class cannot be inherited.
+    /// </summary>
     sealed class SpriteFontGlyphCW : AContentSerializationWriter<SpriteFont.Glyph>
     {
+        /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Glyph obj)
         {
             context.Set("Character", obj.Character);
@@ -62,8 +70,12 @@ namespace Exomia.Framework.Graphics
         }
     }
 
+    /// <summary>
+    ///     A sprite font kerning cw. This class cannot be inherited.
+    /// </summary>
     sealed class SpriteFontKerningCW : AContentSerializationWriter<SpriteFont.Kerning>
     {
+        /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Kerning obj)
         {
             context.Set("First", obj.First);

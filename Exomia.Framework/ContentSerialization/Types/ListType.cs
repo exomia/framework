@@ -29,57 +29,44 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization.Types
 {
     /// <summary>
-    ///     ListType class
+    ///     A list type. This class cannot be inherited.
     /// </summary>
     sealed class ListType : IType
     {
-        /// <summary>
-        ///     typeof(Array)
-        /// </summary>
+        /// <inheritdoc />
         public Type BaseType { get; }
 
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsPrimitive
         {
             get { return false; }
         }
 
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
+        /// <inheritdoc />
         public string TypeName
         {
             get { return BaseType.Name.ToUpper(); }
         }
 
         /// <summary>
-        ///     constructor EnumType
+        ///     Initializes a new instance of the <see cref="ListType" /> class.
         /// </summary>
         public ListType()
         {
             BaseType = typeof(List<>);
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateType(string)" />
-        /// </summary>
+        /// <inheritdoc />
         public Type CreateType(string genericTypeInfo)
         {
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
-            {
-                return BaseType.MakeGenericType(it.CreateType(gti));
-            }
-            return BaseType.MakeGenericType(bti.CreateType());
+            return ContentSerializer.s_types.TryGetValue(bti, out IType it)
+                ? BaseType.MakeGenericType(it.CreateType(gti))
+                : BaseType.MakeGenericType(bti.CreateType());
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateTypeInfo(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public string CreateTypeInfo(Type type)
         {
             Type[] gArgs = type.GetGenericArguments();
@@ -87,8 +74,9 @@ namespace Exomia.Framework.ContentSerialization.Types
             {
                 string genericTypeInfo =
                     ContentSerializer.s_types.TryGetValue(gArgs[0].Name.ToUpper(), out IType it)
-                    || ContentSerializer.s_types.TryGetValue(
-                        (gArgs[0].BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it)
+                 || ContentSerializer.s_types.TryGetValue(
+                        (gArgs[0].BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
+                        out it)
                         ? it.CreateTypeInfo(gArgs[0])
                         : gArgs[0].ToString();
 
@@ -97,9 +85,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             throw new NotSupportedException(type.ToString());
         }
 
-        /// <summary>
-        ///     <see cref="IType.Read(CSStreamReader, string, string, string)" />
-        /// </summary>
+        /// <inheritdoc />
         public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             if (string.IsNullOrEmpty(dimensionInfo))
@@ -114,7 +100,7 @@ namespace Exomia.Framework.ContentSerialization.Types
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            Type elementType;
+            Type                                 elementType;
             Func<CSStreamReader, string, object> readCallback;
             if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
             {
@@ -135,18 +121,16 @@ namespace Exomia.Framework.ContentSerialization.Types
 
             int count = GetListCount(dimensionInfo);
 
-            Type list = BaseType.MakeGenericType(elementType);
-            object obj = System.Activator.CreateInstance(list, count);
+            Type   list = BaseType.MakeGenericType(elementType);
+            object obj  = System.Activator.CreateInstance(list, count);
             AddListContent(stream, readCallback, (dynamic)obj, count);
             stream.ReadTag($"/{key}");
             return obj;
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
-            bool useTypeInfo = true)
+                          bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
             Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
@@ -154,6 +138,13 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #region WriteHelper
 
+        /// <summary>
+        ///     Foreach list dimension.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="list">         The list. </param>
         private static void ForeachListDimension<T>(Action<string, string> writeHandler, string tabSpace, List<T> list)
         {
             foreach (T entry in list)
@@ -175,8 +166,17 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #endregion
 
+        /// <summary>
+        ///     Writes.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="key">          The key. </param>
+        /// <param name="content">      The content. </param>
+        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
         private void Write<T>(Action<string, string> writeHandler, string tabSpace, string key, List<T> content,
-            bool useTypeInfo = true)
+                              bool                   useTypeInfo = true)
         {
             writeHandler(
                 tabSpace,
@@ -187,10 +187,18 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #region ReaderHelper
 
+        /// <summary>
+        ///     Gets list count.
+        /// </summary>
+        /// <param name="listTypeInfo"> Information describing the list type. </param>
+        /// <returns>
+        ///     The list count.
+        /// </returns>
+        /// <exception cref="CSTypeException"> Thrown when a Create struct Type error condition occurs. </exception>
         private static int GetListCount(string listTypeInfo)
         {
             string start = "(";
-            string end = ")";
+            string end   = ")";
 
             int sIndex = listTypeInfo.IndexOf(start);
             if (sIndex == -1)
@@ -214,8 +222,16 @@ namespace Exomia.Framework.ContentSerialization.Types
             return buffer;
         }
 
+        /// <summary>
+        ///     Adds a list content.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="stream">       The stream. </param>
+        /// <param name="readCallback"> The read callback. </param>
+        /// <param name="list">         The list. </param>
+        /// <param name="count">        Number of. </param>
         private static void AddListContent<T>(CSStreamReader stream, Func<CSStreamReader, string, object> readCallback,
-            List<T> list, int count)
+                                              List<T>        list,   int                                  count)
         {
             for (int i = 0; i < count; i++)
             {

@@ -29,27 +29,66 @@ using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Tools
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///     A tween. This class cannot be inherited.
+    /// </summary>
     public sealed class Tween : IUpdateable
     {
+        /// <summary>
+        ///     Occurs when Enabled Changed.
+        /// </summary>
         /// <inheritdoc />
         public event EventHandler EnabledChanged;
 
+        /// <summary>
+        ///     Occurs when Update Order Changed.
+        /// </summary>
         /// <inheritdoc />
         public event EventHandler UpdateOrderChanged;
 
+        /// <summary>
+        ///     The callback.
+        /// </summary>
         private readonly EasingFunction _callback;
+
+        /// <summary>
+        ///     The delay.
+        /// </summary>
         private readonly float _delay;
+
+        /// <summary>
+        ///     The duration.
+        /// </summary>
         private readonly float _duration;
 
+        /// <summary>
+        ///     The items.
+        /// </summary>
         private readonly List<TweenItem> _items;
 
+        /// <summary>
+        ///     Target for the.
+        /// </summary>
         private readonly object _target;
+
+        /// <summary>
+        ///     The delay time.
+        /// </summary>
         private float _delayTime;
 
+        /// <summary>
+        ///     True to enable, false to disable.
+        /// </summary>
         private bool _enabled;
 
+        /// <summary>
+        ///     The time.
+        /// </summary>
         private float _time;
+
+        /// <summary>
+        ///     The update order.
+        /// </summary>
         private int _updateOrder;
 
         /// <inheritdoc />
@@ -92,7 +131,7 @@ namespace Exomia.Framework.Tools
 
             _items = new List<TweenItem>();
 
-            Type valueType = values.GetType();
+            Type valueType  = values.GetType();
             Type targetType = target.GetType();
 
             foreach (PropertyInfo info in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -100,7 +139,7 @@ namespace Exomia.Framework.Tools
                 PropertyInfo info2 = targetType.GetProperty(info.Name);
                 if (info2 == null) { return; }
                 float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float));
-                float to = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float));
+                float to   = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float));
 
                 _items.Add(new TweenItem(from, to, info2));
             }
@@ -122,18 +161,47 @@ namespace Exomia.Framework.Tools
 
             for (int i = 0; i < _items.Count; i++)
             {
-                TweenItem item = _items[i];
-                float value = _callback(_time, item.From, item.To, _duration);
+                TweenItem item  = _items[i];
+                float     value = _callback(_time, item.From, item.To, _duration);
                 item.PropertyInfo.SetValue(_target, Convert.ChangeType(value, item.PropertyInfo.PropertyType), null);
             }
         }
 
+        /// <summary>
+        ///     A tween item.
+        /// </summary>
         private class TweenItem
         {
+            /// <summary>
+            ///     Gets the source for the.
+            /// </summary>
+            /// <value>
+            ///     from.
+            /// </value>
             public float From { get; }
+
+            /// <summary>
+            ///     Gets information describing the property.
+            /// </summary>
+            /// <value>
+            ///     Information describing the property.
+            /// </value>
             public PropertyInfo PropertyInfo { get; }
+
+            /// <summary>
+            ///     Gets to.
+            /// </summary>
+            /// <value>
+            ///     to.
+            /// </value>
             public float To { get; }
 
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="TweenItem" /> class.
+            /// </summary>
+            /// <param name="from"> Source for the. </param>
+            /// <param name="to">   to. </param>
+            /// <param name="info"> The information. </param>
             public TweenItem(float from, float to, PropertyInfo info)
             {
                 From         = from;

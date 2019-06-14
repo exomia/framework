@@ -40,7 +40,7 @@ namespace Exomia.Framework
         ///     starts the run
         /// </summary>
         void Run();
-        
+
         /// <summary>
         ///     shutdown the run
         /// </summary>

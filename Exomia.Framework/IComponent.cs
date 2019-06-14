@@ -30,8 +30,11 @@ namespace Exomia.Framework
     public interface IComponent
     {
         /// <summary>
-        ///     the name of the component
+        ///     the name of the component.
         /// </summary>
+        /// <value>
+        ///     The name.
+        /// </value>
         string Name { get; }
     }
 }

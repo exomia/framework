@@ -32,21 +32,27 @@ using Resource = SharpDX.Direct3D11.Resource;
 namespace Exomia.Framework.Graphics
 {
     /// <summary>
-    ///     TextureHelper class
+    ///     TextureHelper class.
     /// </summary>
     public static class TextureHelper
     {
+        /// <summary>
+        ///     The image factory.
+        /// </summary>
         private static readonly ImagingFactory s_imgFactory = new ImagingFactory();
 
         /// <summary>
+        ///     Creates a texture.
         /// </summary>
-        /// <param name="device"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
+        /// <param name="device"> . </param>
+        /// <param name="width">  . </param>
+        /// <param name="height"> . </param>
+        /// <param name="format"> (Optional) </param>
+        /// <returns>
+        ///     The new texture.
+        /// </returns>
         public static Texture2D CreateTexture(Device5 device, int width, int height,
-            Format format = Format.B8G8R8A8_UNorm)
+                                              Format  format = Format.B8G8R8A8_UNorm)
         {
             lock (device)
             {
@@ -69,12 +75,15 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
+        ///     Loads a bitmap.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <param name="stream"> . </param>
+        /// <returns>
+        ///     The bitmap.
+        /// </returns>
         public static BitmapSource LoadBitmap(Stream stream)
         {
-            BitmapDecoder bitmapDecoder = new BitmapDecoder(s_imgFactory, stream, DecodeOptions.CacheOnDemand);
+            BitmapDecoder   bitmapDecoder   = new BitmapDecoder(s_imgFactory, stream, DecodeOptions.CacheOnDemand);
             FormatConverter formatConverter = new FormatConverter(s_imgFactory);
             formatConverter.Initialize(
                 bitmapDecoder.GetFrame(0),
@@ -87,10 +96,13 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
+        ///     Loads texture 2 d.
         /// </summary>
-        /// <param name="device"></param>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <param name="device"> . </param>
+        /// <param name="stream"> . </param>
+        /// <returns>
+        ///     The texture 2 d.
+        /// </returns>
         public static Texture2D LoadTexture2D(Device5 device, Stream stream)
         {
             lock (device)
@@ -121,9 +133,17 @@ namespace Exomia.Framework.Graphics
             }
         }
 
+        /// <summary>
+        ///     Converts this object to a texture 2 d array.
+        /// </summary>
+        /// <param name="device">        . </param>
+        /// <param name="bitmapSources"> The bitmap sources. </param>
+        /// <returns>
+        ///     The given data converted to a Texture2D.
+        /// </returns>
         internal static Texture2D ToTexture2DArray(Device5 device, BitmapSource[] bitmapSources)
         {
-            int width = bitmapSources[0].Size.Width;
+            int width  = bitmapSources[0].Size.Width;
             int height = bitmapSources[0].Size.Height;
 
             lock (device)

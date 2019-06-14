@@ -26,10 +26,17 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework
 {
+    /// <summary>
+    ///     A drawable comparer. This class cannot be inherited.
+    /// </summary>
     sealed class DrawableComparer : IComparer<IDrawable>
     {
+        /// <summary>
+        ///     The default.
+        /// </summary>
         public static readonly DrawableComparer Default = new DrawableComparer();
 
+        /// <inheritdoc />
         public int Compare(IDrawable left, IDrawable right)
         {
             if (Equals(left, right))
