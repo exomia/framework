@@ -31,33 +31,84 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class GameTime
     {
+        /// <summary>
+        ///     The maximum frame time.
+        /// </summary>
         private const    float  MAX_FRAME_TIME = 1000.0f / 60.0f;
+        /// <summary>
+        ///     The counts per m security.
+        /// </summary>
         private readonly double _countsPerMSec = 1000.0 / Stopwatch.Frequency;
 
+        /// <summary>
+        ///     The counts per security.
+        /// </summary>
         private readonly double _countsPerSec = 1.0 / Stopwatch.Frequency;
 
+        /// <summary>
+        ///     The base time.
+        /// </summary>
         private long _baseTime;
+        /// <summary>
+        ///     The curr time.
+        /// </summary>
         private long _currTime;
+        /// <summary>
+        ///     The paused time.
+        /// </summary>
         private long _pausedTime;
+        /// <summary>
+        ///     The previous time.
+        /// </summary>
         private long _prevTime;
 
+        /// <summary>
+        ///     True if stopped.
+        /// </summary>
         private bool _stopped;
+        /// <summary>
+        ///     The stop time.
+        /// </summary>
         private long _stopTime;
 
         /// <summary>
         ///     this value will be limited to <see cref="MAX_FRAME_TIME" /> (1000.0f / 60.0f)
         /// </summary>
+        /// <value>
+        ///     The limited delta time milliseconds.
+        /// </value>
         public float LimitedDeltaTimeMS { get; private set; }
 
         /// <summary>
         ///     this value will be limited to <see cref="MAX_FRAME_TIME" /> (1.0f / 60.0f)
         /// </summary>
+        /// <value>
+        ///     The limited delta time s.
+        /// </value>
         public float LimitedDeltaTimeS { get; private set; }
 
+        /// <summary>
+        ///     Gets the delta time milliseconds.
+        /// </summary>
+        /// <value>
+        ///     The delta time milliseconds.
+        /// </value>
         public float DeltaTimeMS { get; private set; }
 
+        /// <summary>
+        ///     Gets the delta time s.
+        /// </summary>
+        /// <value>
+        ///     The delta time s.
+        /// </value>
         public float DeltaTimeS { get; private set; }
 
+        /// <summary>
+        ///     Gets the total number of time milliseconds.
+        /// </summary>
+        /// <value>
+        ///     The total number of time milliseconds.
+        /// </value>
         public float TotalTimeMS
         {
             get
@@ -70,6 +121,12 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Gets the total number of time s.
+        /// </summary>
+        /// <value>
+        ///     The total number of time s.
+        /// </value>
         public float TotalTimeS
         {
             get
@@ -90,13 +147,19 @@ namespace Exomia.Framework.Game
             _prevTime = _baseTime = Stopwatch.GetTimestamp();
         }
 
+        /// <summary>
+        ///     Starts a new.
+        /// </summary>
+        /// <returns>
+        ///     A GameTime.
+        /// </returns>
         public static GameTime StartNew()
         {
             return new GameTime();
         }
 
         /// <summary>
-        ///     reset the game time
+        ///     reset the game time.
         /// </summary>
         public void Reset()
         {
@@ -106,7 +169,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     start the game time
+        ///     start the game time.
         /// </summary>
         public void Start()
         {
@@ -121,7 +184,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     stop the game time
+        ///     stop the game time.
         /// </summary>
         public void Stop()
         {
@@ -132,6 +195,9 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Ticks this object.
+        /// </summary>
         public void Tick()
         {
             if (_stopped)

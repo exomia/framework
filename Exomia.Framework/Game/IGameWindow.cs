@@ -29,7 +29,6 @@ namespace Exomia.Framework.Game
     /// <summary>
     ///     IGameWindow interface.
     /// </summary>
-    /// <inheritdoc />
     public interface IGameWindow : IDisposable
     {
         /// <summary>

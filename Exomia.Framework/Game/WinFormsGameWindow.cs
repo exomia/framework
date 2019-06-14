@@ -65,7 +65,7 @@ namespace Exomia.Framework.Game
         /// </value>
         public bool IsInitialized { get; private set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public RenderForm RenderForm
         {
             get { return _renderForm; }
@@ -165,10 +165,8 @@ namespace Exomia.Framework.Game
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting
         ///     unmanaged resources.
         /// </summary>
-        /// <param name="disposing">
-        ///     True to release both managed and unmanaged resources; false to
-        ///     release only unmanaged resources.
-        /// </param>
+        /// <param name="disposing"> True to release both managed and unmanaged resources; false to
+        ///                          release only unmanaged resources. </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)

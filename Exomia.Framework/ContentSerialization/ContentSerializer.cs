@@ -195,14 +195,6 @@ namespace Exomia.Framework.ContentSerialization
         /// </summary>
         /// <typeparam name="T"> the type the reader can read. </typeparam>
         /// <param name="reader"> IContentSerializationReader. </param>
-        /// <exception cref="CSReaderException">     CSReaderException. </exception>
-        /// <summary>
-        ///     Adds a reader.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="reader"> IContentSerializationReader. </param>
-        /// ###
-        /// <exception cref="ArgumentNullException"> ArgumentNullException. </exception>
         public static void AddReader<T>(IContentSerializationReader reader)
         {
             AddReader(typeof(T), reader);
@@ -232,14 +224,6 @@ namespace Exomia.Framework.ContentSerialization
         /// </summary>
         /// <typeparam name="T"> the type the writer can write. </typeparam>
         /// <param name="writer"> IContentSerializationWriter. </param>
-        /// <exception cref="CSWriterException">     CSWriterException. </exception>
-        /// <summary>
-        ///     Adds a writer.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="writer"> IContentSerializationWriter. </param>
-        /// ###
-        /// <exception cref="ArgumentNullException"> ArgumentNullException. </exception>
         public static void AddWriter<T>(IContentSerializationWriter writer)
         {
             AddWriter(typeof(T), writer);
@@ -263,23 +247,11 @@ namespace Exomia.Framework.ContentSerialization
         /// <summary>
         ///     Write a given object into the asset on the file system.
         /// </summary>
-        /// <typeparam name="T"> typeof Object. </typeparam>
-        /// <param name="assetName"> the asset name. </param>
-        /// <param name="obj">       Object. </param>
-        /// <param name="minify">    (Optional) minify. </param>
-        /// <exception cref="ArgumentNullException"> ArgumentNullException. </exception>
-        /// <exception cref="CSWriterException">     CPWriterException. </exception>
-        /// <exception cref="CSTypeException">       CPTypeException. </exception>
-        /// <summary>
-        ///     Writes.
-        /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="assetName"> Name of the asset. </param>
         /// <param name="obj">       Object. </param>
         /// <param name="minify">    (Optional) True to minify. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// ###
-        /// <exception cref="NotSupportedException"> NotSupportedException. </exception>
         public static void Write<T>(string assetName, T obj, bool minify = false) where T : class
         {
             if (obj == null) { throw new ArgumentNullException(nameof(obj)); }
@@ -356,18 +328,6 @@ namespace Exomia.Framework.ContentSerialization
         /// <summary>
         ///     Reads a object from the given stream.
         /// </summary>
-        /// <typeparam name="T"> typeof object. </typeparam>
-        /// <param name="stream">   Stream. </param>
-        /// <param name="keepOpen"> (Optional) keep stream open. </param>
-        /// <returns>
-        ///     <c>T</c> Object.
-        /// </returns>
-        /// <exception cref="ArgumentNullException"> ArgumentNullException. </exception>
-        /// <exception cref="CSReaderException">     CSReaderException. </exception>
-        /// <exception cref="CSTypeException">       CSTypeException. </exception>
-        /// <summary>
-        ///     Reads.
-        /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="stream">   Stream. </param>
         /// <param name="keepOpen"> (Optional) True to keep open. </param>
@@ -379,8 +339,6 @@ namespace Exomia.Framework.ContentSerialization
         ///     Thrown when a Create struct Reader error condition
         ///     occurs.
         /// </exception>
-        /// ###
-        /// <exception cref="NotSupportedException"> NotSupportedException. </exception>
         public static T Read<T>(Stream stream, bool keepOpen = false) where T : class
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }

@@ -53,7 +53,6 @@ namespace Exomia.Framework.Game
     /// <summary>
     ///     IWinFormsGameWindow interface.
     /// </summary>
-    /// <inheritdoc />
     public interface IWinFormsGameWindow : IGameWindow
     {
         /// <summary>

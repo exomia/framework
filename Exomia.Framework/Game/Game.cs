@@ -41,9 +41,8 @@ using Message = System.Windows.Forms.Message;
 
 namespace Exomia.Framework.Game
 {
-    /// <inheritdoc cref="IRunnable" />
     /// <summary>
-    ///     Game class.
+    ///     A game.
     /// </summary>
     public abstract class Game : IRunnable
     {
@@ -217,7 +216,7 @@ namespace Exomia.Framework.Game
         /// </value>
         public bool IsFixedTimeStep { get; set; } = false;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool IsRunning
         {
             get { return _isRunning; }
@@ -467,7 +466,7 @@ namespace Exomia.Framework.Game
 
         #region Run
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public void Run()
         {
             if (_isRunning)
@@ -521,7 +520,7 @@ namespace Exomia.Framework.Game
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public void Shutdown()
         {
             _shutdown = true;
