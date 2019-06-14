@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,26 +30,59 @@ using Exomia.Framework.Input;
 
 namespace Exomia.Framework.Scene
 {
-    /// <inheritdoc cref="ADrawableComponent" />
-    /// <inheritdoc cref="ISceneManager" />
+    /// <summary>
+    ///     Manager for scenes. This class cannot be inherited.
+    /// </summary>
     public sealed class SceneManager : ADrawableComponent, ISceneManager
     {
+        /// <summary>
+        ///     Initial size of the queue.
+        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 16;
+
+        /// <summary>
+        ///     The current drawable scenes.
+        /// </summary>
         private readonly List<SceneBase> _currentDrawableScenes;
+
+        /// <summary>
+        ///     The current scenes.
+        /// </summary>
         private readonly List<SceneBase> _currentScenes;
 
+        /// <summary>
+        ///     The current updateable scenes.
+        /// </summary>
         private readonly List<SceneBase> _currentUpdateableScenes;
 
+        /// <summary>
+        ///     The pending initializable scenes.
+        /// </summary>
         private readonly List<SceneBase> _pendingInitializableScenes;
 
+        /// <summary>
+        ///     The scenes.
+        /// </summary>
         private readonly Dictionary<string, SceneBase> _scenes;
 
+        /// <summary>
+        ///     The scenes to unload.
+        /// </summary>
         private readonly List<SceneBase> _scenesToUnload;
 
+        /// <summary>
+        ///     The input.
+        /// </summary>
         private IInputDevice _input;
 
+        /// <summary>
+        ///     The input handler.
+        /// </summary>
         private IInputHandler _inputHandler;
 
+        /// <summary>
+        ///     The registry.
+        /// </summary>
         private IServiceRegistry _registry;
 
         /// <inheritdoc />
@@ -231,6 +262,13 @@ namespace Exomia.Framework.Scene
             return _scenes.TryGetValue(key, out SceneBase scene) && HideScene(scene);
         }
 
+        /// <summary>
+        ///     Hides the scene.
+        /// </summary>
+        /// <param name="scene"> The scene. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
         public bool HideScene(SceneBase scene)
         {
             lock (_currentScenes)
@@ -353,41 +391,99 @@ namespace Exomia.Framework.Scene
 
         #region Input Handler
 
+        /// <summary>
+        ///     Input mouse move.
+        /// </summary>
+        /// <param name="x">          The x coordinate. </param>
+        /// <param name="y">          The y coordinate. </param>
+        /// <param name="buttons">    The buttons. </param>
+        /// <param name="clicks">     The clicks. </param>
+        /// <param name="wheelDelta"> The wheel delta. </param>
         private void Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             _inputHandler?.Input_MouseMove(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        ///     Input mouse down.
+        /// </summary>
+        /// <param name="x">          The x coordinate. </param>
+        /// <param name="y">          The y coordinate. </param>
+        /// <param name="buttons">    The buttons. </param>
+        /// <param name="clicks">     The clicks. </param>
+        /// <param name="wheelDelta"> The wheel delta. </param>
         private void Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             _inputHandler?.Input_MouseDown(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        ///     Input mouse up.
+        /// </summary>
+        /// <param name="x">          The x coordinate. </param>
+        /// <param name="y">          The y coordinate. </param>
+        /// <param name="buttons">    The buttons. </param>
+        /// <param name="clicks">     The clicks. </param>
+        /// <param name="wheelDelta"> The wheel delta. </param>
         private void Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             _inputHandler?.Input_MouseUp(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        ///     Input mouse click.
+        /// </summary>
+        /// <param name="x">          The x coordinate. </param>
+        /// <param name="y">          The y coordinate. </param>
+        /// <param name="buttons">    The buttons. </param>
+        /// <param name="clicks">     The clicks. </param>
+        /// <param name="wheelDelta"> The wheel delta. </param>
         private void Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             _inputHandler?.Input_MouseClick(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        ///     Input mouse wheel.
+        /// </summary>
+        /// <param name="x">          The x coordinate. </param>
+        /// <param name="y">          The y coordinate. </param>
+        /// <param name="buttons">    The buttons. </param>
+        /// <param name="clicks">     The clicks. </param>
+        /// <param name="wheelDelta"> The wheel delta. </param>
         private void Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             _inputHandler?.Input_MouseWheel(x, y, buttons, clicks, wheelDelta);
         }
 
+        /// <summary>
+        ///     Input key press.
+        /// </summary>
+        /// <param name="key"> The key. </param>
         private void Input_KeyPress(char key)
         {
             _inputHandler?.Input_KeyPress(key);
         }
 
+        /// <summary>
+        ///     Input key up.
+        /// </summary>
+        /// <param name="keyValue"> The key value. </param>
+        /// <param name="shift">    True to shift. </param>
+        /// <param name="alt">      True to alternate. </param>
+        /// <param name="ctrl">     True to control. </param>
         private void Input_KeyUp(int keyValue, bool shift, bool alt, bool ctrl)
         {
             _inputHandler?.Input_KeyUp(keyValue, shift, alt, ctrl);
         }
 
+        /// <summary>
+        ///     Input key down.
+        /// </summary>
+        /// <param name="keyValue"> The key value. </param>
+        /// <param name="shift">    True to shift. </param>
+        /// <param name="alt">      True to alternate. </param>
+        /// <param name="ctrl">     True to control. </param>
         private void Input_KeyDown(int keyValue, bool shift, bool alt, bool ctrl)
         {
             _inputHandler?.Input_KeyDown(keyValue, shift, alt, ctrl);

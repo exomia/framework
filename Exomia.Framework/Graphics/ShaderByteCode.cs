@@ -24,8 +24,14 @@
 
 namespace Exomia.Framework.Graphics
 {
+    /// <summary>
+    ///     A shader byte code.
+    /// </summary>
     static class ShaderByteCode
     {
+        /// <summary>
+        ///     The first vertex shader byte code.
+        /// </summary>
         internal static readonly byte[] VertexShaderByteCode1 =
         {
             68, 88, 66, 67, 205, 97, 182, 81, 41, 48, 212, 250, 128, 227, 100, 44, 173, 244, 198, 109, 1, 0, 0, 0,
@@ -65,6 +71,9 @@ namespace Exomia.Framework.Graphics
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
 
+        /// <summary>
+        ///     The first pixel shader byte code.
+        /// </summary>
         internal static readonly byte[] PixelShaderByteCode1 =
         {
             68, 88, 66, 67, 123, 64, 201, 231, 223, 221, 183, 210, 0, 151, 21, 252, 33, 228, 216, 199, 1, 0, 0, 0,
@@ -94,6 +103,9 @@ namespace Exomia.Framework.Graphics
             0, 0, 0, 0, 0, 0, 0, 0, 0
         };
 
+        /// <summary>
+        ///     The second vertex shader byte code.
+        /// </summary>
         internal static readonly byte[] VertexShaderByteCode2 =
         {
             68, 88, 66, 67, 193, 41, 167, 231, 222, 242, 129, 53, 212, 74, 158, 107, 19, 181, 108, 178, 1, 0, 0, 0,
@@ -133,6 +145,9 @@ namespace Exomia.Framework.Graphics
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
 
+        /// <summary>
+        ///     The second pixel shader byte code.
+        /// </summary>
         internal static readonly byte[] PixelShaderByteCode2 =
         {
             68, 88, 66, 67, 244, 58, 132, 71, 254, 234, 26, 88, 180, 238, 178, 127, 135, 200, 161, 50, 1, 0, 0, 0,

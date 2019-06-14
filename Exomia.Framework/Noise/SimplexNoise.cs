@@ -26,26 +26,46 @@ using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Noise
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///     A simplex noise. This class cannot be inherited.
+    /// </summary>
     public sealed class SimplexNoise : NoiseBase
     {
+        /// <summary>
+        ///     The second f.
+        /// </summary>
         private const float F2 = 1.0f / 2.0f;
+
+        /// <summary>
+        ///     The second g.
+        /// </summary>
         private const float G2 = 1.0f / 4.0f;
 
+        /// <summary>
+        ///     The third f.
+        /// </summary>
         private const float F3 = 1.0f / 3.0f;
+
+        /// <summary>
+        ///     The third g.
+        /// </summary>
         private const float G3 = 1.0f / 6.0f;
+
+        /// <summary>
+        ///     The third g 3.
+        /// </summary>
         private const float G33 = (G3 * 3f) - 1f;
 
         /// <inheritdoc />
-        public SimplexNoise(int seed, float frequency, int octaves,
-            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
+        public SimplexNoise(int              seed, float frequency, int octaves,
+                            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
             : base(
                 seed, frequency, octaves,
                 NoiseInterpolationType.Linear, noiseFractalType) { }
 
         /// <inheritdoc />
-        public SimplexNoise(int seed, float frequency, int octaves, float lacunarity, float gain,
-            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
+        public SimplexNoise(int              seed, float frequency, int octaves, float lacunarity, float gain,
+                            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
             : base(
                 seed, frequency, octaves, lacunarity, gain,
                 NoiseInterpolationType.Linear, noiseFractalType) { }
@@ -53,8 +73,8 @@ namespace Exomia.Framework.Noise
         /// <inheritdoc />
         protected override float Single(int seed, double x)
         {
-            int x0 = Math2.Floor(x);
-            double xd0 = x - x0;
+            int    x0  = Math2.Floor(x);
+            double xd0 = x  - x0;
             double xd1 = x0 - 1.0f;
 
             double t0 = 1.0f - (xd0 * xd0);
@@ -68,8 +88,8 @@ namespace Exomia.Framework.Noise
         protected override float Single(int seed, double x, double y)
         {
             double t = (x + y) * F2;
-            int i = Math2.Floor(x + t);
-            int j = Math2.Floor(y + t);
+            int    i = Math2.Floor(x + t);
+            int    j = Math2.Floor(y + t);
 
             t = (i + j) * G2;
 
@@ -85,8 +105,8 @@ namespace Exomia.Framework.Noise
 
             double x1 = (x0 - i1) + G2;
             double y1 = (y0 - j1) + G2;
-            double x2 = (x0 - 1) + F2;
-            double y2 = (y0 - 1) + F2;
+            double x2 = (x0 - 1)  + F2;
+            double y2 = (y0 - 1)  + F2;
 
             double n0, n1, n2;
 
@@ -121,11 +141,11 @@ namespace Exomia.Framework.Noise
         protected override float Single(int seed, double x, double y, double z)
         {
             double t = (x + y + z) * F3;
-            int i = Math2.Floor(x + t);
-            int j = Math2.Floor(y + t);
-            int k = Math2.Floor(z + t);
+            int    i = Math2.Floor(x + t);
+            int    j = Math2.Floor(y + t);
+            int    k = Math2.Floor(z + t);
 
-            t = (i + j + k) * G3;
+            t = (i + j    + k) * G3;
             double x0 = x - (i - t);
             double y0 = y - (j - t);
             double z0 = z - (k - t);
@@ -200,9 +220,9 @@ namespace Exomia.Framework.Noise
             double x2 = (x0 - i2) + F3;
             double y2 = (y0 - j2) + F3;
             double z2 = (z0 - k2) + F3;
-            double x3 = x0 + G33;
-            double y3 = y0 + G33;
-            double z3 = z0 + G33;
+            double x3 = x0        + G33;
+            double y3 = y0        + G33;
+            double z3 = z0        + G33;
 
             double n0, n1, n2, n3;
 

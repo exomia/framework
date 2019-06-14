@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using System.Diagnostics;
 using Exomia.Framework.Content;
@@ -33,64 +31,183 @@ using SharpDX;
 
 namespace Exomia.Framework.Components
 {
+    /// <summary>
+    ///     A debug component.
+    /// </summary>
     public class DebugComponent : ADrawableComponent
     {
+        /// <summary>
+        ///     The sample time rate.
+        /// </summary>
         private const float SAMPLE_TIME_RATE = 2.0f;
+
+        /// <summary>
+        ///     The maximum samples.
+        /// </summary>
         private const int MAXIMUM_SAMPLES = (int)(9 / SAMPLE_TIME_RATE) + 1;
+
+        /// <summary>
+        ///     The frame danger threshold.
+        /// </summary>
         private const double FRAME_DANGER_THRESHOLD = 1000.0f / 60.0f;
 
+        /// <summary>
+        ///     The arial 12 px.
+        /// </summary>
         private SpriteFont _arial12Px;
 
+        /// <summary>
+        ///     Information describing the CPU.
+        /// </summary>
         private string _cpuInfo = string.Empty;
+
+        /// <summary>
+        ///     Name of the CPU.
+        /// </summary>
         private string _cpuName = string.Empty;
 
+        /// <summary>
+        ///     The first CPU performance counter.
+        /// </summary>
         private PerformanceCounter _cpuPerformanceCounter1;
-        private PerformanceCounter _cpuPerformanceCounter2;
-        private float _elapsed_time;
 
+        /// <summary>
+        ///     The second CPU performance counter.
+        /// </summary>
+        private PerformanceCounter _cpuPerformanceCounter2;
+
+        /// <summary>
+        ///     The elapsed time.
+        /// </summary>
+        private float _elapsedTime;
+
+        /// <summary>
+        ///     True to first calculate.
+        /// </summary>
         private bool _firstCalc;
+
+        /// <summary>
+        ///     The FPS average.
+        /// </summary>
         private float _fpsAverage;
+
+        /// <summary>
+        ///     The FPS current.
+        /// </summary>
         private float _fpsCurrent;
+
+        /// <summary>
+        ///     Information describing the FPS.
+        /// </summary>
         private string _fpsInfo = string.Empty;
 
+        /// <summary>
+        ///     The game window.
+        /// </summary>
         private IGameWindow _gameWindow;
+
+        /// <summary>
+        ///     Name of the GPU.
+        /// </summary>
         private string _gpuName = string.Empty;
 
+        /// <summary>
+        ///     The maximum frame time.
+        /// </summary>
         private float _maxFrameTime;
 
+        /// <summary>
+        ///     The first position.
+        /// </summary>
         private Vector2 _position1;
+
+        /// <summary>
+        ///     The second position.
+        /// </summary>
         private Vector2 _position2;
 
+        /// <summary>
+        ///     The first processor load t.
+        /// </summary>
         private float _processorLoadT1;
+
+        /// <summary>
+        ///     The second processor load t.
+        /// </summary>
         private float _processorLoadT2;
+
+        /// <summary>
+        ///     Information describing the ram.
+        /// </summary>
         private string _ramInfo = string.Empty;
+
+        /// <summary>
+        ///     The first ram performance counter.
+        /// </summary>
         private PerformanceCounter _ramPerformanceCounter1;
 
+        /// <summary>
+        ///     Buffer for sample data.
+        /// </summary>
         private float _sampleBuffer;
+
+        /// <summary>
+        ///     Number of samples.
+        /// </summary>
         private int _sampleCount;
 
+        /// <summary>
+        ///     The sprite batch.
+        /// </summary>
         private SpriteBatch _spriteBatch;
 
+        /// <summary>
+        ///     The title.
+        /// </summary>
         private string _title = string.Empty;
-        private int _total_frames;
 
+        /// <summary>
+        ///     The total frames.
+        /// </summary>
+        private int _totalFrames;
+
+        /// <summary>
+        ///     The total memory in bytes.
+        /// </summary>
         private float _totalMemoryBytes;
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether the title information is enabled.
+        /// </summary>
+        /// <value>
+        ///     True if enable title information, false if not.
+        /// </value>
         public bool EnableTitleInformation { get; set; } = false;
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether the full information is shown.
+        /// </summary>
+        /// <value>
+        ///     True if show full information, false if not.
+        /// </value>
         public bool ShowFullInformation { get; set; } = false;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DebugComponent" /> class.
+        /// </summary>
+        /// <param name="name"> (Optional) The name. </param>
         public DebugComponent(string name = "DebugGameSystem")
             : base(name)
         {
             _totalMemoryBytes = 0;
             _processorLoadT1  = _processorLoadT2 = 0.0f;
-            _total_frames     = 0;
-            _elapsed_time     = 0.0f;
+            _totalFrames      = 0;
+            _elapsedTime      = 0.0f;
             _fpsCurrent       = 0.0f;
             _fpsAverage       = -1;
         }
 
+        /// <inheritdoc />
         public override void Draw(GameTime gameTime)
         {
             if (!_firstCalc) { return; }
@@ -113,22 +230,24 @@ namespace Exomia.Framework.Components
             _spriteBatch.End();
         }
 
+        /// <inheritdoc />
         public override void EndDraw()
         {
-            _total_frames++;
+            _totalFrames++;
             base.EndDraw();
         }
 
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            _elapsed_time += gameTime.LimitedDeltaTimeS;
+            _elapsedTime += gameTime.DeltaTimeS;
 
-            if (_maxFrameTime < gameTime.LimitedDeltaTimeMS)
+            if (_maxFrameTime < gameTime.DeltaTimeMS)
             {
-                _maxFrameTime = gameTime.LimitedDeltaTimeMS;
+                _maxFrameTime = gameTime.DeltaTimeMS;
             }
 
-            if (_elapsed_time >= SAMPLE_TIME_RATE)
+            if (_elapsedTime >= SAMPLE_TIME_RATE)
             {
                 if (ShowFullInformation)
                 {
@@ -142,18 +261,18 @@ namespace Exomia.Framework.Components
                         $"Total Memory Usage: {_totalMemoryBytes / 1024.0:0}KB ({_totalMemoryBytes / 1024.0 / 1024.0:0.00}MB)";
                 }
 
-                _fpsCurrent = _total_frames / _elapsed_time;
+                _fpsCurrent = _totalFrames / _elapsedTime;
 
                 _sampleBuffer += _fpsCurrent;
                 _sampleCount++;
 
-                _elapsed_time -= SAMPLE_TIME_RATE;
-                _total_frames =  0;
+                _elapsedTime -= SAMPLE_TIME_RATE;
+                _totalFrames =  0;
 
                 _fpsInfo =
 
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.LimitedDeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
+                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
                 _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
                 _maxFrameTime = 0;
                 _firstCalc    = true;
@@ -167,6 +286,7 @@ namespace Exomia.Framework.Components
             }
         }
 
+        /// <inheritdoc />
         protected override void OnInitialize(IServiceRegistry registry)
         {
             IGameWindow gameWindow = registry.GetService<IGameWindow>();
@@ -193,6 +313,7 @@ namespace Exomia.Framework.Components
             Diagnostic.Diagnostic.GetGpuProperty(nameof(Name), out _gpuName);
         }
 
+        /// <inheritdoc />
         protected override void OnLoadContent(IServiceRegistry registry)
         {
             _arial12Px = (registry.GetService<IContentManager>() ??

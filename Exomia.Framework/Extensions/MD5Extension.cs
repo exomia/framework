@@ -45,7 +45,7 @@ namespace Exomia.Framework.Extensions
                 byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(input.ToString()));
 
                 StringBuilder sb = new StringBuilder();
-                int l = hash.Length;
+                int           l  = hash.Length;
                 for (int i = 0; i < l; i++)
                 {
                     sb.Append(hash[i].ToString(format));

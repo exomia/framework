@@ -46,6 +46,6 @@ namespace Exomia.Framework.Native
         public static extern void Cpy(
             void* dest,
             void* src,
-            int count);
+            int   count);
     }
 }

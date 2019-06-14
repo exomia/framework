@@ -26,21 +26,23 @@ using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Noise
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///     A value noise.
+    /// </summary>
     public class ValueNoise : NoiseBase
     {
         /// <inheritdoc />
-        public ValueNoise(int seed, float frequency, int octaves,
-            NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
-            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
+        public ValueNoise(int                    seed, float frequency, int octaves,
+                          NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
+                          NoiseFractalType       noiseFractalType       = NoiseFractalType.BrownianMotion)
             : base(
                 seed, frequency, octaves,
                 noiseInterpolationType, noiseFractalType) { }
 
         /// <inheritdoc />
-        public ValueNoise(int seed, float frequency, int octaves, float lacunarity, float gain,
-            NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
-            NoiseFractalType noiseFractalType = NoiseFractalType.BrownianMotion)
+        public ValueNoise(int                    seed, float frequency, int octaves, float lacunarity, float gain,
+                          NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
+                          NoiseFractalType       noiseFractalType       = NoiseFractalType.BrownianMotion)
             : base(
                 seed, frequency, octaves, lacunarity, gain,
                 noiseInterpolationType, noiseFractalType) { }

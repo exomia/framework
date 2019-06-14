@@ -28,9 +28,13 @@ using System.Reflection;
 
 namespace Exomia.Framework.Content.Resolver.EmbeddedResource
 {
+    /// <summary>
+    ///     An embedded resource stream resolver.
+    /// </summary>
     [ContentResolver(int.MaxValue)]
     class EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
+        /// <inheritdoc />
         public bool Exists(Type assetType, string assetName, out Assembly assembly)
         {
             assembly = assetType.Assembly;
@@ -57,6 +61,7 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
             return false;
         }
 
+        /// <inheritdoc />
         public Stream Resolve(Assembly assembly, string assetName)
         {
             return assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{assetName}");

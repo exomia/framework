@@ -27,12 +27,19 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///     A service registry. This class cannot be inherited.
+    /// </summary>
     public sealed class ServiceRegistry : IServiceRegistry
     {
+        /// <summary>
+        ///     The registered services.
+        /// </summary>
         private readonly Dictionary<Type, object> _registeredServices;
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ServiceRegistry" /> class.
+        /// </summary>
         public ServiceRegistry()
         {
             _registeredServices = new Dictionary<Type, object>();
@@ -41,7 +48,7 @@ namespace Exomia.Framework
         /// <inheritdoc />
         public void AddService(Type type, object provider)
         {
-            if (type == null) { throw new ArgumentNullException(nameof(type)); }
+            if (type     == null) { throw new ArgumentNullException(nameof(type)); }
             if (provider == null) { throw new ArgumentNullException(nameof(provider)); }
 
             if (!type.IsInstanceOfType(provider))

@@ -22,12 +22,14 @@
 
 #endregion
 
+using System;
+
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     An interface to run a object.
+    ///     An interface to run an object.
     /// </summary>
-    public interface IRunnable
+    public interface IRunnable : IDisposable
     {
         /// <summary>
         ///     return true if the object is running

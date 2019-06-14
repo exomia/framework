@@ -22,23 +22,33 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
 {
-    /// <inheritdoc cref="AComponent" />
-    /// <inheritdoc cref="IDrawable" />
     /// <summary>
-    ///     A drawable game component
+    ///     A drawable game component.
     /// </summary>
     public abstract class ADrawableComponent : AComponent, IDrawable
     {
+        /// <summary>
+        ///     Occurs when the <see cref="DrawOrder" /> property changes.
+        /// </summary>
         public event EventHandler DrawOrderChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="Visible" /> property changes.
+        /// </summary>
         public event EventHandler VisibleChanged;
 
+        /// <summary>
+        ///     The draw order.
+        /// </summary>
         private int _drawOrder;
+
+        /// <summary>
+        ///     True to show, false to hide.
+        /// </summary>
         private bool _visible;
 
         /// <inheritdoc />

@@ -31,49 +31,91 @@ using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Input
 {
-    /// <inheritdoc cref="IInputDevice" />
-    /// <inheritdoc cref="IDisposable" />
     /// <summary>
-    ///     WinFormsInputDevice class
+    ///     A window forms input device. This class cannot be inherited.
     /// </summary>
     public sealed class WinFormsInputDevice : IInputDevice, IDisposable
     {
+        /// <summary>
+        ///     Occurs when Key Down.
+        /// </summary>
         /// <inheritdoc />
         public event KeyEventHandler KeyDown;
 
+        /// <summary>
+        ///     Occurs when Key Press.
+        /// </summary>
         /// <inheritdoc />
         public event KeyPressEventHandler KeyPress;
 
+        /// <summary>
+        ///     Occurs when Key Up.
+        /// </summary>
         /// <inheritdoc />
         public event KeyEventHandler KeyUp;
 
+        /// <summary>
+        ///     Occurs when Mouse Click.
+        /// </summary>
         /// <inheritdoc />
         public event MouseEventHandler MouseClick;
 
+        /// <summary>
+        ///     Occurs when Mouse Down.
+        /// </summary>
         /// <inheritdoc />
         public event MouseEventHandler MouseDown;
 
+        /// <summary>
+        ///     Occurs when Mouse Move.
+        /// </summary>
         /// <inheritdoc />
         public event MouseEventHandler MouseMove;
 
+        /// <summary>
+        ///     Occurs when Mouse Up.
+        /// </summary>
         /// <inheritdoc />
         public event MouseEventHandler MouseUp;
 
+        /// <summary>
+        ///     Occurs when Mouse Wheel.
+        /// </summary>
         /// <inheritdoc />
         public event MouseEventHandler MouseWheel;
 
+        /// <summary>
+        ///     The pressed keys.
+        /// </summary>
         private readonly HashSet<int> _pressedKeys = new HashSet<int>();
 
+        /// <summary>
+        ///     The window.
+        /// </summary>
         private readonly IWinFormsGameWindow _window;
 
+        /// <summary>
+        ///     The mouse position.
+        /// </summary>
         private Point _mousePosition = Point.Empty;
 
+        /// <summary>
+        ///     The pressed mouse buttons.
+        /// </summary>
         private MouseButtons _pressedMouseButtons = MouseButtons.None;
 
         /// <summary>
-        ///     WinFormsInputDevice constuctor
+        ///     Initializes a new instance of the <see cref="WinFormsInputDevice" /> class.
         /// </summary>
-        /// <param name="window">IWinFormsGameWindow</param>
+        /// <param name="game"> The game. </param>
+        public WinFormsInputDevice(Game.Game game)
+            : this(game.GameWindow as IWinFormsGameWindow) { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="WinFormsInputDevice" /> class.
+        /// </summary>
+        /// <param name="window"> The win forms game window. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public WinFormsInputDevice(IWinFormsGameWindow window)
         {
             _window = window ?? throw new ArgumentNullException(nameof(window));
@@ -90,7 +132,7 @@ namespace Exomia.Framework.Input
         }
 
         /// <summary>
-        ///     WinFormsInputDevice destructor
+        ///     WinFormsInputDevice destructor.
         /// </summary>
         ~WinFormsInputDevice()
         {
@@ -99,7 +141,11 @@ namespace Exomia.Framework.Input
 
         #region Device MouseInput
 
-        //TODO: CHECK LATER PERFORMANCE LIMIT MOUSE MOVE?
+        /// <summary>
+        ///     TODO: CHECK LATER PERFORMANCE LIMIT MOUSE MOVE?
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse event information. </param>
         private void Renderform_MouseMove(object sender, MouseEventArgs e)
         {
             if (_mousePosition != e.Location)
@@ -109,11 +155,21 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for mouse wheel events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse event information. </param>
         private void RenderForm_MouseWheel(object sender, MouseEventArgs e)
         {
             MouseWheel?.Invoke(_mousePosition.X, _mousePosition.Y, _pressedMouseButtons, e.Clicks, e.Delta);
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for mouse up events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse event information. </param>
         private void RenderForm_MouseUp(object sender, MouseEventArgs e)
         {
             switch (e.Button)
@@ -141,6 +197,11 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for mouse down events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse event information. </param>
         private void RenderForm_MouseDown(object sender, MouseEventArgs e)
         {
             switch (e.Button)
@@ -168,6 +229,11 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for mouse click events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse event information. </param>
         private void RenderForm_MouseClick(object sender, MouseEventArgs e)
         {
             switch (e.Button)
@@ -194,6 +260,11 @@ namespace Exomia.Framework.Input
 
         #region Device KeyboardInput
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for key down events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Key event information. </param>
         private void RenderForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (_pressedKeys.Add(e.KeyValue))
@@ -202,11 +273,21 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for key press events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Key press event information. </param>
         private void RenderForm_KeyPress(object sender, KeyPressEventArgs e)
         {
             KeyPress?.Invoke(e.KeyChar);
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for key up events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Key event information. </param>
         private void RenderForm_KeyUp(object sender, KeyEventArgs e)
         {
             if (_pressedKeys.Remove(e.KeyValue))
@@ -308,8 +389,19 @@ namespace Exomia.Framework.Input
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     True if disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        ///     Releases the unmanaged resources used by the Exomia.Framework.Input.WinFormsInputDevice
+        ///     and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     True to release both managed and unmanaged resources; false to
+        ///     release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -334,9 +426,7 @@ namespace Exomia.Framework.Input
             }
         }
 
-        /// <summary>
-        ///     Dispose
-        /// </summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

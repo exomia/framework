@@ -29,24 +29,54 @@ using System.Windows.Forms;
 using SharpDX;
 using SharpDX.Windows;
 
-#pragma warning disable 1591
-
 namespace Exomia.Framework.Game
 {
+    /// <summary>
+    ///     Form for viewing the window forms game. This class cannot be inherited.
+    /// </summary>
     public sealed class WinFormsGameWindow : IWinFormsGameWindow
     {
+        /// <summary>
+        ///     The render form.
+        /// </summary>
         private RenderForm _renderForm;
 
+        /// <summary>
+        ///     Gets the width.
+        /// </summary>
+        /// <value>
+        ///     The width.
+        /// </value>
         public int Width { get; private set; }
+
+        /// <summary>
+        ///     Gets the height.
+        /// </summary>
+        /// <value>
+        ///     The height.
+        /// </value>
         public int Height { get; private set; }
 
+        /// <summary>
+        ///     Gets a value indicating whether this object is initialized.
+        /// </summary>
+        /// <value>
+        ///     True if this object is initialized, false if not.
+        /// </value>
         public bool IsInitialized { get; private set; }
 
+        /// <inheritdoc/>
         public RenderForm RenderForm
         {
             get { return _renderForm; }
         }
 
+        /// <summary>
+        ///     Gets or sets the title.
+        /// </summary>
+        /// <value>
+        ///     The title.
+        /// </value>
         public string Title
         {
             get { return _renderForm.Text; }
@@ -59,16 +89,27 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="WinFormsGameWindow" /> class.
+        /// </summary>
+        /// <param name="title"> The title. </param>
         public WinFormsGameWindow(string title)
         {
             _renderForm = new RenderForm(title) { FormBorderStyle = FormBorderStyle.FixedSingle };
         }
 
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="WinFormsGameWindow" /> class.
+        /// </summary>
         ~WinFormsGameWindow()
         {
             Dispose(false);
         }
 
+        /// <summary>
+        ///     Initializes this object.
+        /// </summary>
+        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         public void Initialize(ref GameGraphicsParameters parameters)
         {
             if (IsInitialized) { return; }
@@ -94,6 +135,11 @@ namespace Exomia.Framework.Game
             IsInitialized = true;
         }
 
+        /// <summary>
+        ///     Resizes.
+        /// </summary>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
         public void Resize(int width, int height)
         {
             if (_renderForm.InvokeRequired)
@@ -110,8 +156,17 @@ namespace Exomia.Framework.Game
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     True if disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged resources.
+        /// </summary>
+        /// <param name="disposing"> True to release both managed and unmanaged resources; false to
+        ///                          release only unmanaged resources. </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -125,6 +180,10 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

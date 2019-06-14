@@ -22,8 +22,6 @@
 
 #endregion
 
-#pragma warning disable 1591
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,29 +32,77 @@ using SharpDX.RawInput;
 
 namespace Exomia.Framework.Input
 {
+    /// <summary>
+    ///     A raw input device. This class cannot be inherited.
+    /// </summary>
     public sealed class RawInputDevice : IRawInputDevice, IDisposable
     {
+        /// <summary>
+        ///     Occurs when Key Down.
+        /// </summary>
         public event RKeyEventHandler KeyDown;
+
+        /// <summary>
+        ///     Occurs when Key Press.
+        /// </summary>
         public event RKeyEventHandler KeyPress;
+
+        /// <summary>
+        ///     Occurs when Key Up.
+        /// </summary>
         public event RKeyEventHandler KeyUp;
+
+        /// <summary>
+        ///     Occurs when Mouse Down.
+        /// </summary>
         public event RMouseEventHandler MouseDown;
 
+        /// <summary>
+        ///     Occurs when Mouse Move.
+        /// </summary>
         public event RMouseEventHandler MouseMove;
-        public event RMouseEventHandler MouseUp;
-        private readonly HashSet<Keys> _pressedKeys;
 
+        /// <summary>
+        ///     Occurs when Mouse Up.
+        /// </summary>
+        public event RMouseEventHandler MouseUp;
+
+        /// <summary>
+        ///     The pressed keys.
+        /// </summary>
+        private readonly HashSet<int> _pressedKeys;
+
+        /// <summary>
+        ///     The mouse position.
+        /// </summary>
         private Point _mousePosition = Point.Empty;
 
+        /// <summary>
+        ///     Buffer for mouse wheel data data.
+        /// </summary>
         private int _mouseWheelDataBuffer;
+
+        /// <summary>
+        ///     The panel.
+        /// </summary>
         private Panel _panel;
 
+        /// <summary>
+        ///     The pressed mouse buttons.
+        /// </summary>
         private RMouseButtons _pressedMouseButtons = 0;
 
+        /// <summary>
+        ///     The window.
+        /// </summary>
         private IGameWindow _window;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="RawInputDevice" /> class.
+        /// </summary>
         public RawInputDevice()
         {
-            _pressedKeys = new HashSet<Keys>();
+            _pressedKeys = new HashSet<int>();
 
             Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.None);
             Device.KeyboardInput += Device_KeyboardInput;
@@ -65,12 +111,14 @@ namespace Exomia.Framework.Input
             Device.MouseInput += Device_MouseInput;
         }
 
+        /// <inheritdoc />
         public void EndUpdate()
         {
             WheelData             = _mouseWheelDataBuffer;
             _mouseWheelDataBuffer = 0;
         }
 
+        /// <inheritdoc />
         public void Initialize(IGameWindow window)
         {
             _window = window;
@@ -80,12 +128,18 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <inheritdoc />
         public void Initialize(Panel panel)
         {
             _panel           =  panel;
             _panel.MouseMove += RenderForm_MouseMove;
         }
 
+        /// <summary>
+        ///     Event handler. Called by RenderForm for mouse move events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse event information. </param>
         private void RenderForm_MouseMove(object sender, MouseEventArgs e)
         {
             _mousePosition = e.Location;
@@ -96,6 +150,11 @@ namespace Exomia.Framework.Input
 
         #region Device MouseInput
 
+        /// <summary>
+        ///     Event handler. Called by Device for mouse input events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Mouse input event information. </param>
         private void Device_MouseInput(object sender, MouseInputEventArgs e)
         {
             if ((e.ButtonFlags & MouseButtonFlags.MouseWheel) == MouseButtonFlags.MouseWheel)
@@ -159,12 +218,14 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <inheritdoc />
         public bool IsMouseButtonDown(RMouseButtons button)
         {
             //return _pressedMouseButtons.Contains(button);
             return (_pressedMouseButtons & button) == button;
         }
 
+        /// <inheritdoc />
         public bool IsMouseButtonDown(params RMouseButtons[] buttons)
         {
             int l = buttons.Length;
@@ -176,11 +237,13 @@ namespace Exomia.Framework.Input
             return false;
         }
 
+        /// <inheritdoc />
         public bool IsKeyUp(RMouseButtons button)
         {
             return !IsMouseButtonDown(button);
         }
 
+        /// <inheritdoc />
         public bool IsKeyUp(params RMouseButtons[] buttons)
         {
             int l = buttons.Length;
@@ -191,50 +254,58 @@ namespace Exomia.Framework.Input
             return false;
         }
 
+        /// <inheritdoc />
         public int WheelData { get; private set; }
 
         #endregion
 
         #region Device KeyboardInput
 
+        /// <summary>
+        ///     Event handler. Called by Device for keyboard input events.
+        /// </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Keyboard input event information. </param>
         private void Device_KeyboardInput(object sender, KeyboardInputEventArgs e)
         {
             RSpecialKeys sKeys = RSpecialKeys.None;
-            if (IsKeyDown(Keys.ShiftKey))
+            if (IsKeyDown(Key.ShiftKey))
             {
                 sKeys |= RSpecialKeys.Shift;
             }
-            if (IsKeyDown(Keys.Alt))
+            if (IsKeyDown(Key.Alt))
             {
                 sKeys |= RSpecialKeys.Alt;
             }
-            if (IsKeyDown(Keys.ControlKey))
+            if (IsKeyDown(Key.ControlKey))
             {
                 sKeys |= RSpecialKeys.Control;
             }
             if (e.State == KeyState.KeyDown)
             {
-                if (_pressedKeys.Add(e.Key))
+                if (_pressedKeys.Add((int)e.Key))
                 {
-                    KeyDown?.Invoke(e.Key, e.State, e.ExtraInformation, sKeys);
+                    KeyDown?.Invoke((int)e.Key, e.State, e.ExtraInformation, sKeys);
                 }
             }
             if (e.State == KeyState.KeyUp)
             {
-                if (_pressedKeys.Remove(e.Key))
+                if (_pressedKeys.Remove((int)e.Key))
                 {
-                    KeyPress?.Invoke(e.Key, e.State, e.ExtraInformation, sKeys);
+                    KeyPress?.Invoke((int)e.Key, e.State, e.ExtraInformation, sKeys);
                 }
-                KeyUp?.Invoke(e.Key, e.State, e.ExtraInformation, sKeys);
+                KeyUp?.Invoke((int)e.Key, e.State, e.ExtraInformation, sKeys);
             }
         }
 
-        public bool IsKeyDown(Keys key)
+        /// <inheritdoc />
+        public bool IsKeyDown(int key)
         {
             return _pressedKeys.Contains(key);
         }
 
-        public bool IsKeyDown(params Keys[] key)
+        /// <inheritdoc />
+        public bool IsKeyDown(params int[] key)
         {
             int l = key.Length;
             for (int i = 0; i < l; i++)
@@ -244,12 +315,14 @@ namespace Exomia.Framework.Input
             return false;
         }
 
-        public bool IsKeyUp(Keys key)
+        /// <inheritdoc />
+        public bool IsKeyUp(int key)
         {
             return !_pressedKeys.Contains(key);
         }
 
-        public bool IsKeyUp(params Keys[] key)
+        /// <inheritdoc />
+        public bool IsKeyUp(params int[] key)
         {
             int l = key.Length;
             for (int i = 0; i < l; i++)
@@ -263,8 +336,19 @@ namespace Exomia.Framework.Input
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     True to disposed value.
+        /// </summary>
         private bool _disposedValue;
 
+        /// <summary>
+        ///     Releases the unmanaged resources used by the Exomia.Framework.Input.RawInputDevice and
+        ///     optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     True to release both managed and unmanaged resources; false to
+        ///     release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -290,6 +374,7 @@ namespace Exomia.Framework.Input
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

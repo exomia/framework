@@ -24,11 +24,11 @@
 
 namespace Exomia.Framework.ContentSerialization
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     abstract implementation for an <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationReader" />
+    ///     abstract implementation for an
+    ///     <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationReader" />
     /// </summary>
-    /// <typeparam name="T">type to read</typeparam>
+    /// <typeparam name="T"> type to read. </typeparam>
     public abstract class AContentSerializationReader<T> : IContentSerializationReader
     {
         /// <inheritdoc />
@@ -38,10 +38,12 @@ namespace Exomia.Framework.ContentSerialization
         }
 
         /// <summary>
-        ///     Returns a new created object from the context of type T
+        ///     Returns a new created object from the context of type T.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <returns>new T</returns>
+        /// <param name="context"> Context. </param>
+        /// <returns>
+        ///     new T.
+        /// </returns>
         public abstract T ReadContext(ContentSerializationContext context);
     }
 }

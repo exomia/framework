@@ -29,7 +29,7 @@ using SharpDX;
 namespace Exomia.Framework.Mathematics
 {
     /// <summary>
-    ///     Math2 static class
+    ///     The mathematics 2.
     /// </summary>
     public static partial class Math2
     {
@@ -411,9 +411,9 @@ namespace Exomia.Framework.Mathematics
                 return 0;
             }
 
-            uint g = 0;
-            int bshft = Log2Floor(value) >> 1;
-            uint b = 1u << bshft;
+            uint g     = 0;
+            int  bshft = Log2Floor(value) >> 1;
+            uint b     = 1u               << bshft;
             do
             {
                 ulong temp = (ulong)(g + g + b) << bshft;
@@ -453,9 +453,9 @@ namespace Exomia.Framework.Mathematics
                 return 0;
             }
 
-            uint g = 0;
-            int bshft = Log2Floor(value) >> 1;
-            uint b = 1u << bshft;
+            uint g     = 0;
+            int  bshft = Log2Floor(value) >> 1;
+            uint b     = 1u               << bshft;
             do
             {
                 uint temp = (g + g + b) << bshft;

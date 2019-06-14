@@ -26,20 +26,31 @@ using System;
 
 namespace Exomia.Framework.ContentSerialization
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     used to mark a content serializable class
+    ///     used to mark a content serializable class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class ContentSerializableAttribute : Attribute
     {
+        /// <summary>
+        ///     Gets the reader.
+        /// </summary>
+        /// <value>
+        ///     The reader.
+        /// </value>
         internal IContentSerializationReader Reader { get; }
 
+        /// <summary>
+        ///     Gets the writer.
+        /// </summary>
+        /// <value>
+        ///     The writer.
+        /// </value>
         internal IContentSerializationWriter Writer { get; }
 
         /// <inheritdoc />
         /// <summary>
-        ///     ContentSerializableAttribute constructor
+        ///     ContentSerializableAttribute constructor.
         /// </summary>
         /// <param name="reader">
         ///     the content reader type

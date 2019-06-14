@@ -35,26 +35,45 @@ using SharpDX;
 namespace Exomia.Framework.ContentSerialization
 {
     /// <summary>
-    ///     ContentSerializer
+    ///     An object for persisting content data.
     /// </summary>
     public static class ContentSerializer
     {
+        /// <summary>
+        ///     The tabspace.
+        /// </summary>
         internal const string TABSPACE = "\t";
 
         /// <summary>
-        ///     DEFAULT_EXTENSION
+        ///     DEFAULT_EXTENSION.
         /// </summary>
         public const string DEFAULT_EXTENSION = ".e0";
 
+        /// <summary>
+        ///     The content pipe line readers.
+        /// </summary>
         private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders =
             new Dictionary<Type, IContentSerializationReader>();
 
+        /// <summary>
+        ///     The content pipe line writers.
+        /// </summary>
         private static readonly Dictionary<Type, IContentSerializationWriter> s_contentPipeLineWriters =
             new Dictionary<Type, IContentSerializationWriter>();
 
+        /// <summary>
+        ///     The assemblies.
+        /// </summary>
         internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
+
+        /// <summary>
+        ///     The types.
+        /// </summary>
         internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
 
+        /// <summary>
+        ///     Initializes static members of the <see cref="ContentSerializer" /> class.
+        /// </summary>
         static ContentSerializer()
         {
             #region ADD TYPES 
@@ -116,9 +135,9 @@ namespace Exomia.Framework.ContentSerialization
 
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (a.FullName.StartsWith("System") ||
+                if (a.FullName.StartsWith("System")  ||
                     a.FullName.StartsWith("SharpDX") ||
-                    a.FullName.StartsWith("ms") ||
+                    a.FullName.StartsWith("ms")      ||
                     a.FullName.StartsWith("Xilium.CefGlue")) { continue; }
 
                 foreach (Type t in a.GetTypes())
@@ -136,11 +155,13 @@ namespace Exomia.Framework.ContentSerialization
 
             #region SharpDX 
 
+            AddWriter<Vector3>(new Vector3CW());
             AddWriter<Vector2>(new Vector2CW());
             AddWriter<Color>(new ColorCW());
             AddWriter<Rectangle>(new RectangleCW());
             AddWriter<RectangleF>(new RectangleFCW());
 
+            AddReader<Vector3>(new Vector3CR());
             AddReader<Vector2>(new Vector2CR());
             AddReader<Color>(new ColorCR());
             AddReader<Rectangle>(new RectangleCR());
@@ -150,12 +171,12 @@ namespace Exomia.Framework.ContentSerialization
         }
 
         /// <summary>
-        ///     Adds a new content pipeline reader to the content pipeline
+        ///     Adds a new content pipeline reader to the content pipeline.
         /// </summary>
-        /// <param name="type">the type the reader can read</param>
-        /// <param name="reader">IContentSerializationReader</param>
-        /// <exception cref="CSReaderException">CSReaderException</exception>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
+        /// <param name="type">   the type the reader can read. </param>
+        /// <param name="reader"> IContentSerializationReader. </param>
+        /// <exception cref="ArgumentNullException"> ArgumentNullException. </exception>
+        /// <exception cref="CSReaderException">     CSReaderException. </exception>
         public static void AddReader(Type type, IContentSerializationReader reader)
         {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
@@ -170,24 +191,22 @@ namespace Exomia.Framework.ContentSerialization
         }
 
         /// <summary>
-        ///     Adds a new content pipeline reader to the content pipeline
+        ///     Adds a new content pipeline reader to the content pipeline.
         /// </summary>
-        /// <typeparam name="T">the type the reader can read</typeparam>
-        /// <param name="reader">IContentSerializationReader</param>
-        /// <exception cref="CSReaderException">CSReaderException</exception>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
+        /// <typeparam name="T"> the type the reader can read. </typeparam>
+        /// <param name="reader"> IContentSerializationReader. </param>
         public static void AddReader<T>(IContentSerializationReader reader)
         {
             AddReader(typeof(T), reader);
         }
 
         /// <summary>
-        ///     Adds a new content pipeline writer to the content pipeline
+        ///     Adds a new content pipeline writer to the content pipeline.
         /// </summary>
-        /// <param name="type">the type the writer can write</param>
-        /// <param name="writer">IContentSerializationWriter</param>
-        /// <exception cref="CSWriterException">CSWriterException</exception>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
+        /// <param name="type">   the type the writer can write. </param>
+        /// <param name="writer"> IContentSerializationWriter. </param>
+        /// <exception cref="ArgumentNullException"> ArgumentNullException. </exception>
+        /// <exception cref="CSWriterException">     CSWriterException. </exception>
         public static void AddWriter(Type type, IContentSerializationWriter writer)
         {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
@@ -201,17 +220,19 @@ namespace Exomia.Framework.ContentSerialization
         }
 
         /// <summary>
-        ///     Adds a new content pipeline writer to the content pipeline
+        ///     Adds a new content pipeline writer to the content pipeline.
         /// </summary>
-        /// <typeparam name="T">the type the writer can write</typeparam>
-        /// <param name="writer">IContentSerializationWriter</param>
-        /// <exception cref="CSWriterException">CSWriterException</exception>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
+        /// <typeparam name="T"> the type the writer can write. </typeparam>
+        /// <param name="writer"> IContentSerializationWriter. </param>
         public static void AddWriter<T>(IContentSerializationWriter writer)
         {
             AddWriter(typeof(T), writer);
         }
 
+        /// <summary>
+        ///     Adds an assembly.
+        /// </summary>
+        /// <param name="assembly"> The assembly. </param>
         private static void AddAssembly(Assembly assembly)
         {
             string assemblyName = assembly.GetName().Name;
@@ -224,16 +245,13 @@ namespace Exomia.Framework.ContentSerialization
         #region ContentWriter
 
         /// <summary>
-        ///     Write a given object into the asset on the file system
+        ///     Write a given object into the asset on the file system.
         /// </summary>
-        /// <typeparam name="T">typeof Object</typeparam>
-        /// <param name="assetName">the asset name</param>
-        /// <param name="obj">Object</param>
-        /// <param name="minify">minify</param>
-        /// <exception cref="CSWriterException">CPWriterException</exception>
-        /// <exception cref="CSTypeException">CPTypeException</exception>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
-        /// <exception cref="NotSupportedException">NotSupportedException</exception>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <param name="obj">       Object. </param>
+        /// <param name="minify">    (Optional) True to minify. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public static void Write<T>(string assetName, T obj, bool minify = false) where T : class
         {
             if (obj == null) { throw new ArgumentNullException(nameof(obj)); }
@@ -262,6 +280,17 @@ namespace Exomia.Framework.ContentSerialization
             }
         }
 
+        /// <summary>
+        ///     Write a given object into the asset on the file system.
+        /// </summary>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="obj">          Object. </param>
+        /// <param name="type">         the type the reader can read. </param>
+        /// <exception cref="CSWriterException">
+        ///     Thrown when a Create struct Writer error condition
+        ///     occurs.
+        /// </exception>
         internal static void Write(Action<string, string> writeHandler, string tabSpace, object obj, Type type)
         {
             if (obj == null) { return; }
@@ -297,16 +326,19 @@ namespace Exomia.Framework.ContentSerialization
         #region ContentReader
 
         /// <summary>
-        ///     Reads a object from the given stream
+        ///     Reads a object from the given stream.
         /// </summary>
-        /// <typeparam name="T">typeof object</typeparam>
-        /// <param name="stream">Stream </param>
-        /// <param name="keepOpen">keep stream open</param>
-        /// <returns><c>T</c> Object</returns>
-        /// <exception cref="CSReaderException">CSReaderException</exception>
-        /// <exception cref="CSTypeException">CSTypeException</exception>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
-        /// <exception cref="NotSupportedException">NotSupportedException</exception>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="stream">   Stream. </param>
+        /// <param name="keepOpen"> (Optional) True to keep open. </param>
+        /// <returns>
+        ///     A T.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// <exception cref="CSReaderException">
+        ///     Thrown when a Create struct Reader error condition
+        ///     occurs.
+        /// </exception>
         public static T Read<T>(Stream stream, bool keepOpen = false) where T : class
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
@@ -332,6 +364,19 @@ namespace Exomia.Framework.ContentSerialization
             }
         }
 
+        /// <summary>
+        ///     Reads a object from the given stream.
+        /// </summary>
+        /// <param name="stream"> Stream. </param>
+        /// <param name="type">   the type the reader can read. </param>
+        /// <param name="objKey"> The object key. </param>
+        /// <returns>
+        ///     <c>T</c> Object.
+        /// </returns>
+        /// <exception cref="CSReaderException">
+        ///     Thrown when a Create struct Reader error condition
+        ///     occurs.
+        /// </exception>
         internal static object Read(CSStreamReader stream, Type type, string objKey)
         {
             if (!s_contentPipeLineReaders.TryGetValue(type, out IContentSerializationReader reader))
@@ -346,6 +391,16 @@ namespace Exomia.Framework.ContentSerialization
             return reader.Read(context);
         }
 
+        /// <summary>
+        ///     Reads a object from the given stream.
+        /// </summary>
+        /// <param name="stream">  Stream. </param>
+        /// <param name="context"> [in,out] The context. </param>
+        /// <param name="objKey">  The object key. </param>
+        /// <exception cref="CSReaderException">
+        ///     Thrown when a Create struct Reader error condition
+        ///     occurs.
+        /// </exception>
         private static void Read(CSStreamReader stream, ref ContentSerializationContext context, string objKey)
         {
             while (stream.ReadChar(out char c))
@@ -353,44 +408,45 @@ namespace Exomia.Framework.ContentSerialization
                 switch (c)
                 {
                     case '[':
-                    {
-                        if (stream.ReadStartTag(
-                            out string key, out string baseTypeInfo, out string genericTypeInfo,
-                            out string dimensionInfo))
                         {
-                            if (s_types.TryGetValue(baseTypeInfo, out IType it))
+                            if (stream.ReadStartTag(
+                                out string key, out string baseTypeInfo, out string genericTypeInfo,
+                                out string dimensionInfo))
                             {
-                                if (it.IsPrimitive)
+                                if (s_types.TryGetValue(baseTypeInfo, out IType it))
                                 {
-                                    context.Set(key, it.Read(stream, key, string.Empty, string.Empty), it.BaseType);
+                                    if (it.IsPrimitive)
+                                    {
+                                        context.Set(key, it.Read(stream, key, string.Empty, string.Empty), it.BaseType);
+                                    }
+                                    else
+                                    {
+                                        if (string.IsNullOrEmpty(genericTypeInfo))
+                                        {
+                                            throw new CSReaderException(
+                                                $"ERROR: NO GENERIC TYPE INFO DEFINED -> {baseTypeInfo}<GENERIC_TYPE_INFO>");
+                                        }
+                                        context.Set(
+                                            key, it.Read(stream, key, genericTypeInfo, dimensionInfo), it.BaseType);
+                                    }
                                 }
                                 else
                                 {
-                                    if (string.IsNullOrEmpty(genericTypeInfo))
-                                    {
-                                        throw new CSReaderException(
-                                            $"ERROR: NO GENERIC TYPE INFO DEFINED -> {baseTypeInfo}<GENERIC_TYPE_INFO>");
-                                    }
-                                    context.Set(
-                                        key, it.Read(stream, key, genericTypeInfo, dimensionInfo), it.BaseType);
+                                    Type   type = baseTypeInfo.CreateType();
+                                    object obj  = Read(stream, type, key);
+                                    context.Set(key, obj, type);
                                 }
                             }
                             else
                             {
-                                Type type = baseTypeInfo.CreateType();
-                                object obj = Read(stream, type, key);
-                                context.Set(key, obj, type);
+                                if ($"/{objKey}" != key)
+                                {
+                                    throw new CSReaderException(
+                                        $"ERROR: INVALID ENDTAG DEFINITION! -> {objKey} != {key}");
+                                }
+                                return;
                             }
                         }
-                        else
-                        {
-                            if ($"/{objKey}" != key)
-                            {
-                                throw new CSReaderException($"ERROR: INVALID ENDTAG DEFINITION! -> {objKey} != {key}");
-                            }
-                            return;
-                        }
-                    }
                         break;
                     case '/':
                         throw new CSReaderException($"ERROR: INVALID FILE CONTENT! -> invalid char '{c}'!");

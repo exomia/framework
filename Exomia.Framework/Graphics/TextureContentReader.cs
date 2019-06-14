@@ -24,12 +24,15 @@
 
 using System;
 using Exomia.Framework.Content;
-using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Graphics
 {
+    /// <summary>
+    ///     A texture content reader. This class cannot be inherited.
+    /// </summary>
     sealed class TextureContentReader : IContentReader
     {
+        /// <inheritdoc />
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             IGraphicsDevice graphicsDevice = contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
@@ -41,8 +44,12 @@ namespace Exomia.Framework.Graphics
         }
     }
 
+    /// <summary>
+    ///     A texture 2 content reader. This class cannot be inherited.
+    /// </summary>
     sealed class Texture2ContentReader : IContentReader
     {
+        /// <inheritdoc />
         public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             ITexture2ContentManager manager = contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();

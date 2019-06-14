@@ -29,35 +29,31 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization.Types
 {
     /// <summary>
-    ///     PType{T} class
+    ///     PType{T} class.
     /// </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
     sealed class PrimitiveType<T> : IType where T : struct
     {
-        /// <summary>
-        ///     typeof(Array)
-        /// </summary>
+        /// <inheritdoc />
         public Type BaseType { get; }
 
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsPrimitive
         {
             get { return true; }
         }
 
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
+        /// <inheritdoc />
+
         public string TypeName
         {
             get { return BaseType.Name.ToUpper(); }
         }
 
         /// <summary>
-        ///     constructor PrimitiveType{T}
+        ///     Initializes a new instance of the <see cref="PrimitiveType{T}" /> class.
         /// </summary>
+        /// <exception cref="NotSupportedException"> Thrown when the requested operation is not supported. </exception>
         public PrimitiveType()
         {
             BaseType = typeof(T);
@@ -67,25 +63,19 @@ namespace Exomia.Framework.ContentSerialization.Types
             }
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateType(string)" />
-        /// </summary>
+        /// <inheritdoc />
         public Type CreateType(string genericTypeInfo)
         {
             return BaseType;
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateTypeInfo(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public string CreateTypeInfo(Type type)
         {
             return TypeName;
         }
 
-        /// <summary>
-        ///     <see cref="IType.Read(CSStreamReader, string, string, string)" />
-        /// </summary>
+        /// <inheritdoc />
         public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(32);
@@ -95,19 +85,19 @@ namespace Exomia.Framework.ContentSerialization.Types
                 switch (c)
                 {
                     case '[':
-                    {
-                        stream.ReadEndTag(key);
-                        string content = sb.ToString();
-                        try
                         {
-                            return Convert.ChangeType(content, BaseType);
+                            stream.ReadEndTag(key);
+                            string content = sb.ToString();
+                            try
+                            {
+                                return Convert.ChangeType(content, BaseType);
+                            }
+                            catch
+                            {
+                                throw new InvalidCastException(
+                                    $"content '{content}' can't be converted to '{BaseType.FullName}'!");
+                            }
                         }
-                        catch
-                        {
-                            throw new InvalidCastException(
-                                $"content '{content}' can't be converted to '{BaseType.FullName}'!");
-                        }
-                    }
                     case ']':
                     case '\r':
                     case '\n':
@@ -120,11 +110,9 @@ namespace Exomia.Framework.ContentSerialization.Types
             throw new CSReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
-            bool useTypeInfo = true)
+                          bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
             writeHandler(

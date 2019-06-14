@@ -24,11 +24,11 @@
 
 namespace Exomia.Framework.ContentSerialization
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     abstract implementation for an <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
+    ///     abstract implementation for an
+    ///     <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
     /// </summary>
-    /// <typeparam name="T">type to write</typeparam>
+    /// <typeparam name="T"> type to write. </typeparam>
     public abstract class AContentSerializationWriter<T> : IContentSerializationWriter
     {
         /// <inheritdoc />
@@ -38,10 +38,10 @@ namespace Exomia.Framework.ContentSerialization
         }
 
         /// <summary>
-        ///     Write the object (of type T) information into the context
+        ///     Write the object (of type T) information into the context.
         /// </summary>
-        /// <param name="context">ref Context</param>
-        /// <param name="obj">Object</param>
+        /// <param name="context"> ref Context. </param>
+        /// <param name="obj">     Object. </param>
         public abstract void WriteContext(ContentSerializationContext context, T obj);
     }
 }

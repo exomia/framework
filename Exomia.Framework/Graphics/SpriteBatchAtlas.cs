@@ -35,29 +35,67 @@ using Rectangle = SharpDX.Rectangle;
 
 namespace Exomia.Framework.Graphics
 {
+    /// <summary>
+    ///     A sprite batch atlas. This class cannot be inherited.
+    /// </summary>
     sealed class SpriteBatchAtlas : IDisposable
     {
+        /// <summary>
+        ///     The minimum atlas width.
+        /// </summary>
         private const int MIN_ATLAS_WIDTH = 2048;
+
+        /// <summary>
+        ///     The minimum atlas height.
+        /// </summary>
         private const int MIN_ATLAS_HEIGHT = 2048;
 
+        /// <summary>
+        ///     The maximum atlas width.
+        /// </summary>
         private const int MAX_ATLAS_WIDTH = 8192;
+
+        /// <summary>
+        ///     The maximum atlas height.
+        /// </summary>
         private const int MAX_ATLAS_HEIGHT = 8192;
+
+        /// <summary>
+        ///     The height.
+        /// </summary>
         private readonly int _height;
 
+        /// <summary>
+        ///     The lock atlas.
+        /// </summary>
         private readonly object _lockAtlas = new object();
 
+        /// <summary>
+        ///     Source rectangles.
+        /// </summary>
         private readonly Dictionary<string, Rectangle> _sourceRectangles;
 
+        /// <summary>
+        ///     The width.
+        /// </summary>
         private readonly int _width;
 
+        /// <summary>
+        ///     The atlas.
+        /// </summary>
         private Bitmap _atlas;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SpriteBatchAtlas" /> class.
+        /// </summary>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
         public SpriteBatchAtlas(int width, int height)
         {
-            if (width < MIN_ATLAS_WIDTH) { width    = MIN_ATLAS_WIDTH; }
+            if (width  < MIN_ATLAS_WIDTH) { width   = MIN_ATLAS_WIDTH; }
             if (height < MIN_ATLAS_HEIGHT) { height = MIN_ATLAS_HEIGHT; }
 
-            if (width > MAX_ATLAS_WIDTH) { width    = MAX_ATLAS_WIDTH; }
+            if (width  > MAX_ATLAS_WIDTH) { width   = MAX_ATLAS_WIDTH; }
             if (height > MAX_ATLAS_HEIGHT) { height = MAX_ATLAS_HEIGHT; }
 
             _width  = width;
@@ -68,6 +106,16 @@ namespace Exomia.Framework.Graphics
             _atlas = new Bitmap(width, height);
         }
 
+        /// <summary>
+        ///     Adds a texture.
+        /// </summary>
+        /// <exception cref="OverflowException"> Thrown when an arithmetic overflow occurs. </exception>
+        /// <param name="stream">          The stream. </param>
+        /// <param name="assetName">       Name of the asset. </param>
+        /// <param name="sourceRectangle"> [out] Source rectangle. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
         internal bool AddTexture(Stream stream, string assetName, out Rectangle sourceRectangle)
         {
             sourceRectangle = Rectangle.Empty;
@@ -79,7 +127,7 @@ namespace Exomia.Framework.Graphics
 
             using (Image img = Image.FromStream(stream))
             {
-                if (img.Width > _width) { throw new OverflowException("the image size is to big!"); }
+                if (img.Width  > _width) { throw new OverflowException("the image size is to big!"); }
                 if (img.Height > _height) { throw new OverflowException("the image size is to big!"); }
 
                 if (GetFreeLocation(img.Width, img.Height, out int x, out int y))
@@ -99,6 +147,12 @@ namespace Exomia.Framework.Graphics
             return false;
         }
 
+        /// <summary>
+        ///     Generates a bitmap source.
+        /// </summary>
+        /// <returns>
+        ///     The bitmap source.
+        /// </returns>
         internal BitmapSource GenerateBitmapSource()
         {
             lock (_lockAtlas)
@@ -110,6 +164,13 @@ namespace Exomia.Framework.Graphics
             }
         }
 
+        /// <summary>
+        ///     Removes the texture described by assetName.
+        /// </summary>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
         internal bool RemoveTexture(string assetName)
         {
             if (!_sourceRectangles.TryGetValue(assetName, out Rectangle sourceRectangle))
@@ -130,11 +191,29 @@ namespace Exomia.Framework.Graphics
             return _sourceRectangles.Remove(assetName);
         }
 
+        /// <summary>
+        ///     Attempts to get source rectangle a Rectangle from the given string.
+        /// </summary>
+        /// <param name="assetName">       Name of the asset. </param>
+        /// <param name="sourceRectangle"> [out] Source rectangle. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
         internal bool TryGetSourceRectangle(string assetName, out Rectangle sourceRectangle)
         {
             return _sourceRectangles.TryGetValue(assetName, out sourceRectangle);
         }
 
+        /// <summary>
+        ///     Gets free location.
+        /// </summary>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
+        /// <param name="x">      [out] The out int to process. </param>
+        /// <param name="y">      [out] The out int to process. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
         private bool GetFreeLocation(int width, int height, out int x, out int y)
         {
             x = 0;
@@ -183,8 +262,19 @@ namespace Exomia.Framework.Graphics
 
         #region IDisposable Support
 
+        /// <summary>
+        ///     True if disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        ///     Releases the unmanaged resources used by the Exomia.Framework.Graphics.SpriteBatchAtlas
+        ///     and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     True to release both managed and unmanaged resources; false to
+        ///     release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -202,11 +292,15 @@ namespace Exomia.Framework.Graphics
             }
         }
 
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="SpriteBatchAtlas" /> class.
+        /// </summary>
         ~SpriteBatchAtlas()
         {
             Dispose(false);
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

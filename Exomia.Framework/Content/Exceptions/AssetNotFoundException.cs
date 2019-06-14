@@ -26,7 +26,6 @@ using System;
 
 namespace Exomia.Framework.Content.Exceptions
 {
-    /// <inheritdoc />
     /// <summary>
     ///     Thrown than an asset is not found.
     /// </summary>

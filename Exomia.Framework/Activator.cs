@@ -55,11 +55,11 @@ namespace Exomia.Framework
         public static TDelegate GetCreator<TDelegate>()
             where TDelegate : Delegate
         {
-            Type dType = typeof(TDelegate);
-            MethodInfo mi = dType.GetMethod("Invoke") ?? throw new NullReferenceException("get method Invoke");
+            Type       dType = typeof(TDelegate);
+            MethodInfo mi    = dType.GetMethod("Invoke") ?? throw new NullReferenceException("get method Invoke");
             if (mi.ReturnType == typeof(void)) { throw new NotSupportedException("invalid return type (void)"); }
 
-            Type[] pTypes = Array.ConvertAll(mi.GetParameters(), p => p.ParameterType);
+            Type[]                pTypes     = Array.ConvertAll(mi.GetParameters(), p => p.ParameterType);
             ParameterExpression[] parameters = new ParameterExpression[pTypes.Length];
             for (int i = 0; i < pTypes.Length; ++i)
             {
@@ -68,14 +68,15 @@ namespace Exomia.Framework
 
             return (TDelegate)Convert.ChangeType(
                 Expression.Lambda(
-                        dType,
-                        Expression.New(
-                            mi.ReturnType.GetConstructor(pTypes)
-                            ?? throw new NullReferenceException(
+                              dType,
+                              Expression.New(
+                                  mi.ReturnType.GetConstructor(pTypes)
+                               ?? throw new NullReferenceException(
 
-                                // ReSharper disable once CoVariantArrayConversion (can be disabled cause we do no write operations at run-time)
-                                $"can not create a constructor for {typeof(TDelegate)}"), parameters), parameters)
-                    .Compile(), dType);
+                                      // ReSharper disable once CoVariantArrayConversion (can be disabled cause we do no write operations at run-time)
+                                      $"can not create a constructor for {typeof(TDelegate)}"), parameters),
+                              parameters)
+                          .Compile(), dType);
         }
 
         /// <summary>
@@ -94,8 +95,8 @@ namespace Exomia.Framework
         {
             if (constructorParameters == null) { constructorParameters = Type.EmptyTypes; }
 
-            ParameterExpression param = Expression.Parameter(typeof(object[]));
-            Expression[] argsExpressions = new Expression[constructorParameters.Length];
+            ParameterExpression param           = Expression.Parameter(typeof(object[]));
+            Expression[]        argsExpressions = new Expression[constructorParameters.Length];
 
             for (int i = 0; i < constructorParameters.Length; ++i)
             {
@@ -106,13 +107,13 @@ namespace Exomia.Framework
             }
 
             return (Creator<TRes>)Expression.Lambda(
-                    typeof(Creator<TRes>),
-                    Expression.New(
-                        typeof(TRes).GetConstructor(constructorParameters)
-                        ?? throw new ArgumentException(
-                            @"This type does not have a constructor that takes the passed in set of parameters.",
-                            nameof(constructorParameters)), argsExpressions), param)
-                .Compile();
+                                                typeof(Creator<TRes>),
+                                                Expression.New(
+                                                    typeof(TRes).GetConstructor(constructorParameters)
+                                                 ?? throw new ArgumentException(
+                                                        "This type does not have a constructor that takes the passed in set of parameters.",
+                                                        nameof(constructorParameters)), argsExpressions), param)
+                                            .Compile();
         }
     }
 }

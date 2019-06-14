@@ -29,9 +29,13 @@ using Exomia.Framework.ContentSerialization;
 
 namespace Exomia.Framework.Content.Resolver.EmbeddedResource
 {
+    /// <summary>
+    ///     A 0 embedded resource stream resolver.
+    /// </summary>
     [ContentResolver(int.MinValue + 1)]
     class E0EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
+        /// <inheritdoc />
         public bool Exists(Type assetType, string assetName, out Assembly assembly)
         {
             if (Path.GetExtension(assetName) == ContentSerializer.DEFAULT_EXTENSION)
@@ -60,6 +64,7 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
             return false;
         }
 
+        /// <inheritdoc />
         public Stream Resolve(Assembly assembly, string assetName)
         {
             return assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{assetName}");

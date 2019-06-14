@@ -30,23 +30,43 @@ using System.Threading;
 namespace Exomia.Framework.Buffers
 {
     /// <summary>
-    ///     CircularBuffer class
+    ///     CircularBuffer class.
     /// </summary>
-    /// <typeparam name="T">any</typeparam>
+    /// <typeparam name="T"> any. </typeparam>
     public class CircularBuffer<T>
     {
+        /// <summary>
+        ///     The buffer.
+        /// </summary>
         private readonly T[] _buffer;
 
+        /// <summary>
+        ///     this lock.
+        /// </summary>
         private readonly SpinLock _thisLock;
 
+        /// <summary>
+        ///     The head.
+        /// </summary>
         private int _head;
+
+        /// <summary>
+        ///     The size.
+        /// </summary>
         private int _size;
+
+        /// <summary>
+        ///     The tail.
+        /// </summary>
         private int _tail;
 
         /// <summary>
-        ///     Maximum capacity of the buffer.
-        ///     Elements pushed into the buffer after maximum capacity is reached will remove an element.
+        ///     Maximum capacity of the buffer. Elements pushed into the buffer after maximum capacity is
+        ///     reached will remove an element.
         /// </summary>
+        /// <value>
+        ///     The capacity.
+        /// </value>
         public int Capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -56,6 +76,9 @@ namespace Exomia.Framework.Buffers
         /// <summary>
         ///     <c>true</c> if the circular buffer is empty; <c>false</c> otherwise.
         /// </summary>
+        /// <value>
+        ///     True if this object is empty, false if not.
+        /// </value>
         public bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,9 +86,16 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
+        ///     Indexer to get items within this collection using array index syntax.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="index"> . </param>
+        /// <returns>
+        ///     The indexed item.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when one or more arguments are outside
+        ///     the required range.
+        /// </exception>
         public T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -95,8 +125,15 @@ namespace Exomia.Framework.Buffers
         /// <summary>
         ///     Initializes a new instance of the <see cref="CircularBuffer{T}" /> class.
         /// </summary>
-        /// <param name="capacity">Buffer capacity. Must be positive.</param>
-        /// <param name="items">Items to fill buffer with. Items length must be less or equal than capacity.</param>
+        /// <param name="capacity"> (Optional) Buffer capacity. Must be positive. </param>
+        /// <param name="items">
+        ///     (Optional) Items to fill buffer with. Items length must be less or
+        ///     equal than capacity.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or
+        ///     illegal values.
+        /// </exception>
         public CircularBuffer(int capacity = 1024, T[] items = null)
         {
             if (capacity < 1)
@@ -122,7 +159,7 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     clear the circular buffer
+        ///     clear the circular buffer.
         /// </summary>
         public void Clear()
         {
@@ -133,10 +170,12 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     get the last element and return its value
+        ///     get the last element and return its value.
         /// </summary>
-        /// <returns>value of the last element</returns>
-        /// <exception cref="InvalidOperationException">if the buffer is empty</exception>
+        /// <returns>
+        ///     value of the last element.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> if the buffer is empty. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Get()
         {
@@ -163,10 +202,12 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     get the last element from the buffer and return its value
+        ///     get the last element from the buffer and return its value.
         /// </summary>
-        /// <returns>value of the last element</returns>
-        /// <exception cref="InvalidOperationException">if the buffer is empty</exception>
+        /// <returns>
+        ///     value of the last element.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> if the buffer is empty. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T GetR()
         {
@@ -193,11 +234,12 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     peek the last element and return its value
-        ///     this method does not consume the element
+        ///     peek the last element and return its value this method does not consume the element.
         /// </summary>
-        /// <returns>value of the last element</returns>
-        /// <exception cref="InvalidOperationException">if the buffer is empty</exception>
+        /// <returns>
+        ///     value of the last element.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> if the buffer is empty. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Peek()
         {
@@ -219,11 +261,12 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     peek the last element and return its value
-        ///     this method does not consume the element
+        ///     peek the last element and return its value this method does not consume the element.
         /// </summary>
-        /// <returns>value of the last element</returns>
-        /// <exception cref="InvalidOperationException">if the buffer is empty</exception>
+        /// <returns>
+        ///     value of the last element.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> if the buffer is empty. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T PeekR()
         {
@@ -245,9 +288,9 @@ namespace Exomia.Framework.Buffers
         }
 
         /// <summary>
-        ///     put an element to the start of the buffer
+        ///     put an element to the start of the buffer.
         /// </summary>
-        /// <param name="toAdd">element to put at start</param>
+        /// <param name="toAdd"> element to put at start. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Put(in T toAdd)
         {

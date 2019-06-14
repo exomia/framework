@@ -26,8 +26,12 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
+    /// <summary>
+    ///     A rectangle fcr. This class cannot be inherited.
+    /// </summary>
     sealed class RectangleFCR : AContentSerializationReader<RectangleF>
     {
+        /// <inheritdoc />
         public override RectangleF ReadContext(ContentSerializationContext context)
         {
             return new RectangleF
@@ -40,8 +44,12 @@ namespace Exomia.Framework.ContentSerialization.Readers
         }
     }
 
+    /// <summary>
+    ///     A rectangle carriage return. This class cannot be inherited.
+    /// </summary>
     sealed class RectangleCR : AContentSerializationReader<Rectangle>
     {
+        /// <inheritdoc />
         public override Rectangle ReadContext(ContentSerializationContext context)
         {
             return new Rectangle

@@ -29,43 +29,34 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization.Types
 {
     /// <summary>
-    ///     ListType class
+    ///     A dictionary type. This class cannot be inherited.
     /// </summary>
     sealed class DictionaryType : IType
     {
-        /// <summary>
-        ///     typeof(Array)
-        /// </summary>
+        /// <inheritdoc />
         public Type BaseType { get; }
 
-        /// <summary>
-        ///     <see cref="IType.IsPrimitive()" />
-        /// </summary>
+        /// <inheritdoc />
         public bool IsPrimitive
         {
             get { return false; }
         }
 
-        /// <summary>
-        ///     TypeName without System
-        ///     !ALL UPPER CASE!
-        /// </summary>
+        /// <inheritdoc />
         public string TypeName
         {
             get { return BaseType.Name.ToUpper(); }
         }
 
         /// <summary>
-        ///     constructor EnumType
+        ///     Initializes a new instance of the <see cref="DictionaryType" /> class.
         /// </summary>
         public DictionaryType()
         {
             BaseType = typeof(Dictionary<,>);
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateType(string)" />
-        /// </summary>
+        /// <inheritdoc />
         public Type CreateType(string genericTypeInfo)
         {
             genericTypeInfo.GetKeyValueInnerType(
@@ -81,9 +72,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                 : BaseType.MakeGenericType(itk.CreateType(string.Empty), valueBaseTypeInfo.CreateType());
         }
 
-        /// <summary>
-        ///     <see cref="IType.CreateTypeInfo(Type)" />
-        /// </summary>
+        /// <inheritdoc />
         public string CreateTypeInfo(Type type)
         {
             Type[] gArgs = type.GetGenericArguments();
@@ -97,7 +86,8 @@ namespace Exomia.Framework.ContentSerialization.Types
                 string genericTypeInfo2 =
                     ContentSerializer.s_types.TryGetValue(gArgs[1].Name.ToUpper(), out IType itv) ||
                     ContentSerializer.s_types.TryGetValue(
-                        (gArgs[1].BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out itv)
+                        (gArgs[1].BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
+                        out itv)
                         ? itv.CreateTypeInfo(gArgs[1])
                         : gArgs[1].ToString();
 
@@ -106,9 +96,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             throw new NotSupportedException(type.ToString());
         }
 
-        /// <summary>
-        ///     <see cref="IType.Read(CSStreamReader, string, string, string)" />
-        /// </summary>
+        /// <inheritdoc />
         public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             if (string.IsNullOrEmpty(dimensionInfo))
@@ -129,7 +117,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
-            Type valueType;
+            Type                                 valueType;
             Func<CSStreamReader, string, object> readCallback;
             if (ContentSerializer.s_types.TryGetValue(vbti, out IType it))
             {
@@ -150,18 +138,16 @@ namespace Exomia.Framework.ContentSerialization.Types
 
             int count = GetDictionaryCount(dimensionInfo);
 
-            Type dic = BaseType.MakeGenericType(itk.CreateType(string.Empty), valueType);
+            Type   dic = BaseType.MakeGenericType(itk.CreateType(string.Empty), valueType);
             object obj = System.Activator.CreateInstance(dic, count);
             AddDictionaryContent(stream, readCallback, (dynamic)obj, count);
             stream.ReadTag($"/{key}");
             return obj;
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
+        /// <inheritdoc />
         public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
-            bool useTypeInfo = true)
+                          bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
             Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
@@ -169,15 +155,26 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #region WriteHelper
 
-        private static void ForeachDictionaryDimension<TKey, TValue>(Action<string, string> writeHandler,
-            string tabSpace, Dictionary<TKey, TValue> dic)
+        /// <summary>
+        ///     Foreach dictionary dimension.
+        /// </summary>
+        /// <typeparam name="TKey">   Type of the key. </typeparam>
+        /// <typeparam name="TValue"> Type of the value. </typeparam>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="dic">          The dic. </param>
+        /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
+        private static void ForeachDictionaryDimension<TKey, TValue>(Action<string, string>   writeHandler,
+                                                                     string                   tabSpace,
+                                                                     Dictionary<TKey, TValue> dic)
         {
             foreach (KeyValuePair<TKey, TValue> entry in dic)
             {
                 Type elementType = entry.Value.GetType();
                 if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
                     ContentSerializer.s_types.TryGetValue(
-                        (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(), out it))
+                        (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
+                        out it))
                 {
                     it.Write(writeHandler, tabSpace, entry.Key.ToString(), entry.Value, false);
                 }
@@ -193,8 +190,18 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #endregion
 
-        private void Write<TKey, TValue>(Action<string, string> writeHandler, string tabSpace, string key,
-            Dictionary<TKey, TValue> content, bool useTypeInfo = true)
+        /// <summary>
+        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
+        /// </summary>
+        /// <typeparam name="TKey">   Type of the key. </typeparam>
+        /// <typeparam name="TValue"> Type of the value. </typeparam>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="key">          The key. </param>
+        /// <param name="content">      The content. </param>
+        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
+        private void Write<TKey, TValue>(Action<string, string>   writeHandler, string tabSpace, string key,
+                                         Dictionary<TKey, TValue> content,      bool   useTypeInfo = true)
         {
             writeHandler(
                 tabSpace,
@@ -205,10 +212,18 @@ namespace Exomia.Framework.ContentSerialization.Types
 
         #region ReaderHelper
 
+        /// <summary>
+        ///     Gets dictionary count.
+        /// </summary>
+        /// <param name="dictionaryTypeInfo"> Information describing the dictionary type. </param>
+        /// <returns>
+        ///     The dictionary count.
+        /// </returns>
+        /// <exception cref="CSTypeException"> Thrown when a Create struct Type error condition occurs. </exception>
         private static int GetDictionaryCount(string dictionaryTypeInfo)
         {
             const string START = "(";
-            const string END = ")";
+            const string END   = ")";
 
             int sIndex = dictionaryTypeInfo.IndexOf(START, StringComparison.Ordinal);
             if (sIndex == -1)
@@ -232,8 +247,18 @@ namespace Exomia.Framework.ContentSerialization.Types
             return buffer;
         }
 
-        private static void AddDictionaryContent<TKey, TValue>(CSStreamReader stream,
-            Func<CSStreamReader, string, object> readCallback, Dictionary<TKey, TValue> dic, int count)
+        /// <summary>
+        ///     Adds a dictionary content.
+        /// </summary>
+        /// <typeparam name="TKey">   Type of the key. </typeparam>
+        /// <typeparam name="TValue"> Type of the value. </typeparam>
+        /// <param name="stream">       The stream. </param>
+        /// <param name="readCallback"> The read callback. </param>
+        /// <param name="dic">          The dic. </param>
+        /// <param name="count">        Number of. </param>
+        private static void AddDictionaryContent<TKey, TValue>(CSStreamReader                       stream,
+                                                               Func<CSStreamReader, string, object> readCallback,
+                                                               Dictionary<TKey, TValue>             dic, int count)
         {
             for (int i = 0; i < count; i++)
             {

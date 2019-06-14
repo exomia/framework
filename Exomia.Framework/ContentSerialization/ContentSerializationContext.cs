@@ -86,11 +86,27 @@ namespace Exomia.Framework.ContentSerialization
         }
     }
 
+    /// <summary>
+    ///     A content serialization context value.
+    /// </summary>
     struct ContentSerializationContextValue
     {
+        /// <summary>
+        ///     The type.
+        /// </summary>
         public Type Type;
+
+        /// <summary>
+        ///     The object.
+        /// </summary>
         public object Object;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ContentSerializationContextValue" />
+        ///     struct.
+        /// </summary>
+        /// <param name="type"> The type. </param>
+        /// <param name="obj">  The object. </param>
         public ContentSerializationContextValue(Type type, object obj)
         {
             Type   = type;
