@@ -46,7 +46,7 @@ namespace Exomia.Framework.Components
 
         private PerformanceCounter _cpuPerformanceCounter1;
         private PerformanceCounter _cpuPerformanceCounter2;
-        private float _elapsed_time;
+        private float _elapsedTime;
 
         private bool _firstCalc;
         private float _fpsAverage;
@@ -72,7 +72,7 @@ namespace Exomia.Framework.Components
         private SpriteBatch _spriteBatch;
 
         private string _title = string.Empty;
-        private int _total_frames;
+        private int _totalFrames;
 
         private float _totalMemoryBytes;
 
@@ -85,8 +85,8 @@ namespace Exomia.Framework.Components
         {
             _totalMemoryBytes = 0;
             _processorLoadT1  = _processorLoadT2 = 0.0f;
-            _total_frames     = 0;
-            _elapsed_time     = 0.0f;
+            _totalFrames     = 0;
+            _elapsedTime     = 0.0f;
             _fpsCurrent       = 0.0f;
             _fpsAverage       = -1;
         }
@@ -115,20 +115,20 @@ namespace Exomia.Framework.Components
 
         public override void EndDraw()
         {
-            _total_frames++;
+            _totalFrames++;
             base.EndDraw();
         }
 
         public override void Update(GameTime gameTime)
         {
-            _elapsed_time += gameTime.LimitedDeltaTimeS;
+            _elapsedTime += gameTime.DeltaTimeS;
 
-            if (_maxFrameTime < gameTime.LimitedDeltaTimeMS)
+            if (_maxFrameTime < gameTime.DeltaTimeMS)
             {
-                _maxFrameTime = gameTime.LimitedDeltaTimeMS;
+                _maxFrameTime = gameTime.DeltaTimeMS;
             }
 
-            if (_elapsed_time >= SAMPLE_TIME_RATE)
+            if (_elapsedTime >= SAMPLE_TIME_RATE)
             {
                 if (ShowFullInformation)
                 {
@@ -142,18 +142,17 @@ namespace Exomia.Framework.Components
                         $"Total Memory Usage: {_totalMemoryBytes / 1024.0:0}KB ({_totalMemoryBytes / 1024.0 / 1024.0:0.00}MB)";
                 }
 
-                _fpsCurrent = _total_frames / _elapsed_time;
+                _fpsCurrent = _totalFrames / _elapsedTime;
 
                 _sampleBuffer += _fpsCurrent;
                 _sampleCount++;
 
-                _elapsed_time -= SAMPLE_TIME_RATE;
-                _total_frames =  0;
+                _elapsedTime -= SAMPLE_TIME_RATE;
+                _totalFrames =  0;
 
                 _fpsInfo =
-
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.LimitedDeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
+                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
                 _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
                 _maxFrameTime = 0;
                 _firstCalc    = true;
