@@ -71,9 +71,16 @@ namespace Exomia.Framework.Input
         private MouseButtons _pressedMouseButtons = MouseButtons.None;
 
         /// <summary>
-        ///     WinFormsInputDevice constuctor
+        ///     Initializes a new instance of the <see cref="WinFormsInputDevice" /> class.
         /// </summary>
-        /// <param name="window">IWinFormsGameWindow</param>
+        /// <param name="game">The game</param>
+        public WinFormsInputDevice(Game.Game game) 
+            : this(game.GameWindow as IWinFormsGameWindow) { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="WinFormsInputDevice" /> class.
+        /// </summary>
+        /// <param name="window">The win forms game window</param>
         public WinFormsInputDevice(IWinFormsGameWindow window)
         {
             _window = window ?? throw new ArgumentNullException(nameof(window));
