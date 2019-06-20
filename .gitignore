@@ -1,5 +1,5 @@
 ## Custom
-create-wiki.sh
+create-wiki.bat
 nuget-push.bat
 
 ## Ignore Visual Studio temporary files, build results, and
