@@ -1,24 +1,10 @@
-﻿#region MIT License
+﻿#region License
 
-// Copyright (c) 2019 exomia - Daniel Bätz
+// Copyright (c) 2018-2019, exomia
+// All rights reserved.
 // 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
 
 #endregion
 
@@ -117,62 +103,62 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         private int _vSync;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Adapter4 Adapter
         {
             get { return _adapter4; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Device5 Device
         {
             get { return _d3DDevice5; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public DeviceContext4 DeviceContext
         {
             get { return _d3DDeviceContext; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Device4 DxgiDevice
         {
             get { return _dxgiDevice4; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Factory5 Factory
         {
             get { return _dxgiFactory; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool IsInitialized { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public RenderTargetView1 RenderView
         {
             get { return _renderView1; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public SwapChain4 SwapChain
         {
             get { return _swapChain4; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ViewportF Viewport { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool VSync
         {
             get { return _vSync != 0; }
             set { _vSync = value ? 1 : 0; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool BeginFrame()
         {
             if (_needResize)
@@ -183,7 +169,7 @@ namespace Exomia.Framework.Graphics
             return IsInitialized;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Clear()
         {
             lock (_d3DDevice5)
@@ -194,7 +180,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Clear(Color color)
         {
             lock (_d3DDevice5)
@@ -205,19 +191,19 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void EndFrame()
         {
             _swapChain4.Present(_vSync, PresentFlags.None);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool GetFullscreenState()
         {
             return _swapChain4.IsFullScreen;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Initialize(ref GameGraphicsParameters parameters)
         {
             if (IsInitialized) { return; }
@@ -362,7 +348,7 @@ namespace Exomia.Framework.Graphics
             IsInitialized = true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Resize(ref GameGraphicsParameters parameters)
         {
             _resizeParameters = new ResizeParameters
@@ -374,8 +360,8 @@ namespace Exomia.Framework.Graphics
             };
             _needResize = true;
         }
-        
-        /// <inheritdoc/>
+
+        /// <inheritdoc />
         public void Resize(int width, int height)
         {
             _resizeParameters = new ResizeParameters
@@ -388,7 +374,7 @@ namespace Exomia.Framework.Graphics
             _needResize = true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetFullscreenState(bool state, Output output = null)
         {
             if (_swapChain4.IsFullScreen != state)
@@ -397,7 +383,7 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetRenderTarget(RenderTargetView1 target)
         {
             lock (_d3DDevice5)
@@ -406,7 +392,7 @@ namespace Exomia.Framework.Graphics
                 _d3DDeviceContext.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
             }
         }
-        
+
         /// <summary>
         ///     Resizes the given arguments.
         /// </summary>
@@ -503,8 +489,10 @@ namespace Exomia.Framework.Graphics
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting
         ///     unmanaged/managed resources.
         /// </summary>
-        /// <param name="disposing"> True to release both managed and unmanaged resources; false to
-        ///                          release only unmanaged resources. </param>
+        /// <param name="disposing">
+        ///     True to release both managed and unmanaged resources; false to
+        ///     release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -526,13 +514,13 @@ namespace Exomia.Framework.Graphics
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~GraphicsDevice()
         {
             Dispose(false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting
         ///     unmanaged/managed resources.
