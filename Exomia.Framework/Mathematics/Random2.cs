@@ -55,13 +55,15 @@ namespace Exomia.Framework.Mathematics
         ///     The w.
         /// </value>
         private uint _x, _y, _z, _w;
-
-        /// <inheritdoc />
+        
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Random2"/> class.
+        /// </summary>
         public Random2()
             : this(DateTime.Now.Ticks ^ Environment.TickCount) { }
-
+        
         /// <summary>
-        ///     Random2 constructor.
+        ///     Initializes a new instance of the <see cref="Random2"/> class.
         /// </summary>
         /// <param name="seed"> The seed. </param>
         public Random2(long seed)
