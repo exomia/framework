@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization.Readers
     /// <summary>
     ///     A color carriage return. This class cannot be inherited.
     /// </summary>
-    sealed class ColorCR : AContentSerializationReader<Color>
+    sealed class ColorCR : ContentSerializationReader<Color>
     {
         /// <inheritdoc />
         public override Color ReadContext(ContentSerializationContext context)

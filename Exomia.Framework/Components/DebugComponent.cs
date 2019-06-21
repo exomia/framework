@@ -20,7 +20,7 @@ namespace Exomia.Framework.Components
     /// <summary>
     ///     A debug component.
     /// </summary>
-    public class DebugComponent : ADrawableComponent
+    public class DebugComponent : DrawableComponent
     {
         /// <summary>
         ///     The sample time rate.

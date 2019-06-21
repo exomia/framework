@@ -8,15 +8,14 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     A renderer.
+    ///     A drawable game component.
     /// </summary>
-    public abstract class ARenderer : IComponent, IInitializable, IDrawable, IDisposable
+    public abstract class DrawableComponent : Component, IDrawable
     {
         /// <summary>
         ///     Occurs when the <see cref="DrawOrder" /> property changes.
@@ -53,9 +52,6 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public string Name { get; }
-
-        /// <inheritdoc />
         public bool Visible
         {
             get { return _visible; }
@@ -69,17 +65,9 @@ namespace Exomia.Framework
             }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ARenderer" /> class.
-        /// </summary>
-        /// <param name="name"> name. </param>
-        protected ARenderer(string name)
-        {
-            Name = name;
-        }
-
         /// <inheritdoc />
-        public abstract void Dispose();
+        protected DrawableComponent(string name)
+            : base(name) { }
 
         /// <inheritdoc />
         public virtual bool BeginDraw()
@@ -88,12 +76,9 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public virtual void Draw(GameTime gameTime) { }
+        public abstract void Draw(GameTime gameTime);
 
         /// <inheritdoc />
         public virtual void EndDraw() { }
-
-        /// <inheritdoc />
-        public virtual void Initialize(IServiceRegistry registry) { }
     }
 }

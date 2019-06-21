@@ -16,7 +16,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A sprite font cw. This class cannot be inherited.
     /// </summary>
-    sealed class SpriteFontCW : AContentSerializationWriter<SpriteFont>
+    sealed class SpriteFontCW : ContentSerializationWriter<SpriteFont>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont obj)
@@ -43,7 +43,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A sprite font glyph cw. This class cannot be inherited.
     /// </summary>
-    sealed class SpriteFontGlyphCW : AContentSerializationWriter<SpriteFont.Glyph>
+    sealed class SpriteFontGlyphCW : ContentSerializationWriter<SpriteFont.Glyph>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Glyph obj)
@@ -59,7 +59,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A sprite font kerning cw. This class cannot be inherited.
     /// </summary>
-    sealed class SpriteFontKerningCW : AContentSerializationWriter<SpriteFont.Kerning>
+    sealed class SpriteFontKerningCW : ContentSerializationWriter<SpriteFont.Kerning>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Kerning obj)

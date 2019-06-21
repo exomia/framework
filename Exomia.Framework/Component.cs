@@ -17,18 +17,16 @@ namespace Exomia.Framework
     /// <summary>
     ///     A component.
     /// </summary>
-    public abstract class AComponent : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
+    public abstract class Component : IComponent, IInitializable, IContentable, IUpdateable, IDisposable
     {
         /// <summary>
         ///     Occurs when Enabled Changed.
         /// </summary>
-        /// <inheritdoc />
         public event EventHandler EnabledChanged;
 
         /// <summary>
         ///     Occurs when Update Order Changed.
         /// </summary>
-        /// <inheritdoc />
         public event EventHandler UpdateOrderChanged;
 
         /// <summary>
@@ -88,10 +86,10 @@ namespace Exomia.Framework
         public string Name { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AComponent" /> class.
+        ///     Initializes a new instance of the <see cref="Component" /> class.
         /// </summary>
         /// <param name="name"> The component name. </param>
-        protected AComponent(string name)
+        protected Component(string name)
         {
             Name       = name;
             _collector = new DisposeCollector();
@@ -200,7 +198,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        ~AComponent()
+        ~Component()
         {
             Dispose(false);
         }

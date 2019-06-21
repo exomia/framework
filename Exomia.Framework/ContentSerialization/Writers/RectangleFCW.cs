@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization.Writers
     /// <summary>
     ///     A rectangle fcw. This class cannot be inherited.
     /// </summary>
-    sealed class RectangleFCW : AContentSerializationWriter<RectangleF>
+    sealed class RectangleFCW : ContentSerializationWriter<RectangleF>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, RectangleF obj)
@@ -30,7 +30,7 @@ namespace Exomia.Framework.ContentSerialization.Writers
     /// <summary>
     ///     A rectangle cw. This class cannot be inherited.
     /// </summary>
-    sealed class RectangleCW : AContentSerializationWriter<Rectangle>
+    sealed class RectangleCW : ContentSerializationWriter<Rectangle>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Rectangle obj)

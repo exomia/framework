@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization.Readers
     /// <summary>
     ///     A rectangle fcr. This class cannot be inherited.
     /// </summary>
-    sealed class RectangleFCR : AContentSerializationReader<RectangleF>
+    sealed class RectangleFCR : ContentSerializationReader<RectangleF>
     {
         /// <inheritdoc />
         public override RectangleF ReadContext(ContentSerializationContext context)
@@ -33,7 +33,7 @@ namespace Exomia.Framework.ContentSerialization.Readers
     /// <summary>
     ///     A rectangle carriage return. This class cannot be inherited.
     /// </summary>
-    sealed class RectangleCR : AContentSerializationReader<Rectangle>
+    sealed class RectangleCR : ContentSerializationReader<Rectangle>
     {
         /// <inheritdoc />
         public override Rectangle ReadContext(ContentSerializationContext context)
