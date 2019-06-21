@@ -24,58 +24,6 @@ using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace Exomia.Framework.Graphics
 {
-    /// <summary>
-    ///     Values that represent SpriteSortMode.
-    /// </summary>
-    public enum SpriteSortMode
-    {
-        /// <summary>
-        ///     An enum constant representing the deferred option.
-        /// </summary>
-        Deferred,
-
-        /// <summary>
-        ///     An enum constant representing the texture option.
-        /// </summary>
-        Texture,
-
-        /// <summary>
-        ///     An enum constant representing the back to front option.
-        /// </summary>
-        BackToFront,
-
-        /// <summary>
-        ///     An enum constant representing the front to back option.
-        /// </summary>
-        FrontToBack
-    }
-
-    /// <summary>
-    ///     Bitfield of flags for specifying SpriteEffects.
-    /// </summary>
-    [Flags]
-    public enum SpriteEffects
-    {
-        /// <summary>
-        ///     A binary constant representing the none flag.
-        /// </summary>
-        None = 0b00,
-
-        /// <summary>
-        ///     A binary constant representing the flip horizontally flag.
-        /// </summary>
-        FlipHorizontally = 0b01,
-
-        /// <summary>
-        ///     A binary constant representing the flip vertically flag.
-        /// </summary>
-        FlipVertically = 0b10,
-
-        /// <summary>
-        ///     A binary constant representing the flip both flag.
-        /// </summary>
-        FlipBoth = FlipHorizontally | FlipVertically
-    }
 
     /// <summary>
     ///     A sprite batch. This class cannot be inherited.
