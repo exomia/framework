@@ -20,24 +20,57 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
     [ContentResolver(int.MaxValue)]
     class EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool Exists(Type assetType, string assetName, out Assembly assembly)
         {
+            return ExistsInternal(assetType, assetName, out assembly);
+        }
+
+        /// <inheritdoc/>
+        public Stream Resolve(Assembly assembly, string assetName)
+        {
+            return GetManifestResourceStreamInternal(assembly, assetName);
+        }
+
+        /// <summary>
+        ///     Gets the asset name.
+        /// </summary>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <param name="assembly">  [out] The assembly. </param>
+        /// <returns>
+        ///     The asset name.
+        /// </returns>
+        private static string GetAssetName(string assetName, Assembly assembly)
+        {
+            return $"{assembly.GetName().Name}.{assetName}";
+        }
+
+        /// <summary>
+        ///     Exists internal.
+        /// </summary>
+        /// <param name="assetType"> Type of the asset. </param>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <param name="assembly">  [out] The assembly. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        internal static bool ExistsInternal(Type assetType, string assetName, out Assembly assembly)
+        {
             assembly = assetType.Assembly;
-            string name = $"{assembly.GetName().Name}.{assetName}";
+            string name = GetAssetName(assetName, assembly);
             foreach (string resourceName in assembly.GetManifestResourceNames())
             {
-                if (resourceName == name)
+                if (resourceName.Equals(name))
                 {
                     return true;
                 }
             }
 
-            assembly = Assembly.GetEntryAssembly();
-            name     = $"{assembly.GetName().Name}.{assetName}";
+            assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
+            name     = GetAssetName(assetName, assembly);
             foreach (string resourceName in assembly.GetManifestResourceNames())
             {
-                if (resourceName == name)
+                if (resourceName.Equals(name))
                 {
                     return true;
                 }
@@ -47,10 +80,17 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
             return false;
         }
 
-        /// <inheritdoc />
-        public Stream Resolve(Assembly assembly, string assetName)
+        /// <summary>
+        ///     Gets manifest resource stream internal.
+        /// </summary>
+        /// <param name="assembly">  [out] The assembly. </param>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <returns>
+        ///     The manifest resource stream internal.
+        /// </returns>
+        internal static Stream GetManifestResourceStreamInternal(Assembly assembly, string assetName)
         {
-            return assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{assetName}");
+            return assembly.GetManifestResourceStream(GetAssetName(assetName, assembly));
         }
     }
 }

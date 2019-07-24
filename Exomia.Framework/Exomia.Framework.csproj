@@ -84,20 +84,48 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_12px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_14px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_16px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_18px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_20px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_22px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_24px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_26px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_28px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_30px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_32px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_34px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_36px.e1" />
-    <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1" />
+    <EmbeddedResource Include="Resources\fonts\arial\arial_12px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_12px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_14px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_14px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_16px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_16px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_18px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_18px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_20px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_20px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_22px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_22px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_24px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_24px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_26px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_26px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_28px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_28px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_30px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_30px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_32px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_32px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_34px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_34px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_36px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_36px.e1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1">
+      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_38px.e1</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   
   <ItemGroup>
