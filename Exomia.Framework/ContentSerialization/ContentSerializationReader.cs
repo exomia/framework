@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization
     ///     <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationReader" />
     /// </summary>
     /// <typeparam name="T"> type to read. </typeparam>
-    public abstract class AContentSerializationReader<T> : IContentSerializationReader
+    public abstract class ContentSerializationReader<T> : IContentSerializationReader
     {
         /// <inheritdoc />
         public object Read(ContentSerializationContext context)

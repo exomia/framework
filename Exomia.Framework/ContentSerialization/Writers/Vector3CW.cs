@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization.Writers
     /// <summary>
     ///     A vector 3 cw. This class cannot be inherited.
     /// </summary>
-    sealed class Vector3CW : AContentSerializationWriter<Vector3>
+    sealed class Vector3CW : ContentSerializationWriter<Vector3>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Vector3 obj)

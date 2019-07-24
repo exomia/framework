@@ -183,8 +183,17 @@ namespace Exomia.Framework.Audio
                 RecalculateEnvSounds();
             }
         }
-
-        /// <inheritdoc />
+        
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AudioManager"/> class.
+        /// </summary>
+        /// <param name="listener">         The listener. </param>
+        /// <param name="fxSoundPoolLimit"> The effects sound pool limit. </param>
+        /// <param name="speakers">         The speakers. </param>
+        /// <param name="deviceID">         (Optional) Identifier for the device. </param>
+        /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or
+        ///                                      illegal values. </exception>
+        /// <exception cref="Exception">         Thrown when an exception error condition occurs. </exception>
         public AudioManager(Listener listener, int fxSoundPoolLimit, Speakers speakers, string deviceID = null)
         {
             _listener = listener;

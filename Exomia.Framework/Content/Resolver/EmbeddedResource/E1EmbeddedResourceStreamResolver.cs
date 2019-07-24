@@ -26,26 +26,9 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
         {
             if (Path.GetExtension(assetName) == ContentCompressor.DEFAULT_COMPRESSED_EXTENSION)
             {
-                assembly = assetType.Assembly;
-                string name = $"{assembly.GetName().Name}.{assetName}";
-                foreach (string resourceName in assembly.GetManifestResourceNames())
-                {
-                    if (resourceName == name)
-                    {
-                        return true;
-                    }
-                }
-
-                assembly = Assembly.GetEntryAssembly();
-                name     = $"{assembly.GetName().Name}.{assetName}";
-                foreach (string resourceName in assembly.GetManifestResourceNames())
-                {
-                    if (resourceName == name)
-                    {
-                        return true;
-                    }
-                }
+                return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
             }
+            
             assembly = null;
             return false;
         }
@@ -53,7 +36,7 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
         /// <inheritdoc />
         public Stream Resolve(Assembly assembly, string assetName)
         {
-            using (Stream stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{assetName}"))
+            using (Stream stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName))
             {
                 return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
             }

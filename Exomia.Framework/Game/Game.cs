@@ -264,7 +264,7 @@ namespace Exomia.Framework.Game
             _collector = new DisposeCollector();
 
 #if DEBUG
-            ADrawableComponent component = new DebugComponent { ShowFullInformation = true };
+            DrawableComponent component = new DebugComponent { ShowFullInformation = true };
             component.Enabled     = true;
             component.Visible     = true;
             component.DrawOrder   = 0;

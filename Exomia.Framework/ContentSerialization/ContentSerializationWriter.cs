@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization
     ///     <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
     /// </summary>
     /// <typeparam name="T"> type to write. </typeparam>
-    public abstract class AContentSerializationWriter<T> : IContentSerializationWriter
+    public abstract class ContentSerializationWriter<T> : IContentSerializationWriter
     {
         /// <inheritdoc />
         public void Write(ContentSerializationContext context, object obj)

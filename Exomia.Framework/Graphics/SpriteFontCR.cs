@@ -18,7 +18,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A sprite font carriage return. This class cannot be inherited.
     /// </summary>
-    sealed class SpriteFontCR : AContentSerializationReader<SpriteFont>
+    sealed class SpriteFontCR : ContentSerializationReader<SpriteFont>
     {
         /// <inheritdoc />
         public override SpriteFont ReadContext(ContentSerializationContext context)
@@ -43,7 +43,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A sprite font glyph carriage return. This class cannot be inherited.
     /// </summary>
-    sealed class SpriteFontGlyphCR : AContentSerializationReader<SpriteFont.Glyph>
+    sealed class SpriteFontGlyphCR : ContentSerializationReader<SpriteFont.Glyph>
     {
         /// <inheritdoc />
         public override SpriteFont.Glyph ReadContext(ContentSerializationContext context)
@@ -62,7 +62,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A sprite font kerning carriage return. This class cannot be inherited.
     /// </summary>
-    sealed class SpriteFontKerningCR : AContentSerializationReader<SpriteFont.Kerning>
+    sealed class SpriteFontKerningCR : ContentSerializationReader<SpriteFont.Kerning>
     {
         /// <inheritdoc />
         public override SpriteFont.Kerning ReadContext(ContentSerializationContext context)

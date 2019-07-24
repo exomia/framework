@@ -25,7 +25,7 @@ namespace Exomia.Framework.Video
     /// <summary>
     ///     A video player. This class cannot be inherited.
     /// </summary>
-    public sealed class VideoPlayer : ADrawableComponent
+    public sealed class VideoPlayer : DrawableComponent
     {
         /// <summary>
         ///     The event ready to play.

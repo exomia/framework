@@ -11,53 +11,6 @@
 namespace Exomia.Framework.Noise
 {
     /// <summary>
-    ///     NoiseInterpolationType enum.
-    /// </summary>
-    public enum NoiseInterpolationType
-    {
-        /// <summary>
-        ///     Linear
-        /// </summary>
-        Linear,
-
-        /// <summary>
-        ///     Hermite
-        /// </summary>
-        Hermite,
-
-        /// <summary>
-        ///     Quintic
-        /// </summary>
-        Quintic
-    }
-
-    /// <summary>
-    ///     NoiseFractalType enum.
-    /// </summary>
-    public enum NoiseFractalType
-    {
-        /// <summary>
-        ///     NONE
-        /// </summary>
-        None,
-
-        /// <summary>
-        ///     BrownianMotion
-        /// </summary>
-        BrownianMotion,
-
-        /// <summary>
-        ///     Billow
-        /// </summary>
-        Billow,
-
-        /// <summary>
-        ///     RigidMulti
-        /// </summary>
-        RigidMulti
-    }
-
-    /// <summary>
     ///     An interface for calculating 1d, 2d and 3d noise maps.
     /// </summary>
     public interface INoise
@@ -65,8 +18,8 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     generates a 1-dimensional noise array in range from -1 to 1.
         /// </summary>
-        /// <param name="x">    . </param>
-        /// <param name="xMax"> . </param>
+        /// <param name="x">    The x coordinate. </param>
+        /// <param name="xMax"> The x maximum. </param>
         /// <returns>
         ///     1-dimensional noise array in range from -1 to 1.
         /// </returns>
@@ -75,10 +28,10 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     generates a 2-dimensional noise array in range from -1 to 1.
         /// </summary>
-        /// <param name="x">    . </param>
-        /// <param name="y">    . </param>
-        /// <param name="xMax"> . </param>
-        /// <param name="yMax"> . </param>
+        /// <param name="x">    The x coordinate. </param>
+        /// <param name="y">    The y coordinate. </param>
+        /// <param name="xMax"> The x maximum. </param>
+        /// <param name="yMax"> The y maximum. </param>
         /// <returns>
         ///     2-dimensional noise array in range from -1 to 1.
         /// </returns>
@@ -87,12 +40,12 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     generates a 3-dimensional noise array in range from -1 to 1.
         /// </summary>
-        /// <param name="x">    . </param>
-        /// <param name="y">    . </param>
-        /// <param name="z">    . </param>
-        /// <param name="xMax"> . </param>
-        /// <param name="yMax"> . </param>
-        /// <param name="zMax"> . </param>
+        /// <param name="x">    The x coordinate. </param>
+        /// <param name="y">    The y coordinate. </param>
+        /// <param name="z">    The z coordinate. </param>
+        /// <param name="xMax"> The x maximum. </param>
+        /// <param name="yMax"> The y maximum. </param>
+        /// <param name="zMax"> The z maximum. </param>
         /// <returns>
         ///     3-dimensional noise array in range from -1 to 1.
         /// </returns>
@@ -110,8 +63,8 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     generates a noise.
         /// </summary>
-        /// <param name="x"> . </param>
-        /// <param name="y"> . </param>
+        /// <param name="x"> The x coordinate. </param>
+        /// <param name="y"> The y coordinate. </param>
         /// <returns>
         ///     noise in range from -1 to 1.
         /// </returns>
@@ -120,9 +73,9 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     generates a noise.
         /// </summary>
-        /// <param name="x"> . </param>
-        /// <param name="y"> . </param>
-        /// <param name="z"> . </param>
+        /// <param name="x"> The x coordinate. </param>
+        /// <param name="y"> The y coordinate. </param>
+        /// <param name="z"> The z coordinate. </param>
         /// <returns>
         ///     noise in range from -1 to 1.
         /// </returns>

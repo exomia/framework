@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentSerialization.Writers
     /// <summary>
     ///     A color cw. This class cannot be inherited.
     /// </summary>
-    sealed class ColorCW : AContentSerializationWriter<Color>
+    sealed class ColorCW : ContentSerializationWriter<Color>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Color obj)

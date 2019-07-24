@@ -19,7 +19,7 @@ namespace Exomia.Framework.Scene
     /// <summary>
     ///     Manager for scenes. This class cannot be inherited.
     /// </summary>
-    public sealed class SceneManager : ADrawableComponent, ISceneManager
+    public sealed class SceneManager : DrawableComponent, ISceneManager
     {
         /// <summary>
         ///     Initial size of the queue.
