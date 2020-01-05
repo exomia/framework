@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -106,7 +106,7 @@ namespace Exomia.Framework.Tools
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Tween"/> class.
+        ///     Initializes a new instance of the <see cref="Tween" /> class.
         /// </summary>
         /// <param name="target">   Target for the. </param>
         /// <param name="values">   The values. </param>

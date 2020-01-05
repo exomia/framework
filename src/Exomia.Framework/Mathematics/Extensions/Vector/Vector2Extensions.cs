@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -31,7 +31,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         {
             float scalar = (vec1.X * vec2.X) + (vec1.Y * vec2.Y);
             float length = vec1.Length() * vec2.Length();
-            return Math.Cos(scalar       / length);
+            return Math.Cos(scalar / length);
         }
 
         /// <summary>

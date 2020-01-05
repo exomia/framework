@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -108,8 +108,10 @@ namespace Exomia.Framework.ContentSerialization
         ///     Thrown when a Create struct Reader error condition
         ///     occurs.
         /// </exception>
-        internal static void GetKeyValueInnerType(this string typeInfo,          out string keyBaseTypeInfo,
-                                                  out  string valueBaseTypeInfo, out string valueGenericTypeInfo)
+        internal static void GetKeyValueInnerType(this string typeInfo,
+                                                  out  string keyBaseTypeInfo,
+                                                  out  string valueBaseTypeInfo,
+                                                  out  string valueGenericTypeInfo)
         {
             Match match = s_valueInnerTypeMatcher.Match(typeInfo);
             if (!match.Success)
@@ -216,8 +218,11 @@ namespace Exomia.Framework.ContentSerialization
         ///     Thrown when a Create struct Reader error condition
         ///     occurs.
         /// </exception>
-        internal static bool ReadStartTag(this CSStreamReader stream,          out string key, out string baseTypeInfo,
-                                          out  string         genericTypeInfo, out string dimensionInfo)
+        internal static bool ReadStartTag(this CSStreamReader stream,
+                                          out  string         key,
+                                          out  string         baseTypeInfo,
+                                          out  string         genericTypeInfo,
+                                          out  string         dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(128);
 

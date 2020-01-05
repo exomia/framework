@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -37,7 +37,9 @@ namespace Exomia.Framework.Graphics
         /// <returns>
         ///     The new texture.
         /// </returns>
-        public static Texture2D CreateTexture(Device5 device, int width, int height,
+        public static Texture2D CreateTexture(Device5 device,
+                                              int     width,
+                                              int     height,
                                               Format  format = Format.B8G8R8A8_UNorm)
         {
             lock (device)

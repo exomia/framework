@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -355,7 +355,7 @@ namespace Exomia.Framework.Scene
                     _currentScenes.Clear();
                 }
 
-                _input!.MouseMove  -= Input_MouseMove;
+                _input!.MouseMove -= Input_MouseMove;
                 _input.MouseDown  -= Input_MouseDown;
                 _input.MouseUp    -= Input_MouseUp;
                 _input.MouseClick -= Input_MouseClick;

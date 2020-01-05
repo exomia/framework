@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -20,29 +20,16 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
     [ContentResolver(int.MaxValue)]
     class EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Exists(Type assetType, string assetName, out Assembly assembly)
         {
             return ExistsInternal(assetType, assetName, out assembly);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Stream Resolve(Assembly assembly, string assetName)
         {
             return GetManifestResourceStreamInternal(assembly, assetName);
-        }
-
-        /// <summary>
-        ///     Gets the asset name.
-        /// </summary>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <param name="assembly">  [out] The assembly. </param>
-        /// <returns>
-        ///     The asset name.
-        /// </returns>
-        private static string GetAssetName(string assetName, Assembly assembly)
-        {
-            return $"{assembly.GetName().Name}.{assetName}";
         }
 
         /// <summary>
@@ -91,6 +78,19 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
         internal static Stream GetManifestResourceStreamInternal(Assembly assembly, string assetName)
         {
             return assembly.GetManifestResourceStream(GetAssetName(assetName, assembly));
+        }
+
+        /// <summary>
+        ///     Gets the asset name.
+        /// </summary>
+        /// <param name="assetName"> Name of the asset. </param>
+        /// <param name="assembly">  [out] The assembly. </param>
+        /// <returns>
+        ///     The asset name.
+        /// </returns>
+        private static string GetAssetName(string assetName, Assembly assembly)
+        {
+            return $"{assembly.GetName().Name}.{assetName}";
         }
     }
 }

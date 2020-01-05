@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -399,7 +399,7 @@ namespace Exomia.Framework.Mathematics
 
             uint g     = 0;
             int  bshft = Log2Floor(value) >> 1;
-            uint b     = 1u               << bshft;
+            uint b     = 1u << bshft;
             do
             {
                 ulong temp = (ulong)(g + g + b) << bshft;
@@ -441,7 +441,7 @@ namespace Exomia.Framework.Mathematics
 
             uint g     = 0;
             int  bshft = Log2Floor(value) >> 1;
-            uint b     = 1u               << bshft;
+            uint b     = 1u << bshft;
             do
             {
                 uint temp = (g + g + b) << bshft;

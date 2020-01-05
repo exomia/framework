@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -100,7 +100,10 @@ namespace Exomia.Framework.Audio
         /// <param name="volume">      volume. </param>
         /// <param name="maxDistance"> max distance to hear the sound. </param>
         /// <param name="onFxEnd">     (Optional) called than the sound ends. </param>
-        void PlayEnvSound(int            soundID, Vector3 emitterPos, float volume, float maxDistance,
+        void PlayEnvSound(int             soundID,
+                          Vector3         emitterPos,
+                          float           volume,
+                          float           maxDistance,
                           Action<IntPtr>? onFxEnd = null);
 
         /// <summary>
@@ -111,7 +114,10 @@ namespace Exomia.Framework.Audio
         /// <param name="volume">      volume. </param>
         /// <param name="maxDistance"> max distance to hear the sound. </param>
         /// <param name="onFxEnd">     (Optional) called than the sound ends. </param>
-        void PlayFxSound(int            soundID, Vector3 emitterPos, float volume, float maxDistance,
+        void PlayFxSound(int             soundID,
+                         Vector3         emitterPos,
+                         float           volume,
+                         float           maxDistance,
                          Action<IntPtr>? onFxEnd = null);
 
         /// <summary>

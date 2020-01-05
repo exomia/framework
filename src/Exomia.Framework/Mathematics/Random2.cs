@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -55,15 +55,15 @@ namespace Exomia.Framework.Mathematics
         ///     The w.
         /// </value>
         private uint _x, _y, _z, _w;
-        
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Random2"/> class.
+        ///     Initializes a new instance of the <see cref="Random2" /> class.
         /// </summary>
         public Random2()
             : this(DateTime.Now.Ticks ^ Environment.TickCount) { }
-        
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Random2"/> class.
+        ///     Initializes a new instance of the <see cref="Random2" /> class.
         /// </summary>
         /// <param name="seed"> The seed. </param>
         public Random2(long seed)

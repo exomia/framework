@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -132,7 +132,10 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
+        public void Write(Action<string, string> writeHandler,
+                          string                 tabSpace,
+                          string                 key,
+                          object                 content,
                           bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
@@ -186,8 +189,11 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="key">          The key. </param>
         /// <param name="content">      The content. </param>
         /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        private void Write<TKey, TValue>(Action<string, string>   writeHandler, string tabSpace, string key,
-                                         Dictionary<TKey, TValue> content,      bool   useTypeInfo = true)
+        private void Write<TKey, TValue>(Action<string, string>   writeHandler,
+                                         string                   tabSpace,
+                                         string                   key,
+                                         Dictionary<TKey, TValue> content,
+                                         bool                     useTypeInfo = true)
         {
             writeHandler(
                 tabSpace,
@@ -244,7 +250,8 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="count">        Number of. </param>
         private static void AddDictionaryContent<TKey, TValue>(CSStreamReader                       stream,
                                                                Func<CSStreamReader, string, object> readCallback,
-                                                               Dictionary<TKey, TValue>             dic, int count)
+                                                               Dictionary<TKey, TValue>             dic,
+                                                               int                                  count)
         {
             for (int i = 0; i < count; i++)
             {

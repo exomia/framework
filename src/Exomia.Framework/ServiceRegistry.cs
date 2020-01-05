@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -34,7 +34,7 @@ namespace Exomia.Framework
         /// <inheritdoc />
         public void AddService(Type type, object provider)
         {
-            if (type     == null) { throw new ArgumentNullException(nameof(type)); }
+            if (type == null) { throw new ArgumentNullException(nameof(type)); }
             if (provider == null) { throw new ArgumentNullException(nameof(provider)); }
 
             if (!type.IsInstanceOfType(provider))

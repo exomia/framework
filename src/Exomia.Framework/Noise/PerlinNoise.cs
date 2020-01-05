@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -18,7 +18,9 @@ namespace Exomia.Framework.Noise
     public sealed class PerlinNoise : NoiseBase
     {
         /// <inheritdoc />
-        public PerlinNoise(int                    seed, float frequency, int octaves,
+        public PerlinNoise(int                    seed,
+                           float                  frequency,
+                           int                    octaves,
                            NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
                            NoiseFractalType       noiseFractalType       = NoiseFractalType.BrownianMotion)
             : base(
@@ -26,7 +28,11 @@ namespace Exomia.Framework.Noise
                 noiseInterpolationType, noiseFractalType) { }
 
         /// <inheritdoc />
-        public PerlinNoise(int                    seed, float frequency, int octaves, float lacunarity, float gain,
+        public PerlinNoise(int                    seed,
+                           float                  frequency,
+                           int                    octaves,
+                           float                  lacunarity,
+                           float                  gain,
                            NoiseInterpolationType noiseInterpolationType = NoiseInterpolationType.Linear,
                            NoiseFractalType       noiseFractalType       = NoiseFractalType.BrownianMotion)
             : base(

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -26,14 +26,24 @@ namespace Exomia.Framework.ContentSerialization
     public static class ContentSerializer
     {
         /// <summary>
+        ///     DEFAULT_EXTENSION.
+        /// </summary>
+        public const string DEFAULT_EXTENSION = ".e0";
+
+        /// <summary>
         ///     The tabspace.
         /// </summary>
         internal const string TABSPACE = "\t";
 
         /// <summary>
-        ///     DEFAULT_EXTENSION.
+        ///     The assemblies.
         /// </summary>
-        public const string DEFAULT_EXTENSION = ".e0";
+        internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
+
+        /// <summary>
+        ///     The types.
+        /// </summary>
+        internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
 
         /// <summary>
         ///     The content pipe line readers.
@@ -48,21 +58,11 @@ namespace Exomia.Framework.ContentSerialization
             new Dictionary<Type, IContentSerializationWriter>();
 
         /// <summary>
-        ///     The assemblies.
-        /// </summary>
-        internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
-
-        /// <summary>
-        ///     The types.
-        /// </summary>
-        internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
-
-        /// <summary>
         ///     Initializes static members of the <see cref="ContentSerializer" /> class.
         /// </summary>
         static ContentSerializer()
         {
-            #region ADD TYPES 
+            #region ADD TYPES
 
             IType pt = new PrimitiveType<bool>();
             s_types.Add(pt.TypeName, pt);
@@ -121,9 +121,9 @@ namespace Exomia.Framework.ContentSerialization
 
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (a.FullName.StartsWith("System")  ||
+                if (a.FullName.StartsWith("System") ||
                     a.FullName.StartsWith("SharpDX") ||
-                    a.FullName.StartsWith("ms")      ||
+                    a.FullName.StartsWith("ms") ||
                     a.FullName.StartsWith("Xilium.CefGlue")) { continue; }
 
                 foreach (Type t in a.GetTypes())
@@ -139,7 +139,7 @@ namespace Exomia.Framework.ContentSerialization
 
             #endregion
 
-            #region SharpDX 
+            #region SharpDX
 
             AddWriter<Vector3>(new Vector3CW());
             AddWriter<Vector2>(new Vector2CW());

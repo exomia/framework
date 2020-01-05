@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -53,7 +53,7 @@ namespace Exomia.Framework.Buffers
         /// </exception>
         public ArrayPool(int bufferLength, int numberOfBuffers = 10)
         {
-            if (bufferLength    <= 0) { throw new ArgumentOutOfRangeException(nameof(bufferLength)); }
+            if (bufferLength <= 0) { throw new ArgumentOutOfRangeException(nameof(bufferLength)); }
             if (numberOfBuffers <= 0) { throw new ArgumentOutOfRangeException(nameof(numberOfBuffers)); }
 
             _bufferLength = bufferLength;

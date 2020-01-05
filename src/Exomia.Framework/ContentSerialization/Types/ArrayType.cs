@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -108,7 +108,10 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
+        public void Write(Action<string, string> writeHandler,
+                          string                 tabSpace,
+                          string                 key,
+                          object                 content,
                           bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
@@ -156,8 +159,12 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="dimension">    The dimension. </param>
         /// <param name="indices">      The indices. </param>
         /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
-        private static void ForArrayDimension(Action<string, string> writeHandler, string tabSpace,  Array arr,
-                                              Type                   elementType,  int    dimension, int[] indices)
+        private static void ForArrayDimension(Action<string, string> writeHandler,
+                                              string                 tabSpace,
+                                              Array                  arr,
+                                              Type                   elementType,
+                                              int                    dimension,
+                                              int[]                  indices)
         {
             for (int i = 0; i < arr.GetLength(dimension); i++)
             {
@@ -244,10 +251,12 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="dimensions">       The dimensions. </param>
         /// <param name="indices">          The indices. </param>
         /// <param name="currentDimension"> The current dimension. </param>
-        private static void AddArrayContent(CSStreamReader stream, Func<CSStreamReader, string, object> readCallback,
-                                            Array          arr,    int[]                                dimensions,
-                                            int[]          indices,
-                                            int            currentDimension)
+        private static void AddArrayContent(CSStreamReader                       stream,
+                                            Func<CSStreamReader, string, object> readCallback,
+                                            Array                                arr,
+                                            int[]                                dimensions,
+                                            int[]                                indices,
+                                            int                                  currentDimension)
         {
             for (int i = 0; i < dimensions[currentDimension]; i++)
             {

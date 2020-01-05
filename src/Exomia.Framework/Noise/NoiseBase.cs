@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -115,7 +115,9 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     Initializes a new instance of the <see cref="NoiseBase" /> class.
         /// </summary>
-        protected NoiseBase(int                    seed, float frequency, int octaves,
+        protected NoiseBase(int                    seed,
+                            float                  frequency,
+                            int                    octaves,
                             NoiseInterpolationType noiseInterpolationType,
                             NoiseFractalType       noiseFractalType)
             : this(seed, frequency, octaves, 2.0f, 0.5f, noiseInterpolationType, noiseFractalType) { }
@@ -124,9 +126,13 @@ namespace Exomia.Framework.Noise
         /// <summary>
         ///     Initializes a new instance of the <see cref="NoiseBase" /> class.
         /// </summary>
-        protected NoiseBase(int                    seed,                   float            frequency, int octaves,
-                            float                  lacunarity,             float            gain,
-                            NoiseInterpolationType noiseInterpolationType, NoiseFractalType noiseFractalType)
+        protected NoiseBase(int                    seed,
+                            float                  frequency,
+                            int                    octaves,
+                            float                  lacunarity,
+                            float                  gain,
+                            NoiseInterpolationType noiseInterpolationType,
+                            NoiseFractalType       noiseFractalType)
         {
             _seed                   = seed;
             _frequency              = frequency;
@@ -463,7 +469,14 @@ namespace Exomia.Framework.Noise
         ///     A float.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected static float GradCoord4D(int    seed, int x, int y, int z, int w, double xd, double yd, double zd,
+        protected static float GradCoord4D(int    seed,
+                                           int    x,
+                                           int    y,
+                                           int    z,
+                                           int    w,
+                                           double xd,
+                                           double yd,
+                                           double zd,
                                            double wd)
         {
             int hash = seed;

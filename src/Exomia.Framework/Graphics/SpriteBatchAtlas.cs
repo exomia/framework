@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -78,10 +78,10 @@ namespace Exomia.Framework.Graphics
         /// <param name="height"> The height. </param>
         public SpriteBatchAtlas(int width, int height)
         {
-            if (width  < MIN_ATLAS_WIDTH) { width   = MIN_ATLAS_WIDTH; }
+            if (width < MIN_ATLAS_WIDTH) { width    = MIN_ATLAS_WIDTH; }
             if (height < MIN_ATLAS_HEIGHT) { height = MIN_ATLAS_HEIGHT; }
 
-            if (width  > MAX_ATLAS_WIDTH) { width   = MAX_ATLAS_WIDTH; }
+            if (width > MAX_ATLAS_WIDTH) { width    = MAX_ATLAS_WIDTH; }
             if (height > MAX_ATLAS_HEIGHT) { height = MAX_ATLAS_HEIGHT; }
 
             _width  = width;
@@ -113,7 +113,7 @@ namespace Exomia.Framework.Graphics
 
             using (Image img = Image.FromStream(stream))
             {
-                if (img.Width  > _width) { throw new OverflowException("the image size is to big!"); }
+                if (img.Width > _width) { throw new OverflowException("the image size is to big!"); }
                 if (img.Height > _height) { throw new OverflowException("the image size is to big!"); }
 
                 if (GetFreeLocation(img.Width, img.Height, out int x, out int y))

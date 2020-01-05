@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -248,7 +248,7 @@ namespace Exomia.Framework.Graphics
                         out ModeDescription desc);
 
                     if (o == 0
-                     || desc.RefreshRate.Numerator            / desc.RefreshRate.Denominator
+                     || desc.RefreshRate.Numerator / desc.RefreshRate.Denominator
                       > modeDescription.RefreshRate.Numerator / modeDescription.RefreshRate.Denominator)
                     {
                         modeDescription = desc;
@@ -437,7 +437,7 @@ namespace Exomia.Framework.Graphics
                     _depthStencilView = new DepthStencilView(
                         _d3DDevice5, depthBuffer, new DepthStencilViewDescription
                         {
-                            Dimension = _swapChain4.Description.SampleDescription.Count   > 1 ||
+                            Dimension = _swapChain4.Description.SampleDescription.Count > 1 ||
                                         _swapChain4.Description.SampleDescription.Quality > 0
                                 ? DepthStencilViewDimension.Texture2DMultisampled
                                 : DepthStencilViewDimension.Texture2D

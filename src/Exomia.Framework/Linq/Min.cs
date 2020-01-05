@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -45,10 +45,11 @@ namespace Exomia.Framework.Linq
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         /// ###
         /// <exception cref="T:System.InvalidOperationException"> The source sequence is empty. </exception>
-        public static TSource Min<TSource, T>(this IEnumerable<TSource> source, Func<TSource, T> predicate,
-                                              IComparer<T>?              comparer = null)
+        public static TSource Min<TSource, T>(this IEnumerable<TSource> source,
+                                              Func<TSource, T>          predicate,
+                                              IComparer<T>?             comparer = null)
         {
-            if (source    == null) { throw new ArgumentNullException(nameof(source)); }
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
 
             IComparer<T> c = comparer ?? Comparer<T>.Default;

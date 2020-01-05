@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -29,10 +29,9 @@ namespace Exomia.Framework.Native
         [SuppressUnmanagedCodeSecurity]
         [DllImport(
             "msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static extern void Cpy(
-            void* dest,
-            void* src,
-            int   count);
+        public static extern void Cpy(void* dest,
+                                      void* src,
+                                      int   count);
 
         /// <summary>
         ///     memcpy call
@@ -45,9 +44,8 @@ namespace Exomia.Framework.Native
         [SuppressUnmanagedCodeSecurity]
         [DllImport(
             "msvcrt.dll", EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static extern void Move(
-            void* dest,
-            void* src,
-            int   count);
+        public static extern void Move(void* dest,
+                                       void* src,
+                                       int   count);
     }
 }

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -69,9 +69,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="lineWidth">    Width of the line. </param>
         /// <param name="opacity">      The opacity. </param>
         /// <param name="lengthFactor"> (Optional) The length factor. </param>
-        public void DrawLine(
-            in Vector2 point1, in Vector2 point2, in Color color, float lineWidth, float opacity,
-            float      lengthFactor = 1.0f)
+        public void DrawLine(in Vector2 point1,
+                             in Vector2 point2,
+                             in Color   color,
+                             float      lineWidth,
+                             float      opacity,
+                             float      lengthFactor = 1.0f)
         {
             DrawFillRectangle(
                 new RectangleF(point1.X, point1.Y, Vector2.Distance(point1, point2) * lengthFactor, lineWidth), color,
@@ -91,8 +94,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">     The color. </param>
         /// <param name="lineWidth"> Width of the line. </param>
         /// <param name="opacity">   The opacity. </param>
-        public void DrawTriangle(
-            in Vector2 point1, in Vector2 point2, in Vector2 point3, in Color color, float lineWidth, float opacity) { }
+        public void DrawTriangle(in Vector2 point1,
+                                 in Vector2 point2,
+                                 in Vector2 point3,
+                                 in Color   color,
+                                 float      lineWidth,
+                                 float      opacity) { }
 
         /// <summary>
         ///     Draw fill triangle.
@@ -103,8 +110,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">     The color. </param>
         /// <param name="lineWidth"> Width of the line. </param>
         /// <param name="opacity">   The opacity. </param>
-        public void DrawFillTriangle(
-            in Vector2 point1, in Vector2 point2, in Vector2 point3, in Color color, float lineWidth, float opacity) { }
+        public void DrawFillTriangle(in Vector2 point1,
+                                     in Vector2 point2,
+                                     in Vector2 point3,
+                                     in Color   color,
+                                     float      lineWidth,
+                                     float      opacity) { }
 
         #endregion
 
@@ -119,9 +130,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="rotation">             The rotation. </param>
         /// <param name="origin">               The origin. </param>
         /// <param name="opacity">              The opacity. </param>
-        public void DrawRectangle(
-            in RectangleF destinationRectangle, in Color color, float lineWidth, float rotation, in Vector2 origin,
-            float         opacity) { }
+        public void DrawRectangle(in RectangleF destinationRectangle,
+                                  in Color      color,
+                                  float         lineWidth,
+                                  float         rotation,
+                                  in Vector2    origin,
+                                  float         opacity) { }
 
         /// <summary>
         ///     Draw fill rectangle.
@@ -131,8 +145,11 @@ namespace Exomia.Framework.Graphics
         /// <param name="rotation">             The rotation. </param>
         /// <param name="origin">               The origin. </param>
         /// <param name="opacity">              The opacity. </param>
-        public void DrawFillRectangle(
-            in RectangleF destinationRectangle, in Color color, float rotation, in Vector2 origin, float opacity) { }
+        public void DrawFillRectangle(in RectangleF destinationRectangle,
+                                      in Color      color,
+                                      float         rotation,
+                                      in Vector2    origin,
+                                      float         opacity) { }
 
         #endregion
 
@@ -151,9 +168,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="lineWidth"> Width of the line. </param>
         /// <param name="opacity">   The opacity. </param>
         /// <param name="segments">  The segments. </param>
-        public void DrawArc(
-            in Vector2 center, float radius,    float start,   float end, float width, float height,
-            in Color   color,  float lineWidth, float opacity, int   segments) { }
+        public void DrawArc(in Vector2 center,
+                            float      radius,
+                            float      start,
+                            float      end,
+                            float      width,
+                            float      height,
+                            in Color   color,
+                            float      lineWidth,
+                            float      opacity,
+                            int        segments) { }
 
         /// <summary>
         ///     Draw fill arc.
@@ -168,9 +192,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="lineWidth"> Width of the line. </param>
         /// <param name="opacity">   The opacity. </param>
         /// <param name="segments">  The segments. </param>
-        public void DrawFillArc(
-            in Vector2 center, float radius,    float start,   float end, float width, float height,
-            in Color   color,  float lineWidth, float opacity, int   segments) { }
+        public void DrawFillArc(in Vector2 center,
+                                float      radius,
+                                float      start,
+                                float      end,
+                                float      width,
+                                float      height,
+                                in Color   color,
+                                float      lineWidth,
+                                float      opacity,
+                                int        segments) { }
 
         #endregion
 
@@ -215,8 +246,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="texture">  The texture. </param>
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
-        public void Draw(
-            Texture texture, in Vector2 position, in Color color)
+        public void Draw(Texture texture, in Vector2 position, in Color color)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true,
@@ -229,8 +259,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="texture">              The texture. </param>
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="color">                The color. </param>
-        public void Draw(
-            Texture texture, in RectangleF destinationRectangle, in Color color)
+        public void Draw(Texture texture, in RectangleF destinationRectangle, in Color color)
         {
             DrawSprite(
                 texture, destinationRectangle, false,
@@ -244,8 +273,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position">        The position. </param>
         /// <param name="sourceRectangle"> Source rectangle. </param>
         /// <param name="color">           The color. </param>
-        public void Draw(
-            Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in Color color)
+        public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in Color color)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true,
@@ -259,8 +287,10 @@ namespace Exomia.Framework.Graphics
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="sourceRectangle">      Source rectangle. </param>
         /// <param name="color">                The color. </param>
-        public void Draw(
-            Texture texture, in RectangleF destinationRectangle, in Rectangle? sourceRectangle, in Color color)
+        public void Draw(Texture       texture,
+                         in RectangleF destinationRectangle,
+                         in Rectangle? sourceRectangle,
+                         in Color      color)
         {
             DrawSprite(
                 texture, destinationRectangle, false,
@@ -278,9 +308,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">               The origin. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="effects">              The effects. </param>
-        public void Draw(
-            Texture texture,  in RectangleF destinationRectangle, in Rectangle? sourceRectangle, in Color      color,
-            float   rotation, in Vector2    origin,               float         opacity,         SpriteEffects effects)
+        public void Draw(Texture       texture,
+                         in RectangleF destinationRectangle,
+                         in Rectangle? sourceRectangle,
+                         in Color      color,
+                         float         rotation,
+                         in Vector2    origin,
+                         float         opacity,
+                         SpriteEffects effects)
         {
             DrawSprite(
                 texture, destinationRectangle, false,
@@ -299,10 +334,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="scale">           The scale. </param>
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
-        public void Draw(
-            Texture       texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
-            float         rotation, in Vector2 origin,   float         scale,           float    opacity,
-            SpriteEffects effects)
+        public void Draw(Texture       texture,
+                         in Vector2    position,
+                         in Rectangle? sourceRectangle,
+                         in Color      color,
+                         float         rotation,
+                         in Vector2    origin,
+                         float         scale,
+                         float         opacity,
+                         SpriteEffects effects)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, scale, scale), true,
@@ -321,10 +361,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="scale">           The scale. </param>
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
-        public void Draw(
-            Texture       texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
-            float         rotation, in Vector2 origin,   in Vector2    scale,           float    opacity,
-            SpriteEffects effects)
+        public void Draw(Texture       texture,
+                         in Vector2    position,
+                         in Rectangle? sourceRectangle,
+                         in Color      color,
+                         float         rotation,
+                         in Vector2    origin,
+                         in Vector2    scale,
+                         float         opacity,
+                         SpriteEffects effects)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true,
@@ -343,11 +388,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">           The origin. </param>
         /// <param name="opacity">          The opacity. </param>
         /// <param name="effects">          The effects. </param>
-        private void DrawSprite(
-            Texture       texture, in RectangleF destination, bool scaleDestination,
-            in Rectangle? sourceRectangle,
-            in Color      color, float rotation, in Vector2 origin, float opacity,
-            SpriteEffects effects) { }
+        private void DrawSprite(Texture       texture,
+                                in RectangleF destination,
+                                bool          scaleDestination,
+                                in Rectangle? sourceRectangle,
+                                in Color      color,
+                                float         rotation,
+                                in Vector2    origin,
+                                float         opacity,
+                                SpriteEffects effects) { }
 
         #endregion
 
@@ -360,8 +409,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="text">     The text. </param>
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
-        public void DrawText(
-            SpriteFont font, string text, in Vector2 position, in Color color)
+        public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color)
         {
             font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
         }
@@ -374,8 +422,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
         /// <param name="rotation"> The rotation. </param>
-        public void DrawText(
-            SpriteFont font, string text, in Vector2 position, in Color color, float rotation)
+        public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color, float rotation)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
         }
@@ -391,9 +438,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">   The origin. </param>
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
-        public void DrawText(
-            SpriteFont font,   string text,    in Vector2    position, in Color color, float rotation,
-            in Vector2 origin, float  opacity, SpriteEffects effects)
+        public void DrawText(SpriteFont    font,
+                             string        text,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -411,10 +463,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">   The origin. </param>
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
-        public void DrawText(
-            SpriteFont font, string text, int start, int end, in Vector2 position,
-            in Color   color,
-            float      rotation, in Vector2 origin, float opacity, SpriteEffects effects)
+        public void DrawText(SpriteFont    font,
+                             string        text,
+                             int           start,
+                             int           end,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects)
         {
             font.Draw(DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -433,10 +491,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">    The origin. </param>
         /// <param name="opacity">   The opacity. </param>
         /// <param name="effects">   The effects. </param>
-        public void DrawText(
-            SpriteFont font, string text, int start, int end, in Vector2 position,
-            in Size2F  dimension,
-            in Color   color, float rotation, in Vector2 origin, float opacity, SpriteEffects effects)
+        public void DrawText(SpriteFont    font,
+                             string        text,
+                             int           start,
+                             int           end,
+                             in Vector2    position,
+                             in Size2F     dimension,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
@@ -449,8 +514,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="text">     The text. </param>
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
-        public void DrawText(
-            SpriteFont font, StringBuilder text, in Vector2 position, in Color color)
+        public void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color)
         {
             font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
         }
@@ -463,8 +527,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
         /// <param name="rotation"> The rotation. </param>
-        public void DrawText(
-            SpriteFont font, StringBuilder text, in Vector2 position, in Color color, float rotation)
+        public void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color, float rotation)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
         }
@@ -480,9 +543,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">   The origin. </param>
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
-        public void DrawText(
-            SpriteFont font,   StringBuilder text,    in Vector2    position, in Color color, float rotation,
-            in Vector2 origin, float         opacity, SpriteEffects effects)
+        public void DrawText(SpriteFont    font,
+                             StringBuilder text,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -500,9 +568,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">   The origin. </param>
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
-        public void DrawText(
-            SpriteFont font,  StringBuilder text,     int        start,  int   end,     in Vector2    position,
-            in Color   color, float         rotation, in Vector2 origin, float opacity, SpriteEffects effects)
+        public void DrawText(SpriteFont    font,
+                             StringBuilder text,
+                             int           start,
+                             int           end,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects)
         {
             font.Draw(DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -521,10 +596,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">    The origin. </param>
         /// <param name="opacity">   The opacity. </param>
         /// <param name="effects">   The effects. </param>
-        public void DrawText(
-            SpriteFont    font,      StringBuilder text,  int   start,    int        end,    in Vector2 position,
-            in Size2F     dimension, in Color      color, float rotation, in Vector2 origin, float      opacity,
-            SpriteEffects effects)
+        public void DrawText(SpriteFont    font,
+                             StringBuilder text,
+                             int           start,
+                             int           end,
+                             in Vector2    position,
+                             in Size2F     dimension,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
@@ -543,9 +625,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        internal void DrawTextInternal(Texture       texture, in Vector2 position, in Rectangle? sourceRectangle,
+        internal void DrawTextInternal(Texture       texture,
+                                       in Vector2    position,
+                                       in Rectangle? sourceRectangle,
                                        in Color      color,
-                                       float         rotation, in Vector2 origin, float scale, float opacity,
+                                       float         rotation,
+                                       in Vector2    origin,
+                                       float         scale,
+                                       float         opacity,
                                        SpriteEffects effects,
                                        float         layerDepth)
         {

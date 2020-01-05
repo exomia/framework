@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -114,12 +114,14 @@ namespace Exomia.Framework.Graphics
 
                 using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
-                    s_whiteTexture = Texture.Load(device, ms) ?? throw new NullReferenceException($"{nameof(WhiteTexture)}");
+                    s_whiteTexture = Texture.Load(device, ms) ??
+                                     throw new NullReferenceException($"{nameof(WhiteTexture)}");
                 }
 
                 using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(BLACK_TEXTURE_BASE64)))
                 {
-                    s_blackTexture = Texture.Load(device, ms) ?? throw new NullReferenceException($"{nameof(BlackTexture)}");
+                    s_blackTexture = Texture.Load(device, ms) ??
+                                     throw new NullReferenceException($"{nameof(BlackTexture)}");
                 }
             }
         }

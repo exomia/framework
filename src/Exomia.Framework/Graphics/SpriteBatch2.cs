@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -263,7 +263,7 @@ namespace Exomia.Framework.Graphics
             _spriteSort = sortAlgorithm switch
             {
                 SpriteSortAlgorithm.MergeSort => new SpriteMergeSort(),
-                _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm)),
+                _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm))
             };
 
             Initialize(_device);

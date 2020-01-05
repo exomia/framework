@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -115,7 +115,10 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
+        public void Write(Action<string, string> writeHandler,
+                          string                 tabSpace,
+                          string                 key,
+                          object                 content,
                           bool                   useTypeInfo = true)
         {
             //[key:type]content[/key]
@@ -161,7 +164,10 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="key">          The key. </param>
         /// <param name="content">      The content. </param>
         /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        private void Write<T>(Action<string, string> writeHandler, string tabSpace, string key, List<T> content,
+        private void Write<T>(Action<string, string> writeHandler,
+                              string                 tabSpace,
+                              string                 key,
+                              List<T>                content,
                               bool                   useTypeInfo = true)
         {
             writeHandler(
@@ -216,8 +222,10 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="readCallback"> The read callback. </param>
         /// <param name="list">         The list. </param>
         /// <param name="count">        Number of. </param>
-        private static void AddListContent<T>(CSStreamReader stream, Func<CSStreamReader, string, object> readCallback,
-                                              List<T>        list,   int                                  count)
+        private static void AddListContent<T>(CSStreamReader                       stream,
+                                              Func<CSStreamReader, string, object> readCallback,
+                                              List<T>                              list,
+                                              int                                  count)
         {
             for (int i = 0; i < count; i++)
             {

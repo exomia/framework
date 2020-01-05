@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -20,15 +20,15 @@ namespace Exomia.Framework.Tools
         /// <summary>
         ///     Occurs when Enabled Changed.
         /// </summary>
-        ///
-        /// ### <inheritdoc/>
+        /// ###
+        /// <inheritdoc />
         public event EventHandler? EnabledChanged;
 
         /// <summary>
         ///     Occurs when Update Order Changed.
         /// </summary>
-        ///
-        /// ### <inheritdoc/>
+        /// ###
+        /// <inheritdoc />
         public event EventHandler? UpdateOrderChanged;
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Exomia.Framework.Tools
         /// </value>
         public uint CurrentIteration { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Enabled
         {
             get { return _enabled; }
@@ -91,7 +91,7 @@ namespace Exomia.Framework.Tools
         /// </value>
         public float TimerTick { get; set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int UpdateOrder
         {
             get { return _updateOrder; }
@@ -109,43 +109,51 @@ namespace Exomia.Framework.Tools
         ///     Initializes a new instance of the <see cref="Timer2" /> class.
         /// </summary>
         /// <param name="tick">          time in ms after a timer Tick occurs. </param>
-        /// <param name="maxIterations"> (Optional) set the max iteration count for this timer or 0 for
-        ///                              unlimited. </param>
+        /// <param name="maxIterations">
+        ///     (Optional) set the max iteration count for this timer or 0 for
+        ///     unlimited.
+        /// </param>
         public Timer2(float tick, uint maxIterations = 0)
         {
             TimerTick      = tick;
             _maxIterations = maxIterations;
         }
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Tools.Timer2" /> class.
         /// </summary>
         /// <param name="tick">          time in ms after a timer Tick occurs. </param>
         /// <param name="tickCallback">  callback for each tick event. </param>
-        /// <param name="maxIterations"> (Optional) set the max iteration count for this timer or 0 for
-        ///                              unlimited. </param>
+        /// <param name="maxIterations">
+        ///     (Optional) set the max iteration count for this timer or 0 for
+        ///     unlimited.
+        /// </param>
         public Timer2(float tick, EventHandler<Timer2> tickCallback, uint maxIterations = 0)
             : this(tick, maxIterations)
         {
             TimerTicked += tickCallback;
         }
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Tools.Timer2" /> class.
         /// </summary>
         /// <param name="tick">             time in ms after a timer Tick occurs. </param>
         /// <param name="tickCallback">     callback for each tick event. </param>
         /// <param name="finishedCallback"> callback for timer finished. </param>
-        /// <param name="maxIterations">    set the max iteration count for this timer or 0 for
-        ///                                 unlimited. </param>
-        public Timer2(float tick, EventHandler<Timer2> tickCallback, EventHandler<Timer2> finishedCallback,
-                      uint  maxIterations)
+        /// <param name="maxIterations">
+        ///     set the max iteration count for this timer or 0 for
+        ///     unlimited.
+        /// </param>
+        public Timer2(float                tick,
+                      EventHandler<Timer2> tickCallback,
+                      EventHandler<Timer2> finishedCallback,
+                      uint                 maxIterations)
             : this(tick, tickCallback, maxIterations)
         {
             TimerFinished += finishedCallback;
         }
-        
-        /// <inheritdoc/>
+
+        /// <inheritdoc />
         public void Update(GameTime gameTime)
         {
             if (!_enabled) { return; }

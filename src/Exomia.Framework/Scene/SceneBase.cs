@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -74,6 +74,11 @@ namespace Exomia.Framework.Scene
         private readonly List<IUpdateable> _updateableComponent;
 
         /// <summary>
+        ///     The collector.
+        /// </summary>
+        private readonly DisposeCollector _collector;
+
+        /// <summary>
         ///     The input handler.
         /// </summary>
         private IInputHandler? _inputHandler;
@@ -87,11 +92,6 @@ namespace Exomia.Framework.Scene
         ///     The registry.
         /// </summary>
         private IServiceRegistry? _registry;
-
-        /// <summary>
-        ///     The collector.
-        /// </summary>
-        private readonly DisposeCollector _collector;
 
         /// <summary>
         ///     True if this object is initialized.
@@ -108,19 +108,19 @@ namespace Exomia.Framework.Scene
         /// </summary>
         private SceneState _state = SceneState.None;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Enabled { get; set; } = false;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool IsOverlayScene { get; set; } = false;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public string Key { get; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public string[] ReferenceScenes { get; set; } = new string[0];
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public SceneState State
         {
             get { return _state; }
@@ -134,35 +134,35 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Visible { get; set; } = false;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected IInputHandler InputHandler
         {
             set { _inputHandler = value; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected ISceneManager SceneManager
         {
             get { return _sceneManager!; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         IInputHandler IScene.InputHandler
         {
             get { return _inputHandler!; }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ISceneManager IScene.SceneManager
         {
             set { _sceneManager = value; }
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SceneBase"/> class.
+        ///     Initializes a new instance of the <see cref="SceneBase" /> class.
         /// </summary>
         /// <param name="key"> The key. </param>
         protected SceneBase(string key)
@@ -181,7 +181,7 @@ namespace Exomia.Framework.Scene
             _collector = new DisposeCollector();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void LoadContent(IServiceRegistry registry)
         {
             if (_isInitialized && !_isContentLoaded && _state != SceneState.ContentLoading)
@@ -205,7 +205,7 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void UnloadContent(IServiceRegistry registry)
         {
             if (_isContentLoaded && _state == SceneState.Ready)
@@ -229,7 +229,7 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized && _state != SceneState.Initializing)
@@ -251,7 +251,7 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Update(GameTime gameTime)
         {
             lock (_updateableComponent)
@@ -271,13 +271,13 @@ namespace Exomia.Framework.Scene
             _currentlyUpdateableComponent.Clear();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool BeginDraw()
         {
             return Visible;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Draw(GameTime gameTime)
         {
             lock (_drawableComponent)
@@ -298,16 +298,16 @@ namespace Exomia.Framework.Scene
             _currentlyDrawableComponent.Clear();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void EndDraw() { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IScene.ReferenceScenesLoaded()
         {
             OnReferenceScenesLoaded();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IScene.Show(SceneBase? comingFrom, object[] payload)
         {
             OnShow(comingFrom, payload);
@@ -465,7 +465,7 @@ namespace Exomia.Framework.Scene
             return item;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override string ToString()
         {
             return
@@ -547,7 +547,6 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        
         void IInputHandler.Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseMove(x, y, buttons, clicks, wheelDelta);
@@ -561,7 +560,6 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-       
         protected virtual void OnMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
 
         /// <summary>
@@ -572,7 +570,6 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        
         void IInputHandler.Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseDown(x, y, buttons, clicks, wheelDelta);
@@ -732,7 +729,7 @@ namespace Exomia.Framework.Scene
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~SceneBase()
         {
             Dispose(false);

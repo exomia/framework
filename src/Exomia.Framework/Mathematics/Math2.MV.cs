@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -27,12 +27,15 @@ namespace Exomia.Framework.Mathematics
         /// <param name="scale">     scale. </param>
         /// <param name="rotation">  rotation. </param>
         /// <param name="transform"> [out] out transform matrix. </param>
-        public static void CalculateTransformMatrix(in Vector2 position, in  Vector2 origin, in Vector2 scale,
-                                                    float      rotation, out Matrix  transform)
+        public static void CalculateTransformMatrix(in Vector2 position,
+                                                    in Vector2 origin,
+                                                    in Vector2 scale,
+                                                    float      rotation,
+                                                    out Matrix transform)
         {
             transform = Matrix.Translation(-origin.X, -origin.Y, 0) *
-                        Matrix.RotationZ(rotation)                  *
-                        Matrix.Scaling(scale.X, scale.Y, 0.0f)      *
+                        Matrix.RotationZ(rotation) *
+                        Matrix.Scaling(scale.X, scale.Y, 0.0f) *
                         Matrix.Translation(position.X, position.Y, 0);
         }
 
@@ -46,12 +49,14 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     transform matrix.
         /// </returns>
-        public static Matrix CalculateTransformMatrix(in Vector2 position, in Vector2 origin, in Vector2 scale,
+        public static Matrix CalculateTransformMatrix(in Vector2 position,
+                                                      in Vector2 origin,
+                                                      in Vector2 scale,
                                                       float      rotation)
         {
             return Matrix.Translation(-origin.X, -origin.Y, 0) *
-                   Matrix.RotationZ(rotation)                  *
-                   Matrix.Scaling(scale.X, scale.Y, 0.0f)      *
+                   Matrix.RotationZ(rotation) *
+                   Matrix.Scaling(scale.X, scale.Y, 0.0f) *
                    Matrix.Translation(position.X, position.Y, 0);
         }
 
@@ -117,8 +122,12 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     axis aligned bounding box.
         /// </returns>
-        public static RectangleF CreateAABB(in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation,
-                                            float      width,    float      height)
+        public static RectangleF CreateAABB(in Vector2 position,
+                                            in Vector2 origin,
+                                            in Vector2 scale,
+                                            float      rotation,
+                                            float      width,
+                                            float      height)
         {
             return CreateAABB(CalculateTransformMatrix(position, origin, scale, rotation), width, height);
         }

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -79,7 +79,10 @@ namespace Exomia.Framework.ContentSerialization.Types
         /// <param name="key">          The key. </param>
         /// <param name="content">      The content. </param>
         /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        void Write(Action<string, string> writeHandler, string tabSpace, string key, object content,
+        void Write(Action<string, string> writeHandler,
+                   string                 tabSpace,
+                   string                 key,
+                   object                 content,
                    bool                   useTypeInfo = true);
     }
 }

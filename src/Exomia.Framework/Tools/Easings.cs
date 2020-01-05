@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -156,7 +156,7 @@ namespace Exomia.Framework.Tools
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return ((-c / 2) * ((float)Math.Sqrt(1 - (t * t)) - 1)) + b; }
-                return ((c                               / 2) * ((float)Math.Sqrt(1 - ((t -= 2) * t)) + 1)) + b;
+                return ((c / 2) * ((float)Math.Sqrt(1 - ((t -= 2) * t)) + 1)) + b;
             }
 
             /// <summary>
@@ -208,7 +208,7 @@ namespace Exomia.Framework.Tools
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return ((c / 2) * t * t * t) + b; }
-                return ((c                                      / 2) * (((t -= 2) * t * t) + 2)) + b;
+                return ((c / 2) * (((t -= 2) * t * t) + 2)) + b;
             }
 
             /// <summary>
@@ -259,10 +259,10 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseInOut(float t, float b, float c, float d)
             {
-                if (t            == 0) { return b; }
-                if (t            == d) { return b                                           + c; }
+                if (t == 0) { return b; }
+                if (t == d) { return b + c; }
                 if ((t /= d / 2) < 1) { return ((c / 2) * (float)Math.Pow(2, 10 * (t - 1))) + b; }
-                return ((c                              / 2) * (-(float)Math.Pow(2, -10 * --t) + 2)) + b;
+                return ((c / 2) * (-(float)Math.Pow(2, -10 * --t) + 2)) + b;
             }
 
             /// <summary>
@@ -335,7 +335,7 @@ namespace Exomia.Framework.Tools
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return ((c / 2) * t * t) + b; }
-                return ((-c                                 / 2) * ((--t * (t - 2)) - 1)) + b;
+                return ((-c / 2) * ((--t * (t - 2)) - 1)) + b;
             }
 
             /// <summary>
@@ -387,7 +387,7 @@ namespace Exomia.Framework.Tools
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return ((c / 2) * t * t * t * t) + b; }
-                return ((-c                                         / 2) * (((t -= 2) * t * t * t) - 2)) + b;
+                return ((-c / 2) * (((t -= 2) * t * t * t) - 2)) + b;
             }
 
             /// <summary>
@@ -439,7 +439,7 @@ namespace Exomia.Framework.Tools
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if ((t /= d / 2) < 1) { return ((c / 2) * t * t * t * t * t) + b; }
-                return ((c                                              / 2) * (((t -= 2) * t * t * t * t) + 2)) + b;
+                return ((c / 2) * (((t -= 2) * t * t * t * t) + 2)) + b;
             }
 
             /// <summary>

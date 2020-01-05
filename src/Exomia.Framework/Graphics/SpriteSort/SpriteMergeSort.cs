@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -122,7 +122,10 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="left">      The left. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSortSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo,
+                                                  int*                     arr,
+                                                  int                      left,
+                                                  int                      right,
                                                   int*                     tempArray)
         {
             if (left < right)
@@ -151,7 +154,9 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="left">      The left. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSortSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left,
+        private static void MergeSortSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo,
+                                                  int*                      arr,
+                                                  int                       left,
                                                   int                       right,
                                                   int*                      tempArray)
         {
@@ -181,7 +186,10 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="left">      The left. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSortSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo, int* arr, int left, int right,
+        private static void MergeSortSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo,
+                                                  int*                     arr,
+                                                  int                      left,
+                                                  int                      right,
                                                   int*                     tempArray)
         {
             if (left < right)
@@ -210,7 +218,9 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="left">      The left. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSortSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo, int* arr, int left,
+        private static void MergeSortSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo,
+                                                  int*                      arr,
+                                                  int                       left,
                                                   int                       right,
                                                   int*                      tempArray)
         {
@@ -240,7 +250,10 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="left">      The left. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSortTextureInfo(SpriteBatch.TextureInfo[] tInfo, int* arr, int left, int right,
+        private static void MergeSortTextureInfo(SpriteBatch.TextureInfo[] tInfo,
+                                                 int*                      arr,
+                                                 int                       left,
+                                                 int                       right,
                                                  int*                      tempArray)
         {
             if (left < right)
@@ -271,8 +284,13 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="middle1">   The first middle. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo,   int* arr,   int  left, int middle,
-                                              int                      middle1, int  right, int* tempArray)
+        private static void MergeSpriteInfoBf(SpriteBatch.SpriteInfo[] sInfo,
+                                              int*                     arr,
+                                              int                      left,
+                                              int                      middle,
+                                              int                      middle1,
+                                              int                      right,
+                                              int*                     tempArray)
         {
             int oldPosition = left;
             int size        = (right - left) + 1;
@@ -310,8 +328,13 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="middle1">   The first middle. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo,   int* arr,   int  left, int middle,
-                                              int                       middle1, int  right, int* tempArray)
+        private static void MergeSpriteInfoBf(SpriteBatch2.SpriteInfo[] sInfo,
+                                              int*                      arr,
+                                              int                       left,
+                                              int                       middle,
+                                              int                       middle1,
+                                              int                       right,
+                                              int*                      tempArray)
         {
             int oldPosition = left;
             int size        = (right - left) + 1;
@@ -349,8 +372,13 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="middle1">   The first middle. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo,   int* arr,   int  left, int middle,
-                                              int                      middle1, int  right, int* tempArray)
+        private static void MergeSpriteInfoFb(SpriteBatch.SpriteInfo[] sInfo,
+                                              int*                     arr,
+                                              int                      left,
+                                              int                      middle,
+                                              int                      middle1,
+                                              int                      right,
+                                              int*                     tempArray)
         {
             int oldPosition = left;
             int size        = (right - left) + 1;
@@ -388,8 +416,13 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="middle1">   The first middle. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo,   int* arr,   int  left, int middle,
-                                              int                       middle1, int  right, int* tempArray)
+        private static void MergeSpriteInfoFb(SpriteBatch2.SpriteInfo[] sInfo,
+                                              int*                      arr,
+                                              int                       left,
+                                              int                       middle,
+                                              int                       middle1,
+                                              int                       right,
+                                              int*                      tempArray)
         {
             int oldPosition = left;
             int size        = (right - left) + 1;
@@ -427,8 +460,13 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="middle1">   The first middle. </param>
         /// <param name="right">     The right. </param>
         /// <param name="tempArray"> [in,out] If non-null, array of temporaries. </param>
-        private static void MergeTextureInfo(SpriteBatch.TextureInfo[] tInfo,   int* arr,   int  left, int middle,
-                                             int                       middle1, int  right, int* tempArray)
+        private static void MergeTextureInfo(SpriteBatch.TextureInfo[] tInfo,
+                                             int*                      arr,
+                                             int                       left,
+                                             int                       middle,
+                                             int                       middle1,
+                                             int                       right,
+                                             int*                      tempArray)
         {
             int oldPosition = left;
             int size        = (right - left) + 1;
