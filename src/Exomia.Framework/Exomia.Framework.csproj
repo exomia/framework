@@ -5,7 +5,6 @@
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
     <Version>1.1.0.3</Version>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/exomia/framework/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -19,6 +18,8 @@
     <PackageOutputPath>.</PackageOutputPath> 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile></DocumentationFile>
+    <Nullable>enable</Nullable>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -147,5 +148,12 @@
     <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" />
     <PackageReference Include="SharpDX.RawInput" Version="4.2.0" />
     <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
