@@ -331,7 +331,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Inserts the item into the list.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="index"> Zero-based index to insert the item. </param>
         /// <param name="item">  The item to insert at index. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(int index, in T item)
@@ -345,7 +345,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Inserts the range of items into the list.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="index"> Zero-based index to start inserting at. </param>
         /// <param name="items"> The items to insert at index. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InsertRange(int index, T[] items)
