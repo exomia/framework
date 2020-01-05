@@ -30,22 +30,22 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     The white texture.
         /// </summary>
-        private static Texture s_whiteTexture;
+        private static Texture? s_whiteTexture;
 
         /// <summary>
         ///     The black texture.
         /// </summary>
-        private static Texture s_blackTexture;
+        private static Texture? s_blackTexture;
 
         /// <summary>
         ///     The second s white texture.
         /// </summary>
-        private static Texture2 s_whiteTexture2;
+        private static Texture2? s_whiteTexture2;
 
         /// <summary>
         ///     The second s black texture.
         /// </summary>
-        private static Texture2 s_blackTexture2;
+        private static Texture2? s_blackTexture2;
 
         /// <summary>
         ///     True if this object is initialized.
@@ -65,7 +65,7 @@ namespace Exomia.Framework.Graphics
         /// </value>
         public static Texture BlackTexture
         {
-            get { return s_blackTexture; }
+            get { return s_blackTexture!; }
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Exomia.Framework.Graphics
         /// </value>
         public static Texture2 BlackTexture2
         {
-            get { return s_blackTexture2; }
+            get { return s_blackTexture2!; }
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Exomia.Framework.Graphics
         /// </value>
         public static Texture WhiteTexture
         {
-            get { return s_whiteTexture; }
+            get { return s_whiteTexture!; }
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Exomia.Framework.Graphics
         /// </value>
         public static Texture2 WhiteTexture2
         {
-            get { return s_whiteTexture2; }
+            get { return s_whiteTexture2!; }
         }
 
         /// <summary>
@@ -114,12 +114,12 @@ namespace Exomia.Framework.Graphics
 
                 using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
-                    s_whiteTexture = Texture.Load(device, ms);
+                    s_whiteTexture = Texture.Load(device, ms) ?? throw new NullReferenceException($"{nameof(WhiteTexture)}");
                 }
 
                 using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(BLACK_TEXTURE_BASE64)))
                 {
-                    s_blackTexture = Texture.Load(device, ms);
+                    s_blackTexture = Texture.Load(device, ms) ?? throw new NullReferenceException($"{nameof(BlackTexture)}");
                 }
             }
         }

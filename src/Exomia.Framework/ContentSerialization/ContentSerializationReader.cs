@@ -20,7 +20,7 @@ namespace Exomia.Framework.ContentSerialization
         /// <inheritdoc />
         public object Read(ContentSerializationContext context)
         {
-            return ReadContext(context);
+            return ReadContext(context)!;
         }
 
         /// <summary>

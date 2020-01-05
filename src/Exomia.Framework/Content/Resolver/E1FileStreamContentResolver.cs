@@ -27,12 +27,10 @@ namespace Exomia.Framework.Content.Resolver
         }
 
         /// <inheritdoc />
-        public Stream Resolve(string assetName)
+        public Stream? Resolve(string assetName)
         {
-            using (FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read))
-            {
-                return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
-            }
+            using FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read);
+            return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
         }
     }
 }

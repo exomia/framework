@@ -36,9 +36,8 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
         /// <param name="assembly">  The assembly in which the resource exists. </param>
         /// <param name="assetName"> Name of the asset. </param>
         /// <returns>
-        ///     The stream of the asset. This value can be null if this resolver was not able to locate
-        ///     the asset.
+        ///     The stream of the asset. This value can be null if this resolver was not able to locate the asset.
         /// </returns>
-        Stream Resolve(Assembly assembly, string assetName);
+        Stream? Resolve(Assembly assembly, string assetName);
     }
 }

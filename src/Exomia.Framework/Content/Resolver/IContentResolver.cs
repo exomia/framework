@@ -31,9 +31,8 @@ namespace Exomia.Framework.Content.Resolver
         /// </summary>
         /// <param name="assetName"> Name of the asset. </param>
         /// <returns>
-        ///     The stream of the asset. This value can be null if this resolver was not able to locate
-        ///     the asset.
+        ///     The stream of the asset. This value can be null if this resolver was not able to locate the asset.
         /// </returns>
-        Stream Resolve(string assetName);
+        Stream? Resolve(string assetName);
     }
 }

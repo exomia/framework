@@ -64,7 +64,7 @@ namespace Exomia.Framework.Content
         /// <summary>
         ///     The texture.
         /// </summary>
-        private Texture _texture;
+        private Texture _texture = Texture.Empty;
 
         /// <inheritdoc />
         public bool IsTextureInvalid { get; private set; }
@@ -109,10 +109,8 @@ namespace Exomia.Framework.Content
         /// <inheritdoc />
         public Texture2 AddTexture(string assetName, int startIndex = 0)
         {
-            using (FileStream fs = new FileStream(assetName, FileMode.Open, FileAccess.Read))
-            {
-                return AddTexture(fs, assetName, startIndex);
-            }
+            using FileStream fs = new FileStream(assetName, FileMode.Open, FileAccess.Read);
+            return AddTexture(fs, assetName, startIndex);
         }
 
         /// <inheritdoc />
@@ -145,7 +143,7 @@ namespace Exomia.Framework.Content
             }
             catch
             {
-                texture = null;
+                texture = null!;
                 return false;
             }
         }
@@ -158,7 +156,6 @@ namespace Exomia.Framework.Content
             _atlasesIndex    = 0;
             IsTextureInvalid = true;
             _texture?.Dispose();
-            _texture = null;
         }
 
         /// <summary>

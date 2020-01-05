@@ -49,11 +49,10 @@ namespace Exomia.Framework.ContentSerialization.Compression
         ///     Thrown when one or more arguments have unsupported or
         ///     illegal values.
         /// </exception>
-        public static bool CompressStream(Stream       stream, out Stream streamOut,
+        public static bool CompressStream(Stream       stream,
+                                          out Stream   streamOut,
                                           CompressMode compressMode = CompressMode.Gzip)
         {
-            if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
-            streamOut = null;
             try
             {
                 stream.Position = 0;
@@ -70,7 +69,11 @@ namespace Exomia.Framework.ContentSerialization.Compression
                     default: throw new ArgumentException("no compression method found", nameof(compressMode));
                 }
             }
-            catch { return false; }
+            catch
+            {
+                streamOut = null!;
+                return false;
+            }
             return true;
         }
 
@@ -89,15 +92,17 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// </exception>
         public static bool DecompressStream(Stream stream, out Stream streamOut)
         {
-            if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
-            streamOut = null;
             try
             {
                 stream.Position = 0;
 
                 byte[] buffer = new byte[s_magicHeader.Length];
                 if (stream.Read(buffer, 0, buffer.Length) != s_magicHeader.Length
-                 && !s_magicHeader.SequenceEqual(buffer)) { return false; }
+                 && !s_magicHeader.SequenceEqual(buffer))
+                {
+                    streamOut = null!;
+                    return false;
+                }
 
                 switch ((CompressMode)stream.ReadByte())
                 {
@@ -107,7 +112,11 @@ namespace Exomia.Framework.ContentSerialization.Compression
                     default: throw new ArgumentException("no compression method found", nameof(stream));
                 }
             }
-            catch { return false; }
+            catch
+            {
+                streamOut = null!;
+                return false;
+            }
             return true;
         }
 

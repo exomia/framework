@@ -21,12 +21,12 @@ namespace Exomia.Framework
         /// <summary>
         ///     Occurs when the <see cref="DrawOrder" /> property changes.
         /// </summary>
-        public event EventHandler DrawOrderChanged;
+        public event EventHandler? DrawOrderChanged;
 
         /// <summary>
         ///     Occurs when the <see cref="Visible" /> property changes.
         /// </summary>
-        public event EventHandler VisibleChanged;
+        public event EventHandler? VisibleChanged;
 
         /// <summary>
         ///     The draw order.

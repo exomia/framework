@@ -23,7 +23,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     The head.
         /// </summary>
-        private LinkedListNode _head;
+        private LinkedListNode? _head;
 
         /// <summary>
         ///     Gets the number of.
@@ -39,7 +39,7 @@ namespace Exomia.Framework.Collections
         /// <value>
         ///     The first.
         /// </value>
-        public LinkedListNode First
+        public LinkedListNode? First
         {
             get { return _head; }
         }
@@ -50,7 +50,7 @@ namespace Exomia.Framework.Collections
         /// <value>
         ///     The last.
         /// </value>
-        public LinkedListNode Last
+        public LinkedListNode? Last
         {
             get { return _head?.Previous; }
         }
@@ -112,7 +112,7 @@ namespace Exomia.Framework.Collections
                 node.Next     = _head;
                 node.Previous = _head.Previous;
 
-                _head.Previous.Next = node;
+                _head.Previous!.Next = node;
                 _head.Previous      = node;
 
                 _head = node;
@@ -142,7 +142,7 @@ namespace Exomia.Framework.Collections
                 node.Next     = _head;
                 node.Previous = _head.Previous;
 
-                _head.Previous.Next = node;
+                _head.Previous!.Next = node;
                 _head.Previous      = node;
             }
             Count++;
@@ -172,7 +172,7 @@ namespace Exomia.Framework.Collections
                 do
                 {
                     yield return node;
-                    node = node.Next;
+                    node = node.Next!;
                 } while (node != _head);
             }
         }
@@ -189,7 +189,7 @@ namespace Exomia.Framework.Collections
                 do
                 {
                     action(node);
-                    node = node.Next;
+                    node = node.Next!;
                 } while (node != _head);
             }
         }
@@ -205,8 +205,8 @@ namespace Exomia.Framework.Collections
             if (node.Next == node) { _head = null; }
             else
             {
-                node.Previous.Next = node.Next;
-                node.Next.Previous = node.Previous;
+                node.Previous!.Next = node.Next;
+                node.Next!.Previous = node.Previous;
                 if (_head == node) { _head = node.Next; }
             }
             node.Invalidate();
@@ -230,7 +230,7 @@ namespace Exomia.Framework.Collections
         public void RemoveLast()
         {
             if (_head == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(_head.Previous);
+            Remove(_head.Previous!);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace Exomia.Framework.Collections
             /// <value>
             ///     The next.
             /// </value>
-            public LinkedListNode Next { get; internal set; }
+            public LinkedListNode? Next { get; internal set; }
 
             /// <summary>
             ///     Gets the previous.
@@ -268,7 +268,7 @@ namespace Exomia.Framework.Collections
             /// <value>
             ///     The previous.
             /// </value>
-            public LinkedListNode Previous { get; internal set; }
+            public LinkedListNode? Previous { get; internal set; }
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="LinkedListNode" /> class.
@@ -314,7 +314,7 @@ namespace Exomia.Framework.Collections
             /// <summary>
             ///     The node.
             /// </summary>
-            private LinkedListNode _node;
+            private LinkedListNode? _node;
 
             /// <summary>
             ///     The current.
@@ -330,7 +330,7 @@ namespace Exomia.Framework.Collections
             /// <inheritdoc />
             object IEnumerator.Current
             {
-                get { return Current; }
+                get { return Current!; }
             }
 
             /// <summary>
@@ -341,7 +341,7 @@ namespace Exomia.Framework.Collections
             {
                 _list    = list;
                 _node    = list._head;
-                _current = default;
+                _current = default!;
             }
 
             /// <inheritdoc />
@@ -363,7 +363,7 @@ namespace Exomia.Framework.Collections
             /// <inheritdoc />
             public void Reset()
             {
-                _current = default;
+                _current = default!;
                 _node    = _list._head;
             }
 

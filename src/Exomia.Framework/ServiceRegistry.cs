@@ -56,7 +56,7 @@ namespace Exomia.Framework
         /// <inheritdoc />
         public void AddService<T>(T provider)
         {
-            AddService(typeof(T), provider);
+            AddService(typeof(T), provider!);
         }
 
         /// <inheritdoc />

@@ -29,12 +29,12 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
                 return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
             }
             
-            assembly = null;
+            assembly = null!;
             return false;
         }
 
         /// <inheritdoc />
-        public Stream Resolve(Assembly assembly, string assetName)
+        public Stream? Resolve(Assembly assembly, string assetName)
         {
             return EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
         }

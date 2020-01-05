@@ -156,13 +156,13 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             foreach (KeyValuePair<TKey, TValue> entry in dic)
             {
-                Type elementType = entry.Value.GetType();
+                Type elementType = entry.Value!.GetType();
                 if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
                     ContentSerializer.s_types.TryGetValue(
                         (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
                         out it))
                 {
-                    it.Write(writeHandler, tabSpace, entry.Key.ToString(), entry.Value, false);
+                    it.Write(writeHandler, tabSpace, entry.Key!.ToString(), entry.Value, false);
                 }
                 else
                 {

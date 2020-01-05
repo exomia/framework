@@ -41,7 +41,7 @@ namespace Exomia.Framework.Content.Exceptions
         /// </summary>
         /// <param name="message">The exception message.</param>
         /// <param name="innerException">The inner exception.</param>
-        public AssetNotFoundException(string message, Exception innerException)
+        public AssetNotFoundException(string message, Exception? innerException)
             : base(message, innerException) { }
     }
 }

@@ -135,7 +135,7 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             foreach (T entry in list)
             {
-                Type elementType = entry.GetType();
+                Type elementType = entry!.GetType();
                 if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
                     ContentSerializer.s_types.TryGetValue(elementType.BaseType.Name.ToUpper(), out it))
                 {
@@ -221,7 +221,7 @@ namespace Exomia.Framework.ContentSerialization.Types
         {
             for (int i = 0; i < count; i++)
             {
-                stream.ReadStartTag(out string key, out string dimensionInfo);
+                stream.ReadStartTag(out string _, out string dimensionInfo);
 
                 list.Add((dynamic)readCallback(stream, dimensionInfo));
             }

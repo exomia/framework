@@ -35,7 +35,7 @@ namespace Exomia.Framework.ContentSerialization
             {
                 return (T)Content[key].Object;
             }
-            return default;
+            return default!;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Exomia.Framework.ContentSerialization
         /// <param name="obj">Object</param>
         public void Set<T>(string key, T obj)
         {
-            Set(key, obj, typeof(T));
+            Set(key, obj!, typeof(T));
         }
 
         /// <summary>

@@ -40,7 +40,7 @@ namespace Exomia.Framework.Components
         /// <summary>
         ///     The arial 12 px.
         /// </summary>
-        private SpriteFont _arial12Px;
+        private SpriteFont? _arial12Px;
 
         /// <summary>
         ///     Information describing the CPU.
@@ -55,12 +55,12 @@ namespace Exomia.Framework.Components
         /// <summary>
         ///     The first CPU performance counter.
         /// </summary>
-        private PerformanceCounter _cpuPerformanceCounter1;
+        private PerformanceCounter? _cpuPerformanceCounter1;
 
         /// <summary>
         ///     The second CPU performance counter.
         /// </summary>
-        private PerformanceCounter _cpuPerformanceCounter2;
+        private PerformanceCounter? _cpuPerformanceCounter2;
 
         /// <summary>
         ///     The elapsed time.
@@ -90,7 +90,7 @@ namespace Exomia.Framework.Components
         /// <summary>
         ///     The game window.
         /// </summary>
-        private IGameWindow _gameWindow;
+        private IGameWindow? _gameWindow;
 
         /// <summary>
         ///     Name of the GPU.
@@ -130,7 +130,7 @@ namespace Exomia.Framework.Components
         /// <summary>
         ///     The first ram performance counter.
         /// </summary>
-        private PerformanceCounter _ramPerformanceCounter1;
+        private PerformanceCounter? _ramPerformanceCounter1;
 
         /// <summary>
         ///     Buffer for sample data.
@@ -145,7 +145,7 @@ namespace Exomia.Framework.Components
         /// <summary>
         ///     The sprite batch.
         /// </summary>
-        private SpriteBatch _spriteBatch;
+        private SpriteBatch? _spriteBatch;
 
         /// <summary>
         ///     The title.
@@ -199,18 +199,18 @@ namespace Exomia.Framework.Components
             if (!_firstCalc) { return; }
             if (EnableTitleInformation)
             {
-                _gameWindow.Title = _title + " " + _fpsInfo;
+                _gameWindow!.Title = _title + " " + _fpsInfo;
             }
 
-            _spriteBatch.Begin();
+            _spriteBatch!.Begin();
 
             if (ShowFullInformation)
             {
-                _spriteBatch.DrawText(_arial12Px, $"{_cpuInfo}\n\n{_ramInfo}", _position1, Color.White, 0.0f);
+                _spriteBatch.DrawText(_arial12Px!, $"{_cpuInfo}\n\n{_ramInfo}", _position1, Color.White, 0.0f);
             }
 
             _spriteBatch.DrawText(
-                _arial12Px, _fpsInfo, _position2, _fpsCurrent <= FRAME_DANGER_THRESHOLD ? Color.Red : Color.White,
+                _arial12Px!, _fpsInfo, _position2, _fpsCurrent <= FRAME_DANGER_THRESHOLD ? Color.Red : Color.White,
                 0.0f);
 
             _spriteBatch.End();
@@ -237,10 +237,10 @@ namespace Exomia.Framework.Components
             {
                 if (ShowFullInformation)
                 {
-                    _totalMemoryBytes = _ramPerformanceCounter1.NextValue();
+                    _totalMemoryBytes = _ramPerformanceCounter1!.NextValue();
 
-                    _processorLoadT1 = _cpuPerformanceCounter1.NextValue() / Environment.ProcessorCount;
-                    _processorLoadT2 = _cpuPerformanceCounter2.NextValue();
+                    _processorLoadT1 = _cpuPerformanceCounter1!.NextValue() / Environment.ProcessorCount;
+                    _processorLoadT2 = _cpuPerformanceCounter2!.NextValue();
 
                     _cpuInfo = $"{_cpuName}\nCPU-Load: {_processorLoadT1:0.0}% Total: {_processorLoadT2:0.0}%";
                     _ramInfo =

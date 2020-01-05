@@ -73,7 +73,7 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The face.
         /// </value>
-        public string Face { get; set; }
+        public string? Face { get; set; }
 
         /// <summary>
         ///     Gets or sets the glyphs.
@@ -111,7 +111,7 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     Information describing the image.
         /// </value>
-        public byte[] ImageData { get; set; }
+        public byte[] ImageData { get; set; } = Array.Empty<byte>();
 
         /// <summary>
         ///     Gets or sets a value indicating whether the italic.
@@ -180,6 +180,7 @@ namespace Exomia.Framework.Graphics
         {
             _glyphs  = new Dictionary<int, Glyph>();
             Kernings = new Dictionary<int, Kerning>();
+            _texture = Texture.Empty;
         }
 
         /// <summary>
@@ -1102,8 +1103,8 @@ namespace Exomia.Framework.Graphics
                     Kernings.Clear();
                 }
 
-                Kernings = null;
-                _glyphs  = null;
+                Kernings.Clear();
+                _glyphs.Clear();
 
                 _disposed = true;
             }

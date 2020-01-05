@@ -119,7 +119,7 @@ namespace Exomia.Framework.Scene
         /// </summary>
         /// <param name="comingFrom"> coming from. </param>
         /// <param name="payload">    payload. </param>
-        void Show(SceneBase comingFrom, object[] payload);
+        void Show(SceneBase? comingFrom, object[] payload);
 
         /// <summary>
         ///     This method is called when this game component is updated.

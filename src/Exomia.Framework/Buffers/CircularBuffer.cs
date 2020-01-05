@@ -94,7 +94,7 @@ namespace Exomia.Framework.Buffers
 
                 index = (_tail + index) % _buffer.Length;
                 T buffer = _buffer[index];
-                _buffer[index] = default;
+                _buffer[index] = default!;
                 return buffer;
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,7 +120,7 @@ namespace Exomia.Framework.Buffers
         ///     Thrown when one or more arguments have unsupported or
         ///     illegal values.
         /// </exception>
-        public CircularBuffer(int capacity = 1024, T[] items = null)
+        public CircularBuffer(int capacity = 1024, T[] items = null!)
         {
             if (capacity < 1)
             {
@@ -175,7 +175,7 @@ namespace Exomia.Framework.Buffers
                 }
 
                 T item = _buffer[_tail];
-                _buffer[_tail] = default;
+                _buffer[_tail] = default!;
                 _tail          = (_tail + 1) % _buffer.Length;
                 _size--;
 
@@ -207,7 +207,7 @@ namespace Exomia.Framework.Buffers
                 }
 
                 ref T item = ref _buffer[_tail];
-                _buffer[_tail] = default;
+                _buffer[_tail] = default!;
                 _tail          = (_tail + 1) % _buffer.Length;
                 _size--;
 

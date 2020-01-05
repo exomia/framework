@@ -34,7 +34,7 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     The head.
         /// </summary>
-        private Sound _head;
+        private Sound? _head;
 
         /// <summary>
         ///     Number of.
@@ -114,7 +114,7 @@ namespace Exomia.Framework.Audio
                     sound.Next     = _head;
                     sound.Previous = _head.Previous;
 
-                    _head.Previous.Next = sound;
+                    _head.Previous!.Next = sound;
                     _head.Previous      = sound;
                 }
 
@@ -147,8 +147,8 @@ namespace Exomia.Framework.Audio
                 if (sound.Next == sound) { _head = null; }
                 else
                 {
-                    sound.Previous.Next = sound.Next;
-                    sound.Next.Previous = sound.Previous;
+                    sound.Previous!.Next = sound.Next;
+                    sound.Next!.Previous = sound.Previous;
                     if (_head == sound) { _head = sound.Next; }
                 }
                 sound.Invalidate();
@@ -183,12 +183,12 @@ namespace Exomia.Framework.Audio
             /// <value>
             ///     The node.
             /// </value>
-            private Sound _current, _node;
+            private Sound? _current, _node;
 
             /// <inheritdoc />
             public Sound Current
             {
-                get { return _current; }
+                get { return _current!; }
             }
 
             /// <inheritdoc />
@@ -253,12 +253,12 @@ namespace Exomia.Framework.Audio
             /// <summary>
             ///     The next.
             /// </summary>
-            internal Sound Next;
+            internal Sound? Next;
 
             /// <summary>
             ///     The previous.
             /// </summary>
-            internal Sound Previous;
+            internal Sound? Previous;
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="Sound" /> class.

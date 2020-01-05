@@ -23,6 +23,15 @@ namespace Exomia.Framework.Graphics
     public sealed class Texture : IDisposable
     {
         /// <summary>
+        ///     Gets the empty.
+        /// </summary>
+        /// <value>
+        ///     The empty.
+        /// </value>
+        public static Texture Empty { get; } = new Texture(null!, 0, 0);
+        
+        
+        /// <summary>
         ///     The texture view.
         /// </summary>
         private ShaderResourceView1 _textureView;
@@ -94,16 +103,14 @@ namespace Exomia.Framework.Graphics
         /// <returns>
         ///     new texture.
         /// </returns>
-        public static Texture Load(Device5 device, Stream stream)
+        public static Texture? Load(Device5 device, Stream stream)
         {
             try
             {
-                using (Texture2D texture2D = TextureHelper.LoadTexture2D(device, stream))
-                {
-                    return new Texture(
-                        new ShaderResourceView1(device, texture2D), texture2D.Description.Width,
-                        texture2D.Description.Height);
-                }
+                using Texture2D texture2D = TextureHelper.LoadTexture2D(device, stream);
+                return new Texture(
+                    new ShaderResourceView1(device, texture2D), texture2D.Description.Width,
+                    texture2D.Description.Height);
             }
             catch { return null; }
         }
@@ -152,6 +159,14 @@ namespace Exomia.Framework.Graphics
     [ContentReadable(typeof(Texture2ContentReader))]
     public sealed class Texture2 : IDisposable
     {
+        /// <summary>
+        ///     Gets the empty.
+        /// </summary>
+        /// <value>
+        ///     The empty.
+        /// </value>
+        public static Texture2 Empty { get; } = new Texture2(-1, null!, Rectangle.Empty);
+
         /// <summary>
         ///     AssetName.
         /// </summary>

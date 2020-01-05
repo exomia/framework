@@ -8,6 +8,8 @@
 
 #endregion
 
+#pragma warning disable IDE0069
+
 using System;
 using Exomia.Framework.Game;
 using SharpDX;
@@ -22,12 +24,12 @@ namespace Exomia.Framework
         /// <summary>
         ///     Occurs when Enabled Changed.
         /// </summary>
-        public event EventHandler EnabledChanged;
+        public event EventHandler? EnabledChanged;
 
         /// <summary>
         ///     Occurs when Update Order Changed.
         /// </summary>
-        public event EventHandler UpdateOrderChanged;
+        public event EventHandler? UpdateOrderChanged;
 
         /// <summary>
         ///     flag to identify if the component is already initialized.
@@ -42,7 +44,7 @@ namespace Exomia.Framework
         /// <summary>
         ///     The collector.
         /// </summary>
-        private DisposeCollector _collector;
+        private readonly DisposeCollector _collector;
 
         /// <summary>
         ///     True to enable, false to disable.
@@ -187,12 +189,7 @@ namespace Exomia.Framework
             if (!_disposed)
             {
                 OnDispose(disposing);
-                if (disposing)
-                {
-                    /* USER CODE */
-                    _collector.DisposeAndClear();
-                    _collector = null;
-                }
+                _collector.DisposeAndClear(disposing);
                 _disposed = true;
             }
         }

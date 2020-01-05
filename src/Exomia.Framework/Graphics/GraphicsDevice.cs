@@ -36,42 +36,42 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     <see cref="IGraphicsDevice.ResizeFinished" />
         /// </summary>
-        public event EventHandler<ViewportF> ResizeFinished;
+        public event EventHandler<ViewportF>? ResizeFinished;
 
         /// <summary>
         ///     The fourth adapter.
         /// </summary>
-        private Adapter4 _adapter4;
+        private Adapter4? _adapter4;
 
         /// <summary>
         ///     The current render view.
         /// </summary>
-        private RenderTargetView1 _currentRenderView;
+        private RenderTargetView1? _currentRenderView;
 
         /// <summary>
         ///     The fifth d 3 d device.
         /// </summary>
-        private Device5 _d3DDevice5;
+        private Device5? _d3DDevice5;
 
         /// <summary>
         ///     Context for the 3 d device.
         /// </summary>
-        private DeviceContext4 _d3DDeviceContext;
+        private DeviceContext4? _d3DDeviceContext;
 
         /// <summary>
         ///     The depth stencil view.
         /// </summary>
-        private DepthStencilView _depthStencilView;
+        private DepthStencilView? _depthStencilView;
 
         /// <summary>
         ///     The fourth dxgi device.
         /// </summary>
-        private Device4 _dxgiDevice4;
+        private Device4? _dxgiDevice4;
 
         /// <summary>
         ///     The dxgi factory.
         /// </summary>
-        private Factory5 _dxgiFactory;
+        private Factory5? _dxgiFactory;
 
         /// <summary>
         ///     True to need resize.
@@ -81,12 +81,12 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     The output.
         /// </summary>
-        private Output _output;
+        private Output? _output;
 
         /// <summary>
         ///     The first render view.
         /// </summary>
-        private RenderTargetView1 _renderView1;
+        private RenderTargetView1? _renderView1;
 
         /// <summary>
         ///     Options for controlling the resize.
@@ -96,7 +96,7 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     The fourth swap chain.
         /// </summary>
-        private SwapChain4 _swapChain4;
+        private SwapChain4? _swapChain4;
 
         /// <summary>
         ///     The synchronise.
@@ -106,31 +106,31 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public Adapter4 Adapter
         {
-            get { return _adapter4; }
+            get { return _adapter4!; }
         }
 
         /// <inheritdoc />
         public Device5 Device
         {
-            get { return _d3DDevice5; }
+            get { return _d3DDevice5!; }
         }
 
         /// <inheritdoc />
         public DeviceContext4 DeviceContext
         {
-            get { return _d3DDeviceContext; }
+            get { return _d3DDeviceContext!; }
         }
 
         /// <inheritdoc />
         public Device4 DxgiDevice
         {
-            get { return _dxgiDevice4; }
+            get { return _dxgiDevice4!; }
         }
 
         /// <inheritdoc />
         public Factory5 Factory
         {
-            get { return _dxgiFactory; }
+            get { return _dxgiFactory!; }
         }
 
         /// <inheritdoc />
@@ -139,13 +139,13 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public RenderTargetView1 RenderView
         {
-            get { return _renderView1; }
+            get { return _renderView1!; }
         }
 
         /// <inheritdoc />
         public SwapChain4 SwapChain
         {
-            get { return _swapChain4; }
+            get { return _swapChain4!; }
         }
 
         /// <inheritdoc />
@@ -172,9 +172,9 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void Clear()
         {
-            lock (_d3DDevice5)
+            lock (_d3DDevice5!)
             {
-                _d3DDeviceContext.ClearRenderTargetView(_currentRenderView, Color.CornflowerBlue);
+                _d3DDeviceContext!.ClearRenderTargetView(_currentRenderView, Color.CornflowerBlue);
                 _d3DDeviceContext.ClearDepthStencilView(
                     _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             }
@@ -183,9 +183,9 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void Clear(Color color)
         {
-            lock (_d3DDevice5)
+            lock (_d3DDevice5!)
             {
-                _d3DDeviceContext.ClearRenderTargetView(_currentRenderView, color);
+                _d3DDeviceContext!.ClearRenderTargetView(_currentRenderView, color);
                 _d3DDeviceContext.ClearDepthStencilView(
                     _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             }
@@ -194,13 +194,13 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void EndFrame()
         {
-            _swapChain4.Present(_vSync, PresentFlags.None);
+            _swapChain4!.Present(_vSync, PresentFlags.None);
         }
 
         /// <inheritdoc />
         public bool GetFullscreenState()
         {
-            return _swapChain4.IsFullScreen;
+            return _swapChain4!.IsFullScreen;
         }
 
         /// <inheritdoc />
@@ -223,7 +223,7 @@ namespace Exomia.Framework.Graphics
             }
             _dxgiFactory.MakeWindowAssociation(parameters.Handle, parameters.WindowAssociationFlags);
 
-            _adapter4 = null;
+            _adapter4 = null!;
 
             for (int i = 0; i < _dxgiFactory.GetAdapterCount1(); i++)
             {
@@ -285,7 +285,7 @@ namespace Exomia.Framework.Graphics
                 Console.WriteLine($"Scaling:\t\t{modeDescription.Scaling}");
                 Console.WriteLine($"ScanlineOrdering:\t{modeDescription.ScanlineOrdering}");
                 Console.WriteLine();
-                Console.WriteLine($"DeviceName:\t\t{_output.Description.DeviceName}");
+                Console.WriteLine($"DeviceName:\t\t{_output!.Description.DeviceName}");
                 Console.WriteLine(
                     $"DesktopBounds:\t\t{_output.Description.DesktopBounds.Left};{_output.Description.DesktopBounds.Top};{_output.Description.DesktopBounds.Right};{_output.Description.DesktopBounds.Bottom}");
                 Console.WriteLine($"MonitorHandle:\t\t{_output.Description.MonitorHandle}");
@@ -366,7 +366,7 @@ namespace Exomia.Framework.Graphics
         {
             _resizeParameters = new ResizeParameters
             {
-                BufferCount    = _swapChain4.Description1.BufferCount,
+                BufferCount    = _swapChain4!.Description1.BufferCount,
                 Width          = width,
                 Height         = height,
                 SwapChainFlags = _swapChain4.Description1.Flags
@@ -375,21 +375,21 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <inheritdoc />
-        public void SetFullscreenState(bool state, Output output = null)
+        public void SetFullscreenState(bool state, Output? output = null)
         {
-            if (_swapChain4.IsFullScreen != state)
+            if (_swapChain4!.IsFullScreen != state)
             {
                 _swapChain4.SetFullscreenState(state, output);
             }
         }
 
         /// <inheritdoc />
-        public void SetRenderTarget(RenderTargetView1 target)
+        public void SetRenderTarget(RenderTargetView1? target)
         {
-            lock (_d3DDevice5)
+            lock (_d3DDevice5!)
             {
                 _currentRenderView = target ?? _renderView1;
-                _d3DDeviceContext.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
+                _d3DDeviceContext!.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
             }
         }
 
@@ -399,7 +399,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="args"> The arguments. </param>
         private void Resize(ResizeParameters args)
         {
-            lock (_d3DDevice5)
+            lock (_d3DDevice5!)
             {
                 if (_renderView1 != null)
                 {
@@ -407,7 +407,7 @@ namespace Exomia.Framework.Graphics
                     _renderView1 = null;
                 }
 
-                _swapChain4.ResizeBuffers(
+                _swapChain4!.ResizeBuffers(
                     args.BufferCount, args.Width, args.Height, Format.Unknown, args.SwapChainFlags);
 
                 RenderTargetView renderView;
@@ -446,7 +446,7 @@ namespace Exomia.Framework.Graphics
 
                 Viewport = new Viewport(0, 0, args.Width, args.Height);
 
-                _d3DDeviceContext.Rasterizer.SetViewport(Viewport);
+                _d3DDeviceContext!.Rasterizer.SetViewport(Viewport);
                 SetRenderTarget(null);
             }
             ResizeFinished?.Invoke(Viewport);

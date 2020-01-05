@@ -128,12 +128,12 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The blend state.
         /// </value>
-        private BlendState _defaultBlendState, _blendState;
+        private BlendState? _defaultBlendState, _blendState;
 
         /// <summary>
         ///     The default depth stencil state.
         /// </summary>
-        private DepthStencilState _defaultDepthStencilState;
+        private DepthStencilState? _defaultDepthStencilState;
 
         /// <summary>
         ///     Gets the state of the rasterizer.
@@ -141,7 +141,7 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The rasterizer state.
         /// </value>
-        private RasterizerState _defaultRasterizerState, _defaultRasterizerScissorEnabledState, _rasterizerState;
+        private RasterizerState? _defaultRasterizerState, _defaultRasterizerScissorEnabledState, _rasterizerState;
 
         /// <summary>
         ///     Gets the state of the sampler.
@@ -149,12 +149,12 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The sampler state.
         /// </value>
-        private SamplerState _defaultSamplerState, _samplerState;
+        private SamplerState? _defaultSamplerState, _samplerState;
 
         /// <summary>
         ///     State of the depth stencil.
         /// </summary>
-        private DepthStencilState _depthStencilState;
+        private DepthStencilState? _depthStencilState;
 
         /// <summary>
         ///     Gets a value indicating whether the scissor is enabled.
@@ -216,12 +216,12 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     The pixel shader.
         /// </summary>
-        private PixelShader _pixelShader;
+        private PixelShader? _pixelShader;
 
         /// <summary>
         ///     The vertex shader.
         /// </summary>
-        private VertexShader _vertexShader;
+        private VertexShader? _vertexShader;
 
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch" /> class.
@@ -265,15 +265,12 @@ namespace Exomia.Framework.Graphics
             _device  = iDevice.Device;
             _context = iDevice.DeviceContext;
 
-            switch (sortAlgorithm)
+            _spriteSort = sortAlgorithm switch
             {
-                case SpriteSortAlgorithm.MergeSort:
-                    _spriteSort = new SpriteMergeSort();
-                    break;
-                default:
-                    throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm));
-            }
-
+                SpriteSortAlgorithm.MergeSort => new SpriteMergeSort(),
+                _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm)),
+            };
+            
             Initialize(_device);
 
             _spriteQueue    = new SpriteInfo[MAX_BATCH_SIZE];
@@ -408,10 +405,10 @@ namespace Exomia.Framework.Graphics
         /// <param name="viewMatrix">        (Optional) The view matrix. </param>
         /// <param name="scissorRectangle">  (Optional) The scissor rectangle. </param>
         public void Begin(SpriteSortMode    sortMode          = SpriteSortMode.Deferred,
-                          BlendState        blendState        = null,
-                          SamplerState      samplerState      = null,
-                          DepthStencilState depthStencilState = null,
-                          RasterizerState   rasterizerState   = null,
+                          BlendState?        blendState        = null,
+                          SamplerState?      samplerState      = null,
+                          DepthStencilState? depthStencilState = null,
+                          RasterizerState?   rasterizerState   = null,
                           Matrix?           transformMatrix   = null,
                           Matrix?           viewMatrix        = null,
                           Rectangle?        scissorRectangle  = null)
@@ -642,7 +639,7 @@ namespace Exomia.Framework.Graphics
         {
             Resize(viewport);
         }
-
+        
         /// <summary>
         ///     Initializes this object.
         /// </summary>
@@ -1834,13 +1831,20 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref _defaultBlendState);
                     Utilities.Dispose(ref _defaultRasterizerState);
                     Utilities.Dispose(ref _defaultSamplerState);
-                    Utilities.Dispose(ref _depthStencilState);
+                    Utilities.Dispose(ref _defaultRasterizerScissorEnabledState);
+                    Utilities.Dispose(ref _defaultDepthStencilState);
+
 
                     Utilities.Dispose(ref _vertexBuffer);
                     Utilities.Dispose(ref _perFrameBuffer);
                     Utilities.Dispose(ref _indexBuffer);
-                }
 
+                    Utilities.Dispose(ref _pixelShader);
+                    Utilities.Dispose(ref _vertexShader);
+
+                    _vertexInputLayout.Dispose();
+                }
+                
                 _disposed = true;
             }
         }

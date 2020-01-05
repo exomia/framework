@@ -121,12 +121,12 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The blend state.
         /// </value>
-        private BlendState _defaultBlendState, _blendState;
+        private BlendState? _defaultBlendState, _blendState;
 
         /// <summary>
         ///     The default depth stencil state.
         /// </summary>
-        private DepthStencilState _defaultDepthStencilState;
+        private DepthStencilState? _defaultDepthStencilState;
 
         /// <summary>
         ///     Gets the state of the rasterizer.
@@ -134,7 +134,7 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The rasterizer state.
         /// </value>
-        private RasterizerState _defaultRasterizerState, _defaultRasterizerScissorEnabledState, _rasterizerState;
+        private RasterizerState? _defaultRasterizerState, _defaultRasterizerScissorEnabledState, _rasterizerState;
 
         /// <summary>
         ///     Gets the state of the sampler.
@@ -142,12 +142,12 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The sampler state.
         /// </value>
-        private SamplerState _defaultSamplerState, _samplerState;
+        private SamplerState? _defaultSamplerState, _samplerState;
 
         /// <summary>
         ///     State of the depth stencil.
         /// </summary>
-        private DepthStencilState _depthStencilState;
+        private DepthStencilState? _depthStencilState;
 
         /// <summary>
         ///     Gets a value indicating whether this object is texture generated.
@@ -178,7 +178,7 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     The sort indices.
         /// </summary>
-        private int[] _sortIndices;
+        private int[] _sortIndices = Array.Empty<int>();
 
         /// <summary>
         ///     Queue of sprites.
@@ -193,7 +193,7 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Array of texture 2 ds.
         /// </summary>
-        private Texture _texture2DArray;
+        private Texture _texture2DArray = Texture.Empty;
 
         /// <summary>
         ///     Gets the transform matrix.
@@ -206,12 +206,12 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     The pixel shader.
         /// </summary>
-        private PixelShader _pixelShader;
+        private PixelShader? _pixelShader;
 
         /// <summary>
         ///     The vertex shader.
         /// </summary>
-        private VertexShader _vertexShader;
+        private VertexShader? _vertexShader;
 
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch2" /> class.
@@ -252,21 +252,19 @@ namespace Exomia.Framework.Graphics
         /// <param name="iDevice">       Zero-based index of the device. </param>
         /// <param name="manager">       The manager. </param>
         /// <param name="sortAlgorithm"> (Optional) The sort algorithm. </param>
-        public SpriteBatch2(IGraphicsDevice     iDevice, ITexture2ContentManager manager,
-                            SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
+        public SpriteBatch2(IGraphicsDevice         iDevice,
+                            ITexture2ContentManager manager,
+                            SpriteSortAlgorithm     sortAlgorithm = SpriteSortAlgorithm.MergeSort)
         {
-            _device  = iDevice?.Device       ?? throw new NullReferenceException(nameof(iDevice));
+            _device  = iDevice?.Device ?? throw new NullReferenceException(nameof(iDevice));
             _context = iDevice.DeviceContext ?? throw new NullReferenceException(nameof(iDevice));
-            _manager = manager               ?? throw new NullReferenceException(nameof(manager));
+            _manager = manager ?? throw new NullReferenceException(nameof(manager));
 
-            switch (sortAlgorithm)
+            _spriteSort = sortAlgorithm switch
             {
-                case SpriteSortAlgorithm.MergeSort:
-                    _spriteSort = new SpriteMergeSort();
-                    break;
-                default:
-                    throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm));
-            }
+                SpriteSortAlgorithm.MergeSort => new SpriteMergeSort(),
+                _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm)),
+            };
 
             Initialize(_device);
 
@@ -317,14 +315,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="transformMatrix">   (Optional) The transform matrix. </param>
         /// <param name="viewMatrix">        (Optional) The view matrix. </param>
         /// <param name="scissorRectangle">  (Optional) The scissor rectangle. </param>
-        public void Begin(SpriteSortMode    sortMode          = SpriteSortMode.Deferred,
-                          BlendState        blendState        = null,
-                          SamplerState      samplerState      = null,
-                          DepthStencilState depthStencilState = null,
-                          RasterizerState   rasterizerState   = null,
-                          Matrix?           transformMatrix   = null,
-                          Matrix?           viewMatrix        = null,
-                          Rectangle?        scissorRectangle  = null)
+        public void Begin(SpriteSortMode     sortMode          = SpriteSortMode.Deferred,
+                          BlendState?        blendState        = null,
+                          SamplerState?      samplerState      = null,
+                          DepthStencilState? depthStencilState = null,
+                          RasterizerState?   rasterizerState   = null,
+                          Matrix?            transformMatrix   = null,
+                          Matrix?            viewMatrix        = null,
+                          Rectangle?         scissorRectangle  = null)
         {
             if (!_isTextureGenerated)
             {
@@ -342,7 +340,7 @@ namespace Exomia.Framework.Graphics
             _depthStencilState = depthStencilState;
             _rasterizerState   = rasterizerState;
             _transformMatrix   = transformMatrix ?? Matrix.Identity;
-            _viewMatrix        = viewMatrix      ?? Matrix.Identity;
+            _viewMatrix        = viewMatrix ?? Matrix.Identity;
 
             _isScissorEnabled = scissorRectangle.HasValue;
             _scissorRectangle = scissorRectangle ?? Rectangle.Empty;
@@ -376,7 +374,8 @@ namespace Exomia.Framework.Graphics
         {
             if (_manager.GenerateTexture2DArray(_device, out Texture texture))
             {
-                Interlocked.Exchange(ref _texture2DArray, texture)?.Dispose();
+                Texture t = Interlocked.Exchange(ref _texture2DArray, texture);
+                if (t.TextureView != null) { t.Dispose(); }
                 _isTextureGenerated = true;
             }
         }
@@ -406,7 +405,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="height"> The height. </param>
         public void Resize(float width, float height)
         {
-            float xRatio = width  > 0 ? 1f  / width : 0f;
+            float xRatio = width > 0 ? 1f / width : 0f;
             float yRatio = height > 0 ? -1f / height : 0f;
             _projectionMatrix = new Matrix
             {
@@ -673,7 +672,7 @@ namespace Exomia.Framework.Graphics
             _context.VertexShader.Set(_vertexShader);
             _context.PixelShader.Set(_pixelShader);
 
-            _context.OutputMerger.SetBlendState(_blendState               ?? _defaultBlendState);
+            _context.OutputMerger.SetBlendState(_blendState ?? _defaultBlendState);
             _context.OutputMerger.SetDepthStencilState(_depthStencilState ?? _defaultDepthStencilState, 1);
 
             _context.Rasterizer.State = _rasterizerState ?? _defaultRasterizerState;
@@ -710,7 +709,8 @@ namespace Exomia.Framework.Graphics
         /// <param name="deltaX">     The delta x coordinate. </param>
         /// <param name="deltaY">     The delta y coordinate. </param>
         private unsafe void UpdateVertexFromSpriteInfoParallel(ref SpriteInfo              spriteInfo,
-                                                               VertexPositionColorTexture* vpctPtr, float deltaX,
+                                                               VertexPositionColorTexture* vpctPtr,
+                                                               float                       deltaX,
                                                                float                       deltaY)
         {
             Vector2 origin = spriteInfo.Origin;
@@ -749,7 +749,7 @@ namespace Exomia.Framework.Graphics
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
                     corner    = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
-                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width))  * deltaX;
+                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
                     vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
                     vertex->I = spriteInfo.Index;
                 }
@@ -767,7 +767,7 @@ namespace Exomia.Framework.Graphics
                     float   posY   = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
 
                     vertex->X = (spriteInfo.Destination.X + (posX * cos)) - (posY * sin);
-                    vertex->Y = spriteInfo.Destination.Y + (posX * sin)   + (posY * cos);
+                    vertex->Y = spriteInfo.Destination.Y + (posX * sin) + (posY * cos);
                     vertex->Z = spriteInfo.Depth;
                     vertex->W = 1.0f;
 
@@ -777,7 +777,7 @@ namespace Exomia.Framework.Graphics
                     vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
 
                     corner    = s_corner_offsets[j ^ (int)spriteInfo.SpriteEffects];
-                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width))  * deltaX;
+                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
                     vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
                     vertex->I = spriteInfo.Index;
                 }
@@ -921,8 +921,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="rotation">             The rotation. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
-        public void DrawRectangle(in RectangleF destinationRectangle, in Color color, float lineWidth, float rotation,
-                                  float         opacity,              float    layerDepth)
+        public void DrawRectangle(in RectangleF destinationRectangle,
+                                  in Color      color,
+                                  float         lineWidth,
+                                  float         rotation,
+                                  float         opacity,
+                                  float         layerDepth)
         {
             DrawRectangle(destinationRectangle, color, lineWidth, rotation, s_vector2Zero, opacity, layerDepth);
         }
@@ -937,8 +941,13 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">               The origin. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
-        public void DrawRectangle(in RectangleF destinationRectangle, in Color color,   float lineWidth, float rotation,
-                                  in Vector2    origin,               float    opacity, float layerDepth)
+        public void DrawRectangle(in RectangleF destinationRectangle,
+                                  in Color      color,
+                                  float         lineWidth,
+                                  float         rotation,
+                                  in Vector2    origin,
+                                  float         opacity,
+                                  float         layerDepth)
         {
             Vector2[] vertex;
 
@@ -979,7 +988,7 @@ namespace Exomia.Framework.Graphics
 
                     vertex[j] = new Vector2(
                         (destinationRectangle.X + (posX * cos)) - (posY * sin),
-                        destinationRectangle.Y + (posX * sin)   + (posY * cos));
+                        destinationRectangle.Y + (posX * sin) + (posY * cos));
                 }
             }
 
@@ -1006,7 +1015,9 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">                The color. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
-        public void DrawFillRectangle(in RectangleF destinationRectangle, in Color color, float opacity,
+        public void DrawFillRectangle(in RectangleF destinationRectangle,
+                                      in Color      color,
+                                      float         opacity,
                                       float         layerDepth)
         {
             DrawSprite(
@@ -1023,8 +1034,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">               The origin. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
-        public void DrawFillRectangle(in RectangleF destinationRectangle, in Color color,   float rotation,
-                                      in Vector2    origin,               float    opacity, float layerDepth)
+        public void DrawFillRectangle(in RectangleF destinationRectangle,
+                                      in Color      color,
+                                      float         rotation,
+                                      in Vector2    origin,
+                                      float         opacity,
+                                      float         layerDepth)
         {
             DrawSprite(
                 DefaultTextures.WhiteTexture2, destinationRectangle, true, true, s_nullRectangle, color, rotation,
@@ -1040,7 +1055,11 @@ namespace Exomia.Framework.Graphics
         /// <param name="lineWidth">  Width of the line. </param>
         /// <param name="opacity">    The opacity. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawLine(in Vector2 point1, in Vector2 point2, in Color color, float lineWidth, float opacity,
+        public void DrawLine(in Vector2 point1,
+                             in Vector2 point2,
+                             in Color   color,
+                             float      lineWidth,
+                             float      opacity,
                              float      layerDepth)
         {
             DrawLine(point1, point2, color, lineWidth, opacity, 1.0f, layerDepth);
@@ -1056,8 +1075,13 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="lengthFactor"> The length factor. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        public void DrawLine(in Vector2 point1,       in Vector2 point2, in Color color, float lineWidth, float opacity,
-                             float      lengthFactor, float      layerDepth)
+        public void DrawLine(in Vector2 point1,
+                             in Vector2 point2,
+                             in Color   color,
+                             float      lineWidth,
+                             float      opacity,
+                             float      lengthFactor,
+                             float      layerDepth)
         {
             DrawSprite(
                 DefaultTextures.WhiteTexture2, new RectangleF(
@@ -1098,8 +1122,13 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="segments">   The segments. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawCircle(in Vector2 center,   float radius, in Color color, float lineWidth, float opacity,
-                               int        segments, float layerDepth)
+        public void DrawCircle(in Vector2 center,
+                               float      radius,
+                               in Color   color,
+                               float      lineWidth,
+                               float      opacity,
+                               int        segments,
+                               float      layerDepth)
         {
             DrawCircle(center, radius, 0, MathUtil.TwoPi, color, lineWidth, opacity, segments, layerDepth);
         }
@@ -1116,9 +1145,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="segments">   The segments. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawCircle(in Vector2 center, float radius, float start, float end, in Color color, float lineWidth,
+        public void DrawCircle(in Vector2 center,
+                               float      radius,
+                               float      start,
+                               float      end,
+                               in Color   color,
+                               float      lineWidth,
                                float      opacity,
-                               int        segments, float layerDepth)
+                               int        segments,
+                               float      layerDepth)
         {
             Vector2[] vertex = new Vector2[segments];
 
@@ -1229,8 +1264,10 @@ namespace Exomia.Framework.Graphics
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="sourceRectangle">      Source rectangle. </param>
         /// <param name="color">                The color. </param>
-        public void Draw(Texture2 texture, in RectangleF destinationRectangle, in Rectangle? sourceRectangle,
-                         in Color color)
+        public void Draw(Texture2      texture,
+                         in RectangleF destinationRectangle,
+                         in Rectangle? sourceRectangle,
+                         in Color      color)
         {
             DrawSprite(
                 texture, destinationRectangle, false, false, sourceRectangle, color, 0f, s_vector2Zero, 1.0f,
@@ -1244,8 +1281,10 @@ namespace Exomia.Framework.Graphics
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="sourceRectangle">      Source rectangle. </param>
         /// <param name="color">                The color. </param>
-        public void DrawT(Texture2 texture, in RectangleF destinationRectangle, in Rectangle? sourceRectangle,
-                          in Color color)
+        public void DrawT(Texture2      texture,
+                          in RectangleF destinationRectangle,
+                          in Rectangle? sourceRectangle,
+                          in Color      color)
         {
             DrawSprite(
                 texture, destinationRectangle, false, true, sourceRectangle, color, 0f, s_vector2Zero, 1.0f,
@@ -1264,8 +1303,13 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">              The opacity. </param>
         /// <param name="effects">              The effects. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
-        public void Draw(Texture2      texture, in RectangleF destinationRectangle, in Rectangle? sourceRectangle,
-                         in Color      color,   float         rotation,             in Vector2    origin, float opacity,
+        public void Draw(Texture2      texture,
+                         in RectangleF destinationRectangle,
+                         in Rectangle? sourceRectangle,
+                         in Color      color,
+                         float         rotation,
+                         in Vector2    origin,
+                         float         opacity,
                          SpriteEffects effects,
                          float         layerDepth)
         {
@@ -1286,8 +1330,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">              The opacity. </param>
         /// <param name="effects">              The effects. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
-        public void DrawT(Texture2      texture, in RectangleF destinationRectangle, in Rectangle? sourceRectangle,
-                          in Color      color,   float         rotation,             in Vector2    origin,
+        public void DrawT(Texture2      texture,
+                          in RectangleF destinationRectangle,
+                          in Rectangle? sourceRectangle,
+                          in Color      color,
+                          float         rotation,
+                          in Vector2    origin,
                           float         opacity,
                           SpriteEffects effects,
                           float         layerDepth)
@@ -1310,8 +1358,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        public void Draw(Texture2      texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
-                         float         rotation, in Vector2 origin,   float         scale,           float    opacity,
+        public void Draw(Texture2      texture,
+                         in Vector2    position,
+                         in Rectangle? sourceRectangle,
+                         in Color      color,
+                         float         rotation,
+                         in Vector2    origin,
+                         float         scale,
+                         float         opacity,
                          SpriteEffects effects,
                          float         layerDepth)
         {
@@ -1334,8 +1388,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        public void DrawT(Texture2      texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
-                          float         rotation, in Vector2 origin,   float         scale,           float    opacity,
+        public void DrawT(Texture2      texture,
+                          in Vector2    position,
+                          in Rectangle? sourceRectangle,
+                          in Color      color,
+                          float         rotation,
+                          in Vector2    origin,
+                          float         scale,
+                          float         opacity,
                           SpriteEffects effects,
                           float         layerDepth)
         {
@@ -1358,8 +1418,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        public void Draw(Texture2      texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
-                         float         rotation, in Vector2 origin,   in Vector2    scale,           float    opacity,
+        public void Draw(Texture2      texture,
+                         in Vector2    position,
+                         in Rectangle? sourceRectangle,
+                         in Color      color,
+                         float         rotation,
+                         in Vector2    origin,
+                         in Vector2    scale,
+                         float         opacity,
                          SpriteEffects effects,
                          float         layerDepth)
         {
@@ -1382,8 +1448,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        public void DrawT(Texture2      texture,  in Vector2 position, in Rectangle? sourceRectangle, in Color color,
-                          float         rotation, in Vector2 origin,   in Vector2    scale,           float    opacity,
+        public void DrawT(Texture2      texture,
+                          in Vector2    position,
+                          in Rectangle? sourceRectangle,
+                          in Color      color,
+                          float         rotation,
+                          in Vector2    origin,
+                          in Vector2    scale,
+                          float         opacity,
                           SpriteEffects effects,
                           float         layerDepth)
         {
@@ -1409,13 +1481,19 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">          The opacity. </param>
         /// <param name="effects">          The effects. </param>
         /// <param name="depth">            The depth. </param>
-        private unsafe void DrawSprite(Texture2 texture, in RectangleF destination,
-                                       bool     scaleDestination,
-                                       bool     texelCalculation, in Rectangle? sourceRectangle, in Color color,
-                                       float    rotation,         in Vector2    origin,
-                                       float    opacity,          SpriteEffects effects, float depth)
+        private unsafe void DrawSprite(Texture2      texture,
+                                       in RectangleF destination,
+                                       bool          scaleDestination,
+                                       bool          texelCalculation,
+                                       in Rectangle? sourceRectangle,
+                                       in Color      color,
+                                       float         rotation,
+                                       in Vector2    origin,
+                                       float         opacity,
+                                       SpriteEffects effects,
+                                       float         depth)
         {
-            if (_texture2DArray == null)
+            if (_texture2DArray.TextureView == null)
             {
                 throw new NullReferenceException("texture2DArray");
             }
@@ -1442,8 +1520,8 @@ namespace Exomia.Framework.Graphics
                     {
                         spriteInfo->Source.X = texture.SourceRectangle.X + rectangle.X + 0.5f;
                         spriteInfo->Source.Y = texture.SourceRectangle.Y + rectangle.Y + 0.5f;
-                        width                = rectangle.Width                         - 1.0f;
-                        height               = rectangle.Height                        - 1.0f;
+                        width                = rectangle.Width - 1.0f;
+                        height               = rectangle.Height - 1.0f;
                     }
                     else
                     {
@@ -1458,9 +1536,9 @@ namespace Exomia.Framework.Graphics
                     Rectangle rectangle = texture.SourceRectangle;
                     if (texelCalculation)
                     {
-                        spriteInfo->Source.X = rectangle.X      + 0.5f;
-                        spriteInfo->Source.Y = rectangle.Y      + 0.5f;
-                        width                = rectangle.Width  - 1.0f;
+                        spriteInfo->Source.X = rectangle.X + 0.5f;
+                        spriteInfo->Source.Y = rectangle.Y + 0.5f;
+                        width                = rectangle.Width - 1.0f;
                         height               = rectangle.Height - 1.0f;
                     }
                     else
@@ -1519,125 +1597,38 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">      The color. </param>
         /// <param name="rotation">   The rotation. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2 font, string text, in Vector2 position, in Color color, float rotation,
-                             float       layerDepth)
-        {
-            font.Draw(
-                DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">       The font. </param>
-        /// <param name="text">       The text. </param>
-        /// <param name="position">   The position. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="rotation">   The rotation. </param>
-        /// <param name="origin">     The origin. </param>
-        /// <param name="opacity">    The opacity. </param>
-        /// <param name="effects">    The effects. </param>
-        /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2 font,   string text,    in Vector2    position, in Color color, float rotation,
-                             in Vector2  origin, float  opacity, SpriteEffects effects,  float    layerDepth)
-        {
-            font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, layerDepth);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">       The font. </param>
-        /// <param name="text">       The text. </param>
-        /// <param name="start">      The start. </param>
-        /// <param name="end">        The end. </param>
-        /// <param name="position">   The position. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="rotation">   The rotation. </param>
-        /// <param name="origin">     The origin. </param>
-        /// <param name="opacity">    The opacity. </param>
-        /// <param name="effects">    The effects. </param>
-        /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2 font,     string     text, int start, int end,
-                             in Vector2  position, in Color   color,
-                             float       rotation, in Vector2 origin, float opacity, SpriteEffects effects,
-                             float       layerDepth)
-        {
-            font.Draw(
-                DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, layerDepth);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">       The font. </param>
-        /// <param name="text">       The text. </param>
-        /// <param name="start">      The start. </param>
-        /// <param name="end">        The end. </param>
-        /// <param name="position">   The position. </param>
-        /// <param name="dimension">  The dimension. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="rotation">   The rotation. </param>
-        /// <param name="origin">     The origin. </param>
-        /// <param name="opacity">    The opacity. </param>
-        /// <param name="effects">    The effects. </param>
-        /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2   font, string text, int start, int end,
-                             in Vector2    position,
-                             in Size2F     dimension, in Color color, float rotation, in Vector2 origin,
-                             float         opacity,
-                             SpriteEffects effects, float layerDepth)
-        {
-            font.Draw(
-                DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects,
-                layerDepth);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">       The font. </param>
-        /// <param name="text">       The text. </param>
-        /// <param name="position">   The position. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2 font, StringBuilder text, in Vector2 position, in Color color,
-                             float       layerDepth)
-        {
-            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">       The font. </param>
-        /// <param name="text">       The text. </param>
-        /// <param name="position">   The position. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="rotation">   The rotation. </param>
-        /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2 font, StringBuilder text, in Vector2 position, in Color color, float rotation,
-                             float       layerDepth)
-        {
-            font.Draw(
-                DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">       The font. </param>
-        /// <param name="text">       The text. </param>
-        /// <param name="position">   The position. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="rotation">   The rotation. </param>
-        /// <param name="origin">     The origin. </param>
-        /// <param name="opacity">    The opacity. </param>
-        /// <param name="effects">    The effects. </param>
-        /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2 font, StringBuilder text, in Vector2 position, in Color color,
+        public void DrawText(SpriteFont2 font,
+                             string      text,
+                             in Vector2  position,
+                             in Color    color,
                              float       rotation,
-                             in Vector2  origin, float opacity, SpriteEffects effects, float layerDepth)
+                             float       layerDepth)
+        {
+            font.Draw(
+                DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw text.
+        /// </summary>
+        /// <param name="font">       The font. </param>
+        /// <param name="text">       The text. </param>
+        /// <param name="position">   The position. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="rotation">   The rotation. </param>
+        /// <param name="origin">     The origin. </param>
+        /// <param name="opacity">    The opacity. </param>
+        /// <param name="effects">    The effects. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        public void DrawText(SpriteFont2   font,
+                             string        text,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects,
+                             float         layerDepth)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, layerDepth);
         }
@@ -1656,9 +1647,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2   font, StringBuilder text, int start, int end,
+        public void DrawText(SpriteFont2   font,
+                             string        text,
+                             int           start,
+                             int           end,
                              in Vector2    position,
-                             in Color      color, float rotation, in Vector2 origin, float opacity,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
                              SpriteEffects effects,
                              float         layerDepth)
         {
@@ -1681,11 +1678,143 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
-        public void DrawText(SpriteFont2   font, StringBuilder text, int start, int end,
+        public void DrawText(SpriteFont2   font,
+                             string        text,
+                             int           start,
+                             int           end,
                              in Vector2    position,
-                             in Size2F     dimension, in Color color, float rotation, in Vector2 origin,
+                             in Size2F     dimension,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
                              float         opacity,
-                             SpriteEffects effects, float layerDepth)
+                             SpriteEffects effects,
+                             float         layerDepth)
+        {
+            font.Draw(
+                DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects,
+                layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw text.
+        /// </summary>
+        /// <param name="font">       The font. </param>
+        /// <param name="text">       The text. </param>
+        /// <param name="position">   The position. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        public void DrawText(SpriteFont2   font,
+                             StringBuilder text,
+                             in Vector2    position,
+                             in Color      color,
+                             float         layerDepth)
+        {
+            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw text.
+        /// </summary>
+        /// <param name="font">       The font. </param>
+        /// <param name="text">       The text. </param>
+        /// <param name="position">   The position. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="rotation">   The rotation. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        public void DrawText(SpriteFont2   font,
+                             StringBuilder text,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             float         layerDepth)
+        {
+            font.Draw(
+                DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw text.
+        /// </summary>
+        /// <param name="font">       The font. </param>
+        /// <param name="text">       The text. </param>
+        /// <param name="position">   The position. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="rotation">   The rotation. </param>
+        /// <param name="origin">     The origin. </param>
+        /// <param name="opacity">    The opacity. </param>
+        /// <param name="effects">    The effects. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        public void DrawText(SpriteFont2   font,
+                             StringBuilder text,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects,
+                             float         layerDepth)
+        {
+            font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw text.
+        /// </summary>
+        /// <param name="font">       The font. </param>
+        /// <param name="text">       The text. </param>
+        /// <param name="start">      The start. </param>
+        /// <param name="end">        The end. </param>
+        /// <param name="position">   The position. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="rotation">   The rotation. </param>
+        /// <param name="origin">     The origin. </param>
+        /// <param name="opacity">    The opacity. </param>
+        /// <param name="effects">    The effects. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        public void DrawText(SpriteFont2   font,
+                             StringBuilder text,
+                             int           start,
+                             int           end,
+                             in Vector2    position,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects,
+                             float         layerDepth)
+        {
+            font.Draw(
+                DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw text.
+        /// </summary>
+        /// <param name="font">       The font. </param>
+        /// <param name="text">       The text. </param>
+        /// <param name="start">      The start. </param>
+        /// <param name="end">        The end. </param>
+        /// <param name="position">   The position. </param>
+        /// <param name="dimension">  The dimension. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="rotation">   The rotation. </param>
+        /// <param name="origin">     The origin. </param>
+        /// <param name="opacity">    The opacity. </param>
+        /// <param name="effects">    The effects. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        public void DrawText(SpriteFont2   font,
+                             StringBuilder text,
+                             int           start,
+                             int           end,
+                             in Vector2    position,
+                             in Size2F     dimension,
+                             in Color      color,
+                             float         rotation,
+                             in Vector2    origin,
+                             float         opacity,
+                             SpriteEffects effects,
+                             float         layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects,
@@ -1705,10 +1834,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        internal void DrawTextInternal(Texture2      texture, in Vector2 position, in Rectangle? sourceRectangle,
+        internal void DrawTextInternal(Texture2      texture,
+                                       in Vector2    position,
+                                       in Rectangle? sourceRectangle,
                                        in Color      color,
-                                       float         rotation, in Vector2 origin, float scale, float opacity,
-                                       SpriteEffects effects,  float      layerDepth)
+                                       float         rotation,
+                                       in Vector2    origin,
+                                       float         scale,
+                                       float         opacity,
+                                       SpriteEffects effects,
+                                       float         layerDepth)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, scale, scale), true, false, sourceRectangle, color,
@@ -1749,11 +1884,19 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref _defaultBlendState);
                     Utilities.Dispose(ref _defaultRasterizerState);
                     Utilities.Dispose(ref _defaultSamplerState);
-                    Utilities.Dispose(ref _depthStencilState);
+                    Utilities.Dispose(ref _defaultRasterizerScissorEnabledState);
+                    Utilities.Dispose(ref _defaultDepthStencilState);
 
                     Utilities.Dispose(ref _vertexBuffer);
                     Utilities.Dispose(ref _perFrameBuffer);
                     Utilities.Dispose(ref _indexBuffer);
+
+                    Utilities.Dispose(ref _pixelShader);
+                    Utilities.Dispose(ref _vertexShader);
+
+                    _vertexInputLayout.Dispose();
+
+                    _texture2DArray.Dispose();
                 }
 
                 _disposed = true;

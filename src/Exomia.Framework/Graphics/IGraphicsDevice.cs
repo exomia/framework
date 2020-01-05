@@ -155,7 +155,7 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         /// <param name="state">  True to state. </param>
         /// <param name="output"> (Optional) The output. </param>
-        void SetFullscreenState(bool state, Output output = null);
+        void SetFullscreenState(bool state, Output? output = null);
 
         /// <summary>
         ///     Gets fullscreen state.
@@ -169,6 +169,6 @@ namespace Exomia.Framework.Graphics
         ///     Sets render target.
         /// </summary>
         /// <param name="target"> Target for the. </param>
-        void SetRenderTarget(RenderTargetView1 target);
+        void SetRenderTarget(RenderTargetView1? target);
     }
 }

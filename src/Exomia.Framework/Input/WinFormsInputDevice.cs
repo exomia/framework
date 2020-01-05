@@ -26,49 +26,49 @@ namespace Exomia.Framework.Input
         ///     Occurs when Key Down.
         /// </summary>
         /// <inheritdoc />
-        public event KeyEventHandler KeyDown;
+        public event KeyEventHandler? KeyDown;
 
         /// <summary>
         ///     Occurs when Key Press.
         /// </summary>
         /// <inheritdoc />
-        public event KeyPressEventHandler KeyPress;
+        public event KeyPressEventHandler? KeyPress;
 
         /// <summary>
         ///     Occurs when Key Up.
         /// </summary>
         /// <inheritdoc />
-        public event KeyEventHandler KeyUp;
+        public event KeyEventHandler? KeyUp;
 
         /// <summary>
         ///     Occurs when Mouse Click.
         /// </summary>
         /// <inheritdoc />
-        public event MouseEventHandler MouseClick;
+        public event MouseEventHandler? MouseClick;
 
         /// <summary>
         ///     Occurs when Mouse Down.
         /// </summary>
         /// <inheritdoc />
-        public event MouseEventHandler MouseDown;
+        public event MouseEventHandler? MouseDown;
 
         /// <summary>
         ///     Occurs when Mouse Move.
         /// </summary>
         /// <inheritdoc />
-        public event MouseEventHandler MouseMove;
+        public event MouseEventHandler? MouseMove;
 
         /// <summary>
         ///     Occurs when Mouse Up.
         /// </summary>
         /// <inheritdoc />
-        public event MouseEventHandler MouseUp;
+        public event MouseEventHandler? MouseUp;
 
         /// <summary>
         ///     Occurs when Mouse Wheel.
         /// </summary>
         /// <inheritdoc />
-        public event MouseEventHandler MouseWheel;
+        public event MouseEventHandler? MouseWheel;
 
         /// <summary>
         ///     The pressed keys.
@@ -102,7 +102,7 @@ namespace Exomia.Framework.Input
         /// </summary>
         /// <param name="window"> The win forms game window. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        public WinFormsInputDevice(IWinFormsGameWindow window)
+        public WinFormsInputDevice(IWinFormsGameWindow? window)
         {
             _window = window ?? throw new ArgumentNullException(nameof(window));
 

@@ -59,17 +59,17 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     The input.
         /// </summary>
-        private IInputDevice _input;
+        private IInputDevice? _input;
 
         /// <summary>
         ///     The input handler.
         /// </summary>
-        private IInputHandler _inputHandler;
+        private IInputHandler? _inputHandler;
 
         /// <summary>
         ///     The registry.
         /// </summary>
-        private IServiceRegistry _registry;
+        private IServiceRegistry? _registry;
 
         /// <inheritdoc />
         /// <summary>
@@ -111,7 +111,7 @@ namespace Exomia.Framework.Scene
                 }
                 else
                 {
-                    scene.Initialize(_registry);
+                    scene.Initialize(_registry!);
                 }
             }
 
@@ -147,7 +147,7 @@ namespace Exomia.Framework.Scene
             HideScene(scene);
 
             _scenes.Remove(key);
-            scene.UnloadContent(_registry);
+            scene.UnloadContent(_registry!);
             scene.Dispose();
 
             return true;
@@ -200,7 +200,7 @@ namespace Exomia.Framework.Scene
                                 }
                                 if (!isReferenced)
                                 {
-                                    uScene.UnloadContent(_registry);
+                                    uScene.UnloadContent(_registry!);
                                     _scenesToUnload.RemoveAt(i);
                                 }
                             }
@@ -219,13 +219,13 @@ namespace Exomia.Framework.Scene
                             }
                             if (rScene.State == SceneState.StandBy)
                             {
-                                rScene.LoadContent(_registry);
+                                rScene.LoadContent(_registry!);
                             }
                         }
                         scene.ReferenceScenesLoaded();
                     });
 
-                _inputHandler = scene?.InputHandler ?? scene;
+                _inputHandler = scene.InputHandler ?? scene;
 
                 lock (_currentScenes)
                 {
@@ -355,7 +355,7 @@ namespace Exomia.Framework.Scene
                     _currentScenes.Clear();
                 }
 
-                _input.MouseMove  -= Input_MouseMove;
+                _input!.MouseMove  -= Input_MouseMove;
                 _input.MouseDown  -= Input_MouseDown;
                 _input.MouseUp    -= Input_MouseUp;
                 _input.MouseClick -= Input_MouseClick;
@@ -367,7 +367,7 @@ namespace Exomia.Framework.Scene
 
                 foreach (IScene scene in _scenes.Values)
                 {
-                    scene.UnloadContent(_registry);
+                    scene.UnloadContent(_registry!);
                     scene.Dispose();
                 }
 

@@ -24,6 +24,6 @@ namespace Exomia.Framework.Content
         ///     The data decoded from the stream, or null if the kind of asset is not supported by this
         ///     content reader.
         /// </returns>
-        object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters);
+        object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters);
     }
 }

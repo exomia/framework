@@ -24,13 +24,13 @@ namespace Exomia.Framework.Tools
         ///     Occurs when Enabled Changed.
         /// </summary>
         /// <inheritdoc />
-        public event EventHandler EnabledChanged;
+        public event EventHandler? EnabledChanged;
 
         /// <summary>
         ///     Occurs when Update Order Changed.
         /// </summary>
         /// <inheritdoc />
-        public event EventHandler UpdateOrderChanged;
+        public event EventHandler? UpdateOrderChanged;
 
         /// <summary>
         ///     The callback.
@@ -105,7 +105,15 @@ namespace Exomia.Framework.Tools
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Tween"/> class.
+        /// </summary>
+        /// <param name="target">   Target for the. </param>
+        /// <param name="values">   The values. </param>
+        /// <param name="duration"> The duration. </param>
+        /// <param name="delay">    The delay. </param>
+        /// <param name="callback"> The callback. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public Tween(object target, object values, float duration, float delay, EasingFunction callback)
         {
             if (values == null) { throw new ArgumentNullException(nameof(values)); }

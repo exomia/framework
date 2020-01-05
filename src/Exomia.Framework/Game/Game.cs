@@ -1,12 +1,14 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
 #endregion
+
+#pragma warning disable IDE0069
 
 using System;
 using System.Collections.Generic;
@@ -55,7 +57,7 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     Occurs when is Running Changed.
         /// </summary>
-        private event EventHandler<Game, bool> _isRunningChanged;
+        private event EventHandler<Game, bool>? _IsRunningChanged;
 
         /// <summary>
         ///     The contentable component.
@@ -105,7 +107,7 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     The collector.
         /// </summary>
-        private DisposeCollector _collector;
+        private readonly DisposeCollector _collector;
 
         /// <summary>
         ///     Manager for content.
@@ -210,7 +212,7 @@ namespace Exomia.Framework.Game
             {
                 if (_isRunning != value)
                 {
-                    _isRunningChanged?.Invoke(this, value);
+                    _IsRunningChanged?.Invoke(this, value);
                     _isRunning = value;
                 }
             }
@@ -534,7 +536,7 @@ namespace Exomia.Framework.Game
                 else { gameTime.Stop(); }
             }
 
-            _isRunningChanged += OnIsRunningChanged;
+            _IsRunningChanged += OnIsRunningChanged;
 
             while (!_shutdown && msg.message != WM_QUIT)
             {
@@ -578,7 +580,7 @@ namespace Exomia.Framework.Game
                 gameTime.Tick();
             }
 
-            _isRunningChanged -= OnIsRunningChanged;
+            _IsRunningChanged -= OnIsRunningChanged;
         }
 
         #endregion
@@ -872,8 +874,11 @@ namespace Exomia.Framework.Game
         /// <returns>
         ///     A Timer2.
         /// </returns>
-        public Timer2 AddTimer(float tick, bool enabled, EventHandler<Timer2> tickCallback, uint maxIterations = 0,
-                               bool  removeAfterFinished = false)
+        public Timer2 AddTimer(float                tick,
+                               bool                 enabled,
+                               EventHandler<Timer2> tickCallback,
+                               uint                 maxIterations       = 0,
+                               bool                 removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, maxIterations) { Enabled = enabled });
             if (removeAfterFinished)
@@ -895,9 +900,12 @@ namespace Exomia.Framework.Game
         /// <returns>
         ///     A Timer2.
         /// </returns>
-        public Timer2 AddTimer(float                tick, bool enabled, EventHandler<Timer2> tickCallback,
+        public Timer2 AddTimer(float                tick,
+                               bool                 enabled,
+                               EventHandler<Timer2> tickCallback,
                                EventHandler<Timer2> finishedCallback,
-                               uint                 maxIterations, bool removeAfterFinished = false)
+                               uint                 maxIterations,
+                               bool                 removeAfterFinished = false)
         {
             Timer2 timer = Add(new Timer2(tick, tickCallback, finishedCallback, maxIterations) { Enabled = enabled });
             if (removeAfterFinished)
@@ -970,13 +978,12 @@ namespace Exomia.Framework.Game
                     _gameComponents.Clear();
                     _pendingInitializables.Clear();
 
-                    _collector.DisposeAndClear();
-                    _collector = null;
-
                     Utilities.Dispose(ref _contentManager);
                     Utilities.Dispose(ref _graphicsDevice);
                     Utilities.Dispose(ref _gameWindow);
                 }
+                _collector.DisposeAndClear(disposing);
+
                 _disposed = true;
             }
         }

@@ -19,7 +19,7 @@ namespace Exomia.Framework.Graphics
     sealed class TextureContentReader : IContentReader
     {
         /// <inheritdoc />
-        public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+        public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             IGraphicsDevice graphicsDevice = contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
             if (graphicsDevice == null)
@@ -36,7 +36,7 @@ namespace Exomia.Framework.Graphics
     sealed class Texture2ContentReader : IContentReader
     {
         /// <inheritdoc />
-        public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+        public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             ITexture2ContentManager manager = contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
             if (manager == null)

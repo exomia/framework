@@ -40,7 +40,7 @@ namespace Exomia.Framework.Video
         /// <summary>
         ///     Name of the asset.
         /// </summary>
-        private string _assetName;
+        private string? _assetName;
 
         /// <summary>
         ///     The background color.
@@ -50,12 +50,12 @@ namespace Exomia.Framework.Video
         /// <summary>
         ///     The byte stream.
         /// </summary>
-        private ByteStream _byteStream;
+        private ByteStream? _byteStream;
 
         /// <summary>
         ///     Manager for dxgi device.
         /// </summary>
-        private DXGIDeviceManager _dxgiDeviceManager;
+        private DXGIDeviceManager? _dxgiDeviceManager;
 
         /// <summary>
         ///     True if this object is end of stream.
@@ -75,27 +75,27 @@ namespace Exomia.Framework.Video
         /// <summary>
         ///     The media engine.
         /// </summary>
-        private MediaEngine _mediaEngine;
+        private MediaEngine? _mediaEngine;
 
         /// <summary>
         ///     The media engine ex.
         /// </summary>
-        private MediaEngineEx _mediaEngineEx;
+        private MediaEngineEx? _mediaEngineEx;
 
         /// <summary>
         ///     The sprite batch.
         /// </summary>
-        private SpriteBatch _spriteBatch;
+        private SpriteBatch? _spriteBatch;
 
         /// <summary>
         ///     The texture.
         /// </summary>
-        private Texture _texture;
+        private Texture? _texture;
 
         /// <summary>
         ///     The graphics device.
         /// </summary>
-        private IGraphicsDevice _graphicsDevice;
+        private IGraphicsDevice? _graphicsDevice;
 
         /// <summary>
         ///     Gets or sets the name of the asset.
@@ -103,16 +103,10 @@ namespace Exomia.Framework.Video
         /// <value>
         ///     The name of the asset.
         /// </value>
-        public string AssetName
+        public string? AssetName
         {
             get { return _assetName; }
-            set
-            {
-                if (_assetName != value)
-                {
-                    _assetName = value;
-                }
-            }
+            set { _assetName = value; }
         }
 
         /// <summary>
@@ -124,13 +118,7 @@ namespace Exomia.Framework.Video
         public Color BackgroundColor
         {
             get { return _backgroundColor; }
-            set
-            {
-                if (_backgroundColor != value)
-                {
-                    _backgroundColor = value;
-                }
-            }
+            set { _backgroundColor = value; }
         }
 
         /// <summary>
@@ -143,12 +131,12 @@ namespace Exomia.Framework.Video
         {
             get
             {
-                double duration = 0.0;
-                if (_mediaEngineEx != null)
+                if (_mediaEngineEx == null)
                 {
-                    duration = _mediaEngineEx.Duration;
-                    if (double.IsNaN(duration)) { duration = 0.0; }
+                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
                 }
+                double duration = _mediaEngineEx.Duration;
+                if (double.IsNaN(duration)) { duration = 0.0; }
                 return duration;
             }
         }
@@ -162,13 +150,8 @@ namespace Exomia.Framework.Video
         public bool IsPlaying
         {
             get { return _isPlaying; }
-            set
-            {
-                if (_isPlaying != value)
-                {
-                    _isPlaying = value;
-                }
-            }
+
+            set { _isPlaying = value; }
         }
 
         /// <summary>
@@ -180,7 +163,15 @@ namespace Exomia.Framework.Video
         public bool Mute
         {
             get { return _mediaEngineEx?.Muted ?? false; }
-            set { _mediaEngineEx.Muted = value; }
+
+            set
+            {
+                if (_mediaEngineEx == null)
+                {
+                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                }
+                _mediaEngineEx.Muted = value;
+            }
         }
 
         /// <summary>
@@ -192,7 +183,15 @@ namespace Exomia.Framework.Video
         public double PlaybackPosition
         {
             get { return _mediaEngineEx?.CurrentTime ?? 0.0; }
-            set { _mediaEngineEx.CurrentTime = value; }
+
+            set
+            {
+                if (_mediaEngineEx == null)
+                {
+                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                }
+                _mediaEngineEx.CurrentTime = value;
+            }
         }
 
         /// <summary>
@@ -204,7 +203,15 @@ namespace Exomia.Framework.Video
         public double Volume
         {
             get { return _mediaEngineEx?.Volume ?? 0.0; }
-            set { _mediaEngineEx.Volume = value; }
+
+            set
+            {
+                if (_mediaEngineEx == null)
+                {
+                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                }
+                _mediaEngineEx.Volume = value;
+            }
         }
 
         /// <summary>
@@ -229,8 +236,8 @@ namespace Exomia.Framework.Video
         /// <inheritdoc />
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_texture, Vector2.Zero, Color.White);
+            _spriteBatch!.Begin();
+            _spriteBatch.Draw(_texture!, Vector2.Zero, Color.White);
             _spriteBatch.End();
         }
 
@@ -247,22 +254,26 @@ namespace Exomia.Framework.Video
         /// </summary>
         public void Play()
         {
-            if (_mediaEngineEx != null)
+            if (_mediaEngineEx == null)
             {
-                if (_mediaEngineEx.HasVideo() && _isVideoStopped) { _isVideoStopped = false; }
-
-                if (_isEndOfStream)
-                {
-                    PlaybackPosition = 0;
-                    _isPlaying       = true;
-                }
-                else
-                {
-                    _mediaEngineEx.Play();
-                }
-
-                _isEndOfStream = false;
+                throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
             }
+
+            if (_mediaEngineEx.HasVideo() && _isVideoStopped)
+            {
+                _isVideoStopped = false;
+            }
+            if (_isEndOfStream)
+            {
+                PlaybackPosition = 0;
+                _isPlaying       = true;
+            }
+
+            else
+            {
+                _mediaEngineEx.Play();
+            }
+            _isEndOfStream = false;
         }
 
         /// <summary>
@@ -273,14 +284,16 @@ namespace Exomia.Framework.Video
         public void SetByteStream(Stream stream)
         {
             _byteStream = new ByteStream(stream);
-            if (_mediaEngineEx != null)
+            if (_mediaEngineEx == null)
             {
-                Uri url = new Uri(_assetName, UriKind.RelativeOrAbsolute);
-                _mediaEngineEx.SetSourceFromByteStream(_byteStream, url.AbsoluteUri);
-                if (!_eventReadyToPlay.WaitOne(5000))
-                {
-                    throw new Exception("Unexpected error: Unable to play this file");
-                }
+                throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+            }
+
+            Uri url = new Uri(_assetName, UriKind.RelativeOrAbsolute);
+            _mediaEngineEx.SetSourceFromByteStream(_byteStream, url.AbsoluteUri);
+            if (!_eventReadyToPlay.WaitOne(5000))
+            {
+                throw new Exception("Unexpected error: Unable to play this file");
             }
         }
 
@@ -293,30 +306,29 @@ namespace Exomia.Framework.Video
             {
                 Stop();
 
-                _mediaEngineEx?.Shutdown();
+                _mediaEngineEx!.Shutdown();
             }
         }
 
         /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            if (_isVideoStopped || !_isInitialized) { return; }
-
-            if (_mediaEngineEx != null)
+            if (_isVideoStopped || !_isInitialized)
             {
-                if (_mediaEngineEx.OnVideoStreamTick(out _))
-                {
-                    _mediaEngineEx.TransferVideoFrame(
-                        _outputTexture,
-                        null,
-                        new Rectangle(0, 0, _outputTexture.Description.Width, _outputTexture.Description.Height),
-                        (ColorBGRA)BackgroundColor);
+                return;
+            }
+            if (_mediaEngineEx!.OnVideoStreamTick(out _))
+            {
+                _mediaEngineEx.TransferVideoFrame(
+                    _outputTexture,
+                    null,
+                    new Rectangle(0, 0, _outputTexture.Description.Width, _outputTexture.Description.Height),
+                    (ColorBGRA)BackgroundColor);
 
-                    //TODO: draw the texture directly to the _texture's TexturePointer instead of creating every time new one
-                    _texture = new Texture(
-                        new ShaderResourceView1(_graphicsDevice.Device, _outputTexture),
-                        _outputTexture.Description.Width, _outputTexture.Description.Height);
-                }
+                //TODO: draw the texture directly to the _texture's TexturePointer instead of creating every time new one
+                _texture = new Texture(
+                    new ShaderResourceView1(_graphicsDevice!.Device, _outputTexture),
+                    _outputTexture.Description.Width, _outputTexture.Description.Height);
             }
         }
 
@@ -325,13 +337,10 @@ namespace Exomia.Framework.Video
         {
             _graphicsDevice = registry.GetService<IGraphicsDevice>() ??
                               throw new NullReferenceException(nameof(IGraphicsDevice));
-
             _spriteBatch = ToDispose(new SpriteBatch(_graphicsDevice));
             MediaManager.Startup();
-
             DeviceMultithread multithread = _graphicsDevice.Device.QueryInterface<DeviceMultithread>();
             multithread.SetMultithreadProtected(true);
-
             _dxgiDeviceManager = ToDispose(new DXGIDeviceManager());
             _dxgiDeviceManager.ResetDevice(_graphicsDevice.Device);
 
@@ -339,7 +348,6 @@ namespace Exomia.Framework.Video
             {
                 DxgiManager = _dxgiDeviceManager, VideoOutputFormat = (int)Format.B8G8R8A8_UNorm
             };
-
             using (MediaEngineClassFactory factory = new MediaEngineClassFactory())
             {
                 _mediaEngine = ToDispose(
@@ -375,7 +383,7 @@ namespace Exomia.Framework.Video
                     _isPlaying = false;
                     break;
                 case MediaEngineEvent.Ended:
-                    if (_mediaEngineEx.HasVideo())
+                    if (_mediaEngineEx!.HasVideo())
                     {
                         Stop();
                     }

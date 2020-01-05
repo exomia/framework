@@ -41,17 +41,17 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     The current bgm.
         /// </summary>
-        private SourceVoice _currentBgm;
+        private SourceVoice? _currentBgm;
 
         /// <summary>
         ///     List of environment linked sounds.
         /// </summary>
-        private LinkedSoundList _envLinkedSoundList;
+        private readonly LinkedSoundList _envLinkedSoundList;
 
         /// <summary>
         ///     The environment submix voice.
         /// </summary>
-        private SubmixVoice _envSubmixVoice;
+        private readonly SubmixVoice _envSubmixVoice;
 
         /// <summary>
         ///     Information describing the environment voice send.
@@ -66,12 +66,12 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     List of effects linked sounds.
         /// </summary>
-        private LinkedSoundList _fxLinkedSoundList;
+        private readonly LinkedSoundList _fxLinkedSoundList;
 
         /// <summary>
         ///     The effects submix voice.
         /// </summary>
-        private SubmixVoice _fxSubmixVoice;
+        private readonly SubmixVoice _fxSubmixVoice;
 
         /// <summary>
         ///     Information describing the effects voice send.
@@ -86,7 +86,7 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     The mastering voice.
         /// </summary>
-        private MasteringVoice _masteringVoice;
+        private readonly MasteringVoice _masteringVoice;
 
         /// <summary>
         ///     The master volume.
@@ -96,7 +96,7 @@ namespace Exomia.Framework.Audio
         /// <summary>
         ///     Buffer for sound data.
         /// </summary>
-        private Dictionary<int, SoundBuffer> _soundBuffer;
+        private readonly Dictionary<int, SoundBuffer> _soundBuffer;
 
         /// <summary>
         ///     Zero-based index of the sound buffer.
@@ -104,14 +104,14 @@ namespace Exomia.Framework.Audio
         private int _soundBufferIndex;
 
         /// <summary>
-        ///     The 3 d audio.
+        ///     The 3DAudio.
         /// </summary>
-        private X3DAudio _x3DAudio;
+        private readonly X3DAudio _x3DAudio;
 
         /// <summary>
-        ///     The second x coordinate audio.
+        ///     The XAudio2.
         /// </summary>
-        private XAudio2 _xAudio2;
+        private readonly XAudio2 _xAudio2;
 
         /// <inheritdoc />
         public float BgmVolume
@@ -134,7 +134,7 @@ namespace Exomia.Framework.Audio
             set
             {
                 _envVolume = MathUtil.Clamp(value, 0.0f, 1.0f);
-                _envSubmixVoice?.SetVolume(_envVolume);
+                _envSubmixVoice.SetVolume(_envVolume);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Exomia.Framework.Audio
             set
             {
                 _fxVolume = MathUtil.Clamp(value, 0.0f, 1.0f);
-                _fxSubmixVoice?.SetVolume(_fxVolume);
+                _fxSubmixVoice.SetVolume(_fxVolume);
             }
         }
 
@@ -156,7 +156,7 @@ namespace Exomia.Framework.Audio
             set
             {
                 _masterVolume = MathUtil.Clamp(value, 0.0f, 1.0f);
-                _masteringVoice?.SetVolume(_masterVolume);
+                _masteringVoice.SetVolume(_masterVolume);
             }
         }
 
@@ -194,7 +194,7 @@ namespace Exomia.Framework.Audio
         /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or
         ///                                      illegal values. </exception>
         /// <exception cref="Exception">         Thrown when an exception error condition occurs. </exception>
-        public AudioManager(Listener listener, int fxSoundPoolLimit, Speakers speakers, string deviceID = null)
+        public AudioManager(Listener listener, int fxSoundPoolLimit, Speakers speakers, string? deviceID = null)
         {
             _listener = listener;
             if (fxSoundPoolLimit <= 0)
@@ -217,19 +217,21 @@ namespace Exomia.Framework.Audio
                     _masteringVoice = new MasteringVoice(
                         _xAudio2, XAudio2.DefaultChannels, XAudio2.DefaultSampleRate, deviceID27);
                 }
+                else
+                {
+                    _masteringVoice = new MasteringVoice(
+                        _xAudio2, XAudio2.DefaultChannels, XAudio2.DefaultSampleRate, deviceID);
+                }
             }
             else
             {
                 _masteringVoice = new MasteringVoice(
                     _xAudio2, XAudio2.DefaultChannels, XAudio2.DefaultSampleRate, deviceID);
             }
-            if (_masteringVoice == null)
-            {
-                throw new Exception("can't create MasteringVoice");
-            }
             _masteringVoice.SetVolume(_masterVolume);
-            _x3DAudio = new X3DAudio(speakers, X3DAudio.SpeedOfSound / 1000f);
-
+            
+            _x3DAudio = new X3DAudio(speakers, X3DAudio.SpeedOfSound);
+            
             _masteringVoice.GetVoiceDetails(out VoiceDetails details);
             _inputChannelCount = details.InputChannelCount;
 
@@ -296,7 +298,7 @@ namespace Exomia.Framework.Audio
 
         /// <inheritdoc />
         public void PlayEnvSound(int            soundID, Vector3 emitterPos, float volume, float maxDistance,
-                                 Action<IntPtr> onFxEnd = null)
+                                 Action<IntPtr>? onFxEnd = null)
         {
             PlaySound(
                 soundID, emitterPos, volume, maxDistance, _envLinkedSoundList, ref _envVoiceSendDescriptor, onFxEnd);
@@ -304,7 +306,7 @@ namespace Exomia.Framework.Audio
 
         /// <inheritdoc />
         public void PlayFxSound(int            soundID, Vector3 emitterPos, float volume, float maxDistance,
-                                Action<IntPtr> onFxEnd = null)
+                                Action<IntPtr>? onFxEnd = null)
         {
             if (_fxLinkedSoundList.Count >= _fxLinkedSoundList.Capacity)
             {
@@ -315,13 +317,13 @@ namespace Exomia.Framework.Audio
         }
 
         /// <inheritdoc />
-        public void PlayEnvSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null)
+        public void PlayEnvSound(int soundID, Emitter emitter, float volume, Action<IntPtr>? onFxEnd = null)
         {
             PlaySound(soundID, emitter, volume, _envLinkedSoundList, ref _envVoiceSendDescriptor, onFxEnd);
         }
 
         /// <inheritdoc />
-        public void PlayFxSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null)
+        public void PlayFxSound(int soundID, Emitter emitter, float volume, Action<IntPtr>? onFxEnd = null)
         {
             if (_fxLinkedSoundList.Count >= _fxLinkedSoundList.Capacity)
             {
@@ -358,7 +360,7 @@ namespace Exomia.Framework.Audio
         }
 
         /// <inheritdoc />
-        public void RunBgm(int songID, Action<IntPtr> onBgmEnd = null)
+        public void RunBgm(int songID, Action<IntPtr>? onBgmEnd = null)
         {
             if (!_soundBuffer.TryGetValue(songID, out SoundBuffer buffer))
             {
@@ -445,7 +447,7 @@ namespace Exomia.Framework.Audio
         /// <param name="onFxEnd">             (Optional) The on effects end. </param>
         private void PlaySound(int                     soundID,             Vector3         emitterPos, float volume,
                                float                   maxDistance,         LinkedSoundList list,
-                               ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr>  onFxEnd = null)
+                               ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr>?  onFxEnd = null)
         {
             PlaySound(
                 soundID,
@@ -477,7 +479,7 @@ namespace Exomia.Framework.Audio
         /// <param name="onFxEnd">             (Optional) The on effects end. </param>
         private void PlaySound(int                     soundID, Emitter emitter, float volume,
                                LinkedSoundList         list,
-                               ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr> onFxEnd = null)
+                               ref VoiceSendDescriptor voiceSendDescriptor, Action<IntPtr>? onFxEnd = null)
         {
             if (!_soundBuffer.TryGetValue(soundID, out SoundBuffer buffer))
             {
@@ -604,30 +606,21 @@ namespace Exomia.Framework.Audio
                     _currentBgm?.Dispose();
                     _currentBgm = null;
 
-                    _fxLinkedSoundList?.Clear();
-                    _fxLinkedSoundList = null;
-
-                    _envLinkedSoundList?.Clear();
-                    _envLinkedSoundList = null;
+                    _fxLinkedSoundList.Clear();
+                    _envLinkedSoundList.Clear();
 
                     UnloadAll();
-                    _soundBuffer = null;
 
-                    _fxSubmixVoice?.DestroyVoice();
-                    _fxSubmixVoice?.Dispose();
-                    _fxSubmixVoice = null;
+                    _fxSubmixVoice.DestroyVoice();
+                    _fxSubmixVoice.Dispose();
 
-                    _envSubmixVoice?.DestroyVoice();
-                    _envSubmixVoice?.Dispose();
-                    _envSubmixVoice = null;
+                    _envSubmixVoice.DestroyVoice();
+                    _envSubmixVoice.Dispose();
 
-                    _masteringVoice?.DestroyVoice();
-                    _masteringVoice?.Dispose();
-                    _masteringVoice = null;
+                    _masteringVoice.DestroyVoice();
+                    _masteringVoice.Dispose();
 
-                    _xAudio2?.Dispose();
-                    _xAudio2  = null;
-                    _x3DAudio = null;
+                    _xAudio2.Dispose();
                 }
 
                 _disposed = true;

@@ -62,7 +62,7 @@ namespace Exomia.Framework.Content
         /// <summary>
         ///     Pathname of the root directory.
         /// </summary>
-        private string _rootDirectory;
+        private string _rootDirectory = string.Empty;
 
         /// <inheritdoc />
         public string RootDirectory
@@ -307,7 +307,6 @@ namespace Exomia.Framework.Content
                         if (loadedAsset is IDisposable disposable)
                         {
                             disposable.Dispose();
-                            disposable = null;
                         }
                     }
 
@@ -354,7 +353,6 @@ namespace Exomia.Framework.Content
             if (asset is IDisposable disposable)
             {
                 disposable.Dispose();
-                disposable = null;
             }
 
             return true;
@@ -392,14 +390,14 @@ namespace Exomia.Framework.Content
                     $"No {nameof(IContentResolver)} registered to this content manager");
             }
 
-            Exception lastException = null;
+            Exception? lastException = null;
             foreach (IContentResolver contentResolver in resolvers)
             {
                 try
                 {
                     if (contentResolver.Exists(assetName))
                     {
-                        Stream stream = contentResolver.Resolve(assetName);
+                        Stream? stream = contentResolver.Resolve(assetName);
                         if (stream != null) { return stream; }
                     }
                 }
@@ -436,14 +434,14 @@ namespace Exomia.Framework.Content
                     $"No {nameof(IEmbeddedResourceResolver)} registered to this content manager");
             }
 
-            Exception lastException = null;
+            Exception? lastException = null;
             foreach (IEmbeddedResourceResolver contentResolver in resolvers)
             {
                 try
                 {
                     if (contentResolver.Exists(assetType, assetName, out Assembly assembly))
                     {
-                        Stream stream = contentResolver.Resolve(assembly, assetName);
+                        Stream? stream = contentResolver.Resolve(assembly, assetName);
                         if (stream != null) { return stream; }
                     }
                 }

@@ -46,32 +46,30 @@ namespace Exomia.Framework.Linq
         /// ###
         /// <exception cref="T:System.InvalidOperationException"> The source sequence is empty. </exception>
         public static TSource Min<TSource, T>(this IEnumerable<TSource> source, Func<TSource, T> predicate,
-                                              IComparer<T>              comparer = null)
+                                              IComparer<T>?              comparer = null)
         {
             if (source    == null) { throw new ArgumentNullException(nameof(source)); }
             if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
 
             IComparer<T> c = comparer ?? Comparer<T>.Default;
 
-            using (IEnumerator<TSource> enumerator = source.GetEnumerator())
+            using IEnumerator<TSource> enumerator = source.GetEnumerator();
+            if (!enumerator.MoveNext()) { throw new InvalidOperationException("The source sequence is empty."); }
+
+            TSource r   = enumerator.Current;
+            T       min = predicate(r);
+
+            while (enumerator.MoveNext())
             {
-                if (!enumerator.MoveNext()) { throw new InvalidOperationException("The source sequence is empty."); }
-
-                TSource r   = enumerator.Current;
-                T       min = predicate(r);
-
-                while (enumerator.MoveNext())
+                T v = predicate(enumerator.Current);
+                if (c.Compare(v, min) < 0)
                 {
-                    T v = predicate(enumerator.Current);
-                    if (c.Compare(v, min) < 0)
-                    {
-                        min = v;
-                        r   = enumerator.Current;
-                    }
+                    min = v;
+                    r   = enumerator.Current;
                 }
-
-                return r;
             }
+
+            return r;
         }
     }
 }

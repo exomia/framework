@@ -30,7 +30,7 @@ namespace Exomia.Framework.Buffers
         /// <summary>
         ///     The buffers.
         /// </summary>
-        private readonly T[][] _buffers;
+        private readonly T[]?[] _buffers;
 
         /// <summary>
         ///     The lock.
@@ -67,9 +67,9 @@ namespace Exomia.Framework.Buffers
         /// <returns>
         ///     A T[].
         /// </returns>
-        public T[] Rent()
+        public T[]? Rent()
         {
-            T[] buffer = null;
+            T[]? buffer = null;
 
             bool lockTaken = false;
             try

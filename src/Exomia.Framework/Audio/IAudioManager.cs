@@ -101,7 +101,7 @@ namespace Exomia.Framework.Audio
         /// <param name="maxDistance"> max distance to hear the sound. </param>
         /// <param name="onFxEnd">     (Optional) called than the sound ends. </param>
         void PlayEnvSound(int            soundID, Vector3 emitterPos, float volume, float maxDistance,
-                          Action<IntPtr> onFxEnd = null);
+                          Action<IntPtr>? onFxEnd = null);
 
         /// <summary>
         ///     play a fx sound.
@@ -112,7 +112,7 @@ namespace Exomia.Framework.Audio
         /// <param name="maxDistance"> max distance to hear the sound. </param>
         /// <param name="onFxEnd">     (Optional) called than the sound ends. </param>
         void PlayFxSound(int            soundID, Vector3 emitterPos, float volume, float maxDistance,
-                         Action<IntPtr> onFxEnd = null);
+                         Action<IntPtr>? onFxEnd = null);
 
         /// <summary>
         ///     play an environment sound.
@@ -121,7 +121,7 @@ namespace Exomia.Framework.Audio
         /// <param name="emitter"> the emitter. </param>
         /// <param name="volume">  volume. </param>
         /// <param name="onFxEnd"> (Optional) called than the sound ends. </param>
-        void PlayEnvSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null);
+        void PlayEnvSound(int soundID, Emitter emitter, float volume, Action<IntPtr>? onFxEnd = null);
 
         /// <summary>
         ///     play a fx sound.
@@ -130,7 +130,7 @@ namespace Exomia.Framework.Audio
         /// <param name="emitter"> the emitter. </param>
         /// <param name="volume">  volume. </param>
         /// <param name="onFxEnd"> (Optional) called than the sound ends. </param>
-        void PlayFxSound(int soundID, Emitter emitter, float volume, Action<IntPtr> onFxEnd = null);
+        void PlayFxSound(int soundID, Emitter emitter, float volume, Action<IntPtr>? onFxEnd = null);
 
         /// <summary>
         ///     resume a bgm song.
@@ -152,7 +152,7 @@ namespace Exomia.Framework.Audio
         /// </summary>
         /// <param name="songID">   the song id. </param>
         /// <param name="onBgmEnd"> (Optional) called than the song ends. </param>
-        void RunBgm(int songID, Action<IntPtr> onBgmEnd = null);
+        void RunBgm(int songID, Action<IntPtr>? onBgmEnd = null);
 
         /// <summary>
         ///     stop a bgm song.

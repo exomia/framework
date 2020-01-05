@@ -26,7 +26,7 @@ namespace Exomia.Framework.Scene.Default
         /// <summary>
         ///     The registry.
         /// </summary>
-        private IServiceRegistry _registry;
+        private IServiceRegistry? _registry;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoadingScene" /> class.
@@ -47,24 +47,24 @@ namespace Exomia.Framework.Scene.Default
         }
 
         /// <inheritdoc />
-        protected override void OnShow(SceneBase comingFrom, object[] payload)
+        protected override void OnShow(SceneBase? comingFrom, object[] payload)
         {
             if (_sceneToLoad.State == SceneState.None)
             {
-                _sceneToLoad.SceneStateChanged += _sceneToLoad_SceneStateChanged;
+                _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
                 Task.Factory.StartNew(
                     () =>
                     {
-                        _sceneToLoad.Initialize(_registry);
+                        _sceneToLoad.Initialize(_registry!);
                     });
             }
             else if (_sceneToLoad.State == SceneState.StandBy)
             {
-                _sceneToLoad.SceneStateChanged += _sceneToLoad_SceneStateChanged;
+                _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
                 Task.Factory.StartNew(
                     () =>
                     {
-                        _sceneToLoad.LoadContent(_registry);
+                        _sceneToLoad.LoadContent(_registry!);
                     });
             }
         }
@@ -75,19 +75,19 @@ namespace Exomia.Framework.Scene.Default
         /// <param name="scene">   The scene. </param>
         /// <param name="current"> The current. </param>
         /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
-        private void _sceneToLoad_SceneStateChanged(IScene scene, SceneState current)
+        private void SceneToLoad_SceneStateChanged(IScene scene, SceneState current)
         {
             if (current == SceneState.StandBy)
             {
                 Task.Factory.StartNew(
                     () =>
                     {
-                        _sceneToLoad.LoadContent(_registry);
+                        _sceneToLoad.LoadContent(_registry!);
                     });
             }
             else if (current == SceneState.Ready)
             {
-                _sceneToLoad.SceneStateChanged -= _sceneToLoad_SceneStateChanged;
+                _sceneToLoad.SceneStateChanged -= SceneToLoad_SceneStateChanged;
 
                 if (SceneManager.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
                 {

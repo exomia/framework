@@ -29,17 +29,15 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
                 return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
             }
             
-            assembly = null;
+            assembly = null!;
             return false;
         }
 
         /// <inheritdoc />
-        public Stream Resolve(Assembly assembly, string assetName)
+        public Stream? Resolve(Assembly assembly, string assetName)
         {
-            using (Stream stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName))
-            {
-                return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
-            }
+            using Stream stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
+            return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
         }
     }
 }

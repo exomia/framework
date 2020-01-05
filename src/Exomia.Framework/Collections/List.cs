@@ -238,7 +238,7 @@ namespace Exomia.Framework.Collections
             }
             for (int i = 0; i < Count; ++i)
             {
-                if (_items[i].Equals(item)) { return true; }
+                if (_items[i]?.Equals(item) ?? false) { return true; }
             }
             return false;
         }
@@ -426,7 +426,7 @@ namespace Exomia.Framework.Collections
         {
             Count--;
             if (index < Count) { Array.Copy(_items, index + 1, _items, index, Count - index); }
-            _items[Count] = default;
+            _items[Count] = default!;
         }
 
         /// <summary>
@@ -471,7 +471,7 @@ namespace Exomia.Framework.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Sort()
         {
-            Sort(0, Count, null);
+            Sort(0, Count, null!);
         }
 
         /// <summary>

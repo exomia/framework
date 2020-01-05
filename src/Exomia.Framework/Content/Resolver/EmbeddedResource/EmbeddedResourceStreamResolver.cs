@@ -76,7 +76,7 @@ namespace Exomia.Framework.Content.Resolver.EmbeddedResource
                 }
             }
 
-            assembly = null;
+            assembly = null!;
             return false;
         }
 

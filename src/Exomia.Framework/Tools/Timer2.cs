@@ -22,24 +22,24 @@ namespace Exomia.Framework.Tools
         /// </summary>
         ///
         /// ### <inheritdoc/>
-        public event EventHandler EnabledChanged;
+        public event EventHandler? EnabledChanged;
 
         /// <summary>
         ///     Occurs when Update Order Changed.
         /// </summary>
         ///
         /// ### <inheritdoc/>
-        public event EventHandler UpdateOrderChanged;
+        public event EventHandler? UpdateOrderChanged;
 
         /// <summary>
         ///     timer finished event.
         /// </summary>
-        public event EventHandler<Timer2> TimerFinished;
+        public event EventHandler<Timer2>? TimerFinished;
 
         /// <summary>
         ///     timer ticked event.
         /// </summary>
-        public event EventHandler<Timer2> TimerTicked;
+        public event EventHandler<Timer2>? TimerTicked;
 
         /// <summary>
         ///     The maximum iterations.

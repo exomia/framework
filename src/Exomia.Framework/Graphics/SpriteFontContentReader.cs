@@ -21,7 +21,7 @@ namespace Exomia.Framework.Graphics
     sealed class SpriteFontContentReader : IContentReader
     {
         /// <inheritdoc />
-        public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+        public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont font = ContentSerializer.Read<SpriteFont>(parameters.Stream);
             if (font?.ImageData == null)
@@ -37,11 +37,9 @@ namespace Exomia.Framework.Graphics
 
             try
             {
-                using (MemoryStream ms = new MemoryStream(font.ImageData))
-                {
-                    ms.Position  = 0;
-                    font.Texture = Texture.Load(graphicsDevice.Device, ms);
-                }
+                using MemoryStream ms = new MemoryStream(font.ImageData) { Position = 0 };
+                font.Texture = Texture.Load(graphicsDevice.Device, ms) ??
+                               throw new NullReferenceException($"{nameof(font.Texture)}");
             }
             catch { return null; }
 
@@ -55,7 +53,7 @@ namespace Exomia.Framework.Graphics
     sealed class SpriteFont2ContentReader : IContentReader
     {
         /// <inheritdoc />
-        public object ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+        public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont2 font = ContentSerializer.Read<SpriteFont2>(parameters.Stream);
 
@@ -73,11 +71,8 @@ namespace Exomia.Framework.Graphics
 
             try
             {
-                using (MemoryStream ms = new MemoryStream(font.ImageData))
-                {
-                    ms.Position   = 0;
-                    font.Texture2 = manager.AddTexture(ms, parameters.AssetName);
-                }
+                using MemoryStream ms = new MemoryStream(font.ImageData) { Position = 0 };
+                font.Texture2 = manager.AddTexture(ms, parameters.AssetName);
             }
             catch { return null; }
 

@@ -138,7 +138,7 @@ namespace Exomia.Framework
         /// </returns>
         public static Creator<TRes> GetCreator<TRes>(IEnumerable<Type> constructorParameters)
         {
-            return GetCreator<TRes>(constructorParameters?.ToArray());
+            return GetCreator<TRes>(constructorParameters.ToArray());
         }
     }
 }

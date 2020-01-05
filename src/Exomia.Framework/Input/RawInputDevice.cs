@@ -26,32 +26,32 @@ namespace Exomia.Framework.Input
         /// <summary>
         ///     Occurs when Key Down.
         /// </summary>
-        public event RKeyEventHandler KeyDown;
+        public event RKeyEventHandler? KeyDown;
 
         /// <summary>
         ///     Occurs when Key Press.
         /// </summary>
-        public event RKeyEventHandler KeyPress;
+        public event RKeyEventHandler? KeyPress;
 
         /// <summary>
         ///     Occurs when Key Up.
         /// </summary>
-        public event RKeyEventHandler KeyUp;
+        public event RKeyEventHandler? KeyUp;
 
         /// <summary>
         ///     Occurs when Mouse Down.
         /// </summary>
-        public event RMouseEventHandler MouseDown;
+        public event RMouseEventHandler? MouseDown;
 
         /// <summary>
         ///     Occurs when Mouse Move.
         /// </summary>
-        public event RMouseEventHandler MouseMove;
+        public event RMouseEventHandler? MouseMove;
 
         /// <summary>
         ///     Occurs when Mouse Up.
         /// </summary>
-        public event RMouseEventHandler MouseUp;
+        public event RMouseEventHandler? MouseUp;
 
         /// <summary>
         ///     The pressed keys.
@@ -71,7 +71,7 @@ namespace Exomia.Framework.Input
         /// <summary>
         ///     The panel.
         /// </summary>
-        private Panel _panel;
+        private Panel? _panel;
 
         /// <summary>
         ///     The pressed mouse buttons.
@@ -81,7 +81,7 @@ namespace Exomia.Framework.Input
         /// <summary>
         ///     The window.
         /// </summary>
-        private IGameWindow _window;
+        private IGameWindow? _window;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RawInputDevice" /> class.
