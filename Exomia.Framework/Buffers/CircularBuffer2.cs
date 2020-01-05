@@ -36,7 +36,7 @@ namespace Exomia.Framework.Buffers
         /// <summary>
         ///     this lock.
         /// </summary>
-        private readonly SpinLock _thisLock;
+        private SpinLock _thisLock;
 
         /// <summary>
         ///     The head.

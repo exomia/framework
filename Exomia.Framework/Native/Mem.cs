@@ -33,5 +33,21 @@ namespace Exomia.Framework.Native
             void* dest,
             void* src,
             int   count);
+
+        /// <summary>
+        ///     memcpy call
+        ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
+        ///     destination.
+        /// </summary>
+        /// <param name="dest">destination ptr</param>
+        /// <param name="src">source ptr</param>
+        /// <param name="count">count of bytes to copy</param>
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(
+            "msvcrt.dll", EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        public static extern void Move(
+            void* dest,
+            void* src,
+            int   count);
     }
 }

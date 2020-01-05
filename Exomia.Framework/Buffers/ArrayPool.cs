@@ -35,7 +35,7 @@ namespace Exomia.Framework.Buffers
         /// <summary>
         ///     The lock.
         /// </summary>
-        private readonly SpinLock _lock;
+        private SpinLock _lock;
 
         /// <summary>
         ///     The index.

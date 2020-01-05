@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2019, exomia
+// Copyright (c) 2018-2020, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -37,7 +37,7 @@ namespace Exomia.Framework.Collections
         private static readonly T[] s_emptyArray = new T[0];
 
         /// <summary>
-        ///     The size of.
+        ///     The size of T in bytes.
         /// </summary>
         private readonly int _sizeOf;
 
@@ -49,10 +49,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Sets the capacity.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     Thrown when one or more arguments are outside
-        ///     the required range.
-        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         /// <value>
         ///     The capacity.
         /// </value>
@@ -80,7 +77,7 @@ namespace Exomia.Framework.Collections
         }
 
         /// <summary>
-        ///     Gets the number of.
+        ///     Gets the number of items in the list.
         /// </summary>
         /// <value>
         ///     The count.
@@ -163,6 +160,7 @@ namespace Exomia.Framework.Collections
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public List(IEnumerable<T> collection)
         {
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (collection == null) { throw new ArgumentNullException(nameof(collection)); }
             if (collection is ICollection<T> c)
             {
@@ -180,43 +178,32 @@ namespace Exomia.Framework.Collections
                 Count  = 0;
                 _items = s_emptyArray;
 
-                using (IEnumerator<T> en = collection.GetEnumerator())
+                using IEnumerator<T> en = collection.GetEnumerator();
+                while (en.MoveNext())
                 {
-                    while (en.MoveNext())
-                    {
-                        Add(en.Current);
-                    }
+                    Add(en.Current);
                 }
             }
         }
 
         /// <summary>
-        ///     Adds item.
+        ///     Adds the item to the end of the list.
         /// </summary>
-        /// <param name="item"> The item to remove. </param>
+        /// <param name="item"> The item to add to the end of the list. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(in T item)
         {
-            if (Count == _items.Length) { EnsureCapacity(Count + 1); }
-            _items[Count++] = item;
+            Insert(Count, item);
         }
 
         /// <summary>
-        ///     Adds a range to 'items'.
+        ///     Adds a range of items to the end of the list.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
-        /// <param name="items"> The items. </param>
+        /// <param name="items"> The items to add to the end of the list. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddRange(int index, T[] items)
+        public void AddRange(T[] items)
         {
-            if (Count + items.Length == _items.Length) { EnsureCapacity(Count + items.Length); }
-            if (index < Count)
-            {
-                Buffer.BlockCopy(
-                    _items, index, _items, index + items.Length, (Count - (index + items.Length)) * _sizeOf);
-            }
-            Buffer.BlockCopy(items, 0, _items, index, items.Length * _sizeOf);
-            Count += items.Length;
+            InsertRange(Count, items);
         }
 
         /// <summary>
@@ -235,7 +222,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Query if this object contains the given item.
         /// </summary>
-        /// <param name="item"> The item to remove. </param>
+        /// <param name="item"> The item to look for. </param>
         /// <returns>
         ///     True if the object is in this collection, false if not.
         /// </returns>
@@ -259,7 +246,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Gets a reference t using the given index.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="index"> Zero-based index of the item to get. </param>
         /// <returns>
         ///     A ref T.
         /// </returns>
@@ -272,7 +259,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Gets a reference t using the given index.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="index"> Zero-based index of the item to get. </param>
         /// <returns>
         ///     A ref T.
         /// </returns>
@@ -285,7 +272,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Finds the range of the given arguments.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="index"> Zero-based index to start copying from. </param>
         /// <param name="count"> Number of. </param>
         /// <returns>
         ///     The calculated range.
@@ -302,7 +289,7 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Searches for the first match.
         /// </summary>
-        /// <param name="item"> The item to remove. </param>
+        /// <param name="item"> The item to find the index of. </param>
         /// <returns>
         ///     An int.
         /// </returns>
@@ -315,8 +302,8 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Searches for the first match.
         /// </summary>
-        /// <param name="item">  The item to remove. </param>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="item">  The item to find the index of. </param>
+        /// <param name="index"> Zero-based index to start searching from. </param>
         /// <returns>
         ///     An int.
         /// </returns>
@@ -329,9 +316,9 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Searches for the first match.
         /// </summary>
-        /// <param name="item">  The item to remove. </param>
-        /// <param name="index"> Zero-based index of the. </param>
-        /// <param name="count"> Number of. </param>
+        /// <param name="item">  The item to find the index of. </param>
+        /// <param name="index"> Zero-based index to start searching from. </param>
+        /// <param name="count"> Number of the search range. </param>
         /// <returns>
         ///     An int.
         /// </returns>
@@ -342,23 +329,37 @@ namespace Exomia.Framework.Collections
         }
 
         /// <summary>
-        ///     Inserts.
+        ///     Inserts the item into the list.
         /// </summary>
         /// <param name="index"> Zero-based index of the. </param>
-        /// <param name="item">  The item to remove. </param>
+        /// <param name="item">  The item to insert at index. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(int index, in T item)
         {
-            if (Count == _items.Length) { EnsureCapacity(Count                 + 1); }
-            if (index < Count) { Buffer.BlockCopy(_items, index, _items, index + 1, (Count - index) * _sizeOf); }
-            _items[index] = item;
-            Count++;
+            if (index >= _items.Length) { EnsureCapacity(Count + 1); }
+            if (index < Count) { Array.Copy(_items, index, _items, index + 1, Count - index); }
+            _items[index] =  item;
+            Count         += 1;
+        }
+
+        /// <summary>
+        ///     Inserts the range of items into the list.
+        /// </summary>
+        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="items"> The items to insert at index. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void InsertRange(int index, T[] items)
+        {
+            if (index + items.Length >= _items.Length) { EnsureCapacity(Count + items.Length); }
+            if (index < Count) { Array.Copy(_items, index, _items, index + _items.Length, Count - index); }
+            Buffer.BlockCopy(items, 0, _items, index, items.Length * _sizeOf);
+            Count += _items.Length;
         }
 
         /// <summary>
         ///     Searches for the last match.
         /// </summary>
-        /// <param name="item"> The item to remove. </param>
+        /// <param name="item"> The item to find the last index of. </param>
         /// <returns>
         ///     An int.
         /// </returns>
@@ -371,8 +372,8 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Searches for the last match.
         /// </summary>
-        /// <param name="item">  The item to remove. </param>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="item">  The item to find the last index of. </param>
+        /// <param name="index"> Zero-based index to start searching from. </param>
         /// <returns>
         ///     An int.
         /// </returns>
@@ -385,9 +386,9 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Searches for the last match.
         /// </summary>
-        /// <param name="item">  The item to remove. </param>
-        /// <param name="index"> Zero-based index of the. </param>
-        /// <param name="count"> Number of. </param>
+        /// <param name="item">  The item to find the last index of. </param>
+        /// <param name="index"> Zero-based index to start searching from. </param>
+        /// <param name="count"> Number of the search range. </param>
         /// <returns>
         ///     An int.
         /// </returns>
@@ -419,30 +420,27 @@ namespace Exomia.Framework.Collections
         /// <summary>
         ///     Removes at described by index.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
+        /// <param name="index"> Zero-based index of the item to remove. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
         {
             Count--;
-            if (index < Count) { Buffer.BlockCopy(_items, index + 1, _items, index, (Count - index) * _sizeOf); }
+            if (index < Count) { Array.Copy(_items, index + 1, _items, index, Count - index); }
             _items[Count] = default;
         }
 
         /// <summary>
         ///     Removes the range.
         /// </summary>
-        /// <param name="index"> Zero-based index of the. </param>
-        /// <param name="count"> Number of. </param>
+        /// <param name="index"> Zero-based index of the items to remove. </param>
+        /// <param name="count"> Number of items to remove. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveRange(int index, int count)
         {
             if (count > 0)
             {
                 Count -= count;
-                if (index < Count)
-                {
-                    Buffer.BlockCopy(_items, index + count, _items, index, (Count - index) * _sizeOf);
-                }
+                if (index < Count) { Array.Copy(_items, index + count, _items, index, Count - index); }
                 Array.Clear(_items, Count, count);
             }
         }
