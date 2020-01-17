@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Exomia.Framework.Content;
 using Exomia.Framework.Graphics.SpriteSort;
+using Exomia.Framework.Mathematics;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -756,8 +757,8 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                float cos = (float)Math.Cos(spriteInfo.Rotation);
-                float sin = (float)Math.Sin(spriteInfo.Rotation);
+                float cos = Math2.Cos(spriteInfo.Rotation);
+                float sin = Math2.Sin(spriteInfo.Rotation);
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
                 {
                     VertexPositionColorTexture* vertex = vpctPtr + j;
