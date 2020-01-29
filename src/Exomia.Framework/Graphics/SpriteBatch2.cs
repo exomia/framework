@@ -757,8 +757,7 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                float cos = Math2.Cos(spriteInfo.Rotation);
-                float sin = Math2.Sin(spriteInfo.Rotation);
+                Math2.SinCos(spriteInfo.Rotation, out float sin, out float cos);
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
                 {
                     VertexPositionColorTexture* vertex = vpctPtr + j;

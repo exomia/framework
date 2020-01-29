@@ -99,12 +99,25 @@ namespace Exomia.Framework.Mathematics
             }
             return result;
         }
+        
+        private const float PI    = (float)Math.PI;
+        private const float TWOPI = (float)(2.0 * Math.PI);
+        private const float ITWOPI = 1.0f / TWOPI;
+        private const float PITWO = (float)(Math.PI * 0.5);
 
         /// <summary>
-        ///     The inverse two pi
+        ///     Returns the approximated sinus of a specified number.
         /// </summary>
-        private const float ITWOPI = 1.0f / (2.0f * (float)Math.PI);
-        
+        /// <param name="x"> The value. </param>
+        /// <returns>
+        ///     A float.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Sin(float x)
+        {
+            return Cos(x - PITWO);
+        }
+
         /// <summary>
         ///     Returns the approximated cosine of a specified number.
         /// </summary>
@@ -112,6 +125,7 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     A float.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(float x)
         {
             x *= ITWOPI;
@@ -120,22 +134,52 @@ namespace Exomia.Framework.Mathematics
             x += 0.225f * x * (Math.Abs(x) - 1.0f);
             return x;
         }
-        
+
         /// <summary>
-        ///     The pi two.
+        ///     Sine cosine.
         /// </summary>
-        private const float PITWO = (float)(Math.PI/2.0);
-        
+        /// <param name="x">   The value in radians. </param>
+        /// <param name="sin"> [out] The sine. </param>
+        /// <param name="cos"> [out] The cosine. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SinCos(float x, out float sin, out float cos)
+        {
+            const float A = 1.27323954f, B = 0.405284735f;
+            x -= (TWOPI * Floor((x / TWOPI) + 0.5f));
+            sin =  x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
+            x   += PITWO;
+            if (x > PI) x -= TWOPI;
+            cos = x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
+        }
+
         /// <summary>
-        ///     Returns the approximated sinus of a specified number.
+        ///     Atan 2.
         /// </summary>
-        /// <param name="x"> The value. </param>
+        /// <param name="y"> The y value. </param>
+        /// <param name="x"> The x value. </param>
         /// <returns>
         ///     A float.
         /// </returns>
-        public static float Sin(float x)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Atan2(float y, float x)
         {
-            return Cos(x - PITWO);
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (x == 0f)
+            {
+                if (y > 0f) return PITWO;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (y == 0f) return 0f;
+                return -PITWO;
+            }
+            float atan, z = y / x;
+            if (Math.Abs(z) < 1f)
+            {
+                atan = z / (1f + (0.28f * z * z));
+                if (x < 0f) return atan + (y < 0f ? -PI : PI);
+                return atan;
+            }
+            atan = PITWO - (z / ((z * z) + 0.28f));
+            return y < 0f ? atan - PI : atan;
         }
 
         #region RoundUpToPowerOfTwo
