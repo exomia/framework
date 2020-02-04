@@ -34,7 +34,7 @@ namespace Exomia.Framework.Scene.Default
         /// <param name="key">         . </param>
         /// <param name="sceneToLoad"> . </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        public LoadingScene(string key, SceneBase sceneToLoad)
+        public LoadingScene(string key, IScene sceneToLoad)
             : base(key)
         {
             _sceneToLoad = sceneToLoad ?? throw new ArgumentNullException(nameof(sceneToLoad));
