@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 
 namespace Exomia.Framework.Scene
@@ -17,7 +16,7 @@ namespace Exomia.Framework.Scene
     /// <summary>
     ///     Interface for scene.
     /// </summary>
-    interface IScene : IInitializable, IContentable, IInputHandler, IDisposable
+    public interface IScene : IInitializable, IContentable, IInputHandler, IDisposable
     {
         /// <summary>
         ///     Occurs when Scene State Changed.
@@ -63,15 +62,7 @@ namespace Exomia.Framework.Scene
         /// <value>
         ///     The reference scenes.
         /// </value>
-        string[] ReferenceScenes { get; }
-
-        /// <summary>
-        ///     Sets the manager for scene.
-        /// </summary>
-        /// <value>
-        ///     The scene manager.
-        /// </value>
-        ISceneManager SceneManager { set; }
+        string[] ReferenceScenes { get; set; }
 
         /// <summary>
         ///     Gets the state.
@@ -82,49 +73,11 @@ namespace Exomia.Framework.Scene
         SceneState State { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the <see cref="Draw" /> method should be
-        ///     called./&gt;.
+        ///     Gets or sets a value indicating whether the draw method should be called.
         /// </summary>
         /// <value>
         ///     <c>true</c> if this drawable component is visible; <c>false</c> otherwise.
         /// </value>
         bool Visible { get; set; }
-
-        /// <summary>
-        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
-        /// </summary>
-        /// <returns>
-        ///     <c>true</c> if Draw should occur; <c>false</c> otherwise.
-        /// </returns>
-        bool BeginDraw();
-
-        /// <summary>
-        ///     Draws this instance.
-        /// </summary>
-        /// <param name="gameTime"> The current timing. </param>
-        void Draw(GameTime gameTime);
-
-        /// <summary>
-        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
-        /// </summary>
-        void EndDraw();
-
-        /// <summary>
-        ///     Is called than all ReferenceScenes are loaded.
-        /// </summary>
-        void ReferenceScenesLoaded();
-
-        /// <summary>
-        ///     Is called than the scene is showed.
-        /// </summary>
-        /// <param name="comingFrom"> coming from. </param>
-        /// <param name="payload">    payload. </param>
-        void Show(SceneBase? comingFrom, object[] payload);
-
-        /// <summary>
-        ///     This method is called when this game component is updated.
-        /// </summary>
-        /// <param name="gameTime"> The current timing. </param>
-        void Update(GameTime gameTime);
     }
 }

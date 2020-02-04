@@ -21,7 +21,7 @@ namespace Exomia.Framework.Scene.Default
         /// <summary>
         ///     The scene to load.
         /// </summary>
-        private readonly SceneBase _sceneToLoad;
+        private readonly IScene _sceneToLoad;
 
         /// <summary>
         ///     The registry.
@@ -47,7 +47,7 @@ namespace Exomia.Framework.Scene.Default
         }
 
         /// <inheritdoc />
-        protected override void OnShow(SceneBase? comingFrom, object[] payload)
+        protected override void OnShow(IScene? comingFrom, object[] payload)
         {
             if (_sceneToLoad.State == SceneState.None)
             {

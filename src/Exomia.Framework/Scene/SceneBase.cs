@@ -23,7 +23,7 @@ namespace Exomia.Framework.Scene
     /// <summary>
     ///     A scene base.
     /// </summary>
-    public abstract class SceneBase : IScene
+    public abstract class SceneBase : ISceneInternal
     {
         /// <summary>
         ///     Initial size of the queue.
@@ -79,7 +79,12 @@ namespace Exomia.Framework.Scene
         ///     The collector.
         /// </summary>
         private readonly DisposeCollector _collector;
-        
+
+        /// <summary>
+        ///     The key.
+        /// </summary>
+        private readonly string _key;
+
         /// <summary>
         ///     The raw input handler.
         /// </summary>
@@ -106,27 +111,19 @@ namespace Exomia.Framework.Scene
         private bool _isContentLoaded;
 
         /// <summary>
+        ///     True to show, false to hide.
+        /// </summary>
+        private bool _visible;
+
+        /// <summary>
         ///     The state.
         /// </summary>
         private SceneState _state = SceneState.None;
 
-        /// <inheritdoc />
-        public bool Enabled { get; set; } = false;
-
-        /// <inheritdoc />
-        public bool IsOverlayScene { get; set; } = false;
-
-        /// <inheritdoc />
-        public string Key { get; }
-
-        /// <inheritdoc />
-        public string[] ReferenceScenes { get; set; } = new string[0];
-
-        /// <inheritdoc />
-        public SceneState State
+        /// <inheritdoc cref="ISceneInternal" />
+        protected SceneState State
         {
-            get { return _state; }
-            protected set
+            set
             {
                 if (_state != value)
                 {
@@ -136,27 +133,44 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        /// <inheritdoc />
-        public bool Visible { get; set; } = false;
-        
-        /// <summary>
-        ///     Sets the raw input handler.
-        /// </summary>
-        /// <value>
-        ///     The raw input handler.
-        /// </value>
+        /// <inheritdoc cref="ISceneInternal" />
         protected IRawInputHandler RawInputHandler
         {
-            set
-            {
-                _rawInputHandler = value;
-            }
+            set { _rawInputHandler = value; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ISceneInternal" />
         protected ISceneManager SceneManager
         {
             get { return _sceneManager!; }
+        }
+
+        /// <inheritdoc />
+        bool IScene.Enabled { get; set; } = false;
+
+        /// <inheritdoc />
+        bool IScene.IsOverlayScene { get; set; } = false;
+
+        /// <inheritdoc />
+        string IScene.Key
+        {
+            get { return _key; }
+        }
+
+        /// <inheritdoc />
+        string[] IScene.ReferenceScenes { get; set; } = new string[0];
+
+        /// <inheritdoc />
+        SceneState IScene.State
+        {
+            get { return _state; }
+        }
+
+        /// <inheritdoc />
+        bool IScene.Visible
+        {
+            get { return _visible; }
+            set { _visible = value; }
         }
 
         /// <inheritdoc />
@@ -166,7 +180,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        ISceneManager IScene.SceneManager
+        ISceneManager ISceneInternal.SceneManager
         {
             set { _sceneManager = value; }
         }
@@ -177,7 +191,7 @@ namespace Exomia.Framework.Scene
         /// <param name="key"> The key. </param>
         protected SceneBase(string key)
         {
-            Key = key;
+            _key = key;
 
             _sceneComponents               = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
             _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
@@ -192,7 +206,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public void LoadContent(IServiceRegistry registry)
+        void IContentable.LoadContent(IServiceRegistry registry)
         {
             if (_isInitialized && !_isContentLoaded && _state != SceneState.ContentLoading)
             {
@@ -216,7 +230,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public void UnloadContent(IServiceRegistry registry)
+        void IContentable.UnloadContent(IServiceRegistry registry)
         {
             if (_isContentLoaded && _state == SceneState.Ready)
             {
@@ -240,7 +254,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
+        void IInitializable.Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized && _state != SceneState.Initializing)
             {
@@ -261,77 +275,16 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        /// <inheritdoc />
-        public virtual void Update(GameTime gameTime)
-        {
-            lock (_updateableComponent)
-            {
-                _currentlyUpdateableComponent.AddRange(_updateableComponent);
-            }
-
-            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
-            {
-                IUpdateable updateable = _currentlyUpdateableComponent[i];
-                if (updateable.Enabled)
-                {
-                    updateable.Update(gameTime);
-                }
-            }
-
-            _currentlyUpdateableComponent.Clear();
-        }
-
-        /// <inheritdoc />
-        public bool BeginDraw()
-        {
-            return Visible;
-        }
-
-        /// <inheritdoc />
-        public virtual void Draw(GameTime gameTime)
-        {
-            lock (_drawableComponent)
-            {
-                _currentlyDrawableComponent.AddRange(_drawableComponent);
-            }
-
-            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
-            {
-                IDrawable drawable = _currentlyDrawableComponent[i];
-                if (drawable.BeginDraw())
-                {
-                    drawable.Draw(gameTime);
-                    drawable.EndDraw();
-                }
-            }
-
-            _currentlyDrawableComponent.Clear();
-        }
-
-        /// <inheritdoc />
-        public virtual void EndDraw() { }
-
-        /// <inheritdoc />
-        void IScene.ReferenceScenesLoaded()
-        {
-            OnReferenceScenesLoaded();
-        }
-
-        /// <inheritdoc />
-        void IScene.Show(SceneBase? comingFrom, object[] payload)
-        {
-            OnShow(comingFrom, payload);
-        }
 
         /// <summary>
         ///     Adds item.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="item"> any. </param>
+        /// <param name="item"> The item. </param>
         /// <returns>
-        ///     the passed item.
+        ///     A T.
         /// </returns>
-        public T Add<T>(T item)
+        protected T Add<T>(T item)
         {
             if (item is IComponent component)
             {
@@ -420,15 +373,101 @@ namespace Exomia.Framework.Scene
             return item;
         }
 
+        /// <inheritdoc />
+        void ISceneInternal.Update(GameTime gameTime)
+        {
+            lock (_updateableComponent)
+            {
+                _currentlyUpdateableComponent.AddRange(_updateableComponent);
+            }
+
+            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
+            {
+                IUpdateable updateable = _currentlyUpdateableComponent[i];
+                if (updateable.Enabled)
+                {
+                    updateable.Update(gameTime);
+                }
+            }
+
+            _currentlyUpdateableComponent.Clear();
+
+            OnUpdate(gameTime);
+        }
+
+        /// <inheritdoc />
+        bool ISceneInternal.BeginDraw()
+        {
+            return _visible;
+        }
+
+        /// <inheritdoc />
+        void ISceneInternal.Draw(GameTime gameTime)
+        {
+            lock (_drawableComponent)
+            {
+                _currentlyDrawableComponent.AddRange(_drawableComponent);
+            }
+
+            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
+            {
+                IDrawable drawable = _currentlyDrawableComponent[i];
+                if (drawable.BeginDraw())
+                {
+                    drawable.Draw(gameTime);
+                    drawable.EndDraw();
+                }
+            }
+
+            _currentlyDrawableComponent.Clear();
+
+            OnDraw(gameTime);
+        }
+
+        /// <inheritdoc />
+        void ISceneInternal.EndDraw()
+        {
+            OnEndDraw();
+        }
+
+        /// <inheritdoc />
+        void ISceneInternal.ReferenceScenesLoaded()
+        {
+            OnReferenceScenesLoaded();
+        }
+
+        /// <inheritdoc />
+        void ISceneInternal.Show(IScene? comingFrom, object[] payload)
+        {
+            OnShow(comingFrom, payload);
+        }
+
+        /// <summary>
+        ///     Place user code here.
+        /// </summary>
+        /// <param name="gameTime"> The game time. </param>
+        protected virtual void OnUpdate(GameTime gameTime) { }
+
+        /// <summary>
+        ///     Place user code here.
+        /// </summary>
+        /// <param name="gameTime"> The game time. </param>
+        protected virtual void OnDraw(GameTime gameTime) { }
+
+        /// <summary>
+        ///     Place user code here.
+        /// </summary>
+        protected virtual void OnEndDraw() { }
+        
         /// <summary>
         ///     Removes the given item.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="item"> any. </param>
+        /// <param name="item"> The item. </param>
         /// <returns>
-        ///     the passed item.
+        ///     A T.
         /// </returns>
-        public T Remove<T>(T item)
+        protected T Remove<T>(T item)
         {
             if (item is IContentable contentable && _contentableComponent.Contains(contentable))
             {
@@ -478,8 +517,9 @@ namespace Exomia.Framework.Scene
         /// <inheritdoc />
         public override string ToString()
         {
+            IScene scene = this;
             return
-                $"Scene {Key}\nReferences ({string.Join(", ", ReferenceScenes)})\nState: {State}\nIsOverLayScene: {IsOverlayScene}";
+                $"Scene {scene.Key}\nReferences ({string.Join(", ", scene.ReferenceScenes)})\nState: {scene.State}\nIsOverLayScene: {scene.IsOverlayScene}";
         }
 
         /// <summary>
@@ -510,7 +550,7 @@ namespace Exomia.Framework.Scene
         /// </summary>
         /// <param name="comingFrom"> coming from. </param>
         /// <param name="payload">    payload. </param>
-        protected virtual void OnShow(SceneBase? comingFrom, object[] payload) { }
+        protected virtual void OnShow(IScene? comingFrom, object[] payload) { }
 
         /// <summary>
         ///     Converts an obj to a dispose.
@@ -667,7 +707,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     Input key up.
         /// </summary>
-        /// <param name="keyValue"> The key value. </param>
+        /// <param name="keyValue">  The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
         void IInputHandler.Input_KeyUp(int keyValue, KeyModifier modifiers)
         {
@@ -677,14 +717,14 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     Executes the key up action.
         /// </summary>
-        /// <param name="keyValue"> The key value. </param>
+        /// <param name="keyValue">  The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
         protected virtual void OnKeyUp(int keyValue, KeyModifier modifiers) { }
 
         /// <summary>
         ///     Input key down.
         /// </summary>
-        /// <param name="keyValue"> The key value. </param>
+        /// <param name="keyValue">  The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
         void IInputHandler.Input_KeyDown(int keyValue, KeyModifier modifiers)
         {
@@ -694,7 +734,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     Executes the key down action.
         /// </summary>
-        /// <param name="keyValue"> The key value. </param>
+        /// <param name="keyValue">  The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
         protected virtual void OnKeyDown(int keyValue, KeyModifier modifiers) { }
 

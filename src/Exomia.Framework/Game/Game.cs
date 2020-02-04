@@ -123,7 +123,7 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     The game window initialize.
         /// </summary>
-        private IGameWindowInitialize _gameWindowInitialize;
+        private readonly IGameWindowInitialize _gameWindowInitialize;
 
         /// <summary>
         ///     The graphics device.
@@ -251,14 +251,14 @@ namespace Exomia.Framework.Game
 #endif
 
             _serviceRegistry = new ServiceRegistry();
-            
+
             WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
             _gameWindow           = gameWindow;
             _gameWindowInitialize = gameWindow;
-            
+
             _graphicsDevice = new GraphicsDevice();
-            _contentManager  = new ContentManager(_serviceRegistry);
-            
+            _contentManager = new ContentManager(_serviceRegistry);
+
             _serviceRegistry.AddService(_serviceRegistry);
             _serviceRegistry.AddService(_graphicsDevice);
             _serviceRegistry.AddService(_contentManager);

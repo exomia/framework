@@ -92,6 +92,25 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
+        ///     Resizes.
+        /// </summary>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
+        public void Resize(int width, int height)
+        {
+            if (_renderForm.InvokeRequired)
+            {
+                _renderForm.Invoke(
+                    (MethodInvoker)delegate
+                    {
+                        Resize(width, height);
+                    });
+                return;
+            }
+            _renderForm.ClientSize = new Size(Width = width, Height = height);
+        }
+
+        /// <summary>
         ///     Initializes this object.
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
@@ -118,25 +137,6 @@ namespace Exomia.Framework.Game
             parameters.Handle = _renderForm.Handle;
 
             IsInitialized = true;
-        }
-
-        /// <summary>
-        ///     Resizes.
-        /// </summary>
-        /// <param name="width">  The width. </param>
-        /// <param name="height"> The height. </param>
-        public void Resize(int width, int height)
-        {
-            if (_renderForm.InvokeRequired)
-            {
-                _renderForm.Invoke(
-                    (MethodInvoker)delegate
-                    {
-                        Resize(width, height);
-                    });
-                return;
-            }
-            _renderForm.ClientSize = new Size(Width = width, Height = height);
         }
 
         #region IDisposable Support
