@@ -23,7 +23,7 @@ namespace Exomia.Framework.Scene
         /// <returns>
         ///     True if it succeeds, false if it fails.
         /// </returns>
-        bool AddScene(SceneBase scene, bool initialize = true);
+        bool AddScene(IScene scene, bool initialize = true);
 
         /// <summary>
         ///     Gets a scene.

@@ -146,10 +146,10 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        bool IScene.Enabled { get; set; } = false;
+        public bool Enabled { get; set; } = false;
 
         /// <inheritdoc />
-        bool IScene.IsOverlayScene { get; set; } = false;
+        public bool IsOverlayScene { get; set; } = false;
 
         /// <inheritdoc />
         string IScene.Key
@@ -158,7 +158,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        string[] IScene.ReferenceScenes { get; set; } = new string[0];
+        public string[] ReferenceScenes { get; set; } = new string[0];
 
         /// <inheritdoc />
         SceneState IScene.State
@@ -167,7 +167,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        bool IScene.Visible
+        public bool Visible
         {
             get { return _visible; }
             set { _visible = value; }
@@ -398,7 +398,7 @@ namespace Exomia.Framework.Scene
         /// <inheritdoc />
         bool ISceneInternal.BeginDraw()
         {
-            return _visible;
+            return _visible && OnBeginDraw();
         }
 
         /// <inheritdoc />
@@ -447,6 +447,14 @@ namespace Exomia.Framework.Scene
         /// </summary>
         /// <param name="gameTime"> The game time. </param>
         protected virtual void OnUpdate(GameTime gameTime) { }
+
+        /// <summary>
+        ///     Place user code here.
+        /// </summary>
+        protected virtual bool OnBeginDraw()
+        {
+            return true;
+        }
 
         /// <summary>
         ///     Place user code here.

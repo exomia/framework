@@ -82,7 +82,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     Initializes a new instance of the <see cref="SceneManager" /> class.
         /// </summary>
-        public SceneManager(SceneBase startScene, string name = "SceneManager")
+        public SceneManager(IScene startScene, string name = "SceneManager")
             : base(name)
         {
             if (startScene == null) { throw new ArgumentNullException(nameof(startScene)); }
@@ -98,7 +98,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public bool AddScene(SceneBase scene, bool initialize = true)
+        public bool AddScene(IScene scene, bool initialize = true)
         {
             if (!(scene is ISceneInternal intern))
             {
