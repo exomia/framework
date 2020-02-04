@@ -39,7 +39,7 @@ namespace Exomia.Framework.Scene
         /// <value>
         ///     The input handler.
         /// </value>
-        IInputHandler InputHandler { get; }
+        IRawInputHandler RawInputHandler { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this object is overlay scene.

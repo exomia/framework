@@ -12,6 +12,23 @@ using System;
 
 namespace Exomia.Framework.Game
 {
+    interface IGameWindowInitialize
+    {
+        /// <summary>
+        ///     Gets a value indicating whether this object is initialized.
+        /// </summary>
+        /// <value>
+        ///     True if this object is initialized, false if not.
+        /// </value>
+        bool IsInitialized { get; }
+
+        /// <summary>
+        ///     Initializes this object.
+        /// </summary>
+        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
+        void Initialize(ref GameGraphicsParameters parameters);
+    }
+    
     /// <summary>
     ///     IGameWindow interface.
     /// </summary>
@@ -24,15 +41,7 @@ namespace Exomia.Framework.Game
         ///     The height.
         /// </value>
         int Height { get; }
-
-        /// <summary>
-        ///     Gets a value indicating whether this object is initialized.
-        /// </summary>
-        /// <value>
-        ///     True if this object is initialized, false if not.
-        /// </value>
-        bool IsInitialized { get; }
-
+        
         /// <summary>
         ///     Gets or sets the title.
         /// </summary>
@@ -48,12 +57,6 @@ namespace Exomia.Framework.Game
         ///     The width.
         /// </value>
         int Width { get; }
-
-        /// <summary>
-        ///     Initializes this object.
-        /// </summary>
-        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
-        void Initialize(ref GameGraphicsParameters parameters);
 
         /// <summary>
         ///     Resizes.

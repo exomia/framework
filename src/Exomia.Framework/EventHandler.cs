@@ -15,20 +15,27 @@ namespace Exomia.Framework
     ///     specified.
     /// </summary>
     public delegate void EventHandler();
-
+    
     /// <summary>
-    ///     Represents the method that will handle an event that has no event data.
+    ///     Handler, called when the event.
     /// </summary>
-    /// <typeparam name="TEventArgs"> . </typeparam>
-    /// <param name="e"> . </param>
+    /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
+    /// <param name="e"> T event information. </param>
     public delegate void EventHandler<in TEventArgs>(TEventArgs e);
-
+    
     /// <summary>
-    ///     Represents the method that will handle an event when the event provides data.
+    ///     Delegate for handling Ref events.
     /// </summary>
-    /// <typeparam name="TClass">     . </typeparam>
-    /// <typeparam name="TEventArgs"> . </typeparam>
-    /// <param name="sender"> . </param>
-    /// <param name="e">      . </param>
+    /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
+    /// <param name="e"> [in,out] Reference t event information. </param>
+    public delegate void RefEventHandler<TEventArgs>(ref TEventArgs e) where TEventArgs : struct;
+    
+    /// <summary>
+    ///     Handler, called when the event.
+    /// </summary>
+    /// <typeparam name="TClass">     Type of the class. </typeparam>
+    /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
+    /// <param name="sender"> The sender. </param>
+    /// <param name="e">      T event information. </param>
     public delegate void EventHandler<in TClass, in TEventArgs>(TClass sender, TEventArgs e);
 }

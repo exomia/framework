@@ -13,14 +13,13 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using SharpDX;
-using SharpDX.Windows;
 
 namespace Exomia.Framework.Game
 {
     /// <summary>
     ///     Form for viewing the window forms game. This class cannot be inherited.
     /// </summary>
-    public sealed class WinFormsGameWindow : IWinFormsGameWindow
+    public sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
     {
         /// <summary>
         ///     The render form.

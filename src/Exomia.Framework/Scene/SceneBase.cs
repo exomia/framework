@@ -12,9 +12,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using SharpDX;
+using MouseButtons = Exomia.Framework.Input.MouseButtons;
 
 namespace Exomia.Framework.Scene
 {
@@ -77,11 +79,11 @@ namespace Exomia.Framework.Scene
         ///     The collector.
         /// </summary>
         private readonly DisposeCollector _collector;
-
+        
         /// <summary>
-        ///     The input handler.
+        ///     The raw input handler.
         /// </summary>
-        private IInputHandler? _inputHandler;
+        private IRawInputHandler? _rawInputHandler;
 
         /// <summary>
         ///     Manager for scene.
@@ -136,11 +138,19 @@ namespace Exomia.Framework.Scene
 
         /// <inheritdoc />
         public bool Visible { get; set; } = false;
-
-        /// <inheritdoc />
-        protected IInputHandler InputHandler
+        
+        /// <summary>
+        ///     Sets the raw input handler.
+        /// </summary>
+        /// <value>
+        ///     The raw input handler.
+        /// </value>
+        protected IRawInputHandler RawInputHandler
         {
-            set { _inputHandler = value; }
+            set
+            {
+                _rawInputHandler = value;
+            }
         }
 
         /// <inheritdoc />
@@ -150,9 +160,9 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        IInputHandler IScene.InputHandler
+        IRawInputHandler IScene.RawInputHandler
         {
-            get { return _inputHandler!; }
+            get { return _rawInputHandler!; }
         }
 
         /// <inheritdoc />
@@ -547,7 +557,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IInputHandler.Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseMove(x, y, buttons, clicks, wheelDelta);
         }
@@ -570,7 +580,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IInputHandler.Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseDown(x, y, buttons, clicks, wheelDelta);
         }
@@ -593,7 +603,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IInputHandler.Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseUp(x, y, buttons, clicks, wheelDelta);
         }
@@ -616,7 +626,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IInputHandler.Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseClick(x, y, buttons, clicks, wheelDelta);
         }
@@ -639,7 +649,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IInputHandler.Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseWheel(x, y, buttons, clicks, wheelDelta);
         }
@@ -658,43 +668,50 @@ namespace Exomia.Framework.Scene
         ///     Input key up.
         /// </summary>
         /// <param name="keyValue"> The key value. </param>
-        /// <param name="shift">    True to shift. </param>
-        /// <param name="alt">      True to alternate. </param>
-        /// <param name="ctrl">     True to control. </param>
-        void IInputHandler.Input_KeyUp(int keyValue, bool shift, bool alt, bool ctrl)
+        /// <param name="modifiers"> The key modifiers. </param>
+        void IInputHandler.Input_KeyUp(int keyValue, KeyModifier modifiers)
         {
-            OnKeyUp(keyValue, shift, alt, ctrl);
+            OnKeyUp(keyValue, modifiers);
         }
 
         /// <summary>
         ///     Executes the key up action.
         /// </summary>
         /// <param name="keyValue"> The key value. </param>
-        /// <param name="shift">    True to shift. </param>
-        /// <param name="alt">      True to alternate. </param>
-        /// <param name="ctrl">     True to control. </param>
-        protected virtual void OnKeyUp(int keyValue, bool shift, bool alt, bool ctrl) { }
+        /// <param name="modifiers"> The key modifiers. </param>
+        protected virtual void OnKeyUp(int keyValue, KeyModifier modifiers) { }
 
         /// <summary>
         ///     Input key down.
         /// </summary>
         /// <param name="keyValue"> The key value. </param>
-        /// <param name="shift">    True to shift. </param>
-        /// <param name="alt">      True to alternate. </param>
-        /// <param name="ctrl">     True to control. </param>
-        void IInputHandler.Input_KeyDown(int keyValue, bool shift, bool alt, bool ctrl)
+        /// <param name="modifiers"> The key modifiers. </param>
+        void IInputHandler.Input_KeyDown(int keyValue, KeyModifier modifiers)
         {
-            OnKeyDown(keyValue, shift, alt, ctrl);
+            OnKeyDown(keyValue, modifiers);
         }
 
         /// <summary>
         ///     Executes the key down action.
         /// </summary>
         /// <param name="keyValue"> The key value. </param>
-        /// <param name="shift">    True to shift. </param>
-        /// <param name="alt">      True to alternate. </param>
-        /// <param name="ctrl">     True to control. </param>
-        protected virtual void OnKeyDown(int keyValue, bool shift, bool alt, bool ctrl) { }
+        /// <param name="modifiers"> The key modifiers. </param>
+        protected virtual void OnKeyDown(int keyValue, KeyModifier modifiers) { }
+
+        /// <summary>
+        ///     Input key event.
+        /// </summary>
+        /// <param name="message"> [in,out] The message. </param>
+        void IRawInputHandler.Input_KeyEvent(ref Message message)
+        {
+            OnKeyEvent(ref message);
+        }
+
+        /// <summary>
+        ///     Executes the key event action.
+        /// </summary>
+        /// <param name="message"> [in,out] The message. </param>
+        protected virtual void OnKeyEvent(ref Message message) { }
 
         /// <summary>
         ///     Input key press.

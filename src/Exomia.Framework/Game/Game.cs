@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using Exomia.Framework.Components;
 using Exomia.Framework.Content;
 using Exomia.Framework.Graphics;
+using Exomia.Framework.Input;
 using Exomia.Framework.Native;
 using Exomia.Framework.Tools;
 using SharpDX;
@@ -118,6 +119,11 @@ namespace Exomia.Framework.Game
         ///     The game window.
         /// </summary>
         private IGameWindow _gameWindow;
+
+        /// <summary>
+        ///     The game window initialize.
+        /// </summary>
+        private IGameWindowInitialize _gameWindowInitialize;
 
         /// <summary>
         ///     The graphics device.
@@ -245,14 +251,19 @@ namespace Exomia.Framework.Game
 #endif
 
             _serviceRegistry = new ServiceRegistry();
-            _gameWindow      = new WinFormsGameWindow(title);
-            _graphicsDevice  = new GraphicsDevice();
+            
+            WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
+            _gameWindow           = gameWindow;
+            _gameWindowInitialize = gameWindow;
+            
+            _graphicsDevice = new GraphicsDevice();
             _contentManager  = new ContentManager(_serviceRegistry);
-
+            
             _serviceRegistry.AddService(_serviceRegistry);
             _serviceRegistry.AddService(_graphicsDevice);
             _serviceRegistry.AddService(_contentManager);
             _serviceRegistry.AddService(_gameWindow);
+            _serviceRegistry.AddService<IRawInputDevice>(gameWindow.RenderForm);
 
             _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
             _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
@@ -515,7 +526,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Renderloops this object.
+        ///     The Renderloop.
         /// </summary>
         private void Renderloop()
         {
@@ -646,7 +657,7 @@ namespace Exomia.Framework.Game
 
             OnInitializeGameGraphicsParameters(ref parameters);
 
-            _gameWindow.Initialize(ref parameters);
+            _gameWindowInitialize.Initialize(ref parameters);
             _graphicsDevice.Initialize(ref parameters);
 
             GameGraphicsParameters = parameters;

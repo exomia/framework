@@ -8,7 +8,6 @@
 
 #endregion
 
-// ReSharper disable InconsistentNaming
 namespace Exomia.Framework.Input
 {
     /// <summary>

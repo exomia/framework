@@ -11,8 +11,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
+using MouseButtons = Exomia.Framework.Input.MouseButtons;
 
 namespace Exomia.Framework.Scene
 {
@@ -57,19 +59,24 @@ namespace Exomia.Framework.Scene
         private readonly List<SceneBase> _scenesToUnload;
 
         /// <summary>
-        ///     The input.
+        ///     The raw input device.
         /// </summary>
-        private IInputDevice? _input;
+        private IRawInputDevice? _rawInputDevice;
 
         /// <summary>
         ///     The input handler.
         /// </summary>
-        private IInputHandler? _inputHandler;
+        private IRawInputHandler? _rawInputHandler;
 
         /// <summary>
         ///     The registry.
         /// </summary>
         private IServiceRegistry? _registry;
+
+        /// <summary>
+        ///     The key modifier.
+        /// </summary>
+        private KeyModifier _keyModifier = 0;
 
         /// <inheritdoc />
         /// <summary>
@@ -159,6 +166,7 @@ namespace Exomia.Framework.Scene
             lock (this)
             {
                 if (!(s is IScene scene)) { return ShowSceneResult.NoScene; }
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (scene.State)
                 {
                     case SceneState.ContentLoading:
@@ -225,7 +233,7 @@ namespace Exomia.Framework.Scene
                         scene.ReferenceScenesLoaded();
                     });
 
-                _inputHandler = scene.InputHandler ?? scene;
+                _rawInputHandler = scene.RawInputHandler ?? scene;
 
                 lock (_currentScenes)
                 {
@@ -263,12 +271,12 @@ namespace Exomia.Framework.Scene
 
                 if (_currentScenes.Count > 0)
                 {
-                    _inputHandler = (_currentScenes[_currentScenes.Count - 1] as IScene).InputHandler ??
-                                    _currentScenes[_currentScenes.Count - 1];
+                    _rawInputHandler = (_currentScenes[_currentScenes.Count - 1] as IScene).RawInputHandler ??
+                                       _currentScenes[_currentScenes.Count - 1];
                 }
                 else
                 {
-                    _inputHandler = null;
+                    _rawInputHandler = null;
                 }
                 return true;
             }
@@ -318,18 +326,15 @@ namespace Exomia.Framework.Scene
         protected override void OnInitialize(IServiceRegistry registry)
         {
             _registry = registry;
-            _input = registry.GetService<IInputDevice>() ??
-                     throw new NullReferenceException("No IInputDevice found.");
+            _rawInputDevice = registry.GetService<IRawInputDevice>() ??
+                              throw new NullReferenceException($"No {nameof(IRawInputDevice)} found.");
 
-            _input.MouseMove  += Input_MouseMove;
-            _input.MouseDown  += Input_MouseDown;
-            _input.MouseUp    += Input_MouseUp;
-            _input.MouseClick += Input_MouseClick;
-            _input.MouseWheel += Input_MouseWheel;
-
-            _input.KeyDown  += Input_KeyDown;
-            _input.KeyUp    += Input_KeyUp;
-            _input.KeyPress += Input_KeyPress;
+            _rawInputDevice.RawKeyEvent   += RawInputDeviceOnRawKeyEvent;
+            _rawInputDevice.RawMouseDown  += RawInputDeviceOnRawMouseDown;
+            _rawInputDevice.RawMouseUp    += RawInputDeviceOnRawMouseUp;
+            _rawInputDevice.RawMouseClick += RawInputDeviceOnRawMouseClick;
+            _rawInputDevice.RawMouseMove  += RawInputDeviceOnRawMouseMove;
+            _rawInputDevice.RawMouseWheel += RawInputDeviceOnRawMouseWheel;
 
             lock (_pendingInitializableScenes)
             {
@@ -355,15 +360,11 @@ namespace Exomia.Framework.Scene
                     _currentScenes.Clear();
                 }
 
-                _input!.MouseMove -= Input_MouseMove;
-                _input.MouseDown  -= Input_MouseDown;
-                _input.MouseUp    -= Input_MouseUp;
-                _input.MouseClick -= Input_MouseClick;
-                _input.MouseWheel -= Input_MouseWheel;
-
-                _input.KeyDown  -= Input_KeyDown;
-                _input.KeyUp    -= Input_KeyUp;
-                _input.KeyPress -= Input_KeyPress;
+                _rawInputDevice!.RawKeyEvent  -= RawInputDeviceOnRawKeyEvent;
+                _rawInputDevice.RawMouseDown  -= RawInputDeviceOnRawMouseDown;
+                _rawInputDevice.RawMouseUp    -= RawInputDeviceOnRawMouseUp;
+                _rawInputDevice.RawMouseMove  -= RawInputDeviceOnRawMouseMove;
+                _rawInputDevice.RawMouseWheel -= RawInputDeviceOnRawMouseWheel;
 
                 foreach (IScene scene in _scenes.Values)
                 {
@@ -375,106 +376,128 @@ namespace Exomia.Framework.Scene
             }
         }
 
-        #region Input Handler
-
         /// <summary>
-        ///     Input mouse move.
+        ///     Raw input device on raw mouse wheel.
         /// </summary>
         /// <param name="x">          The x coordinate. </param>
         /// <param name="y">          The y coordinate. </param>
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        private void Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        /// <param name="wheelDelta"> The wheelDelta. </param>
+        private void RawInputDeviceOnRawMouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            _inputHandler?.Input_MouseMove(x, y, buttons, clicks, wheelDelta);
+            _rawInputHandler?.Input_MouseWheel(x, y, buttons, clicks, wheelDelta);
         }
 
         /// <summary>
-        ///     Input mouse down.
+        ///     Raw input device on raw mouse move.
         /// </summary>
         /// <param name="x">          The x coordinate. </param>
         /// <param name="y">          The y coordinate. </param>
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        private void Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        /// <param name="wheelDelta"> The wheelDelta. </param>
+        private void RawInputDeviceOnRawMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            _inputHandler?.Input_MouseDown(x, y, buttons, clicks, wheelDelta);
+            _rawInputHandler?.Input_MouseMove(x, y, buttons, clicks, wheelDelta);
         }
 
         /// <summary>
-        ///     Input mouse up.
+        ///     Raw input device on raw mouse up.
         /// </summary>
         /// <param name="x">          The x coordinate. </param>
         /// <param name="y">          The y coordinate. </param>
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        private void Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        /// <param name="wheelDelta"> The wheelDelta. </param>
+        private void RawInputDeviceOnRawMouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            _inputHandler?.Input_MouseUp(x, y, buttons, clicks, wheelDelta);
+            _rawInputHandler?.Input_MouseUp(x, y, buttons, clicks, wheelDelta);
         }
 
         /// <summary>
-        ///     Input mouse click.
+        ///     Raw input device on raw mouse down.
         /// </summary>
         /// <param name="x">          The x coordinate. </param>
         /// <param name="y">          The y coordinate. </param>
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        private void Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        /// <param name="wheelDelta"> The wheelDelta. </param>
+        private void RawInputDeviceOnRawMouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            _inputHandler?.Input_MouseClick(x, y, buttons, clicks, wheelDelta);
+            _rawInputHandler?.Input_MouseDown(x, y, buttons, clicks, wheelDelta);
         }
 
         /// <summary>
-        ///     Input mouse wheel.
+        ///     Raw input device on raw mouse click.
         /// </summary>
         /// <param name="x">          The x coordinate. </param>
         /// <param name="y">          The y coordinate. </param>
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        private void Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        /// <param name="wheelDelta"> The wheelDelta. </param>
+        private void RawInputDeviceOnRawMouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            _inputHandler?.Input_MouseWheel(x, y, buttons, clicks, wheelDelta);
+            _rawInputHandler?.Input_MouseClick(x, y, buttons, clicks, wheelDelta);
         }
 
         /// <summary>
-        ///     Input key press.
+        ///     Raw input device on raw key event.
         /// </summary>
-        /// <param name="key"> The key. </param>
-        private void Input_KeyPress(char key)
+        /// <param name="e"> [in,out] The ref Message to process. </param>
+        private void RawInputDeviceOnRawKeyEvent(ref Message e)
         {
-            _inputHandler?.Input_KeyPress(key);
-        }
+            _rawInputHandler?.Input_KeyEvent(ref e);
+            if (_rawInputHandler is IInputHandler inputHandler)
+            {
+                int vKey = (int)e.WParam.ToInt64();
 
-        /// <summary>
-        ///     Input key up.
-        /// </summary>
-        /// <param name="keyValue"> The key value. </param>
-        /// <param name="shift">    True to shift. </param>
-        /// <param name="alt">      True to alternate. </param>
-        /// <param name="ctrl">     True to control. </param>
-        private void Input_KeyUp(int keyValue, bool shift, bool alt, bool ctrl)
-        {
-            _inputHandler?.Input_KeyUp(keyValue, shift, alt, ctrl);
+                switch (e.Msg)
+                {
+                    case Win32Message.WM_KEYDOWN:
+                        switch (vKey)
+                        {
+                            case Key.ShiftKey:
+                                _keyModifier |= KeyModifier.Shift;
+                                break;
+                            case Key.ControlKey:
+                                _keyModifier |= KeyModifier.Control;
+                                break;
+                        }
+                        inputHandler.Input_KeyDown(vKey, _keyModifier);
+                        break;
+                    case Win32Message.WM_KEYUP:
+                        switch (vKey)
+                        {
+                            case Key.ShiftKey:
+                                _keyModifier &= ~KeyModifier.Shift;
+                                break;
+                            case Key.ControlKey:
+                                _keyModifier &= ~KeyModifier.Control;
+                                break;
+                        }
+                        inputHandler.Input_KeyUp(vKey, _keyModifier);
+                        break;
+                    case Win32Message.WM_SYSKEYDOWN:
+                        if (vKey == Key.Menu)
+                        {
+                            _keyModifier |= KeyModifier.Alt;
+                        }
+                        inputHandler.Input_KeyDown(vKey, _keyModifier);
+                        break;
+                    case Win32Message.WM_SYSKEYUP:
+                        if (vKey == Key.Menu)
+                        {
+                            _keyModifier &= ~KeyModifier.Alt;
+                        }
+                        inputHandler.Input_KeyUp(vKey, _keyModifier);
+                        break;
+                    case Win32Message.WM_UNICHAR:
+                    case Win32Message.WM_CHAR:
+                        inputHandler.Input_KeyPress((char)vKey);
+                        break;
+                }
+            }
         }
-
-        /// <summary>
-        ///     Input key down.
-        /// </summary>
-        /// <param name="keyValue"> The key value. </param>
-        /// <param name="shift">    True to shift. </param>
-        /// <param name="alt">      True to alternate. </param>
-        /// <param name="ctrl">     True to control. </param>
-        private void Input_KeyDown(int keyValue, bool shift, bool alt, bool ctrl)
-        {
-            _inputHandler?.Input_KeyDown(keyValue, shift, alt, ctrl);
-        }
-
-        #endregion
     }
 }
