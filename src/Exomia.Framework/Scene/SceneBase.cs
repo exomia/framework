@@ -788,7 +788,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     call to dispose the instance.
         /// </summary>
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
