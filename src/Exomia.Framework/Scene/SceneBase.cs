@@ -605,7 +605,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseMove(x, y, buttons, clicks, wheelDelta);
         }
@@ -628,7 +628,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseDown(x, y, buttons, clicks, wheelDelta);
         }
@@ -651,7 +651,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseUp(x, y, buttons, clicks, wheelDelta);
         }
@@ -674,7 +674,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseClick(x, y, buttons, clicks, wheelDelta);
         }
@@ -697,7 +697,7 @@ namespace Exomia.Framework.Scene
         /// <param name="buttons">    The buttons. </param>
         /// <param name="clicks">     The clicks. </param>
         /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        void IRawInputHandler.MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
             OnMouseWheel(x, y, buttons, clicks, wheelDelta);
         }
@@ -717,7 +717,7 @@ namespace Exomia.Framework.Scene
         /// </summary>
         /// <param name="keyValue">  The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
-        void IInputHandler.Input_KeyUp(int keyValue, KeyModifier modifiers)
+        void IInputHandler.KeyUp(int keyValue, KeyModifier modifiers)
         {
             OnKeyUp(keyValue, modifiers);
         }
@@ -734,7 +734,7 @@ namespace Exomia.Framework.Scene
         /// </summary>
         /// <param name="keyValue">  The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
-        void IInputHandler.Input_KeyDown(int keyValue, KeyModifier modifiers)
+        void IInputHandler.KeyDown(int keyValue, KeyModifier modifiers)
         {
             OnKeyDown(keyValue, modifiers);
         }
@@ -750,7 +750,7 @@ namespace Exomia.Framework.Scene
         ///     Input key event.
         /// </summary>
         /// <param name="message"> [in,out] The message. </param>
-        void IRawInputHandler.Input_KeyEvent(ref Message message)
+        void IRawInputHandler.KeyEvent(ref Message message)
         {
             OnKeyEvent(ref message);
         }
@@ -765,7 +765,7 @@ namespace Exomia.Framework.Scene
         ///     Input key press.
         /// </summary>
         /// <param name="key"> The key. </param>
-        void IInputHandler.Input_KeyPress(char key)
+        void IInputHandler.KeyPress(char key)
         {
             OnKeyPress(key);
         }
@@ -783,7 +783,7 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     true if the instance is already disposed; false otherwise.
         /// </summary>
-        protected bool _disposed;
+        private bool _disposed;
 
         /// <summary>
         ///     call to dispose the instance.
