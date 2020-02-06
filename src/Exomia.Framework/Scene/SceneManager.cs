@@ -11,10 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
-using MouseButtons = Exomia.Framework.Input.MouseButtons;
 
 namespace Exomia.Framework.Scene
 {
@@ -57,7 +55,6 @@ namespace Exomia.Framework.Scene
         ///     The scenes to unload.
         /// </summary>
         private readonly List<ISceneInternal> _scenesToUnload;
-        
 
         /// <summary>
         ///     The input handler.
@@ -274,7 +271,7 @@ namespace Exomia.Framework.Scene
                 if (_currentScenes.Count > 0)
                 {
                     _rawInputManager.RawInputHandler = _currentScenes[_currentScenes.Count - 1].RawInputHandler ??
-                                                      _currentScenes[_currentScenes.Count - 1];
+                                                       _currentScenes[_currentScenes.Count - 1];
                 }
                 else
                 {
@@ -329,7 +326,7 @@ namespace Exomia.Framework.Scene
         {
             _registry = registry;
             _rawInputManager.Initialize(registry);
-            
+
             lock (_pendingInitializableScenes)
             {
                 _pendingInitializableScenes[0].Initialize(registry);

@@ -111,6 +111,11 @@ namespace Exomia.Framework.Game
         private readonly DisposeCollector _collector;
 
         /// <summary>
+        ///     The game window initialize.
+        /// </summary>
+        private readonly IGameWindowInitialize _gameWindowInitialize;
+
+        /// <summary>
         ///     Manager for content.
         /// </summary>
         private IContentManager _contentManager;
@@ -119,11 +124,6 @@ namespace Exomia.Framework.Game
         ///     The game window.
         /// </summary>
         private IGameWindow _gameWindow;
-
-        /// <summary>
-        ///     The game window initialize.
-        /// </summary>
-        private readonly IGameWindowInitialize _gameWindowInitialize;
 
         /// <summary>
         ///     The graphics device.

@@ -10,7 +10,10 @@
 
 namespace Exomia.Framework.Input
 {
-    static class Win32Message
+    /// <summary>
+    ///     A window 32 message.
+    /// </summary>
+    public static class Win32Message
     {
         /// <summary>
         ///     The wm keydown.

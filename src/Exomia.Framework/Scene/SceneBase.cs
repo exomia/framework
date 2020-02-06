@@ -120,6 +120,22 @@ namespace Exomia.Framework.Scene
         /// </summary>
         private SceneState _state = SceneState.None;
 
+        /// <inheritdoc />
+        public bool Enabled { get; set; } = false;
+
+        /// <inheritdoc />
+        public bool IsOverlayScene { get; set; } = false;
+
+        /// <inheritdoc />
+        public string[] ReferenceScenes { get; set; } = new string[0];
+
+        /// <inheritdoc />
+        public bool Visible
+        {
+            get { return _visible; }
+            set { _visible = value; }
+        }
+
         /// <inheritdoc cref="ISceneInternal" />
         protected SceneState State
         {
@@ -146,31 +162,15 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public bool Enabled { get; set; } = false;
-
-        /// <inheritdoc />
-        public bool IsOverlayScene { get; set; } = false;
-
-        /// <inheritdoc />
         string IScene.Key
         {
             get { return _key; }
         }
 
         /// <inheritdoc />
-        public string[] ReferenceScenes { get; set; } = new string[0];
-
-        /// <inheritdoc />
         SceneState IScene.State
         {
             get { return _state; }
-        }
-
-        /// <inheritdoc />
-        public bool Visible
-        {
-            get { return _visible; }
-            set { _visible = value; }
         }
 
         /// <inheritdoc />
@@ -274,7 +274,6 @@ namespace Exomia.Framework.Scene
                 _isInitialized = true;
             }
         }
-
 
         /// <summary>
         ///     Adds item.
@@ -466,7 +465,7 @@ namespace Exomia.Framework.Scene
         ///     Place user code here.
         /// </summary>
         protected virtual void OnEndDraw() { }
-        
+
         /// <summary>
         ///     Removes the given item.
         /// </summary>

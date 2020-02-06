@@ -1,4 +1,14 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
 using System.Windows.Forms;
 
 namespace Exomia.Framework.Input
@@ -24,35 +34,35 @@ namespace Exomia.Framework.Input
         private bool _isInitialized;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RawInputManager"/> class.
-        /// </summary>
-        public RawInputManager()
-        {
-            _rawInputDevice = null!;
-        }
-
-        /// <summary>
         ///     Gets or sets the raw input handler.
         /// </summary>
         /// <value>
         ///     The raw input handler.
         /// </value>
         public IRawInputHandler? RawInputHandler { get; set; }
-        
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="RawInputManager" /> class.
+        /// </summary>
+        public RawInputManager()
+        {
+            _rawInputDevice = null!;
+        }
+
         public void Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized)
             {
                 _rawInputDevice = registry.GetService<IRawInputDevice>() ??
                                   throw new NullReferenceException($"No {nameof(IRawInputDevice)} found.");
-                
+
                 _rawInputDevice.RawKeyEvent   += RawInputDeviceOnRawKeyEvent;
                 _rawInputDevice.RawMouseDown  += RawInputDeviceOnRawMouseDown;
                 _rawInputDevice.RawMouseUp    += RawInputDeviceOnRawMouseUp;
                 _rawInputDevice.RawMouseClick += RawInputDeviceOnRawMouseClick;
                 _rawInputDevice.RawMouseMove  += RawInputDeviceOnRawMouseMove;
                 _rawInputDevice.RawMouseWheel += RawInputDeviceOnRawMouseWheel;
-                
+
                 _isInitialized = true;
             }
         }
@@ -186,13 +196,14 @@ namespace Exomia.Framework.Input
         /// <summary>
         ///     True if disposed.
         /// </summary>
-        private bool _disposed = false;
+        private bool _disposed;
 
         /// <summary>
-        ///     Releases the unmanaged resources used by the Exomia.Framework.Input.RawInputManager and optionally releases the managed resources.
+        ///     Releases the unmanaged resources used by the Exomia.Framework.Input.RawInputManager and optionally releases the
+        ///     managed resources.
         /// </summary>
         /// <param name="disposing">  to release both managed and unmanaged resources;  to release only unmanaged resources. </param>
-        void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed)
             {
@@ -208,13 +219,13 @@ namespace Exomia.Framework.Input
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~RawInputManager()
         {
             Dispose(false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
