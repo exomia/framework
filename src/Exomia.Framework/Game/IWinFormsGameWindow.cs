@@ -32,8 +32,6 @@
 
 #endregion
 
-using SharpDX.Windows;
-
 namespace Exomia.Framework.Game
 {
     /// <summary>

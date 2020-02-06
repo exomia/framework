@@ -21,7 +21,7 @@ namespace Exomia.Framework.Input
         ///     called than a key event occured.
         /// </summary>
         /// <param name="message"> [in,out] The message. </param>
-        void Input_KeyEvent(ref Message message);
+        void KeyEvent(ref Message message);
 
         /// <summary>
         ///     called than a mouse button is clicked.
@@ -31,7 +31,7 @@ namespace Exomia.Framework.Input
         /// <param name="buttons">    buttons. </param>
         /// <param name="clicks">     clicks. </param>
         /// <param name="wheelDelta"> wheel delta. </param>
-        void Input_MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
+        void MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
 
         /// <summary>
         ///     called than a mouse button is down.
@@ -41,7 +41,7 @@ namespace Exomia.Framework.Input
         /// <param name="buttons">    buttons. </param>
         /// <param name="clicks">     clicks. </param>
         /// <param name="wheelDelta"> wheel delta. </param>
-        void Input_MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
+        void MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
 
         /// <summary>
         ///     called than the mouse moved.
@@ -51,7 +51,7 @@ namespace Exomia.Framework.Input
         /// <param name="buttons">    buttons. </param>
         /// <param name="clicks">     clicks. </param>
         /// <param name="wheelDelta"> wheel delta. </param>
-        void Input_MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
+        void MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
 
         /// <summary>
         ///     called than a mouse button is up.
@@ -61,7 +61,7 @@ namespace Exomia.Framework.Input
         /// <param name="buttons">    buttons. </param>
         /// <param name="clicks">     clicks. </param>
         /// <param name="wheelDelta"> wheel delta. </param>
-        void Input_MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
+        void MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
 
         /// <summary>
         ///     called than the mouse wheel delta is changed.
@@ -71,6 +71,6 @@ namespace Exomia.Framework.Input
         /// <param name="buttons">    buttons. </param>
         /// <param name="clicks">     clicks. </param>
         /// <param name="wheelDelta"> wheel delta. </param>
-        void Input_MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
+        void MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
     }
 }

@@ -28,7 +28,7 @@ namespace Exomia.Framework.Game
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         void Initialize(ref GameGraphicsParameters parameters);
     }
-    
+
     /// <summary>
     ///     IGameWindow interface.
     /// </summary>
@@ -41,7 +41,7 @@ namespace Exomia.Framework.Game
         ///     The height.
         /// </value>
         int Height { get; }
-        
+
         /// <summary>
         ///     Gets or sets the title.
         /// </summary>

@@ -11,10 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
-using MouseButtons = Exomia.Framework.Input.MouseButtons;
 
 namespace Exomia.Framework.Scene
 {
@@ -31,81 +29,75 @@ namespace Exomia.Framework.Scene
         /// <summary>
         ///     The current drawable scenes.
         /// </summary>
-        private readonly List<SceneBase> _currentDrawableScenes;
+        private readonly List<ISceneInternal> _currentDrawableScenes;
 
         /// <summary>
         ///     The current scenes.
         /// </summary>
-        private readonly List<SceneBase> _currentScenes;
+        private readonly List<ISceneInternal> _currentScenes;
 
         /// <summary>
         ///     The current updateable scenes.
         /// </summary>
-        private readonly List<SceneBase> _currentUpdateableScenes;
+        private readonly List<ISceneInternal> _currentUpdateableScenes;
 
         /// <summary>
         ///     The pending initializable scenes.
         /// </summary>
-        private readonly List<SceneBase> _pendingInitializableScenes;
+        private readonly List<ISceneInternal> _pendingInitializableScenes;
 
         /// <summary>
         ///     The scenes.
         /// </summary>
-        private readonly Dictionary<string, SceneBase> _scenes;
+        private readonly Dictionary<string, ISceneInternal> _scenes;
 
         /// <summary>
         ///     The scenes to unload.
         /// </summary>
-        private readonly List<SceneBase> _scenesToUnload;
-
-        /// <summary>
-        ///     The raw input device.
-        /// </summary>
-        private IRawInputDevice? _rawInputDevice;
+        private readonly List<ISceneInternal> _scenesToUnload;
 
         /// <summary>
         ///     The input handler.
         /// </summary>
-        private IRawInputHandler? _rawInputHandler;
+        private readonly RawInputManager _rawInputManager;
 
         /// <summary>
         ///     The registry.
         /// </summary>
         private IServiceRegistry? _registry;
 
-        /// <summary>
-        ///     The key modifier.
-        /// </summary>
-        private KeyModifier _keyModifier = 0;
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="SceneManager" /> class.
         /// </summary>
-        public SceneManager(SceneBase startScene, string name = "SceneManager")
+        public SceneManager(IScene startScene, string name = "SceneManager")
             : base(name)
         {
             if (startScene == null) { throw new ArgumentNullException(nameof(startScene)); }
-            _scenes        = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
-            _currentScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _scenes        = new Dictionary<string, ISceneInternal>(INITIAL_QUEUE_SIZE);
+            _currentScenes = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
 
-            _currentUpdateableScenes    = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _currentDrawableScenes      = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _pendingInitializableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
-            _scenesToUnload             = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentUpdateableScenes    = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
+            _currentDrawableScenes      = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
+            _pendingInitializableScenes = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
+            _scenesToUnload             = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
+
+            _rawInputManager = new RawInputManager();
 
             AddScene(startScene);
         }
 
         /// <inheritdoc />
-        public bool AddScene(SceneBase scene, bool initialize = true)
+        public bool AddScene(IScene scene, bool initialize = true)
         {
-            if (string.IsNullOrEmpty(scene.Key) && _scenes.ContainsKey(scene.Key)) { return false; }
-
-            if (scene is IScene intern)
+            if (!(scene is ISceneInternal intern))
             {
-                intern.SceneManager = this;
+                throw new InvalidCastException();
             }
+
+            if (string.IsNullOrEmpty(intern.Key) && _scenes.ContainsKey(intern.Key)) { return false; }
+
+            intern.SceneManager = this;
 
             if (initialize)
             {
@@ -113,30 +105,32 @@ namespace Exomia.Framework.Scene
                 {
                     lock (_pendingInitializableScenes)
                     {
-                        _pendingInitializableScenes.Add(scene);
+                        _pendingInitializableScenes.Add(intern);
                     }
                 }
                 else
                 {
-                    scene.Initialize(_registry!);
+                    intern.Initialize(_registry!);
                 }
             }
 
-            _scenes.Add(scene.Key, scene);
+            _scenes.Add(intern.Key, intern);
 
             return true;
         }
 
         /// <inheritdoc />
-        public bool GetScene(string key, out SceneBase scene)
+        public bool GetScene(string key, out IScene scene)
         {
-            return _scenes.TryGetValue(key, out scene);
+            bool result = _scenes.TryGetValue(key, out ISceneInternal intern);
+            scene = intern;
+            return result;
         }
 
         /// <inheritdoc />
         public SceneState GetSceneState(string key)
         {
-            if (_scenes.TryGetValue(key, out SceneBase scene))
+            if (_scenes.TryGetValue(key, out ISceneInternal scene))
             {
                 return scene.State;
             }
@@ -146,7 +140,7 @@ namespace Exomia.Framework.Scene
         /// <inheritdoc />
         public bool RemoveScene(string key)
         {
-            if (!_scenes.TryGetValue(key, out SceneBase scene))
+            if (!_scenes.TryGetValue(key, out ISceneInternal scene))
             {
                 return false;
             }
@@ -161,11 +155,12 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public ShowSceneResult ShowScene(SceneBase s, params object[] payload)
+        public ShowSceneResult ShowScene(IScene s, params object[] payload)
         {
             lock (this)
             {
-                if (!(s is IScene scene)) { return ShowSceneResult.NoScene; }
+                if (!(s is ISceneInternal scene)) { return ShowSceneResult.NoScene; }
+
                 // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (scene.State)
                 {
@@ -221,7 +216,7 @@ namespace Exomia.Framework.Scene
                         for (int i = scene.ReferenceScenes.Length - 1; i >= 0; --i)
                         {
                             string referenceSceneKey = scene.ReferenceScenes[i];
-                            if (!GetScene(referenceSceneKey, out SceneBase rScene))
+                            if (!GetScene(referenceSceneKey, out IScene rScene))
                             {
                                 throw new ArgumentNullException(referenceSceneKey);
                             }
@@ -233,11 +228,11 @@ namespace Exomia.Framework.Scene
                         scene.ReferenceScenesLoaded();
                     });
 
-                _rawInputHandler = scene.RawInputHandler ?? scene;
+                _rawInputManager.RawInputHandler = scene.RawInputHandler ?? scene;
 
                 lock (_currentScenes)
                 {
-                    _currentScenes.Add(s);
+                    _currentScenes.Add(scene);
                 }
 
                 return scene.State == SceneState.Ready ? ShowSceneResult.Success : ShowSceneResult.NotReady;
@@ -245,15 +240,19 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        public ShowSceneResult ShowScene(string key, out SceneBase scene, params object[] payload)
+        public ShowSceneResult ShowScene(string key, out IScene scene, params object[] payload)
         {
-            return !_scenes.TryGetValue(key, out scene) ? ShowSceneResult.NoScene : ShowScene(scene, payload);
+            ShowSceneResult result = !_scenes.TryGetValue(key, out ISceneInternal intern)
+                ? ShowSceneResult.NoScene
+                : ShowScene(intern, payload);
+            scene = intern;
+            return result;
         }
 
         /// <inheritdoc />
         public bool HideScene(string key)
         {
-            return _scenes.TryGetValue(key, out SceneBase scene) && HideScene(scene);
+            return _scenes.TryGetValue(key, out ISceneInternal intern) && HideScene(intern);
         }
 
         /// <summary>
@@ -263,20 +262,20 @@ namespace Exomia.Framework.Scene
         /// <returns>
         ///     True if it succeeds, false if it fails.
         /// </returns>
-        public bool HideScene(SceneBase scene)
+        public bool HideScene(IScene scene)
         {
             lock (_currentScenes)
             {
-                if (!_currentScenes.Remove(scene)) { return false; }
+                if (!_currentScenes.Remove((ISceneInternal)scene)) { return false; }
 
                 if (_currentScenes.Count > 0)
                 {
-                    _rawInputHandler = (_currentScenes[_currentScenes.Count - 1] as IScene).RawInputHandler ??
-                                       _currentScenes[_currentScenes.Count - 1];
+                    _rawInputManager.RawInputHandler = _currentScenes[_currentScenes.Count - 1].RawInputHandler ??
+                                                       _currentScenes[_currentScenes.Count - 1];
                 }
                 else
                 {
-                    _rawInputHandler = null;
+                    _rawInputManager.RawInputHandler = null;
                 }
                 return true;
             }
@@ -292,7 +291,7 @@ namespace Exomia.Framework.Scene
 
             for (int i = _currentUpdateableScenes.Count - 1; i >= 0; i--)
             {
-                IScene scene = _currentUpdateableScenes[i];
+                ISceneInternal scene = _currentUpdateableScenes[i];
                 if (scene.State == SceneState.Ready && scene.Enabled)
                 {
                     scene.Update(gameTime);
@@ -311,7 +310,7 @@ namespace Exomia.Framework.Scene
             }
             for (int i = 0; i < _currentDrawableScenes.Count; i++)
             {
-                IScene scene = _currentDrawableScenes[i];
+                ISceneInternal scene = _currentDrawableScenes[i];
                 if (scene.State == SceneState.Ready && scene.BeginDraw())
                 {
                     scene.Draw(gameTime);
@@ -326,15 +325,7 @@ namespace Exomia.Framework.Scene
         protected override void OnInitialize(IServiceRegistry registry)
         {
             _registry = registry;
-            _rawInputDevice = registry.GetService<IRawInputDevice>() ??
-                              throw new NullReferenceException($"No {nameof(IRawInputDevice)} found.");
-
-            _rawInputDevice.RawKeyEvent   += RawInputDeviceOnRawKeyEvent;
-            _rawInputDevice.RawMouseDown  += RawInputDeviceOnRawMouseDown;
-            _rawInputDevice.RawMouseUp    += RawInputDeviceOnRawMouseUp;
-            _rawInputDevice.RawMouseClick += RawInputDeviceOnRawMouseClick;
-            _rawInputDevice.RawMouseMove  += RawInputDeviceOnRawMouseMove;
-            _rawInputDevice.RawMouseWheel += RawInputDeviceOnRawMouseWheel;
+            _rawInputManager.Initialize(registry);
 
             lock (_pendingInitializableScenes)
             {
@@ -360,143 +351,15 @@ namespace Exomia.Framework.Scene
                     _currentScenes.Clear();
                 }
 
-                _rawInputDevice!.RawKeyEvent  -= RawInputDeviceOnRawKeyEvent;
-                _rawInputDevice.RawMouseDown  -= RawInputDeviceOnRawMouseDown;
-                _rawInputDevice.RawMouseUp    -= RawInputDeviceOnRawMouseUp;
-                _rawInputDevice.RawMouseMove  -= RawInputDeviceOnRawMouseMove;
-                _rawInputDevice.RawMouseWheel -= RawInputDeviceOnRawMouseWheel;
-
-                foreach (IScene scene in _scenes.Values)
+                foreach (ISceneInternal scene in _scenes.Values)
                 {
                     scene.UnloadContent(_registry!);
                     scene.Dispose();
                 }
 
                 _scenes.Clear();
-            }
-        }
 
-        /// <summary>
-        ///     Raw input device on raw mouse wheel.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheelDelta. </param>
-        private void RawInputDeviceOnRawMouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            _rawInputHandler?.Input_MouseWheel(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Raw input device on raw mouse move.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheelDelta. </param>
-        private void RawInputDeviceOnRawMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            _rawInputHandler?.Input_MouseMove(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Raw input device on raw mouse up.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheelDelta. </param>
-        private void RawInputDeviceOnRawMouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            _rawInputHandler?.Input_MouseUp(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Raw input device on raw mouse down.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheelDelta. </param>
-        private void RawInputDeviceOnRawMouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            _rawInputHandler?.Input_MouseDown(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Raw input device on raw mouse click.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheelDelta. </param>
-        private void RawInputDeviceOnRawMouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            _rawInputHandler?.Input_MouseClick(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Raw input device on raw key event.
-        /// </summary>
-        /// <param name="e"> [in,out] The ref Message to process. </param>
-        private void RawInputDeviceOnRawKeyEvent(ref Message e)
-        {
-            _rawInputHandler?.Input_KeyEvent(ref e);
-            if (_rawInputHandler is IInputHandler inputHandler)
-            {
-                int vKey = (int)e.WParam.ToInt64();
-
-                switch (e.Msg)
-                {
-                    case Win32Message.WM_KEYDOWN:
-                        switch (vKey)
-                        {
-                            case Key.ShiftKey:
-                                _keyModifier |= KeyModifier.Shift;
-                                break;
-                            case Key.ControlKey:
-                                _keyModifier |= KeyModifier.Control;
-                                break;
-                        }
-                        inputHandler.Input_KeyDown(vKey, _keyModifier);
-                        break;
-                    case Win32Message.WM_KEYUP:
-                        switch (vKey)
-                        {
-                            case Key.ShiftKey:
-                                _keyModifier &= ~KeyModifier.Shift;
-                                break;
-                            case Key.ControlKey:
-                                _keyModifier &= ~KeyModifier.Control;
-                                break;
-                        }
-                        inputHandler.Input_KeyUp(vKey, _keyModifier);
-                        break;
-                    case Win32Message.WM_SYSKEYDOWN:
-                        if (vKey == Key.Menu)
-                        {
-                            _keyModifier |= KeyModifier.Alt;
-                        }
-                        inputHandler.Input_KeyDown(vKey, _keyModifier);
-                        break;
-                    case Win32Message.WM_SYSKEYUP:
-                        if (vKey == Key.Menu)
-                        {
-                            _keyModifier &= ~KeyModifier.Alt;
-                        }
-                        inputHandler.Input_KeyUp(vKey, _keyModifier);
-                        break;
-                    case Win32Message.WM_UNICHAR:
-                    case Win32Message.WM_CHAR:
-                        inputHandler.Input_KeyPress((char)vKey);
-                        break;
-                }
+                _rawInputManager.Dispose();
             }
         }
     }

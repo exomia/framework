@@ -23,7 +23,7 @@ namespace Exomia.Framework.Scene
         /// <returns>
         ///     True if it succeeds, false if it fails.
         /// </returns>
-        bool AddScene(SceneBase scene, bool initialize = true);
+        bool AddScene(IScene scene, bool initialize = true);
 
         /// <summary>
         ///     Gets a scene.
@@ -33,7 +33,7 @@ namespace Exomia.Framework.Scene
         /// <returns>
         ///     True if it succeeds, false if it fails.
         /// </returns>
-        bool GetScene(string key, out SceneBase scene);
+        bool GetScene(string key, out IScene scene);
 
         /// <summary>
         ///     Gets scene state.
@@ -70,7 +70,7 @@ namespace Exomia.Framework.Scene
         /// <returns>
         ///     A ShowSceneResult.
         /// </returns>
-        ShowSceneResult ShowScene(SceneBase scene, params object[] payload);
+        ShowSceneResult ShowScene(IScene scene, params object[] payload);
 
         /// <summary>
         ///     Shows the scene.
@@ -81,6 +81,6 @@ namespace Exomia.Framework.Scene
         /// <returns>
         ///     A ShowSceneResult.
         /// </returns>
-        ShowSceneResult ShowScene(string key, out SceneBase scene, params object[] payload);
+        ShowSceneResult ShowScene(string key, out IScene scene, params object[] payload);
     }
 }

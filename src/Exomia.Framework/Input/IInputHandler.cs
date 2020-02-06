@@ -20,19 +20,19 @@ namespace Exomia.Framework.Input
         /// </summary>
         /// <param name="keyValue"> The key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
-        void Input_KeyDown(int keyValue, KeyModifier modifiers);
+        void KeyDown(int keyValue, KeyModifier modifiers);
 
         /// <summary>
         ///     called than a key is pressed.
         /// </summary>
         /// <param name="key"> key char. </param>
-        void Input_KeyPress(char key);
+        void KeyPress(char key);
 
         /// <summary>
         ///     called than a key is up.
         /// </summary>
         /// <param name="keyValue"> key value. </param>
         /// <param name="modifiers"> The key modifiers. </param>
-        void Input_KeyUp(int keyValue, KeyModifier modifiers);
+        void KeyUp(int keyValue, KeyModifier modifiers);
     }
 }

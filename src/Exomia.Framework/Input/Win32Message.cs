@@ -8,13 +8,17 @@
 
 #endregion
 
-namespace Exomia.Framework.Input {
-    static class Win32Message
+namespace Exomia.Framework.Input
+{
+    /// <summary>
+    ///     A window 32 message.
+    /// </summary>
+    public static class Win32Message
     {
         /// <summary>
         ///     The wm keydown.
         /// </summary>
-        public  const int WM_KEYDOWN = 0x0100;
+        public const int WM_KEYDOWN = 0x0100;
 
         /// <summary>
         ///     The wm keyup.

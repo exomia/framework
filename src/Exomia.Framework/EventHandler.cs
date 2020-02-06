@@ -15,21 +15,21 @@ namespace Exomia.Framework
     ///     specified.
     /// </summary>
     public delegate void EventHandler();
-    
+
     /// <summary>
     ///     Handler, called when the event.
     /// </summary>
     /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
     /// <param name="e"> T event information. </param>
     public delegate void EventHandler<in TEventArgs>(TEventArgs e);
-    
+
     /// <summary>
     ///     Delegate for handling Ref events.
     /// </summary>
     /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
     /// <param name="e"> [in,out] Reference t event information. </param>
     public delegate void RefEventHandler<TEventArgs>(ref TEventArgs e) where TEventArgs : struct;
-    
+
     /// <summary>
     ///     Handler, called when the event.
     /// </summary>

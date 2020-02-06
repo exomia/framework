@@ -21,6 +21,11 @@ namespace Exomia.Framework.Mathematics
     {
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
 
+        private const float PI     = (float)Math.PI;
+        private const float TWOPI  = (float)(2.0 * Math.PI);
+        private const float ITWOPI = 1.0f / TWOPI;
+        private const float PITWO  = (float)(Math.PI * 0.5);
+
         /// <summary>
         ///     calculates the absolute value of x
         /// </summary>
@@ -99,11 +104,6 @@ namespace Exomia.Framework.Mathematics
             }
             return result;
         }
-        
-        private const float PI    = (float)Math.PI;
-        private const float TWOPI = (float)(2.0 * Math.PI);
-        private const float ITWOPI = 1.0f / TWOPI;
-        private const float PITWO = (float)(Math.PI * 0.5);
 
         /// <summary>
         ///     Returns the approximated sinus of a specified number.
@@ -145,10 +145,13 @@ namespace Exomia.Framework.Mathematics
         public static void SinCos(float x, out float sin, out float cos)
         {
             const float A = 1.27323954f, B = 0.405284735f;
-            x -= (TWOPI * Floor((x / TWOPI) + 0.5f));
+            x   -= TWOPI * Floor((x / TWOPI) + 0.5f);
             sin =  x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
             x   += PITWO;
-            if (x > PI) x -= TWOPI;
+            if (x > PI)
+            {
+                x -= TWOPI;
+            }
             cos = x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
         }
 
@@ -166,16 +169,26 @@ namespace Exomia.Framework.Mathematics
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (x == 0f)
             {
-                if (y > 0f) return PITWO;
+                if (y > 0f)
+                {
+                    return PITWO;
+                }
+
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (y == 0f) return 0f;
+                if (y == 0f)
+                {
+                    return 0f;
+                }
                 return -PITWO;
             }
             float atan, z = y / x;
             if (Math.Abs(z) < 1f)
             {
                 atan = z / (1f + (0.28f * z * z));
-                if (x < 0f) return atan + (y < 0f ? -PI : PI);
+                if (x < 0f)
+                {
+                    return atan + (y < 0f ? -PI : PI);
+                }
                 return atan;
             }
             atan = PITWO - (z / ((z * z) + 0.28f));
@@ -250,9 +263,9 @@ namespace Exomia.Framework.Mathematics
             value |= value >> 32;
             return value + 1;
         }
-        
+
         #endregion
-        
+
         #region SQRT
 
         /// <summary>
@@ -338,7 +351,6 @@ namespace Exomia.Framework.Mathematics
             return g;
         }
 
-
         /// <summary>
         ///     Returns the approximated square root of a specified number.
         /// </summary>
@@ -350,6 +362,7 @@ namespace Exomia.Framework.Mathematics
 
             // adjust bias
             i += 127 << 23;
+
             // approximation of square root
             i >>= 1;
 
@@ -519,7 +532,7 @@ namespace Exomia.Framework.Mathematics
         {
             int y = x;
             y -= (y >> 1) & 0x55;
-            y = ((y >> 2) & 0x33) + (y & 0x33);
+            y =  ((y >> 2) & 0x33) + (y & 0x33);
             return (y & 0x0F) + (y >> 4);
         }
 
@@ -530,8 +543,8 @@ namespace Exomia.Framework.Mathematics
         {
             int y = x;
             y -= (y >> 1) & 0x5555;
-            y = ((y >> 2) & 0x3333) + (y & 0x3333);
-            y = ((y >> 4) + y) & 0x0F0F;
+            y =  ((y >> 2) & 0x3333) + (y & 0x3333);
+            y =  ((y >> 4) + y) & 0x0F0F;
             return (y + (y >> 8)) & 0x001F;
         }
 
@@ -550,8 +563,8 @@ namespace Exomia.Framework.Mathematics
         public static int CountOnes(uint x)
         {
             x -= (x >> 1) & 0x55555555;
-            x = ((x >> 2) & 0x33333333) + (x & 0x33333333);
-            x = ((x >> 4) + x) & 0x0F0F0F0F;
+            x =  ((x >> 2) & 0x33333333) + (x & 0x33333333);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F;
             x += x >> 8;
             return (int)((x + (x >> 16)) & 0x0000003F);
         }
@@ -571,8 +584,8 @@ namespace Exomia.Framework.Mathematics
         public static int CountOnes(ulong x)
         {
             x -= (x >> 1) & 0x5555555555555555u;
-            x = ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
-            x = ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
+            x =  ((x >> 2) & 0x3333333333333333u) + (x & 0x3333333333333333u);
+            x =  ((x >> 4) + x) & 0x0F0F0F0F0F0F0F0Fu;
             x += x >> 8;
             x += x >> 16;
             return ((int)x + (int)(x >> 32)) & 0x0000007F;
