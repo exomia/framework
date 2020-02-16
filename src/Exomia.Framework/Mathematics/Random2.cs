@@ -423,8 +423,9 @@ namespace Exomia.Framework.Mathematics
         /// </returns>
         public Vector2 NextUnitVector()
         {
-            float angle = NextAngle();
-            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            Vector2 v;
+            Math2.SinCos(NextAngle(), out v.X, out v.Y);
+            return v;
         }
 
         /// <summary>
@@ -437,9 +438,7 @@ namespace Exomia.Framework.Mathematics
         /// </returns>
         public unsafe void NextUnitVector(Vector2* vector)
         {
-            float angle = NextAngle();
-            vector->X = (float)Math.Cos(angle);
-            vector->Y = (float)Math.Sin(angle);
+            Math2.SinCos(NextAngle(), out vector->X, out vector->Y);
         }
     }
 }
