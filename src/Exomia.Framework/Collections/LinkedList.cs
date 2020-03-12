@@ -20,9 +20,6 @@ namespace Exomia.Framework.Collections
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     public sealed class LinkedList<T> : IEnumerable<T>
     {
-        /// <summary>
-        ///     The head.
-        /// </summary>
         private LinkedListNode? _head;
 
         /// <summary>
@@ -306,20 +303,9 @@ namespace Exomia.Framework.Collections
         /// </summary>
         public struct Enumerator : IEnumerator<T>
         {
-            /// <summary>
-            ///     The list.
-            /// </summary>
-            private readonly LinkedList<T> _list;
-
-            /// <summary>
-            ///     The node.
-            /// </summary>
-            private LinkedListNode? _node;
-
-            /// <summary>
-            ///     The current.
-            /// </summary>
-            private T _current;
+            private readonly LinkedList<T>   _list;
+            private          LinkedListNode? _node;
+            private          T               _current;
 
             /// <inheritdoc />
             public T Current

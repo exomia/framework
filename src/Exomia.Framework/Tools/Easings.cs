@@ -13,14 +13,14 @@ using System;
 namespace Exomia.Framework.Tools
 {
     /// <summary>
-    ///     EasingFunction delegate.
+    ///     Easing function.
     /// </summary>
-    /// <param name="t"> time (0 - duration) </param>
-    /// <param name="b"> initial value. </param>
-    /// <param name="c"> change in value or difference between final and initial value. </param>
-    /// <param name="d"> duration. </param>
+    /// <param name="t"> The float to process. </param>
+    /// <param name="b"> The float to process. </param>
+    /// <param name="c"> The float to process. </param>
+    /// <param name="d"> The float to process. </param>
     /// <returns>
-    ///     float value.
+    ///     A float.
     /// </returns>
     public delegate float EasingFunction(float t, float b, float c, float d);
 
@@ -34,34 +34,11 @@ namespace Exomia.Framework.Tools
         /// </summary>
         public static class Bounce
         {
-            /// <summary>
-            ///     The first b.
-            /// </summary>
             private const float B1 = 1.0f / 2.75f;
-
-            /// <summary>
-            ///     The second b.
-            /// </summary>
             private const float B2 = 1.5f / 2.75f;
-
-            /// <summary>
-            ///     The third b.
-            /// </summary>
             private const float B3 = 2.0f / 2.75f;
-
-            /// <summary>
-            ///     The fourth b.
-            /// </summary>
             private const float B4 = 2.25f / 2.75f;
-
-            /// <summary>
-            ///     The fifth b.
-            /// </summary>
             private const float B5 = 2.5f / 2.75f;
-
-            /// <summary>
-            ///     The b 6.
-            /// </summary>
             private const float B6 = 2.625f / 2.75f;
 
             /// <summary>

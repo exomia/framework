@@ -20,7 +20,6 @@ namespace Exomia.Framework.Mathematics
     public static partial class Math2
     {
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
-
         private const float PI     = (float)Math.PI;
         private const float TWOPI  = (float)(2.0 * Math.PI);
         private const float ITWOPI = 1.0f / TWOPI;

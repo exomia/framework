@@ -16,11 +16,8 @@ namespace Exomia.Framework
     /// <summary>
     ///     A service registry. This class cannot be inherited.
     /// </summary>
-    public sealed class ServiceRegistry : IServiceRegistry
+    sealed class ServiceRegistry : IServiceRegistry
     {
-        /// <summary>
-        ///     The registered services.
-        /// </summary>
         private readonly Dictionary<Type, object> _registeredServices;
 
         /// <summary>

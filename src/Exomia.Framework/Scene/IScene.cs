@@ -9,14 +9,13 @@
 #endregion
 
 using System;
-using Exomia.Framework.Input;
 
 namespace Exomia.Framework.Scene
 {
     /// <summary>
     ///     Interface for scene.
     /// </summary>
-    public interface IScene : IInitializable, IContentable, IInputHandler, IDisposable
+    public interface IScene : IInitializable, IContentable, IDisposable
     {
         /// <summary>
         ///     Occurs when Scene State Changed.
@@ -31,14 +30,6 @@ namespace Exomia.Framework.Scene
         ///     <c>true</c> if update is enabled; <c>false</c> otherwise.
         /// </value>
         bool Enabled { get; set; }
-
-        /// <summary>
-        ///     Gets the input handler.
-        /// </summary>
-        /// <value>
-        ///     The input handler.
-        /// </value>
-        IRawInputHandler RawInputHandler { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this object is overlay scene.

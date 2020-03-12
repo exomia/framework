@@ -22,9 +22,6 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public static class TextureHelper
     {
-        /// <summary>
-        ///     The image factory.
-        /// </summary>
         private static readonly ImagingFactory s_imgFactory = new ImagingFactory();
 
         /// <summary>

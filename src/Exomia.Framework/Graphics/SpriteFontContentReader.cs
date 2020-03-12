@@ -24,16 +24,13 @@ namespace Exomia.Framework.Graphics
         public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont font = ContentSerializer.Read<SpriteFont>(parameters.Stream);
-            if (font?.ImageData == null)
+            if (font.ImageData == null)
             {
                 return null;
             }
 
-            IGraphicsDevice graphicsDevice = contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
-            if (graphicsDevice == null)
-            {
-                throw new InvalidOperationException($"Unable to retrieve a {nameof(IGraphicsDevice)}");
-            }
+            IGraphicsDevice graphicsDevice =
+                contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
 
             try
             {
@@ -57,17 +54,13 @@ namespace Exomia.Framework.Graphics
         {
             SpriteFont2 font = ContentSerializer.Read<SpriteFont2>(parameters.Stream);
 
-            if (font?.ImageData == null)
+            if (font.ImageData == null)
             {
                 return null;
             }
 
             ITexture2ContentManager manager =
                 contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
-            if (manager == null)
-            {
-                throw new InvalidOperationException($"Unable to retrieve a {nameof(ITexture2ContentManager)}");
-            }
 
             try
             {

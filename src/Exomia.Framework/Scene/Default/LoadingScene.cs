@@ -18,15 +18,8 @@ namespace Exomia.Framework.Scene.Default
     /// </summary>
     public class LoadingScene : SceneBase
     {
-        /// <summary>
-        ///     The scene to load.
-        /// </summary>
-        private readonly IScene _sceneToLoad;
-
-        /// <summary>
-        ///     The registry.
-        /// </summary>
-        private IServiceRegistry? _registry;
+        private readonly IScene            _sceneToLoad;
+        private          IServiceRegistry? _registry;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoadingScene" /> class.

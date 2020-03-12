@@ -22,25 +22,10 @@ namespace Exomia.Framework.Buffers
     /// <typeparam name="T"> any. </typeparam>
     public sealed class ArrayPool<T>
     {
-        /// <summary>
-        ///     Length of the buffer.
-        /// </summary>
-        private readonly int _bufferLength;
-
-        /// <summary>
-        ///     The buffers.
-        /// </summary>
-        private readonly T[]?[] _buffers;
-
-        /// <summary>
-        ///     The lock.
-        /// </summary>
-        private SpinLock _lock;
-
-        /// <summary>
-        ///     The index.
-        /// </summary>
-        private int _index;
+        private readonly int      _bufferLength;
+        private readonly T[]?[]   _buffers;
+        private          SpinLock _lock;
+        private          int      _index;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ArrayPool{T}" /> class.

@@ -23,95 +23,24 @@ namespace Exomia.Framework.Audio
     /// </summary>
     public sealed class AudioManager : IAudioManager
     {
-        /// <summary>
-        ///     Number of input channels.
-        /// </summary>
-        private readonly int _inputChannelCount;
-
-        /// <summary>
-        ///     The listener.
-        /// </summary>
-        private readonly Listener _listener;
-
-        /// <summary>
-        ///     List of environment linked sounds.
-        /// </summary>
-        private readonly LinkedSoundList _envLinkedSoundList;
-
-        /// <summary>
-        ///     The environment submix voice.
-        /// </summary>
-        private readonly SubmixVoice _envSubmixVoice;
-
-        /// <summary>
-        ///     List of effects linked sounds.
-        /// </summary>
-        private readonly LinkedSoundList _fxLinkedSoundList;
-
-        /// <summary>
-        ///     The effects submix voice.
-        /// </summary>
-        private readonly SubmixVoice _fxSubmixVoice;
-
-        /// <summary>
-        ///     The mastering voice.
-        /// </summary>
-        private readonly MasteringVoice _masteringVoice;
-
-        /// <summary>
-        ///     Buffer for sound data.
-        /// </summary>
+        private readonly int                          _inputChannelCount;
+        private readonly Listener                     _listener;
+        private readonly LinkedSoundList              _envLinkedSoundList;
+        private readonly SubmixVoice                  _envSubmixVoice;
+        private readonly LinkedSoundList              _fxLinkedSoundList;
+        private readonly SubmixVoice                  _fxSubmixVoice;
+        private readonly MasteringVoice               _masteringVoice;
         private readonly Dictionary<int, SoundBuffer> _soundBuffer;
-
-        /// <summary>
-        ///     The 3DAudio.
-        /// </summary>
-        private readonly X3DAudio _x3DAudio;
-
-        /// <summary>
-        ///     The XAudio2.
-        /// </summary>
-        private readonly XAudio2 _xAudio2;
-
-        /// <summary>
-        ///     The bgm volume.
-        /// </summary>
-        private float _bgmVolume = 1.0f;
-
-        /// <summary>
-        ///     The current bgm.
-        /// </summary>
-        private SourceVoice? _currentBgm;
-
-        /// <summary>
-        ///     Information describing the environment voice send.
-        /// </summary>
-        private VoiceSendDescriptor _envVoiceSendDescriptor;
-
-        /// <summary>
-        ///     The environment volume.
-        /// </summary>
-        private float _envVolume = 1.0f;
-
-        /// <summary>
-        ///     Information describing the effects voice send.
-        /// </summary>
-        private VoiceSendDescriptor _fxVoiceSendDescriptor;
-
-        /// <summary>
-        ///     The effects volume.
-        /// </summary>
-        private float _fxVolume = 1.0f;
-
-        /// <summary>
-        ///     The master volume.
-        /// </summary>
-        private float _masterVolume = 0.5f;
-
-        /// <summary>
-        ///     Zero-based index of the sound buffer.
-        /// </summary>
-        private int _soundBufferIndex;
+        private readonly X3DAudio                     _x3DAudio;
+        private readonly XAudio2                      _xAudio2;
+        private          float                        _bgmVolume = 1.0f;
+        private          SourceVoice?                 _currentBgm;
+        private          VoiceSendDescriptor          _envVoiceSendDescriptor;
+        private          float                        _envVolume = 1.0f;
+        private          VoiceSendDescriptor          _fxVoiceSendDescriptor;
+        private          float                        _fxVolume     = 1.0f;
+        private          float                        _masterVolume = 0.5f;
+        private          int                          _soundBufferIndex;
 
         /// <inheritdoc />
         public float BgmVolume
@@ -195,7 +124,6 @@ namespace Exomia.Framework.Audio
         ///     Thrown when one or more arguments have unsupported or
         ///     illegal values.
         /// </exception>
-        /// <exception cref="Exception">         Thrown when an exception error condition occurs. </exception>
         public AudioManager(Listener listener, int fxSoundPoolLimit, Speakers speakers, string? deviceID = null)
         {
             _listener = listener;
@@ -443,16 +371,6 @@ namespace Exomia.Framework.Audio
             return _soundBuffer.Remove(soundID);
         }
 
-        /// <summary>
-        ///     Play sound.
-        /// </summary>
-        /// <param name="soundID">             Identifier for the sound. </param>
-        /// <param name="emitterPos">          The emitter position. </param>
-        /// <param name="volume">              The volume. </param>
-        /// <param name="maxDistance">         The maximum distance. </param>
-        /// <param name="list">                The list. </param>
-        /// <param name="voiceSendDescriptor"> [in,out] Information describing the voice send. </param>
-        /// <param name="onFxEnd">             (Optional) The on effects end. </param>
         private void PlaySound(int                     soundID,
                                Vector3                 emitterPos,
                                float                   volume,
@@ -480,15 +398,6 @@ namespace Exomia.Framework.Audio
                 }, volume, list, ref voiceSendDescriptor, onFxEnd);
         }
 
-        /// <summary>
-        ///     Play sound.
-        /// </summary>
-        /// <param name="soundID">             Identifier for the sound. </param>
-        /// <param name="emitter">             The emitter. </param>
-        /// <param name="volume">              The volume. </param>
-        /// <param name="list">                The list. </param>
-        /// <param name="voiceSendDescriptor"> [in,out] Information describing the voice send. </param>
-        /// <param name="onFxEnd">             (Optional) The on effects end. </param>
         private void PlaySound(int                     soundID,
                                Emitter                 emitter,
                                float                   volume,
@@ -531,9 +440,6 @@ namespace Exomia.Framework.Audio
             sound.SourceVoice.SetFrequencyRatio(settings.DopplerFactor);
         }
 
-        /// <summary>
-        ///     Calculates the environment sounds.
-        /// </summary>
         private void RecalculateEnvSounds()
         {
             foreach (LinkedSoundList.Sound sound in _envLinkedSoundList)
@@ -551,9 +457,6 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     Calculates the effects sounds.
-        /// </summary>
         private void RecalculateFxSounds()
         {
             foreach (LinkedSoundList.Sound sound in _fxLinkedSoundList)
@@ -571,9 +474,6 @@ namespace Exomia.Framework.Audio
             }
         }
 
-        /// <summary>
-        ///     Buffer for sound.
-        /// </summary>
         private struct SoundBuffer
         {
             /// <summary>
@@ -599,14 +499,6 @@ namespace Exomia.Framework.Audio
         /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        ///     Releases the unmanaged resources used by the Exomia.Framework.Audio.AudioManager and
-        ///     optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">
-        ///     True to release both managed and unmanaged resources; false to
-        ///     release only unmanaged resources.
-        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)

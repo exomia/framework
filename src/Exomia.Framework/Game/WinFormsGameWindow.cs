@@ -21,9 +21,6 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
     {
-        /// <summary>
-        ///     The render form.
-        /// </summary>
         private RenderForm _renderForm;
 
         /// <summary>

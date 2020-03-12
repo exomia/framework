@@ -20,7 +20,6 @@ struct VertexShaderOutput
 	float2 TextureUV	: TEXCOORD0;
 };
 
-
 VertexShaderOutput VSMain(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;

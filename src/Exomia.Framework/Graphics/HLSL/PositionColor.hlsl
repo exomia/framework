@@ -15,7 +15,6 @@ struct VertexShaderOutput
 	float4 Color		: COLOR0;
 };
 
-
 VertexShaderOutput VSMain(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;

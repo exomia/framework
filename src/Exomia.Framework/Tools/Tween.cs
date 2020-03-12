@@ -32,50 +32,13 @@ namespace Exomia.Framework.Tools
         /// <inheritdoc />
         public event EventHandler? UpdateOrderChanged;
 
-        /// <summary>
-        ///     The callback.
-        /// </summary>
-        private readonly EasingFunction _callback;
-
-        /// <summary>
-        ///     The delay.
-        /// </summary>
-        private readonly float _delay;
-
-        /// <summary>
-        ///     The duration.
-        /// </summary>
-        private readonly float _duration;
-
-        /// <summary>
-        ///     The items.
-        /// </summary>
+        private readonly EasingFunction  _callback;
+        private readonly float           _delay, _duration;
         private readonly List<TweenItem> _items;
-
-        /// <summary>
-        ///     Target for the.
-        /// </summary>
-        private readonly object _target;
-
-        /// <summary>
-        ///     The delay time.
-        /// </summary>
-        private float _delayTime;
-
-        /// <summary>
-        ///     True to enable, false to disable.
-        /// </summary>
-        private bool _enabled;
-
-        /// <summary>
-        ///     The time.
-        /// </summary>
-        private float _time;
-
-        /// <summary>
-        ///     The update order.
-        /// </summary>
-        private int _updateOrder;
+        private readonly object          _target;
+        private          float           _delayTime, _time;
+        private          bool            _enabled;
+        private          int             _updateOrder;
 
         /// <inheritdoc />
         public bool Enabled

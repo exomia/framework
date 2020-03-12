@@ -45,15 +45,9 @@ namespace Exomia.Framework.ContentSerialization
         /// </summary>
         internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
 
-        /// <summary>
-        ///     The content pipe line readers.
-        /// </summary>
         private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders =
             new Dictionary<Type, IContentSerializationReader>();
 
-        /// <summary>
-        ///     The content pipe line writers.
-        /// </summary>
         private static readonly Dictionary<Type, IContentSerializationWriter> s_contentPipeLineWriters =
             new Dictionary<Type, IContentSerializationWriter>();
 

@@ -27,35 +27,9 @@ namespace Exomia.Framework.Graphics
         private const string BLACK_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAD0lEQVR42mNk+M/AwAgiAAsOAgGA6bm/AAAAAElFTkSuQmCC";
 
-        /// <summary>
-        ///     The white texture.
-        /// </summary>
-        private static Texture? s_whiteTexture;
-
-        /// <summary>
-        ///     The black texture.
-        /// </summary>
-        private static Texture? s_blackTexture;
-
-        /// <summary>
-        ///     The second s white texture.
-        /// </summary>
-        private static Texture2? s_whiteTexture2;
-
-        /// <summary>
-        ///     The second s black texture.
-        /// </summary>
-        private static Texture2? s_blackTexture2;
-
-        /// <summary>
-        ///     True if this object is initialized.
-        /// </summary>
-        private static bool s_isInitialized;
-
-        /// <summary>
-        ///     True if this object is initialized 2.
-        /// </summary>
-        private static bool s_isInitialized2;
+        private static Texture?  s_whiteTexture,  s_blackTexture;
+        private static Texture2? s_whiteTexture2, s_blackTexture2;
+        private static bool      s_isInitialized, s_isInitialized2;
 
         /// <summary>
         ///     Gets the black texture.

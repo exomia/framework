@@ -18,15 +18,8 @@ namespace Exomia.Framework.ContentSerialization
     /// </summary>
     sealed class CSStreamReader : IDisposable
     {
-        /// <summary>
-        ///     The stream.
-        /// </summary>
         private readonly Stream _stream;
-
-        /// <summary>
-        ///     The line.
-        /// </summary>
-        private int _line = 1;
+        private          int    _line = 1;
 
         /// <summary>
         ///     Gets the zero-based index of this object.

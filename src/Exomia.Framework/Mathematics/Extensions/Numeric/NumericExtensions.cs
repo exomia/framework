@@ -18,24 +18,9 @@ namespace Exomia.Framework.Mathematics.Extensions.Numeric
     /// </summary>
     public static class NumericExtensions
     {
-        /// <summary>
-        ///     The pi over 180 d.
-        /// </summary>
         private const double PI_OVER_180_D = Math.PI / 180.0;
-
-        /// <summary>
-        ///     The pi over 180 f.
-        /// </summary>
         private const float PI_OVER_180_F = (float)(Math.PI / 180.0);
-
-        /// <summary>
-        ///     Zero-based index of the 80 over pi d.
-        /// </summary>
         private const double I80_OVER_PI_D = 180.0 / Math.PI;
-
-        /// <summary>
-        ///     Zero-based index of the 80 over pi f.
-        /// </summary>
         private const float I80_OVER_PI_F = (float)(180.0 / Math.PI);
 
         /// <summary>

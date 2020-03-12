@@ -21,25 +21,10 @@ namespace Exomia.Framework.Audio
     /// </summary>
     sealed class LinkedSoundList : IEnumerable<LinkedSoundList.Sound>
     {
-        /// <summary>
-        ///     The capacity.
-        /// </summary>
-        private readonly int _capacity;
-
-        /// <summary>
-        ///     this lock.
-        /// </summary>
+        private readonly int    _capacity;
         private readonly object _thisLock;
-
-        /// <summary>
-        ///     The head.
-        /// </summary>
-        private Sound? _head;
-
-        /// <summary>
-        ///     Number of.
-        /// </summary>
-        private int _count;
+        private          Sound? _head;
+        private          int    _count;
 
         /// <summary>
         ///     Gets the capacity.

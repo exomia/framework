@@ -30,189 +30,50 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public sealed class SpriteBatch2 : IDisposable
     {
-        /// <summary>
-        ///     Size of the maximum batch.
-        /// </summary>
-        private const int MAX_BATCH_SIZE = 4096;
-
-        /// <summary>
-        ///     The vertices per sprite.
-        /// </summary>
-        private const int VERTICES_PER_SPRITE = 4;
-
-        /// <summary>
-        ///     The indices per sprite.
-        /// </summary>
-        private const int INDICES_PER_SPRITE = 6;
-
-        /// <summary>
-        ///     Number of vertices.
-        /// </summary>
-        private const int MAX_VERTEX_COUNT = MAX_BATCH_SIZE * VERTICES_PER_SPRITE;
-
-        /// <summary>
-        ///     Number of maximum indexes.
-        /// </summary>
-        private const int MAX_INDEX_COUNT = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
-
-        /// <summary>
-        ///     The batch sequential threshold.
-        /// </summary>
+        private const int MAX_BATCH_SIZE             = 4096;
+        private const int VERTICES_PER_SPRITE        = 4;
+        private const int INDICES_PER_SPRITE         = 6;
+        private const int MAX_VERTEX_COUNT           = MAX_BATCH_SIZE * VERTICES_PER_SPRITE;
+        private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
         private const int BATCH_SEQUENTIAL_THRESHOLD = 512;
+        private const int VERTEX_STRIDE              = sizeof(float) * 11;
 
-        /// <summary>
-        ///     The vertex stride.
-        /// </summary>
-        private const int VERTEX_STRIDE = sizeof(float) * 11;
-
-        /// <summary>
-        ///     The corner offsets.
-        /// </summary>
         private static readonly Vector2[]
             s_corner_offsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
 
-        /// <summary>
-        ///     The indices.
-        /// </summary>
-        private static readonly ushort[] s_indices;
+        private static readonly ushort[]                s_indices;
+        private static readonly Vector2                 s_vector2Zero   = Vector2.Zero;
+        private static readonly Rectangle?              s_nullRectangle = null;
+        private readonly        Device5                 _device;
+        private readonly        DeviceContext4          _context;
+        private readonly        ISpriteSort             _spriteSort;
+        private readonly        ITexture2ContentManager _manager;
+        private readonly        VertexBufferBinding     _vertexBufferBinding;
+        private readonly        InputLayout             _vertexInputLayout;
+        private                 BlendState?             _defaultBlendState,        _blendState;
+        private                 DepthStencilState?      _defaultDepthStencilState, _depthStencilState;
 
-        /// <summary>
-        ///     The vector 2 zero.
-        /// </summary>
-        private static readonly Vector2 s_vector2Zero = Vector2.Zero;
+        private RasterizerState? _defaultRasterizerState,
+                                                        _defaultRasterizerScissorEnabledState,
+                                                        _rasterizerState;
 
-        /// <summary>
-        ///     The null rectangle.
-        /// </summary>
-        private static readonly Rectangle? s_nullRectangle = null;
-
-        /// <summary>
-        ///     The device.
-        /// </summary>
-        private readonly Device5 _device;
-
-        /// <summary>
-        ///     The context.
-        /// </summary>
-        private readonly DeviceContext4 _context;
-
-        /// <summary>
-        ///     The sprite sort.
-        /// </summary>
-        private readonly ISpriteSort _spriteSort;
-
-        /// <summary>
-        ///     The manager.
-        /// </summary>
-        private readonly ITexture2ContentManager _manager;
-
-        /// <summary>
-        ///     The vertex buffer binding.
-        /// </summary>
-        private readonly VertexBufferBinding _vertexBufferBinding;
-
-        /// <summary>
-        ///     The vertex input layout.
-        /// </summary>
-        private readonly InputLayout _vertexInputLayout;
-
-        /// <summary>
-        ///     Gets the state of the blend.
-        /// </summary>
-        /// <value>
-        ///     The blend state.
-        /// </value>
-        private BlendState? _defaultBlendState, _blendState;
-
-        /// <summary>
-        ///     The default depth stencil state.
-        /// </summary>
-        private DepthStencilState? _defaultDepthStencilState;
-
-        /// <summary>
-        ///     Gets the state of the rasterizer.
-        /// </summary>
-        /// <value>
-        ///     The rasterizer state.
-        /// </value>
-        private RasterizerState? _defaultRasterizerState, _defaultRasterizerScissorEnabledState, _rasterizerState;
-
-        /// <summary>
-        ///     Gets the state of the sampler.
-        /// </summary>
-        /// <value>
-        ///     The sampler state.
-        /// </value>
         private SamplerState? _defaultSamplerState, _samplerState;
 
-        /// <summary>
-        ///     State of the depth stencil.
-        /// </summary>
-        private DepthStencilState? _depthStencilState;
+        private bool _isBeginCalled,
+                                                        _isInitialized,
+                                                        _isScissorEnabled,
+                                                        _isTextureGenerated;
 
-        /// <summary>
-        ///     Gets a value indicating whether this object is texture generated.
-        /// </summary>
-        /// <value>
-        ///     True if is texture generated, false if not.
-        /// </value>
-        private bool _isBeginCalled, _isInitialized, _isScissorEnabled, _isTextureGenerated;
-
-        /// <summary>
-        ///     Gets the buffer for per frame data.
-        /// </summary>
-        /// <value>
-        ///     A Buffer for per frame data.
-        /// </value>
-        private Buffer _vertexBuffer, _indexBuffer, _perFrameBuffer;
-
-        /// <summary>
-        ///     The scissor rectangle.
-        /// </summary>
-        private Rectangle _scissorRectangle;
-
-        /// <summary>
-        ///     The sprite sort mode.
-        /// </summary>
+        private Buffer         _vertexBuffer, _indexBuffer, _perFrameBuffer;
+        private Rectangle      _scissorRectangle;
         private SpriteSortMode _spriteSortMode;
-
-        /// <summary>
-        ///     The sort indices.
-        /// </summary>
-        private int[] _sortIndices = Array.Empty<int>();
-
-        /// <summary>
-        ///     Queue of sprites.
-        /// </summary>
-        private SpriteInfo[] _spriteQueue;
-
-        /// <summary>
-        ///     Number of sprite queues.
-        /// </summary>
-        private int _spriteQueueCount;
-
-        /// <summary>
-        ///     Array of texture 2 ds.
-        /// </summary>
-        private Texture _texture2DArray = Texture.Empty;
-
-        /// <summary>
-        ///     Gets the transform matrix.
-        /// </summary>
-        /// <value>
-        ///     The transform matrix.
-        /// </value>
-        private Matrix _projectionMatrix, _viewMatrix, _transformMatrix;
-
-        /// <summary>
-        ///     The pixel shader.
-        /// </summary>
-        private PixelShader? _pixelShader;
-
-        /// <summary>
-        ///     The vertex shader.
-        /// </summary>
-        private VertexShader? _vertexShader;
+        private int[]          _sortIndices = Array.Empty<int>();
+        private SpriteInfo[]   _spriteQueue;
+        private int            _spriteQueueCount;
+        private Texture        _texture2DArray = Texture.Empty;
+        private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
+        private PixelShader?   _pixelShader;
+        private VertexShader?  _vertexShader;
 
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch2" /> class.
@@ -275,7 +136,7 @@ namespace Exomia.Framework.Graphics
                 _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable);
 
             _vertexInputLayout = new InputLayout(
-                _device, ShaderByteCode.VertexShaderByteCode2,
+                _device, VertexShaderByteCode2,
                 new[]
                 {
                     new InputElement("SV_POSITION", 0, Format.R32G32B32A32_Float, 0, 0),
@@ -563,8 +424,8 @@ namespace Exomia.Framework.Graphics
         /// <param name="device"> The device. </param>
         private void InitializeShaders(Device5 device)
         {
-            _vertexShader = new VertexShader(device, ShaderByteCode.VertexShaderByteCode2);
-            _pixelShader  = new PixelShader(device, ShaderByteCode.PixelShaderByteCode2);
+            _vertexShader = new VertexShader(device, VertexShaderByteCode2);
+            _pixelShader  = new PixelShader(device, PixelShaderByteCode2);
         }
 
         /// <summary>
@@ -1909,6 +1770,84 @@ namespace Exomia.Framework.Graphics
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
+
+        #region ShaderByteCode
+
+        /// <summary>
+        ///     The second vertex shader byte code.
+        /// </summary>
+        private static readonly byte[] VertexShaderByteCode2 =
+        {
+            68, 88, 66, 67, 193, 41, 167, 231, 222, 242, 129, 53, 212, 74, 158, 107, 19, 181, 108, 178, 1, 0, 0, 0,
+            12, 4, 0, 0, 5, 0, 0, 0, 52, 0, 0, 0, 88, 1, 0, 0, 204, 1, 0, 0, 64, 2, 0, 0, 112, 3, 0, 0, 82, 68, 69,
+            70, 28, 1, 0, 0, 1, 0, 0, 0, 104, 0, 0, 0, 1, 0, 0, 0, 60, 0, 0, 0, 0, 5, 254, 255, 0, 193, 0, 0, 244,
+            0, 0, 0, 82, 68, 49, 49, 60, 0, 0, 0, 24, 0, 0, 0, 32, 0, 0, 0, 40, 0, 0, 0, 36, 0, 0, 0, 12, 0, 0, 0,
+            0, 0, 0, 0, 92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
+            0, 0, 80, 101, 114, 70, 114, 97, 109, 101, 0, 171, 171, 171, 92, 0, 0, 0, 1, 0, 0, 0, 128, 0, 0, 0, 64,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 168, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 2, 0, 0, 0, 208, 0, 0, 0, 0, 0,
+            0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 103, 95, 87, 111, 114, 108, 100,
+            86, 105, 101, 119, 80, 114, 111, 106, 101, 99, 116, 105, 111, 110, 77, 97, 116, 114, 105, 120, 0, 102,
+            108, 111, 97, 116, 52, 120, 52, 0, 171, 171, 171, 3, 0, 3, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 0, 0, 0, 77, 105, 99, 114, 111, 115, 111, 102, 116, 32,
+            40, 82, 41, 32, 72, 76, 83, 76, 32, 83, 104, 97, 100, 101, 114, 32, 67, 111, 109, 112, 105, 108, 101,
+            114, 32, 49, 48, 46, 49, 0, 73, 83, 71, 78, 108, 0, 0, 0, 3, 0, 0, 0, 8, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 15, 15, 0, 0, 92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1,
+            0, 0, 0, 15, 15, 0, 0, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 7, 7, 0, 0, 83, 86,
+            95, 80, 79, 83, 73, 84, 73, 79, 78, 0, 67, 79, 76, 79, 82, 0, 84, 69, 88, 67, 79, 79, 82, 68, 0, 171,
+            79, 83, 71, 78, 108, 0, 0, 0, 3, 0, 0, 0, 8, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0,
+            0, 0, 0, 0, 15, 0, 0, 0, 92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 15, 0, 0, 0, 98,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 7, 8, 0, 0, 83, 86, 95, 80, 79, 83, 73, 84, 73,
+            79, 78, 0, 67, 79, 76, 79, 82, 0, 84, 69, 88, 67, 79, 79, 82, 68, 0, 171, 83, 72, 69, 88, 40, 1, 0, 0,
+            80, 0, 1, 0, 74, 0, 0, 0, 106, 8, 0, 1, 89, 0, 0, 4, 70, 142, 32, 0, 0, 0, 0, 0, 4, 0, 0, 0, 95, 0, 0,
+            3, 242, 16, 16, 0, 0, 0, 0, 0, 95, 0, 0, 3, 242, 16, 16, 0, 1, 0, 0, 0, 95, 0, 0, 3, 114, 16, 16, 0, 2,
+            0, 0, 0, 103, 0, 0, 4, 242, 32, 16, 0, 0, 0, 0, 0, 1, 0, 0, 0, 101, 0, 0, 3, 242, 32, 16, 0, 1, 0, 0, 0,
+            101, 0, 0, 3, 114, 32, 16, 0, 2, 0, 0, 0, 17, 0, 0, 8, 18, 32, 16, 0, 0, 0, 0, 0, 70, 30, 16, 0, 0, 0,
+            0, 0, 70, 142, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 0, 0, 8, 34, 32, 16, 0, 0, 0, 0, 0, 70, 30, 16, 0, 0,
+            0, 0, 0, 70, 142, 32, 0, 0, 0, 0, 0, 1, 0, 0, 0, 17, 0, 0, 8, 66, 32, 16, 0, 0, 0, 0, 0, 70, 30, 16, 0,
+            0, 0, 0, 0, 70, 142, 32, 0, 0, 0, 0, 0, 2, 0, 0, 0, 17, 0, 0, 8, 130, 32, 16, 0, 0, 0, 0, 0, 70, 30, 16,
+            0, 0, 0, 0, 0, 70, 142, 32, 0, 0, 0, 0, 0, 3, 0, 0, 0, 56, 0, 0, 10, 242, 32, 16, 0, 1, 0, 0, 0, 70, 30,
+            16, 0, 1, 0, 0, 0, 2, 64, 0, 0, 129, 128, 128, 59, 129, 128, 128, 59, 129, 128, 128, 59, 129, 128, 128,
+            59, 54, 0, 0, 5, 114, 32, 16, 0, 2, 0, 0, 0, 70, 18, 16, 0, 2, 0, 0, 0, 62, 0, 0, 1, 83, 84, 65, 84,
+            148, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        /// <summary>
+        ///     The second pixel shader byte code.
+        /// </summary>
+        private static readonly byte[] PixelShaderByteCode2 =
+        {
+            68, 88, 66, 67, 244, 58, 132, 71, 254, 234, 26, 88, 180, 238, 178, 127, 135, 200, 161, 50, 1, 0, 0, 0,
+            228, 2, 0, 0, 5, 0, 0, 0, 52, 0, 0, 0, 248, 0, 0, 0, 108, 1, 0, 0, 160, 1, 0, 0, 72, 2, 0, 0, 82, 68,
+            69, 70, 188, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 60, 0, 0, 0, 0, 5, 255, 255, 0, 193, 0, 0,
+            145, 0, 0, 0, 82, 68, 49, 49, 60, 0, 0, 0, 24, 0, 0, 0, 32, 0, 0, 0, 40, 0, 0, 0, 36, 0, 0, 0, 12, 0, 0,
+            0, 0, 0, 0, 0, 124, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+            0, 0, 0, 134, 0, 0, 0, 2, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 1, 0, 0, 0,
+            13, 0, 0, 0, 103, 95, 83, 97, 109, 112, 108, 101, 114, 0, 103, 95, 84, 101, 120, 116, 117, 114, 101,
+            115, 0, 77, 105, 99, 114, 111, 115, 111, 102, 116, 32, 40, 82, 41, 32, 72, 76, 83, 76, 32, 83, 104, 97,
+            100, 101, 114, 32, 67, 111, 109, 112, 105, 108, 101, 114, 32, 49, 48, 46, 49, 0, 171, 171, 171, 73, 83,
+            71, 78, 108, 0, 0, 0, 3, 0, 0, 0, 8, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0,
+            0, 15, 0, 0, 0, 92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 15, 15, 0, 0, 98, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 7, 7, 0, 0, 83, 86, 95, 80, 79, 83, 73, 84, 73, 79, 78,
+            0, 67, 79, 76, 79, 82, 0, 84, 69, 88, 67, 79, 79, 82, 68, 0, 171, 79, 83, 71, 78, 44, 0, 0, 0, 1, 0, 0,
+            0, 8, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 83, 86, 95, 84,
+            65, 82, 71, 69, 84, 0, 171, 171, 83, 72, 69, 88, 160, 0, 0, 0, 80, 0, 0, 0, 40, 0, 0, 0, 106, 8, 0, 1,
+            90, 0, 0, 3, 0, 96, 16, 0, 0, 0, 0, 0, 88, 64, 0, 4, 0, 112, 16, 0, 0, 0, 0, 0, 85, 85, 0, 0, 98, 16, 0,
+            3, 242, 16, 16, 0, 1, 0, 0, 0, 98, 16, 0, 3, 114, 16, 16, 0, 2, 0, 0, 0, 101, 0, 0, 3, 242, 32, 16, 0,
+            0, 0, 0, 0, 104, 0, 0, 2, 1, 0, 0, 0, 69, 0, 0, 139, 2, 2, 0, 128, 67, 85, 21, 0, 242, 0, 16, 0, 0, 0,
+            0, 0, 70, 18, 16, 0, 2, 0, 0, 0, 70, 126, 16, 0, 0, 0, 0, 0, 0, 96, 16, 0, 0, 0, 0, 0, 56, 0, 0, 7, 242,
+            32, 16, 0, 0, 0, 0, 0, 70, 14, 16, 0, 0, 0, 0, 0, 70, 30, 16, 0, 1, 0, 0, 0, 62, 0, 0, 1, 83, 84, 65,
+            84, 148, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
 
         #endregion
     }

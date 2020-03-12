@@ -21,30 +21,11 @@ namespace Exomia.Framework.Collections
     /// <typeparam name="T"> any. </typeparam>
     public sealed class List<T>
     {
-        /// <summary>
-        ///     The default capacity.
-        /// </summary>
-        private const int DEFAULT_CAPACITY = 8;
-
-        /// <summary>
-        ///     The maximum capacity.
-        /// </summary>
-        private const int MAX_CAPACITY = 0X7FEFFFFF;
-
-        /// <summary>
-        ///     Array of empties.
-        /// </summary>
-        private static readonly T[] s_emptyArray = new T[0];
-
-        /// <summary>
-        ///     The size of T in bytes.
-        /// </summary>
-        private readonly int _sizeOf;
-
-        /// <summary>
-        ///     The items.
-        /// </summary>
-        private T[] _items;
+        private const           int DEFAULT_CAPACITY = 8;
+        private const           int MAX_CAPACITY     = 0X7FEFFFFF;
+        private static readonly T[] s_emptyArray     = new T[0];
+        private readonly        int _sizeOf;
+        private                 T[] _items;
 
         /// <summary>
         ///     Sets the capacity.

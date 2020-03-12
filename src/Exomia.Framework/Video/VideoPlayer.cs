@@ -27,75 +27,18 @@ namespace Exomia.Framework.Video
     /// </summary>
     public sealed class VideoPlayer : DrawableComponent
     {
-        /// <summary>
-        ///     The event ready to play.
-        /// </summary>
-        private readonly ManualResetEvent _eventReadyToPlay = new ManualResetEvent(false);
-
-        /// <summary>
-        ///     The output texture.
-        /// </summary>
-        private readonly Texture2D _outputTexture;
-
-        /// <summary>
-        ///     Name of the asset.
-        /// </summary>
-        private string? _assetName;
-
-        /// <summary>
-        ///     The background color.
-        /// </summary>
-        private Color _backgroundColor;
-
-        /// <summary>
-        ///     The byte stream.
-        /// </summary>
-        private ByteStream? _byteStream;
-
-        /// <summary>
-        ///     Manager for dxgi device.
-        /// </summary>
-        private DXGIDeviceManager? _dxgiDeviceManager;
-
-        /// <summary>
-        ///     True if this object is end of stream.
-        /// </summary>
-        private bool _isEndOfStream;
-
-        /// <summary>
-        ///     True if this object is playing.
-        /// </summary>
-        private bool _isPlaying;
-
-        /// <summary>
-        ///     True if this object is video stopped.
-        /// </summary>
-        private bool _isVideoStopped = true;
-
-        /// <summary>
-        ///     The media engine.
-        /// </summary>
-        private MediaEngine? _mediaEngine;
-
-        /// <summary>
-        ///     The media engine ex.
-        /// </summary>
-        private MediaEngineEx? _mediaEngineEx;
-
-        /// <summary>
-        ///     The sprite batch.
-        /// </summary>
-        private SpriteBatch? _spriteBatch;
-
-        /// <summary>
-        ///     The texture.
-        /// </summary>
-        private Texture? _texture;
-
-        /// <summary>
-        ///     The graphics device.
-        /// </summary>
-        private IGraphicsDevice? _graphicsDevice;
+        private readonly ManualResetEvent   _eventReadyToPlay = new ManualResetEvent(false);
+        private readonly Texture2D          _outputTexture;
+        private          string?            _assetName;
+        private          Color              _backgroundColor;
+        private          ByteStream?        _byteStream;
+        private          DXGIDeviceManager? _dxgiDeviceManager;
+        private          bool               _isPlaying, _isVideoStopped = true, _isEndOfStream;
+        private          MediaEngine?       _mediaEngine;
+        private          MediaEngineEx?     _mediaEngineEx;
+        private          SpriteBatch?       _spriteBatch;
+        private          Texture?           _texture;
+        private          IGraphicsDevice?   _graphicsDevice;
 
         /// <summary>
         ///     Gets or sets the name of the asset.
@@ -335,9 +278,8 @@ namespace Exomia.Framework.Video
         /// <inheritdoc />
         protected override void OnInitialize(IServiceRegistry registry)
         {
-            _graphicsDevice = registry.GetService<IGraphicsDevice>() ??
-                              throw new NullReferenceException(nameof(IGraphicsDevice));
-            _spriteBatch = ToDispose(new SpriteBatch(_graphicsDevice));
+            _graphicsDevice = registry.GetService<IGraphicsDevice>();
+            _spriteBatch    = ToDispose(new SpriteBatch(_graphicsDevice));
             MediaManager.Startup();
             DeviceMultithread multithread = _graphicsDevice.Device.QueryInterface<DeviceMultithread>();
             multithread.SetMultithreadProtected(true);

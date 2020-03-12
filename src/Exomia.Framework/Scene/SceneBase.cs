@@ -12,11 +12,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
-using Exomia.Framework.Input;
 using SharpDX;
-using MouseButtons = Exomia.Framework.Input.MouseButtons;
 
 namespace Exomia.Framework.Scene
 {
@@ -25,9 +22,6 @@ namespace Exomia.Framework.Scene
     /// </summary>
     public abstract class SceneBase : ISceneInternal
     {
-        /// <summary>
-        ///     Initial size of the queue.
-        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 8;
 
         /// <summary>
@@ -35,90 +29,20 @@ namespace Exomia.Framework.Scene
         /// </summary>
         public event EventHandler<SceneBase, SceneState>? SceneStateChanged;
 
-        /// <summary>
-        ///     The contentable component.
-        /// </summary>
-        private readonly List<IContentable> _contentableComponent;
-
-        /// <summary>
-        ///     The currently contentable component.
-        /// </summary>
-        private readonly List<IContentable> _currentlyContentableComponent;
-
-        /// <summary>
-        ///     The currently drawable component.
-        /// </summary>
-        private readonly List<IDrawable> _currentlyDrawableComponent;
-
-        /// <summary>
-        ///     The currently updateable component.
-        /// </summary>
-        private readonly List<IUpdateable> _currentlyUpdateableComponent;
-
-        /// <summary>
-        ///     The drawable component.
-        /// </summary>
-        private readonly List<IDrawable> _drawableComponent;
-
-        /// <summary>
-        ///     The pending initializables.
-        /// </summary>
-        private readonly List<IInitializable> _pendingInitializables;
-
-        /// <summary>
-        ///     The scene components.
-        /// </summary>
+        private readonly List<IContentable>             _contentableComponent;
+        private readonly List<IContentable>             _currentlyContentableComponent;
+        private readonly List<IDrawable>                _currentlyDrawableComponent;
+        private readonly List<IUpdateable>              _currentlyUpdateableComponent;
+        private readonly List<IDrawable>                _drawableComponent;
+        private readonly List<IInitializable>           _pendingInitializables;
         private readonly Dictionary<string, IComponent> _sceneComponents;
-
-        /// <summary>
-        ///     The updateable component.
-        /// </summary>
-        private readonly List<IUpdateable> _updateableComponent;
-
-        /// <summary>
-        ///     The collector.
-        /// </summary>
-        private readonly DisposeCollector _collector;
-
-        /// <summary>
-        ///     The key.
-        /// </summary>
-        private readonly string _key;
-
-        /// <summary>
-        ///     The raw input handler.
-        /// </summary>
-        private IRawInputHandler? _rawInputHandler;
-
-        /// <summary>
-        ///     Manager for scene.
-        /// </summary>
-        private ISceneManager? _sceneManager;
-
-        /// <summary>
-        ///     The registry.
-        /// </summary>
-        private IServiceRegistry? _registry;
-
-        /// <summary>
-        ///     True if this object is initialized.
-        /// </summary>
-        private bool _isInitialized;
-
-        /// <summary>
-        ///     True if this object is content loaded.
-        /// </summary>
-        private bool _isContentLoaded;
-
-        /// <summary>
-        ///     True to show, false to hide.
-        /// </summary>
-        private bool _visible;
-
-        /// <summary>
-        ///     The state.
-        /// </summary>
-        private SceneState _state = SceneState.None;
+        private readonly List<IUpdateable>              _updateableComponent;
+        private readonly DisposeCollector               _collector;
+        private readonly string                         _key;
+        private          ISceneManager?                 _sceneManager;
+        private          IServiceRegistry?              _registry;
+        private          bool                           _isInitialized, _isContentLoaded, _visible;
+        private          SceneState                     _state = SceneState.None;
 
         /// <inheritdoc />
         public bool Enabled { get; set; } = false;
@@ -150,12 +74,6 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc cref="ISceneInternal" />
-        protected IRawInputHandler RawInputHandler
-        {
-            set { _rawInputHandler = value; }
-        }
-
-        /// <inheritdoc cref="ISceneInternal" />
         protected ISceneManager SceneManager
         {
             get { return _sceneManager!; }
@@ -171,12 +89,6 @@ namespace Exomia.Framework.Scene
         SceneState IScene.State
         {
             get { return _state; }
-        }
-
-        /// <inheritdoc />
-        IRawInputHandler IScene.RawInputHandler
-        {
-            get { return _rawInputHandler!; }
         }
 
         /// <inheritdoc />
@@ -593,189 +505,6 @@ namespace Exomia.Framework.Scene
                 _drawableComponent.Sort(DrawableComparer.Default);
             }
         }
-
-        #region Input Events
-
-        /// <summary>
-        ///     Input mouse move.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.MouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            OnMouseMove(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Executes the mouse move action.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        protected virtual void OnMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
-
-        /// <summary>
-        ///     Input mouse down.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.MouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            OnMouseDown(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Executes the mouse down action.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        protected virtual void OnMouseDown(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
-
-        /// <summary>
-        ///     Input mouse up.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.MouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            OnMouseUp(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Executes the mouse up action.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        protected virtual void OnMouseUp(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
-
-        /// <summary>
-        ///     Input mouse click.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.MouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            OnMouseClick(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Executes the mouse click action.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        protected virtual void OnMouseClick(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
-
-        /// <summary>
-        ///     Input mouse wheel.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        void IRawInputHandler.MouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
-        {
-            OnMouseWheel(x, y, buttons, clicks, wheelDelta);
-        }
-
-        /// <summary>
-        ///     Executes the mouse wheel action.
-        /// </summary>
-        /// <param name="x">          The x coordinate. </param>
-        /// <param name="y">          The y coordinate. </param>
-        /// <param name="buttons">    The buttons. </param>
-        /// <param name="clicks">     The clicks. </param>
-        /// <param name="wheelDelta"> The wheel delta. </param>
-        protected virtual void OnMouseWheel(int x, int y, MouseButtons buttons, int clicks, int wheelDelta) { }
-
-        /// <summary>
-        ///     Input key up.
-        /// </summary>
-        /// <param name="keyValue">  The key value. </param>
-        /// <param name="modifiers"> The key modifiers. </param>
-        void IInputHandler.KeyUp(int keyValue, KeyModifier modifiers)
-        {
-            OnKeyUp(keyValue, modifiers);
-        }
-
-        /// <summary>
-        ///     Executes the key up action.
-        /// </summary>
-        /// <param name="keyValue">  The key value. </param>
-        /// <param name="modifiers"> The key modifiers. </param>
-        protected virtual void OnKeyUp(int keyValue, KeyModifier modifiers) { }
-
-        /// <summary>
-        ///     Input key down.
-        /// </summary>
-        /// <param name="keyValue">  The key value. </param>
-        /// <param name="modifiers"> The key modifiers. </param>
-        void IInputHandler.KeyDown(int keyValue, KeyModifier modifiers)
-        {
-            OnKeyDown(keyValue, modifiers);
-        }
-
-        /// <summary>
-        ///     Executes the key down action.
-        /// </summary>
-        /// <param name="keyValue">  The key value. </param>
-        /// <param name="modifiers"> The key modifiers. </param>
-        protected virtual void OnKeyDown(int keyValue, KeyModifier modifiers) { }
-
-        /// <summary>
-        ///     Input key event.
-        /// </summary>
-        /// <param name="message"> [in,out] The message. </param>
-        void IRawInputHandler.KeyEvent(ref Message message)
-        {
-            OnKeyEvent(ref message);
-        }
-
-        /// <summary>
-        ///     Executes the key event action.
-        /// </summary>
-        /// <param name="message"> [in,out] The message. </param>
-        protected virtual void OnKeyEvent(ref Message message) { }
-
-        /// <summary>
-        ///     Input key press.
-        /// </summary>
-        /// <param name="key"> The key. </param>
-        void IInputHandler.KeyPress(char key)
-        {
-            OnKeyPress(key);
-        }
-
-        /// <summary>
-        ///     Executes the key press action.
-        /// </summary>
-        /// <param name="key"> The key. </param>
-        protected virtual void OnKeyPress(char key) { }
-
-        #endregion
 
         #region IDisposable Support
 

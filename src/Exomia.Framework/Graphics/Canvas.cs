@@ -20,25 +20,10 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public sealed class Canvas : IDisposable
     {
-        /// <summary>
-        ///     The vector 2 zero.
-        /// </summary>
-        private static readonly Vector2 s_vector2Zero = Vector2.Zero;
-
-        /// <summary>
-        ///     The null rectangle.
-        /// </summary>
-        private static readonly Rectangle? s_nullRectangle = null;
-
-        /// <summary>
-        ///     The device.
-        /// </summary>
-        private readonly Device5 _device;
-
-        /// <summary>
-        ///     The context.
-        /// </summary>
-        private readonly DeviceContext4 _context;
+        private static readonly Vector2        s_vector2Zero   = Vector2.Zero;
+        private static readonly Rectangle?     s_nullRectangle = null;
+        private readonly        Device5        _device;
+        private readonly        DeviceContext4 _context;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteBatch" /> class.

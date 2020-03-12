@@ -24,9 +24,6 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public sealed class GraphicsDevice : IGraphicsDevice
     {
-        /// <summary>
-        ///     The feature levels.
-        /// </summary>
         private static readonly FeatureLevel[] s_featureLevels =
         {
             FeatureLevel.Level_11_1, FeatureLevel.Level_11_0, FeatureLevel.Level_10_1, FeatureLevel.Level_10_0,
@@ -38,70 +35,19 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         public event EventHandler<ViewportF>? ResizeFinished;
 
-        /// <summary>
-        ///     The fourth adapter.
-        /// </summary>
-        private Adapter4? _adapter4;
-
-        /// <summary>
-        ///     The current render view.
-        /// </summary>
+        private Adapter4?          _adapter4;
         private RenderTargetView1? _currentRenderView;
-
-        /// <summary>
-        ///     The fifth d 3 d device.
-        /// </summary>
-        private Device5? _d3DDevice5;
-
-        /// <summary>
-        ///     Context for the 3 d device.
-        /// </summary>
-        private DeviceContext4? _d3DDeviceContext;
-
-        /// <summary>
-        ///     The depth stencil view.
-        /// </summary>
-        private DepthStencilView? _depthStencilView;
-
-        /// <summary>
-        ///     The fourth dxgi device.
-        /// </summary>
-        private Device4? _dxgiDevice4;
-
-        /// <summary>
-        ///     The dxgi factory.
-        /// </summary>
-        private Factory5? _dxgiFactory;
-
-        /// <summary>
-        ///     True to need resize.
-        /// </summary>
-        private bool _needResize;
-
-        /// <summary>
-        ///     The output.
-        /// </summary>
-        private Output? _output;
-
-        /// <summary>
-        ///     The first render view.
-        /// </summary>
+        private Device5?           _d3DDevice5;
+        private DeviceContext4?    _d3DDeviceContext;
+        private DepthStencilView?  _depthStencilView;
+        private Device4?           _dxgiDevice4;
+        private Factory5?          _dxgiFactory;
+        private bool               _needResize;
+        private Output?            _output;
         private RenderTargetView1? _renderView1;
-
-        /// <summary>
-        ///     Options for controlling the resize.
-        /// </summary>
-        private ResizeParameters _resizeParameters;
-
-        /// <summary>
-        ///     The fourth swap chain.
-        /// </summary>
-        private SwapChain4? _swapChain4;
-
-        /// <summary>
-        ///     The synchronise.
-        /// </summary>
-        private int _vSync;
+        private ResizeParameters   _resizeParameters;
+        private SwapChain4?        _swapChain4;
+        private int                _vSync;
 
         /// <inheritdoc />
         public Adapter4 Adapter

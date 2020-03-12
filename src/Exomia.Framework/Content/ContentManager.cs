@@ -24,45 +24,15 @@ namespace Exomia.Framework.Content
     /// </summary>
     public sealed class ContentManager : IContentManager
     {
-        /// <summary>
-        ///     Initial size of the queue.
-        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 16;
 
-        /// <summary>
-        ///     The asset lockers.
-        /// </summary>
-        private readonly Dictionary<AssetKey, object> _assetLockers;
-
-        /// <summary>
-        ///     The loaded assets.
-        /// </summary>
-        private readonly Dictionary<AssetKey, object> _loadedAssets;
-
-        /// <summary>
-        ///     The registered content reader factories.
-        /// </summary>
-        private readonly List<IContentReaderFactory> _registeredContentReaderFactories;
-
-        /// <summary>
-        ///     The registered content readers.
-        /// </summary>
+        private readonly Dictionary<AssetKey, object>     _assetLockers;
+        private readonly Dictionary<AssetKey, object>     _loadedAssets;
+        private readonly List<IContentReaderFactory>      _registeredContentReaderFactories;
         private readonly Dictionary<Type, IContentReader> _registeredContentReaders;
-
-        /// <summary>
-        ///     The registered content resolvers.
-        /// </summary>
-        private readonly List<IContentResolver> _registeredContentResolvers;
-
-        /// <summary>
-        ///     The registered embedded resource resolvers.
-        /// </summary>
-        private readonly List<IEmbeddedResourceResolver> _registeredEmbeddedResourceResolvers;
-
-        /// <summary>
-        ///     Pathname of the root directory.
-        /// </summary>
-        private string _rootDirectory = string.Empty;
+        private readonly List<IContentResolver>           _registeredContentResolvers;
+        private readonly List<IEmbeddedResourceResolver>  _registeredEmbeddedResourceResolvers;
+        private          string                           _rootDirectory = string.Empty;
 
         /// <inheritdoc />
         public string RootDirectory
@@ -112,7 +82,6 @@ namespace Exomia.Framework.Content
                 if (a.FullName.StartsWith("System")) { continue; }
                 if (a.FullName.StartsWith("SharpDX")) { continue; }
                 if (a.FullName.StartsWith("ms")) { continue; }
-                if (a.FullName.StartsWith("Xilium.CefGlue")) { continue; }
 
                 foreach (Type t in a.GetTypes())
                 {
@@ -120,7 +89,7 @@ namespace Exomia.Framework.Content
                     {
                         ContentReadableAttribute contentReadableAttribute;
                         if ((contentReadableAttribute
-                                = t.GetCustomAttribute<ContentReadableAttribute>(false)) != null)
+                            = t.GetCustomAttribute<ContentReadableAttribute>(false)) != null)
                         {
                             AddContentReader(t, contentReadableAttribute.Reader);
                         }
@@ -243,8 +212,9 @@ namespace Exomia.Framework.Content
                 throw new InvalidOperationException("No resolver registered to this content manager");
             }
 
-            string assetPath = Path.Combine(_rootDirectory ?? string.Empty, assetName);
+            string assetPath = Path.Combine(_rootDirectory, assetName);
 
+            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
             foreach (IContentResolver contentResolver in resolvers)
             {
                 if (contentResolver.Exists(assetPath)) { return true; }
@@ -278,7 +248,7 @@ namespace Exomia.Framework.Content
                     assetName,
                     fromEmbeddedResource
                         ? ResolveEmbeddedResourceStream(assetType, assetName)
-                        : ResolveStream(Path.Combine(_rootDirectory ?? string.Empty, assetName)));
+                        : ResolveStream(Path.Combine(_rootDirectory, assetName)));
 
                 lock (_loadedAssets)
                 {

@@ -35,120 +35,27 @@ namespace Exomia.Framework.Game
     /// </summary>
     public abstract class Game : IRunnable
     {
-        /// <summary>
-        ///     Initial size of the queue.
-        /// </summary>
-        private const int INITIAL_QUEUE_SIZE = 16;
-
-        /// <summary>
-        ///     The fixed timestamp threshold.
-        /// </summary>
-        private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
-
-        /// <summary>
-        ///     The wm quit.
-        /// </summary>
-        private const int WM_QUIT = 0x0012;
-
-        /// <summary>
-        ///     The pm remove.
-        /// </summary>
-        private const int PM_REMOVE = 0x0001;
-
-        /// <summary>
-        ///     Occurs when is Running Changed.
-        /// </summary>
-        private event EventHandler<Game, bool>? _IsRunningChanged;
-
-        /// <summary>
-        ///     The contentable component.
-        /// </summary>
-        private readonly List<IContentable> _contentableComponent;
-
-        /// <summary>
-        ///     The currently contentable component.
-        /// </summary>
-        private readonly List<IContentable> _currentlyContentableComponent;
-
-        /// <summary>
-        ///     The currently drawable component.
-        /// </summary>
-        private readonly List<IDrawable> _currentlyDrawableComponent;
-
-        /// <summary>
-        ///     The currently updateable component.
-        /// </summary>
-        private readonly List<IUpdateable> _currentlyUpdateableComponent;
-
-        /// <summary>
-        ///     The drawable component.
-        /// </summary>
-        private readonly List<IDrawable> _drawableComponent;
-
-        /// <summary>
-        ///     The game components.
-        /// </summary>
+        private const int                               INITIAL_QUEUE_SIZE        = 16;
+        private const double                            FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+        private const int                               WM_QUIT                   = 0x0012;
+        private const int                               PM_REMOVE                 = 0x0001;
+        private event EventHandler<Game, bool>?         _IsRunningChanged;
+        private readonly List<IContentable>             _contentableComponent;
+        private readonly List<IContentable>             _currentlyContentableComponent;
+        private readonly List<IDrawable>                _currentlyDrawableComponent;
+        private readonly List<IUpdateable>              _currentlyUpdateableComponent;
+        private readonly List<IDrawable>                _drawableComponent;
         private readonly Dictionary<string, IComponent> _gameComponents;
-
-        /// <summary>
-        ///     The pending initializables.
-        /// </summary>
-        private readonly List<IInitializable> _pendingInitializables;
-
-        /// <summary>
-        ///     The updateable component.
-        /// </summary>
-        private readonly List<IUpdateable> _updateableComponent;
-
-        /// <summary>
-        ///     The service registry.
-        /// </summary>
-        private readonly IServiceRegistry _serviceRegistry;
-
-        /// <summary>
-        ///     The collector.
-        /// </summary>
-        private readonly DisposeCollector _collector;
-
-        /// <summary>
-        ///     The game window initialize.
-        /// </summary>
-        private readonly IGameWindowInitialize _gameWindowInitialize;
-
-        /// <summary>
-        ///     Manager for content.
-        /// </summary>
-        private IContentManager _contentManager;
-
-        /// <summary>
-        ///     The game window.
-        /// </summary>
-        private IGameWindow _gameWindow;
-
-        /// <summary>
-        ///     The graphics device.
-        /// </summary>
-        private IGraphicsDevice _graphicsDevice;
-
-        /// <summary>
-        ///     True if this object is content loaded.
-        /// </summary>
-        private bool _isContentLoaded;
-
-        /// <summary>
-        ///     True if this object is initialized.
-        /// </summary>
-        private bool _isInitialized;
-
-        /// <summary>
-        ///     True if this object is running.
-        /// </summary>
-        private bool _isRunning;
-
-        /// <summary>
-        ///     True to shutdown.
-        /// </summary>
-        private bool _shutdown;
+        private readonly List<IInitializable>           _pendingInitializables;
+        private readonly List<IUpdateable>              _updateableComponent;
+        private readonly IServiceRegistry               _serviceRegistry;
+        private readonly DisposeCollector               _collector;
+        private readonly IGameWindowInitialize          _gameWindowInitialize;
+        private readonly IInputDevice                   _inputDevice;
+        private          IContentManager                _contentManager;
+        private          IGameWindow                    _gameWindow;
+        private          IGraphicsDevice                _graphicsDevice;
+        private          bool                           _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
         /// <summary>
         ///     Gets the services.
@@ -263,7 +170,7 @@ namespace Exomia.Framework.Game
             _serviceRegistry.AddService(_graphicsDevice);
             _serviceRegistry.AddService(_contentManager);
             _serviceRegistry.AddService(_gameWindow);
-            _serviceRegistry.AddService<IRawInputDevice>(gameWindow.RenderForm);
+            _serviceRegistry.AddService(_inputDevice = gameWindow.RenderForm);
 
             _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
             _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
@@ -383,6 +290,11 @@ namespace Exomia.Framework.Game
                 drawable.DrawOrderChanged += DrawableComponent_DrawOrderChanged;
             }
 
+            if (item is IInputHandler inputHandler)
+            {
+                inputHandler.RegisterInput(_inputDevice);
+            }
+
             if (item is IDisposable disposable)
             {
                 ToDispose(disposable);
@@ -437,6 +349,11 @@ namespace Exomia.Framework.Game
                 {
                     _gameComponents.Remove(component1.Name);
                 }
+            }
+
+            if (item is IInputHandler inputHandler)
+            {
+                inputHandler.UnregisterInput(_inputDevice);
             }
 
             if (item is IDisposable disposable)
@@ -968,8 +885,6 @@ namespace Exomia.Framework.Game
                 OnDispose(disposing);
                 if (disposing)
                 {
-                    /* USER CODE */
-
                     lock (_drawableComponent)
                     {
                         _drawableComponent.Clear();

@@ -16,6 +16,11 @@ namespace Exomia.Framework.Input
     public static class Win32Message
     {
         /// <summary>
+        ///     The wm input.
+        /// </summary>
+        public const int WM_INPUT = 0x00FF;
+
+        /// <summary>
         ///     The wm keydown.
         /// </summary>
         public const int WM_KEYDOWN = 0x0100;

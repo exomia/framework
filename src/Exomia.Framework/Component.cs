@@ -41,20 +41,9 @@ namespace Exomia.Framework
         /// </summary>
         protected bool _isContentLoaded;
 
-        /// <summary>
-        ///     The collector.
-        /// </summary>
         private readonly DisposeCollector _collector;
-
-        /// <summary>
-        ///     True to enable, false to disable.
-        /// </summary>
-        private bool _enabled;
-
-        /// <summary>
-        ///     The update order.
-        /// </summary>
-        private int _updateOrder;
+        private          bool             _enabled;
+        private          int              _updateOrder;
 
         /// <inheritdoc />
         public bool Enabled

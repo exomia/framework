@@ -17,50 +17,11 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class GameTime
     {
-        /// <summary>
-        ///     The maximum frame time.
-        /// </summary>
-        private const float MAX_FRAME_TIME = 1000.0f / 60.0f;
-
-        /// <summary>
-        ///     The counts per m security.
-        /// </summary>
+        private const    float  MAX_FRAME_TIME = 1000.0f / 60.0f;
         private readonly double _countsPerMSec = 1000.0 / Stopwatch.Frequency;
-
-        /// <summary>
-        ///     The counts per security.
-        /// </summary>
-        private readonly double _countsPerSec = 1.0 / Stopwatch.Frequency;
-
-        /// <summary>
-        ///     The base time.
-        /// </summary>
-        private long _baseTime;
-
-        /// <summary>
-        ///     The curr time.
-        /// </summary>
-        private long _currTime;
-
-        /// <summary>
-        ///     The paused time.
-        /// </summary>
-        private long _pausedTime;
-
-        /// <summary>
-        ///     The previous time.
-        /// </summary>
-        private long _prevTime;
-
-        /// <summary>
-        ///     True if stopped.
-        /// </summary>
-        private bool _stopped;
-
-        /// <summary>
-        ///     The stop time.
-        /// </summary>
-        private long _stopTime;
+        private readonly double _countsPerSec  = 1.0 / Stopwatch.Frequency;
+        private          long   _baseTime, _currTime, _pausedTime, _prevTime, _stopTime;
+        private          bool   _stopped;
 
         /// <summary>
         ///     this value will be limited to <see cref="MAX_FRAME_TIME" /> (1000.0f / 60.0f)
