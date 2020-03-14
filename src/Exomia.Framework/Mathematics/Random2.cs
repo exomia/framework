@@ -18,19 +18,19 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public sealed class Random2
     {
-        private const float SINGLE_UNIT_INT = 1.0f / int.MaxValue;
-        private const double REAL_UNIT_INT = 1.0 / int.MaxValue;
-        private const double REAL_UNIT_INT1 = 1.0 / (int.MaxValue + 1.0);
+        private const float  SINGLE_UNIT_INT = 1.0f / int.MaxValue;
+        private const double REAL_UNIT_INT   = 1.0 / int.MaxValue;
+        private const double REAL_UNIT_INT1  = 1.0 / (int.MaxValue + 1.0);
         private const double REAL_UNIT_UINT1 = 1.0 / (uint.MaxValue + 1.0);
-        private const uint Y = 842502087, Z = 3579807591, W = 273326509;
-        
+        private const uint   Y               = 842502087, Z = 3579807591, W = 273326509;
+
         /// <summary>
         ///     Default Random2.
         /// </summary>
         public static Random2 Default = new Random2();
 
         private uint _x, _y, _z, _w;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Random2" /> class.
         /// </summary>

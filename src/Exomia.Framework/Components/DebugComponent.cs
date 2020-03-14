@@ -37,11 +37,11 @@ namespace Exomia.Framework.Components
         private bool                _firstCalc;
 
         private float _fpsAverage,
-                                    _fpsCurrent,
-                                    _elapsedTime,
-                                    _maxFrameTime,
-                                    _sampleBuffer,
-                                    _totalMemoryBytes;
+                      _fpsCurrent,
+                      _elapsedTime,
+                      _maxFrameTime,
+                      _sampleBuffer,
+                      _totalMemoryBytes;
 
         private IGameWindow? _gameWindow;
         private Vector2      _position1,       _position2;

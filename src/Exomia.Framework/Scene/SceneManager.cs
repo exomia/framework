@@ -254,13 +254,12 @@ namespace Exomia.Framework.Scene
                 {
                     inputHandler.UnregisterInput(_inputDevice);
                 }
-                if (_currentScenes.Count > 0)
+
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                if (_currentScenes.Count > 0 &&
+                    _currentScenes[_currentScenes.Count - 1] is IInputHandler nextInputHandler)
                 {
-                    // ReSharper disable once SuspiciousTypeConversion.Global
-                    if (_currentScenes[_currentScenes.Count - 1] is IInputHandler nextInputHandler)
-                    {
-                        nextInputHandler.RegisterInput(_inputDevice);
-                    }
+                    nextInputHandler.RegisterInput(_inputDevice);
                 }
 
                 return true;

@@ -19,11 +19,11 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public static partial class Math2
     {
-        private const long L_OFFSET_MAX = int.MaxValue + 1L;
-        private const float PI     = (float)Math.PI;
-        private const float TWOPI  = (float)(2.0 * Math.PI);
-        private const float ITWOPI = 1.0f / TWOPI;
-        private const float PITWO  = (float)(Math.PI * 0.5);
+        private const long  L_OFFSET_MAX = int.MaxValue + 1L;
+        private const float PI           = (float)Math.PI;
+        private const float TWOPI        = (float)(2.0 * Math.PI);
+        private const float ITWOPI       = 1.0f / TWOPI;
+        private const float PITWO        = (float)(Math.PI * 0.5);
 
         /// <summary>
         ///     calculates the absolute value of x

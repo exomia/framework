@@ -234,24 +234,25 @@ namespace Exomia.Framework.Game
                             : Input.MouseButtons.XButton2);
                     break;
                 case Win32Message.WM_MOUSEMOVE:
-                    for (int i = 0; i < _mouseMovePipe.Count; i++)
                     {
-                        if (_mouseMovePipe[i]
-                            .Invoke(LowWord(m.LParam), HighWord(m.LParam), (MouseButtons)LowWord(m.WParam), 0, 0))
+                        int          x            = LowWord(m.LParam);
+                        int          y            = HighWord(m.LParam);
+                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
+                        for (int i = 0; i < _mouseMovePipe.Count; i++)
                         {
-                            break;
+                            if (_mouseMovePipe[i].Invoke(x, y, mouseButtons, 0, 0)) { break; }
                         }
+                        break;
                     }
-                    break;
                 case Win32Message.WM_MOUSEWHEEL:
-                    for (int i = 0; i < _mouseWheelPipe.Count; i++)
                     {
-                        if (_mouseWheelPipe[i]
-                            .Invoke(
-                                LowWord(m.LParam), HighWord(m.LParam), (MouseButtons)LowWord(m.WParam), 1,
-                                HighWord(m.WParam)))
+                        int          x            = LowWord(m.LParam);
+                        int          y            = HighWord(m.LParam);
+                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
+                        int          wheelDelta   = HighWord(m.WParam);
+                        for (int i = 0; i < _mouseWheelPipe.Count; i++)
                         {
-                            break;
+                            if (_mouseWheelPipe[i].Invoke(x, y, mouseButtons, 2, wheelDelta)) { break; }
                         }
                     }
                     break;
@@ -259,16 +260,17 @@ namespace Exomia.Framework.Game
                 case Win32Message.WM_MBUTTONDBLCLK:
                 case Win32Message.WM_RBUTTONDBLCLK:
                 case Win32Message.WM_XBUTTONDBLCLK:
-                    _state |= 0xC000000;
-                    for (int i = 0; i < _mouseClickPipe.Count; i++)
                     {
-                        if (_mouseClickPipe[i]
-                            .Invoke(LowWord(m.LParam), HighWord(m.LParam), (MouseButtons)LowWord(m.WParam), 2, 0))
+                        _state |= 0xC000000;
+                        int          x            = LowWord(m.LParam);
+                        int          y            = HighWord(m.LParam);
+                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
+                        for (int i = 0; i < _mouseClickPipe.Count; i++)
                         {
-                            break;
+                            if (_mouseClickPipe[i].Invoke(x, y, mouseButtons, 2, 0)) { break; }
                         }
+                        break;
                     }
-                    break;
             }
             base.WndProc(ref m);
         }
@@ -358,9 +360,11 @@ namespace Exomia.Framework.Game
         private void RawMouseDown(ref Message m, MouseButtons buttons)
         {
             _state |= 0x8000000;
+            int low  = LowWord(m.LParam);
+            int high = HighWord(m.LParam);
             for (int i = 0; i < _mouseWheelPipe.Count; i++)
             {
-                if (_mouseDownPipe[i].Invoke(LowWord(m.LParam), HighWord(m.LParam), buttons, 1, 0))
+                if (_mouseDownPipe[i].Invoke(low, high, buttons, 1, 0))
                 {
                     break;
                 }
@@ -379,9 +383,10 @@ namespace Exomia.Framework.Game
             int high = HighWord(m.LParam);
             if ((_state & 0x8000000) == 0x8000000)
             {
+                int clicks = (_state & 0x4000000) == 0x4000000 ? 2 : 1;
                 for (int i = 0; i < _mouseClickPipe.Count; i++)
                 {
-                    if (_mouseClickPipe[i].Invoke(low, high, buttons, (_state & 0x4000000) == 0x4000000 ? 2 : 1, 0))
+                    if (_mouseClickPipe[i].Invoke(low, high, buttons, clicks, 0))
                     {
                         break;
                     }

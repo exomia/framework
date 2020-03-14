@@ -19,9 +19,9 @@ namespace Exomia.Framework.Mathematics.Extensions.Numeric
     public static class NumericExtensions
     {
         private const double PI_OVER_180_D = Math.PI / 180.0;
-        private const float PI_OVER_180_F = (float)(Math.PI / 180.0);
+        private const float  PI_OVER_180_F = (float)(Math.PI / 180.0);
         private const double I80_OVER_PI_D = 180.0 / Math.PI;
-        private const float I80_OVER_PI_F = (float)(180.0 / Math.PI);
+        private const float  I80_OVER_PI_F = (float)(180.0 / Math.PI);
 
         /// <summary>
         ///     Convert to Degrees.

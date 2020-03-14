@@ -40,12 +40,13 @@ namespace Exomia.Framework.Graphics.Camera
         private readonly List<ICameraComponent>           _components;
         private readonly List<IUpdateableCameraComponent> _updateableCameraComponents;
         private readonly Matrix                           _projectionMatrix;
-        private          string                           _name = string.Empty;
+
+        private string _name = string.Empty;
 
         private bool _isInitialized,
-                                                          _enabled,
-                                                          _focused         = true,
-                                                          _viewMatrixDirty = true;
+                     _enabled,
+                     _focused         = true,
+                     _viewMatrixDirty = true;
 
         private int               _updateOrder;
         private Matrix            _viewMatrix;

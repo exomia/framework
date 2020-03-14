@@ -59,8 +59,8 @@ namespace Exomia.Framework.Graphics
         private          DepthStencilState?  _defaultDepthStencilState, _depthStencilState;
 
         private RasterizerState? _defaultRasterizerState,
-                                             _defaultRasterizerScissorEnabledState,
-                                             _rasterizerState;
+                                 _defaultRasterizerScissorEnabledState,
+                                 _rasterizerState;
 
         private SamplerState?  _defaultSamplerState, _samplerState;
         private bool           _isBeginCalled,       _isInitialized, _isScissorEnabled;
