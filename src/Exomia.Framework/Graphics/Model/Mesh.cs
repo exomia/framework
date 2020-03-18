@@ -27,26 +27,34 @@ namespace Exomia.Framework.Graphics.Model
         ///     The mesh.
         /// </summary>
         public readonly uint[] Indices;
+        
+        /// <summary>
+        ///     The texture.
+        /// </summary>
+        public readonly Texture Texture;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Mesh" /> class.
         /// </summary>
-        /// <param name="vertices">      The mesh vertices. </param>
-        /// <param name="indices">       The mesh indices. </param>
-        private Mesh(VertexNormalTexture2D[] vertices, uint[] indices)
+        /// <param name="vertices"> The mesh vertices. </param>
+        /// <param name="indices">  The mesh indices. </param>
+        /// <param name="texture">  The texture. </param>
+        private Mesh(VertexNormalTexture2D[] vertices, uint[] indices, Texture texture)
         {
             Vertices = vertices;
             Indices  = indices;
+            Texture = texture;
         }
 
         /// <summary>
         ///     Initializes a new <see cref="Mesh" /> instance from the given <see cref="Obj" /> instance.
         /// </summary>
-        /// <param name="obj"> The object. </param>
+        /// <param name="obj">     The object. </param>
+        /// <param name="texture"> The texture. </param>
         /// <returns>
         ///     A Mesh.
         /// </returns>
-        public static Mesh FromObj(Obj obj)
+        public static Mesh FromObj(Obj obj, Texture texture)
         {
             List<VertexNormalTexture2D> vertices = new List<VertexNormalTexture2D>();
             List<uint>                  indices  = new List<uint>();
@@ -75,7 +83,7 @@ namespace Exomia.Framework.Graphics.Model
                 index++;
             }
 
-            return new Mesh(vertices.ToArray(), indices.ToArray());
+            return new Mesh(vertices.ToArray(), indices.ToArray(), texture);
         }
 
         /// <summary>

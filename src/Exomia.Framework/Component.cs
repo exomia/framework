@@ -87,7 +87,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void LoadContent(IServiceRegistry registry)
+        void IContentable.LoadContent(IServiceRegistry registry)
         {
             if (_isInitialized && !_isContentLoaded)
             {
@@ -97,7 +97,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void UnloadContent(IServiceRegistry registry)
+        void IContentable.UnloadContent(IServiceRegistry registry)
         {
             if (_isContentLoaded)
             {
@@ -107,7 +107,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
+        void IInitializable.Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized)
             {
