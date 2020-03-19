@@ -1,3 +1,8 @@
+/** Shaderdefinition
+ * pass vs VSMain vs_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
+ * pass ps PSMain ps_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
+ */
+
 Texture2D g_Texture			: register(t0);
 SamplerState g_Sampler		: register(s0);
 

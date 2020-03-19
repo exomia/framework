@@ -1,4 +1,9 @@
-﻿cbuffer PerFrame			: register(b0)
+﻿/** Shaderdefinition
+ * pass vs VSMain vs_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
+ * pass ps PSMain ps_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
+ */
+
+cbuffer PerFrame			: register(b0)
 {
 	float4x4 g_WorldViewProjectionMatrix;
 };
