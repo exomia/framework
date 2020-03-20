@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
@@ -24,20 +25,15 @@ namespace Exomia.Framework.Graphics.Camera.Controller
     public sealed class RotationController : ICameraComponent, IInitializableCameraComponent,
                                              IUpdateableCameraComponent, IInputHandler
     {
-        private const float MOUSE_SPEED_X = 1.0f;
-        private const float MOUSE_SPEED_Y = MOUSE_SPEED_X;
-        private const float PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
-
-        private readonly string               _name;
-        private          float                _yaw, _pitch;
-        private          IWinFormsGameWindow? _window;
-        private          int                  _x, _y;
+        private const float                MOUSE_SPEED_X = 0.1f;
+        private const float                MOUSE_SPEED_Y = MOUSE_SPEED_X;
+        private const float                PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
+        private       float                _yaw, _pitch;
+        private       IWinFormsGameWindow? _window;
+        private       int                  _x, _y;
 
         /// <inheritdoc />
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RotationController" /> class.
@@ -45,7 +41,7 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         /// <param name="name"> The name. </param>
         public RotationController(string name)
         {
-            _name = name;
+            Name = name;
         }
 
         /// <inheritdoc />
@@ -56,7 +52,6 @@ namespace Exomia.Framework.Graphics.Camera.Controller
             Vector3 lookAt = camera.Target - camera.Position;
             _yaw   = (float)Math.Atan2(lookAt.X, lookAt.Z);
             _pitch = (float)Math.Atan2(lookAt.Y, Math.Sqrt((lookAt.X * lookAt.X) + (lookAt.Z * lookAt.Z)));
-
             _x = _window.Width / 2;
             _y = _window.Height / 2;
         }
@@ -76,16 +71,23 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         /// <inheritdoc />
         void IUpdateableCameraComponent.Update(GameTime gameTime, ICamera camera)
         {
-            float x = MathUtil.Lerp((_x - (_window!.Width * 0.5f)) * gameTime.DeltaTimeS, 0, 0.8f);
-            float y = MathUtil.Lerp((_y - (_window!.Height * 0.5f)) * gameTime.DeltaTimeS, 0, 0.8f);
-
-            _yaw -= x * MOUSE_SPEED_X;
+            float x = Interlocked.Exchange(ref _x, 0);
+            float y = Interlocked.Exchange(ref _y, 0);
+            
+            if (_window!.RenderForm.Focused)
+            {
+                Cursor.Position = 
+                    _window!.RenderForm.PointToScreen(
+                        new Point(_window.Width / 2, _window.Height / 2));
+            }
+            
+            _yaw -= x * MOUSE_SPEED_X * gameTime.DeltaTimeS;
             _yaw = (float)((-MathUtil.Pi + (_yaw + MathUtil.Pi)) -
                            (MathUtil.TwoPi * Math.Floor((_yaw + MathUtil.Pi) / MathUtil.TwoPi)));
 
-            _pitch -= y * MOUSE_SPEED_Y;
-            if (_pitch < -PITCH_LIMIT) { _pitch = -PITCH_LIMIT; }
-            if (_pitch > PITCH_LIMIT) { _pitch  = PITCH_LIMIT; }
+            _pitch -= y * MOUSE_SPEED_Y * gameTime.DeltaTimeS;
+            if (_pitch < -PITCH_LIMIT) { _pitch     = -PITCH_LIMIT; }
+            else if (_pitch > PITCH_LIMIT) { _pitch = PITCH_LIMIT; }
 
             float  height   = (float)Math.Sin(_pitch);
             double distance = Math.Cos(_pitch);
@@ -98,7 +100,7 @@ namespace Exomia.Framework.Graphics.Camera.Controller
             //Math2.SinCos(_yaw, out float lookZ, out float lookX);
             //lookX *= distance;
             //lookZ *= distance;
-            // 
+
             float strafeX = (float)(Math.Cos(_yaw + MathUtil.PiOverTwo) * distance);
             float strafeZ = (float)(Math.Sin(_yaw + MathUtil.PiOverTwo) * distance);
 
@@ -109,20 +111,12 @@ namespace Exomia.Framework.Graphics.Camera.Controller
                 camera.Position.X + lookX,
                 camera.Position.Y + height,
                 camera.Position.Z + lookZ);
-
-            if (_window.RenderForm.Focused)
-            {
-                Cursor.Position = _window!.RenderForm.PointToScreen(
-                    new Point(
-                        _x = _window.Width / 2,
-                        _y = _window.Height / 2));
-            }
         }
 
         private bool CameraOnMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            _x = x;
-            _y = y;
+            Interlocked.Exchange(ref _x, x - (_window!.Width / 2));
+            Interlocked.Exchange(ref _y, y - (_window!.Height / 2));
             return false;
         }
     }

@@ -22,14 +22,10 @@ namespace Exomia.Framework.Graphics.Camera.Controller
     public sealed class TranslationKeyboardController : ICameraComponent, IUpdateableCameraComponent, IInputHandler
     {
         private const    float        TRANSLATION_SPEED = 20.0f;
-        private readonly string       _name;
         private readonly HashSet<int> _keysDown;
 
         /// <inheritdoc />
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TranslationKeyboardController" /> class.
@@ -37,7 +33,7 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         /// <param name="name"> The name. </param>
         public TranslationKeyboardController(string name)
         {
-            _name = name;
+            Name = name;
 #if NET471
             _keysDown = new HashSet<int>(EqualityComparer<int>.Default);
 #else
