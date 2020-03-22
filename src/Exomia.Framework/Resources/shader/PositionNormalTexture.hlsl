@@ -1,6 +1,20 @@
 ﻿/** Shaderdefinition
- * pass vs VS_VERTEX_LIGHTING_BLINNPHONG vs_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
- * pass ps PS_VERTEX_LIGHTING ps_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
+ * 
+ * technique VERTEX_LIGHTING_PHONG
+ *  vs VS_VERTEX_LIGHTING_PHONG vs_5_0 OptimizationLevel3
+ *  ps PS_VERTEX_LIGHTING ps_5_0 OptimizationLevel3
+ *
+ * technique VERTEX_LIGHTING_BLINNPHONG
+ *  vs VS_VERTEX_LIGHTING_BLINNPHONG vs_5_0 OptimizationLevel3
+ *  ps PS_VERTEX_LIGHTING ps_5_0 OptimizationLevel3
+ *
+ * technique PIXEL_LIGHTING_PHONG
+ *  vs VS_PIXEL_LIGHTING_PHONG vs_5_0 OptimizationLevel3
+ *  ps PS_PIXEL_LIGHTING_PHONG ps_5_0 OptimizationLevel3
+ *
+ * technique PIXEL_LIGHTING_BLINNPHONG
+ *  vs VS_PIXEL_LIGHTING_BLINNPHONG vs_5_0 OptimizationLevel3
+ *  ps PS_PIXEL_LIGHTING_BLINNPHONG ps_5_0 OptimizationLevel3
  */
 
 Texture2D g_Texture : register(t0);
@@ -62,14 +76,14 @@ struct PS_INPUT_PP_PHONG
 {
     float4 p : SV_POSITION;
     float4 wp : POSITION;
-    float2 t : TEXCOORD0;
+    float2 t : TEXCOORD;
     float3 n : TEXCOORD1;
 };
 
 struct PS_INPUT_PP_BLINNPHONG
 {
     float4 p : SV_POSITION;
-    float2 t : TEXCOORD0;
+    float2 t : TEXCOORD;
     float3 n : TEXCOORD1;
     float3 h : TEXCOORD2;
 };

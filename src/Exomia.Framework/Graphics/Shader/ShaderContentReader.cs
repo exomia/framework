@@ -29,8 +29,16 @@ namespace Exomia.Framework.Graphics.Shader
         private const string SHADER_DEFINITION     = "/** Shaderdefinition";
         private const string SHADER_DEFINITION_END = "*/";
 
-        private static readonly Regex s_passRegex = new Regex(
-            "^\\s*\\*\\s*pass\\s*(vs|ps)\\s*([^\\s]+)\\s*([^\\s]+)\\s(.*)$",
+        private static readonly Regex s_emptyLineRegex = new Regex(
+            "^\\s*\\**\\s*$",
+            RegexOptions.Compiled | RegexOptions.Singleline);
+
+        private static readonly Regex s_techniqueRegex = new Regex(
+            "^\\s*\\*\\s*technique\\s*(.*)$",
+            RegexOptions.Compiled | RegexOptions.Singleline);
+
+        private static readonly Regex s_shaderInfoRegex = new Regex(
+            "^\\s*\\*\\s*(vs|ps|ds|gs|hs|cs)\\s*([^\\s]+)\\s*([^\\s]+)\\s(.*)$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
         /// <inheritdoc />
@@ -45,64 +53,144 @@ namespace Exomia.Framework.Graphics.Shader
                 return null;
             }
 
-            Dictionary<string, Pass> passes = new Dictionary<string, Pass>(2);
-            string?                  line   = sr.ReadLine()?.Trim();
-            while (line != null && !SHADER_DEFINITION_END.Equals(line, StringComparison.InvariantCultureIgnoreCase))
+            IList<Technique> techniques = new List<Technique>(1);
+
+            Technique? currentTechnique = null;
+            string?    line;
+            while ((line = sr.ReadLine()?.Trim()) != null)
             {
-                Match m = s_passRegex.Match(line);
-                if (m.Success)
+                if (SHADER_DEFINITION_END.Equals(line, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (!Enum.TryParse(m.Groups[4].Value, out ShaderFlags flags))
-                    {
-                        throw new InvalidDataException(
-                            $"pass shader flags '{m.Groups[4].Value}' one or more flags are invalid or unsupported.");
-                    }
-                    passes.Add(m.Groups[1].Value, new Pass(m.Groups[2].Value, m.Groups[3].Value, flags));
+                    break;
                 }
-                line = sr.ReadLine()?.Trim();
+
+                if (!s_emptyLineRegex.IsMatch(line))
+                {
+                    Match techniqueMatch = s_techniqueRegex.Match(line);
+                    if (techniqueMatch.Success)
+                    {
+                        techniques.Add(currentTechnique = new Technique(techniqueMatch.Groups[1].Value));
+                        continue;
+                    }
+
+                    Match shaderInfoMatch = s_shaderInfoRegex.Match(line);
+                    if (shaderInfoMatch.Success)
+                    {
+                        if (!Enum.TryParse(shaderInfoMatch.Groups[4].Value, out ShaderFlags flags))
+                        {
+                            throw new InvalidDataException(
+                                $"pass shader flags '{shaderInfoMatch.Groups[4].Value}' one or more flags are invalid or unsupported.");
+                        }
+                        currentTechnique?.Add(
+                            new ShaderInfo(
+                                shaderInfoMatch.Groups[1].Value,
+                                shaderInfoMatch.Groups[2].Value,
+                                shaderInfoMatch.Groups[3].Value,
+                                flags));
+                    }
+                }
             }
 
             string shaderSource = sr.ReadToEnd();
 
             return new Shader(
-                passes
-                    .Select(
-                        kvp =>
-                        {
-                            using CompilationResult cr = ShaderBytecode.Compile(
-                                shaderSource,
-                                kvp.Value.EntryPoint,
-                                kvp.Value.Profile,
-                                kvp.Value.Flags);
-                            if (cr.HasErrors) { throw new InvalidDataException(cr.Message); }
-                            return kvp.Key switch
-                            {
-                                "vs" => (Shader.Type.VertexShader,
-                                         (ComObject)new VertexShader(graphicsDevice.Device, cr),
-                                         ShaderSignature.GetInputSignature(cr)),
-                                "ps" => (Shader.Type.PixelShader,
-                                         (ComObject)new PixelShader(graphicsDevice.Device, cr),
-                                         ShaderSignature.GetInputSignature(cr)),
-                                "ds" => (Shader.Type.DomainShader,
-                                         (ComObject)new DomainShader(graphicsDevice.Device, cr),
-                                         ShaderSignature.GetInputSignature(cr)),
-                                "gs" => (Shader.Type.GeometryShader,
-                                         (ComObject)new GeometryShader(graphicsDevice.Device, cr),
-                                         ShaderSignature.GetInputSignature(cr)),
-                                "hs" => (Shader.Type.HullShader,
-                                         (ComObject)new HullShader(graphicsDevice.Device, cr),
-                                         ShaderSignature.GetInputSignature(cr)),
-                                "cs" => (Shader.Type.ComputeShader,
-                                         (ComObject)new ComputeShader(graphicsDevice.Device, cr),
-                                         ShaderSignature.GetInputSignature(cr)),
-                                _ => throw new InvalidDataException(
-                                    $"pass shader type '{kvp.Key}' doesn't exists or is unsupported.")
-                            };
-                        }));
+                techniques.Select(
+                    t =>
+                    {
+                        return (t.Name,
+                                t.ShaderInfos.Select(
+                                    s =>
+                                    {
+                                        using CompilationResult cr = ShaderBytecode.Compile(
+                                            shaderSource,
+                                            s.EntryPoint,
+                                            s.Profile,
+                                            s.Flags);
+                                        if (cr.HasErrors) { throw new InvalidDataException(cr.Message); }
+                                        return s.Type switch
+                                        {
+                                            "vs" => (Shader.Type.VertexShader,
+                                                     (ComObject)new VertexShader(graphicsDevice.Device, cr),
+                                                     ShaderSignature.GetInputSignature(cr)),
+                                            "ps" => (Shader.Type.PixelShader,
+                                                     (ComObject)new PixelShader(graphicsDevice.Device, cr),
+                                                     ShaderSignature.GetInputSignature(cr)),
+                                            "ds" => (Shader.Type.DomainShader,
+                                                     (ComObject)new DomainShader(graphicsDevice.Device, cr),
+                                                     ShaderSignature.GetInputSignature(cr)),
+                                            "gs" => (Shader.Type.GeometryShader,
+                                                     (ComObject)new GeometryShader(graphicsDevice.Device, cr),
+                                                     ShaderSignature.GetInputSignature(cr)),
+                                            "hs" => (Shader.Type.HullShader,
+                                                     (ComObject)new HullShader(graphicsDevice.Device, cr),
+                                                     ShaderSignature.GetInputSignature(cr)),
+                                            "cs" => (Shader.Type.ComputeShader,
+                                                     (ComObject)new ComputeShader(graphicsDevice.Device, cr),
+                                                     ShaderSignature.GetInputSignature(cr)),
+                                            _ => throw new InvalidDataException(
+                                                $"pass shader type '{s.Type}' doesn't exists or is unsupported.")
+                                        };
+                                    })
+                            );
+                    }));
         }
-        
-        private class Pass
+
+        /// <summary>
+        ///     A technique. This class cannot be inherited.
+        /// </summary>
+        private sealed class Technique
         {
+            /// <summary>
+            ///     Gets the name.
+            /// </summary>
+            /// <value>
+            ///     The name.
+            /// </value>
+            public string Name { get; }
+
+            /// <summary>
+            ///     Gets the shader infos.
+            /// </summary>
+            /// <value>
+            ///     The shader infos.
+            /// </value>
+            public IList<ShaderInfo> ShaderInfos { get; }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="Technique" /> class.
+            /// </summary>
+            /// <param name="name"> The name. </param>
+            public Technique(string name)
+            {
+                Name        = name;
+                ShaderInfos = new List<ShaderInfo>(2);
+            }
+
+            public void Add(ShaderInfo pass)
+            {
+                ShaderInfos.Add(pass);
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return $"{Name} (shaders {ShaderInfos.Count})";
+            }
+        }
+
+        /// <summary>
+        ///     Information about the shader. This class cannot be inherited.
+        /// </summary>
+        private sealed class ShaderInfo
+        {
+            /// <summary>
+            ///     Gets the type.
+            /// </summary>
+            /// <value>
+            ///     The type.
+            /// </value>
+            public string Type { get; }
+
             /// <summary>
             ///     Gets or sets the entry point.
             /// </summary>
@@ -128,16 +216,24 @@ namespace Exomia.Framework.Graphics.Shader
             public ShaderFlags Flags { get; }
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="Pass" /> class.
+            ///     Initializes a new instance of the <see cref="ShaderInfo" /> class.
             /// </summary>
+            /// <param name="type">       The type. </param>
             /// <param name="entryPoint"> The entry point. </param>
             /// <param name="profile">    The profile. </param>
             /// <param name="flags">      The flags. </param>
-            public Pass(string entryPoint, string profile, ShaderFlags flags)
+            public ShaderInfo(string type, string entryPoint, string profile, ShaderFlags flags)
             {
+                Type       = type;
                 EntryPoint = entryPoint;
                 Profile    = profile;
                 Flags      = flags;
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return $"{Type} {EntryPoint} {Profile} {Flags}";
             }
         }
     }

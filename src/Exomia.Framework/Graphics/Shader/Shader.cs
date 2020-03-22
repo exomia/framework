@@ -42,120 +42,190 @@ namespace Exomia.Framework.Graphics.Shader
             ///     An enum constant representing the domain shader option.
             /// </summary>
             DomainShader,
-            
+
             /// <summary>
             ///     An enum constant representing the geometry shader option.
             /// </summary>
-            GeometryShader, 
-            
+            GeometryShader,
+
             /// <summary>
             ///     An enum constant representing the hull shader option.
             /// </summary>
             HullShader,
-            
+
             /// <summary>
             ///     An enum constant representing the compute shader option.
             /// </summary>
             ComputeShader
         }
 
-        private readonly Dictionary<Type, (ComObject shader, ShaderSignature signature)> _passes;
+        private readonly Dictionary<string, Technique> _techniques;
+
+        /// <summary>
+        ///     Specify the technique to get
+        /// </summary>
+        /// <param name="technique"> The technique. </param>
+        /// <returns>
+        ///     The <see cref="Technique" />.
+        /// </returns>
+        public Technique this[string technique]
+        {
+            get { return _techniques[technique]; }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Shader" /> class.
         /// </summary>
-        /// <param name="passes"> The passes. </param>
-        internal Shader(IEnumerable<(Type, ComObject, ShaderSignature)> passes)
+        /// <param name="techniques"> The techniques. </param>
+        internal Shader(
+            IEnumerable<(string technique, IEnumerable<(Type, ComObject, ShaderSignature)> passes)> techniques)
         {
-            _passes = new Dictionary<Type, (ComObject, ShaderSignature)>();
-            foreach ((Type type, ComObject comObject, ShaderSignature signature) in passes)
+            _techniques = new Dictionary<string, Technique>(StringComparer.InvariantCultureIgnoreCase);
+            foreach ((string technique, IEnumerable<(Type, ComObject, ShaderSignature)> passes) in techniques)
             {
-                _passes.Add(type, (comObject, signature));
+                _techniques.Add(technique, new Technique(passes));
             }
         }
 
         /// <summary>
-        ///     Implicit converts the given Shader to a <see cref="VertexShader" />.
+        ///     A technique. This class cannot be inherited.
         /// </summary>
-        /// <param name="shader"> The shader. </param>
-        /// <returns>
-        ///     The <see cref="VertexShader" />.
-        /// </returns>
-        public static implicit operator VertexShader(Shader shader)
+        public sealed class Technique : IDisposable
         {
-            return (VertexShader)shader._passes[Type.VertexShader].shader;
-        }
+            private readonly Dictionary<Type, (ComObject shader, ShaderSignature signature)> _passes;
 
-        /// <summary>
-        ///     Implicit converts the given Shader to a <see cref="PixelShader" />.
-        /// </summary>
-        /// <param name="shader"> The shader. </param>
-        /// <returns>
-        ///     The <see cref="PixelShader" />.
-        /// </returns>
-        public static implicit operator PixelShader(Shader shader)
-        {
-            return (PixelShader)shader._passes[Type.PixelShader].shader;
-        }
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="Technique" /> class.
+            /// </summary>
+            /// <param name="passes"> The passes. </param>
+            internal Technique(IEnumerable<(Type type, ComObject comObject, ShaderSignature signature)> passes)
+            {
+                _passes = new Dictionary<Type, (ComObject shader, ShaderSignature signature)>();
+                foreach ((Type type, ComObject comObject, ShaderSignature signature) in passes)
+                {
+                    _passes.Add(type, (comObject, signature));
+                }
+            }
 
-        /// <summary>
-        ///     Implicit converts the given Shader to a <see cref="DomainShader" />.
-        /// </summary>
-        /// <param name="shader"> The shader. </param>
-        /// <returns>
-        ///     The <see cref="DomainShader" />.
-        /// </returns>
-        public static implicit operator DomainShader(Shader shader)
-        {
-            return (DomainShader)shader._passes[Type.DomainShader].shader;
-        }
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="VertexShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="VertexShader" />.
+            /// </returns>
+            public static implicit operator VertexShader(Technique technique)
+            {
+                return (VertexShader)technique._passes[Type.VertexShader].shader;
+            }
 
-        /// <summary>
-        ///     Implicit converts the given Shader to a <see cref="GeometryShader" />.
-        /// </summary>
-        /// <param name="shader"> The shader. </param>
-        /// <returns>
-        ///     The <see cref="GeometryShader" />.
-        /// </returns>
-        public static implicit operator GeometryShader(Shader shader)
-        {
-            return (GeometryShader)shader._passes[Type.GeometryShader].shader;
-        }
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="PixelShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="PixelShader" />.
+            /// </returns>
+            public static implicit operator PixelShader(Technique technique)
+            {
+                return (PixelShader)technique._passes[Type.PixelShader].shader;
+            }
 
-        /// <summary>
-        ///     Implicit converts the given Shader to a <see cref="HullShader" />.
-        /// </summary>
-        /// <param name="shader"> The shader. </param>
-        /// <returns>
-        ///     The <see cref="HullShader" />.
-        /// </returns>
-        public static implicit operator HullShader(Shader shader)
-        {
-            return (HullShader)shader._passes[Type.HullShader].shader;
-        }
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="DomainShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="DomainShader" />.
+            /// </returns>
+            public static implicit operator DomainShader(Technique technique)
+            {
+                return (DomainShader)technique._passes[Type.DomainShader].shader;
+            }
 
-        /// <summary>
-        ///     Implicit converts the given Shader to a <see cref="ComputeShader" />.
-        /// </summary>
-        /// <param name="shader"> The shader. </param>
-        /// <returns>
-        ///     The <see cref="ComputeShader" />.
-        /// </returns>
-        public static implicit operator ComputeShader(Shader shader)
-        {
-            return (ComputeShader)shader._passes[Type.ComputeShader].shader;
-        }
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="GeometryShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="GeometryShader" />.
+            /// </returns>
+            public static implicit operator GeometryShader(Technique technique)
+            {
+                return (GeometryShader)technique._passes[Type.GeometryShader].shader;
+            }
 
-        /// <summary>
-        ///     Gets the <see cref="ShaderSignature" />.
-        /// </summary>
-        /// <param name="type"> The type. </param>
-        /// <returns>
-        ///     The <see cref="ShaderSignature" />.
-        /// </returns>
-        public ShaderSignature GetShaderSignature(Type type)
-        {
-            return _passes[type].signature;
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="HullShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="HullShader" />.
+            /// </returns>
+            public static implicit operator HullShader(Technique technique)
+            {
+                return (HullShader)technique._passes[Type.HullShader].shader;
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="ComputeShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="ComputeShader" />.
+            /// </returns>
+            public static implicit operator ComputeShader(Technique technique)
+            {
+                return (ComputeShader)technique._passes[Type.ComputeShader].shader;
+            }
+
+            /// <summary>
+            ///     Gets the <see cref="ShaderSignature" />.
+            /// </summary>
+            /// <param name="type"> The type. </param>
+            /// <returns>
+            ///     The <see cref="ShaderSignature" />.
+            /// </returns>
+            public ShaderSignature GetShaderSignature(Type type)
+            {
+                return _passes[type].signature;
+            }
+
+            #region IDisposable Support
+
+            private bool _disposed;
+
+            private void Dispose(bool disposing)
+            {
+                if (!_disposed)
+                {
+                    foreach (KeyValuePair<Type, (ComObject shader, ShaderSignature signature)> keyValuePair in _passes)
+                    {
+                        keyValuePair.Value.shader.Dispose();
+                        keyValuePair.Value.signature.Dispose();
+                    }
+                    if (disposing)
+                    {
+                        _passes.Clear();
+                    }
+                    _disposed = true;
+                }
+            }
+
+            /// <inheritdoc />
+            ~Technique()
+            {
+                Dispose(false);
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            #endregion
         }
 
         #region IDisposable Support
@@ -166,26 +236,25 @@ namespace Exomia.Framework.Graphics.Shader
         {
             if (!_disposed)
             {
-                foreach (KeyValuePair<Type, (ComObject shader, ShaderSignature signature)> keyValuePair in _passes)
+                foreach (KeyValuePair<string, Technique> keyValuePair in _techniques)
                 {
-                    keyValuePair.Value.shader.Dispose();
-                    keyValuePair.Value.signature.Dispose();
+                    keyValuePair.Value.Dispose();
                 }
                 if (disposing)
                 {
-                    _passes.Clear();
+                    _techniques.Clear();
                 }
                 _disposed = true;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~Shader()
         {
             Dispose(false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

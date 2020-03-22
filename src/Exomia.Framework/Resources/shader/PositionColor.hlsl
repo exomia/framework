@@ -1,6 +1,8 @@
 ﻿/** Shaderdefinition
- * pass vs VSMain vs_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
- * pass ps PSMain ps_5_0 OptimizationLevel0,OptimizationLevel1,OptimizationLevel2,OptimizationLevel3
+ *
+ * technique DEFAULT
+ *  vs VSMain vs_5_0 OptimizationLevel3
+ *  ps PSMain ps_5_0 OptimizationLevel3
  */
 
 cbuffer PerFrame			: register(b0)
