@@ -25,7 +25,7 @@ namespace Exomia.Framework.Graphics.Camera.Controller
     public sealed class RotationController : ICameraComponent, IInitializableCameraComponent,
                                              IUpdateableCameraComponent, IInputHandler
     {
-        private const float                MOUSE_SPEED_X = 0.1f;
+        private const float                MOUSE_SPEED_X = 0.5f;
         private const float                MOUSE_SPEED_Y = MOUSE_SPEED_X;
         private const float                PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
         private       float                _yaw, _pitch;
@@ -80,6 +80,9 @@ namespace Exomia.Framework.Graphics.Camera.Controller
                     _window!.RenderForm.PointToScreen(
                         new Point(_window.Width / 2, _window.Height / 2));
             }
+            
+            if (x > 10 || x < -10) x /= 10;
+            if (y > 10 || y < -10) y /= 10;
             
             _yaw -= x * MOUSE_SPEED_X * gameTime.DeltaTimeS;
             _yaw = (float)((-MathUtil.Pi + (_yaw + MathUtil.Pi)) -

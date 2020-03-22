@@ -84,7 +84,7 @@
     <None Remove="Resources\arial_68px.e1" />
     <None Remove="Resources\arial_70px.e1" />
     <None Remove="Resources\arial_72px.e1" />
-    <None Remove="Resources\shader\VertexNormalTexture.hlsl" />
+    <None Remove="Resources\shader\PositionNormalTexture.hlsl" />
   </ItemGroup>
 
   <ItemGroup>
@@ -130,7 +130,7 @@
     <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1">
       <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_38px.e1</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\shader\VertexNormalTexture.hlsl" />
+    <EmbeddedResource Include="Resources\shader\PositionNormalTexture.hlsl" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,7 +21,7 @@ namespace Exomia.Framework.Graphics.Model
         /// <summary>
         ///     The mesh vertices.
         /// </summary>
-        public readonly VertexNormalTexture2D[] Vertices;
+        public readonly PositionNormalTexture2D[] Vertices;
 
         /// <summary>
         ///     The mesh.
@@ -34,40 +34,48 @@ namespace Exomia.Framework.Graphics.Model
         public readonly Texture Texture;
 
         /// <summary>
+        ///     The material.
+        /// </summary>
+        public readonly Material Material;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Mesh" /> class.
         /// </summary>
         /// <param name="vertices"> The mesh vertices. </param>
         /// <param name="indices">  The mesh indices. </param>
         /// <param name="texture">  The texture. </param>
-        private Mesh(VertexNormalTexture2D[] vertices, uint[] indices, Texture texture)
+        /// <param name="material"> The material. </param>
+        private Mesh(PositionNormalTexture2D[] vertices, uint[] indices, Texture texture, Material material)
         {
             Vertices = vertices;
             Indices  = indices;
             Texture = texture;
+            Material = material;
         }
 
         /// <summary>
         ///     Initializes a new <see cref="Mesh" /> instance from the given <see cref="Obj" /> instance.
         /// </summary>
-        /// <param name="obj">     The object. </param>
-        /// <param name="texture"> The texture. </param>
+        /// <param name="obj">      The object. </param>
+        /// <param name="texture">  The texture. </param>
+        /// <param name="material"> The material. </param>
         /// <returns>
         ///     A Mesh.
         /// </returns>
-        public static Mesh FromObj(Obj obj, Texture texture)
+        public static Mesh FromObj(Obj obj, Texture texture, Material material)
         {
-            List<VertexNormalTexture2D> vertices = new List<VertexNormalTexture2D>();
+            List<PositionNormalTexture2D> vertices = new List<PositionNormalTexture2D>();
             List<uint>                  indices  = new List<uint>();
 
             uint index = 0;
             foreach (Obj.Face face in obj.Faces)
             {
-                VertexNormalTexture2D FromIndex(int i)
+                PositionNormalTexture2D FromIndex(int i)
                 {
                     Obj.Vertex  v = obj.Vertices[face.Vertices[i].V - 1];
                     Obj.Normal  n = obj.Normals[face.Vertices[i].N - 1];
                     Obj.Texture t = obj.Textures[face.Vertices[i].T - 1];
-                    return new VertexNormalTexture2D(v.X, v.Y, v.Z, v.W, n.X, n.Y, n.Z, t.U, t.V);
+                    return new PositionNormalTexture2D(v.X, v.Y, v.Z, v.W, n.X, n.Y, n.Z, t.U, t.V);
                 }
 
                 vertices.Add(FromIndex(0));
@@ -83,14 +91,14 @@ namespace Exomia.Framework.Graphics.Model
                 index++;
             }
 
-            return new Mesh(vertices.ToArray(), indices.ToArray(), texture);
+            return new Mesh(vertices.ToArray(), indices.ToArray(), texture, material);
         }
 
         /// <summary>
-        ///     A vertex normal texture.
+        ///     A position normal texture.
         /// </summary>
         [StructLayout(LayoutKind.Explicit, Size = 36)]
-        public readonly struct VertexNormalTexture2D
+        public readonly struct PositionNormalTexture2D
         {
             /// <summary>
             ///     The X coordinate.
@@ -158,7 +166,7 @@ namespace Exomia.Framework.Graphics.Model
             /// <param name="nz"> The normal z. </param>
             /// <param name="u">  The texture u. </param>
             /// <param name="v">  The texture v. </param>
-            public VertexNormalTexture2D(float x,
+            public PositionNormalTexture2D(float x,
                                          float y,
                                          float z,
                                          float w,
