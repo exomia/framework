@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Exomia.Framework.Input;
+using SharpDX.Multimedia;
+using SharpDX.RawInput;
 using KeyEventHandler = Exomia.Framework.Input.KeyEventHandler;
 using KeyPressEventHandler = Exomia.Framework.Input.KeyPressEventHandler;
 using MouseButtons = Exomia.Framework.Input.MouseButtons;
@@ -35,6 +37,8 @@ namespace Exomia.Framework.Game
                                                  _mouseClickPipe,
                                                  _mouseWheelPipe;
 
+        private readonly Pipe<MouseEventHandler> _mouseRawInputPipe;
+
         private int         _state;
         private KeyModifier _keyModifier = 0;
 
@@ -45,121 +49,137 @@ namespace Exomia.Framework.Game
         public RenderForm(string text)
             : base(text)
         {
-            _rawKeyPipe     = new Pipe<RawKeyEventHandler>();
-            _keyUpPipe      = new Pipe<KeyEventHandler>();
-            _keyDownPipe    = new Pipe<KeyEventHandler>();
-            _keyPressPipe   = new Pipe<KeyPressEventHandler>();
-            _mouseMovePipe  = new Pipe<MouseEventHandler>();
-            _mouseUpPipe    = new Pipe<MouseEventHandler>();
-            _mouseDownPipe  = new Pipe<MouseEventHandler>();
-            _mouseClickPipe = new Pipe<MouseEventHandler>();
-            _mouseWheelPipe = new Pipe<MouseEventHandler>();
+            _rawKeyPipe        = new Pipe<RawKeyEventHandler>();
+            _keyUpPipe         = new Pipe<KeyEventHandler>();
+            _keyDownPipe       = new Pipe<KeyEventHandler>();
+            _keyPressPipe      = new Pipe<KeyPressEventHandler>();
+            _mouseMovePipe     = new Pipe<MouseEventHandler>();
+            _mouseUpPipe       = new Pipe<MouseEventHandler>();
+            _mouseDownPipe     = new Pipe<MouseEventHandler>();
+            _mouseClickPipe    = new Pipe<MouseEventHandler>();
+            _mouseWheelPipe    = new Pipe<MouseEventHandler>();
+            _mouseRawInputPipe = new Pipe<MouseEventHandler>();
+
+            Device.RegisterDevice(UsagePage.Generic, UsageId.GenericMouse, DeviceFlags.None);
+            Device.MouseInput += DeviceOnMouseInput;
         }
 
         /// <inheritdoc />
-        public void RegisterRawKeyEvent(RawKeyEventHandler handler, int position = -1)
+        void IInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position = -1)
         {
             _rawKeyPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterKeyUp(KeyEventHandler handler, int position = -1)
+        void IInputDevice.RegisterKeyUp(KeyEventHandler handler, int position = -1)
         {
             _keyUpPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterKeyPress(KeyPressEventHandler handler, int position = -1)
+        void IInputDevice.RegisterKeyPress(KeyPressEventHandler handler, int position = -1)
         {
             _keyPressPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterKeyDown(KeyEventHandler handler, int position = -1)
+        void IInputDevice.RegisterKeyDown(KeyEventHandler handler, int position = -1)
         {
             _keyDownPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterMouseDown(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseDown(MouseEventHandler handler, int position = -1)
         {
             _mouseDownPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterMouseUp(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseUp(MouseEventHandler handler, int position = -1)
         {
             _mouseUpPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterMouseClick(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseClick(MouseEventHandler handler, int position = -1)
         {
             _mouseClickPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterMouseMove(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseMove(MouseEventHandler handler, int position = -1)
         {
             _mouseMovePipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void RegisterMouseWheel(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterRawMouseInput(MouseEventHandler handler, int position = -1)
+        {
+            _mouseRawInputPipe.Register(handler, position);
+        }
+
+        /// <inheritdoc />
+        void IInputDevice.RegisterMouseWheel(MouseEventHandler handler, int position = -1)
         {
             _mouseWheelPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        public void UnregisterRawKeyEvent(RawKeyEventHandler handler)
+        void IInputDevice.UnregisterRawKeyEvent(RawKeyEventHandler handler)
         {
             _rawKeyPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterKeyUp(KeyEventHandler handler)
+        void IInputDevice.UnregisterKeyUp(KeyEventHandler handler)
         {
             _keyUpPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterKeyPress(KeyPressEventHandler handler)
+        void IInputDevice.UnregisterKeyPress(KeyPressEventHandler handler)
         {
             _keyPressPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterKeyDown(KeyEventHandler handler)
+        void IInputDevice.UnregisterKeyDown(KeyEventHandler handler)
         {
             _keyDownPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterMouseDown(MouseEventHandler handler)
+        void IInputDevice.UnregisterRawMouseInput(MouseEventHandler handler)
+        {
+            _mouseRawInputPipe.Unregister(handler);
+        }
+
+        /// <inheritdoc />
+        void IInputDevice.UnregisterMouseDown(MouseEventHandler handler)
         {
             _mouseDownPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterMouseUp(MouseEventHandler handler)
+        void IInputDevice.UnregisterMouseUp(MouseEventHandler handler)
         {
             _mouseUpPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterMouseClick(MouseEventHandler handler)
+        void IInputDevice.UnregisterMouseClick(MouseEventHandler handler)
         {
             _mouseClickPipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterMouseMove(MouseEventHandler handler)
+        void IInputDevice.UnregisterMouseMove(MouseEventHandler handler)
         {
             _mouseMovePipe.Unregister(handler);
         }
 
         /// <inheritdoc />
-        public void UnregisterMouseWheel(MouseEventHandler handler)
+        void IInputDevice.UnregisterMouseWheel(MouseEventHandler handler)
         {
             _mouseWheelPipe.Unregister(handler);
         }
@@ -275,6 +295,41 @@ namespace Exomia.Framework.Game
             base.WndProc(ref m);
         }
 
+        private void DeviceOnMouseInput(object sender, MouseInputEventArgs e)
+        {
+            MouseButtons buttons = Input.MouseButtons.None;
+            int          clicks  = 0;
+            if ((e.ButtonFlags & MouseButtonFlags.LeftButtonDown) == MouseButtonFlags.LeftButtonDown)
+            {
+                buttons |= Input.MouseButtons.Left;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & MouseButtonFlags.RightButtonDown) == MouseButtonFlags.RightButtonDown)
+            {
+                buttons |= Input.MouseButtons.Right;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & MouseButtonFlags.MiddleButtonDown) == MouseButtonFlags.MiddleButtonDown)
+            {
+                buttons |= Input.MouseButtons.Middle;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & MouseButtonFlags.Button4Down) == MouseButtonFlags.Button4Down)
+            {
+                buttons |= Input.MouseButtons.XButton1;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & MouseButtonFlags.Button5Down) == MouseButtonFlags.Button5Down)
+            {
+                buttons |= Input.MouseButtons.XButton2;
+                clicks  =  1;
+            }
+            for (int i = 0; i < _mouseRawInputPipe.Count; i++)
+            {
+                if (_mouseRawInputPipe[i].Invoke(e.X, e.Y, buttons, clicks, e.WheelDelta)) { break; }
+            }
+        }
+
         /// <summary>
         ///     Raw key message.
         /// </summary>
@@ -362,7 +417,7 @@ namespace Exomia.Framework.Game
             _state |= 0x8000000;
             int low  = LowWord(m.LParam);
             int high = HighWord(m.LParam);
-            for (int i = 0; i < _mouseWheelPipe.Count; i++)
+            for (int i = 0; i < _mouseDownPipe.Count; i++)
             {
                 if (_mouseDownPipe[i].Invoke(low, high, buttons, 1, 0))
                 {

@@ -10,12 +10,10 @@
 
 using System;
 using System.Threading;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
+using Exomia.Framework.Mathematics;
 using SharpDX;
-using MouseButtons = Exomia.Framework.Input.MouseButtons;
-using Point = System.Drawing.Point;
 
 namespace Exomia.Framework.Graphics.Camera.Controller
 {
@@ -25,12 +23,11 @@ namespace Exomia.Framework.Graphics.Camera.Controller
     public sealed class RotationController : ICameraComponent, IInitializableCameraComponent,
                                              IUpdateableCameraComponent, IInputHandler
     {
-        private const float                MOUSE_SPEED_X = 0.5f;
-        private const float                MOUSE_SPEED_Y = MOUSE_SPEED_X;
-        private const float                PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
-        private       float                _yaw, _pitch;
-        private       IWinFormsGameWindow? _window;
-        private       int                  _x, _y;
+        private const float MOUSE_SPEED_X = 1f;
+        private const float MOUSE_SPEED_Y = MOUSE_SPEED_X;
+        private const float PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
+        private       float _yaw, _pitch;
+        private       int   _x,   _y;
 
         /// <inheritdoc />
         public string Name { get; }
@@ -47,25 +44,11 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         /// <inheritdoc />
         void IInitializableCameraComponent.Initialize(IServiceRegistry registry, ICamera camera)
         {
-            _window = registry.GetService<IGameWindow>() as IWinFormsGameWindow ??
-                      throw new NullReferenceException(nameof(IWinFormsGameWindow));
             Vector3 lookAt = camera.Target - camera.Position;
             _yaw   = (float)Math.Atan2(lookAt.X, lookAt.Z);
             _pitch = (float)Math.Atan2(lookAt.Y, Math.Sqrt((lookAt.X * lookAt.X) + (lookAt.Z * lookAt.Z)));
-            _x = _window.Width / 2;
-            _y = _window.Height / 2;
-        }
-
-        /// <inheritdoc />
-        void IInputHandler.RegisterInput(IInputDevice device)
-        {
-            device.RegisterMouseMove(CameraOnMouseMove);
-        }
-
-        /// <inheritdoc />
-        void IInputHandler.UnregisterInput(IInputDevice device)
-        {
-            device.UnregisterMouseMove(CameraOnMouseMove);
+            _x     = 0;
+            _y     = 0;
         }
 
         /// <inheritdoc />
@@ -73,53 +56,66 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         {
             float x = Interlocked.Exchange(ref _x, 0);
             float y = Interlocked.Exchange(ref _y, 0);
-            
-            if (_window!.RenderForm.Focused)
-            {
-                Cursor.Position = 
-                    _window!.RenderForm.PointToScreen(
-                        new Point(_window.Width / 2, _window.Height / 2));
-            }
-            
-            if (x > 10 || x < -10) x /= 10;
-            if (y > 10 || y < -10) y /= 10;
-            
-            _yaw -= x * MOUSE_SPEED_X * gameTime.DeltaTimeS;
+
+            // ReSharper disable CompareOfFloatsByEqualityOperator
+            if (x == 0 && y == 0) { return; }
+
+            // ReSharper enable CompareOfFloatsByEqualityOperator
+
+            float invSqrt = Math2.FastInverseSqrt((x * x) + (y * y));
+
+            _yaw -= x * invSqrt * MOUSE_SPEED_X * gameTime.DeltaTimeS;
             _yaw = (float)((-MathUtil.Pi + (_yaw + MathUtil.Pi)) -
                            (MathUtil.TwoPi * Math.Floor((_yaw + MathUtil.Pi) / MathUtil.TwoPi)));
 
-            _pitch -= y * MOUSE_SPEED_Y * gameTime.DeltaTimeS;
+            _pitch -= y * invSqrt * MOUSE_SPEED_Y * gameTime.DeltaTimeS;
             if (_pitch < -PITCH_LIMIT) { _pitch     = -PITCH_LIMIT; }
             else if (_pitch > PITCH_LIMIT) { _pitch = PITCH_LIMIT; }
 
-            float  height   = (float)Math.Sin(_pitch);
-            double distance = Math.Cos(_pitch);
+            //float height   = (float)Math.Sin(_pitch);
+            //float distance = (float)Math.Cos(_pitch);
 
-            //Math2.SinCos(_pitch, out float height, out float distance);
+            Math2.SinCos(_pitch, out float height, out float distance);
 
-            float lookX = (float)(Math.Cos(_yaw) * distance);
-            float lookZ = (float)(Math.Sin(_yaw) * distance);
+            //float lookZ = (float)Math.Sin(_yaw) * distance;
+            //float lookX = (float)Math.Cos(_yaw) * distance;
 
-            //Math2.SinCos(_yaw, out float lookZ, out float lookX);
-            //lookX *= distance;
-            //lookZ *= distance;
+            Math2.SinCos(_yaw, out float lookZ, out float lookX);
+            lookX *= distance;
+            lookZ *= distance;
 
-            float strafeX = (float)(Math.Cos(_yaw + MathUtil.PiOverTwo) * distance);
-            float strafeZ = (float)(Math.Sin(_yaw + MathUtil.PiOverTwo) * distance);
+            //float strafeZ = (float)Math.Sin(_yaw + MathUtil.PiOverTwo);
+            //float strafeX = (float)Math.Cos(_yaw + MathUtil.PiOverTwo);
 
-            //Math2.SinCos(_yaw + MathUtil.PiOverTwo, out float strafeZ, out float strafeX);
+            Math2.SinCos(_yaw + MathUtil.PiOverTwo, out float strafeZ, out float strafeX);
 
-            camera.Up = Vector3.Cross(new Vector3(strafeX, 0, strafeZ), new Vector3(lookX, height, lookZ));
+            camera.Up = Vector3.Cross(
+                new Vector3(strafeX * distance, 0, strafeZ * distance), new Vector3(lookX, height, lookZ));
             camera.Target = new Vector3(
                 camera.Position.X + lookX,
                 camera.Position.Y + height,
                 camera.Position.Z + lookZ);
         }
 
-        private bool CameraOnMouseMove(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        /// <inheritdoc />
+        void IInputHandler.RegisterInput(IInputDevice device)
         {
-            Interlocked.Exchange(ref _x, x - (_window!.Width / 2));
-            Interlocked.Exchange(ref _y, y - (_window!.Height / 2));
+            device.RegisterRawMouseInput(CameraOnRawMouseInput);
+        }
+
+        /// <inheritdoc />
+        void IInputHandler.UnregisterInput(IInputDevice device)
+        {
+            device.RegisterRawMouseInput(CameraOnRawMouseInput);
+        }
+
+        private bool CameraOnRawMouseInput(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        {
+            if (x != 0 || y != 0)
+            {
+                Interlocked.Add(ref _x, x);
+                Interlocked.Add(ref _y, y);
+            }
             return false;
         }
     }

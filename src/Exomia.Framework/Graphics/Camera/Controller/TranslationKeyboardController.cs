@@ -58,58 +58,55 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         /// <inheritdoc />
         void IUpdateableCameraComponent.Update(GameTime gameTime, ICamera camera)
         {
-            Vector3 forwardVector = Vector3.Normalize(camera.Target - camera.Position);
-            Vector3 move          = Vector3.Normalize(Vector3.Cross(camera.Up, forwardVector));
-            Vector3 move2         = Vector3.Normalize(Vector3.Cross(forwardVector, move));
+            Vector3 forwardVector = camera.Target - camera.Position;
+            Vector3 move          = Vector3.Cross(camera.Up, forwardVector);
+            Vector3 move2         = Vector3.Cross(forwardVector, move);
 
             Vector3 v = Vector3.Zero;
 
             if (_keysDown.Contains((int)Keys.W))
             {
-                v += forwardVector * TRANSLATION_SPEED * gameTime.DeltaTimeS;
+                v += forwardVector;
             }
             if (_keysDown.Contains((int)Keys.S))
             {
-                v -= forwardVector * TRANSLATION_SPEED * gameTime.DeltaTimeS;
+                v -= forwardVector;
             }
 
             if (_keysDown.Contains((int)Keys.A))
             {
-                v -= move * TRANSLATION_SPEED * gameTime.DeltaTimeS;
+                v -= move;
             }
             if (_keysDown.Contains((int)Keys.D))
             {
-                v += move * TRANSLATION_SPEED * gameTime.DeltaTimeS;
+                v += move;
             }
 
             if (_keysDown.Contains((int)Keys.Space))
             {
-                v += move2 * TRANSLATION_SPEED * gameTime.DeltaTimeS;
+                v += move2;
             }
             if (_keysDown.Contains((int)Keys.ControlKey))
             {
-                v -= move2 * TRANSLATION_SPEED * gameTime.DeltaTimeS;
+                v -= move2;
             }
 
-            camera.Position += v;
+            if (v != Vector3.Zero)
+            {
+                v.Normalize();
+                v *= TRANSLATION_SPEED * gameTime.DeltaTimeS;
+
+                camera.Position += v;
+                camera.Target   += v;
+            }
         }
 
-        /// <summary>
-        ///     Camera on key down.
-        /// </summary>
-        /// <param name="keyValue">  The key value. </param>
-        /// <param name="modifiers"> The modifiers. </param>
         private bool CameraOnKeyDown(int keyValue, KeyModifier modifiers)
         {
             _keysDown.Add(keyValue);
             return false;
         }
 
-        /// <summary>
-        ///     Camera on key up.
-        /// </summary>
-        /// <param name="keyValue">  The key value. </param>
-        /// <param name="modifiers"> The modifiers. </param>
         private bool CameraOnKeyUp(int keyValue, KeyModifier modifiers)
         {
             _keysDown.Remove(keyValue);

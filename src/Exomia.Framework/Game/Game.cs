@@ -16,7 +16,6 @@ using System.Diagnostics;
 using System.Runtime;
 using System.Threading;
 using System.Windows.Forms;
-using Exomia.Framework.Components;
 using Exomia.Framework.Content;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
@@ -54,7 +53,7 @@ namespace Exomia.Framework.Game
         private readonly IInputDevice                   _inputDevice;
         private          IContentManager                _contentManager;
         private          IGameWindow                    _gameWindow;
-        private          IGraphicsDevice                _graphicsDevice;
+        private          GraphicsDevice                 _graphicsDevice;
         private          bool                           _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
         /// <summary>
@@ -163,11 +162,9 @@ namespace Exomia.Framework.Game
             _gameWindow           = gameWindow;
             _gameWindowInitialize = gameWindow;
 
-            _graphicsDevice = new GraphicsDevice();
+            _serviceRegistry.AddService<IGraphicsDevice>(_graphicsDevice = new GraphicsDevice());
             _contentManager = new ContentManager(_serviceRegistry);
 
-            _serviceRegistry.AddService(_serviceRegistry);
-            _serviceRegistry.AddService(_graphicsDevice);
             _serviceRegistry.AddService(_contentManager);
             _serviceRegistry.AddService(_gameWindow);
             _serviceRegistry.AddService(_inputDevice = gameWindow.RenderForm);
@@ -182,15 +179,6 @@ namespace Exomia.Framework.Game
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
             _collector = new DisposeCollector();
-
-#if DEBUG
-            DrawableComponent component = new DebugComponent { ShowFullInformation = true };
-            component.Enabled     = true;
-            component.Visible     = true;
-            component.DrawOrder   = 0;
-            component.UpdateOrder = 0;
-            Add(component);
-#endif
         }
 
         /// <summary>

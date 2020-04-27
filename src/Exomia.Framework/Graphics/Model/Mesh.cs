@@ -27,7 +27,7 @@ namespace Exomia.Framework.Graphics.Model
         ///     The mesh.
         /// </summary>
         public readonly uint[] Indices;
-        
+
         /// <summary>
         ///     The texture.
         /// </summary>
@@ -49,7 +49,7 @@ namespace Exomia.Framework.Graphics.Model
         {
             Vertices = vertices;
             Indices  = indices;
-            Texture = texture;
+            Texture  = texture;
             Material = material;
         }
 
@@ -65,7 +65,7 @@ namespace Exomia.Framework.Graphics.Model
         public static Mesh FromObj(Obj obj, Texture texture, Material material)
         {
             List<PositionNormalTexture2D> vertices = new List<PositionNormalTexture2D>();
-            List<uint>                  indices  = new List<uint>();
+            List<uint>                    indices  = new List<uint>();
 
             uint index = 0;
             foreach (Obj.Face face in obj.Faces)
@@ -167,14 +167,14 @@ namespace Exomia.Framework.Graphics.Model
             /// <param name="u">  The texture u. </param>
             /// <param name="v">  The texture v. </param>
             public PositionNormalTexture2D(float x,
-                                         float y,
-                                         float z,
-                                         float w,
-                                         float nx,
-                                         float ny,
-                                         float nz,
-                                         float u,
-                                         float v)
+                                           float y,
+                                           float z,
+                                           float w,
+                                           float nx,
+                                           float ny,
+                                           float nz,
+                                           float u,
+                                           float v)
             {
                 X  = x;
                 Y  = y;

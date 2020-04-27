@@ -39,7 +39,7 @@ namespace Exomia.Framework.Graphics.Model
         public readonly float Shininess;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Mesh"/> class.
+        ///     Initializes a new instance of the <see cref="Mesh" /> class.
         /// </summary>
         /// <param name="ambient">   The ambient. </param>
         /// <param name="diffuse">   The diffuse. </param>
@@ -52,5 +52,5 @@ namespace Exomia.Framework.Graphics.Model
             Specular  = specular;
             Shininess = shininess;
         }
-    };
+    }
 }

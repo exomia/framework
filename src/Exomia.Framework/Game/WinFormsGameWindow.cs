@@ -121,8 +121,14 @@ namespace Exomia.Framework.Game
 
             if (!parameters.IsMouseVisible)
             {
-                _renderForm.MouseEnter += (sender, e) => { Cursor.Hide(); };
-                _renderForm.MouseLeave += (sender, e) => { Cursor.Show(); };
+                _renderForm.MouseEnter += (sender, e) =>
+                {
+                    Cursor.Hide();
+                };
+                _renderForm.MouseLeave += (sender, e) =>
+                {
+                    Cursor.Show();
+                };
             }
 
             while (!_renderForm.IsHandleCreated)

@@ -1,4 +1,14 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
 using Exomia.Framework.Game;
 
 namespace Exomia.Framework.Components
@@ -10,29 +20,26 @@ namespace Exomia.Framework.Components
     {
         private readonly string _modelAsset;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Model3DViewerComponent(string modelAsset, string name)
             : base(name)
         {
             _modelAsset = modelAsset;
         }
 
-        /// <inheritdoc/>
-        protected override void OnLoadContent(IServiceRegistry registry)
-        {
-            
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void Draw(GameTime gameTime)
         {
             throw new NotImplementedException();
         }
+
+        /// <inheritdoc />
+        protected override void OnLoadContent(IServiceRegistry registry) { }
     }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework", "src\Exomia.Framework\Exomia.Framework.csproj", "{2311CF3A-095C-49B0-BBEA-FC3892E9134E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exomia.Framework.Example", "examples\Exomia.Framework.Example\Exomia.Framework.Example.csproj", "{C673179F-457C-4AE9-B61E-0481343E8A35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.Example", "examples\Exomia.Framework.Example\Exomia.Framework.Example.csproj", "{C673179F-457C-4AE9-B61E-0481343E8A35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

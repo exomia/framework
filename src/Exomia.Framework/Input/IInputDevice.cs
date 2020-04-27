@@ -76,6 +76,21 @@ namespace Exomia.Framework.Input
         void RegisterKeyDown(KeyEventHandler handler, int position = -1);
 
         /// <summary>
+        ///     Registers the raw mouse input.
+        /// </summary>
+        /// <param name="handler">  The handler. </param>
+        /// <param name="position"> (Optional) The position. </param>
+        /// <remarks>
+        ///     <para>
+        ///         <paramref name="position" /> a negative index inserts the handler from the back
+        ///     </para>
+        ///     <para>
+        ///         <paramref name="position" /> a positive index inserts the handler from the start
+        ///     </para>
+        /// </remarks>
+        void RegisterRawMouseInput(MouseEventHandler handler, int position = -1);
+
+        /// <summary>
         ///     Registers the mouse down.
         /// </summary>
         /// <param name="handler">  The handler. </param>
@@ -173,6 +188,12 @@ namespace Exomia.Framework.Input
         /// </summary>
         /// <param name="handler"> The handler. </param>
         void UnregisterKeyDown(KeyEventHandler handler);
+
+        /// <summary>
+        ///     Unregister the raw mouse input described by handler.
+        /// </summary>
+        /// <param name="handler"> The handler. </param>
+        void UnregisterRawMouseInput(MouseEventHandler handler);
 
         /// <summary>
         ///     Unregister the mouse down described by handler.

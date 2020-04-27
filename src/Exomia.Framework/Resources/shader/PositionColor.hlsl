@@ -5,21 +5,21 @@
  *  ps PSMain ps_5_0 OptimizationLevel3
  */
 
-cbuffer PerFrame			: register(b0)
+cbuffer PerFrame : register(b0)
 {
-	float4x4 g_WorldViewProjectionMatrix;
+float4x4 g_WorldViewProjectionMatrix;
 };
 
 struct VertexShaderInput
 {
-	float4 Position		: SV_POSITION0;
-	float4 Color		: COLOR0;
+	float4 Position : SV_POSITION0;
+	float4 Color : COLOR0;
 };
 
 struct VertexShaderOutput
 {
-	float4 Position		: SV_POSITION0;
-	float4 Color		: COLOR0;
+	float4 Position : SV_POSITION0;
+	float4 Color : COLOR0;
 };
 
 VertexShaderOutput VSMain(VertexShaderInput input)

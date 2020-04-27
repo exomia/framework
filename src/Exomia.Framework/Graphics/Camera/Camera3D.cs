@@ -21,14 +21,10 @@ namespace Exomia.Framework.Graphics.Camera
     /// </summary>
     public sealed class Camera3D : ICamera, IDisposable
     {
-        /// <summary>
-        ///     Occurs when Enabled Changed.
-        /// </summary>
+        /// <inheritdoc />
         public event EventHandler? EnabledChanged;
 
-        /// <summary>
-        ///     Occurs when Update Order Changed.
-        /// </summary>
+        /// <inheritdoc />
         public event EventHandler? UpdateOrderChanged;
 
         /// <inheritdoc />
@@ -111,7 +107,6 @@ namespace Exomia.Framework.Graphics.Camera
                 {
                     _position        = value;
                     _viewMatrixDirty = true;
-
                     PositionChanged?.Invoke(this);
                 }
             }
@@ -163,25 +158,89 @@ namespace Exomia.Framework.Graphics.Camera
         /// <summary>
         ///     Initializes a new instance of the <see cref="Camera3D" /> class.
         /// </summary>
-        public Camera3D(Vector3 position,
-                        Vector3 target,
-                        Vector3 up,
-                        float   aspectRatio,
-                        float   fieldOfView = MathUtil.PiOverFour,
-                        float   zNear       = 0.1f,
-                        float   zFar        = 10000f)
-        {
-            _components                 = new List<ICameraComponent>();
-            _updateableCameraComponents = new List<IUpdateableCameraComponent>();
+        /// <param name="position">    The position. </param>
+        /// <param name="target">      Target for the. </param>
+        /// <param name="up">          The up. </param>
+        /// <param name="aspectRatio"> The aspect ratio. </param>
+        /// <param name="components">  A variable-length parameters list containing components. </param>
+        public Camera3D(Vector3                   position,
+                        Vector3                   target,
+                        Vector3                   up,
+                        float                     aspectRatio,
+                        params ICameraComponent[] components)
+            : this(position, target, up, aspectRatio, MathUtil.PiOverFour, 0.1f, 10000f, components) { }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Camera3D" /> class.
+        /// </summary>
+        /// <param name="position">    The position. </param>
+        /// <param name="target">      Target for the. </param>
+        /// <param name="up">          The up. </param>
+        /// <param name="aspectRatio"> The aspect ratio. </param>
+        /// <param name="fieldOfView"> The field of view. </param>
+        /// <param name="components">  A variable-length parameters list containing components. </param>
+        public Camera3D(Vector3                   position,
+                        Vector3                   target,
+                        Vector3                   up,
+                        float                     aspectRatio,
+                        float                     fieldOfView,
+                        params ICameraComponent[] components)
+            : this(position, target, up, aspectRatio, fieldOfView, 0.1f, 10000f, components) { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Camera3D" /> class.
+        /// </summary>
+        /// <param name="position">    The position. </param>
+        /// <param name="target">      Target for the. </param>
+        /// <param name="up">          The up. </param>
+        /// <param name="aspectRatio"> The aspect ratio. </param>
+        /// <param name="zNear">       The near. </param>
+        /// <param name="zFar">        The far. </param>
+        /// <param name="components">  A variable-length parameters list containing components. </param>
+        public Camera3D(Vector3                   position,
+                        Vector3                   target,
+                        Vector3                   up,
+                        float                     aspectRatio,
+                        float                     zNear,
+                        float                     zFar,
+                        params ICameraComponent[] components)
+            : this(position, target, up, aspectRatio, MathUtil.PiOverFour, zNear, zFar, components) { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Camera3D" /> class.
+        /// </summary>
+        /// <param name="position">    The position. </param>
+        /// <param name="target">      Target for the. </param>
+        /// <param name="up">          The up. </param>
+        /// <param name="aspectRatio"> The aspect ratio. </param>
+        /// <param name="fieldOfView"> The field of view. </param>
+        /// <param name="zNear">       The near. </param>
+        /// <param name="zFar">        The far. </param>
+        /// <param name="components">  A variable-length parameters list containing components. </param>
+        public Camera3D(Vector3                   position,
+                        Vector3                   target,
+                        Vector3                   up,
+                        float                     aspectRatio,
+                        float                     fieldOfView,
+                        float                     zNear,
+                        float                     zFar,
+                        params ICameraComponent[] components)
+        {
             _position = position;
             _target   = target;
             _up       = up;
 
             _projectionMatrix = Matrix.PerspectiveFovLH(fieldOfView, aspectRatio, zNear, zFar);
-            _viewMatrix       = Matrix.LookAtLH(_position, _target, _up);
 
             _frustum = new BoundingFrustum(_viewMatrix * _projectionMatrix);
+
+            _components                 = new List<ICameraComponent>(components.Length);
+            _updateableCameraComponents = new List<IUpdateableCameraComponent>(components.Length);
+
+            foreach (ICameraComponent component in components)
+            {
+                AddComponent(component);
+            }
         }
 
         /// <inheritdoc />

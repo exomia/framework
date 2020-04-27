@@ -5,26 +5,26 @@
  *  ps PSMain ps_5_0 OptimizationLevel3
  */
 
-Texture2D g_Texture			: register(t0);
-SamplerState g_Sampler		: register(s0);
+Texture2D g_Texture : register(t0);
+SamplerState g_Sampler : register(s0);
 
-cbuffer PerFrame			: register(b0)
+cbuffer PerFrame : register(b0)
 {
-	float4x4 g_WorldViewProjectionMatrix;
+float4x4 g_WorldViewProjectionMatrix;
 };
 
 struct VertexShaderInput
 {
-	float4 Position		: SV_POSITION0;
-	float4 Color		: COLOR0;
-	float2 TextureUV	: TEXCOORD0;
+	float4 Position : SV_POSITION0;
+	float4 Color : COLOR0;
+	float2 TextureUV : TEXCOORD0;
 };
 
 struct VertexShaderOutput
 {
-	float4 Position		: SV_POSITION0;
-	float4 Color		: COLOR0;
-	float2 TextureUV	: TEXCOORD0;
+	float4 Position : SV_POSITION0;
+	float4 Color : COLOR0;
+	float2 TextureUV : TEXCOORD0;
 };
 
 VertexShaderOutput VSMain(VertexShaderInput input)

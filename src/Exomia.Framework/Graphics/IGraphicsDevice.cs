@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Game;
 using SharpDX;
 using SharpDX.Direct3D11;
@@ -20,7 +19,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     Interface for graphics device.
     /// </summary>
-    public interface IGraphicsDevice : IDisposable
+    public interface IGraphicsDevice
     {
         /// <summary>
         ///     Occurs when Resize Finished.
@@ -106,25 +105,6 @@ namespace Exomia.Framework.Graphics
         ///     True if synchronise, false if not.
         /// </value>
         bool VSync { get; set; }
-
-        /// <summary>
-        ///     Initializes this object.
-        /// </summary>
-        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
-        void Initialize(ref GameGraphicsParameters parameters);
-
-        /// <summary>
-        ///     Begins a frame.
-        /// </summary>
-        /// <returns>
-        ///     True if it succeeds, false if it fails.
-        /// </returns>
-        bool BeginFrame();
-
-        /// <summary>
-        ///     Ends a frame.
-        /// </summary>
-        void EndFrame();
 
         /// <summary>
         ///     Clears this object to its blank/initial state.

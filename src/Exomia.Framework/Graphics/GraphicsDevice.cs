@@ -22,7 +22,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     The graphics device. This class cannot be inherited.
     /// </summary>
-    public sealed class GraphicsDevice : IGraphicsDevice
+    sealed class GraphicsDevice : IGraphicsDevice, IDisposable
     {
         private static readonly FeatureLevel[] s_featureLevels =
         {
@@ -105,17 +105,6 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <inheritdoc />
-        public bool BeginFrame()
-        {
-            if (_needResize)
-            {
-                _needResize = false;
-                Resize(_resizeParameters);
-            }
-            return IsInitialized;
-        }
-
-        /// <inheritdoc />
         public void Clear()
         {
             lock (_d3DDevice5!)
@@ -138,18 +127,84 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <inheritdoc />
-        public void EndFrame()
-        {
-            _swapChain4!.Present(_vSync, PresentFlags.None);
-        }
-
-        /// <inheritdoc />
         public bool GetFullscreenState()
         {
             return _swapChain4!.IsFullScreen;
         }
 
         /// <inheritdoc />
+        public void Resize(ref GameGraphicsParameters parameters)
+        {
+            _resizeParameters = new ResizeParameters
+            {
+                BufferCount    = parameters.BufferCount,
+                Width          = parameters.Width,
+                Height         = parameters.Height,
+                SwapChainFlags = parameters.SwapChainFlags
+            };
+            _needResize = true;
+        }
+
+        /// <inheritdoc />
+        public void Resize(int width, int height)
+        {
+            _resizeParameters = new ResizeParameters
+            {
+                BufferCount    = _swapChain4!.Description1.BufferCount,
+                Width          = width,
+                Height         = height,
+                SwapChainFlags = _swapChain4.Description1.Flags
+            };
+            _needResize = true;
+        }
+
+        /// <inheritdoc />
+        public void SetFullscreenState(bool state, Output? output = null)
+        {
+            if (_swapChain4!.IsFullScreen != state)
+            {
+                _swapChain4.SetFullscreenState(state, output);
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetRenderTarget(RenderTargetView1? target)
+        {
+            lock (_d3DDevice5!)
+            {
+                _currentRenderView = target ?? _renderView1;
+                _d3DDeviceContext!.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
+            }
+        }
+
+        /// <summary>
+        ///     Begins a frame.
+        /// </summary>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        public bool BeginFrame()
+        {
+            if (_needResize)
+            {
+                _needResize = false;
+                Resize(_resizeParameters);
+            }
+            return IsInitialized;
+        }
+
+        /// <summary>
+        ///     Ends a frame.
+        /// </summary>
+        public void EndFrame()
+        {
+            _swapChain4!.Present(_vSync, PresentFlags.None);
+        }
+
+        /// <summary>
+        ///     Initializes this object.
+        /// </summary>
+        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         public void Initialize(ref GameGraphicsParameters parameters)
         {
             if (IsInitialized) { return; }
@@ -294,55 +349,6 @@ namespace Exomia.Framework.Graphics
             IsInitialized = true;
         }
 
-        /// <inheritdoc />
-        public void Resize(ref GameGraphicsParameters parameters)
-        {
-            _resizeParameters = new ResizeParameters
-            {
-                BufferCount    = parameters.BufferCount,
-                Width          = parameters.Width,
-                Height         = parameters.Height,
-                SwapChainFlags = parameters.SwapChainFlags
-            };
-            _needResize = true;
-        }
-
-        /// <inheritdoc />
-        public void Resize(int width, int height)
-        {
-            _resizeParameters = new ResizeParameters
-            {
-                BufferCount    = _swapChain4!.Description1.BufferCount,
-                Width          = width,
-                Height         = height,
-                SwapChainFlags = _swapChain4.Description1.Flags
-            };
-            _needResize = true;
-        }
-
-        /// <inheritdoc />
-        public void SetFullscreenState(bool state, Output? output = null)
-        {
-            if (_swapChain4!.IsFullScreen != state)
-            {
-                _swapChain4.SetFullscreenState(state, output);
-            }
-        }
-
-        /// <inheritdoc />
-        public void SetRenderTarget(RenderTargetView1? target)
-        {
-            lock (_d3DDevice5!)
-            {
-                _currentRenderView = target ?? _renderView1;
-                _d3DDeviceContext!.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
-            }
-        }
-
-        /// <summary>
-        ///     Resizes the given arguments.
-        /// </summary>
-        /// <param name="args"> The arguments. </param>
         private void Resize(ResizeParameters args)
         {
             lock (_d3DDevice5!)
@@ -398,9 +404,6 @@ namespace Exomia.Framework.Graphics
             ResizeFinished?.Invoke(Viewport);
         }
 
-        /// <summary>
-        ///     A resize parameters.
-        /// </summary>
         private struct ResizeParameters
         {
             /// <summary>
@@ -431,14 +434,6 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
-        ///     unmanaged/managed resources.
-        /// </summary>
-        /// <param name="disposing">
-        ///     True to release both managed and unmanaged resources; false to
-        ///     release only unmanaged resources.
-        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
