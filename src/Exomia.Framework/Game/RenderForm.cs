@@ -65,61 +65,61 @@ namespace Exomia.Framework.Game
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position = -1)
+        void IInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
         {
             _rawKeyPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterKeyUp(KeyEventHandler handler, int position = -1)
+        void IInputDevice.RegisterKeyUp(KeyEventHandler handler, int position)
         {
             _keyUpPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterKeyPress(KeyPressEventHandler handler, int position = -1)
+        void IInputDevice.RegisterKeyPress(KeyPressEventHandler handler, int position)
         {
             _keyPressPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterKeyDown(KeyEventHandler handler, int position = -1)
+        void IInputDevice.RegisterKeyDown(KeyEventHandler handler, int position)
         {
             _keyDownPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterMouseDown(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseDown(MouseEventHandler handler, int position)
         {
             _mouseDownPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterMouseUp(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseUp(MouseEventHandler handler, int position)
         {
             _mouseUpPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterMouseClick(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseClick(MouseEventHandler handler, int position)
         {
             _mouseClickPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterMouseMove(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseMove(MouseEventHandler handler, int position)
         {
             _mouseMovePipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterRawMouseInput(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterRawMouseInput(MouseEventHandler handler, int position)
         {
             _mouseRawInputPipe.Register(handler, position);
         }
 
         /// <inheritdoc />
-        void IInputDevice.RegisterMouseWheel(MouseEventHandler handler, int position = -1)
+        void IInputDevice.RegisterMouseWheel(MouseEventHandler handler, int position)
         {
             _mouseWheelPipe.Register(handler, position);
         }
