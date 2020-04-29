@@ -29,7 +29,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void AddService(Type type, object provider)
+        public object AddService(Type type, object provider)
         {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
             if (provider == null) { throw new ArgumentNullException(nameof(provider)); }
@@ -48,12 +48,14 @@ namespace Exomia.Framework
                 }
                 _registeredServices.Add(type, provider);
             }
+
+            return provider;
         }
 
         /// <inheritdoc />
-        public void AddService<T>(T provider)
+        public T AddService<T>(T provider)
         {
-            AddService(typeof(T), provider!);
+            return (T)AddService(typeof(T), provider!);
         }
 
         /// <inheritdoc />

@@ -12,7 +12,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using SharpDX;
+using Exomia.Framework.Native;
 
 namespace Exomia.Framework.Game
 {
@@ -21,7 +21,7 @@ namespace Exomia.Framework.Game
     /// </summary>
     public sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
     {
-        private RenderForm _renderForm;
+        private readonly RenderForm _renderForm;
 
         /// <summary>
         ///     Gets the width.
@@ -77,7 +77,10 @@ namespace Exomia.Framework.Game
         /// <param name="title"> The title. </param>
         public WinFormsGameWindow(string title)
         {
-            _renderForm = new RenderForm(title) { FormBorderStyle = FormBorderStyle.FixedSingle };
+            _renderForm = new RenderForm(title)
+            {
+                StartPosition = FormStartPosition.Manual, Location = Point.Empty, AutoScaleMode = AutoScaleMode.None
+            };
         }
 
         /// <summary>
@@ -115,29 +118,73 @@ namespace Exomia.Framework.Game
         {
             if (IsInitialized) { return; }
 
-            _renderForm.ClientSize = new Size(Width = parameters.Width, Height = parameters.Height);
+            _renderForm.WindowState = parameters.DisplayType == DisplayType.FullscreenWindow
+                ? FormWindowState.Maximized
+                : FormWindowState.Normal;
+
+            _renderForm.IsFullscreen = parameters.DisplayType == DisplayType.Fullscreen;
+            _renderForm.FormBorderStyle = parameters.DisplayType == DisplayType.Window
+                ? FormBorderStyle.Fixed3D
+                : FormBorderStyle.None;
+
             _renderForm.Show();
             _renderForm.Activate();
 
-            if (!parameters.IsMouseVisible)
-            {
-                _renderForm.MouseEnter += (sender, e) =>
-                {
-                    Cursor.Hide();
-                };
-                _renderForm.MouseLeave += (sender, e) =>
-                {
-                    Cursor.Show();
-                };
-            }
-
             while (!_renderForm.IsHandleCreated)
             {
-                Thread.Sleep(16);
+                Thread.Sleep(1);
                 Application.DoEvents();
             }
 
             parameters.Handle = _renderForm.Handle;
+
+            if (parameters.DisplayType == DisplayType.FullscreenWindow)
+            {
+                parameters.Width  = Width  = _renderForm.ClientSize.Width;
+                parameters.Height = Height = _renderForm.ClientSize.Height;
+            }
+            else
+            {
+                Resize(parameters.Width, parameters.Height);
+            }
+
+            bool isMouseVisible = parameters.IsMouseVisible;
+            bool clipCursor     = parameters.ClipCursor;
+
+            _renderForm.MouseEnter += (sender, e) =>
+            {
+                if (!isMouseVisible)
+                {
+                    Cursor.Hide();
+                }
+                if (clipCursor)
+                {
+                    User32.RECT rect = new User32.RECT(Width, Height);
+                    if (User32.ClientToScreen(_renderForm.Handle, ref rect.LeftTop) &&
+                        User32.ClientToScreen(_renderForm.Handle, ref rect.RightBottom))
+                    {
+                        User32.ClipCursor(ref rect);
+                    }
+                }
+            };
+
+            _renderForm.MouseLeave += (sender, e) =>
+            {
+                if (!isMouseVisible)
+                {
+                    Cursor.Show();
+                }
+            };
+
+            if (clipCursor)
+            {
+                User32.RECT rect = new User32.RECT(Width, Height);
+                if (User32.ClientToScreen(_renderForm.Handle, ref rect.LeftTop) &&
+                    User32.ClientToScreen(_renderForm.Handle, ref rect.RightBottom))
+                {
+                    User32.ClipCursor(ref rect);
+                }
+            }
 
             IsInitialized = true;
         }
@@ -163,8 +210,7 @@ namespace Exomia.Framework.Game
             {
                 if (disposing)
                 {
-                    /* USER CODE */
-                    Utilities.Dispose(ref _renderForm);
+                    _renderForm.Dispose();
                 }
                 _disposed = true;
             }

@@ -146,8 +146,7 @@ namespace Exomia.Framework.Components
                 _fpsInfo =
 
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
-                _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
+                    $"{_gpuName}\nFPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
                 _maxFrameTime = 0;
                 _firstCalc    = true;
             }
@@ -177,13 +176,14 @@ namespace Exomia.Framework.Components
             _ramPerformanceCounter1 = new PerformanceCounter(nameof(Process), "Working Set", pName, true);
             _totalMemoryBytes       = (long)_ramPerformanceCounter1.NextValue();
 
-            _spriteBatch = new SpriteBatch(registry.GetService<IGraphicsDevice>());
+            IGraphicsDevice graphicsDevice = registry.GetService<IGraphicsDevice>();
+            _spriteBatch = new SpriteBatch(graphicsDevice);
 
             _position1 = new Vector2(10, 20);
             _position2 = new Vector2(10, 80);
 
             Diagnostic.Diagnostic.GetCpuProperty(nameof(Name), out _cpuName);
-            Diagnostic.Diagnostic.GetGpuProperty(nameof(Name), out _gpuName);
+            _gpuName = graphicsDevice.Adapter.Desc3.Description;
         }
 
         /// <inheritdoc />

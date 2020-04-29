@@ -9,13 +9,33 @@
 #endregion
 
 using System;
-using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
 namespace Exomia.Framework.Game
 {
+    /// <summary>
+    ///     Values that represent DisplayType.
+    /// </summary>
+    public enum DisplayType
+    {
+        /// <summary>
+        ///     An enum constant representing the fullscreen option.
+        /// </summary>
+        Fullscreen = 1 << 0,
+
+        /// <summary>
+        ///     An enum constant representing the window option.
+        /// </summary>
+        Window = 1 << 1,
+
+        /// <summary>
+        ///     An enum constant representing the fullscreen window option.
+        /// </summary>
+        FullscreenWindow = 1 << 2,
+    }
+
     /// <summary>
     ///     GameGraphicsParameters struct.
     /// </summary>
@@ -24,7 +44,7 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     Define the width of the game Window.
         /// </summary>
-        public IntPtr Handle;
+        internal IntPtr Handle;
 
         /// <summary>
         ///     Define the width of the game Window.
@@ -47,14 +67,19 @@ namespace Exomia.Framework.Game
         public bool UseVSync;
 
         /// <summary>
-        ///     Define if the game is in window mode.
+        ///     Define if the game is in full screen whether windowed or not.
         /// </summary>
-        public bool IsWindowed;
+        public DisplayType DisplayType;
 
         /// <summary>
         ///     Define if the default mouse is in visible.
         /// </summary>
         public bool IsMouseVisible;
+
+        /// <summary>
+        ///     True to clip cursor.
+        /// </summary>
+        public bool ClipCursor;
 
         /// <summary>
         ///     Define if the buffer count.
@@ -97,11 +122,6 @@ namespace Exomia.Framework.Game
         public Format Format;
 
         /// <summary>
-        ///     Define the D2D1.BitmapOptions.
-        /// </summary>
-        public Vector2 DPI;
-
-        /// <summary>
         ///     enables the multi sampling.
         /// </summary>
         public bool EnableMultiSampling;
@@ -110,5 +130,15 @@ namespace Exomia.Framework.Game
         ///     define the multi sample count.
         /// </summary>
         public MultiSampleCount MultiSampleCount;
+
+        /// <summary>
+        ///     The adapter luid.
+        /// </summary>
+        public long AdapterLuid;
+
+        /// <summary>
+        ///     The output index.
+        /// </summary>
+        public int OutputIndex;
     }
 }

@@ -51,9 +51,9 @@ namespace Exomia.Framework.Game
         private readonly DisposeCollector               _collector;
         private readonly IGameWindowInitialize          _gameWindowInitialize;
         private readonly IInputDevice                   _inputDevice;
-        private          IContentManager                _contentManager;
-        private          IGameWindow                    _gameWindow;
-        private          GraphicsDevice                 _graphicsDevice;
+        private readonly IContentManager                _contentManager;
+        private readonly IGameWindow                    _gameWindow;
+        private readonly GraphicsDevice                 _graphicsDevice;
         private          bool                           _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
         /// <summary>
@@ -148,26 +148,6 @@ namespace Exomia.Framework.Game
         protected Game(string title = "", GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
         {
             GCSettings.LatencyMode = gcLatencyMode;
-#if DEBUG
-            /*string info = "";
-            Diagnostic.DSDiagnostic.GetCPUInformation(out info);
-            Console.WriteLine(info);
-            Diagnostic.DSDiagnostic.GetGPUInformation(out info);
-            Console.WriteLine(info);*/
-#endif
-
-            _serviceRegistry = new ServiceRegistry();
-
-            WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
-            _gameWindow           = gameWindow;
-            _gameWindowInitialize = gameWindow;
-
-            _serviceRegistry.AddService<IGraphicsDevice>(_graphicsDevice = new GraphicsDevice());
-            _contentManager = new ContentManager(_serviceRegistry);
-
-            _serviceRegistry.AddService(_contentManager);
-            _serviceRegistry.AddService(_gameWindow);
-            _serviceRegistry.AddService(_inputDevice = gameWindow.RenderForm);
 
             _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
             _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
@@ -178,7 +158,16 @@ namespace Exomia.Framework.Game
             _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
 
-            _collector = new DisposeCollector();
+            _collector       = new DisposeCollector();
+            _serviceRegistry = new ServiceRegistry();
+
+            WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
+            _gameWindowInitialize = gameWindow;
+            _serviceRegistry.AddService(_gameWindow = gameWindow);
+
+            _serviceRegistry.AddService<IGraphicsDevice>(_graphicsDevice = new GraphicsDevice());
+            _serviceRegistry.AddService(_contentManager                  = new ContentManager(_serviceRegistry));
+            _serviceRegistry.AddService(_inputDevice                     = gameWindow.RenderForm);
         }
 
         /// <summary>
@@ -258,6 +247,7 @@ namespace Exomia.Framework.Game
             }
 
             // ReSharper disable once InconsistentlySynchronizedField
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (item is IDrawable drawable && !_drawableComponent.Contains(drawable))
             {
                 lock (_drawableComponent)
@@ -375,7 +365,7 @@ namespace Exomia.Framework.Game
         {
             if (_isRunning)
             {
-                throw new InvalidOperationException("Can't run this instance while it is already running");
+                throw new InvalidOperationException("Can't run this instance while it is already running.");
             }
 
             _isRunning = true;
@@ -543,12 +533,11 @@ namespace Exomia.Framework.Game
                 DeviceCreationFlags =
                     DeviceCreationFlags.BgraSupport,
 #endif
-                DPI                    = new Vector2(96.0f, 96.0f),
                 DriverType             = DriverType.Hardware,
                 Format                 = Format.B8G8R8A8_UNorm,
                 Width                  = 1024,
                 Height                 = 768,
-                IsWindowed             = true,
+                DisplayType            = DisplayType.Window,
                 IsMouseVisible         = false,
                 Rational               = new Rational(60, 1),
                 SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
@@ -557,7 +546,10 @@ namespace Exomia.Framework.Game
                 UseVSync               = false,
                 WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
                 EnableMultiSampling    = false,
-                MultiSampleCount       = MultiSampleCount.None
+                MultiSampleCount       = MultiSampleCount.None,
+                AdapterLuid            = -1,
+                OutputIndex            = -1,
+                ClipCursor             = true
             };
 
             OnInitializeGameGraphicsParameters(ref parameters);
@@ -892,9 +884,9 @@ namespace Exomia.Framework.Game
                     _gameComponents.Clear();
                     _pendingInitializables.Clear();
 
-                    Utilities.Dispose(ref _contentManager);
-                    Utilities.Dispose(ref _graphicsDevice);
-                    Utilities.Dispose(ref _gameWindow);
+                    _contentManager.Dispose();
+                    _graphicsDevice.Dispose();
+                    _gameWindow.Dispose();
                 }
                 _collector.DisposeAndClear(disposing);
 

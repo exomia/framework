@@ -22,18 +22,24 @@ namespace Exomia.Framework
         /// </summary>
         /// <param name="type">     The type of service to add. </param>
         /// <param name="provider"> The instance of the service provider to add. </param>
+        /// <returns>
+        ///     The <paramref name="provider" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException"> Service type cannot be null. </exception>
         /// <exception cref="ArgumentException">     Service is already registered. </exception>
-        void AddService(Type type, object provider);
+        object AddService(Type type, object provider);
 
         /// <summary>
         ///     Adds a service to this service provider.
         /// </summary>
         /// <typeparam name="T"> The type of the service to add. </typeparam>
         /// <param name="provider"> The instance of the service provider to add. </param>
+        /// <returns>
+        ///     The <paramref name="provider" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException"> Service type cannot be null. </exception>
         /// <exception cref="ArgumentException">     Service is already registered. </exception>
-        void AddService<T>(T provider);
+        T AddService<T>(T provider);
 
         /// <summary>
         ///     Gets the service object of specified type.
