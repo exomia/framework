@@ -12,8 +12,6 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 
-#pragma warning disable CS1591
-
 namespace Exomia.Framework.Buffers
 {
     /// <summary>

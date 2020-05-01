@@ -103,7 +103,7 @@ namespace Exomia.Framework
         /// </exception>
         public static Creator<TRes> GetCreator<TRes>(params Type[] constructorParameters)
         {
-            if (constructorParameters == null) { constructorParameters = Type.EmptyTypes; }
+            constructorParameters ??= Type.EmptyTypes;
 
             ParameterExpression param           = Expression.Parameter(typeof(object[]));
             Expression[]        argsExpressions = new Expression[constructorParameters.Length];

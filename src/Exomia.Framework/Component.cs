@@ -8,8 +8,6 @@
 
 #endregion
 
-#pragma warning disable IDE0069
-
 using System;
 using Exomia.Framework.Game;
 using SharpDX;
