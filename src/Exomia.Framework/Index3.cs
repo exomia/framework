@@ -109,7 +109,7 @@ namespace Exomia.Framework
         ///     <c>false</c> otherwise.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(in Index3 other)
+        public readonly bool Equals(in Index3 other)
         {
             return
                 X == other.X &&
@@ -119,7 +119,7 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object value)
+        public override readonly bool Equals(object value)
         {
             if (value is Index3 other)
             {
@@ -129,7 +129,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             unchecked
             {
@@ -142,7 +142,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
@@ -156,7 +156,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             if (format == null)
             {
@@ -178,7 +178,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public string ToString(IFormatProvider formatProvider)
+        public readonly string ToString(IFormatProvider formatProvider)
         {
             return string.Format(
                 formatProvider,
@@ -194,7 +194,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="T:System.String" /> that represents this instance.
         /// </returns>
-        public string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
             {
@@ -216,7 +216,7 @@ namespace Exomia.Framework
         ///     The length of the index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Length()
+        public readonly double Length()
         {
             return Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
         }
@@ -228,7 +228,7 @@ namespace Exomia.Framework
         ///     The squared length of the index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LengthSquared()
+        public readonly int LengthSquared()
         {
             return (X * X) + (Y * Y) + (Z * Z);
         }

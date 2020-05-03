@@ -83,7 +83,7 @@ namespace Exomia.Framework
         ///     <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(in Index2 other)
+        public readonly bool Equals(in Index2 other)
         {
             return
                 X == other.X &&
@@ -92,7 +92,7 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object value)
+        public override readonly bool Equals(object value)
         {
             if (value is Index2 other)
             {
@@ -102,7 +102,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             unchecked
             {
@@ -114,7 +114,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
@@ -128,7 +128,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             if (format == null)
             {
@@ -149,7 +149,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public string ToString(IFormatProvider formatProvider)
+        public readonly string ToString(IFormatProvider formatProvider)
         {
             return string.Format(
                 formatProvider,
@@ -157,7 +157,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
             {
@@ -178,7 +178,7 @@ namespace Exomia.Framework
         ///     The length of the index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Length()
+        public readonly float Length()
         {
             return (float)Math.Sqrt((X * X) + (Y * Y));
         }
@@ -190,7 +190,7 @@ namespace Exomia.Framework
         ///     The squared length of the index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LengthSquared()
+        public readonly int LengthSquared()
         {
             return (X * X) + (Y * Y);
         }
@@ -213,7 +213,7 @@ namespace Exomia.Framework
         /// <param name="left">  The first index to add. </param>
         /// <param name="right"> The second index to add. </param>
         /// <returns>
-        ///     The sum of the two indexs.
+        ///     The sum of the two indices.
         /// </returns>
         public static Index2 Add(in Index2 left, in Index2 right)
         {
@@ -854,6 +854,32 @@ namespace Exomia.Framework
         public static implicit operator Index2(int value)
         {
             return new Index2(value, value);
+        }
+
+        /// <summary>
+        ///     Performs an implicit conversion from <see cref="Index2" /> to <see cref="Vector2" />.
+        ///     equal to <see cref="Vector2" /> (value.x, value.y)
+        /// </summary>
+        /// <param name="value"> The value. </param>
+        /// <returns>
+        ///     The result of the conversion.
+        /// </returns>
+        public static implicit operator Vector2(in Index2 value)
+        {
+            return new Vector2(value.X, value.Y);
+        }
+
+        /// <summary>
+        ///     Performs an implicit conversion from <see cref="Vector2" /> to <see cref="Index2" />.
+        ///     equal to <see cref="Index2" /> ((int)value.x, (int)value.y)
+        /// </summary>
+        /// <param name="value"> The value. </param>
+        /// <returns>
+        ///     The result of the conversion.
+        /// </returns>
+        public static implicit operator Index2(in Vector2 value)
+        {
+            return new Index2((int)value.X, (int)value.Y);
         }
 
         /// <summary>
