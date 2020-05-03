@@ -21,20 +21,10 @@ namespace Exomia.Framework.Graphics.SpriteSort
     /// </summary>
     sealed unsafe class SpriteMergeSort : ISpriteSort
     {
-        /// <summary>
-        ///     The sequential threshold.
-        /// </summary>
         private const int SEQUENTIAL_THRESHOLD = 2048;
 
-        /// <summary>
-        ///     Length of the temporary sort buffer.
-        /// </summary>
-        private readonly int _tempSortBufferLength = 0;
-
-        /// <summary>
-        ///     The temporary.
-        /// </summary>
-        private int* _tmp;
+        private readonly int  _tempSortBufferLength = 0;
+        private          int* _tmp;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteMergeSort" /> class.

@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Content;
 
 namespace Exomia.Framework.Graphics
@@ -21,11 +20,8 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
-            IGraphicsDevice graphicsDevice = contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
-            if (graphicsDevice == null)
-            {
-                throw new InvalidOperationException($"Unable to retrieve a {nameof(IGraphicsDevice)}");
-            }
+            IGraphicsDevice graphicsDevice =
+                contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
             return Texture.Load(graphicsDevice.Device, parameters.Stream);
         }
     }
@@ -38,11 +34,8 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
-            ITexture2ContentManager manager = contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
-            if (manager == null)
-            {
-                throw new InvalidOperationException($"Unable to retrieve a {nameof(ITexture2ContentManager)}");
-            }
+            ITexture2ContentManager manager =
+                contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
             try
             {
                 return manager.AddTexture(parameters.Stream, parameters.AssetName);

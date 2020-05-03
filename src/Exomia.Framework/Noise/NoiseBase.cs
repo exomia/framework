@@ -111,7 +111,6 @@ namespace Exomia.Framework.Noise
         /// </summary>
         protected int _seed;
 
-        /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="NoiseBase" /> class.
         /// </summary>
@@ -122,7 +121,6 @@ namespace Exomia.Framework.Noise
                             NoiseFractalType       noiseFractalType)
             : this(seed, frequency, octaves, 2.0f, 0.5f, noiseInterpolationType, noiseFractalType) { }
 
-        /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="NoiseBase" /> class.
         /// </summary>

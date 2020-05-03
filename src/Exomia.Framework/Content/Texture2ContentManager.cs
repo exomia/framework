@@ -24,47 +24,19 @@ namespace Exomia.Framework.Content
     /// </summary>
     public sealed class Texture2ContentManager : ITexture2ContentManager
     {
-        /// <summary>
-        ///     Initial size of the queue.
-        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 8;
+        private const int ATLAS_WIDTH        = 1024 * 8;
+        private const int ATLAS_HEIGHT       = 1024 * 8;
 
-        /// <summary>
-        ///     Width of the atlas.
-        /// </summary>
-        private const int ATLAS_WIDTH = 1024 * 8;
-
-        /// <summary>
-        ///     Height of the atlas.
-        /// </summary>
-        private const int ATLAS_HEIGHT = 1024 * 8;
-
-        /// <summary>
-        ///     The atlases.
-        /// </summary>
         private readonly Dictionary<int, SpriteBatchAtlas> _atlases =
             new Dictionary<int, SpriteBatchAtlas>(INITIAL_QUEUE_SIZE);
 
-        /// <summary>
-        ///     The atlases keys.
-        /// </summary>
         private readonly Dictionary<string, Texture2> _atlasesKeys =
             new Dictionary<string, Texture2>(INITIAL_QUEUE_SIZE);
 
-        /// <summary>
-        ///     The lock atlas.
-        /// </summary>
-        private readonly object _lockAtlas = new object();
-
-        /// <summary>
-        ///     Zero-based index of the atlases.
-        /// </summary>
-        private int _atlasesIndex;
-
-        /// <summary>
-        ///     The texture.
-        /// </summary>
-        private Texture _texture = Texture.Empty;
+        private readonly object  _lockAtlas = new object();
+        private          int     _atlasesIndex;
+        private          Texture _texture = Texture.Empty;
 
         /// <inheritdoc />
         public bool IsTextureInvalid { get; private set; }

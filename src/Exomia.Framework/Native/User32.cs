@@ -62,6 +62,16 @@ namespace Exomia.Framework.Native
         [DllImport("User32.dll", SetLastError = true)]
         internal static extern int TranslateMessage(ref MSG lpMsg);
 
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("user32.dll", SetLastError = false)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("user32.dll", SetLastError = false)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool ClipCursor(ref RECT lpRect);
+
         /// <summary>
         ///     A message.
         /// </summary>
@@ -97,6 +107,37 @@ namespace Exomia.Framework.Native
             ///     The point.
             /// </summary>
             public Point pt;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct RECT
+        {
+            /// <summary>
+            ///     Left position of the rectangle.
+            /// </summary>
+            public POINT LeftTop;
+
+            public POINT RightBottom;
+
+            public RECT(int width, int height)
+            {
+                LeftTop.X     = LeftTop.Y = 0;
+                RightBottom.X = width;
+                RightBottom.Y = height;
+            }
+        }
+
+        internal struct POINT
+        {
+            /// <summary>
+            ///     Left position of the rectangle.
+            /// </summary>
+            public int X;
+
+            /// <summary>
+            ///     Top position of the rectangle.
+            /// </summary>
+            public int Y;
         }
     }
 }

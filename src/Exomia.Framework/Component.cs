@@ -8,8 +8,6 @@
 
 #endregion
 
-#pragma warning disable IDE0069
-
 using System;
 using Exomia.Framework.Game;
 using SharpDX;
@@ -41,20 +39,9 @@ namespace Exomia.Framework
         /// </summary>
         protected bool _isContentLoaded;
 
-        /// <summary>
-        ///     The collector.
-        /// </summary>
         private readonly DisposeCollector _collector;
-
-        /// <summary>
-        ///     True to enable, false to disable.
-        /// </summary>
-        private bool _enabled;
-
-        /// <summary>
-        ///     The update order.
-        /// </summary>
-        private int _updateOrder;
+        private          bool             _enabled;
+        private          int              _updateOrder;
 
         /// <inheritdoc />
         public bool Enabled
@@ -98,7 +85,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void LoadContent(IServiceRegistry registry)
+        void IContentable.LoadContent(IServiceRegistry registry)
         {
             if (_isInitialized && !_isContentLoaded)
             {
@@ -108,7 +95,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void UnloadContent(IServiceRegistry registry)
+        void IContentable.UnloadContent(IServiceRegistry registry)
         {
             if (_isContentLoaded)
             {
@@ -118,7 +105,7 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public void Initialize(IServiceRegistry registry)
+        void IInitializable.Initialize(IServiceRegistry registry)
         {
             if (!_isInitialized)
             {

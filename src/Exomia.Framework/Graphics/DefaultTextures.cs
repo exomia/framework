@@ -22,62 +22,11 @@ namespace Exomia.Framework.Graphics
     public static class DefaultTextures
     {
         private const string WHITE_TEXTURE_BASE64 =
-            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAEElEQVR42mP8/5+BgRFEAAAYAQP/58fuIwAAAABJRU5ErkJggg==";
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 
-        private const string BLACK_TEXTURE_BASE64 =
-            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAD0lEQVR42mNk+M/AwAgiAAsOAgGA6bm/AAAAAElFTkSuQmCC";
-
-        /// <summary>
-        ///     The white texture.
-        /// </summary>
-        private static Texture? s_whiteTexture;
-
-        /// <summary>
-        ///     The black texture.
-        /// </summary>
-        private static Texture? s_blackTexture;
-
-        /// <summary>
-        ///     The second s white texture.
-        /// </summary>
+        private static Texture?  s_whiteTexture;
         private static Texture2? s_whiteTexture2;
-
-        /// <summary>
-        ///     The second s black texture.
-        /// </summary>
-        private static Texture2? s_blackTexture2;
-
-        /// <summary>
-        ///     True if this object is initialized.
-        /// </summary>
-        private static bool s_isInitialized;
-
-        /// <summary>
-        ///     True if this object is initialized 2.
-        /// </summary>
-        private static bool s_isInitialized2;
-
-        /// <summary>
-        ///     Gets the black texture.
-        /// </summary>
-        /// <value>
-        ///     The black texture.
-        /// </value>
-        public static Texture BlackTexture
-        {
-            get { return s_blackTexture!; }
-        }
-
-        /// <summary>
-        ///     Gets the black texture 2.
-        /// </summary>
-        /// <value>
-        ///     The black texture 2.
-        /// </value>
-        public static Texture2 BlackTexture2
-        {
-            get { return s_blackTexture2!; }
-        }
+        private static bool      s_isInitialized, s_isInitialized2;
 
         /// <summary>
         ///     Gets the white texture.
@@ -117,12 +66,6 @@ namespace Exomia.Framework.Graphics
                     s_whiteTexture = Texture.Load(device, ms) ??
                                      throw new NullReferenceException($"{nameof(WhiteTexture)}");
                 }
-
-                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(BLACK_TEXTURE_BASE64)))
-                {
-                    s_blackTexture = Texture.Load(device, ms) ??
-                                     throw new NullReferenceException($"{nameof(BlackTexture)}");
-                }
             }
         }
 
@@ -140,11 +83,6 @@ namespace Exomia.Framework.Graphics
                 using (Stream stream = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
                     s_whiteTexture2 = manager.AddTexture(stream, "WHITE_TEXTURE_BASE64");
-                }
-
-                using (Stream stream = new MemoryStream(Convert.FromBase64String(BLACK_TEXTURE_BASE64)))
-                {
-                    s_blackTexture2 = manager.AddTexture(stream, "BLACK_TEXTURE_BASE64");
                 }
             }
         }
@@ -170,8 +108,6 @@ namespace Exomia.Framework.Graphics
             {
                 if (disposing)
                 {
-                    Utilities.Dispose(ref s_blackTexture);
-                    Utilities.Dispose(ref s_blackTexture2);
                     Utilities.Dispose(ref s_whiteTexture);
                     Utilities.Dispose(ref s_whiteTexture2);
                 }

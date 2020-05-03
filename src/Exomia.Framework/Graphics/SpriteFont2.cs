@@ -24,20 +24,9 @@ namespace Exomia.Framework.Graphics
     [ContentSerializable(typeof(SpriteFontCR), typeof(SpriteFontCW))]
     public sealed class SpriteFont2 : IDisposable
     {
-        /// <summary>
-        ///     The default glyph.
-        /// </summary>
-        private SpriteFont.Glyph _defaultGlyph;
-
-        /// <summary>
-        ///     The glyphs.
-        /// </summary>
+        private SpriteFont.Glyph                  _defaultGlyph;
         private Dictionary<int, SpriteFont.Glyph> _glyphs;
-
-        /// <summary>
-        ///     The second texture.
-        /// </summary>
-        private Texture2 _texture2;
+        private Texture2                          _texture2;
 
         /// <summary>
         ///     Gets or sets a value indicating whether the bold.

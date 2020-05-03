@@ -17,29 +17,10 @@ namespace Exomia.Framework.Noise
     /// </summary>
     public sealed class SimplexNoise : NoiseBase
     {
-        /// <summary>
-        ///     The second f.
-        /// </summary>
-        private const float F2 = 1.0f / 2.0f;
-
-        /// <summary>
-        ///     The second g.
-        /// </summary>
-        private const float G2 = 1.0f / 4.0f;
-
-        /// <summary>
-        ///     The third f.
-        /// </summary>
-        private const float F3 = 1.0f / 3.0f;
-
-        /// <summary>
-        ///     The third g.
-        /// </summary>
-        private const float G3 = 1.0f / 6.0f;
-
-        /// <summary>
-        ///     The third g 3.
-        /// </summary>
+        private const float F2  = 1.0f / 2.0f;
+        private const float G2  = 1.0f / 4.0f;
+        private const float F3  = 1.0f / 3.0f;
+        private const float G3  = 1.0f / 6.0f;
         private const float G33 = (G3 * 3f) - 1f;
 
         /// <inheritdoc />

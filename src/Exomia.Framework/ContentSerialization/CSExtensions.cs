@@ -22,30 +22,18 @@ namespace Exomia.Framework.ContentSerialization
     /// </summary>
     static class CSExtensions
     {
-        /// <summary>
-        ///     The inner type matcher.
-        /// </summary>
         private static readonly Regex s_innerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9.+,\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)?)>$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        /// <summary>
-        ///     The value inner type matcher.
-        /// </summary>
         private static readonly Regex s_valueInnerTypeMatcher = new Regex(
             "^<([A-Za-z][A-Za-z0-9]+),(?:[\\s]*)?([A-Za-z][A-Za-z0-9.`+]+)(?:(<[A-Za-z0-9.,\\s<>`+]+>)?)>$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        /// <summary>
-        ///     The key information matcher.
-        /// </summary>
         private static readonly Regex s_keyInfoMatcher = new Regex(
             "^([A-Za-z][A-Za-z0-9]*):([A-Za-z][A-Za-z0-9.,+\\s`]+)(?:(<[A-Za-z0-9.,+\\s`<>]+>)(\\([0-9,]+\\))?)?$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        /// <summary>
-        ///     The kv information matcher.
-        /// </summary>
         private static readonly Regex s_kvInfoMatcher = new Regex(
             "^([a-zA-Z0-9-]+)?:(\\([0-9,]+\\))?$", RegexOptions.Compiled | RegexOptions.Singleline);
 

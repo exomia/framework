@@ -28,14 +28,7 @@ namespace Exomia.Framework
         /// </summary>
         public event EventHandler? VisibleChanged;
 
-        /// <summary>
-        ///     The draw order.
-        /// </summary>
-        private int _drawOrder;
-
-        /// <summary>
-        ///     True to show, false to hide.
-        /// </summary>
+        private int  _drawOrder;
         private bool _visible;
 
         /// <inheritdoc />

@@ -11,28 +11,20 @@
 namespace Exomia.Framework.Input
 {
     /// <summary>
-    ///     an interface used for input handling.
+    ///     Interface for raw input handler.
     /// </summary>
-    public interface IInputHandler : IRawInputHandler
+    public interface IInputHandler
     {
         /// <summary>
-        ///     called than a key is down.
+        ///     Register the input events on the given input device.
         /// </summary>
-        /// <param name="keyValue"> The key value. </param>
-        /// <param name="modifiers"> The key modifiers. </param>
-        void KeyDown(int keyValue, KeyModifier modifiers);
+        /// <param name="device"> The device. </param>
+        void RegisterInput(IInputDevice device);
 
         /// <summary>
-        ///     called than a key is pressed.
+        ///     Unregister the input events on the given input device.
         /// </summary>
-        /// <param name="key"> key char. </param>
-        void KeyPress(char key);
-
-        /// <summary>
-        ///     called than a key is up.
-        /// </summary>
-        /// <param name="keyValue"> key value. </param>
-        /// <param name="modifiers"> The key modifiers. </param>
-        void KeyUp(int keyValue, KeyModifier modifiers);
+        /// <param name="device"> The device. </param>
+        void UnregisterInput(IInputDevice device);
     }
 }

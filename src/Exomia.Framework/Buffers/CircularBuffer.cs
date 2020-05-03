@@ -21,30 +21,11 @@ namespace Exomia.Framework.Buffers
     /// <typeparam name="T"> any. </typeparam>
     public class CircularBuffer<T>
     {
-        /// <summary>
-        ///     The buffer.
-        /// </summary>
-        private readonly T[] _buffer;
-
-        /// <summary>
-        ///     this lock.
-        /// </summary>
-        private SpinLock _thisLock;
-
-        /// <summary>
-        ///     The head.
-        /// </summary>
-        private int _head;
-
-        /// <summary>
-        ///     The size.
-        /// </summary>
-        private int _size;
-
-        /// <summary>
-        ///     The tail.
-        /// </summary>
-        private int _tail;
+        private readonly T[]      _buffer;
+        private          SpinLock _thisLock;
+        private          int      _head;
+        private          int      _size;
+        private          int      _tail;
 
         /// <summary>
         ///     Maximum capacity of the buffer. Elements pushed into the buffer after maximum capacity is

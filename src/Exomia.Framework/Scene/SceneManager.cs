@@ -21,50 +21,16 @@ namespace Exomia.Framework.Scene
     /// </summary>
     public sealed class SceneManager : DrawableComponent, ISceneManager
     {
-        /// <summary>
-        ///     Initial size of the queue.
-        /// </summary>
         private const int INITIAL_QUEUE_SIZE = 16;
 
-        /// <summary>
-        ///     The current drawable scenes.
-        /// </summary>
-        private readonly List<ISceneInternal> _currentDrawableScenes;
-
-        /// <summary>
-        ///     The current scenes.
-        /// </summary>
-        private readonly List<ISceneInternal> _currentScenes;
-
-        /// <summary>
-        ///     The current updateable scenes.
-        /// </summary>
-        private readonly List<ISceneInternal> _currentUpdateableScenes;
-
-        /// <summary>
-        ///     The pending initializable scenes.
-        /// </summary>
-        private readonly List<ISceneInternal> _pendingInitializableScenes;
-
-        /// <summary>
-        ///     The scenes.
-        /// </summary>
+        private readonly List<ISceneInternal>               _currentDrawableScenes;
+        private readonly List<ISceneInternal>               _currentScenes;
+        private readonly List<ISceneInternal>               _currentUpdateableScenes;
+        private readonly List<ISceneInternal>               _pendingInitializableScenes;
         private readonly Dictionary<string, ISceneInternal> _scenes;
-
-        /// <summary>
-        ///     The scenes to unload.
-        /// </summary>
-        private readonly List<ISceneInternal> _scenesToUnload;
-
-        /// <summary>
-        ///     The input handler.
-        /// </summary>
-        private readonly RawInputManager _rawInputManager;
-
-        /// <summary>
-        ///     The registry.
-        /// </summary>
-        private IServiceRegistry? _registry;
+        private readonly List<ISceneInternal>               _scenesToUnload;
+        private          IServiceRegistry?                  _registry;
+        private          IInputDevice                       _inputDevice;
 
         /// <inheritdoc />
         /// <summary>
@@ -82,7 +48,7 @@ namespace Exomia.Framework.Scene
             _pendingInitializableScenes = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
             _scenesToUnload             = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
 
-            _rawInputManager = new RawInputManager();
+            _inputDevice = null!;
 
             AddScene(startScene);
         }
@@ -170,7 +136,18 @@ namespace Exomia.Framework.Scene
                     default: throw new Exception($"Scene is in wrong state to be shown {scene.State}");
                 }
 
-                scene.Show(_currentScenes.Count > 0 ? _currentScenes[_currentScenes.Count - 1] : null, payload);
+                IScene? oldScene = null;
+                if (_currentScenes.Count > 0)
+                {
+                    oldScene = _currentScenes[_currentScenes.Count - 1];
+
+                    // ReSharper disable once SuspiciousTypeConversion.Global
+                    if (oldScene is IInputHandler oldInputHandler)
+                    {
+                        oldInputHandler.UnregisterInput(_inputDevice);
+                    }
+                }
+                scene.Show(oldScene, payload);
 
                 if (!scene.IsOverlayScene)
                 {
@@ -228,7 +205,11 @@ namespace Exomia.Framework.Scene
                         scene.ReferenceScenesLoaded();
                     });
 
-                _rawInputManager.RawInputHandler = scene.RawInputHandler ?? scene;
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                if (scene is IInputHandler inputHandler)
+                {
+                    inputHandler.RegisterInput(_inputDevice);
+                }
 
                 lock (_currentScenes)
                 {
@@ -268,15 +249,19 @@ namespace Exomia.Framework.Scene
             {
                 if (!_currentScenes.Remove((ISceneInternal)scene)) { return false; }
 
-                if (_currentScenes.Count > 0)
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                if (scene is IInputHandler inputHandler)
                 {
-                    _rawInputManager.RawInputHandler = _currentScenes[_currentScenes.Count - 1].RawInputHandler ??
-                                                       _currentScenes[_currentScenes.Count - 1];
+                    inputHandler.UnregisterInput(_inputDevice);
                 }
-                else
+
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                if (_currentScenes.Count > 0 &&
+                    _currentScenes[_currentScenes.Count - 1] is IInputHandler nextInputHandler)
                 {
-                    _rawInputManager.RawInputHandler = null;
+                    nextInputHandler.RegisterInput(_inputDevice);
                 }
+
                 return true;
             }
         }
@@ -324,8 +309,8 @@ namespace Exomia.Framework.Scene
         /// <inheritdoc />
         protected override void OnInitialize(IServiceRegistry registry)
         {
-            _registry = registry;
-            _rawInputManager.Initialize(registry);
+            _registry    = registry;
+            _inputDevice = registry.GetService<IInputDevice>();
 
             lock (_pendingInitializableScenes)
             {
@@ -358,8 +343,6 @@ namespace Exomia.Framework.Scene
                 }
 
                 _scenes.Clear();
-
-                _rawInputManager.Dispose();
             }
         }
     }

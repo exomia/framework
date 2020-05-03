@@ -18,15 +18,8 @@ namespace Exomia.Framework.Scene.Default
     /// </summary>
     public class LoadingScene : SceneBase
     {
-        /// <summary>
-        ///     The scene to load.
-        /// </summary>
-        private readonly IScene _sceneToLoad;
-
-        /// <summary>
-        ///     The registry.
-        /// </summary>
-        private IServiceRegistry? _registry;
+        private readonly IScene            _sceneToLoad;
+        private          IServiceRegistry? _registry;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoadingScene" /> class.
@@ -49,23 +42,25 @@ namespace Exomia.Framework.Scene.Default
         /// <inheritdoc />
         protected override void OnShow(IScene? comingFrom, object[] payload)
         {
-            if (_sceneToLoad.State == SceneState.None)
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_sceneToLoad.State)
             {
-                _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        _sceneToLoad.Initialize(_registry!);
-                    });
-            }
-            else if (_sceneToLoad.State == SceneState.StandBy)
-            {
-                _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        _sceneToLoad.LoadContent(_registry!);
-                    });
+                case SceneState.None:
+                    _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
+                    Task.Factory.StartNew(
+                        () =>
+                        {
+                            _sceneToLoad.Initialize(_registry!);
+                        });
+                    break;
+                case SceneState.StandBy:
+                    _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
+                    Task.Factory.StartNew(
+                        () =>
+                        {
+                            _sceneToLoad.LoadContent(_registry!);
+                        });
+                    break;
             }
         }
 
@@ -77,22 +72,26 @@ namespace Exomia.Framework.Scene.Default
         /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
         private void SceneToLoad_SceneStateChanged(IScene scene, SceneState current)
         {
-            if (current == SceneState.StandBy)
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (current)
             {
-                Task.Factory.StartNew(
-                    () =>
+                case SceneState.StandBy:
+                    Task.Factory.StartNew(
+                        () =>
+                        {
+                            _sceneToLoad.LoadContent(_registry!);
+                        });
+                    break;
+                case SceneState.Ready:
                     {
-                        _sceneToLoad.LoadContent(_registry!);
-                    });
-            }
-            else if (current == SceneState.Ready)
-            {
-                _sceneToLoad.SceneStateChanged -= SceneToLoad_SceneStateChanged;
-
-                if (SceneManager.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
-                {
-                    throw new Exception($"can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
-                }
+                        _sceneToLoad.SceneStateChanged -= SceneToLoad_SceneStateChanged;
+                        if (SceneManager.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
+                        {
+                            throw new Exception(
+                                $"can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
+                        }
+                        break;
+                    }
             }
         }
     }

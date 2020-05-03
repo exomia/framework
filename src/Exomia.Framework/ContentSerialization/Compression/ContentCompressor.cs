@@ -25,14 +25,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         /// </summary>
         public const string DEFAULT_COMPRESSED_EXTENSION = ".e1";
 
-        /// <summary>
-        ///     Size of the buffer.
-        /// </summary>
-        private const int BUFFER_SIZE = 2048;
-
-        /// <summary>
-        ///     the magic header for the compressed e1 extension.
-        /// </summary>
+        private const           int    BUFFER_SIZE   = 2048;
         private static readonly byte[] s_magicHeader = { 64, 101, 120, 49 };
 
         /// <summary>

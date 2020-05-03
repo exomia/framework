@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
+using Exomia.Framework.Resources;
 using SharpDX;
 
 namespace Exomia.Framework.Components
@@ -22,145 +23,33 @@ namespace Exomia.Framework.Components
     /// </summary>
     public class DebugComponent : DrawableComponent
     {
-        /// <summary>
-        ///     The sample time rate.
-        /// </summary>
-        private const float SAMPLE_TIME_RATE = 2.0f;
+        private const float       SAMPLE_TIME_RATE       = 2.0f;
+        private const int         MAXIMUM_SAMPLES        = (int)(9 / SAMPLE_TIME_RATE) + 1;
+        private const double      FRAME_DANGER_THRESHOLD = 1000.0f / 60.0f;
+        private       SpriteFont? _arial12Px;
 
-        /// <summary>
-        ///     The maximum samples.
-        /// </summary>
-        private const int MAXIMUM_SAMPLES = (int)(9 / SAMPLE_TIME_RATE) + 1;
+        private string _cpuInfo = string.Empty,
+                       _cpuName = string.Empty,
+                       _fpsInfo = string.Empty,
+                       _gpuName = string.Empty,
+                       _ramInfo = string.Empty;
 
-        /// <summary>
-        ///     The frame danger threshold.
-        /// </summary>
-        private const double FRAME_DANGER_THRESHOLD = 1000.0f / 60.0f;
+        private PerformanceCounter? _cpuPerformanceCounter1, _cpuPerformanceCounter2, _ramPerformanceCounter1;
+        private bool                _firstCalc;
 
-        /// <summary>
-        ///     The arial 12 px.
-        /// </summary>
-        private SpriteFont? _arial12Px;
+        private float _fpsAverage,
+                      _fpsCurrent,
+                      _elapsedTime,
+                      _maxFrameTime,
+                      _sampleBuffer,
+                      _totalMemoryBytes;
 
-        /// <summary>
-        ///     Information describing the CPU.
-        /// </summary>
-        private string _cpuInfo = string.Empty;
-
-        /// <summary>
-        ///     Name of the CPU.
-        /// </summary>
-        private string _cpuName = string.Empty;
-
-        /// <summary>
-        ///     The first CPU performance counter.
-        /// </summary>
-        private PerformanceCounter? _cpuPerformanceCounter1;
-
-        /// <summary>
-        ///     The second CPU performance counter.
-        /// </summary>
-        private PerformanceCounter? _cpuPerformanceCounter2;
-
-        /// <summary>
-        ///     The elapsed time.
-        /// </summary>
-        private float _elapsedTime;
-
-        /// <summary>
-        ///     True to first calculate.
-        /// </summary>
-        private bool _firstCalc;
-
-        /// <summary>
-        ///     The FPS average.
-        /// </summary>
-        private float _fpsAverage;
-
-        /// <summary>
-        ///     The FPS current.
-        /// </summary>
-        private float _fpsCurrent;
-
-        /// <summary>
-        ///     Information describing the FPS.
-        /// </summary>
-        private string _fpsInfo = string.Empty;
-
-        /// <summary>
-        ///     The game window.
-        /// </summary>
         private IGameWindow? _gameWindow;
-
-        /// <summary>
-        ///     Name of the GPU.
-        /// </summary>
-        private string _gpuName = string.Empty;
-
-        /// <summary>
-        ///     The maximum frame time.
-        /// </summary>
-        private float _maxFrameTime;
-
-        /// <summary>
-        ///     The first position.
-        /// </summary>
-        private Vector2 _position1;
-
-        /// <summary>
-        ///     The second position.
-        /// </summary>
-        private Vector2 _position2;
-
-        /// <summary>
-        ///     The first processor load t.
-        /// </summary>
-        private float _processorLoadT1;
-
-        /// <summary>
-        ///     The second processor load t.
-        /// </summary>
-        private float _processorLoadT2;
-
-        /// <summary>
-        ///     Information describing the ram.
-        /// </summary>
-        private string _ramInfo = string.Empty;
-
-        /// <summary>
-        ///     The first ram performance counter.
-        /// </summary>
-        private PerformanceCounter? _ramPerformanceCounter1;
-
-        /// <summary>
-        ///     Buffer for sample data.
-        /// </summary>
-        private float _sampleBuffer;
-
-        /// <summary>
-        ///     Number of samples.
-        /// </summary>
-        private int _sampleCount;
-
-        /// <summary>
-        ///     The sprite batch.
-        /// </summary>
+        private Vector2      _position1,       _position2;
+        private float        _processorLoadT1, _processorLoadT2;
+        private int          _sampleCount,     _totalFrames;
         private SpriteBatch? _spriteBatch;
-
-        /// <summary>
-        ///     The title.
-        /// </summary>
-        private string _title = string.Empty;
-
-        /// <summary>
-        ///     The total frames.
-        /// </summary>
-        private int _totalFrames;
-
-        /// <summary>
-        ///     The total memory in bytes.
-        /// </summary>
-        private float _totalMemoryBytes;
+        private string       _title = string.Empty;
 
         /// <summary>
         ///     Gets or sets a value indicating whether the title information is enabled.
@@ -258,8 +147,7 @@ namespace Exomia.Framework.Components
                 _fpsInfo =
 
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    $"FPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
-                _fpsInfo      = $"{_gpuName}\n{_fpsInfo}";
+                    $"{_gpuName}\nFPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
                 _maxFrameTime = 0;
                 _firstCalc    = true;
             }
@@ -289,22 +177,21 @@ namespace Exomia.Framework.Components
             _ramPerformanceCounter1 = new PerformanceCounter(nameof(Process), "Working Set", pName, true);
             _totalMemoryBytes       = (long)_ramPerformanceCounter1.NextValue();
 
-            _spriteBatch = new SpriteBatch(
-                registry.GetService<IGraphicsDevice>() ?? throw new NullReferenceException(nameof(IGraphicsDevice)));
+            IGraphicsDevice graphicsDevice = registry.GetService<IGraphicsDevice>();
+            _spriteBatch = new SpriteBatch(graphicsDevice);
 
             _position1 = new Vector2(10, 20);
             _position2 = new Vector2(10, 80);
 
             Diagnostic.Diagnostic.GetCpuProperty(nameof(Name), out _cpuName);
-            Diagnostic.Diagnostic.GetGpuProperty(nameof(Name), out _gpuName);
+            _gpuName = graphicsDevice.Adapter.Desc3.Description;
         }
 
         /// <inheritdoc />
         protected override void OnLoadContent(IServiceRegistry registry)
         {
-            _arial12Px = (registry.GetService<IContentManager>() ??
-                          throw new NullReferenceException(nameof(IContentManager)))
-                .Load<SpriteFont>("Resources.fonts.arial.arial_12px.e1", true);
+            _arial12Px = registry.GetService<IContentManager>()
+                                 .Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
         }
     }
 }

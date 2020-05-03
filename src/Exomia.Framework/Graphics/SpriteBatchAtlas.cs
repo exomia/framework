@@ -26,50 +26,16 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     sealed class SpriteBatchAtlas : IDisposable
     {
-        /// <summary>
-        ///     The minimum atlas width.
-        /// </summary>
-        private const int MIN_ATLAS_WIDTH = 2048;
-
-        /// <summary>
-        ///     The minimum atlas height.
-        /// </summary>
+        private const int MIN_ATLAS_WIDTH  = 2048;
         private const int MIN_ATLAS_HEIGHT = 2048;
-
-        /// <summary>
-        ///     The maximum atlas width.
-        /// </summary>
-        private const int MAX_ATLAS_WIDTH = 8192;
-
-        /// <summary>
-        ///     The maximum atlas height.
-        /// </summary>
+        private const int MAX_ATLAS_WIDTH  = 8192;
         private const int MAX_ATLAS_HEIGHT = 8192;
 
-        /// <summary>
-        ///     The height.
-        /// </summary>
-        private readonly int _height;
-
-        /// <summary>
-        ///     The lock atlas.
-        /// </summary>
-        private readonly object _lockAtlas = new object();
-
-        /// <summary>
-        ///     Source rectangles.
-        /// </summary>
+        private readonly int                           _height;
+        private readonly object                        _lockAtlas = new object();
         private readonly Dictionary<string, Rectangle> _sourceRectangles;
-
-        /// <summary>
-        ///     The width.
-        /// </summary>
-        private readonly int _width;
-
-        /// <summary>
-        ///     The atlas.
-        /// </summary>
-        private Bitmap _atlas;
+        private readonly int                           _width;
+        private          Bitmap                        _atlas;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteBatchAtlas" /> class.

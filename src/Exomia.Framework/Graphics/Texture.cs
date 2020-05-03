@@ -22,9 +22,6 @@ namespace Exomia.Framework.Graphics
     [ContentReadable(typeof(TextureContentReader))]
     public sealed class Texture : IDisposable
     {
-        /// <summary>
-        ///     The texture view.
-        /// </summary>
         private ShaderResourceView1 _textureView;
 
         /// <summary>

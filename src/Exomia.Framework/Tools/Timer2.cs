@@ -20,15 +20,11 @@ namespace Exomia.Framework.Tools
         /// <summary>
         ///     Occurs when Enabled Changed.
         /// </summary>
-        /// ###
-        /// <inheritdoc />
         public event EventHandler? EnabledChanged;
 
         /// <summary>
         ///     Occurs when Update Order Changed.
         /// </summary>
-        /// ###
-        /// <inheritdoc />
         public event EventHandler? UpdateOrderChanged;
 
         /// <summary>
@@ -41,25 +37,10 @@ namespace Exomia.Framework.Tools
         /// </summary>
         public event EventHandler<Timer2>? TimerTicked;
 
-        /// <summary>
-        ///     The maximum iterations.
-        /// </summary>
-        private readonly uint _maxIterations;
-
-        /// <summary>
-        ///     The elapsed time.
-        /// </summary>
-        private float _elapsedTime;
-
-        /// <summary>
-        ///     True to enable, false to disable.
-        /// </summary>
-        private bool _enabled;
-
-        /// <summary>
-        ///     The update order.
-        /// </summary>
-        private int _updateOrder;
+        private readonly uint  _maxIterations;
+        private          float _elapsedTime;
+        private          bool  _enabled;
+        private          int   _updateOrder;
 
         /// <summary>
         ///     Gets the current iteration or 0 if maxIteration = 0.
