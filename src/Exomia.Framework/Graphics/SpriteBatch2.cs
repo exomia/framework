@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Exomia.Framework.Content;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Graphics.SpriteSort;
+using Exomia.Framework.Resources;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -142,11 +143,11 @@ namespace Exomia.Framework.Graphics
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             using (Stream stream = assembly.GetManifestResourceStream(
-                $"{assembly.GetName().Name}.{Resources.Shaders.POSITION_COLOR_TEXTURE}"))
+                $"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}"))
             {
                 Shader.Shader.Technique technique =
-                    (_shader = (ShaderHelper.FromStream(iDevice, stream) ??
-                                throw new NullReferenceException(nameof(ShaderHelper.FromStream))))["DEFAULT"];
+                    (_shader = ShaderHelper.FromStream(iDevice, stream) ??
+                               throw new NullReferenceException(nameof(ShaderHelper.FromStream)))["DEFAULT"];
 
                 _vertexShader = technique;
                 _pixelShader  = technique;
@@ -857,7 +858,7 @@ namespace Exomia.Framework.Graphics
         public void DrawFillRectangle(in RectangleF destinationRectangle, in Color color, float layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture2, destinationRectangle, false, 
+                DefaultTextures.WhiteTexture2, destinationRectangle, false,
                 s_nullRectangle, color, 0.0f, s_vector2Zero, 1.0f, SpriteEffects.None, layerDepth);
         }
 
@@ -874,7 +875,7 @@ namespace Exomia.Framework.Graphics
                                       float         layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture2, destinationRectangle, false, s_nullRectangle, 
+                DefaultTextures.WhiteTexture2, destinationRectangle, false, s_nullRectangle,
                 color, 0.0f, s_vector2Zero, opacity, SpriteEffects.None, layerDepth);
         }
 
@@ -895,7 +896,7 @@ namespace Exomia.Framework.Graphics
                                       float         layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture2, destinationRectangle, false, s_nullRectangle, 
+                DefaultTextures.WhiteTexture2, destinationRectangle, false, s_nullRectangle,
                 color, rotation, origin, opacity, SpriteEffects.None, layerDepth);
         }
 
@@ -1014,9 +1015,9 @@ namespace Exomia.Framework.Graphics
 
             for (int i = 0; i < segments; i++)
             {
-                vertex[i].X = center.X + (radius * (float)Math.Cos(theta));
-                vertex[i].Y = center.Y + (radius * (float)Math.Sin(theta));
-                theta     += increment;
+                vertex[i].X =  center.X + (radius * (float)Math.Cos(theta));
+                vertex[i].Y =  center.Y + (radius * (float)Math.Sin(theta));
+                theta       += increment;
             }
 
             DrawPolygon(vertex, color, lineWidth, opacity, layerDepth);
@@ -1035,7 +1036,7 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture2 texture, in Vector2 position, in Color color)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, s_nullRectangle, 
+                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, s_nullRectangle,
                 color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
         }
 
@@ -1048,10 +1049,10 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture2 texture, in RectangleF destinationRectangle, in Color color)
         {
             DrawSprite(
-                texture, destinationRectangle, false, s_nullRectangle, 
+                texture, destinationRectangle, false, s_nullRectangle,
                 color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
         }
-        
+
         /// <summary>
         ///     Draws.
         /// </summary>
@@ -1062,10 +1063,10 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture2 texture, in Vector2 position, in Rectangle? sourceRectangle, in Color color)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, sourceRectangle, 
+                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, sourceRectangle,
                 color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
         }
-        
+
         /// <summary>
         ///     Draws.
         /// </summary>
@@ -1079,10 +1080,10 @@ namespace Exomia.Framework.Graphics
                          in Color      color)
         {
             DrawSprite(
-                texture, destinationRectangle, false, sourceRectangle, 
+                texture, destinationRectangle, false, sourceRectangle,
                 color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
         }
-        
+
         /// <summary>
         ///     Draws.
         /// </summary>
@@ -1106,10 +1107,10 @@ namespace Exomia.Framework.Graphics
                          float         layerDepth)
         {
             DrawSprite(
-                texture, destinationRectangle, false, sourceRectangle, 
+                texture, destinationRectangle, false, sourceRectangle,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
-        
+
         /// <summary>
         ///     Draws.
         /// </summary>
@@ -1135,10 +1136,10 @@ namespace Exomia.Framework.Graphics
                          float         layerDepth)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle, 
+                texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
-        
+
         /// <summary>
         ///     Draws.
         /// </summary>
@@ -1164,7 +1165,7 @@ namespace Exomia.Framework.Graphics
                          float         layerDepth)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true, sourceRectangle, 
+                texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true, sourceRectangle,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1198,7 +1199,7 @@ namespace Exomia.Framework.Graphics
             {
                 throw new NullReferenceException("texture2DArray");
             }
-            
+
             if (!_isBeginCalled)
             {
                 throw new InvalidOperationException("Begin must be called before draw");
@@ -1305,7 +1306,7 @@ namespace Exomia.Framework.Graphics
                              float       layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, position, 
+                DrawTextInternal, text, position,
                 color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
         }
 
@@ -1332,7 +1333,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, position, 
+                DrawTextInternal, text, position,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1363,7 +1364,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, start, end, position, 
+                DrawTextInternal, text, start, end, position,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1396,7 +1397,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, start, end, position, dimension, 
+                DrawTextInternal, text, start, end, position, dimension,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1415,7 +1416,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, position, 
+                DrawTextInternal, text, position,
                 color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
         }
 
@@ -1436,7 +1437,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, position, 
+                DrawTextInternal, text, position,
                 color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
         }
 
@@ -1463,7 +1464,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, position, 
+                DrawTextInternal, text, position,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1494,7 +1495,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, start, end, position, 
+                DrawTextInternal, text, start, end, position,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1527,7 +1528,7 @@ namespace Exomia.Framework.Graphics
                              float         layerDepth)
         {
             font.Draw(
-                DrawTextInternal, text, start, end, position, dimension, 
+                DrawTextInternal, text, start, end, position, dimension,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
@@ -1556,8 +1557,8 @@ namespace Exomia.Framework.Graphics
                                        float         layerDepth)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle, 
-                color, rotation, origin, opacity, effects,layerDepth);
+                texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle,
+                color, rotation, origin, opacity, effects, layerDepth);
         }
 
         #endregion

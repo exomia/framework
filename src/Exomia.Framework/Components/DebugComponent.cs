@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
+using Exomia.Framework.Resources;
 using SharpDX;
 
 namespace Exomia.Framework.Components
@@ -190,7 +191,7 @@ namespace Exomia.Framework.Components
         protected override void OnLoadContent(IServiceRegistry registry)
         {
             _arial12Px = registry.GetService<IContentManager>()
-                                 .Load<SpriteFont>(Resources.Fonts.ARIAL_12_PX, true);
+                                 .Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
         }
     }
 }

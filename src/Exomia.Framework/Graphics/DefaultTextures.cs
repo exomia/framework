@@ -24,10 +24,10 @@ namespace Exomia.Framework.Graphics
         private const string WHITE_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 
-        private static Texture? s_whiteTexture;
+        private static Texture?  s_whiteTexture;
         private static Texture2? s_whiteTexture2;
-        private static bool s_isInitialized, s_isInitialized2;
-        
+        private static bool      s_isInitialized, s_isInitialized2;
+
         /// <summary>
         ///     Gets the white texture.
         /// </summary>
@@ -78,7 +78,7 @@ namespace Exomia.Framework.Graphics
             if (!s_isInitialized2)
             {
                 s_isInitialized2 = true;
-                s_disposedValue = false;
+                s_disposedValue  = false;
 
                 using (Stream stream = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
@@ -112,7 +112,7 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref s_whiteTexture2);
                 }
 
-                s_isInitialized = false;
+                s_isInitialized  = false;
                 s_isInitialized2 = false;
 
                 s_disposedValue = true;

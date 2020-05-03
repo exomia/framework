@@ -23,7 +23,7 @@ namespace Exomia.Framework.Graphics
     public static class TextureHelper
     {
         private static readonly ImagingFactory s_imgFactory = new ImagingFactory();
-        
+
         /// <summary>
         ///     Creates a texture.
         /// </summary>
@@ -76,7 +76,7 @@ namespace Exomia.Framework.Graphics
                 BitmapPaletteType.Custom);
             return formatConverter;
         }
-        
+
         /// <summary>
         ///     Loads texture 2 d.
         /// </summary>
@@ -111,7 +111,7 @@ namespace Exomia.Framework.Graphics
                 }
             }
         }
-        
+
         /// <summary>
         ///     Converts this object to a texture 2 d array.
         /// </summary>

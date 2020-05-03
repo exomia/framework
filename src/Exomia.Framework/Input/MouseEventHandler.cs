@@ -13,13 +13,9 @@ namespace Exomia.Framework.Input
     /// <summary>
     ///     Delegate for handling mouse events.
     /// </summary>
-    /// <param name="x">          The x coordinate. </param>
-    /// <param name="y">          The y coordinate. </param>
-    /// <param name="buttons">    The buttons. </param>
-    /// <param name="clicks">     The clicks. </param>
-    /// <param name="wheelDelta"> The wheel delta. </param>
+    /// <param name="mouseEventArgs"> In mouse event information. </param>
     /// <returns>
     ///     <c>true</c> if the mouse event was handled; <c>false</c> otherwise.
     /// </returns>
-    public delegate bool MouseEventHandler(int x, int y, MouseButtons buttons, int clicks, int wheelDelta);
+    public delegate bool MouseEventHandler(in MouseEventArgs mouseEventArgs);
 }

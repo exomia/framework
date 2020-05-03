@@ -1,4 +1,14 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,7 +48,7 @@ namespace Exomia.Framework.Graphics.Shader
             IList<Technique> techniques = new List<Technique>(1);
 
             Technique? currentTechnique = null;
-            string? line;
+            string?    line;
             while ((line = sr.ReadLine()?.Trim()) != null)
             {
                 if (SHADER_DEFINITION_END.Equals(line, StringComparison.InvariantCultureIgnoreCase))
@@ -144,7 +154,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <param name="name"> The name. </param>
             public Technique(string name)
             {
-                Name = name;
+                Name        = name;
                 ShaderInfos = new List<ShaderInfo>(2);
             }
 
@@ -206,10 +216,10 @@ namespace Exomia.Framework.Graphics.Shader
             /// <param name="flags">      The flags. </param>
             public ShaderInfo(string type, string entryPoint, string profile, ShaderFlags flags)
             {
-                Type = type;
+                Type       = type;
                 EntryPoint = entryPoint;
-                Profile = profile;
-                Flags = flags;
+                Profile    = profile;
+                Flags      = flags;
             }
 
             /// <inheritdoc />

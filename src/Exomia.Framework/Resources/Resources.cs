@@ -1,4 +1,14 @@
-﻿namespace Exomia.Framework.Resources
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+namespace Exomia.Framework.Resources
 {
     /// <summary>
     ///     font paths
@@ -85,12 +95,12 @@
         ///     The position color shader resource path.
         /// </summary>
         public const string POSITION_COLOR = "Resources.shaders.position_color.ehlsl";
-        
+
         /// <summary>
         ///     The position color texture shader resource path.
         /// </summary>
         public const string POSITION_COLOR_TEXTURE = "Resources.shaders.position_color_texture.ehlsl";
-        
+
         /// <summary>
         ///     The position color texture2 shader resource path.
         /// </summary>

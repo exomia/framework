@@ -72,20 +72,11 @@ namespace Exomia.Framework.Graphics.Camera.Controller
             if (_pitch < -PITCH_LIMIT) { _pitch     = -PITCH_LIMIT; }
             else if (_pitch > PITCH_LIMIT) { _pitch = PITCH_LIMIT; }
 
-            //float height   = (float)Math.Sin(_pitch);
-            //float distance = (float)Math.Cos(_pitch);
-
             Math2.SinCos(_pitch, out float height, out float distance);
-
-            //float lookZ = (float)Math.Sin(_yaw) * distance;
-            //float lookX = (float)Math.Cos(_yaw) * distance;
 
             Math2.SinCos(_yaw, out float lookZ, out float lookX);
             lookX *= distance;
             lookZ *= distance;
-
-            //float strafeZ = (float)Math.Sin(_yaw + MathUtil.PiOverTwo);
-            //float strafeX = (float)Math.Cos(_yaw + MathUtil.PiOverTwo);
 
             Math2.SinCos(_yaw + MathUtil.PiOverTwo, out float strafeZ, out float strafeX);
 
@@ -109,12 +100,12 @@ namespace Exomia.Framework.Graphics.Camera.Controller
             device.RegisterRawMouseInput(CameraOnRawMouseInput);
         }
 
-        private bool CameraOnRawMouseInput(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
+        private bool CameraOnRawMouseInput(in MouseEventArgs mouseEventArgs)
         {
-            if (x != 0 || y != 0)
+            if (mouseEventArgs.X != 0 || mouseEventArgs.Y != 0)
             {
-                Interlocked.Add(ref _x, x);
-                Interlocked.Add(ref _y, y);
+                Interlocked.Add(ref _x, mouseEventArgs.X);
+                Interlocked.Add(ref _y, mouseEventArgs.Y);
             }
             return false;
         }

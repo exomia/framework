@@ -20,7 +20,7 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
-            IGraphicsDevice graphicsDevice = 
+            IGraphicsDevice graphicsDevice =
                 contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
             return Texture.Load(graphicsDevice.Device, parameters.Stream);
         }

@@ -18,6 +18,7 @@ using SharpDX.RawInput;
 using KeyEventHandler = Exomia.Framework.Input.KeyEventHandler;
 using KeyPressEventHandler = Exomia.Framework.Input.KeyPressEventHandler;
 using MouseButtons = Exomia.Framework.Input.MouseButtons;
+using MouseEventArgs = Exomia.Framework.Input.MouseEventArgs;
 using MouseEventHandler = Exomia.Framework.Input.MouseEventHandler;
 
 namespace Exomia.Framework.Game
@@ -260,7 +261,7 @@ namespace Exomia.Framework.Game
                         MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
                         for (int i = 0; i < _mouseMovePipe.Count; i++)
                         {
-                            if (_mouseMovePipe[i].Invoke(x, y, mouseButtons, 0, 0)) { break; }
+                            if (_mouseMovePipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 0, 0))) { break; }
                         }
                         break;
                     }
@@ -272,7 +273,10 @@ namespace Exomia.Framework.Game
                         int          wheelDelta   = HighWord(m.WParam);
                         for (int i = 0; i < _mouseWheelPipe.Count; i++)
                         {
-                            if (_mouseWheelPipe[i].Invoke(x, y, mouseButtons, 2, wheelDelta)) { break; }
+                            if (_mouseWheelPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, wheelDelta)))
+                            {
+                                break;
+                            }
                         }
                     }
                     break;
@@ -287,7 +291,7 @@ namespace Exomia.Framework.Game
                         MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
                         for (int i = 0; i < _mouseClickPipe.Count; i++)
                         {
-                            if (_mouseClickPipe[i].Invoke(x, y, mouseButtons, 2, 0)) { break; }
+                            if (_mouseClickPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, 0))) { break; }
                         }
                         break;
                     }
@@ -326,7 +330,10 @@ namespace Exomia.Framework.Game
             }
             for (int i = 0; i < _mouseRawInputPipe.Count; i++)
             {
-                if (_mouseRawInputPipe[i].Invoke(e.X, e.Y, buttons, clicks, e.WheelDelta)) { break; }
+                if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.X, e.Y, buttons, clicks, e.WheelDelta)))
+                {
+                    break;
+                }
             }
         }
 
@@ -419,7 +426,7 @@ namespace Exomia.Framework.Game
             int high = HighWord(m.LParam);
             for (int i = 0; i < _mouseDownPipe.Count; i++)
             {
-                if (_mouseDownPipe[i].Invoke(low, high, buttons, 1, 0))
+                if (_mouseDownPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0)))
                 {
                     break;
                 }
@@ -441,7 +448,7 @@ namespace Exomia.Framework.Game
                 int clicks = (_state & 0x4000000) == 0x4000000 ? 2 : 1;
                 for (int i = 0; i < _mouseClickPipe.Count; i++)
                 {
-                    if (_mouseClickPipe[i].Invoke(low, high, buttons, clicks, 0))
+                    if (_mouseClickPipe[i].Invoke(new MouseEventArgs(low, high, buttons, clicks, 0)))
                     {
                         break;
                     }
@@ -450,7 +457,7 @@ namespace Exomia.Framework.Game
             _state &= ~0xC000000;
             for (int i = 0; i < _mouseUpPipe.Count; i++)
             {
-                if (_mouseUpPipe[i].Invoke(low, high, buttons, 1, 0)) { break; }
+                if (_mouseUpPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0))) { break; }
             }
         }
 
