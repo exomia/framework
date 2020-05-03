@@ -22,37 +22,12 @@ namespace Exomia.Framework.Graphics
     public static class DefaultTextures
     {
         private const string WHITE_TEXTURE_BASE64 =
-            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAEElEQVR42mP8/5+BgRFEAAAYAQP/58fuIwAAAABJRU5ErkJggg==";
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 
-        private const string BLACK_TEXTURE_BASE64 =
-            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAD0lEQVR42mNk+M/AwAgiAAsOAgGA6bm/AAAAAElFTkSuQmCC";
-
-        private static Texture?  s_whiteTexture,  s_blackTexture;
-        private static Texture2? s_whiteTexture2, s_blackTexture2;
-        private static bool      s_isInitialized, s_isInitialized2;
-
-        /// <summary>
-        ///     Gets the black texture.
-        /// </summary>
-        /// <value>
-        ///     The black texture.
-        /// </value>
-        public static Texture BlackTexture
-        {
-            get { return s_blackTexture!; }
-        }
-
-        /// <summary>
-        ///     Gets the black texture 2.
-        /// </summary>
-        /// <value>
-        ///     The black texture 2.
-        /// </value>
-        public static Texture2 BlackTexture2
-        {
-            get { return s_blackTexture2!; }
-        }
-
+        private static Texture? s_whiteTexture;
+        private static Texture2? s_whiteTexture2;
+        private static bool s_isInitialized, s_isInitialized2;
+        
         /// <summary>
         ///     Gets the white texture.
         /// </summary>
@@ -91,12 +66,6 @@ namespace Exomia.Framework.Graphics
                     s_whiteTexture = Texture.Load(device, ms) ??
                                      throw new NullReferenceException($"{nameof(WhiteTexture)}");
                 }
-
-                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(BLACK_TEXTURE_BASE64)))
-                {
-                    s_blackTexture = Texture.Load(device, ms) ??
-                                     throw new NullReferenceException($"{nameof(BlackTexture)}");
-                }
             }
         }
 
@@ -109,16 +78,11 @@ namespace Exomia.Framework.Graphics
             if (!s_isInitialized2)
             {
                 s_isInitialized2 = true;
-                s_disposedValue  = false;
+                s_disposedValue = false;
 
                 using (Stream stream = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
                 {
                     s_whiteTexture2 = manager.AddTexture(stream, "WHITE_TEXTURE_BASE64");
-                }
-
-                using (Stream stream = new MemoryStream(Convert.FromBase64String(BLACK_TEXTURE_BASE64)))
-                {
-                    s_blackTexture2 = manager.AddTexture(stream, "BLACK_TEXTURE_BASE64");
                 }
             }
         }
@@ -144,13 +108,11 @@ namespace Exomia.Framework.Graphics
             {
                 if (disposing)
                 {
-                    Utilities.Dispose(ref s_blackTexture);
-                    Utilities.Dispose(ref s_blackTexture2);
                     Utilities.Dispose(ref s_whiteTexture);
                     Utilities.Dispose(ref s_whiteTexture2);
                 }
 
-                s_isInitialized  = false;
+                s_isInitialized = false;
                 s_isInitialized2 = false;
 
                 s_disposedValue = true;

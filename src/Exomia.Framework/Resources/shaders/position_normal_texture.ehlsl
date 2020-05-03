@@ -40,16 +40,16 @@ struct Material
 //--------------------------------------------------------------------------------------
 cbuffer PerFrame : register(b0)
 {
-float4x4 g_WorldMatrix;
-float4x4 g_ViewMatrix;
-float4x4 g_ProjectionMatrix;
-float4x4 g_WorldViewProjectionMatrix;
-float3 g_EyeVector;
+	float4x4 g_WorldMatrix;
+	float4x4 g_ViewMatrix;
+	float4x4 g_ProjectionMatrix;
+	float4x4 g_WorldViewProjectionMatrix;
+	float3 g_EyeVector;
 };
 
 cbuffer PerObject : register(b1)
 {
-Material g_Material;
+	Material g_Material;
 };
 
 //--------------------------------------------------------------------------------------

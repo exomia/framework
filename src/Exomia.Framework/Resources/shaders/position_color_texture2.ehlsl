@@ -10,7 +10,7 @@ SamplerState g_Sampler : register(s0);
 
 cbuffer PerFrame : register(b0)
 {
-float4x4 g_WorldViewProjectionMatrix;
+	float4x4 g_WorldViewProjectionMatrix;
 };
 
 struct VertexShaderInput

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Content;
 using SharpDX;
 using SharpDX.D3DCompiler;
@@ -70,6 +71,7 @@ namespace Exomia.Framework.Graphics.Shader
         /// </returns>
         public Technique this[string technique]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _techniques[technique]; }
         }
 
@@ -90,7 +92,7 @@ namespace Exomia.Framework.Graphics.Shader
         /// <summary>
         ///     A technique. This class cannot be inherited.
         /// </summary>
-        public sealed class Technique : IDisposable
+        public sealed class Technique
         {
             private readonly Dictionary<Type, (ComObject shader, ShaderSignature signature)> _passes;
 
@@ -114,6 +116,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="VertexShader" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator VertexShader(Technique technique)
             {
                 return (VertexShader)technique._passes[Type.VertexShader].shader;
@@ -126,6 +129,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="PixelShader" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator PixelShader(Technique technique)
             {
                 return (PixelShader)technique._passes[Type.PixelShader].shader;
@@ -138,6 +142,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="DomainShader" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator DomainShader(Technique technique)
             {
                 return (DomainShader)technique._passes[Type.DomainShader].shader;
@@ -150,6 +155,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="GeometryShader" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator GeometryShader(Technique technique)
             {
                 return (GeometryShader)technique._passes[Type.GeometryShader].shader;
@@ -162,6 +168,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="HullShader" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator HullShader(Technique technique)
             {
                 return (HullShader)technique._passes[Type.HullShader].shader;
@@ -174,6 +181,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="ComputeShader" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator ComputeShader(Technique technique)
             {
                 return (ComputeShader)technique._passes[Type.ComputeShader].shader;
@@ -218,8 +226,10 @@ namespace Exomia.Framework.Graphics.Shader
                 Dispose(false);
             }
 
-            /// <inheritdoc />
-            public void Dispose()
+            /// <summary>
+            ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            /// </summary>
+            internal void Dispose()
             {
                 Dispose(true);
                 GC.SuppressFinalize(this);

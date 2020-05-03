@@ -18,19 +18,19 @@ using Resource = SharpDX.Direct3D11.Resource;
 namespace Exomia.Framework.Graphics
 {
     /// <summary>
-    ///     TextureHelper class.
+    ///     A texture helper.
     /// </summary>
     public static class TextureHelper
     {
         private static readonly ImagingFactory s_imgFactory = new ImagingFactory();
-
+        
         /// <summary>
         ///     Creates a texture.
         /// </summary>
-        /// <param name="device"> . </param>
-        /// <param name="width">  . </param>
-        /// <param name="height"> . </param>
-        /// <param name="format"> (Optional) </param>
+        /// <param name="device"> The device. </param>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
+        /// <param name="format"> (Optional) Describes the format to use. </param>
         /// <returns>
         ///     The new texture.
         /// </returns>
@@ -39,30 +39,27 @@ namespace Exomia.Framework.Graphics
                                               int     height,
                                               Format  format = Format.B8G8R8A8_UNorm)
         {
-            lock (device)
-            {
-                return new Texture2D(
-                    device,
-                    new Texture2DDescription
-                    {
-                        Width             = width,
-                        Height            = height,
-                        ArraySize         = 1,
-                        BindFlags         = BindFlags.RenderTarget | BindFlags.ShaderResource,
-                        Usage             = ResourceUsage.Default,
-                        CpuAccessFlags    = CpuAccessFlags.None,
-                        Format            = format,
-                        MipLevels         = 1,
-                        OptionFlags       = ResourceOptionFlags.None,
-                        SampleDescription = new SampleDescription(1, 0)
-                    });
-            }
+            return new Texture2D(
+                device,
+                new Texture2DDescription
+                {
+                    Width             = width,
+                    Height            = height,
+                    ArraySize         = 1,
+                    BindFlags         = BindFlags.RenderTarget | BindFlags.ShaderResource,
+                    Usage             = ResourceUsage.Default,
+                    CpuAccessFlags    = CpuAccessFlags.None,
+                    Format            = format,
+                    MipLevels         = 1,
+                    OptionFlags       = ResourceOptionFlags.None,
+                    SampleDescription = new SampleDescription(1, 0)
+                });
         }
 
         /// <summary>
         ///     Loads a bitmap.
         /// </summary>
-        /// <param name="stream"> . </param>
+        /// <param name="stream"> The stream. </param>
         /// <returns>
         ///     The bitmap.
         /// </returns>
@@ -79,49 +76,46 @@ namespace Exomia.Framework.Graphics
                 BitmapPaletteType.Custom);
             return formatConverter;
         }
-
+        
         /// <summary>
         ///     Loads texture 2 d.
         /// </summary>
-        /// <param name="device"> . </param>
-        /// <param name="stream"> . </param>
+        /// <param name="device"> The device. </param>
+        /// <param name="stream"> The stream. </param>
         /// <returns>
         ///     The texture 2 d.
         /// </returns>
         public static Texture2D LoadTexture2D(Device5 device, Stream stream)
         {
-            lock (device)
+            using (BitmapSource bitmapSource = LoadBitmap(stream))
             {
-                using (BitmapSource bitmapSource = LoadBitmap(stream))
+                int stride = bitmapSource.Size.Width * 4;
+                using (DataStream buffer = new DataStream(bitmapSource.Size.Height * stride, true, true))
                 {
-                    int stride = bitmapSource.Size.Width * 4;
-                    using (DataStream buffer = new DataStream(bitmapSource.Size.Height * stride, true, true))
-                    {
-                        bitmapSource.CopyPixels(stride, buffer);
-                        return new Texture2D(
-                            device,
-                            new Texture2DDescription
-                            {
-                                Width             = bitmapSource.Size.Width,
-                                Height            = bitmapSource.Size.Height,
-                                ArraySize         = 1,
-                                BindFlags         = BindFlags.ShaderResource,
-                                Usage             = ResourceUsage.Immutable,
-                                CpuAccessFlags    = CpuAccessFlags.None,
-                                Format            = Format.R8G8B8A8_UNorm,
-                                MipLevels         = 1,
-                                OptionFlags       = ResourceOptionFlags.None,
-                                SampleDescription = new SampleDescription(1, 0)
-                            }, new DataRectangle(buffer.DataPointer, stride));
-                    }
+                    bitmapSource.CopyPixels(stride, buffer);
+                    return new Texture2D(
+                        device,
+                        new Texture2DDescription
+                        {
+                            Width             = bitmapSource.Size.Width,
+                            Height            = bitmapSource.Size.Height,
+                            ArraySize         = 1,
+                            BindFlags         = BindFlags.ShaderResource,
+                            Usage             = ResourceUsage.Immutable,
+                            CpuAccessFlags    = CpuAccessFlags.None,
+                            Format            = Format.R8G8B8A8_UNorm,
+                            MipLevels         = 1,
+                            OptionFlags       = ResourceOptionFlags.None,
+                            SampleDescription = new SampleDescription(1, 0)
+                        }, new DataRectangle(buffer.DataPointer, stride));
                 }
             }
         }
-
+        
         /// <summary>
         ///     Converts this object to a texture 2 d array.
         /// </summary>
-        /// <param name="device">        . </param>
+        /// <param name="device">        The device. </param>
         /// <param name="bitmapSources"> The bitmap sources. </param>
         /// <returns>
         ///     The given data converted to a Texture2D.
@@ -131,40 +125,37 @@ namespace Exomia.Framework.Graphics
             int width  = bitmapSources[0].Size.Width;
             int height = bitmapSources[0].Size.Height;
 
-            lock (device)
-            {
-                Texture2D texArray = new Texture2D(
-                    device,
-                    new Texture2DDescription
-                    {
-                        Width             = width,
-                        Height            = height,
-                        ArraySize         = bitmapSources.Length,
-                        BindFlags         = BindFlags.ShaderResource,
-                        Usage             = ResourceUsage.Default,
-                        CpuAccessFlags    = CpuAccessFlags.None,
-                        Format            = Format.R8G8B8A8_UNorm,
-                        MipLevels         = 1,
-                        OptionFlags       = ResourceOptionFlags.None,
-                        SampleDescription = new SampleDescription(1, 0)
-                    });
-
-                int stride = width * 4;
-                for (int i = 0; i < bitmapSources.Length; i++)
+            Texture2D texArray = new Texture2D(
+                device,
+                new Texture2DDescription
                 {
-                    using (BitmapSource bitmap = bitmapSources[i])
+                    Width             = width,
+                    Height            = height,
+                    ArraySize         = bitmapSources.Length,
+                    BindFlags         = BindFlags.ShaderResource,
+                    Usage             = ResourceUsage.Default,
+                    CpuAccessFlags    = CpuAccessFlags.None,
+                    Format            = Format.R8G8B8A8_UNorm,
+                    MipLevels         = 1,
+                    OptionFlags       = ResourceOptionFlags.None,
+                    SampleDescription = new SampleDescription(1, 0)
+                });
+
+            int stride = width * 4;
+            for (int i = 0; i < bitmapSources.Length; i++)
+            {
+                using (BitmapSource bitmap = bitmapSources[i])
+                {
+                    using (DataStream buffer = new DataStream(height * stride, true, true))
                     {
-                        using (DataStream buffer = new DataStream(height * stride, true, true))
-                        {
-                            bitmap.CopyPixels(stride, buffer);
-                            DataBox box = new DataBox(buffer.DataPointer, stride, 1);
-                            device.ImmediateContext.UpdateSubresource(
-                                box, texArray, Resource.CalculateSubResourceIndex(0, i, 1));
-                        }
+                        bitmap.CopyPixels(stride, buffer);
+                        DataBox box = new DataBox(buffer.DataPointer, stride, 1);
+                        device.ImmediateContext.UpdateSubresource(
+                            box, texArray, Resource.CalculateSubResourceIndex(0, i, 1));
                     }
                 }
-                return texArray;
             }
+            return texArray;
         }
     }
 }

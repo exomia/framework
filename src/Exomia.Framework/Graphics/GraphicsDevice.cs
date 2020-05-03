@@ -278,8 +278,7 @@ namespace Exomia.Framework.Graphics
                 if (_adapter4 != null)
                 {
                     Console.WriteLine("------- GRAPHIC CARD INFORMATION -------");
-                    Console.WriteLine(
-                        $"Luid:\t\t{_adapter4.Description2.Luid}");
+                    Console.WriteLine($"Luid:\t\t\t{_adapter4.Description2.Luid}");
                     Console.WriteLine(
                         $"Description:\t\t{_adapter4.Description2.Description.TrimEnd('\t', ' ', '\r', '\n', (char)0)}");
                     Console.WriteLine($"DeviceId:\t\t{_adapter4.Description2.DeviceId}");
