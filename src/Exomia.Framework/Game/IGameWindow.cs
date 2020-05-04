@@ -27,6 +27,11 @@ namespace Exomia.Framework.Game
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         void Initialize(ref GameGraphicsParameters parameters);
+
+        /// <summary>
+        ///     Shows this object.
+        /// </summary>
+        void Show();
     }
 
     /// <summary>

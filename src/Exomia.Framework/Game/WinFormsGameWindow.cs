@@ -22,6 +22,7 @@ namespace Exomia.Framework.Game
     public sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
     {
         private readonly RenderForm _renderForm;
+        private          bool       _isInitialized;
 
         /// <summary>
         ///     Gets the width.
@@ -45,7 +46,10 @@ namespace Exomia.Framework.Game
         /// <value>
         ///     True if this object is initialized, false if not.
         /// </value>
-        public bool IsInitialized { get; private set; }
+        bool IGameWindowInitialize.IsInitialized
+        {
+            get { return _isInitialized; }
+        }
 
         /// <inheritdoc />
         public RenderForm RenderForm
@@ -62,13 +66,7 @@ namespace Exomia.Framework.Game
         public string Title
         {
             get { return _renderForm.Text; }
-            set
-            {
-                if (_renderForm != null)
-                {
-                    _renderForm.Text = value;
-                }
-            }
+            set { _renderForm.Text = value; }
         }
 
         /// <summary>
@@ -79,18 +77,12 @@ namespace Exomia.Framework.Game
         {
             _renderForm = new RenderForm(title)
             {
-                StartPosition = FormStartPosition.Manual, Location = Point.Empty, AutoScaleMode = AutoScaleMode.None
+                StartPosition = FormStartPosition.Manual, 
+                Location = Point.Empty, 
+                AutoScaleMode = AutoScaleMode.None
             };
         }
-
-        /// <summary>
-        ///     Finalizes an instance of the <see cref="WinFormsGameWindow" /> class.
-        /// </summary>
-        ~WinFormsGameWindow()
-        {
-            Dispose(false);
-        }
-
+        
         /// <summary>
         ///     Resizes.
         /// </summary>
@@ -114,9 +106,9 @@ namespace Exomia.Framework.Game
         ///     Initializes this object.
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
-        public void Initialize(ref GameGraphicsParameters parameters)
+        void IGameWindowInitialize.Initialize(ref GameGraphicsParameters parameters)
         {
-            if (IsInitialized) { return; }
+            if (_isInitialized) { return; }
 
             _renderForm.WindowState = parameters.DisplayType == DisplayType.FullscreenWindow
                 ? FormWindowState.Maximized
@@ -127,8 +119,7 @@ namespace Exomia.Framework.Game
                 ? FormBorderStyle.Fixed3D
                 : FormBorderStyle.None;
 
-            _renderForm.Show();
-            _renderForm.Activate();
+            _renderForm.ForceCreateHandle();
 
             while (!_renderForm.IsHandleCreated)
             {
@@ -186,7 +177,13 @@ namespace Exomia.Framework.Game
                 }
             }
 
-            IsInitialized = true;
+            _isInitialized = true;
+        }
+
+        void IGameWindowInitialize.Show()
+        {
+            _renderForm.Show();
+            _renderForm.Activate();
         }
 
         #region IDisposable Support
@@ -216,6 +213,14 @@ namespace Exomia.Framework.Game
             }
         }
 
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="WinFormsGameWindow" /> class.
+        /// </summary>
+        ~WinFormsGameWindow()
+        {
+            Dispose(false);
+        }
+        
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting
         ///     unmanaged resources.
