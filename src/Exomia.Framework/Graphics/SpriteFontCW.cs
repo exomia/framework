@@ -21,22 +21,22 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont obj)
         {
-            context.Set("Face", obj.Face);
-            context.Set("Size", obj.Size);
-
-            context.Set("Bold", obj.Bold);
-            context.Set("Italic", obj.Italic);
-
-            context.Set("DefaultCharacter", obj.DefaultCharacter);
-            context.Set("LineSpacing", obj.LineSpacing);
-
-            context.Set("SpacingX", obj.SpacingX);
-            context.Set("SpacingY", obj.SpacingY);
-
-            context.Set("Glyphs", obj.Glyphs);
-            context.Set("Kernings", obj.Kernings);
-
-            context.Set("ImageData", Convert.ToBase64String(obj.ImageData));
+            context.Set(nameof(SpriteFont.Face), obj.Face);
+            context.Set(nameof(SpriteFont.Size), obj.Size);
+            
+            context.Set(nameof(SpriteFont.Bold), obj.Bold);
+            context.Set(nameof(SpriteFont.Italic), obj.Italic);
+            
+            context.Set(nameof(SpriteFont.DefaultCharacter), obj.DefaultCharacter);
+            context.Set(nameof(SpriteFont.LineSpacing), obj.LineSpacing);
+            
+            context.Set(nameof(SpriteFont.SpacingX), obj.SpacingX);
+            context.Set(nameof(SpriteFont.SpacingY), obj.SpacingY);
+            
+            context.Set(nameof(SpriteFont.Glyphs), obj.Glyphs);
+            context.Set(nameof(SpriteFont.Kernings), obj.Kernings);
+            
+            context.Set(nameof(SpriteFont.ImageData), Convert.ToBase64String(obj.ImageData));
         }
     }
 
@@ -48,11 +48,11 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Glyph obj)
         {
-            context.Set("Character", obj.Character);
-            context.Set("Subrect", obj.Subrect);
-            context.Set("OffsetX", obj.OffsetX);
-            context.Set("OffsetY", obj.OffsetY);
-            context.Set("XAdvance", obj.XAdvance);
+            context.Set(nameof(SpriteFont.Glyph.Character), obj.Character);
+            context.Set(nameof(SpriteFont.Glyph.Subrect), obj.Subrect);
+            context.Set(nameof(SpriteFont.Glyph.OffsetX), obj.OffsetX);
+            context.Set(nameof(SpriteFont.Glyph.OffsetY), obj.OffsetY);
+            context.Set(nameof(SpriteFont.Glyph.XAdvance), obj.XAdvance);
         }
     }
 
@@ -64,9 +64,9 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, SpriteFont.Kerning obj)
         {
-            context.Set("First", obj.First);
-            context.Set("Second", obj.Second);
-            context.Set("Offset", obj.Offset);
+            context.Set(nameof(SpriteFont.Kerning.First), obj.First);
+            context.Set(nameof(SpriteFont.Kerning.Second), obj.Second);
+            context.Set(nameof(SpriteFont.Kerning.Offset), obj.Offset);
         }
     }
 }

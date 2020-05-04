@@ -22,7 +22,9 @@ namespace Exomia.Framework.ContentSerialization.Readers
         {
             return new Vector3
             {
-                X = context.Get<float>("X"), Y = context.Get<float>("Y"), Z = context.Get<float>("Z")
+                X = context.Get<float>(nameof(Vector3.X)),
+                Y = context.Get<float>(nameof(Vector3.Y)),
+                Z = context.Get<float>(nameof(Vector3.Z))
             };
         }
     }

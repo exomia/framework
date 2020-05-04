@@ -22,10 +22,10 @@ namespace Exomia.Framework.ContentSerialization.Readers
         {
             return new Color
             {
-                A = context.Get<byte>("A"),
-                R = context.Get<byte>("R"),
-                G = context.Get<byte>("G"),
-                B = context.Get<byte>("B")
+                A = context.Get<byte>(nameof(Color.A)),
+                R = context.Get<byte>(nameof(Color.R)),
+                G = context.Get<byte>(nameof(Color.G)),
+                B = context.Get<byte>(nameof(Color.B))
             };
         }
     }

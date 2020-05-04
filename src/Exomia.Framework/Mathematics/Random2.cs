@@ -407,10 +407,6 @@ namespace Exomia.Framework.Mathematics
         ///     Gets the next random unit vector.
         /// </summary>
         /// <param name="vector"> [in,out] If non-null, the vector. </param>
-        /// ###
-        /// <returns>
-        ///     A random unit vector.
-        /// </returns>
         public unsafe void NextUnitVector(Vector2* vector)
         {
             Math2.SinCos(NextAngle(), out vector->X, out vector->Y);

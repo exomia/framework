@@ -25,17 +25,17 @@ namespace Exomia.Framework.Graphics
         {
             return new SpriteFont
             {
-                Face             = context.Get<string>("Face"),
-                Size             = context.Get<int>("Size"),
-                Bold             = context.Get<bool>("Bold"),
-                Italic           = context.Get<bool>("Italic"),
-                DefaultCharacter = context.Get<int>("DefaultCharacter"),
-                LineSpacing      = context.Get<int>("LineSpacing"),
-                SpacingX         = context.Get<int>("SpacingX"),
-                SpacingY         = context.Get<int>("SpacingY"),
-                Glyphs           = context.Get<Dictionary<int, SpriteFont.Glyph>>("Glyphs"),
-                Kernings         = context.Get<Dictionary<int, SpriteFont.Kerning>>("Kernings"),
-                ImageData        = Convert.FromBase64String(context.Get<string>("ImageData"))
+                Face             = context.Get<string>(nameof(SpriteFont.Face)),
+                Size             = context.Get<int>(nameof(SpriteFont.Size)),
+                Bold             = context.Get<bool>(nameof(SpriteFont.Bold)),
+                Italic           = context.Get<bool>(nameof(SpriteFont.Italic)),
+                DefaultCharacter = context.Get<int>(nameof(SpriteFont.DefaultCharacter)),
+                LineSpacing      = context.Get<int>(nameof(SpriteFont.LineSpacing)),
+                SpacingX         = context.Get<int>(nameof(SpriteFont.SpacingX)),
+                SpacingY         = context.Get<int>(nameof(SpriteFont.SpacingY)),
+                Glyphs           = context.Get<Dictionary<int, SpriteFont.Glyph>>(nameof(SpriteFont.Glyphs)),
+                Kernings         = context.Get<Dictionary<int, SpriteFont.Kerning>>(nameof(SpriteFont.Kernings)),
+                ImageData        = Convert.FromBase64String(context.Get<string>(nameof(SpriteFont.ImageData)))
             };
         }
     }
@@ -50,11 +50,11 @@ namespace Exomia.Framework.Graphics
         {
             return new SpriteFont.Glyph
             {
-                Character = context.Get<int>("Character"),
-                Subrect   = context.Get<Rectangle>("Subrect"),
-                OffsetX   = context.Get<int>("OffsetX"),
-                OffsetY   = context.Get<int>("OffsetY"),
-                XAdvance  = context.Get<int>("XAdvance")
+                Character = context.Get<int>(nameof(SpriteFont.Glyph.Character)),
+                Subrect   = context.Get<Rectangle>(nameof(SpriteFont.Glyph.Subrect)),
+                OffsetX   = context.Get<int>(nameof(SpriteFont.Glyph.OffsetX)),
+                OffsetY   = context.Get<int>(nameof(SpriteFont.Glyph.OffsetY)),
+                XAdvance  = context.Get<int>(nameof(SpriteFont.Glyph.XAdvance))
             };
         }
     }
@@ -69,9 +69,9 @@ namespace Exomia.Framework.Graphics
         {
             return new SpriteFont.Kerning
             {
-                First  = context.Get<int>("First"),
-                Second = context.Get<int>("Second"),
-                Offset = context.Get<int>("Offset")
+                First  = context.Get<int>(nameof(SpriteFont.Kerning.First)),
+                Second = context.Get<int>(nameof(SpriteFont.Kerning.Second)),
+                Offset = context.Get<int>(nameof(SpriteFont.Kerning.Offset))
             };
         }
     }
