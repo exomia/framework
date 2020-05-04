@@ -20,9 +20,9 @@ namespace Exomia.Framework.ContentSerialization.Writers
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Vector3 obj)
         {
-            context.Set("X", obj.X);
-            context.Set("Y", obj.Y);
-            context.Set("Z", obj.Z);
+            context.Set(nameof(Vector3.X), obj.X);
+            context.Set(nameof(Vector3.Y), obj.Y);
+            context.Set(nameof(Vector3.Z), obj.Z);
         }
     }
 }

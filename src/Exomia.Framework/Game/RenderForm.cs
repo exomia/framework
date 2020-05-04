@@ -65,6 +65,14 @@ namespace Exomia.Framework.Game
             Device.MouseInput += DeviceOnMouseInput;
         }
 
+        /// <summary>
+        ///     Force the creation of the handle.
+        /// </summary>
+        public void ForceCreateHandle()
+        {
+            base.CreateHandle();
+        }
+        
         /// <inheritdoc />
         void IInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
         {
@@ -184,7 +192,7 @@ namespace Exomia.Framework.Game
         {
             _mouseWheelPipe.Unregister(handler);
         }
-
+        
         /// <summary>
         ///     Low word.
         /// </summary>

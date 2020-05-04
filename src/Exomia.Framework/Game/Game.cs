@@ -583,6 +583,7 @@ namespace Exomia.Framework.Game
                 InitializePendingInitializations();
                 _isInitialized = true;
                 OnAfterInitialize();
+                _gameWindowInitialize.Show();
             }
         }
 

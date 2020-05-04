@@ -20,10 +20,10 @@ namespace Exomia.Framework.ContentSerialization.Writers
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, RectangleF obj)
         {
-            context.Set("X", obj.X);
-            context.Set("Y", obj.Y);
-            context.Set("Width", obj.Width);
-            context.Set("Height", obj.Height);
+            context.Set(nameof(RectangleF.X), obj.X);
+            context.Set(nameof(RectangleF.Y), obj.Y);
+            context.Set(nameof(RectangleF.Width), obj.Width);
+            context.Set(nameof(RectangleF.Height), obj.Height);
         }
     }
 
@@ -35,10 +35,10 @@ namespace Exomia.Framework.ContentSerialization.Writers
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Rectangle obj)
         {
-            context.Set("X", obj.X);
-            context.Set("Y", obj.Y);
-            context.Set("Width", obj.Width);
-            context.Set("Height", obj.Height);
+            context.Set(nameof(Rectangle.X), obj.X);
+            context.Set(nameof(Rectangle.Y), obj.Y);
+            context.Set(nameof(Rectangle.Width), obj.Width);
+            context.Set(nameof(Rectangle.Height), obj.Height);
         }
     }
 }
