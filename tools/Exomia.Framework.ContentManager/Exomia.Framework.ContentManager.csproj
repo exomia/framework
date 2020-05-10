@@ -1,0 +1,96 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net48;net471;net472;</TargetFrameworks>
+    <Authors>exomia</Authors>
+    <Description>a content manager for the exomia framework</Description>
+    <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
+    <Version>0.0.0.1</Version>
+    <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageTags>exomia framework 2d 3d game engine xna mono content manager contentmanager</PackageTags>
+    <RepositoryUrl>https://github.com/exomia/framework</RepositoryUrl>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RepositoryType>git</RepositoryType>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <PackageOutputPath>.</PackageOutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile></DocumentationFile>
+    <Nullable>enable</Nullable>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">DEBUG;TRACE;x86</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">DEBUG;TRACE;$(Platform)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">TRACE;x86</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">TRACE;$(Platform)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
+    <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
+    <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>1701;1702;IDE0063</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <None Include="..\..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainForm.*.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CreateProjectForm.cs" />
+    <Compile Update="CreateProjectForm.*.cs">
+      <DependentUpon>CreateProjectForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

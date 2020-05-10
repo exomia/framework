@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -82,6 +83,8 @@ namespace Exomia.Framework.Graphics
         private Texture        _texture2DArray = Texture.Empty;
         private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
 
+        private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
+
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch2" /> class.
         /// </summary>
@@ -143,7 +146,7 @@ namespace Exomia.Framework.Graphics
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             using (Stream stream = assembly.GetManifestResourceStream(
-                $"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}"))
+                $"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE2}"))
             {
                 Shader.Shader.Technique technique =
                     (_shader = ShaderHelper.FromStream(iDevice, stream) ??
@@ -1207,11 +1210,25 @@ namespace Exomia.Framework.Graphics
 
             if (_spriteQueueCount >= _spriteQueue.Length)
             {
-                _sortIndices = new int[_spriteQueue.Length * 2];
-                Array.Resize(ref _spriteQueue, _spriteQueue.Length * 2);
-            }
+                bool lockTaken = false;
+                try
+                {
+                    _spinLock.Enter(ref lockTaken);
 
-            fixed (SpriteInfo* spriteInfo = &_spriteQueue[_spriteQueueCount++])
+                    int size = _spriteQueue.Length * 2;
+                    _sortIndices = new int[size];
+                    Array.Resize(ref _spriteQueue, size);
+                }
+                finally
+                {
+                    if (lockTaken)
+                    {
+                        _spinLock.Exit(false);
+                    }
+                }
+            }
+            int spriteQueueCount = Interlocked.Increment(ref _spriteQueueCount) - 1;
+            fixed (SpriteInfo* spriteInfo = &_spriteQueue[spriteQueueCount])
             {
                 float width;
                 float height;
