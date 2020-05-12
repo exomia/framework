@@ -21,7 +21,7 @@ namespace Exomia.Framework.Game
     public struct GameGraphicsParameters
     {
         /// <summary>
-        ///     Define the width of the game Window.
+        ///     The handle.
         /// </summary>
         internal IntPtr Handle;
 

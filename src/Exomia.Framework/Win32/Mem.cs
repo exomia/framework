@@ -11,7 +11,7 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Exomia.Framework.Native
+namespace Exomia.Framework.Win32
 {
     /// <summary>
     ///     Memory utils

@@ -13,7 +13,7 @@ using System.IO;
 using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
-using Exomia.Framework.Native;
+using Exomia.Framework.Win32;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;

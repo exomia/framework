@@ -10,17 +10,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using SharpDX;
 using SharpDX.WIC;
-using Bitmap = System.Drawing.Bitmap;
 using Color = System.Drawing.Color;
 using Rectangle = SharpDX.Rectangle;
 
 namespace Exomia.Framework.Graphics
 {
+    //TODO
     /// <summary>
     ///     A sprite batch atlas. This class cannot be inherited.
     /// </summary>
@@ -55,7 +53,7 @@ namespace Exomia.Framework.Graphics
 
             _sourceRectangles = new Dictionary<string, Rectangle>(16);
 
-            _atlas = new Bitmap(width, height);
+            //_atlas = new Bitmap(width, height);
         }
 
         /// <summary>
@@ -77,25 +75,25 @@ namespace Exomia.Framework.Graphics
                 return true;
             }
 
-            using (Image img = Image.FromStream(stream))
-            {
-                if (img.Width > _width) { throw new OverflowException("the image size is to big!"); }
-                if (img.Height > _height) { throw new OverflowException("the image size is to big!"); }
+            //using (Image img = Image.FromStream(stream))
+            //{
+            //    if (img.Width > _width) { throw new OverflowException("the image size is to big!"); }
+            //    if (img.Height > _height) { throw new OverflowException("the image size is to big!"); }
 
-                if (GetFreeLocation(img.Width, img.Height, out int x, out int y))
-                {
-                    sourceRectangle = new Rectangle(x, y, img.Width, img.Height);
-                    _sourceRectangles.Add(assetName, sourceRectangle);
-                    lock (_lockAtlas)
-                    {
-                        using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
-                        {
-                            g.DrawImage(img, new System.Drawing.Rectangle(x, y, img.Width, img.Height));
-                        }
-                    }
-                    return true;
-                }
-            }
+            //    if (GetFreeLocation(img.Width, img.Height, out int x, out int y))
+            //    {
+            //        sourceRectangle = new Rectangle(x, y, img.Width, img.Height);
+            //        _sourceRectangles.Add(assetName, sourceRectangle);
+            //        lock (_lockAtlas)
+            //        {
+            //            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
+            //            {
+            //                g.DrawImage(img, new System.Drawing.Rectangle(x, y, img.Width, img.Height));
+            //            }
+            //        }
+            //        return true;
+            //    }
+            //}
             return false;
         }
 
@@ -110,7 +108,7 @@ namespace Exomia.Framework.Graphics
             lock (_lockAtlas)
             {
                 MemoryStream ms = new MemoryStream();
-                _atlas.Save(ms, ImageFormat.Png);
+                //_atlas.Save(ms, ImageFormat.Png);
                 ms.Position = 0;
                 return TextureHelper.LoadBitmap(ms);
             }
@@ -129,16 +127,16 @@ namespace Exomia.Framework.Graphics
             {
                 return true;
             }
-            lock (_lockAtlas)
-            {
-                using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
-                {
-                    g.FillRectangle(
-                        new SolidBrush(Color.Transparent),
-                        new System.Drawing.Rectangle(
-                            sourceRectangle.X, sourceRectangle.Y, sourceRectangle.Width, sourceRectangle.Height));
-                }
-            }
+            //lock (_lockAtlas)
+            //{
+            //    using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
+            //    {
+            //        g.FillRectangle(
+            //            new SolidBrush(Color.Transparent),
+            //            new System.Drawing.Rectangle(
+            //                sourceRectangle.X, sourceRectangle.Y, sourceRectangle.Width, sourceRectangle.Height));
+            //    }
+            //}
 
             return _sourceRectangles.Remove(assetName);
         }

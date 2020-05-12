@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net48;net471;net472;</TargetFrameworks>
+    <TargetFramework>net48</TargetFramework>
     <Authors>exomia</Authors>
     <Description>a content manager for the exomia framework</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>

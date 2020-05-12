@@ -11,8 +11,8 @@
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     Represents the method that will handle an event that has no event data and no sender
-    ///     specified.
+    ///     Represents the method that will handle an event,
+    ///     that has no event data and no sender specified.
     /// </summary>
     public delegate void EventHandler();
 
@@ -29,7 +29,7 @@ namespace Exomia.Framework
     /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
     /// <param name="e"> [in,out] Reference t event information. </param>
     public delegate void RefEventHandler<TEventArgs>(ref TEventArgs e) where TEventArgs : struct;
-
+    
     /// <summary>
     ///     Handler, called when the event.
     /// </summary>
@@ -38,4 +38,13 @@ namespace Exomia.Framework
     /// <param name="sender"> The sender. </param>
     /// <param name="e">      T event information. </param>
     public delegate void EventHandler<in TClass, in TEventArgs>(TClass sender, TEventArgs e);
+
+    /// <summary>
+    ///     Delegate for handling Ref events.
+    /// </summary>
+    /// <typeparam name="TClass">     Type of the class. </typeparam>
+    /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
+    /// <param name="sender"> The sender. </param>
+    /// <param name="e">      [in,out] Reference t event information. </param>
+    public delegate void RefEventHandler<in TClass, TEventArgs>(TClass sender, ref TEventArgs e) where TEventArgs : struct;
 }

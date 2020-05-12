@@ -9,10 +9,8 @@
 #endregion
 
 using System;
-using System.Drawing;
 using System.Threading;
-using System.Windows.Forms;
-using Exomia.Framework.Native;
+using Exomia.Framework.Win32;
 
 namespace Exomia.Framework.Game
 {
@@ -30,7 +28,10 @@ namespace Exomia.Framework.Game
         /// <value>
         ///     The width.
         /// </value>
-        public int Width { get; private set; }
+        public int Width
+        {
+            get { return _renderForm.Size.X; }
+        }
 
         /// <summary>
         ///     Gets the height.
@@ -38,7 +39,10 @@ namespace Exomia.Framework.Game
         /// <value>
         ///     The height.
         /// </value>
-        public int Height { get; private set; }
+        public int Height
+        {
+            get { return _renderForm.Size.Y; }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this object is initialized.
@@ -65,8 +69,8 @@ namespace Exomia.Framework.Game
         /// </value>
         public string Title
         {
-            get { return _renderForm.Text; }
-            set { _renderForm.Text = value; }
+            get { return _renderForm.WindowTitle; }
+            set { _renderForm.WindowTitle = value; }
         }
 
         /// <summary>
@@ -75,14 +79,9 @@ namespace Exomia.Framework.Game
         /// <param name="title"> The title. </param>
         public WinFormsGameWindow(string title)
         {
-            _renderForm = new RenderForm(title)
-            {
-                StartPosition = FormStartPosition.Manual, 
-                Location = Point.Empty, 
-                AutoScaleMode = AutoScaleMode.None
-            };
+            _renderForm = new RenderForm(title);
         }
-        
+
         /// <summary>
         ///     Resizes.
         /// </summary>
@@ -90,16 +89,7 @@ namespace Exomia.Framework.Game
         /// <param name="height"> The height. </param>
         public void Resize(int width, int height)
         {
-            if (_renderForm.InvokeRequired)
-            {
-                _renderForm.Invoke(
-                    (MethodInvoker)delegate
-                    {
-                        Resize(width, height);
-                    });
-                return;
-            }
-            _renderForm.ClientSize = new Size(Width = width, Height = height);
+            _renderForm.Resize(width, height);
         }
 
         /// <summary>
@@ -111,67 +101,55 @@ namespace Exomia.Framework.Game
             if (_isInitialized) { return; }
 
             _renderForm.WindowState = parameters.DisplayType == DisplayType.FullscreenWindow
-                ? FormWindowState.Maximized
-                : FormWindowState.Normal;
+                ? RenderForm.FormWindowState.Maximized
+                : RenderForm.FormWindowState.Normal;
 
-            _renderForm.IsFullscreen = parameters.DisplayType == DisplayType.Fullscreen;
-            _renderForm.FormBorderStyle = parameters.DisplayType == DisplayType.Window
-                ? FormBorderStyle.Fixed3D
-                : FormBorderStyle.None;
+            _renderForm.BorderStyle = parameters.DisplayType == DisplayType.Window
+                ? RenderForm.FormBorderStyle.Fixed
+                : RenderForm.FormBorderStyle.None;
 
-            _renderForm.ForceCreateHandle();
-
-            while (!_renderForm.IsHandleCreated)
-            {
-                Thread.Sleep(1);
-                Application.DoEvents();
-            }
-
-            parameters.Handle = _renderForm.Handle;
+            parameters.Handle = _renderForm.CreateWindow(parameters.Width, parameters.Height);
 
             if (parameters.DisplayType == DisplayType.FullscreenWindow)
             {
-                parameters.Width  = Width  = _renderForm.ClientSize.Width;
-                parameters.Height = Height = _renderForm.ClientSize.Height;
-            }
-            else
-            {
-                Resize(parameters.Width, parameters.Height);
+                User32.GetClientRect(parameters.Handle, out RECT rcRect);
+                parameters.Width  = rcRect.RightBottom.X;
+                parameters.Height = rcRect.RightBottom.Y;
             }
 
             bool isMouseVisible = parameters.IsMouseVisible;
             bool clipCursor     = parameters.ClipCursor;
 
-            _renderForm.MouseEnter += (sender, e) =>
+            _renderForm.MouseEnter += hWnd =>
             {
                 if (!isMouseVisible)
                 {
-                    Cursor.Hide();
+                    User32.ShowCursor(false);
                 }
                 if (clipCursor)
                 {
-                    User32.RECT rect = new User32.RECT(Width, Height);
-                    if (User32.ClientToScreen(_renderForm.Handle, ref rect.LeftTop) &&
-                        User32.ClientToScreen(_renderForm.Handle, ref rect.RightBottom))
+                    RECT rect = new RECT(Width, Height);
+                    if (User32.ClientToScreen(hWnd, ref rect.LeftTop) &&
+                        User32.ClientToScreen(hWnd, ref rect.RightBottom))
                     {
                         User32.ClipCursor(ref rect);
                     }
                 }
             };
 
-            _renderForm.MouseLeave += (sender, e) =>
+            _renderForm.MouseLeave += hWnd =>
             {
                 if (!isMouseVisible)
                 {
-                    Cursor.Show();
+                    User32.ShowCursor(true);
                 }
             };
 
             if (clipCursor)
             {
-                User32.RECT rect = new User32.RECT(Width, Height);
-                if (User32.ClientToScreen(_renderForm.Handle, ref rect.LeftTop) &&
-                    User32.ClientToScreen(_renderForm.Handle, ref rect.RightBottom))
+                RECT rect = new RECT(Width, Height);
+                if (User32.ClientToScreen(parameters.Handle, ref rect.LeftTop) &&
+                    User32.ClientToScreen(parameters.Handle, ref rect.RightBottom))
                 {
                     User32.ClipCursor(ref rect);
                 }
@@ -183,7 +161,6 @@ namespace Exomia.Framework.Game
         void IGameWindowInitialize.Show()
         {
             _renderForm.Show();
-            _renderForm.Activate();
         }
 
         #region IDisposable Support
@@ -220,7 +197,7 @@ namespace Exomia.Framework.Game
         {
             Dispose(false);
         }
-        
+
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting
         ///     unmanaged resources.

@@ -9,16 +9,12 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Exomia.Framework.Input;
-using SharpDX.Multimedia;
-using SharpDX.RawInput;
+using Exomia.Framework.Win32;
 using KeyEventHandler = Exomia.Framework.Input.KeyEventHandler;
 using KeyPressEventHandler = Exomia.Framework.Input.KeyPressEventHandler;
-using MouseButtons = Exomia.Framework.Input.MouseButtons;
-using MouseEventArgs = Exomia.Framework.Input.MouseEventArgs;
 using MouseEventHandler = Exomia.Framework.Input.MouseEventHandler;
 
 namespace Exomia.Framework.Game
@@ -26,30 +22,159 @@ namespace Exomia.Framework.Game
     /// <summary>
     ///     The RenderForm.
     /// </summary>
-    public class RenderForm : SharpDX.Windows.RenderForm, IInputDevice
+    public sealed partial class RenderForm : IDisposable
     {
-        private readonly Pipe<RawKeyEventHandler>   _rawKeyPipe;
-        private readonly Pipe<KeyEventHandler>      _keyUpPipe, _keyDownPipe;
-        private readonly Pipe<KeyPressEventHandler> _keyPressPipe;
+        private const string LP_CLASS_NAME = "Exomia.Framework.RenderForm";
 
-        private readonly Pipe<MouseEventHandler> _mouseMovePipe,
-                                                 _mouseUpPipe,
-                                                 _mouseDownPipe,
-                                                 _mouseClickPipe,
-                                                 _mouseWheelPipe;
+        private const uint COLOR_WINDOW = 5;
+        private const int  IDC_ARROW    = 32512;
 
-        private readonly Pipe<MouseEventHandler> _mouseRawInputPipe;
+        private readonly WndClassEx _wndClassEx;
 
         private int         _state;
         private KeyModifier _keyModifier = 0;
+        private IntPtr      _hWnd;
+
+        private string          _windowTitle;
+        private Index2          _size;
+        private FormWindowState _windowState = FormWindowState.Normal;
+        private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
+
+        /// <summary>
+        ///     Gets or sets the size.
+        /// </summary>
+        /// <value>
+        ///     The size.
+        /// </value>
+        public Index2 Size
+        {
+            get { return _size; }
+            set
+            {
+                if (_size != value)
+                {
+                    _size = value;
+                    Resize(value.X, value.Y);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the window title.
+        /// </summary>
+        /// <value>
+        ///     The title.
+        /// </value>
+        public string WindowTitle
+        {
+            get { return _windowTitle; }
+            set
+            {
+                _windowTitle = value;
+                if (_hWnd != IntPtr.Zero)
+                {
+                    User32.SetWindowText(_hWnd, _windowTitle);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the state of the window.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+        /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
+        /// <value>
+        ///     The window state.
+        /// </value>
+        public FormWindowState WindowState
+        {
+            get { return _windowState; }
+            set
+            {
+                _windowState = value;
+                if (_hWnd != IntPtr.Zero)
+                {
+                    ShowWindowCommands showWindowCommands = _windowState switch
+                    {
+                        FormWindowState.Normal => ShowWindowCommands.Normal,
+                        FormWindowState.Minimized => ShowWindowCommands.Minimize,
+                        FormWindowState.Maximized => ShowWindowCommands.Maximize,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+
+                    if (!User32.ShowWindow(_hWnd, (int)showWindowCommands))
+                    {
+                        throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.ShowWindow)} failed!");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the state of the window.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+        /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
+        /// <value>
+        ///     The window state.
+        /// </value>
+        public FormBorderStyle BorderStyle
+        {
+            get { return _borderStyle; }
+            set
+            {
+                _borderStyle = value;
+                if (_hWnd != IntPtr.Zero)
+                {
+                    uint windowStyles = _borderStyle switch
+                    {
+                        FormBorderStyle.None => WS.OVERLAPPED,
+                        FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                                 WS.MAXIMIZEBOX,
+                        FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                                   WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+
+                    windowStyles |= _windowState switch
+                    {
+                        FormWindowState.Normal => 0,
+                        FormWindowState.Minimized => WS.MINIMIZE,
+                        FormWindowState.Maximized => WS.MAXIMIZE,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+
+                    uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
+                    if (_borderStyle == FormBorderStyle.None)
+                    {
+                        windowStylesEx &= ~WSEX.WINDOWEDGE;
+                    }
+
+                    User32.SetWindowLongPtr(_hWnd, WLF.GWL_STYLE, (IntPtr)windowStyles);
+                    User32.SetWindowLongPtr(_hWnd, WLF.GWL_EXSTYLE, (IntPtr)windowStylesEx);
+
+                    if (!User32.SetWindowPos(
+                        _hWnd,
+                        IntPtr.Zero,
+                        0, 0, 0, 0,
+                        SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
+                        SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
+                        SetWindowPosFlags.FrameChanged))
+                    {
+                        throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
+                    }
+                }
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RenderForm" /> class.
         /// </summary>
-        /// <param name="text"> The text. </param>
-        public RenderForm(string text)
-            : base(text)
+        /// <param name="windowTitle"> (Optional) The window title. </param>
+        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
+        public RenderForm(string windowTitle = "RenderForm")
         {
+            _windowTitle       = windowTitle;
             _rawKeyPipe        = new Pipe<RawKeyEventHandler>();
             _keyUpPipe         = new Pipe<KeyEventHandler>();
             _keyDownPipe       = new Pipe<KeyEventHandler>();
@@ -61,490 +186,227 @@ namespace Exomia.Framework.Game
             _mouseWheelPipe    = new Pipe<MouseEventHandler>();
             _mouseRawInputPipe = new Pipe<MouseEventHandler>();
 
-            Device.RegisterDevice(UsagePage.Generic, UsageId.GenericMouse, DeviceFlags.None);
-            Device.MouseInput += DeviceOnMouseInput;
+            _wndClassEx = new WndClassEx
+            {
+                cbSize = Marshal.SizeOf(typeof(WndClassEx)),
+                style = ClassStyles.HorizontalRedraw | ClassStyles.VerticalRedraw |
+                        ClassStyles.DoubleClicks | ClassStyles.OwnDC,
+                hbrBackground = (IntPtr)COLOR_WINDOW + 1, //null,
+                cbClsExtra    = 0,
+                cbWndExtra    = 0,
+                hInstance     = Kernel32.GetModuleHandle(null!),
+                hIcon         = IntPtr.Zero,
+                hCursor       = User32.LoadCursor(IntPtr.Zero, IDC_ARROW),
+                lpszMenuName  = null!,
+                lpszClassName = LP_CLASS_NAME,
+                lpfnWndProc   = WndProc,
+                hIconSm       = IntPtr.Zero
+            };
+
+            ushort regResult = User32.RegisterClassEx(ref _wndClassEx);
+            if (regResult == 0)
+            {
+                throw new Win32Exception(
+                    Kernel32.GetLastError(), $"{nameof(User32.RegisterClassEx)} failed with code {regResult}!");
+            }
+
+            //Device.RegisterDevice(UsagePage.Generic, UsageId.GenericMouse, DeviceFlags.None);
+            //Device.MouseInput += DeviceOnMouseInput;
         }
 
         /// <summary>
-        ///     Force the creation of the handle.
+        ///     Creates a window.
         /// </summary>
-        public void ForceCreateHandle()
-        {
-            base.CreateHandle();
-        }
-        
-        /// <inheritdoc />
-        void IInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
-        {
-            _rawKeyPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterKeyUp(KeyEventHandler handler, int position)
-        {
-            _keyUpPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterKeyPress(KeyPressEventHandler handler, int position)
-        {
-            _keyPressPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterKeyDown(KeyEventHandler handler, int position)
-        {
-            _keyDownPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterMouseDown(MouseEventHandler handler, int position)
-        {
-            _mouseDownPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterMouseUp(MouseEventHandler handler, int position)
-        {
-            _mouseUpPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterMouseClick(MouseEventHandler handler, int position)
-        {
-            _mouseClickPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterMouseMove(MouseEventHandler handler, int position)
-        {
-            _mouseMovePipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterRawMouseInput(MouseEventHandler handler, int position)
-        {
-            _mouseRawInputPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.RegisterMouseWheel(MouseEventHandler handler, int position)
-        {
-            _mouseWheelPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterRawKeyEvent(RawKeyEventHandler handler)
-        {
-            _rawKeyPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterKeyUp(KeyEventHandler handler)
-        {
-            _keyUpPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterKeyPress(KeyPressEventHandler handler)
-        {
-            _keyPressPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterKeyDown(KeyEventHandler handler)
-        {
-            _keyDownPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterRawMouseInput(MouseEventHandler handler)
-        {
-            _mouseRawInputPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterMouseDown(MouseEventHandler handler)
-        {
-            _mouseDownPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterMouseUp(MouseEventHandler handler)
-        {
-            _mouseUpPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterMouseClick(MouseEventHandler handler)
-        {
-            _mouseClickPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterMouseMove(MouseEventHandler handler)
-        {
-            _mouseMovePipe.Unregister(handler);
-        }
-
-        /// <inheritdoc />
-        void IInputDevice.UnregisterMouseWheel(MouseEventHandler handler)
-        {
-            _mouseWheelPipe.Unregister(handler);
-        }
-        
-        /// <summary>
-        ///     Low word.
-        /// </summary>
-        /// <param name="number"> Number of. </param>
+        /// <param name="w">            The width. </param>
+        /// <param name="h">            The height. </param>
         /// <returns>
-        ///     An int.
+        ///     The new window.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int LowWord(IntPtr number)
+        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
+        internal IntPtr CreateWindow(int w, int h)
         {
-            return (int)number.ToInt64() & 0x0000FFFF;
-        }
+            RECT windowRect;
+            windowRect.LeftTop.X     = 0;
+            windowRect.LeftTop.Y     = 0;
+            windowRect.RightBottom.X = w;
+            windowRect.RightBottom.Y = h;
 
-        /// <summary>
-        ///     High word.
-        /// </summary>
-        /// <param name="number"> Number of. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int HighWord(IntPtr number)
-        {
-            return (int)number.ToInt64() >> 16;
-        }
+            uint windowStyles = _borderStyle switch
+            {
+                FormBorderStyle.None => WS.POPUP,
+                FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                         WS.MAXIMIZEBOX,
+                FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                           WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
-        /// <inheritdoc />
-        protected override void WndProc(ref Message m)
-        {
-            switch (m.Msg)
+            // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+            windowStyles |= _windowState switch
             {
-                case Win32Message.WM_KEYDOWN:
-                case Win32Message.WM_KEYUP:
-                case Win32Message.WM_CHAR:
-                case Win32Message.WM_UNICHAR:
-                case Win32Message.WM_SYSKEYDOWN:
-                case Win32Message.WM_SYSKEYUP:
-                    RawKeyMessage(ref m);
-                    break;
-                case Win32Message.WM_LBUTTONDOWN:
-                    RawMouseDown(ref m, Input.MouseButtons.Left);
-                    break;
-                case Win32Message.WM_MBUTTONDOWN:
-                    RawMouseDown(ref m, Input.MouseButtons.Middle);
-                    break;
-                case Win32Message.WM_RBUTTONDOWN:
-                    RawMouseDown(ref m, Input.MouseButtons.Right);
-                    break;
-                case Win32Message.WM_XBUTTONDOWN:
-                    RawMouseDown(
-                        ref m, HighWord(m.WParam) == 1
-                            ? Input.MouseButtons.XButton1
-                            : Input.MouseButtons.XButton2);
-                    break;
-                case Win32Message.WM_LBUTTONUP:
-                    RawMouseUp(ref m, Input.MouseButtons.Left);
-                    break;
-                case Win32Message.WM_MBUTTONUP:
-                    RawMouseUp(ref m, Input.MouseButtons.Middle);
-                    break;
-                case Win32Message.WM_RBUTTONUP:
-                    RawMouseUp(ref m, Input.MouseButtons.Right);
-                    break;
-                case Win32Message.WM_XBUTTONUP:
-                    RawMouseUp(
-                        ref m, HighWord(m.WParam) == 1
-                            ? Input.MouseButtons.XButton1
-                            : Input.MouseButtons.XButton2);
-                    break;
-                case Win32Message.WM_MOUSEMOVE:
-                    {
-                        int          x            = LowWord(m.LParam);
-                        int          y            = HighWord(m.LParam);
-                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
-                        for (int i = 0; i < _mouseMovePipe.Count; i++)
-                        {
-                            if (_mouseMovePipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 0, 0))) { break; }
-                        }
-                        break;
-                    }
-                case Win32Message.WM_MOUSEWHEEL:
-                    {
-                        int          x            = LowWord(m.LParam);
-                        int          y            = HighWord(m.LParam);
-                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
-                        int          wheelDelta   = HighWord(m.WParam);
-                        for (int i = 0; i < _mouseWheelPipe.Count; i++)
-                        {
-                            if (_mouseWheelPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, wheelDelta)))
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                case Win32Message.WM_LBUTTONDBLCLK:
-                case Win32Message.WM_MBUTTONDBLCLK:
-                case Win32Message.WM_RBUTTONDBLCLK:
-                case Win32Message.WM_XBUTTONDBLCLK:
-                    {
-                        _state |= 0xC000000;
-                        int          x            = LowWord(m.LParam);
-                        int          y            = HighWord(m.LParam);
-                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.WParam);
-                        for (int i = 0; i < _mouseClickPipe.Count; i++)
-                        {
-                            if (_mouseClickPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, 0))) { break; }
-                        }
-                        break;
-                    }
+                FormWindowState.Normal => 0,
+                FormWindowState.Maximized => WS.MAXIMIZE,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
+            if (_borderStyle == FormBorderStyle.None)
+            {
+                windowStylesEx &= ~WSEX.WINDOWEDGE;
             }
-            base.WndProc(ref m);
-        }
 
-        private void DeviceOnMouseInput(object sender, MouseInputEventArgs e)
-        {
-            MouseButtons buttons = Input.MouseButtons.None;
-            int          clicks  = 0;
-            if ((e.ButtonFlags & MouseButtonFlags.LeftButtonDown) == MouseButtonFlags.LeftButtonDown)
+            if (!User32.AdjustWindowRectEx(ref windowRect, windowStyles, false, windowStylesEx))
             {
-                buttons |= Input.MouseButtons.Left;
-                clicks  =  1;
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
             }
-            if ((e.ButtonFlags & MouseButtonFlags.RightButtonDown) == MouseButtonFlags.RightButtonDown)
+
+            const int CW_USEDEFAULT = unchecked((int)0x80000000);
+            if ((_hWnd =
+                User32.CreateWindowEx(
+                    windowStylesEx,
+                    _wndClassEx.lpszClassName,
+                    WindowTitle,
+                    windowStyles,
+                    CW_USEDEFAULT,
+                    0,
+                    windowRect.RightBottom.X - windowRect.LeftTop.X,
+                    windowRect.RightBottom.Y - windowRect.LeftTop.Y,
+                    IntPtr.Zero,
+                    IntPtr.Zero,
+                    _wndClassEx.hInstance,
+                    IntPtr.Zero)) == IntPtr.Zero)
             {
-                buttons |= Input.MouseButtons.Right;
-                clicks  =  1;
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.CreateWindowEx)} failed!");
             }
-            if ((e.ButtonFlags & MouseButtonFlags.MiddleButtonDown) == MouseButtonFlags.MiddleButtonDown)
+
+            if (_borderStyle == FormBorderStyle.None)
             {
-                buttons |= Input.MouseButtons.Middle;
-                clicks  =  1;
-            }
-            if ((e.ButtonFlags & MouseButtonFlags.Button4Down) == MouseButtonFlags.Button4Down)
-            {
-                buttons |= Input.MouseButtons.XButton1;
-                clicks  =  1;
-            }
-            if ((e.ButtonFlags & MouseButtonFlags.Button5Down) == MouseButtonFlags.Button5Down)
-            {
-                buttons |= Input.MouseButtons.XButton2;
-                clicks  =  1;
-            }
-            for (int i = 0; i < _mouseRawInputPipe.Count; i++)
-            {
-                if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.X, e.Y, buttons, clicks, e.WheelDelta)))
+                User32.SetWindowLongPtr(_hWnd, WLF.GWL_STYLE, (IntPtr)0);
+                if (!User32.SetWindowPos(
+                    _hWnd,
+                    IntPtr.Zero,
+                    0, 0, 0, 0,
+                    SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
+                    SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
+                    SetWindowPosFlags.FrameChanged))
                 {
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Raw key message.
-        /// </summary>
-        /// <param name="m"> [in,out] The ref Message to process. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void RawKeyMessage(ref Message m)
-        {
-            for (int i = 0; i < _rawKeyPipe.Count; i++)
-            {
-                if (_rawKeyPipe[i].Invoke(m))
-                {
-                    break;
+                    throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
                 }
             }
 
-            int vKey = (int)m.WParam.ToInt64();
-
-            switch (m.Msg)
-            {
-                case Win32Message.WM_SYSKEYDOWN:
-                case Win32Message.WM_KEYDOWN:
-                    switch (vKey)
-                    {
-                        case Key.ShiftKey:
-                            _keyModifier |= KeyModifier.Shift;
-                            break;
-                        case Key.ControlKey:
-                            _keyModifier |= KeyModifier.Control;
-                            break;
-                        case Key.Menu:
-                            _keyModifier |= KeyModifier.Alt;
-                            break;
-                    }
-                    for (int i = 0; i < _keyDownPipe.Count; i++)
-                    {
-                        if (_keyDownPipe[i].Invoke(vKey, _keyModifier))
-                        {
-                            break;
-                        }
-                    }
-                    break;
-                case Win32Message.WM_SYSKEYUP:
-                case Win32Message.WM_KEYUP:
-                    switch (vKey)
-                    {
-                        case Key.ShiftKey:
-                            _keyModifier &= ~KeyModifier.Shift;
-                            break;
-                        case Key.ControlKey:
-                            _keyModifier &= ~KeyModifier.Control;
-                            break;
-                        case Key.Menu:
-                            _keyModifier &= ~KeyModifier.Alt;
-                            break;
-                    }
-                    for (int i = 0; i < _keyUpPipe.Count; i++)
-                    {
-                        if (_keyUpPipe[i].Invoke(vKey, _keyModifier))
-                        {
-                            break;
-                        }
-                    }
-                    break;
-                case Win32Message.WM_UNICHAR:
-                case Win32Message.WM_CHAR:
-                    for (int i = 0; i < _keyPressPipe.Count; i++)
-                    {
-                        if (_keyPressPipe[i].Invoke((char)vKey))
-                        {
-                            break;
-                        }
-                    }
-                    break;
-            }
+            return _hWnd;
         }
 
         /// <summary>
-        ///     Raw mouse up.
+        ///     Shows the window.
         /// </summary>
-        /// <param name="m">       [in,out] The ref Message to process. </param>
-        /// <param name="buttons"> The buttons. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void RawMouseDown(ref Message m, MouseButtons buttons)
+        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
+        public void Show()
         {
-            _state |= 0x8000000;
-            int low  = LowWord(m.LParam);
-            int high = HighWord(m.LParam);
-            for (int i = 0; i < _mouseDownPipe.Count; i++)
+            User32.ShowWindow(_hWnd, (int)ShowWindowCommands.Normal);
+
+            if (!User32.UpdateWindow(_hWnd))
             {
-                if (_mouseDownPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0)))
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.UpdateWindow)} failed!");
+            }
+            if (!User32.SetForegroundWindow(_hWnd))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetForegroundWindow)} failed!");
+            }
+            User32.SetFocus(_hWnd);
+        }
+
+        /// <summary>
+        ///     Resizes the window.
+        /// </summary>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
+        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
+        public void Resize(int width, int height)
+        {
+            RECT windowRect;
+            windowRect.LeftTop.X     = 0;
+            windowRect.LeftTop.Y     = 0;
+            windowRect.RightBottom.X = width;
+            windowRect.RightBottom.Y = height;
+
+            uint windowStyles = _borderStyle switch
+            {
+                FormBorderStyle.None => 0,
+                FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                         WS.MAXIMIZEBOX,
+                FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                           WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+            windowStyles |= _windowState switch
+            {
+                FormWindowState.Normal => 0,
+                FormWindowState.Maximized => WS.MAXIMIZE,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
+            if (_borderStyle == FormBorderStyle.None)
+            {
+                windowStylesEx &= ~WSEX.WINDOWEDGE;
+            }
+
+            if (!User32.AdjustWindowRectEx(ref windowRect, windowStyles, false, windowStylesEx))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
+            }
+
+            if (!User32.SetWindowPos(
+                _hWnd,
+                IntPtr.Zero,
+                0, 0,
+                windowRect.RightBottom.X - windowRect.LeftTop.X,
+                windowRect.RightBottom.Y - windowRect.LeftTop.Y,
+                SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
+                SetWindowPosFlags.IgnoreZOrder))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
+            }
+        }
+
+        #region IDisposable Support
+
+        private bool _disposed;
+
+#pragma warning disable IDE0060
+
+        // ReSharper disable once UnusedParameter.Local
+        private void Dispose(bool disposing)
+#pragma warning restore IDE0060
+        {
+            if (!_disposed)
+            {
+                if (_hWnd != IntPtr.Zero)
                 {
-                    break;
+                    User32.DestroyWindow(_hWnd);
                 }
+
+                User32.UnregisterClass(_wndClassEx.lpszClassName, _wndClassEx.hInstance);
+
+                _disposed = true;
             }
         }
 
-        /// <summary>
-        ///     Raw mouse up.
-        /// </summary>
-        /// <param name="m">       [in,out] The ref Message to process. </param>
-        /// <param name="buttons"> The buttons. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void RawMouseUp(ref Message m, MouseButtons buttons)
+        /// <inheritdoc/>
+        ~RenderForm()
         {
-            int low  = LowWord(m.LParam);
-            int high = HighWord(m.LParam);
-            if ((_state & 0x8000000) == 0x8000000)
-            {
-                int clicks = (_state & 0x4000000) == 0x4000000 ? 2 : 1;
-                for (int i = 0; i < _mouseClickPipe.Count; i++)
-                {
-                    if (_mouseClickPipe[i].Invoke(new MouseEventArgs(low, high, buttons, clicks, 0)))
-                    {
-                        break;
-                    }
-                }
-            }
-            _state &= ~0xC000000;
-            for (int i = 0; i < _mouseUpPipe.Count; i++)
-            {
-                if (_mouseUpPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0))) { break; }
-            }
+            Dispose(false);
         }
 
-        /// <summary>
-        ///     A pipe.
-        /// </summary>
-        /// <typeparam name="TDelegate"> Type of the delegate. </typeparam>
-        private sealed class Pipe<TDelegate>
-            where TDelegate : Delegate
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            /// <summary>
-            ///     The list.
-            /// </summary>
-            private readonly List<TDelegate> _list;
-
-            /// <summary>
-            ///     Gets the number of the registered delegates.
-            /// </summary>
-            /// <value>
-            ///     The count.
-            /// </value>
-            public int Count
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get { return _list.Count; }
-            }
-
-            /// <summary>
-            ///     Indexer to get items within this collection using array index syntax.
-            /// </summary>
-            /// <param name="index"> Zero-based index of the entry to access. </param>
-            /// <returns>
-            ///     The indexed item.
-            /// </returns>
-            public TDelegate this[int index]
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get { return _list[index]; }
-            }
-
-            /// <summary>
-            ///     Initializes a new instance of the &lt;see cref="Pipe&lt;TDelegate&gt;"/&gt; class.
-            /// </summary>
-            public Pipe()
-            {
-                _list = new List<TDelegate>(8);
-            }
-
-            /// <summary>
-            ///     Registers this object.
-            /// </summary>
-            /// <param name="handler">  The handler. </param>
-            /// <param name="position"> (Optional) The position. </param>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Register(in TDelegate handler, int position = -1)
-            {
-                if (position == -1) { _list.Add(handler); }
-                else { _list.Insert(position >= 0 ? position : _list.Count + position, handler); }
-            }
-
-            /// <summary>
-            ///     Deregisters this object.
-            /// </summary>
-            /// <param name="handler"> The handler. </param>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Unregister(in TDelegate handler)
-            {
-                _list.Remove(handler);
-            }
-
-            /// <summary>
-            ///     Deregisters this object.
-            /// </summary>
-            /// <param name="position"> The position. </param>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Unregister(int position)
-            {
-                _list.RemoveAt(position);
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }
