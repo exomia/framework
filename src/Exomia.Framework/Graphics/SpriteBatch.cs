@@ -11,10 +11,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Graphics.SpriteSort;
@@ -81,6 +83,8 @@ namespace Exomia.Framework.Graphics
         private int            _spriteQueueCount;
         private TextureInfo[]  _spriteTextures;
         private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
+
+        private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch" /> class.
@@ -165,11 +169,11 @@ namespace Exomia.Framework.Graphics
                 _device, sizeof(float) * 4 * 4 * 1, ResourceUsage.Default, BindFlags.ConstantBuffer,
                 CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
+            _sortIndices   = new int[MAX_BATCH_SIZE];
+            _sortedSprites = new SpriteInfo[MAX_BATCH_SIZE];
+
             _spriteQueue    = new SpriteInfo[MAX_BATCH_SIZE];
             _spriteTextures = new TextureInfo[MAX_BATCH_SIZE];
-
-            _sortIndices   = new int[_spriteQueue.Length];
-            _sortedSprites = new SpriteInfo[_spriteQueue.Length];
 
             iDevice.ResizeFinished += IDevice_onResizeFinished;
 
@@ -449,6 +453,7 @@ namespace Exomia.Framework.Graphics
                     _sortIndices[i] = i;
                 }
 
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (_spriteSortMode)
                 {
                     case SpriteSortMode.Texture:
@@ -1266,18 +1271,49 @@ namespace Exomia.Framework.Graphics
 
             if (_spriteQueueCount >= _spriteQueue.Length)
             {
-                _sortIndices   = new int[_spriteQueue.Length * 2];
-                _sortedSprites = new SpriteInfo[_spriteQueue.Length * 2];
-                Array.Resize(ref _spriteQueue, _spriteQueue.Length * 2);
+                bool lockTaken = false;
+                try
+                {
+                    _spinLock.Enter(ref lockTaken);
+
+                    int size = _spriteQueue.Length * 2;
+                    _sortIndices   = new int[size];
+                    _sortedSprites = new SpriteInfo[size];
+                    Array.Resize(ref _spriteQueue, size);
+                    Array.Resize(ref _spriteTextures, size);
+                }
+                finally
+                {
+                    if (lockTaken)
+                    {
+                        _spinLock.Exit(false);
+                    }
+                }
             }
 
             if (!_textureInfos.TryGetValue(texture.TexturePointer, out TextureInfo textureInfo))
             {
-                textureInfo = new TextureInfo(texture.TextureView, texture.Width, texture.Height);
-                _textureInfos.Add(texture.TexturePointer, textureInfo);
+                bool lockTaken = false;
+                try
+                {
+                    _spinLock.Enter(ref lockTaken);
+                    if (!_textureInfos.TryGetValue(texture.TexturePointer, out textureInfo))
+                    {
+                        textureInfo = new TextureInfo(texture.TextureView, texture.Width, texture.Height);
+                        _textureInfos.Add(texture.TexturePointer, textureInfo);
+                    }
+                }
+                finally
+                {
+                    if (lockTaken)
+                    {
+                        _spinLock.Exit(false);
+                    }
+                }
             }
 
-            fixed (SpriteInfo* spriteInfo = &_spriteQueue[_spriteQueueCount])
+            int spriteQueueCount = Interlocked.Increment(ref _spriteQueueCount) - 1;
+            fixed (SpriteInfo* spriteInfo = &_spriteQueue[spriteQueueCount])
             {
                 float width;
                 float height;
@@ -1334,12 +1370,7 @@ namespace Exomia.Framework.Graphics
                 spriteInfo->Opacity       = opacity;
             }
 
-            if (_spriteTextures.Length < _spriteQueue.Length)
-            {
-                Array.Resize(ref _spriteTextures, _spriteQueue.Length);
-            }
-            _spriteTextures[_spriteQueueCount] = textureInfo;
-            _spriteQueueCount++;
+            _spriteTextures[spriteQueueCount] = textureInfo;
         }
 
         #endregion

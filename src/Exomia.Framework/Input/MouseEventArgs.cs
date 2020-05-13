@@ -9,7 +9,6 @@
 #endregion
 
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace Exomia.Framework.Input
 {

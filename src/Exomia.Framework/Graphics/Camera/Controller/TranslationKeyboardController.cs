@@ -9,7 +9,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using SharpDX;
@@ -34,10 +33,10 @@ namespace Exomia.Framework.Graphics.Camera.Controller
         public TranslationKeyboardController(string name)
         {
             Name = name;
-#if NET471
-            _keysDown = new HashSet<int>(EqualityComparer<int>.Default);
-#else
+#if NETSTANDARD2_1
             _keysDown = new HashSet<int>(128, EqualityComparer<int>.Default);
+#else
+            _keysDown = new HashSet<int>(EqualityComparer<int>.Default);
 #endif
         }
 
@@ -64,29 +63,29 @@ namespace Exomia.Framework.Graphics.Camera.Controller
 
             Vector3 v = Vector3.Zero;
 
-            if (_keysDown.Contains((int)Keys.W))
+            if (_keysDown.Contains(Key.W))
             {
                 v += forwardVector;
             }
-            if (_keysDown.Contains((int)Keys.S))
+            if (_keysDown.Contains(Key.S))
             {
                 v -= forwardVector;
             }
 
-            if (_keysDown.Contains((int)Keys.A))
+            if (_keysDown.Contains(Key.A))
             {
                 v -= move;
             }
-            if (_keysDown.Contains((int)Keys.D))
+            if (_keysDown.Contains(Key.D))
             {
                 v += move;
             }
 
-            if (_keysDown.Contains((int)Keys.Space))
+            if (_keysDown.Contains(Key.Space))
             {
                 v += move2;
             }
-            if (_keysDown.Contains((int)Keys.ControlKey))
+            if (_keysDown.Contains(Key.ControlKey))
             {
                 v -= move2;
             }

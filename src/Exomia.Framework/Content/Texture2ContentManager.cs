@@ -162,7 +162,6 @@ namespace Exomia.Framework.Content
             {
                 if (disposing)
                 {
-                    /* USER CODE */
                     Reset();
                 }
                 _disposed = true;

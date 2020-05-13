@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework", "src\Exo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.Example", "examples\Exomia.Framework.Example\Exomia.Framework.Example.csproj", "{C673179F-457C-4AE9-B61E-0481343E8A35}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.ContentManager", "tools\Exomia.Framework.ContentManager\Exomia.Framework.ContentManager.csproj", "{245257B7-CD93-40BA-8E10-DF23DBB32FB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{C900162B-CB2F-4112-98D2-2DA9D947B7C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9D20989E-7C37-42F4-AE05-19CED958EA7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,9 +47,25 @@ Global
 		{C673179F-457C-4AE9-B61E-0481343E8A35}.Release|x64.Build.0 = Release|Any CPU
 		{C673179F-457C-4AE9-B61E-0481343E8A35}.Release|x86.ActiveCfg = Release|Any CPU
 		{C673179F-457C-4AE9-B61E-0481343E8A35}.Release|x86.Build.0 = Release|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Debug|x64.Build.0 = Debug|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Debug|x86.Build.0 = Debug|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Release|x64.ActiveCfg = Release|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Release|x64.Build.0 = Release|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Release|x86.ActiveCfg = Release|Any CPU
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C673179F-457C-4AE9-B61E-0481343E8A35} = {9D20989E-7C37-42F4-AE05-19CED958EA7A}
+		{245257B7-CD93-40BA-8E10-DF23DBB32FB8} = {C900162B-CB2F-4112-98D2-2DA9D947B7C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E4E52C8-D1D4-488D-8700-A3E45E8968BE}

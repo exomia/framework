@@ -8,7 +8,7 @@
 
 #endregion
 
-using System.Windows.Forms;
+using Exomia.Framework.Win32;
 
 namespace Exomia.Framework.Input
 {

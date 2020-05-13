@@ -505,7 +505,6 @@ namespace Exomia.Framework.Audio
             {
                 if (disposing)
                 {
-                    /* USER CODE */
                     StopFxSounds();
                     StopEnvSounds();
 

@@ -13,17 +13,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime;
 using System.Threading;
-using System.Windows.Forms;
 using Exomia.Framework.Content;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
-using Exomia.Framework.Native;
 using Exomia.Framework.Tools;
+using Exomia.Framework.Win32;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using Message = System.Windows.Forms.Message;
 
 namespace Exomia.Framework.Game
 {
@@ -34,7 +32,6 @@ namespace Exomia.Framework.Game
     {
         private const int                               INITIAL_QUEUE_SIZE        = 16;
         private const double                            FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
-        private const int                               WM_QUIT                   = 0x0012;
         private const int                               PM_REMOVE                 = 0x0001;
         private event EventHandler<Game, bool>?         _IsRunningChanged;
         private readonly List<IContentable>             _contentableComponent;
@@ -159,7 +156,10 @@ namespace Exomia.Framework.Game
             _collector       = new DisposeCollector();
             _serviceRegistry = new ServiceRegistry();
 
+            // TODO: use a factory?
             WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
+            gameWindow.FormClosing += (ref bool cancel) => { Shutdown(); };
+
             _gameWindowInitialize = gameWindow;
             _serviceRegistry.AddService(_gameWindow = gameWindow);
 
@@ -370,45 +370,10 @@ namespace Exomia.Framework.Game
 
             if (!_isInitialized)
             {
-                bool isWindowExiting = false;
-
-                void OnRenderFormOnFormClosing(object s, FormClosingEventArgs e)
-                {
-                    if (!isWindowExiting)
-                    {
-                        isWindowExiting = true;
-                        Shutdown();
-                    }
-                }
-
-                switch (_gameWindow)
-                {
-                    case IWinFormsGameWindow formsWindow:
-                        {
-                            formsWindow.RenderForm.FormClosing += OnRenderFormOnFormClosing;
-                        }
-                        break;
-                    default:
-                        throw new NotSupportedException(
-                            $"The game window of type {_gameWindow.GetType()} is currently not supported!");
-                }
-
                 Initialize();
                 LoadContent();
                 Renderloop();
                 UnloadContent();
-
-                switch (_gameWindow)
-                {
-                    case IWinFormsGameWindow formsWindow:
-                        {
-                            formsWindow.RenderForm.FormClosing -= OnRenderFormOnFormClosing;
-                        }
-                        break;
-                    default:
-                        throw new NotSupportedException(
-                            $"The game window of type {_gameWindow.GetType()} is currently not supported!");
-                }
             }
         }
 
@@ -423,13 +388,13 @@ namespace Exomia.Framework.Game
         /// </summary>
         private void Renderloop()
         {
-            User32.MSG msg;
-            msg.hWnd    = IntPtr.Zero;
-            msg.message = 0;
-            msg.lParam  = IntPtr.Zero;
-            msg.wParam  = IntPtr.Zero;
-            msg.time    = 0;
-            msg.pt      = Point.Zero;
+            MSG m;
+            m.hWnd   = IntPtr.Zero;
+            m.msg    = 0;
+            m.lParam = IntPtr.Zero;
+            m.wParam = IntPtr.Zero;
+            m.time   = 0;
+            m.pt     = Point.Zero;
 
             Stopwatch stopwatch = new Stopwatch();
             GameTime  gameTime  = GameTime.StartNew();
@@ -442,18 +407,14 @@ namespace Exomia.Framework.Game
 
             _IsRunningChanged += OnIsRunningChanged;
 
-            while (!_shutdown && msg.message != WM_QUIT)
+            while (!_shutdown)
             {
                 stopwatch.Restart();
 
-                while (User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE))
+                while (User32.PeekMessage(out m, IntPtr.Zero, 0, 0, PM_REMOVE))
                 {
-                    Message message = Message.Create(msg.hWnd, msg.message, msg.wParam, msg.lParam);
-                    if (!Application.FilterMessage(ref message))
-                    {
-                        User32.TranslateMessage(ref msg);
-                        User32.DispatchMessage(ref msg);
-                    }
+                    User32.TranslateMessage(ref m);
+                    User32.DispatchMessage(ref m);
                 }
 
                 if (!_isRunning)
@@ -547,7 +508,7 @@ namespace Exomia.Framework.Game
                 MultiSampleCount       = MultiSampleCount.None,
                 AdapterLuid            = -1,
                 OutputIndex            = -1,
-                ClipCursor             = true
+                ClipCursor             = false
             };
 
             OnInitializeGameGraphicsParameters(ref parameters);

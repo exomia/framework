@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using SharpDX;
 using SharpDX.WIC;
 using Bitmap = System.Drawing.Bitmap;
@@ -70,8 +71,6 @@ namespace Exomia.Framework.Graphics
         /// </returns>
         internal bool AddTexture(Stream stream, string assetName, out Rectangle sourceRectangle)
         {
-            sourceRectangle = Rectangle.Empty;
-
             if (_sourceRectangles.TryGetValue(assetName, out sourceRectangle))
             {
                 return true;
@@ -129,6 +128,7 @@ namespace Exomia.Framework.Graphics
             {
                 return true;
             }
+
             lock (_lockAtlas)
             {
                 using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
@@ -172,34 +172,29 @@ namespace Exomia.Framework.Graphics
             y = 0;
             for (y = 1; y < _height - 1; y++)
             {
-                int ymin = _height - 1;
+                int yMin = _height - 1;
                 for (x = 1; x < _width - 1; x++)
                 {
                     if (x + width > _width - 1)
                     {
-                        y = ymin;
+                        y = yMin;
                         break;
                     }
                     Rectangle sharpSf = new Rectangle(x, y, width, height);
 
                     bool intersects = false;
-                    foreach (Rectangle sRect in _sourceRectangles.Values)
+                    foreach (Rectangle sRect in _sourceRectangles.Values.Where(sRect => sRect.Intersects(sharpSf)))
                     {
-                        if (sRect.Intersects(sharpSf))
+                        x = sRect.X + sRect.Width;
+                        if (x + width < _width - 1)
                         {
-                            x = sRect.X + sRect.Width;
-
-                            if (x + width < _width - 1)
+                            if (yMin > sRect.Y + sRect.Height)
                             {
-                                if (ymin > sRect.Y + sRect.Height)
-                                {
-                                    ymin = sRect.Y + sRect.Height;
-                                }
+                                yMin = sRect.Y + sRect.Height;
                             }
-
-                            intersects = true;
-                            break;
                         }
+                        intersects = true;
+                        break;
                     }
 
                     if (!intersects && x + width <= _width - 1 && y + height <= _height - 1)
@@ -233,7 +228,6 @@ namespace Exomia.Framework.Graphics
             {
                 if (disposing)
                 {
-                    /* USER CODE */
                     lock (_lockAtlas)
                     {
                         Utilities.Dispose(ref _atlas);

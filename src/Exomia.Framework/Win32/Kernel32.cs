@@ -12,22 +12,20 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Exomia.Framework.Native
+namespace Exomia.Framework.Win32
 {
-    /// <summary>
-    ///     A kernel 32.
-    /// </summary>
     static class Kernel32
     {
-        /// <summary>
-        ///     Sets an event.
-        /// </summary>
-        /// <param name="hEvent"> The event. </param>
-        /// <returns>
-        ///     True if it succeeds, false if it fails.
-        /// </returns>
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
         internal static extern bool SetEvent(IntPtr hEvent);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32.dll", EntryPoint = "GetLastError")]
+        internal static extern int GetLastError();
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        internal static extern IntPtr GetModuleHandle(string lpModuleName);
     }
 }
