@@ -8,6 +8,7 @@
 
 #endregion
 
+using System;
 using Exomia.Framework.Game;
 using SharpDX;
 using SharpDX.Direct3D11;
@@ -19,7 +20,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     Interface for graphics device.
     /// </summary>
-    public interface IGraphicsDevice
+    public interface IGraphicsDevice : IDisposable
     {
         /// <summary>
         ///     Occurs when Resize Finished.

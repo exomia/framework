@@ -25,7 +25,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     The graphics device. This class cannot be inherited.
     /// </summary>
-    sealed class GraphicsDevice : IGraphicsDevice, IDisposable
+    public sealed class GraphicsDevice : IGraphicsDevice
     {
         private static readonly PresentParameters s_defaultPresentParameters = new PresentParameters();
 
@@ -108,7 +108,7 @@ namespace Exomia.Framework.Graphics
             get { return _vSync != 0; }
             set { _vSync = value ? 1 : 0; }
         }
-
+        
         /// <inheritdoc />
         public void Clear()
         {
@@ -416,7 +416,7 @@ namespace Exomia.Framework.Graphics
 
             ResizeFinished?.Invoke(Viewport);
         }
-
+        
         private struct ResizeParameters
         {
             /// <summary>
@@ -439,7 +439,7 @@ namespace Exomia.Framework.Graphics
             /// </summary>
             public SwapChainFlags SwapChainFlags;
         }
-
+        
         #region IDisposable Support
 
         /// <summary>
