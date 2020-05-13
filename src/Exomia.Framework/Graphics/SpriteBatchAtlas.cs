@@ -10,13 +10,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using SharpDX;
 using SharpDX.WIC;
+using Bitmap = System.Drawing.Bitmap;
+using Color = System.Drawing.Color;
+using Rectangle = SharpDX.Rectangle;
 
 namespace Exomia.Framework.Graphics
 {
-    //TODO
     /// <summary>
     ///     A sprite batch atlas. This class cannot be inherited.
     /// </summary>
@@ -51,7 +56,7 @@ namespace Exomia.Framework.Graphics
 
             _sourceRectangles = new Dictionary<string, Rectangle>(16);
 
-            //_atlas = new Bitmap(width, height);
+            _atlas = new Bitmap(width, height);
         }
 
         /// <summary>
@@ -66,32 +71,30 @@ namespace Exomia.Framework.Graphics
         /// </returns>
         internal bool AddTexture(Stream stream, string assetName, out Rectangle sourceRectangle)
         {
-            sourceRectangle = Rectangle.Empty;
-
             if (_sourceRectangles.TryGetValue(assetName, out sourceRectangle))
             {
                 return true;
             }
 
-            //using (Image img = Image.FromStream(stream))
-            //{
-            //    if (img.Width > _width) { throw new OverflowException("the image size is to big!"); }
-            //    if (img.Height > _height) { throw new OverflowException("the image size is to big!"); }
+            using (Image img = Image.FromStream(stream))
+            {
+                if (img.Width > _width) { throw new OverflowException("the image size is to big!"); }
+                if (img.Height > _height) { throw new OverflowException("the image size is to big!"); }
 
-            //    if (GetFreeLocation(img.Width, img.Height, out int x, out int y))
-            //    {
-            //        sourceRectangle = new Rectangle(x, y, img.Width, img.Height);
-            //        _sourceRectangles.Add(assetName, sourceRectangle);
-            //        lock (_lockAtlas)
-            //        {
-            //            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
-            //            {
-            //                g.DrawImage(img, new System.Drawing.Rectangle(x, y, img.Width, img.Height));
-            //            }
-            //        }
-            //        return true;
-            //    }
-            //}
+                if (GetFreeLocation(img.Width, img.Height, out int x, out int y))
+                {
+                    sourceRectangle = new Rectangle(x, y, img.Width, img.Height);
+                    _sourceRectangles.Add(assetName, sourceRectangle);
+                    lock (_lockAtlas)
+                    {
+                        using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
+                        {
+                            g.DrawImage(img, new System.Drawing.Rectangle(x, y, img.Width, img.Height));
+                        }
+                    }
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -106,8 +109,7 @@ namespace Exomia.Framework.Graphics
             lock (_lockAtlas)
             {
                 MemoryStream ms = new MemoryStream();
-
-                //_atlas.Save(ms, ImageFormat.Png);
+                _atlas.Save(ms, ImageFormat.Png);
                 ms.Position = 0;
                 return TextureHelper.LoadBitmap(ms);
             }
@@ -127,16 +129,16 @@ namespace Exomia.Framework.Graphics
                 return true;
             }
 
-            //lock (_lockAtlas)
-            //{
-            //    using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
-            //    {
-            //        g.FillRectangle(
-            //            new SolidBrush(Color.Transparent),
-            //            new System.Drawing.Rectangle(
-            //                sourceRectangle.X, sourceRectangle.Y, sourceRectangle.Width, sourceRectangle.Height));
-            //    }
-            //}
+            lock (_lockAtlas)
+            {
+                using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))
+                {
+                    g.FillRectangle(
+                        new SolidBrush(Color.Transparent),
+                        new System.Drawing.Rectangle(
+                            sourceRectangle.X, sourceRectangle.Y, sourceRectangle.Width, sourceRectangle.Height));
+                }
+            }
 
             return _sourceRectangles.Remove(assetName);
         }
@@ -170,34 +172,29 @@ namespace Exomia.Framework.Graphics
             y = 0;
             for (y = 1; y < _height - 1; y++)
             {
-                int ymin = _height - 1;
+                int yMin = _height - 1;
                 for (x = 1; x < _width - 1; x++)
                 {
                     if (x + width > _width - 1)
                     {
-                        y = ymin;
+                        y = yMin;
                         break;
                     }
                     Rectangle sharpSf = new Rectangle(x, y, width, height);
 
                     bool intersects = false;
-                    foreach (Rectangle sRect in _sourceRectangles.Values)
+                    foreach (Rectangle sRect in _sourceRectangles.Values.Where(sRect => sRect.Intersects(sharpSf)))
                     {
-                        if (sRect.Intersects(sharpSf))
+                        x = sRect.X + sRect.Width;
+                        if (x + width < _width - 1)
                         {
-                            x = sRect.X + sRect.Width;
-
-                            if (x + width < _width - 1)
+                            if (yMin > sRect.Y + sRect.Height)
                             {
-                                if (ymin > sRect.Y + sRect.Height)
-                                {
-                                    ymin = sRect.Y + sRect.Height;
-                                }
+                                yMin = sRect.Y + sRect.Height;
                             }
-
-                            intersects = true;
-                            break;
                         }
+                        intersects = true;
+                        break;
                     }
 
                     if (!intersects && x + width <= _width - 1 && y + height <= _height - 1)
@@ -231,7 +228,6 @@ namespace Exomia.Framework.Graphics
             {
                 if (disposing)
                 {
-                    /* USER CODE */
                     lock (_lockAtlas)
                     {
                         Utilities.Dispose(ref _atlas);
