@@ -28,7 +28,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The location.
         /// </value>
-        [Category("Common"), Description("The location of the project."), ReadOnly(true)]
+        [Category("Common")]
+        [Description("The location of the project.")]
+        [ReadOnly(true)]
         public string Location
         {
             get { return _locationProvider(); }
@@ -40,11 +42,25 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The pathname of the output folder.
         /// </value>
-        [Category("Settings"), Description("The build output folder.")]
+        [Category("Settings")]
+        [Description("The build output folder.")]
         public string? OutputFolder { get; set; }
-        
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentPropertyGridItem"/> class.
+        ///     TODO: REMOVE.
+        /// </summary>
+        /// <value>
+        ///     The test.
+        /// </value>
+        [Category("test")]
+        [Description("...")]
+        [ReadOnly(false)]
+        [TypeConverter(typeof(ChoicesStringConverter))]
+        [Choices("a", "b", "c")]
+        public string? Test { get; set; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
         /// </summary>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
@@ -57,20 +73,6 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
             : base(nameProvider, virtualPathProvider, totalItemsProvider)
         {
             _locationProvider = locationProvider;
-        }
-
-        /// <summary>
-        ///     TODO: REMOVE.
-        /// </summary>
-        /// <value>
-        ///     The test.
-        /// </value>
-        [Category("test"), Description("..."), ReadOnly(false)]
-        [TypeConverter(typeof(ChoicesStringConverter)), Choices("a", "b", "c")]
-        public string? Test
-        {
-            get;
-            set;
         }
     }
 }

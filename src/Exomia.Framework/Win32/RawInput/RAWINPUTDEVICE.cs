@@ -22,10 +22,13 @@ namespace Exomia.Framework.Win32.RawInput
     {
         /// <summary>Top level collection Usage page for the raw input device.</summary>
         public HIDUsagePage UsagePage;
+
         /// <summary>Top level collection Usage for the raw input device. </summary>
         public HIDUsage Usage;
+
         /// <summary>Mode flag that specifies how to interpret the information provided by UsagePage and Usage.</summary>
         public RawInputDeviceFlags Flags;
+
         /// <summary>Handle to the target device. If NULL, it follows the keyboard focus.</summary>
         public IntPtr WindowHandle;
     }

@@ -26,7 +26,7 @@ namespace Exomia.Framework.ContentManager.Attributes
         /// </value>
         public string[] Entries { get; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ChoicesAttribute(params string[] entries)
         {
             Entries = entries;

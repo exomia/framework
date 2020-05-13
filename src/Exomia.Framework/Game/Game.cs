@@ -155,11 +155,11 @@ namespace Exomia.Framework.Game
 
             _collector       = new DisposeCollector();
             _serviceRegistry = new ServiceRegistry();
-            
+
             // TODO: use a factory?
             WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
             gameWindow.FormClosing += (ref bool cancel) => { Shutdown(); };
-            
+
             _gameWindowInitialize = gameWindow;
             _serviceRegistry.AddService(_gameWindow = gameWindow);
 
@@ -515,7 +515,7 @@ namespace Exomia.Framework.Game
 
             _gameWindowInitialize.Initialize(ref parameters);
             _graphicsDevice.Initialize(ref parameters);
-            
+
             GameGraphicsParameters = parameters;
         }
 

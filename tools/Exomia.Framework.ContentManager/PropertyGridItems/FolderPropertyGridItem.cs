@@ -27,7 +27,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The full pathname of the virtual file.
         /// </value>
-        [Category("Common"), Description("The virtual path to this item."), ReadOnly(true)]
+        [Category("Common")]
+        [Description("The virtual path to this item.")]
+        [ReadOnly(true)]
         public string VirtualPath
         {
             get { return _virtualPathProvider(); }
@@ -39,14 +41,16 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The total number of items.
         /// </value>
-        [Category("Statistics"), Description("The total item count of this project."), ReadOnly(true)]
+        [Category("Statistics")]
+        [Description("The total item count of this project.")]
+        [ReadOnly(true)]
         public int TotalItems
         {
             get { return _totalItemsProvider(); }
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FolderPropertyGridItem"/> class.
+        ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
         /// </summary>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>

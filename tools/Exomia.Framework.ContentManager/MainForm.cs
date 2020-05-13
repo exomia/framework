@@ -1,6 +1,17 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
+using Exomia.Framework.ContentManager.Properties;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -10,14 +21,14 @@ namespace Exomia.Framework.ContentManager
     public partial class MainForm : Form
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MainForm"/> class.
+        ///     Initializes a new instance of the <see cref="MainForm" /> class.
         /// </summary>
         public MainForm()
         {
             InitializeComponent();
             SetProgressbarValue(true);
             SetStatusLabel(StatusType.Info, "Startup...");
-            SetStatusLabel(StatusType.Info, "Startup finished..."); 
+            SetStatusLabel(StatusType.Info, "Startup finished...");
             SetProgressbarValue(false);
         }
 
@@ -35,12 +46,12 @@ namespace Exomia.Framework.ContentManager
                 {
                     toolStripStatusLabel1.Image = statusType switch
                     {
-                        StatusType.Warning => global::Exomia.Framework.ContentManager.Properties.Resources
-                                                    .StatusWarning_16x,
-                        StatusType.Error => global::Exomia.Framework.ContentManager.Properties.Resources
-                                                  .StatusCriticalError_16x,
-                        StatusType.Info => global::Exomia.Framework.ContentManager.Properties.Resources
-                                                 .StatusInformation_16x,
+                        StatusType.Warning => Resources
+                            .StatusWarning_16x,
+                        StatusType.Error => Resources
+                            .StatusCriticalError_16x,
+                        StatusType.Info => Resources
+                            .StatusInformation_16x,
                         _ => throw new ArgumentOutOfRangeException(nameof(statusType), statusType, null)
                     };
                     toolStripStatusLabel1.Text = string.Format(text, args);

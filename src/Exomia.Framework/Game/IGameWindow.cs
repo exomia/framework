@@ -43,7 +43,7 @@ namespace Exomia.Framework.Game
         ///     Occurs when the form is about to close.
         /// </summary>
         event RefEventHandler<bool> FormClosing;
-            
+
         /// <summary>
         ///     Gets the height.
         /// </summary>

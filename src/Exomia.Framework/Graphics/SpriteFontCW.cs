@@ -23,19 +23,19 @@ namespace Exomia.Framework.Graphics
         {
             context.Set(nameof(SpriteFont.Face), obj.Face);
             context.Set(nameof(SpriteFont.Size), obj.Size);
-            
+
             context.Set(nameof(SpriteFont.Bold), obj.Bold);
             context.Set(nameof(SpriteFont.Italic), obj.Italic);
-            
+
             context.Set(nameof(SpriteFont.DefaultCharacter), obj.DefaultCharacter);
             context.Set(nameof(SpriteFont.LineSpacing), obj.LineSpacing);
-            
+
             context.Set(nameof(SpriteFont.SpacingX), obj.SpacingX);
             context.Set(nameof(SpriteFont.SpacingY), obj.SpacingY);
-            
+
             context.Set(nameof(SpriteFont.Glyphs), obj.Glyphs);
             context.Set(nameof(SpriteFont.Kernings), obj.Kernings);
-            
+
             context.Set(nameof(SpriteFont.ImageData), Convert.ToBase64String(obj.ImageData));
         }
     }

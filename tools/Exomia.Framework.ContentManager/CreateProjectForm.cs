@@ -1,4 +1,15 @@
-﻿using System.Windows.Forms;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
+using System.Windows.Forms;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -8,16 +19,16 @@ namespace Exomia.Framework.ContentManager
     public partial class CreateProjectForm : Form
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CreateProjectForm"/> class.
+        ///     Initializes a new instance of the <see cref="CreateProjectForm" /> class.
         /// </summary>
         public CreateProjectForm()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, System.EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
     }
 }

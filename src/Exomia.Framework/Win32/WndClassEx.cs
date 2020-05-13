@@ -18,19 +18,24 @@ namespace Exomia.Framework.Win32
     {
         [MarshalAs(UnmanagedType.U4)]
         public int cbSize;
+
         [MarshalAs(UnmanagedType.U4)]
         public ClassStyles style;
+
         public WndProc lpfnWndProc;
-        public int    cbClsExtra;
-        public int    cbWndExtra;
-        public IntPtr hInstance;
-        public IntPtr hIcon;
-        public IntPtr hCursor;
-        public IntPtr hbrBackground;
+        public int     cbClsExtra;
+        public int     cbWndExtra;
+        public IntPtr  hInstance;
+        public IntPtr  hIcon;
+        public IntPtr  hCursor;
+        public IntPtr  hbrBackground;
+
         [MarshalAs(UnmanagedType.LPStr)]
         public string lpszMenuName;
+
         [MarshalAs(UnmanagedType.LPStr)]
         public string lpszClassName;
+
         public IntPtr hIconSm;
     }
 }

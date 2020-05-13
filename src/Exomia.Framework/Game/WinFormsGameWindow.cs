@@ -18,6 +18,15 @@ namespace Exomia.Framework.Game
     /// </summary>
     sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
     {
+        /// <summary>
+        ///     Occurs when the form is about to close.
+        /// </summary>
+        public event RefEventHandler<bool> FormClosing
+        {
+            add { _renderForm.FormClosing    += value; }
+            remove { _renderForm.FormClosing -= value; }
+        }
+
         private readonly RenderForm _renderForm;
         private          bool       _isInitialized;
 
@@ -43,26 +52,6 @@ namespace Exomia.Framework.Game
             get { return _renderForm.Size.Y; }
         }
 
-        /// <summary>
-        ///     Occurs when the form is about to close.
-        /// </summary>
-        public event RefEventHandler<bool> FormClosing
-        {
-            add { _renderForm.FormClosing += value; }
-            remove { _renderForm.FormClosing -= value; }
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether this object is initialized.
-        /// </summary>
-        /// <value>
-        ///     True if this object is initialized, false if not.
-        /// </value>
-        bool IGameWindowInitialize.IsInitialized
-        {
-            get { return _isInitialized; }
-        }
-
         /// <inheritdoc />
         public RenderForm RenderForm
         {
@@ -79,6 +68,17 @@ namespace Exomia.Framework.Game
         {
             get { return _renderForm.WindowTitle; }
             set { _renderForm.WindowTitle = value; }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this object is initialized.
+        /// </summary>
+        /// <value>
+        ///     True if this object is initialized, false if not.
+        /// </value>
+        bool IGameWindowInitialize.IsInitialized
+        {
+            get { return _isInitialized; }
         }
 
         /// <summary>

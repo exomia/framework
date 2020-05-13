@@ -1,4 +1,14 @@
-﻿#nullable enable
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+#nullable enable
 
 using System;
 using System.ComponentModel;
@@ -64,6 +74,7 @@ namespace Exomia.Framework.Game
                             case RID_INPUT_TYPE_MOUSE:
                                 RawMouseInput(in rawInput->Data.Mouse);
                                 break;
+
                             // not supported/needed atm.
                             case RID_INPUT_TYPE_KEYBOARD:
                             case RID_INPUT_TYPE_HID:
@@ -101,34 +112,34 @@ namespace Exomia.Framework.Game
                     RawKeyMessage(ref m);
                     return IntPtr.Zero;
                 case WM.LBUTTONDOWN:
-                    RawMouseDown(ref m, Input.MouseButtons.Left);
+                    RawMouseDown(ref m, MouseButtons.Left);
                     return IntPtr.Zero;
                 case WM.MBUTTONDOWN:
-                    RawMouseDown(ref m, Input.MouseButtons.Middle);
+                    RawMouseDown(ref m, MouseButtons.Middle);
                     return IntPtr.Zero;
                 case WM.RBUTTONDOWN:
-                    RawMouseDown(ref m, Input.MouseButtons.Right);
+                    RawMouseDown(ref m, MouseButtons.Right);
                     return IntPtr.Zero;
                 case WM.XBUTTONDOWN:
                     RawMouseDown(
                         ref m, HighWord(m.wParam) == 1
-                            ? Input.MouseButtons.XButton1
-                            : Input.MouseButtons.XButton2);
+                            ? MouseButtons.XButton1
+                            : MouseButtons.XButton2);
                     return IntPtr.Zero;
                 case WM.LBUTTONUP:
-                    RawMouseUp(ref m, Input.MouseButtons.Left);
+                    RawMouseUp(ref m, MouseButtons.Left);
                     return IntPtr.Zero;
                 case WM.MBUTTONUP:
-                    RawMouseUp(ref m, Input.MouseButtons.Middle);
+                    RawMouseUp(ref m, MouseButtons.Middle);
                     return IntPtr.Zero;
                 case WM.RBUTTONUP:
-                    RawMouseUp(ref m, Input.MouseButtons.Right);
+                    RawMouseUp(ref m, MouseButtons.Right);
                     return IntPtr.Zero;
                 case WM.XBUTTONUP:
                     RawMouseUp(
                         ref m, HighWord(m.wParam) == 1
-                            ? Input.MouseButtons.XButton1
-                            : Input.MouseButtons.XButton2);
+                            ? MouseButtons.XButton1
+                            : MouseButtons.XButton2);
                     return IntPtr.Zero;
                 case WM.MOUSEMOVE:
                     {
@@ -300,31 +311,31 @@ namespace Exomia.Framework.Game
 
         private void RawMouseInput(in RAWINPUTMOUSE e)
         {
-            MouseButtons buttons = Input.MouseButtons.None;
+            MouseButtons buttons = MouseButtons.None;
             int          clicks  = 0;
             if ((e.ButtonFlags & RawMouseButtons.LeftDown) == RawMouseButtons.LeftDown)
             {
-                buttons |= Input.MouseButtons.Left;
+                buttons |= MouseButtons.Left;
                 clicks  =  1;
             }
             if ((e.ButtonFlags & RawMouseButtons.RightDown) == RawMouseButtons.RightDown)
             {
-                buttons |= Input.MouseButtons.Right;
+                buttons |= MouseButtons.Right;
                 clicks  =  1;
             }
             if ((e.ButtonFlags & RawMouseButtons.MiddleDown) == RawMouseButtons.MiddleDown)
             {
-                buttons |= Input.MouseButtons.Middle;
+                buttons |= MouseButtons.Middle;
                 clicks  =  1;
             }
             if ((e.ButtonFlags & RawMouseButtons.Button4Down) == RawMouseButtons.Button4Down)
             {
-                buttons |= Input.MouseButtons.XButton1;
+                buttons |= MouseButtons.XButton1;
                 clicks  =  1;
             }
             if ((e.ButtonFlags & RawMouseButtons.Button5Down) == RawMouseButtons.Button5Down)
             {
-                buttons |= Input.MouseButtons.XButton2;
+                buttons |= MouseButtons.XButton2;
                 clicks  =  1;
             }
             for (int i = 0; i < _mouseRawInputPipe.Count; i++)

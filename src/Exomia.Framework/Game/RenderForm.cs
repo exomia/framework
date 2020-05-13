@@ -15,9 +15,6 @@ using Exomia.Framework.Input;
 using Exomia.Framework.Input.Raw;
 using Exomia.Framework.Win32;
 using Exomia.Framework.Win32.RawInput;
-using KeyEventHandler = Exomia.Framework.Input.KeyEventHandler;
-using KeyPressEventHandler = Exomia.Framework.Input.KeyPressEventHandler;
-using MouseEventHandler = Exomia.Framework.Input.MouseEventHandler;
 
 namespace Exomia.Framework.Game
 {
@@ -31,6 +28,8 @@ namespace Exomia.Framework.Game
         private const uint COLOR_WINDOW = 5;
         private const int  IDC_ARROW    = 32512;
 
+        private static readonly int s_size_of_rawinputheader = Marshal.SizeOf<RAWINPUTHEADER>();
+
         private readonly WndClassEx _wndClassEx;
 
         private int         _state;
@@ -41,8 +40,6 @@ namespace Exomia.Framework.Game
         private Index2          _size;
         private FormWindowState _windowState = FormWindowState.Normal;
         private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
-
-        private static readonly int s_size_of_rawinputheader = Marshal.SizeOf<RAWINPUTHEADER>();
 
         /// <summary>
         ///     Gets or sets the size.
@@ -216,6 +213,81 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
+        ///     Shows the window.
+        /// </summary>
+        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
+        public void Show()
+        {
+            User32.ShowWindow(_hWnd, (int)ShowWindowCommands.Normal);
+
+            if (!User32.UpdateWindow(_hWnd))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.UpdateWindow)} failed!");
+            }
+            if (!User32.SetForegroundWindow(_hWnd))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetForegroundWindow)} failed!");
+            }
+            User32.SetFocus(_hWnd);
+        }
+
+        /// <summary>
+        ///     Resizes the window.
+        /// </summary>
+        /// <param name="width">  The width. </param>
+        /// <param name="height"> The height. </param>
+        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
+        public void Resize(int width, int height)
+        {
+            RECT windowRect;
+            windowRect.LeftTop.X     = 0;
+            windowRect.LeftTop.Y     = 0;
+            windowRect.RightBottom.X = width;
+            windowRect.RightBottom.Y = height;
+
+            uint windowStyles = _borderStyle switch
+            {
+                FormBorderStyle.None => 0,
+                FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                         WS.MAXIMIZEBOX,
+                FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
+                                           WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+            windowStyles |= _windowState switch
+            {
+                FormWindowState.Normal => 0,
+                FormWindowState.Maximized => WS.MAXIMIZE,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
+            if (_borderStyle == FormBorderStyle.None)
+            {
+                windowStylesEx &= ~WSEX.WINDOWEDGE;
+            }
+
+            if (!User32.AdjustWindowRectEx(ref windowRect, windowStyles, false, windowStylesEx))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
+            }
+
+            if (!User32.SetWindowPos(
+                _hWnd,
+                IntPtr.Zero,
+                0, 0,
+                windowRect.RightBottom.X - windowRect.LeftTop.X,
+                windowRect.RightBottom.Y - windowRect.LeftTop.Y,
+                SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
+                SetWindowPosFlags.IgnoreZOrder))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
+            }
+        }
+
+        /// <summary>
         ///     Creates a window.
         /// </summary>
         /// <param name="w">            The width. </param>
@@ -299,81 +371,6 @@ namespace Exomia.Framework.Game
             return _hWnd;
         }
 
-        /// <summary>
-        ///     Shows the window.
-        /// </summary>
-        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
-        public void Show()
-        {
-            User32.ShowWindow(_hWnd, (int)ShowWindowCommands.Normal);
-
-            if (!User32.UpdateWindow(_hWnd))
-            {
-                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.UpdateWindow)} failed!");
-            }
-            if (!User32.SetForegroundWindow(_hWnd))
-            {
-                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetForegroundWindow)} failed!");
-            }
-            User32.SetFocus(_hWnd);
-        }
-
-        /// <summary>
-        ///     Resizes the window.
-        /// </summary>
-        /// <param name="width">  The width. </param>
-        /// <param name="height"> The height. </param>
-        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
-        public void Resize(int width, int height)
-        {
-            RECT windowRect;
-            windowRect.LeftTop.X     = 0;
-            windowRect.LeftTop.Y     = 0;
-            windowRect.RightBottom.X = width;
-            windowRect.RightBottom.Y = height;
-
-            uint windowStyles = _borderStyle switch
-            {
-                FormBorderStyle.None => 0,
-                FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                         WS.MAXIMIZEBOX,
-                FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                           WS.MAXIMIZEBOX | WS.SIZEFRAME,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-            windowStyles |= _windowState switch
-            {
-                FormWindowState.Normal => 0,
-                FormWindowState.Maximized => WS.MAXIMIZE,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
-            if (_borderStyle == FormBorderStyle.None)
-            {
-                windowStylesEx &= ~WSEX.WINDOWEDGE;
-            }
-
-            if (!User32.AdjustWindowRectEx(ref windowRect, windowStyles, false, windowStylesEx))
-            {
-                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
-            }
-
-            if (!User32.SetWindowPos(
-                _hWnd,
-                IntPtr.Zero,
-                0, 0,
-                windowRect.RightBottom.X - windowRect.LeftTop.X,
-                windowRect.RightBottom.Y - windowRect.LeftTop.Y,
-                SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
-                SetWindowPosFlags.IgnoreZOrder))
-            {
-                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
-            }
-        }
-
         #region IDisposable Support
 
         private bool _disposed;
@@ -397,13 +394,13 @@ namespace Exomia.Framework.Game
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~RenderForm()
         {
             Dispose(false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

@@ -14,17 +14,20 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Win32.RawInput
 {
     /// <summary>
-    /// Value type for a raw input header.
+    ///     Value type for a raw input header.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct RAWINPUTHEADER
     {
         /// <summary>Type of device the input is coming from.</summary>
         public int Type;
+
         /// <summary>Size of the packet of data.</summary>
         public int Size;
+
         /// <summary>Handle to the device sending the data.</summary>
         public IntPtr Device;
+
         /// <summary>wParam from the window message.</summary>
         public IntPtr wParam;
     }

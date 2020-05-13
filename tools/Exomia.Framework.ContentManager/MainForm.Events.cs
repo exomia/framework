@@ -1,4 +1,14 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
@@ -137,8 +147,8 @@ namespace Exomia.Framework.ContentManager
             }
 
             if (e.Node.Level == 0 ||
-                (Check(e.Node, n => n.PrevNode) &&
-                 Check(e.Node, n => n.NextNode)))
+                Check(e.Node, n => n.PrevNode) &&
+                Check(e.Node, n => n.NextNode))
             {
                 string oldText = e.Node.Text;
                 e.Node.Text = e.Label;

@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Diagnostics;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
@@ -60,10 +58,10 @@ namespace Exomia.Framework.Components
         public DebugComponent(string name = "DebugGameSystem")
             : base(name)
         {
-            _totalFrames      = 0;
-            _elapsedTime      = 0.0f;
-            _fpsCurrent       = 0.0f;
-            _fpsAverage       = -1;
+            _totalFrames = 0;
+            _elapsedTime = 0.0f;
+            _fpsCurrent  = 0.0f;
+            _fpsAverage  = -1;
         }
 
         /// <inheritdoc />

@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Resources;
 using System.Threading;
 using Exomia.Framework.Game;
 using SharpDX;
@@ -351,9 +350,9 @@ namespace Exomia.Framework.Graphics
             }
 
             _dxgiFactory.MakeWindowAssociation(parameters.Handle, parameters.WindowAssociationFlags);
-            
+
             _swapChain4!.ResizeTarget(ref modeDescription);
-            
+
             SetFullscreenState(parameters.DisplayType == DisplayType.Fullscreen);
 
             _resizeParameters = new ResizeParameters
@@ -365,7 +364,7 @@ namespace Exomia.Framework.Graphics
             };
 
             Resize(_resizeParameters);
-            
+
             IsInitialized = true;
         }
 
@@ -373,9 +372,9 @@ namespace Exomia.Framework.Graphics
         {
             Utilities.Dispose(ref _renderView1);
             Utilities.Dispose(ref _depthStencilView);
-           
+
             _d3DDeviceContext!.ClearState();
-                
+
             _swapChain4!.ResizeBuffers(
                 args.BufferCount, args.Width, args.Height, Format.Unknown, args.SwapChainFlags);
 

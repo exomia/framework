@@ -19,11 +19,11 @@ namespace Exomia.Framework.Win32
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
         internal static extern bool SetEvent(IntPtr hEvent);
-        
+
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", EntryPoint = "GetLastError")]
         internal static extern int GetLastError();
-        
+
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         internal static extern IntPtr GetModuleHandle(string lpModuleName);

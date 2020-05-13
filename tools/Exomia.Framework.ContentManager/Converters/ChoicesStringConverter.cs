@@ -20,11 +20,19 @@ namespace Exomia.Framework.ContentManager.Converters
     /// </summary>
     public sealed class ChoicesStringConverter : StringConverter
     {
-        /// <inheritdoc/>
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context) { return true; }
-        /// <inheritdoc/>
-        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) { return true; }
-        /// <inheritdoc/>
+        /// <inheritdoc />
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
             foreach (Attribute propertyDescriptorAttribute in context.PropertyDescriptor.Attributes)

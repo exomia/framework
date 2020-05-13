@@ -171,10 +171,10 @@ namespace Exomia.Framework.Graphics
 
             _sortIndices   = new int[MAX_BATCH_SIZE];
             _sortedSprites = new SpriteInfo[MAX_BATCH_SIZE];
-            
+
             _spriteQueue    = new SpriteInfo[MAX_BATCH_SIZE];
             _spriteTextures = new TextureInfo[MAX_BATCH_SIZE];
-            
+
             iDevice.ResizeFinished += IDevice_onResizeFinished;
 
             Resize(iDevice.Viewport);
@@ -1229,7 +1229,7 @@ namespace Exomia.Framework.Graphics
                 texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true, sourceRectangle,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
-        
+
         /// <summary>
         ///     Draw sprite.
         /// </summary>
@@ -1369,7 +1369,7 @@ namespace Exomia.Framework.Graphics
                 spriteInfo->Color         = color;
                 spriteInfo->Opacity       = opacity;
             }
-            
+
             _spriteTextures[spriteQueueCount] = textureInfo;
         }
 

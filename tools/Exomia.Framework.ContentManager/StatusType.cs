@@ -19,10 +19,12 @@ namespace Exomia.Framework.ContentManager
         ///     An enum constant representing the warning option.
         /// </summary>
         Warning,
+
         /// <summary>
         ///     An enum constant representing the error option.
         /// </summary>
         Error,
+
         /// <summary>
         ///     An enum constant representing the Information option.
         /// </summary>

@@ -13,8 +13,6 @@ using System.Collections.Generic;
 using System.IO;
 using SharpDX;
 using SharpDX.WIC;
-using Color = System.Drawing.Color;
-using Rectangle = SharpDX.Rectangle;
 
 namespace Exomia.Framework.Graphics
 {
@@ -50,7 +48,7 @@ namespace Exomia.Framework.Graphics
 
             _width  = width;
             _height = height;
-            
+
             _sourceRectangles = new Dictionary<string, Rectangle>(16);
 
             //_atlas = new Bitmap(width, height);
@@ -108,6 +106,7 @@ namespace Exomia.Framework.Graphics
             lock (_lockAtlas)
             {
                 MemoryStream ms = new MemoryStream();
+
                 //_atlas.Save(ms, ImageFormat.Png);
                 ms.Position = 0;
                 return TextureHelper.LoadBitmap(ms);
@@ -127,6 +126,7 @@ namespace Exomia.Framework.Graphics
             {
                 return true;
             }
+
             //lock (_lockAtlas)
             //{
             //    using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(_atlas))

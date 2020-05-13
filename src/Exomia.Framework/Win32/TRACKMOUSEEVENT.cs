@@ -17,14 +17,16 @@ namespace Exomia.Framework.Win32
     struct TRACKMOUSEEVENT
     {
         public int cbSize;
+
         [MarshalAs(UnmanagedType.U4)]
         public uint dwFlags;
+
         public IntPtr hWnd;
-        public uint dwHoverTime;
+        public uint   dwHoverTime;
 
         public TRACKMOUSEEVENT(uint dwFlags, IntPtr hWnd, uint dwHoverTime)
         {
-            this.cbSize      = Marshal.SizeOf(typeof(TRACKMOUSEEVENT));
+            cbSize           = Marshal.SizeOf(typeof(TRACKMOUSEEVENT));
             this.dwFlags     = dwFlags;
             this.hWnd        = hWnd;
             this.dwHoverTime = dwHoverTime;

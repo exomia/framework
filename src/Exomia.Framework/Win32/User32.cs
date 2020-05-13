@@ -18,6 +18,14 @@ namespace Exomia.Framework.Win32
     static class User32
     {
         [SuppressUnmanagedCodeSecurity]
+        [DllImport("user32.dll", SetLastError = false)]
+        public static extern unsafe uint GetRawInputData(IntPtr  hRawInput,
+                                                         uint    riCmd,
+                                                         byte*   pData,
+                                                         ref int pcbSize,
+                                                         int     cbSizeHeader);
+
+        [SuppressUnmanagedCodeSecurity]
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern int DispatchMessage(ref MSG lpMsg);
 
@@ -161,13 +169,5 @@ namespace Exomia.Framework.Win32
                                                             RAWINPUTDEVICE[] pRawInputDevices,
                                                             int uiNumDevices,
                                                             int cbSize);
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
-        public static extern unsafe uint GetRawInputData(IntPtr  hRawInput,
-                                                         uint    riCmd,
-                                                         byte*   pData,
-                                                         ref int pcbSize,
-                                                         int     cbSizeHeader);
     }
 }

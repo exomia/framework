@@ -29,7 +29,7 @@ namespace Exomia.Framework
     /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
     /// <param name="e"> [in,out] Reference t event information. </param>
     public delegate void RefEventHandler<TEventArgs>(ref TEventArgs e) where TEventArgs : struct;
-    
+
     /// <summary>
     ///     Handler, called when the event.
     /// </summary>
@@ -46,5 +46,6 @@ namespace Exomia.Framework
     /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
     /// <param name="sender"> The sender. </param>
     /// <param name="e">      [in,out] Reference t event information. </param>
-    public delegate void RefEventHandler<in TClass, TEventArgs>(TClass sender, ref TEventArgs e) where TEventArgs : struct;
+    public delegate void RefEventHandler<in TClass, TEventArgs>(TClass sender, ref TEventArgs e)
+        where TEventArgs : struct;
 }
