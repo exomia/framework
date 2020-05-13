@@ -11,7 +11,7 @@
     <PackageTags>exomia framework 2d 3d game engine xna mono</PackageTags>
     <RepositoryUrl>https://github.com/exomia/framework</RepositoryUrl>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RepositoryType>git</RepositoryType>
     <IncludeBuildOutput>true</IncludeBuildOutput>
@@ -19,6 +19,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile></DocumentationFile>
     <Nullable>enable</Nullable>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>

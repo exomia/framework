@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using System.Threading;
 using Exomia.Framework.Win32;
 
 namespace Exomia.Framework.Game
@@ -17,7 +16,7 @@ namespace Exomia.Framework.Game
     /// <summary>
     ///     Form for viewing the window forms game. This class cannot be inherited.
     /// </summary>
-    public sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
+    sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
     {
         private readonly RenderForm _renderForm;
         private          bool       _isInitialized;
@@ -42,6 +41,15 @@ namespace Exomia.Framework.Game
         public int Height
         {
             get { return _renderForm.Size.Y; }
+        }
+
+        /// <summary>
+        ///     Occurs when the form is about to close.
+        /// </summary>
+        public event RefEventHandler<bool> FormClosing
+        {
+            add { _renderForm.FormClosing += value; }
+            remove { _renderForm.FormClosing -= value; }
         }
 
         /// <summary>

@@ -32,7 +32,6 @@ namespace Exomia.Framework.Game
     {
         private const int                               INITIAL_QUEUE_SIZE        = 16;
         private const double                            FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
-        private const int                               WM_QUIT                   = 0x0012;
         private const int                               PM_REMOVE                 = 0x0001;
         private event EventHandler<Game, bool>?         _IsRunningChanged;
         private readonly List<IContentable>             _contentableComponent;
@@ -156,8 +155,11 @@ namespace Exomia.Framework.Game
 
             _collector       = new DisposeCollector();
             _serviceRegistry = new ServiceRegistry();
-
+            
+            // TODO: use a factory?
             WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
+            gameWindow.FormClosing += (ref bool cancel) => { Shutdown(); };
+            
             _gameWindowInitialize = gameWindow;
             _serviceRegistry.AddService(_gameWindow = gameWindow);
 
@@ -368,45 +370,10 @@ namespace Exomia.Framework.Game
 
             if (!_isInitialized)
             {
-                bool isWindowExiting = false;
-
-                void OnRenderFormOnFormClosing(IntPtr hWnd, ref bool close)
-                {
-                    if (!isWindowExiting)
-                    {
-                        isWindowExiting = true;
-                        Shutdown();
-                    }
-                }
-
-                switch (_gameWindow)
-                {
-                    case IWinFormsGameWindow formsWindow:
-                        {
-                            formsWindow.RenderForm.FormClosing += OnRenderFormOnFormClosing;
-                        }
-                        break;
-                    default:
-                        throw new NotSupportedException(
-                            $"The game window of type {_gameWindow.GetType()} is currently not supported!");
-                }
-
                 Initialize();
                 LoadContent();
                 Renderloop();
                 UnloadContent();
-
-                switch (_gameWindow)
-                {
-                    case IWinFormsGameWindow formsWindow:
-                        {
-                            formsWindow.RenderForm.FormClosing -= OnRenderFormOnFormClosing;
-                        }
-                        break;
-                    default:
-                        throw new NotSupportedException(
-                            $"The game window of type {_gameWindow.GetType()} is currently not supported!");
-                }
             }
         }
 
@@ -440,7 +407,7 @@ namespace Exomia.Framework.Game
 
             _IsRunningChanged += OnIsRunningChanged;
 
-            while (!_shutdown && m.msg != WM_QUIT)
+            while (!_shutdown)
             {
                 stopwatch.Restart();
 
@@ -548,7 +515,7 @@ namespace Exomia.Framework.Game
 
             _gameWindowInitialize.Initialize(ref parameters);
             _graphicsDevice.Initialize(ref parameters);
-
+            
             GameGraphicsParameters = parameters;
         }
 

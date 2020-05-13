@@ -12,7 +12,9 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Input;
+using Exomia.Framework.Input.Raw;
 using Exomia.Framework.Win32;
+using Exomia.Framework.Win32.RawInput;
 using KeyEventHandler = Exomia.Framework.Input.KeyEventHandler;
 using KeyPressEventHandler = Exomia.Framework.Input.KeyPressEventHandler;
 using MouseEventHandler = Exomia.Framework.Input.MouseEventHandler;
@@ -39,6 +41,8 @@ namespace Exomia.Framework.Game
         private Index2          _size;
         private FormWindowState _windowState = FormWindowState.Normal;
         private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
+
+        private static readonly int s_size_of_rawinputheader = Marshal.SizeOf<RAWINPUTHEADER>();
 
         /// <summary>
         ///     Gets or sets the size.
@@ -209,9 +213,6 @@ namespace Exomia.Framework.Game
                 throw new Win32Exception(
                     Kernel32.GetLastError(), $"{nameof(User32.RegisterClassEx)} failed with code {regResult}!");
             }
-
-            //Device.RegisterDevice(UsagePage.Generic, UsageId.GenericMouse, DeviceFlags.None);
-            //Device.MouseInput += DeviceOnMouseInput;
         }
 
         /// <summary>
@@ -292,6 +293,8 @@ namespace Exomia.Framework.Game
                     throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
                 }
             }
+
+            Device.RegisterDevice(HIDUsagePage.Generic, HIDUsage.Mouse, RawInputDeviceFlags.None, _hWnd);
 
             return _hWnd;
         }

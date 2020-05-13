@@ -11,6 +11,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using Exomia.Framework.Win32.RawInput;
 
 namespace Exomia.Framework.Win32
 {
@@ -134,7 +135,7 @@ namespace Exomia.Framework.Win32
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
-        
+
         [SuppressUnmanagedCodeSecurity]
         [DllImport("user32.dll")]
         internal static extern int GetSystemMetrics(int smIndex);
@@ -143,14 +144,30 @@ namespace Exomia.Framework.Win32
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-        
+
         [SuppressUnmanagedCodeSecurity]
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
 
-        [DllImport("user32.dll")]
         [SuppressUnmanagedCodeSecurity]
+        [DllImport("user32.dll")]
         internal static extern int ShowCursor(bool bShow);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool RegisterRawInputDevices([MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)]
+                                                            RAWINPUTDEVICE[] pRawInputDevices,
+                                                            int uiNumDevices,
+                                                            int cbSize);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("user32.dll", SetLastError = false)]
+        public static extern unsafe uint GetRawInputData(IntPtr  hRawInput,
+                                                         uint    riCmd,
+                                                         byte*   pData,
+                                                         ref int pcbSize,
+                                                         int     cbSizeHeader);
     }
 }

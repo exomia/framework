@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading;
 using Exomia.Framework.Game;
 using SharpDX;
@@ -118,9 +119,9 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void Clear(Color color)
         {
-            _d3DDeviceContext!.ClearRenderTargetView(_currentRenderView, color);
-            _d3DDeviceContext.ClearDepthStencilView(
-                _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            _d3DDeviceContext!.ClearDepthStencilView(
+                _depthStencilView!, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            _d3DDeviceContext!.ClearRenderTargetView(_currentRenderView!, color);
         }
 
         /// <inheritdoc />
@@ -350,7 +351,9 @@ namespace Exomia.Framework.Graphics
             }
 
             _dxgiFactory.MakeWindowAssociation(parameters.Handle, parameters.WindowAssociationFlags);
-
+            
+            _swapChain4!.ResizeTarget(ref modeDescription);
+            
             SetFullscreenState(parameters.DisplayType == DisplayType.Fullscreen);
 
             _resizeParameters = new ResizeParameters
@@ -362,20 +365,17 @@ namespace Exomia.Framework.Graphics
             };
 
             Resize(_resizeParameters);
-
-            SetRenderTarget(null);
-
+            
             IsInitialized = true;
         }
 
         private void Resize(ResizeParameters args)
         {
-            if (_renderView1 != null)
-            {
-                _renderView1.Dispose();
-                _renderView1 = null;
-            }
-
+            Utilities.Dispose(ref _renderView1);
+            Utilities.Dispose(ref _depthStencilView);
+           
+            _d3DDeviceContext!.ClearState();
+                
             _swapChain4!.ResizeBuffers(
                 args.BufferCount, args.Width, args.Height, Format.Unknown, args.SwapChainFlags);
 
@@ -412,6 +412,8 @@ namespace Exomia.Framework.Graphics
             }
 
             _d3DDeviceContext!.Rasterizer.SetViewport(Viewport = new Viewport(0, 0, args.Width, args.Height));
+
+            SetRenderTarget(null);
 
             ResizeFinished?.Invoke(Viewport);
         }

@@ -40,6 +40,11 @@ namespace Exomia.Framework.Game
     public interface IGameWindow : IDisposable
     {
         /// <summary>
+        ///     Occurs when the form is about to close.
+        /// </summary>
+        event RefEventHandler<bool> FormClosing;
+            
+        /// <summary>
         ///     Gets the height.
         /// </summary>
         /// <value>

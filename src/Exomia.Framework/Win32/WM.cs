@@ -98,6 +98,7 @@ namespace Exomia.Framework.Win32
         public const uint INITDIALOG             = 0x0110;
         public const uint INITMENU               = 0x0116;
         public const uint INITMENUPOPUP          = 0x0117;
+        public const uint INPUT                  = 0x00FF;
         public const uint INPUTLANGCHANGE        = 0x0051;
         public const uint INPUTLANGCHANGEREQUEST = 0x0050;
         public const uint KEYDOWN                = 0x0100;

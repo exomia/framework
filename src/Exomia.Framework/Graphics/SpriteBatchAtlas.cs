@@ -50,7 +50,7 @@ namespace Exomia.Framework.Graphics
 
             _width  = width;
             _height = height;
-
+            
             _sourceRectangles = new Dictionary<string, Rectangle>(16);
 
             //_atlas = new Bitmap(width, height);

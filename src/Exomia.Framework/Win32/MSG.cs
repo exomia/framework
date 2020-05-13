@@ -18,19 +18,37 @@ namespace Exomia.Framework.Win32
     struct MSG
     {
         public IntPtr hWnd;
-        public uint    msg;
+        public uint   msg;
         public IntPtr wParam;
         public IntPtr lParam;
         public uint   time;
         public Point  pt;
     }
 
+    /// <summary>
+    ///     A message.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct Message
     {
+        /// <summary>
+        ///     The window handle.
+        /// </summary>
         public IntPtr hWnd;
-        public uint    msg;
+
+        /// <summary>
+        ///     The message.
+        /// </summary>
+        public uint msg;
+
+        /// <summary>
+        ///     The w parameter.
+        /// </summary>
         public IntPtr wParam;
+
+        /// <summary>
+        ///     The l parameter.
+        /// </summary>
         public IntPtr lParam;
     }
 }

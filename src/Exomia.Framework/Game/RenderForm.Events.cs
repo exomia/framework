@@ -5,11 +5,20 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Input;
 using Exomia.Framework.Win32;
+using Exomia.Framework.Win32.RawInput;
 
 namespace Exomia.Framework.Game
 {
     sealed partial class RenderForm
     {
+        private const uint RID_ERROR               = unchecked((uint)-1);
+        private const int  RID_INPUT               = 0x10000003;
+        private const int  RID_HEADER              = 0x10000005;
+        private const int  RID_INPUT_TYPE_MOUSE    = 0;
+        private const int  RID_INPUT_TYPE_KEYBOARD = 1;
+        private const int  RID_INPUT_TYPE_HID      = 2;
+        private const int  RID_INPUT_TYPE_OTHER    = 3;
+
         private const int MOUSE_LE_STATE = 1;
 
         /// <summary>
@@ -23,42 +32,65 @@ namespace Exomia.Framework.Game
         public event EventHandler<IntPtr>? MouseEnter;
 
         /// <summary>
-        ///     Occurs when the form is closing.
+        ///     Occurs when the form is about to close.
         /// </summary>
-        public event RefEventHandler<IntPtr, bool>? FormClosing;
+        public event RefEventHandler<bool>? FormClosing;
 
-
-        private IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        private unsafe IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             Message m;
-            m.hWnd = hWnd;
-            m.msg = msg;
+            m.hWnd   = hWnd;
+            m.msg    = msg;
             m.wParam = wParam;
             m.lParam = lParam;
 
             switch (msg)
             {
+                case WM.INPUT:
+                    int sizeOfRawInputData = 0;
+                    User32.GetRawInputData(
+                        lParam, RID_INPUT, (byte*)0, ref sizeOfRawInputData, s_size_of_rawinputheader);
+
+                    if (sizeOfRawInputData == 0) { return IntPtr.Zero; }
+
+                    byte* rawInputDataPtr = stackalloc byte[sizeOfRawInputData];
+                    if (User32.GetRawInputData(
+                            lParam, RID_INPUT, rawInputDataPtr, ref sizeOfRawInputData, s_size_of_rawinputheader) !=
+                        RID_ERROR)
+                    {
+                        RAWINPUT* rawInput = (RAWINPUT*)rawInputDataPtr;
+                        switch (rawInput->Header.Type)
+                        {
+                            case RID_INPUT_TYPE_MOUSE:
+                                RawMouseInput(in rawInput->Data.Mouse);
+                                break;
+                            // not supported/needed atm.
+                            case RID_INPUT_TYPE_KEYBOARD:
+                            case RID_INPUT_TYPE_HID:
+                            case RID_INPUT_TYPE_OTHER:
+                                break;
+                        }
+                    }
+                    return IntPtr.Zero;
                 case WM.MOUSELEAVE:
                     _state &= ~MOUSE_LE_STATE;
                     MouseLeave?.Invoke(_hWnd);
-                    break;
+                    return IntPtr.Zero;
                 case WM.SIZE:
                     _size.X = LowWord(lParam);
                     _size.Y = HighWord(lParam);
-                    break;
+                    return IntPtr.Zero;
                 case WM.CLOSE:
-                    bool close = true;
-                    FormClosing?.Invoke(_hWnd, ref close);
-                    if (close)
+                    bool cancel = false;
+                    FormClosing?.Invoke(ref cancel);
+                    if (!cancel)
                     {
                         User32.DestroyWindow(_hWnd);
-                        User32.PostQuitMessage(0);
                     }
                     return IntPtr.Zero;
                 case WM.DESTROY:
-                    User32.DestroyWindow(_hWnd);
-                    User32.PostQuitMessage(0);
                     MouseLeave?.Invoke(_hWnd);
+                    User32.PostQuitMessage(0);
                     return IntPtr.Zero;
                 case WM.KEYDOWN:
                 case WM.KEYUP:
@@ -104,7 +136,7 @@ namespace Exomia.Framework.Game
                         {
                             _state |= MOUSE_LE_STATE;
                             MouseEnter?.Invoke(_hWnd);
-                            
+
                             TRACKMOUSEEVENT trackMouseEvent = new TRACKMOUSEEVENT(TME.LEAVE, _hWnd, 0);
                             if (!User32.TrackMouseEvent(ref trackMouseEvent))
                             {
@@ -113,8 +145,8 @@ namespace Exomia.Framework.Game
                             }
                         }
 
-                        int x = LowWord(m.lParam);
-                        int y = HighWord(m.lParam);
+                        int          x            = LowWord(m.lParam);
+                        int          y            = HighWord(m.lParam);
                         MouseButtons mouseButtons = (MouseButtons)LowWord(m.wParam);
                         for (int i = 0; i < _mouseMovePipe.Count; i++)
                         {
@@ -124,10 +156,10 @@ namespace Exomia.Framework.Game
                     }
                 case WM.MOUSEWHEEL:
                     {
-                        int x = LowWord(m.lParam);
-                        int y = HighWord(m.lParam);
+                        int          x            = LowWord(m.lParam);
+                        int          y            = HighWord(m.lParam);
                         MouseButtons mouseButtons = (MouseButtons)LowWord(m.wParam);
-                        int wheelDelta = HighWord(m.wParam);
+                        int          wheelDelta   = HighWord(m.wParam);
                         for (int i = 0; i < _mouseWheelPipe.Count; i++)
                         {
                             if (_mouseWheelPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, wheelDelta)))
@@ -143,8 +175,8 @@ namespace Exomia.Framework.Game
                 case WM.XBUTTONDBLCLK:
                     {
                         _state |= 0xC000000;
-                        int x = LowWord(m.lParam);
-                        int y = HighWord(m.lParam);
+                        int          x            = LowWord(m.lParam);
+                        int          y            = HighWord(m.lParam);
                         MouseButtons mouseButtons = (MouseButtons)LowWord(m.wParam);
                         for (int i = 0; i < _mouseClickPipe.Count; i++)
                         {
@@ -227,12 +259,12 @@ namespace Exomia.Framework.Game
                     break;
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RawMouseDown(ref Message m, MouseButtons buttons)
         {
             _state |= 0x8000000;
-            int low = LowWord(m.lParam);
+            int low  = LowWord(m.lParam);
             int high = HighWord(m.lParam);
             for (int i = 0; i < _mouseDownPipe.Count; i++)
             {
@@ -242,11 +274,11 @@ namespace Exomia.Framework.Game
                 }
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RawMouseUp(ref Message m, MouseButtons buttons)
         {
-            int low = LowWord(m.lParam);
+            int low  = LowWord(m.lParam);
             int high = HighWord(m.lParam);
             if ((_state & 0x8000000) == 0x8000000)
             {
@@ -266,42 +298,42 @@ namespace Exomia.Framework.Game
             }
         }
 
-        //private void DeviceOnMouseInput(object sender, MouseInputEventArgs e)
-        //{
-        //    MouseButtons buttons = Input.MouseButtons.None;
-        //    int          clicks  = 0;
-        //    if ((e.ButtonFlags & MouseButtonFlags.LeftButtonDown) == MouseButtonFlags.LeftButtonDown)
-        //    {
-        //        buttons |= Input.MouseButtons.Left;
-        //        clicks  =  1;
-        //    }
-        //    if ((e.ButtonFlags & MouseButtonFlags.RightButtonDown) == MouseButtonFlags.RightButtonDown)
-        //    {
-        //        buttons |= Input.MouseButtons.Right;
-        //        clicks  =  1;
-        //    }
-        //    if ((e.ButtonFlags & MouseButtonFlags.MiddleButtonDown) == MouseButtonFlags.MiddleButtonDown)
-        //    {
-        //        buttons |= Input.MouseButtons.Middle;
-        //        clicks  =  1;
-        //    }
-        //    if ((e.ButtonFlags & MouseButtonFlags.Button4Down) == MouseButtonFlags.Button4Down)
-        //    {
-        //        buttons |= Input.MouseButtons.XButton1;
-        //        clicks  =  1;
-        //    }
-        //    if ((e.ButtonFlags & MouseButtonFlags.Button5Down) == MouseButtonFlags.Button5Down)
-        //    {
-        //        buttons |= Input.MouseButtons.XButton2;
-        //        clicks  =  1;
-        //    }
-        //    for (int i = 0; i < _mouseRawInputPipe.Count; i++)
-        //    {
-        //        if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.X, e.Y, buttons, clicks, e.WheelDelta)))
-        //        {
-        //            break;
-        //        }
-        //    }
-        //}
+        private void RawMouseInput(in RAWINPUTMOUSE e)
+        {
+            MouseButtons buttons = Input.MouseButtons.None;
+            int          clicks  = 0;
+            if ((e.ButtonFlags & RawMouseButtons.LeftDown) == RawMouseButtons.LeftDown)
+            {
+                buttons |= Input.MouseButtons.Left;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & RawMouseButtons.RightDown) == RawMouseButtons.RightDown)
+            {
+                buttons |= Input.MouseButtons.Right;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & RawMouseButtons.MiddleDown) == RawMouseButtons.MiddleDown)
+            {
+                buttons |= Input.MouseButtons.Middle;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & RawMouseButtons.Button4Down) == RawMouseButtons.Button4Down)
+            {
+                buttons |= Input.MouseButtons.XButton1;
+                clicks  =  1;
+            }
+            if ((e.ButtonFlags & RawMouseButtons.Button5Down) == RawMouseButtons.Button5Down)
+            {
+                buttons |= Input.MouseButtons.XButton2;
+                clicks  =  1;
+            }
+            for (int i = 0; i < _mouseRawInputPipe.Count; i++)
+            {
+                if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.LastX, e.LastY, buttons, clicks, e.ButtonData)))
+                {
+                    break;
+                }
+            }
+        }
     }
 }
