@@ -34,12 +34,12 @@ namespace Exomia.Framework.Graphics
     /// </summary>
     public sealed class SpriteBatch2 : IDisposable
     {
-        private const int MAX_BATCH_SIZE             = 4096;
+        private const int MAX_BATCH_SIZE             = 1 << 13;
         private const int VERTICES_PER_SPRITE        = 4;
         private const int INDICES_PER_SPRITE         = 6;
         private const int MAX_VERTEX_COUNT           = MAX_BATCH_SIZE * VERTICES_PER_SPRITE;
         private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
-        private const int BATCH_SEQUENTIAL_THRESHOLD = 512;
+        private const int BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
         private const int VERTEX_STRIDE              = sizeof(float) * 11;
 
         private static readonly Vector2[]
@@ -102,7 +102,7 @@ namespace Exomia.Framework.Graphics
             }
 #pragma warning restore 162
             s_indices = new ushort[MAX_INDEX_COUNT];
-            for (int i = 0, k = 0; i < MAX_INDEX_COUNT; i += 6, k += VERTICES_PER_SPRITE)
+            for (int i = 0, k = 0; i < MAX_INDEX_COUNT; i += INDICES_PER_SPRITE, k += VERTICES_PER_SPRITE)
             {
                 s_indices[i + 0] = (ushort)(k + 0);
                 s_indices[i + 1] = (ushort)(k + 1);
@@ -341,7 +341,7 @@ namespace Exomia.Framework.Graphics
                                 {
                                     index = _sortIndices[index];
                                 }
-                                UpdateVertexFromSpriteInfoParallel(
+                                UpdateVertexFromSpriteInfo(
                                     ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
                             }
                         },
@@ -355,7 +355,7 @@ namespace Exomia.Framework.Graphics
                                 {
                                     index = _sortIndices[index];
                                 }
-                                UpdateVertexFromSpriteInfoParallel(
+                                UpdateVertexFromSpriteInfo(
                                     ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
                             }
                         });
@@ -369,7 +369,7 @@ namespace Exomia.Framework.Graphics
                         {
                             index = _sortIndices[index];
                         }
-                        UpdateVertexFromSpriteInfoParallel(ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
+                        UpdateVertexFromSpriteInfo(ref sprites[index], vpctPtr + (i << 2), deltaX, deltaY);
                     }
                 }
 
@@ -559,16 +559,16 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Updates the vertex from sprite information parallel.
+        ///     Updates the vertex from sprite information.
         /// </summary>
         /// <param name="spriteInfo"> [in,out] Information describing the sprite. </param>
         /// <param name="vpctPtr">    [in,out] If non-null, the vpct pointer. </param>
         /// <param name="deltaX">     The delta x coordinate. </param>
         /// <param name="deltaY">     The delta y coordinate. </param>
-        private unsafe void UpdateVertexFromSpriteInfoParallel(ref SpriteInfo              spriteInfo,
-                                                               VertexPositionColorTexture* vpctPtr,
-                                                               float                       deltaX,
-                                                               float                       deltaY)
+        private unsafe void UpdateVertexFromSpriteInfo(ref SpriteInfo              spriteInfo,
+                                                       VertexPositionColorTexture* vpctPtr,
+                                                       float                       deltaX,
+                                                       float                       deltaY)
         {
             Vector2 origin = spriteInfo.Origin;
 
@@ -639,130 +639,6 @@ namespace Exomia.Framework.Graphics
                     vertex->I = spriteInfo.Index;
                 }
             }
-        }
-
-        /// <summary>
-        ///     Information about the sprite.
-        /// </summary>
-        internal struct SpriteInfo
-        {
-            /// <summary>
-            ///     Source for the.
-            /// </summary>
-            public RectangleF Source;
-
-            /// <summary>
-            ///     Destination for the.
-            /// </summary>
-            public RectangleF Destination;
-
-            /// <summary>
-            ///     The origin.
-            /// </summary>
-            public Vector2 Origin;
-
-            /// <summary>
-            ///     The rotation.
-            /// </summary>
-            public float Rotation;
-
-            /// <summary>
-            ///     The depth.
-            /// </summary>
-            public float Depth;
-
-            /// <summary>
-            ///     The sprite effects.
-            /// </summary>
-            public SpriteEffects SpriteEffects;
-
-            /// <summary>
-            ///     The color.
-            /// </summary>
-            public Color Color;
-
-            /// <summary>
-            ///     The opacity.
-            /// </summary>
-            public float Opacity;
-
-            /// <summary>
-            ///     Zero-based index of the.
-            /// </summary>
-            public int Index;
-        }
-
-        /// <summary>
-        ///     A vertex position color texture.
-        /// </summary>
-        [StructLayout(LayoutKind.Explicit, Size = 44)]
-        private struct VertexPositionColorTexture
-        {
-            /// <summary>
-            ///     The X coordinate.
-            /// </summary>
-            [FieldOffset(0)]
-            public float X;
-
-            /// <summary>
-            ///     The Y coordinate.
-            /// </summary>
-            [FieldOffset(4)]
-            public float Y;
-
-            /// <summary>
-            ///     The Z coordinate.
-            /// </summary>
-            [FieldOffset(8)]
-            public float Z;
-
-            /// <summary>
-            ///     The width.
-            /// </summary>
-            [FieldOffset(12)]
-            public float W;
-
-            /// <summary>
-            ///     The float to process.
-            /// </summary>
-            [FieldOffset(16)]
-            public float R;
-
-            /// <summary>
-            ///     The float to process.
-            /// </summary>
-            [FieldOffset(20)]
-            public float G;
-
-            /// <summary>
-            ///     The float to process.
-            /// </summary>
-            [FieldOffset(24)]
-            public float B;
-
-            /// <summary>
-            ///     The float to process.
-            /// </summary>
-            [FieldOffset(28)]
-            public float A;
-
-            /// <summary>
-            ///     The float to process.
-            /// </summary>
-            [FieldOffset(32)]
-            public float U;
-
-            /// <summary>
-            ///     The float to process.
-            /// </summary>
-            [FieldOffset(36)]
-            public float V;
-
-            /// <summary>
-            ///     Zero-based index of the.
-            /// </summary>
-            [FieldOffset(40)]
-            public float I;
         }
 
         #region Drawing
@@ -1636,5 +1512,55 @@ namespace Exomia.Framework.Graphics
         }
 
         #endregion
+
+        internal struct SpriteInfo
+        {
+            public RectangleF    Source;
+            public RectangleF    Destination;
+            public Vector2       Origin;
+            public float         Rotation;
+            public float         Depth;
+            public SpriteEffects SpriteEffects;
+            public Color         Color;
+            public float         Opacity;
+            public int           Index;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE)]
+        private struct VertexPositionColorTexture
+        {
+            [FieldOffset(0)]
+            public float X;
+
+            [FieldOffset(4)]
+            public float Y;
+
+            [FieldOffset(8)]
+            public float Z;
+
+            [FieldOffset(12)]
+            public float W;
+
+            [FieldOffset(16)]
+            public float R;
+
+            [FieldOffset(20)]
+            public float G;
+
+            [FieldOffset(24)]
+            public float B;
+
+            [FieldOffset(28)]
+            public float A;
+
+            [FieldOffset(32)]
+            public float U;
+
+            [FieldOffset(36)]
+            public float V;
+
+            [FieldOffset(40)]
+            public float I;
+        }
     }
 }
