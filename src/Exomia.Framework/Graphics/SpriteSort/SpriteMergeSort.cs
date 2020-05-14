@@ -23,15 +23,15 @@ namespace Exomia.Framework.Graphics.SpriteSort
     {
         private const int SEQUENTIAL_THRESHOLD = 2048;
 
-        private readonly int  _tempSortBufferLength = 0;
-        private          int* _tmp;
+        private int  _tempSortBufferLength;
+        private int* _tmp;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteMergeSort" /> class.
         /// </summary>
         public SpriteMergeSort()
         {
-            _tmp = (int*)Marshal.AllocHGlobal(4096 * sizeof(int));
+            _tmp = (int*)Marshal.AllocHGlobal((_tempSortBufferLength = SEQUENTIAL_THRESHOLD) * sizeof(int));
         }
 
         /// <inheritdoc />
@@ -40,7 +40,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             if (_tempSortBufferLength < arr.Length)
             {
                 Marshal.FreeHGlobal((IntPtr)_tmp);
-                _tmp = (int*)Marshal.AllocHGlobal(arr.Length * sizeof(int));
+                _tmp = (int*)Marshal.AllocHGlobal((_tempSortBufferLength = arr.Length) * sizeof(int));
             }
             fixed (int* src = arr)
             {
@@ -54,7 +54,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             if (_tempSortBufferLength < arr.Length)
             {
                 Marshal.FreeHGlobal((IntPtr)_tmp);
-                _tmp = (int*)Marshal.AllocHGlobal(arr.Length * sizeof(int));
+                _tmp = (int*)Marshal.AllocHGlobal((_tempSortBufferLength = arr.Length) * sizeof(int));
             }
             fixed (int* src = arr)
             {
@@ -68,7 +68,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             if (_tempSortBufferLength < arr.Length)
             {
                 Marshal.FreeHGlobal((IntPtr)_tmp);
-                _tmp = (int*)Marshal.AllocHGlobal(arr.Length * sizeof(int));
+                _tmp = (int*)Marshal.AllocHGlobal((_tempSortBufferLength = arr.Length) * sizeof(int));
             }
             fixed (int* src = arr)
             {
@@ -82,7 +82,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             if (_tempSortBufferLength < arr.Length)
             {
                 Marshal.FreeHGlobal((IntPtr)_tmp);
-                _tmp = (int*)Marshal.AllocHGlobal(arr.Length * sizeof(int));
+                _tmp = (int*)Marshal.AllocHGlobal((_tempSortBufferLength = arr.Length) * sizeof(int));
             }
             fixed (int* src = arr)
             {
@@ -96,7 +96,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             if (_tempSortBufferLength < arr.Length)
             {
                 Marshal.FreeHGlobal((IntPtr)_tmp);
-                _tmp = (int*)Marshal.AllocHGlobal(arr.Length * sizeof(int));
+                _tmp = (int*)Marshal.AllocHGlobal((_tempSortBufferLength = arr.Length) * sizeof(int));
             }
             fixed (int* src = arr)
             {
