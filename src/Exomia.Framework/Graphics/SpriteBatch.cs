@@ -145,8 +145,8 @@ namespace Exomia.Framework.Graphics
                 $"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}"))
             {
                 Shader.Shader.Technique technique =
-                    (_shader = ShaderHelper.FromStream(iDevice, stream) ??
-                               throw new NullReferenceException(nameof(ShaderHelper.FromStream)))["DEFAULT"];
+                    (_shader = ShaderFileLoader.FromStream(iDevice, stream) ??
+                               throw new NullReferenceException(nameof(ShaderFileLoader.FromStream)))["DEFAULT"];
 
                 _vertexShader = technique;
                 _pixelShader  = technique;

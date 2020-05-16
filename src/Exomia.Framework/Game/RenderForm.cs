@@ -37,7 +37,7 @@ namespace Exomia.Framework.Game
         private IntPtr      _hWnd;
 
         private string          _windowTitle;
-        private Index2          _size;
+        private VectorI2          _size;
         private FormWindowState _windowState = FormWindowState.Normal;
         private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
 
@@ -47,7 +47,7 @@ namespace Exomia.Framework.Game
         /// <value>
         ///     The size.
         /// </value>
-        public Index2 Size
+        public VectorI2 Size
         {
             get { return _size; }
             set

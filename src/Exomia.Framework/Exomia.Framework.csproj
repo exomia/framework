@@ -91,7 +91,6 @@
     <None Remove="Resources\arial_72px.e1" />
     <None Remove="Resources\shaders\position_color.ehlsl" />
     <None Remove="Resources\shaders\position_color_texture.ehlsl" />
-    <None Remove="Resources\shaders\position_color_texture2.ehlsl" />
     <None Remove="Resources\shaders\position_normal_texture.ehlsl" />
   </ItemGroup>
 
@@ -140,7 +139,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\shaders\position_color.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl" />
-    <EmbeddedResource Include="Resources\shaders\position_color_texture2.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl" />
   </ItemGroup>
   

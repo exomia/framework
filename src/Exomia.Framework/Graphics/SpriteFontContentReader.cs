@@ -43,33 +43,4 @@ namespace Exomia.Framework.Graphics
             return font;
         }
     }
-
-    /// <summary>
-    ///     A sprite font 2 content reader. This class cannot be inherited.
-    /// </summary>
-    sealed class SpriteFont2ContentReader : IContentReader
-    {
-        /// <inheritdoc />
-        public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
-        {
-            SpriteFont2 font = ContentSerializer.Read<SpriteFont2>(parameters.Stream);
-
-            if (font.ImageData == null)
-            {
-                return null;
-            }
-
-            ITexture2ContentManager manager =
-                contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
-
-            try
-            {
-                using MemoryStream ms = new MemoryStream(font.ImageData) { Position = 0 };
-                font.Texture2 = manager.AddTexture(ms, parameters.AssetName);
-            }
-            catch { return null; }
-
-            return font;
-        }
-    }
 }

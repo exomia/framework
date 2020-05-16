@@ -104,11 +104,6 @@ namespace Exomia.Framework.Resources
         /// <summary>
         ///     The position color texture2 shader resource path.
         /// </summary>
-        public const string POSITION_COLOR_TEXTURE2 = "Resources.shaders.position_color_texture2.ehlsl";
-
-        /// <summary>
-        ///     The position color texture2 shader resource path.
-        /// </summary>
         public const string POSITION_NORMAL_TEXTURE = "Resources.shaders.position_normal_texture.ehlsl";
     }
 }

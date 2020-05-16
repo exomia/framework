@@ -34,7 +34,7 @@ namespace Exomia.Framework.Input
         ///     The position.
         /// </summary>
         [FieldOffset(0)]
-        public readonly Index2 Position;
+        public readonly VectorI2 Position;
 
         /// <summary>
         ///     The buttons.
@@ -64,7 +64,7 @@ namespace Exomia.Framework.Input
         /// <param name="wheelDelta"> The wheel delta. </param>
         public MouseEventArgs(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
         {
-            Position   = Index2.Zero;
+            Position   = VectorI2.Zero;
             X          = x;
             Y          = y;
             Buttons    = buttons;

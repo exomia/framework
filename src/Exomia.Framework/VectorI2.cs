@@ -17,36 +17,31 @@ using SharpDX;
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     Represents a three dimensional mathematical index.
+    ///     Represents a two dimensional mathematical index.
     /// </summary>
     /// <inheritdoc cref="IFormattable" />
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 12)]
-    public struct Index3 : IFormattable
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
+    public struct VectorI2 : IFormattable
     {
         /// <summary>
-        ///     A <see cref="Index3" /> with all of its components set to zero.
+        ///     A <see cref="VectorI2" /> with all of its components set to zero.
         /// </summary>
-        public static readonly Index3 Zero = new Index3(0, 0, 0);
+        public static readonly VectorI2 Zero = new VectorI2(0, 0);
 
         /// <summary>
-        ///     The X unit <see cref="Index3" /> (1, 0, 0).
+        ///     The X unit <see cref="VectorI2" /> (1, 0).
         /// </summary>
-        public static readonly Index3 UnitX = new Index3(1, 0, 0);
+        public static readonly VectorI2 UnitX = new VectorI2(1, 0);
 
         /// <summary>
-        ///     The Y unit <see cref="Index3" /> (0, 1, 0).
+        ///     The Y unit <see cref="VectorI2" /> (0, 1).
         /// </summary>
-        public static readonly Index3 UnitY = new Index3(0, 1, 0);
+        public static readonly VectorI2 UnitY = new VectorI2(0, 1);
 
         /// <summary>
-        ///     The Z unit <see cref="Index3" /> (0, 0, 1).
+        ///     A <see cref="VectorI2" /> with all of its components set to one.
         /// </summary>
-        public static readonly Index3 UnitZ = new Index3(0, 0, 1);
-
-        /// <summary>
-        ///     A <see cref="Index3" /> with all of its components set to one.
-        /// </summary>
-        public static readonly Index3 One = new Index3(1, 1, 1);
+        public static readonly VectorI2 One = new VectorI2(1, 1);
 
         /// <summary>
         ///     The X component of the index.
@@ -59,69 +54,47 @@ namespace Exomia.Framework
         public int Y;
 
         /// <summary>
-        ///     The Z component of the index.
-        /// </summary>
-        public int Z;
-
-        /// <summary>
-        ///     Initializes a new instance of the Index3 struct.
+        ///     Initializes a new instance of the Index2 struct.
         /// </summary>
         /// <param name="value"> The value that will be assigned to all components. </param>
-        public Index3(int value)
+        public VectorI2(int value)
         {
             X = value;
             Y = value;
-            Z = value;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the Index3 struct.
+        ///     Initializes a new instance of the Index2 struct.
         /// </summary>
         /// <param name="x"> Initial value for the X component of the index. </param>
         /// <param name="y"> Initial value for the Y component of the index. </param>
-        /// <param name="z"> Initial value for the Z component of the index. </param>
-        public Index3(int x, int y, int z)
+        public VectorI2(int x, int y)
         {
             X = x;
             Y = y;
-            Z = z;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the Index3 struct. equal to <see cref="Index3" /> (value.x,
-        ///     value.y, 0)
+        ///     Determines whether the specified <see cref="VectorI2" /> is equal to this instance.
         /// </summary>
-        /// <param name="value"> Initial value for the X and Y component of the index. </param>
-        /// <param name="z">     Initial value for the Z component of the index. </param>
-        public Index3(in Index2 value, int z)
-        {
-            X = value.X;
-            Y = value.Y;
-            Z = z;
-        }
-
-        /// <summary>
-        ///     Determines whether the specified <see cref="Index3" /> is equal to this instance.
-        /// </summary>
-        /// <param name="other"> The <see cref="Index3" /> to compare with this instance. </param>
+        /// <param name="other"> The <see cref="VectorI2" /> to compare with this instance. </param>
         /// <returns>
-        ///     <c>true</c> if the specified <see cref="Index3" /> is equal to this instance;
-        ///     <c>false</c> otherwise.
+        ///     <c>true</c> if the specified <see cref="VectorI2" /> is equal to this instance; otherwise,
+        ///     <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Equals(in Index3 other)
+        public readonly bool Equals(in VectorI2 other)
         {
             return
                 X == other.X &&
-                Y == other.Y &&
-                Z == other.Z;
+                Y == other.Y;
         }
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override readonly bool Equals(object value)
         {
-            if (value is Index3 other)
+            if (value is VectorI2 other)
             {
                 return Equals(in other);
             }
@@ -134,8 +107,7 @@ namespace Exomia.Framework
             unchecked
             {
                 // ReSharper disable NonReadonlyMemberInGetHashCode
-                return (((X.GetHashCode() * 307) ^
-                         Y.GetHashCode()) * 521) ^ Z.GetHashCode();
+                return (X.GetHashCode() * 307) ^ Y.GetHashCode();
 
                 // ReSharper restore NonReadonlyMemberInGetHashCode
             }
@@ -146,7 +118,7 @@ namespace Exomia.Framework
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X:{0} Y:{1} Z:{2}", X, Y, Z);
+                "X:{0} Y:{1}", X, Y);
         }
 
         /// <summary>
@@ -165,10 +137,9 @@ namespace Exomia.Framework
 
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X:{0} Y:{1} Z:{2}",
+                "X:{0} Y:{1}",
                 X.ToString(format, CultureInfo.CurrentCulture),
-                Y.ToString(format, CultureInfo.CurrentCulture),
-                Z.ToString(format, CultureInfo.CurrentCulture));
+                Y.ToString(format, CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -182,18 +153,10 @@ namespace Exomia.Framework
         {
             return string.Format(
                 formatProvider,
-                "X:{0} Y:{1} Z:{2}", X, Y, Z);
+                "X:{0} Y:{1}", X, Y);
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Returns a <see cref="T:System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="format">         The format. </param>
-        /// <param name="formatProvider"> The format provider. </param>
-        /// <returns>
-        ///     A <see cref="T:System.String" /> that represents this instance.
-        /// </returns>
         public readonly string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
@@ -203,10 +166,9 @@ namespace Exomia.Framework
 
             return string.Format(
                 formatProvider,
-                "X:{0} Y:{1} Z:{2}",
+                "X:{0} Y:{1}",
                 X.ToString(format, formatProvider),
-                Y.ToString(format, formatProvider),
-                Z.ToString(format, formatProvider));
+                Y.ToString(format, formatProvider));
         }
 
         /// <summary>
@@ -216,9 +178,9 @@ namespace Exomia.Framework
         ///     The length of the index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly double Length()
+        public readonly float Length()
         {
-            return Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
+            return (float)Math.Sqrt((X * X) + (Y * Y));
         }
 
         /// <summary>
@@ -230,7 +192,7 @@ namespace Exomia.Framework
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly int LengthSquared()
         {
-            return (X * X) + (Y * Y) + (Z * Z);
+            return (X * X) + (Y * Y);
         }
 
         /// <summary>
@@ -239,11 +201,10 @@ namespace Exomia.Framework
         /// <param name="left">   [in,out] The first index to add. </param>
         /// <param name="right">  [in,out] The second index to add. </param>
         /// <param name="result"> [out] When the method completes, contains the sum of the two indices. </param>
-        public static void Add(ref Index3 left, ref Index3 right, out Index3 result)
+        public static void Add(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
-            result.X = left.X + right.Y;
+            result.X = left.X + right.X;
             result.Y = left.Y + right.Y;
-            result.Z = left.Z + right.Z;
         }
 
         /// <summary>
@@ -252,11 +213,11 @@ namespace Exomia.Framework
         /// <param name="left">  The first index to add. </param>
         /// <param name="right"> The second index to add. </param>
         /// <returns>
-        ///     The sum of the two indexs.
+        ///     The sum of the two indices.
         /// </returns>
-        public static Index3 Add(in Index3 left, in Index3 right)
+        public static VectorI2 Add(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+            return new VectorI2(left.X + right.X, left.Y + right.Y);
         }
 
         /// <summary>
@@ -265,11 +226,10 @@ namespace Exomia.Framework
         /// <param name="left">   [in,out] The input index. </param>
         /// <param name="right">  [in,out] The scalar value to be added to elements. </param>
         /// <param name="result"> [out] The index with added scalar for each element. </param>
-        public static void Add(ref Index3 left, ref int right, out Index3 result)
+        public static void Add(ref VectorI2 left, ref int right, out VectorI2 result)
         {
             result.X = left.X + right;
             result.Y = left.Y + right;
-            result.Z = left.Z + right;
         }
 
         /// <summary>
@@ -280,9 +240,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with added scalar for each element.
         /// </returns>
-        public static Index3 Add(in Index3 left, int right)
+        public static VectorI2 Add(in VectorI2 left, int right)
         {
-            return new Index3(left.X + right, left.Y + right, left.Z + right);
+            return new VectorI2(left.X + right, left.Y + right);
         }
 
         /// <summary>
@@ -294,11 +254,10 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains the difference of the two
         ///     indices.
         /// </param>
-        public static void Subtract(ref Index3 left, ref Index3 right, out Index3 result)
+        public static void Subtract(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X - right.X;
             result.Y = left.Y - right.Y;
-            result.Z = left.Z - right.Z;
         }
 
         /// <summary>
@@ -309,9 +268,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The difference of the two indices.
         /// </returns>
-        public static Index3 Subtract(in Index3 left, in Index3 right)
+        public static VectorI2 Subtract(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+            return new VectorI2(left.X - right.X, left.Y - right.Y);
         }
 
         /// <summary>
@@ -320,11 +279,10 @@ namespace Exomia.Framework
         /// <param name="left">   [in,out] The input index. </param>
         /// <param name="right">  [in,out] The scalar value to be subtracted from elements. </param>
         /// <param name="result"> [out] The index with subtracted scalar for each element. </param>
-        public static void Subtract(ref Index3 left, ref int right, out Index3 result)
+        public static void Subtract(ref VectorI2 left, ref int right, out VectorI2 result)
         {
             result.X = left.X - right;
             result.Y = left.Y - right;
-            result.Z = left.Z - right;
         }
 
         /// <summary>
@@ -335,9 +293,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with subtracted scalar for each element.
         /// </returns>
-        public static Index3 Subtract(in Index3 left, int right)
+        public static VectorI2 Subtract(in VectorI2 left, int right)
         {
-            return new Index3(left.X - right, left.Y - right, left.Z - right);
+            return new VectorI2(left.X - right, left.Y - right);
         }
 
         /// <summary>
@@ -346,11 +304,10 @@ namespace Exomia.Framework
         /// <param name="left">   [in,out] The scalar value to be subtracted from elements. </param>
         /// <param name="right">  [in,out] The input index. </param>
         /// <param name="result"> [out] The index with subtracted scalar for each element. </param>
-        public static void Subtract(ref int left, ref Index3 right, out Index3 result)
+        public static void Subtract(ref int left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left - right.X;
             result.Y = left - right.Y;
-            result.Z = left - right.Z;
         }
 
         /// <summary>
@@ -361,9 +318,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with subtracted scalar for each element.
         /// </returns>
-        public static Index3 Subtract(int left, in Index3 right)
+        public static VectorI2 Subtract(int left, in VectorI2 right)
         {
-            return new Index3(left - right.X, left - right.Y, left - right.Z);
+            return new VectorI2(left - right.X, left - right.Y);
         }
 
         /// <summary>
@@ -372,11 +329,10 @@ namespace Exomia.Framework
         /// <param name="value">  [in,out] The index to scale. </param>
         /// <param name="scale">  The amount by which to index the index. </param>
         /// <param name="result"> [out] When the method completes, contains the scaled index. </param>
-        public static void Multiply(ref Index3 value, int scale, out Index3 result)
+        public static void Multiply(ref VectorI2 value, int scale, out VectorI2 result)
         {
             result.X = value.X * scale;
             result.Y = value.Y * scale;
-            result.Z = value.Z * scale;
         }
 
         /// <summary>
@@ -387,9 +343,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 Multiply(in Index3 value, int scale)
+        public static VectorI2 Multiply(in VectorI2 value, int scale)
         {
-            return new Index3(value.X * scale, value.Y * scale, value.Z * scale);
+            return new VectorI2(value.X * scale, value.Y * scale);
         }
 
         /// <summary>
@@ -398,11 +354,10 @@ namespace Exomia.Framework
         /// <param name="left">   [in,out] The first index to multiply. </param>
         /// <param name="right">  [in,out] The second index to multiply. </param>
         /// <param name="result"> [out] When the method completes, contains the multiplied index. </param>
-        public static void Multiply(ref Index3 left, ref Index3 right, out Index3 result)
+        public static void Multiply(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X * right.X;
             result.Y = left.Y * right.Y;
-            result.Z = left.Z * right.Z;
         }
 
         /// <summary>
@@ -413,9 +368,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The multiplied index.
         /// </returns>
-        public static Index3 Multiply(in Index3 left, in Index3 right)
+        public static VectorI2 Multiply(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
+            return new VectorI2(left.X * right.X, left.Y * right.Y);
         }
 
         /// <summary>
@@ -424,11 +379,10 @@ namespace Exomia.Framework
         /// <param name="value">  [in,out] The index to scale. </param>
         /// <param name="scale">  The amount by which to index the index. </param>
         /// <param name="result"> [out] When the method completes, contains the scaled index. </param>
-        public static void Divide(ref Index3 value, int scale, out Index3 result)
+        public static void Divide(ref VectorI2 value, int scale, out VectorI2 result)
         {
             result.X = value.X / scale;
             result.Y = value.Y / scale;
-            result.Z = value.Z / scale;
         }
 
         /// <summary>
@@ -439,9 +393,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 Divide(in Index3 value, int scale)
+        public static VectorI2 Divide(in VectorI2 value, int scale)
         {
-            return new Index3(value.X / scale, value.Y / scale, value.Z / scale);
+            return new VectorI2(value.X / scale, value.Y / scale);
         }
 
         /// <summary>
@@ -450,11 +404,10 @@ namespace Exomia.Framework
         /// <param name="left">   [in,out] The first index to multiply. </param>
         /// <param name="right">  [in,out] The second index to multiply. </param>
         /// <param name="result"> [out] When the method completes, contains the multiplied index. </param>
-        public static void Divide(ref Index3 left, ref Index3 right, out Index3 result)
+        public static void Divide(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X / right.X;
             result.Y = left.Y / right.Y;
-            result.Z = left.Z / right.Z;
         }
 
         /// <summary>
@@ -465,9 +418,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The multiplied index.
         /// </returns>
-        public static Index3 Divide(in Index3 left, in Index3 right)
+        public static VectorI2 Divide(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
+            return new VectorI2(left.X / right.X, left.Y / right.Y);
         }
 
         /// <summary>
@@ -478,11 +431,10 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains a index facing in the opposite
         ///     direction.
         /// </param>
-        public static void Negate(ref Index3 value, out Index3 result)
+        public static void Negate(ref VectorI2 value, out VectorI2 result)
         {
             result.X = -value.X;
             result.Y = -value.Y;
-            result.Z = -value.Z;
         }
 
         /// <summary>
@@ -492,9 +444,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     A index facing in the opposite direction.
         /// </returns>
-        public static Index3 Negate(in Index3 value)
+        public static VectorI2 Negate(in VectorI2 value)
         {
-            return new Index3(-value.X, -value.Y, -value.Z);
+            return new VectorI2(-value.X, -value.Y);
         }
 
         /// <summary>
@@ -505,11 +457,10 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains a index with each component
         ///     being the absolute value of the input component.
         /// </param>
-        public static void Abs(ref Index3 value, out Index3 result)
+        public static void Abs(ref VectorI2 value, out VectorI2 result)
         {
             result.X = (value.X + (value.X >> 31)) ^ (value.X >> 31);
             result.Y = (value.Y + (value.Y >> 31)) ^ (value.Y >> 31);
-            result.Z = (value.Z + (value.Z >> 31)) ^ (value.Z >> 31);
         }
 
         /// <summary>
@@ -519,12 +470,11 @@ namespace Exomia.Framework
         /// <returns>
         ///     A index with each component being the absolute value of the input component.
         /// </returns>
-        public static Index3 Abs(in Index3 value)
+        public static VectorI2 Abs(in VectorI2 value)
         {
-            return new Index3(
+            return new VectorI2(
                 (value.X + (value.X >> 31)) ^ (value.X >> 31),
-                (value.Y + (value.Y >> 31)) ^ (value.Y >> 31),
-                (value.Z + (value.Z >> 31)) ^ (value.Z >> 31));
+                (value.Y + (value.Y >> 31)) ^ (value.Y >> 31));
         }
 
         /// <summary>
@@ -536,13 +486,12 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains the distance between the two
         ///     indices.
         /// </param>
-        public static void Distance(ref Index3 value1, ref Index3 value2, out double result)
+        public static void Distance(ref VectorI2 value1, ref VectorI2 value2, out double result)
         {
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
-            int z = value1.Z - value2.Z;
 
-            result = Math.Sqrt((x * x) + (y * y) + (z * z));
+            result = Math.Sqrt((x * x) + (y * y));
         }
 
         /// <summary>
@@ -553,13 +502,12 @@ namespace Exomia.Framework
         /// <returns>
         ///     The distance between the two indices.
         /// </returns>
-        public static double Distance(in Index3 value1, in Index3 value2)
+        public static double Distance(in VectorI2 value1, in VectorI2 value2)
         {
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
-            int z = value1.Z - value2.Z;
 
-            return Math.Sqrt((x * x) + (y * y) + (z * z));
+            return Math.Sqrt((x * x) + (y * y));
         }
 
         /// <summary>
@@ -571,13 +519,12 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains the squared distance between
         ///     the two indices.
         /// </param>
-        public static void DistanceSquared(ref Index3 value1, ref Index3 value2, out int result)
+        public static void DistanceSquared(ref VectorI2 value1, ref VectorI2 value2, out int result)
         {
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
-            int z = value1.Z - value2.Z;
 
-            result = (x * x) + (y * y) + (z * z);
+            result = (x * x) + (y * y);
         }
 
         /// <summary>
@@ -588,13 +535,12 @@ namespace Exomia.Framework
         /// <returns>
         ///     The squared distance between the two indices.
         /// </returns>
-        public static int DistanceSquared(in Index3 value1, in Index3 value2)
+        public static int DistanceSquared(in VectorI2 value1, in VectorI2 value2)
         {
             int x = value1.X - value2.X;
             int y = value1.Y - value2.Y;
-            int z = value1.Z - value2.Z;
 
-            return (x * x) + (y * y) + (z * z);
+            return (x * x) + (y * y);
         }
 
         /// <summary>
@@ -606,9 +552,9 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains the dot product of the two
         ///     indices.
         /// </param>
-        public static void Dot(ref Index3 left, ref Index3 right, out int result)
+        public static void Dot(ref VectorI2 left, ref VectorI2 right, out int result)
         {
-            result = (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
+            result = (left.X * right.X) + (left.Y * right.Y);
         }
 
         /// <summary>
@@ -619,9 +565,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The dot product of the two indices.
         /// </returns>
-        public static int Dot(in Index3 left, in Index3 right)
+        public static int Dot(in VectorI2 left, in VectorI2 right)
         {
-            return (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
+            return (left.X * right.X) + (left.Y * right.Y);
         }
 
         /// <summary>
@@ -633,11 +579,10 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains an new index composed of the
         ///     largest components of the source indices.
         /// </param>
-        public static void Max(ref Index3 left, ref Index3 right, out Index3 result)
+        public static void Max(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X > right.X ? left.X : right.X;
             result.Y = left.Y > right.Y ? left.Y : right.Y;
-            result.Z = left.Z > right.Z ? left.Z : right.Z;
         }
 
         /// <summary>
@@ -648,12 +593,11 @@ namespace Exomia.Framework
         /// <returns>
         ///     A index containing the largest components of the source indices.
         /// </returns>
-        public static Index3 Max(in Index3 left, in Index3 right)
+        public static VectorI2 Max(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(
+            return new VectorI2(
                 left.X > right.X ? left.X : right.X,
-                left.Y > right.Y ? left.Y : right.Y,
-                left.Z > right.Z ? left.Z : right.Z);
+                left.Y > right.Y ? left.Y : right.Y);
         }
 
         /// <summary>
@@ -665,11 +609,10 @@ namespace Exomia.Framework
         ///     [out] When the method completes, contains an new index composed of the
         ///     smallest components of the source indices.
         /// </param>
-        public static void Min(ref Index3 left, ref Index3 right, out Index3 result)
+        public static void Min(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X < right.X ? left.X : right.X;
             result.Y = left.Y < right.Y ? left.Y : right.Y;
-            result.Z = left.Z < right.Z ? left.Z : right.Z;
         }
 
         /// <summary>
@@ -680,12 +623,11 @@ namespace Exomia.Framework
         /// <returns>
         ///     A index containing the smallest components of the source indices.
         /// </returns>
-        public static Index3 Min(in Index3 left, in Index3 right)
+        public static VectorI2 Min(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(
+            return new VectorI2(
                 left.X < right.X ? left.X : right.X,
-                left.Y < right.Y ? left.Y : right.Y,
-                left.Z < right.Z ? left.Z : right.Z);
+                left.Y < right.Y ? left.Y : right.Y);
         }
 
         /// <summary>
@@ -696,9 +638,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The sum of the two indices.
         /// </returns>
-        public static Index3 operator +(in Index3 left, in Index3 right)
+        public static VectorI2 operator +(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+            return new VectorI2(left.X + right.X, left.Y + right.Y);
         }
 
         /// <summary>
@@ -709,9 +651,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with added scalar for each element.
         /// </returns>
-        public static Index3 operator +(in Index3 value, int scalar)
+        public static VectorI2 operator +(in VectorI2 value, int scalar)
         {
-            return new Index3(value.X + scalar, value.Y + scalar, value.Z + scalar);
+            return new VectorI2(value.X + scalar, value.Y + scalar);
         }
 
         /// <summary>
@@ -722,9 +664,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with added scalar for each element.
         /// </returns>
-        public static Index3 operator +(int scalar, in Index3 value)
+        public static VectorI2 operator +(int scalar, in VectorI2 value)
         {
-            return new Index3(scalar + value.X, scalar + value.Y, scalar + value.Z);
+            return new VectorI2(scalar + value.X, scalar + value.Y);
         }
 
         /// <summary>
@@ -734,7 +676,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     The asserted (unchanged) index.
         /// </returns>
-        public static Index3 operator +(in Index3 value)
+        public static VectorI2 operator +(in VectorI2 value)
         {
             return value;
         }
@@ -747,9 +689,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The sum of the two indices.
         /// </returns>
-        public static Index3 operator -(in Index3 left, in Index3 right)
+        public static VectorI2 operator -(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+            return new VectorI2(left.X - right.X, left.Y - right.Y);
         }
 
         /// <summary>
@@ -760,9 +702,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with subtracted scalar from each element.
         /// </returns>
-        public static Index3 operator -(in Index3 value, int scalar)
+        public static VectorI2 operator -(in VectorI2 value, int scalar)
         {
-            return new Index3(value.X - scalar, value.Y - scalar, value.Z - scalar);
+            return new VectorI2(value.X - scalar, value.Y - scalar);
         }
 
         /// <summary>
@@ -773,9 +715,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The index with subtracted scalar from each element.
         /// </returns>
-        public static Index3 operator -(int scalar, in Index3 value)
+        public static VectorI2 operator -(int scalar, in VectorI2 value)
         {
-            return new Index3(scalar - value.X, scalar - value.Y, scalar - value.Z);
+            return new VectorI2(scalar - value.X, scalar - value.Y);
         }
 
         /// <summary>
@@ -785,23 +727,23 @@ namespace Exomia.Framework
         /// <returns>
         ///     A index facing in the opposite direction.
         /// </returns>
-        public static Index3 operator -(in Index3 value)
+        public static VectorI2 operator -(in VectorI2 value)
         {
-            return new Index3(-value.X, -value.Y, -value.Z);
+            return new VectorI2(-value.X, -value.Y);
         }
 
         /// <summary>
         ///     Multiplies a index with another by performing component-wise multiplication equivalent to
-        ///     <see cref="Multiply(ref Index3, ref Index3, out Index3)" />.
+        ///     <see cref="Multiply(ref VectorI2, ref VectorI2, out VectorI2)" />.
         /// </summary>
         /// <param name="left">  The first index to multiply. </param>
         /// <param name="right"> The second index to multiply. </param>
         /// <returns>
         ///     The multiplication of the two indices.
         /// </returns>
-        public static Index3 operator *(in Index3 left, in Index3 right)
+        public static VectorI2 operator *(in VectorI2 left, in VectorI2 right)
         {
-            return new Index3(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
+            return new VectorI2(left.X * right.X, left.Y * right.Y);
         }
 
         /// <summary>
@@ -812,9 +754,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 operator *(int scale, in Index3 value)
+        public static VectorI2 operator *(int scale, in VectorI2 value)
         {
-            return new Index3(value.X * scale, value.Y * scale, value.Z * scale);
+            return new VectorI2(value.X * scale, value.Y * scale);
         }
 
         /// <summary>
@@ -825,9 +767,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 operator *(in Index3 value, int scale)
+        public static VectorI2 operator *(in VectorI2 value, int scale)
         {
-            return new Index3(value.X * scale, value.Y * scale, value.Z * scale);
+            return new VectorI2(value.X * scale, value.Y * scale);
         }
 
         /// <summary>
@@ -838,9 +780,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 operator /(in Index3 value, int scale)
+        public static VectorI2 operator /(in VectorI2 value, int scale)
         {
-            return new Index3(value.X / scale, value.Y / scale, value.Z / scale);
+            return new VectorI2(value.X / scale, value.Y / scale);
         }
 
         /// <summary>
@@ -851,9 +793,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 operator /(int scale, in Index3 value)
+        public static VectorI2 operator /(int scale, in VectorI2 value)
         {
-            return new Index3(scale / value.X, scale / value.Y, scale / value.Z);
+            return new VectorI2(scale / value.X, scale / value.Y);
         }
 
         /// <summary>
@@ -864,9 +806,9 @@ namespace Exomia.Framework
         /// <returns>
         ///     The scaled index.
         /// </returns>
-        public static Index3 operator /(in Index3 value, in Index3 scale)
+        public static VectorI2 operator /(in VectorI2 value, in VectorI2 scale)
         {
-            return new Index3(value.X / scale.X, value.Y / scale.Y, value.Z / scale.Z);
+            return new VectorI2(value.X / scale.X, value.Y / scale.Y);
         }
 
         /// <summary>
@@ -880,7 +822,7 @@ namespace Exomia.Framework
         ///     <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(in Index3 left, in Index3 right)
+        public static bool operator ==(in VectorI2 left, in VectorI2 right)
         {
             return left.Equals(in right);
         }
@@ -896,61 +838,74 @@ namespace Exomia.Framework
         ///     <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(in Index3 left, in Index3 right)
+        public static bool operator !=(in VectorI2 left, in VectorI2 right)
         {
             return !left.Equals(in right);
         }
 
         /// <summary>
-        ///     Performs an implicit conversion from <see cref="int" /> to <see cref="Index3" />. equal
-        ///     to <see cref="Index3" /> (value)
+        ///     Performs an implicit conversion from <see cref="int" /> to <see cref="VectorI2" />. equal
+        ///     to <see cref="VectorI2" /> (value)
         /// </summary>
         /// <param name="value"> The value. </param>
         /// <returns>
         ///     The result of the conversion.
         /// </returns>
-        public static implicit operator Index3(int value)
+        public static implicit operator VectorI2(int value)
         {
-            return new Index3(value, value, value);
+            return new VectorI2(value, value);
         }
 
         /// <summary>
-        ///     Performs an implicit conversion from <see cref="int" /> to <see cref="Index3" />. equal
-        ///     to <see cref="Index3" /> (value.x, value.y, 0)
+        ///     Performs an implicit conversion from <see cref="VectorI2" /> to <see cref="Vector2" />.
+        ///     equal to <see cref="Vector2" /> (value.x, value.y)
         /// </summary>
         /// <param name="value"> The value. </param>
         /// <returns>
         ///     The result of the conversion.
         /// </returns>
-        public static implicit operator Index3(in Index2 value)
+        public static implicit operator Vector2(in VectorI2 value)
         {
-            return new Index3(value.X, value.Y, 0);
+            return new Vector2(value.X, value.Y);
         }
 
         /// <summary>
-        ///     Performs an implicit conversion from <see cref="Index3" /> to <see cref="Vector3" />.
-        ///     equal to <see cref="Vector3" /> (value.x, value.y, value.z)
+        ///     Performs an implicit conversion from <see cref="Vector2" /> to <see cref="VectorI2" />.
+        ///     equal to <see cref="VectorI2" /> ((int)value.x, (int)value.y)
         /// </summary>
         /// <param name="value"> The value. </param>
         /// <returns>
         ///     The result of the conversion.
         /// </returns>
-        public static implicit operator Vector3(in Index3 value)
+        public static implicit operator VectorI2(in Vector2 value)
         {
-            return new Vector3(value.X, value.Y, value.Z);
+            return new VectorI2((int)value.X, (int)value.Y);
         }
 
         /// <summary>
-        ///     Performs an implicit conversion from <see cref="Vector3" /> to <see cref="Index3" />.
-        ///     equal to <see cref="Index3" /> ((int)value.x, (int)value.y, (int)value.z)
+        ///     Performs an implicit conversion from <see cref="VectorI2" /> to <see cref="Vector3" />.
+        ///     equal to <see cref="Vector3" /> (value.x, value.y, 0)
         /// </summary>
         /// <param name="value"> The value. </param>
         /// <returns>
         ///     The result of the conversion.
         /// </returns>
-        public static implicit operator Index3(in Vector3 value)
+        public static implicit operator Vector3(in VectorI2 value)
         {
-            return new Index3((int)value.X, (int)value.Y, (int)value.Z);
+            return new Vector3(value.X, value.Y, 0);
+        }
+
+        /// <summary>
+        ///     Performs an implicit conversion from <see cref="Vector3" /> to <see cref="VectorI2" />.
+        ///     equal to <see cref="VectorI2" /> ((int)value.x, (int)value.y)
+        /// </summary>
+        /// <param name="value"> The value. </param>
+        /// <returns>
+        ///     The result of the conversion.
+        /// </returns>
+        public static implicit operator VectorI2(in Vector3 value)
+        {
+            return new VectorI2((int)value.X, (int)value.Y);
         }
     }
 }
