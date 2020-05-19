@@ -10,6 +10,8 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Input;
 using Exomia.Framework.Input.Raw;
@@ -186,7 +188,7 @@ namespace Exomia.Framework.Game
             _mouseClickPipe    = new Pipe<MouseEventHandler>();
             _mouseWheelPipe    = new Pipe<MouseEventHandler>();
             _mouseRawInputPipe = new Pipe<MouseEventHandler>();
-
+            
             _wndClassEx = new WndClassEx
             {
                 cbSize = Marshal.SizeOf(typeof(WndClassEx)),
@@ -196,7 +198,7 @@ namespace Exomia.Framework.Game
                 cbClsExtra    = 0,
                 cbWndExtra    = 0,
                 hInstance     = Kernel32.GetModuleHandle(null!),
-                hIcon         = IntPtr.Zero,
+                hIcon         = Shell32.ExtractIcon(IntPtr.Zero, Assembly.GetExecutingAssembly().Location, 0),
                 hCursor       = User32.LoadCursor(IntPtr.Zero, IDC_ARROW),
                 lpszMenuName  = null!,
                 lpszClassName = LP_CLASS_NAME,

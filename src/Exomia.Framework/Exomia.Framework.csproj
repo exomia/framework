@@ -55,6 +55,7 @@
 
   <PropertyGroup>
     <NoWarn>1701;1702;IDE0063</NoWarn>
+    <ApplicationIcon>logo_x192_Hcn_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
