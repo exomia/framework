@@ -10,6 +10,7 @@
 
 using System;
 using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -18,6 +19,34 @@ namespace Exomia.Framework.ContentManager
     /// </summary>
     public partial class CreateProjectForm : Form
     {
+        /// <summary>
+        ///     Gets the name of the project.
+        /// </summary>
+        /// <value>
+        ///     The name of the project.
+        /// </value>
+        public string ProjectName
+        {
+            get
+            {
+                return projNameTb.Text;
+            }
+        }
+        
+        /// <summary>
+        ///     Gets the project location.
+        /// </summary>
+        /// <value>
+        ///     The project location.
+        /// </value>
+        public string ProjectLocation
+        {
+            get
+            {
+                return locationTb.Text;
+            }
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="CreateProjectForm" /> class.
         /// </summary>
@@ -29,6 +58,23 @@ namespace Exomia.Framework.ContentManager
         private void button1_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = "Create an \"exomia content project\" (.ecp) within selected location.",
+                Multiselect = false
+            })
+            {
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    locationTb.Text = dialog.FileName;
+                }
+            }
+
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Exomia.Framework.Graphics.Camera.Controller
     /// </summary>
     public sealed class TranslationKeyboardController : ICameraComponent, IUpdateableCameraComponent, IInputHandler
     {
-        private const    float        TRANSLATION_SPEED = 20.0f;
+        private const    float        TRANSLATION_SPEED = 40.0f;
         private readonly HashSet<int> _keysDown;
 
         /// <inheritdoc />

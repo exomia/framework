@@ -20,7 +20,21 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     class ContentPropertyGridItem : FolderPropertyGridItem
     {
-        private readonly Func<string> _locationProvider;
+        private readonly Func<string> _projectNameProvider, _projectLocationProvider;
+
+        /// <summary>
+        ///     The location of the project.
+        /// </summary>
+        /// <value>
+        ///     The location.
+        /// </value>
+        [Category("Common")]
+        [Description("The name of the project.")]
+        [ReadOnly(true)]
+        public string ProjectName
+        {
+            get { return _projectNameProvider(); }
+        }
 
         /// <summary>
         ///     The location of the project.
@@ -31,9 +45,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Common")]
         [Description("The location of the project.")]
         [ReadOnly(true)]
-        public string Location
+        public string ProjectLocation
         {
-            get { return _locationProvider(); }
+            get { return _projectLocationProvider(); }
         }
 
         /// <summary>
@@ -62,17 +76,39 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <summary>
         ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
         /// </summary>
-        /// <param name="nameProvider">        The name provider. </param>
-        /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        /// <param name="totalItemsProvider">  The total items provider. </param>
-        /// <param name="locationProvider">    The location provider. </param>
+        /// <param name="nameProvider">            The name provider. </param>
+        /// <param name="virtualPathProvider">     The virtual path provider. </param>
+        /// <param name="totalItemsProvider">      The total items provider. </param>
+        /// <param name="projectNameProvider">     The project name provider. </param>
+        /// <param name="projectLocationProvider"> The project location provider. </param>
         public ContentPropertyGridItem(Func<string> nameProvider,
                                        Func<string> virtualPathProvider,
                                        Func<int>    totalItemsProvider,
-                                       Func<string> locationProvider)
+                                       Func<string> projectNameProvider,
+                                       Func<string> projectLocationProvider)
             : base(nameProvider, virtualPathProvider, totalItemsProvider)
         {
-            _locationProvider = locationProvider;
+            _projectNameProvider     = projectNameProvider;
+            _projectLocationProvider = projectLocationProvider;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
+        /// </summary>
+        /// <param name="nameProvider">        The name provider. </param>
+        /// <param name="virtualPathProvider"> The virtual path provider. </param>
+        /// <param name="totalItemsProvider">  The total items provider. </param>
+        /// <param name="projectName">         The location. </param>
+        /// <param name="projectLocation">     The location. </param>
+        public ContentPropertyGridItem(Func<string> nameProvider,
+                                       Func<string> virtualPathProvider,
+                                       Func<int>    totalItemsProvider,
+                                       string       projectName,
+                                       string       projectLocation)
+            : base(nameProvider, virtualPathProvider, totalItemsProvider)
+        {
+            _projectNameProvider     = () => projectName;
+            _projectLocationProvider = () => projectLocation;
         }
     }
 }

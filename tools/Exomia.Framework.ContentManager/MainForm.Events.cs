@@ -44,8 +44,11 @@ namespace Exomia.Framework.ContentManager
                                 new ContentPropertyGridItem(
                                     () => node.Text,
                                     () => "/",
-                                    () => node.GetNodeCount(true),
-                                    () => "C://.../test/test/test/test/test/test/test/build");
+                                    () => node.GetNodeCount(true), 
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    createProjectForm.ProjectName,
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    createProjectForm.ProjectLocation);
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
                 }
