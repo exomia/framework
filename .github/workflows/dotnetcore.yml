@@ -12,7 +12,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 3.1.300
     - name: dotnet build release
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
