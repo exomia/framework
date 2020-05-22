@@ -14,4 +14,4 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: dotnet build release
-      run: dotnet build --configuration Release  --force --nologo
+      run: dotnet build src/** --configuration Release  --force --nologo
