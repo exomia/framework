@@ -16,4 +16,4 @@ jobs:
     - name: dotnet build release
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
-      run: dotnet build src/** --configuration Release --force --nologo
+      run: dotnet build src/Exomia.Framework --configuration Release --force --nologo
