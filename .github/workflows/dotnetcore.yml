@@ -1,4 +1,4 @@
-name: .NET Core
+name: dotnet build release
 
 on: [push]
 
@@ -15,5 +15,6 @@ jobs:
         dotnet-version: 3.1.300
     - name: dotnet build release
       env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
       run: dotnet build src/Exomia.Framework --configuration Release --force --nologo

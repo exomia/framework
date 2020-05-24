@@ -18,23 +18,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     class FolderPropertyGridItem : PropertyGridItem
     {
-        private readonly Func<string> _virtualPathProvider;
-        private readonly Func<int>    _totalItemsProvider;
-
-        /// <summary>
-        ///     The virtual path to this item.
-        /// </summary>
-        /// <value>
-        ///     The full pathname of the virtual file.
-        /// </value>
-        [Category("Common")]
-        [Description("The virtual path to this item.")]
-        [ReadOnly(true)]
-        public string VirtualPath
-        {
-            get { return _virtualPathProvider(); }
-        }
-
+        private readonly Provider.Value<int>    _totalItemsProvider;
+        
         /// <summary>
         ///     The total item count of this project.
         /// </summary>
@@ -55,12 +40,11 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
         /// <param name="totalItemsProvider">  The total items provider. </param>
-        public FolderPropertyGridItem(Func<string> nameProvider,
-                                      Func<string> virtualPathProvider,
-                                      Func<int>    totalItemsProvider)
-            : base(nameProvider)
+        public FolderPropertyGridItem(Provider.Value<string> nameProvider,
+                                      Provider.Value<string> virtualPathProvider,
+                                      Provider.Value<int>    totalItemsProvider)
+            : base(nameProvider, virtualPathProvider)
         {
-            _virtualPathProvider = virtualPathProvider;
             _totalItemsProvider  = totalItemsProvider;
         }
     }

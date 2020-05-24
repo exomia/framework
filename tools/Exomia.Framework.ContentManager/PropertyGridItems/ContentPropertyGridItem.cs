@@ -16,11 +16,11 @@ using Exomia.Framework.ContentManager.Converters;
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {
     /// <summary>
-    ///     A content property grid item.
+    ///     A content property grid item. This class cannot be inherited.
     /// </summary>
-    class ContentPropertyGridItem : FolderPropertyGridItem
+    sealed class ContentPropertyGridItem : FolderPropertyGridItem
     {
-        private readonly Func<string> _projectNameProvider, _projectLocationProvider;
+        private readonly Provider.Value<string> _projectNameProvider, _projectLocationProvider;
 
         /// <summary>
         ///     The location of the project.
@@ -28,9 +28,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The location.
         /// </value>
-        [Category("Common")]
-        [Description("The name of the project.")]
-        [ReadOnly(true)]
+        [Category("Common"), Description("The name of the project."), ReadOnly(true)]
         public string ProjectName
         {
             get { return _projectNameProvider(); }
@@ -42,9 +40,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The location.
         /// </value>
-        [Category("Common")]
-        [Description("The location of the project.")]
-        [ReadOnly(true)]
+        [Category("Common"), Description("The location of the project."), ReadOnly(true)]
         public string ProjectLocation
         {
             get { return _projectLocationProvider(); }
@@ -56,8 +52,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The pathname of the output folder.
         /// </value>
-        [Category("Settings")]
-        [Description("The build output folder.")]
+        [Category("Settings"), Description("The build output folder.")]
         public string? OutputFolder { get; set; }
 
         /// <summary>
@@ -81,34 +76,15 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <param name="totalItemsProvider">      The total items provider. </param>
         /// <param name="projectNameProvider">     The project name provider. </param>
         /// <param name="projectLocationProvider"> The project location provider. </param>
-        public ContentPropertyGridItem(Func<string> nameProvider,
-                                       Func<string> virtualPathProvider,
-                                       Func<int>    totalItemsProvider,
-                                       Func<string> projectNameProvider,
-                                       Func<string> projectLocationProvider)
+        public ContentPropertyGridItem(Provider.Value<string> nameProvider,
+                                       Provider.Value<string> virtualPathProvider,
+                                       Provider.Value<int>    totalItemsProvider,
+                                       Provider.Value<string> projectNameProvider,
+                                       Provider.Value<string> projectLocationProvider)
             : base(nameProvider, virtualPathProvider, totalItemsProvider)
         {
             _projectNameProvider     = projectNameProvider;
             _projectLocationProvider = projectLocationProvider;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
-        /// </summary>
-        /// <param name="nameProvider">        The name provider. </param>
-        /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        /// <param name="totalItemsProvider">  The total items provider. </param>
-        /// <param name="projectName">         The location. </param>
-        /// <param name="projectLocation">     The location. </param>
-        public ContentPropertyGridItem(Func<string> nameProvider,
-                                       Func<string> virtualPathProvider,
-                                       Func<int>    totalItemsProvider,
-                                       string       projectName,
-                                       string       projectLocation)
-            : base(nameProvider, virtualPathProvider, totalItemsProvider)
-        {
-            _projectNameProvider     = () => projectName;
-            _projectLocationProvider = () => projectLocation;
         }
     }
 }

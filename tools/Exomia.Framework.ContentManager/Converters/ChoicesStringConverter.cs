@@ -39,7 +39,7 @@ namespace Exomia.Framework.ContentManager.Converters
             {
                 if (propertyDescriptorAttribute is ChoicesAttribute choices)
                 {
-                    return new StandardValuesCollection(new List<string>(choices.Entries));
+                    return new StandardValuesCollection(new List<object>(choices.Entries));
                 }
             }
             throw new ArgumentNullException(nameof(ChoicesAttribute));

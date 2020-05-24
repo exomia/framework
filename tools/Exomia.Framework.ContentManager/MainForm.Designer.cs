@@ -74,6 +74,8 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fontToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -392,14 +394,15 @@
             this.deleteToolStripMenuItem,
             this.renameToolStripMenuItem});
             this.folderContextMenuStrip.Name = "contextMenuStrip1";
-            this.folderContextMenuStrip.Size = new System.Drawing.Size(127, 120);
+            this.folderContextMenuStrip.Size = new System.Drawing.Size(181, 142);
             // 
             // addToolStripMenuItem
             // 
             this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.folderToolStripMenuItem});
+            this.folderToolStripMenuItem,
+            this.fontToolStripMenuItem1});
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addToolStripMenuItem.Text = "Add...";
             // 
             // folderToolStripMenuItem
@@ -408,7 +411,7 @@
             this.folderToolStripMenuItem.Name = "folderToolStripMenuItem";
             this.folderToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.folderToolStripMenuItem.Text = "Folder";
-            this.folderToolStripMenuItem.Click += new System.EventHandler(this.folderToolStripMenuItem_Click);
+            this.folderToolStripMenuItem.Click += new System.EventHandler(this.addFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -457,7 +460,8 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem2});
+            this.toolStripMenuItem2,
+            this.fontToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
             this.toolStripMenuItem1.Text = "Add...";
@@ -466,9 +470,9 @@
             // 
             this.toolStripMenuItem2.Image = global::Exomia.Framework.ContentManager.Properties.Resources.AddFolder_16x;
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem2.Text = "Folder";
-            this.toolStripMenuItem2.Click += new System.EventHandler(this.folderToolStripMenuItem_Click);
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.addFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
@@ -482,6 +486,22 @@
             this.toolStripMenuItem6.Size = new System.Drawing.Size(126, 22);
             this.toolStripMenuItem6.Text = "Rename...";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
+            // 
+            // fontToolStripMenuItem
+            // 
+            this.fontToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.AddFont_16x;
+            this.fontToolStripMenuItem.Name = "fontToolStripMenuItem";
+            this.fontToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fontToolStripMenuItem.Text = "Font";
+            this.fontToolStripMenuItem.Click += new System.EventHandler(this.addFontToolStripMenuItem_Click);
+            // 
+            // fontToolStripMenuItem1
+            // 
+            this.fontToolStripMenuItem1.Image = global::Exomia.Framework.ContentManager.Properties.Resources.AddFont_16x;
+            this.fontToolStripMenuItem1.Name = "fontToolStripMenuItem1";
+            this.fontToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.fontToolStripMenuItem1.Text = "Font";
+            this.fontToolStripMenuItem1.Click += new System.EventHandler(this.addFontToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -564,6 +584,8 @@
         private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem rebuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cleanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem1;
     }
 }
 

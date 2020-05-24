@@ -27,12 +27,9 @@ namespace Exomia.Framework.ContentManager
         /// </value>
         public string ProjectName
         {
-            get
-            {
-                return projNameTb.Text;
-            }
+            get { return projNameTb.Text; }
         }
-        
+
         /// <summary>
         ///     Gets the project location.
         /// </summary>
@@ -41,10 +38,7 @@ namespace Exomia.Framework.ContentManager
         /// </value>
         public string ProjectLocation
         {
-            get
-            {
-                return locationTb.Text;
-            }
+            get { return locationTb.Text; }
         }
 
         /// <summary>
@@ -53,10 +47,12 @@ namespace Exomia.Framework.ContentManager
         public CreateProjectForm()
         {
             InitializeComponent();
+            locationTb.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(locationTb.Text) || string.IsNullOrEmpty(projNameTb.Text)) { return; }
             DialogResult = DialogResult.OK;
         }
 
@@ -65,8 +61,8 @@ namespace Exomia.Framework.ContentManager
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = true,
-                Title = "Create an \"exomia content project\" (.ecp) within selected location.",
-                Multiselect = false
+                Title          = "Create an \"exomia content project\" (.ecp) within selected location.",
+                Multiselect    = false
             })
             {
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
@@ -74,7 +70,6 @@ namespace Exomia.Framework.ContentManager
                     locationTb.Text = dialog.FileName;
                 }
             }
-
         }
     }
 }

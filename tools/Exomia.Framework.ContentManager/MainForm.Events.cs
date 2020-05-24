@@ -10,6 +10,7 @@
 
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
 using Exomia.Framework.ContentManager.PropertyGridItems;
@@ -43,12 +44,14 @@ namespace Exomia.Framework.ContentManager
                             node.Tag =
                                 new ContentPropertyGridItem(
                                     () => node.Text,
-                                    () => "/",
-                                    () => node.GetNodeCount(true), 
+                                    Provider.Static(string.Empty),
+                                    () => node.GetNodeCount(true),
+
                                     // ReSharper disable once AccessToDisposedClosure
-                                    createProjectForm.ProjectName,
+                                    Provider.Static(createProjectForm.ProjectName),
+
                                     // ReSharper disable once AccessToDisposedClosure
-                                    createProjectForm.ProjectLocation);
+                                    Provider.Static(createProjectForm.ProjectLocation));
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
                 }
@@ -85,6 +88,7 @@ namespace Exomia.Framework.ContentManager
         #region TreeView1
 
         private const string FOLDER_KEY_PREFIX = "-folder-";
+        private const string FONT_KEY_PREFIX   = "-font-";
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -128,21 +132,30 @@ namespace Exomia.Framework.ContentManager
         {
             if (e.Label == null) { return; }
 
+            string label = e.Label;
+
+            if (e.Node.Name.StartsWith(FONT_KEY_PREFIX))
+            {
+                label = Path.ChangeExtension(label, ".fnt");
+            }
+
             e.CancelEdit = true;
 
             bool Check(TreeNode node, Func<TreeNode, TreeNode> next)
             {
                 while ((node = next(node)) != null)
                 {
-                    if (node.Text.Equals(e.Label ?? e.Node.Text, StringComparison.InvariantCultureIgnoreCase))
+                    if (node.Text.Equals(label, StringComparison.InvariantCultureIgnoreCase))
                     {
                         e.Node.BeginEdit();
                         SetStatusLabel(
                             StatusType.Error,
                             e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
                                 ? "A folder with the same name '{0}' already exists in '{1}'"
-                                : "A item with the same name '{0}' already exists in '{1}'",
-                            e.Label ?? e.Node.Text, e.Node.Parent.FullPath);
+                                : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
+                                    ? "A font with the same name '{0}' already exists in '{1}'"
+                                    : "A item with the same name '{0}' already exists in '{1}'",
+                            label, e.Node.Parent.FullPath);
                         return false;
                     }
                 }
@@ -154,7 +167,7 @@ namespace Exomia.Framework.ContentManager
                 Check(e.Node, n => n.NextNode))
             {
                 string oldText = e.Node.Text;
-                e.Node.Text = e.Label;
+                e.Node.Text = label;
 
                 propertyGrid1.InvokeIfRequired(
                     x =>
@@ -168,7 +181,9 @@ namespace Exomia.Framework.ContentManager
                         ? "The project '{0}' was successfully renamed to '{1}'."
                         : e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
                             ? "The folder '{0}' was successfully renamed to '{1}' under '{2}'"
-                            : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
+                            : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
+                                ? "The font '{0}' was successfully renamed to '{1}' under '{2}'"
+                                : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
                     oldText, e.Node.Text, e.Node.Parent?.FullPath);
             }
         }
@@ -198,7 +213,7 @@ namespace Exomia.Framework.ContentManager
 
         #region rootContextMenuStrip & folderContextMenuStrip
 
-        private void folderToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1.InvokeIfRequired(
                 x =>
@@ -212,7 +227,7 @@ namespace Exomia.Framework.ContentManager
                     node.Tag =
                         new FolderPropertyGridItem(
                             () => node.Text,
-                            () => $"/{node.Parent.FullPath}",
+                            () => node.Parent.FullPath,
                             () => node.GetNodeCount(true));
                     node.ContextMenuStrip = folderContextMenuStrip;
                     selectedNode.Expand();
@@ -229,6 +244,28 @@ namespace Exomia.Framework.ContentManager
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1.InvokeIfRequired(x => x.SelectedNode.BeginEdit());
+        }
+
+        private void addFontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    var selectedNode = x.SelectedNode ?? x.TopNode;
+                    if (selectedNode == null) { return; }
+                    int selectedNodeCount = selectedNode.GetNodeCount(false);
+                    var node = selectedNode.Nodes.Add(
+                        $"{FONT_KEY_PREFIX}{selectedNodeCount}",
+                        $"font{selectedNodeCount}.fnt", 4, 4);
+                    node.Tag =
+                        new FontPropertyGridItem(
+                            () => node.Text,
+                            () => node.Parent.FullPath);
+                    //node.ContextMenuStrip = ;
+                    selectedNode.Expand();
+                    treeView1.SelectedNode = node;
+                    node.BeginEdit();
+                });
         }
 
         #endregion
