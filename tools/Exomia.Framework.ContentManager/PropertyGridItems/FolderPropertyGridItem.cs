@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
@@ -18,8 +17,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     class FolderPropertyGridItem : PropertyGridItem
     {
-        private readonly Provider.Value<int>    _totalItemsProvider;
-        
+        private readonly Provider.Value<int> _totalItemsProvider;
+
         /// <summary>
         ///     The total item count of this project.
         /// </summary>
@@ -45,7 +44,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
                                       Provider.Value<int>    totalItemsProvider)
             : base(nameProvider, virtualPathProvider)
         {
-            _totalItemsProvider  = totalItemsProvider;
+            _totalItemsProvider = totalItemsProvider;
         }
     }
 }

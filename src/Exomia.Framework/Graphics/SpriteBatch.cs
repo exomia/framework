@@ -155,7 +155,8 @@ namespace Exomia.Framework.Graphics
                     _device, technique.GetShaderSignature(Shader.Shader.Type.VertexShader),
                     new[]
                     {
-                        new InputElement("SV_POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                        new InputElement(
+                            "SV_POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
                         new InputElement("COLOR", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
                         new InputElement("TEXCOORD", 0, Format.R32G32_Float, InputElement.AppendAligned, 0)
                     });
@@ -656,6 +657,68 @@ namespace Exomia.Framework.Graphics
             worldViewProjection.Transpose();
 
             _context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
+        }
+
+        internal struct SpriteInfo
+        {
+            public RectangleF    Source;
+            public RectangleF    Destination;
+            public Vector2       Origin;
+            public float         Rotation;
+            public float         Depth;
+            public SpriteEffects SpriteEffects;
+            public Color         Color;
+            public float         Opacity;
+        }
+
+        internal readonly struct TextureInfo
+        {
+            public readonly ShaderResourceView View;
+            public readonly int                Width;
+            public readonly int                Height;
+            public readonly long               Ptr64;
+
+            public TextureInfo(ShaderResourceView view, int width, int height)
+            {
+                View   = view;
+                Width  = width;
+                Height = height;
+                Ptr64  = view.NativePointer.ToInt64();
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE)]
+        private struct VertexPositionColorTexture
+        {
+            [FieldOffset(0)]
+            public float X;
+
+            [FieldOffset(4)]
+            public float Y;
+
+            [FieldOffset(8)]
+            public float Z;
+
+            [FieldOffset(12)]
+            public float W;
+
+            [FieldOffset(16)]
+            public float R;
+
+            [FieldOffset(20)]
+            public float G;
+
+            [FieldOffset(24)]
+            public float B;
+
+            [FieldOffset(28)]
+            public float A;
+
+            [FieldOffset(32)]
+            public float U;
+
+            [FieldOffset(36)]
+            public float V;
         }
 
         #region Drawing
@@ -1553,67 +1616,5 @@ namespace Exomia.Framework.Graphics
         }
 
         #endregion
-
-        internal struct SpriteInfo
-        {
-            public RectangleF    Source;
-            public RectangleF    Destination;
-            public Vector2       Origin;
-            public float         Rotation;
-            public float         Depth;
-            public SpriteEffects SpriteEffects;
-            public Color         Color;
-            public float         Opacity;
-        }
-
-        internal readonly struct TextureInfo
-        {
-            public readonly ShaderResourceView View;
-            public readonly int                Width;
-            public readonly int                Height;
-            public readonly long               Ptr64;
-
-            public TextureInfo(ShaderResourceView view, int width, int height)
-            {
-                View   = view;
-                Width  = width;
-                Height = height;
-                Ptr64  = view.NativePointer.ToInt64();
-            }
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE)]
-        private struct VertexPositionColorTexture
-        {
-            [FieldOffset(0)]
-            public float X;
-
-            [FieldOffset(4)]
-            public float Y;
-
-            [FieldOffset(8)]
-            public float Z;
-
-            [FieldOffset(12)]
-            public float W;
-
-            [FieldOffset(16)]
-            public float R;
-
-            [FieldOffset(20)]
-            public float G;
-
-            [FieldOffset(24)]
-            public float B;
-
-            [FieldOffset(28)]
-            public float A;
-
-            [FieldOffset(32)]
-            public float U;
-
-            [FieldOffset(36)]
-            public float V;
-        }
     }
 }

@@ -25,8 +25,8 @@ namespace Exomia.Framework.Game
         ///     The handle.
         /// </summary>
         /// <remarks>
-        ///     You don't need to set the handle by yourself if your using the see <see cref="Game"/> class!
-        ///     In the case you initialize a <see cref="GraphicsDevice"/> by yourself you need to set a handle!
+        ///     You don't need to set the handle by yourself if your using the see <see cref="Game" /> class!
+        ///     In the case you initialize a <see cref="GraphicsDevice" /> by yourself you need to set a handle!
         /// </remarks>
         public IntPtr Handle;
 

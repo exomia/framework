@@ -40,7 +40,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="offset"></param>
         /// <param name="length"></param>
         void SortBf(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
-        
+
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
         /// </summary>

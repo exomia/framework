@@ -10,7 +10,6 @@
 
 using System;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -19,17 +18,6 @@ namespace Exomia.Framework.ContentManager
     /// </summary>
     public partial class CreateProjectForm : Form
     {
-        /// <summary>
-        ///     Gets the name of the project.
-        /// </summary>
-        /// <value>
-        ///     The name of the project.
-        /// </value>
-        public string ProjectName
-        {
-            get { return projNameTb.Text; }
-        }
-
         /// <summary>
         ///     Gets the project location.
         /// </summary>
@@ -52,20 +40,27 @@ namespace Exomia.Framework.ContentManager
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(locationTb.Text) || string.IsNullOrEmpty(projNameTb.Text)) { return; }
+            if (string.IsNullOrEmpty(locationTb.Text)) { return; }
             DialogResult = DialogResult.OK;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            using (SaveFileDialog dialog = new SaveFileDialog
             {
-                IsFolderPicker = true,
-                Title          = "Create an \"exomia content project\" (.ecp) within selected location.",
-                Multiselect    = false
+                Title                        = "Create an \"exomia content project\" (.ecp)",
+                Filter                       = "exomia content project (*.ecp)|*.ecp",
+                DefaultExt                   = "ecp",
+                AddExtension                 = true,
+                AutoUpgradeEnabled           = true,
+                DereferenceLinks             = true,
+                RestoreDirectory             = true,
+                ShowHelp                     = false,
+                SupportMultiDottedExtensions = true,
+                FileName                     = "content.ecp"
             })
             {
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     locationTb.Text = dialog.FileName;
                 }

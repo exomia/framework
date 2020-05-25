@@ -48,9 +48,6 @@ namespace Exomia.Framework.ContentManager
                                     () => node.GetNodeCount(true),
 
                                     // ReSharper disable once AccessToDisposedClosure
-                                    Provider.Static(createProjectForm.ProjectName),
-
-                                    // ReSharper disable once AccessToDisposedClosure
                                     Provider.Static(createProjectForm.ProjectLocation));
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
@@ -261,6 +258,7 @@ namespace Exomia.Framework.ContentManager
                         new FontPropertyGridItem(
                             () => node.Text,
                             () => node.Parent.FullPath);
+
                     //node.ContextMenuStrip = ;
                     selectedNode.Expand();
                     treeView1.SelectedNode = node;

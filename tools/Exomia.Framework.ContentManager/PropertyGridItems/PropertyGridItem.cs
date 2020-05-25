@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
@@ -19,7 +18,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     [DefaultProperty("Name")]
     class PropertyGridItem
     {
-        private readonly Provider.Value<string> _nameProvider; 
+        private readonly Provider.Value<string> _nameProvider;
         private readonly Provider.Value<string> _virtualPathProvider;
 
         /// <summary>
@@ -28,7 +27,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The name.
         /// </value>
-        [Category("Common"), Description("The name of this project."), ReadOnly(true)]
+        [Category("Common")]
+        [Description("The name of this project.")]
+        [ReadOnly(true)]
         public string Name
         {
             get { return _nameProvider(); }
@@ -40,7 +41,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The full pathname of the virtual file.
         /// </value>
-        [Category("Common"), Description("The virtual path to this item."), ReadOnly(true)]
+        [Category("Common")]
+        [Description("The virtual path to this item.")]
+        [ReadOnly(true)]
         public string VirtualPath
         {
             get { return _virtualPathProvider(); }
@@ -53,7 +56,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
         public PropertyGridItem(Provider.Value<string> nameProvider, Provider.Value<string> virtualPathProvider)
         {
-            _nameProvider = nameProvider;
+            _nameProvider        = nameProvider;
             _virtualPathProvider = virtualPathProvider;
         }
     }

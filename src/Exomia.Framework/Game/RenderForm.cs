@@ -10,7 +10,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Input;
@@ -39,7 +38,7 @@ namespace Exomia.Framework.Game
         private IntPtr      _hWnd;
 
         private string          _windowTitle;
-        private VectorI2          _size;
+        private VectorI2        _size;
         private FormWindowState _windowState = FormWindowState.Normal;
         private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
 
@@ -188,7 +187,7 @@ namespace Exomia.Framework.Game
             _mouseClickPipe    = new Pipe<MouseEventHandler>();
             _mouseWheelPipe    = new Pipe<MouseEventHandler>();
             _mouseRawInputPipe = new Pipe<MouseEventHandler>();
-            
+
             _wndClassEx = new WndClassEx
             {
                 cbSize = Marshal.SizeOf(typeof(WndClassEx)),

@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 using Exomia.Framework.ContentManager.Attributes;
 using Exomia.Framework.ContentManager.Converters;
@@ -20,7 +19,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     sealed class ContentPropertyGridItem : FolderPropertyGridItem
     {
-        private readonly Provider.Value<string> _projectNameProvider, _projectLocationProvider;
+        private readonly Provider.Value<string> _projectLocationProvider;
 
         /// <summary>
         ///     The location of the project.
@@ -28,19 +27,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The location.
         /// </value>
-        [Category("Common"), Description("The name of the project."), ReadOnly(true)]
-        public string ProjectName
-        {
-            get { return _projectNameProvider(); }
-        }
-
-        /// <summary>
-        ///     The location of the project.
-        /// </summary>
-        /// <value>
-        ///     The location.
-        /// </value>
-        [Category("Common"), Description("The location of the project."), ReadOnly(true)]
+        [Category("Common")]
+        [Description("The location of the project.")]
+        [ReadOnly(true)]
         public string ProjectLocation
         {
             get { return _projectLocationProvider(); }
@@ -52,7 +41,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The pathname of the output folder.
         /// </value>
-        [Category("Settings"), Description("The build output folder.")]
+        [Category("Settings")]
+        [Description("The build output folder.")]
         public string? OutputFolder { get; set; }
 
         /// <summary>
@@ -74,16 +64,13 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <param name="nameProvider">            The name provider. </param>
         /// <param name="virtualPathProvider">     The virtual path provider. </param>
         /// <param name="totalItemsProvider">      The total items provider. </param>
-        /// <param name="projectNameProvider">     The project name provider. </param>
         /// <param name="projectLocationProvider"> The project location provider. </param>
         public ContentPropertyGridItem(Provider.Value<string> nameProvider,
                                        Provider.Value<string> virtualPathProvider,
                                        Provider.Value<int>    totalItemsProvider,
-                                       Provider.Value<string> projectNameProvider,
                                        Provider.Value<string> projectLocationProvider)
             : base(nameProvider, virtualPathProvider, totalItemsProvider)
         {
-            _projectNameProvider     = projectNameProvider;
             _projectLocationProvider = projectLocationProvider;
         }
     }

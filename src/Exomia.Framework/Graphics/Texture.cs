@@ -105,7 +105,7 @@ namespace Exomia.Framework.Graphics
             {
                 using Texture2D texture2D = TextureHelper.LoadTexture2D(device, stream);
                 return new Texture(
-                    new ShaderResourceView1(device, texture2D), 
+                    new ShaderResourceView1(device, texture2D),
                     texture2D.Description.Width, texture2D.Description.Height);
             }
             catch { return null; }

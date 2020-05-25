@@ -8,8 +8,8 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
+using Exomia.Framework.ContentManager.Converters;
 using Exomia.Framework.ContentManager.IO;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
@@ -20,13 +20,33 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     class ItemPropertyGridItem : PropertyGridItem
     {
         /// <summary>
+        ///     Gets the importers.
+        /// </summary>
+        /// <value>
+        ///     The importers.
+        /// </value>
+        [Browsable(false)]
+        public IImporter[] Importers { get; }
+
+        /// <summary>
+        ///     Gets the exporters.
+        /// </summary>
+        /// <value>
+        ///     The exporters.
+        /// </value>
+        [Browsable(false)]
+        public IExporter[] Exporters { get; }
+
+        /// <summary>
         ///     The importer for this item.
         /// </summary>
         /// <value>
         ///     The importer.
         /// </value>
-        [Category("Settings"), Description("The importer for this item.")]
-        public IImporter Importer { get; set; }
+        [Category("Settings")]
+        [Description("The importer for this item.")]
+        [TypeConverter(typeof(ItemExporterImporterConverter))]
+        public IImporter? Importer { get; set; }
 
         /// <summary>
         ///     The exporter for this item.
@@ -34,24 +54,26 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The exporter.
         /// </value>
-        [Category("Settings"), Description("The exporter for this item.")]
-        public IExporter Exporter { get; set; }
+        [Category("Settings")]
+        [Description("The exporter for this item.")]
+        [TypeConverter(typeof(ItemExporterImporterConverter))]
+        public IExporter? Exporter { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
         /// </summary>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        /// <param name="importer">            The importer. </param>
-        /// <param name="exporter">            The exporter. </param>
+        /// <param name="importers">           The importers. </param>
+        /// <param name="exporters">           The exporters. </param>
         public ItemPropertyGridItem(Provider.Value<string> nameProvider,
                                     Provider.Value<string> virtualPathProvider,
-                                    IImporter    importer,
-                                    IExporter    exporter)
+                                    IImporter[]            importers,
+                                    IExporter[]            exporters)
             : base(nameProvider, virtualPathProvider)
         {
-            Importer = importer;
-            Exporter = exporter;
+            Importers = importers;
+            Exporters = exporters;
         }
     }
 }

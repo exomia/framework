@@ -23,8 +23,8 @@ namespace Exomia.Framework.Graphics
         private const string WHITE_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 
-        private static Texture?  s_whiteTexture;
-        private static bool      s_isInitialized;
+        private static Texture? s_whiteTexture;
+        private static bool     s_isInitialized;
 
         /// <summary>
         ///     Gets the white texture.

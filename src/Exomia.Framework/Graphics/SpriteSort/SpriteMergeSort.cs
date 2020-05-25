@@ -107,7 +107,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
                 MergeSpriteInfoBf(sInfo, arr, left, middle, middle + 1, right, tempArray);
             }
         }
-        
+
         /// <summary>
         ///     Merge sort sprite information fb.
         /// </summary>
@@ -215,7 +215,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
-        
+
         /// <summary>
         ///     Merge sprite information fb.
         /// </summary>
@@ -259,7 +259,7 @@ namespace Exomia.Framework.Graphics.SpriteSort
             }
             Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
-        
+
         /// <summary>
         ///     Merge texture information.
         /// </summary>
