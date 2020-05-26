@@ -14,12 +14,6 @@ using SharpDX;
 namespace Exomia.Framework.Graphics.Camera
 {
     /// <summary>
-    ///     Delegate for handling <see cref="ICamera" /> events.
-    /// </summary>
-    /// <param name="camera"> The camera. </param>
-    public delegate void CameraEventHandler(ICamera camera);
-
-    /// <summary>
     ///     Interface for a camera.
     /// </summary>
     public interface ICamera : IComponent, IInitializable, IUpdateable, IInputHandler
@@ -27,12 +21,12 @@ namespace Exomia.Framework.Graphics.Camera
         /// <summary>
         ///     Occurs when position is changed.
         /// </summary>
-        event CameraEventHandler? PositionChanged;
+        event EventHandler<ICamera>? PositionChanged;
 
         /// <summary>
         ///     Occurs when the target is changed.
         /// </summary>
-        event CameraEventHandler? TargetChanged;
+        event EventHandler<ICamera>? TargetChanged;
 
         /// <summary>
         ///     Gets the view matrix.
@@ -49,6 +43,15 @@ namespace Exomia.Framework.Graphics.Camera
         ///     The projection matrix.
         /// </value>
         Matrix ProjectionMatrix { get; }
+
+        /// <summary>
+        ///     Gets the view * projection matrix.
+        /// </summary>
+        /// <value>
+        ///     The view * projection matrix.
+        /// </value>
+        Matrix ViewProjectionMatrix { get; }
+
 
         /// <summary>
         ///     Gets or sets the position.

@@ -28,10 +28,10 @@ namespace Exomia.Framework.Graphics.Camera
         public event EventHandler? UpdateOrderChanged;
 
         /// <inheritdoc />
-        public event CameraEventHandler? PositionChanged;
+        public event EventHandler<ICamera>? PositionChanged;
 
         /// <inheritdoc />
-        public event CameraEventHandler? TargetChanged;
+        public event EventHandler<ICamera>? TargetChanged;
 
         private readonly List<ICameraComponent>           _components;
         private readonly List<IUpdateableCameraComponent> _updateableCameraComponents;
@@ -45,7 +45,7 @@ namespace Exomia.Framework.Graphics.Camera
                      _viewMatrixDirty = true;
 
         private int               _updateOrder;
-        private Matrix            _viewMatrix;
+        private Matrix            _viewMatrix, _viewProjectionMatrix;
         private Vector3           _position, _target, _up;
         private BoundingFrustum   _frustum;
         private IServiceRegistry? _registry;
@@ -95,6 +95,13 @@ namespace Exomia.Framework.Graphics.Camera
         public Matrix ProjectionMatrix
         {
             get { return _projectionMatrix; }
+        }
+        
+
+        /// <inheritdoc />
+        public Matrix ViewProjectionMatrix
+        {
+            get { return _viewProjectionMatrix; }
         }
 
         /// <inheritdoc />
@@ -232,7 +239,7 @@ namespace Exomia.Framework.Graphics.Camera
 
             _projectionMatrix = Matrix.PerspectiveFovLH(fieldOfView, aspectRatio, zNear, zFar);
 
-            _frustum = new BoundingFrustum(_viewMatrix * _projectionMatrix);
+            _frustum = new BoundingFrustum(_viewProjectionMatrix = _viewMatrix * _projectionMatrix);
 
             _components                 = new List<ICameraComponent>(components.Length);
             _updateableCameraComponents = new List<IUpdateableCameraComponent>(components.Length);
@@ -348,7 +355,7 @@ namespace Exomia.Framework.Graphics.Camera
             {
                 _viewMatrixDirty = false;
                 _viewMatrix      = Matrix.LookAtLH(_position, _target, _up);
-                _frustum         = new BoundingFrustum(_viewMatrix * _projectionMatrix);
+                _frustum         = new BoundingFrustum(_viewProjectionMatrix = _viewMatrix * _projectionMatrix);
             }
         }
 
