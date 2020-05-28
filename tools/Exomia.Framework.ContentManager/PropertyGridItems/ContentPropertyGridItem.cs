@@ -55,7 +55,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Description("...")]
         [ReadOnly(false)]
         [TypeConverter(typeof(ChoicesStringConverter))]
-        [Choices("a", "b", "c")]
+        [Choices("a", "b", "c", "d")]
         public string? Test { get; set; }
 
         /// <summary>
