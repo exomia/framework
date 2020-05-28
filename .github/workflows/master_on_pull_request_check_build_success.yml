@@ -1,4 +1,4 @@
-name: dotnet build release
+name: check build success
 
 on: 
     pull_request:
