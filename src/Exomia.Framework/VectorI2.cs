@@ -17,7 +17,7 @@ using SharpDX;
 namespace Exomia.Framework
 {
     /// <summary>
-    ///     Represents a two dimensional mathematical index.
+    ///     Represents a two dimensional mathematical vector.
     /// </summary>
     /// <inheritdoc cref="IFormattable" />
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
@@ -44,17 +44,17 @@ namespace Exomia.Framework
         public static readonly VectorI2 One = new VectorI2(1, 1);
 
         /// <summary>
-        ///     The X component of the index.
+        ///     The X component of the vector.
         /// </summary>
         public int X;
 
         /// <summary>
-        ///     The Y component of the index.
+        ///     The Y component of the vector.
         /// </summary>
         public int Y;
 
         /// <summary>
-        ///     Initializes a new instance of the Index2 struct.
+        ///     Initializes a new instance of the vector2 struct.
         /// </summary>
         /// <param name="value"> The value that will be assigned to all components. </param>
         public VectorI2(int value)
@@ -64,10 +64,10 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Initializes a new instance of the Index2 struct.
+        ///     Initializes a new instance of the vector2 struct.
         /// </summary>
-        /// <param name="x"> Initial value for the X component of the index. </param>
-        /// <param name="y"> Initial value for the Y component of the index. </param>
+        /// <param name="x"> Initial value for the X component of the vector. </param>
+        /// <param name="y"> Initial value for the Y component of the vector. </param>
         public VectorI2(int x, int y)
         {
             X = x;
@@ -172,10 +172,10 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the length of the index.
+        ///     Calculates the length of the vector.
         /// </summary>
         /// <returns>
-        ///     The length of the index.
+        ///     The length of the vector.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()
@@ -184,10 +184,10 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the squared length of the index.
+        ///     Calculates the squared length of the vector.
         /// </summary>
         /// <returns>
-        ///     The squared length of the index.
+        ///     The squared length of the vector.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly int LengthSquared()
@@ -196,11 +196,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Adds two indices.
+        ///     Adds two vectors.
         /// </summary>
-        /// <param name="left">   [in,out] The first index to add. </param>
-        /// <param name="right">  [in,out] The second index to add. </param>
-        /// <param name="result"> [out] When the method completes, contains the sum of the two indices. </param>
+        /// <param name="left">   [in,out] The first vector to add. </param>
+        /// <param name="right">  [in,out] The second vector to add. </param>
+        /// <param name="result"> [out] When the method completes, contains the sum of the two vectors. </param>
         public static void Add(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X + right.X;
@@ -208,12 +208,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Adds two indices.
+        ///     Adds two vectors.
         /// </summary>
-        /// <param name="left">  The first index to add. </param>
-        /// <param name="right"> The second index to add. </param>
+        /// <param name="left">  The first vector to add. </param>
+        /// <param name="right"> The second vector to add. </param>
         /// <returns>
-        ///     The sum of the two indices.
+        ///     The sum of the two vectors.
         /// </returns>
         public static VectorI2 Add(in VectorI2 left, in VectorI2 right)
         {
@@ -223,9 +223,9 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise addition.
         /// </summary>
-        /// <param name="left">   [in,out] The input index. </param>
+        /// <param name="left">   [in,out] The input vector. </param>
         /// <param name="right">  [in,out] The scalar value to be added to elements. </param>
-        /// <param name="result"> [out] The index with added scalar for each element. </param>
+        /// <param name="result"> [out] The vector with added scalar for each element. </param>
         public static void Add(ref VectorI2 left, ref int right, out VectorI2 result)
         {
             result.X = left.X + right;
@@ -235,10 +235,10 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise addition.
         /// </summary>
-        /// <param name="left">  The input index. </param>
+        /// <param name="left">  The input vector. </param>
         /// <param name="right"> The scalar value to be added to elements. </param>
         /// <returns>
-        ///     The index with added scalar for each element.
+        ///     The vector with added scalar for each element.
         /// </returns>
         public static VectorI2 Add(in VectorI2 left, int right)
         {
@@ -246,13 +246,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Subtracts two indices.
+        ///     Subtracts two vectors.
         /// </summary>
-        /// <param name="left">   [in,out] The first index to subtract. </param>
-        /// <param name="right">  [in,out] The second index to subtract. </param>
+        /// <param name="left">   [in,out] The first vector to subtract. </param>
+        /// <param name="right">  [in,out] The second vector to subtract. </param>
         /// <param name="result">
         ///     [out] When the method completes, contains the difference of the two
-        ///     indices.
+        ///     vectors.
         /// </param>
         public static void Subtract(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
@@ -261,12 +261,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Subtracts two indices.
+        ///     Subtracts two vectors.
         /// </summary>
-        /// <param name="left">  The first index to subtract. </param>
-        /// <param name="right"> The second index to subtract. </param>
+        /// <param name="left">  The first vector to subtract. </param>
+        /// <param name="right"> The second vector to subtract. </param>
         /// <returns>
-        ///     The difference of the two indices.
+        ///     The difference of the two vectors.
         /// </returns>
         public static VectorI2 Subtract(in VectorI2 left, in VectorI2 right)
         {
@@ -276,9 +276,9 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise subtraction.
         /// </summary>
-        /// <param name="left">   [in,out] The input index. </param>
+        /// <param name="left">   [in,out] The input vector. </param>
         /// <param name="right">  [in,out] The scalar value to be subtracted from elements. </param>
-        /// <param name="result"> [out] The index with subtracted scalar for each element. </param>
+        /// <param name="result"> [out] The vector with subtracted scalar for each element. </param>
         public static void Subtract(ref VectorI2 left, ref int right, out VectorI2 result)
         {
             result.X = left.X - right;
@@ -288,10 +288,10 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise subtraction.
         /// </summary>
-        /// <param name="left">  The input index. </param>
+        /// <param name="left">  The input vector. </param>
         /// <param name="right"> The scalar value to be subtracted from elements. </param>
         /// <returns>
-        ///     The index with subtracted scalar for each element.
+        ///     The vector with subtracted scalar for each element.
         /// </returns>
         public static VectorI2 Subtract(in VectorI2 left, int right)
         {
@@ -302,8 +302,8 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction.
         /// </summary>
         /// <param name="left">   [in,out] The scalar value to be subtracted from elements. </param>
-        /// <param name="right">  [in,out] The input index. </param>
-        /// <param name="result"> [out] The index with subtracted scalar for each element. </param>
+        /// <param name="right">  [in,out] The input vector. </param>
+        /// <param name="result"> [out] The vector with subtracted scalar for each element. </param>
         public static void Subtract(ref int left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left - right.X;
@@ -314,9 +314,9 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction.
         /// </summary>
         /// <param name="left">  The scalar value to be subtracted from elements. </param>
-        /// <param name="right"> The input index. </param>
+        /// <param name="right"> The input vector. </param>
         /// <returns>
-        ///     The index with subtracted scalar for each element.
+        ///     The vector with subtracted scalar for each element.
         /// </returns>
         public static VectorI2 Subtract(int left, in VectorI2 right)
         {
@@ -324,11 +324,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value">  [in,out] The index to scale. </param>
-        /// <param name="scale">  The amount by which to index the index. </param>
-        /// <param name="result"> [out] When the method completes, contains the scaled index. </param>
+        /// <param name="value">  [in,out] The vector to scale. </param>
+        /// <param name="scale">  The amount by which to vector the vector. </param>
+        /// <param name="result"> [out] When the method completes, contains the scaled vector. </param>
         public static void Multiply(ref VectorI2 value, int scale, out VectorI2 result)
         {
             result.X = value.X * scale;
@@ -336,12 +336,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value"> The index to scale. </param>
-        /// <param name="scale"> The amount by which to scale the index. </param>
+        /// <param name="value"> The vector to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 Multiply(in VectorI2 value, int scale)
         {
@@ -349,11 +349,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Multiplies a index with another by performing component-wise multiplication.
+        ///     Multiplies a vector with another by performing component-wise multiplication.
         /// </summary>
-        /// <param name="left">   [in,out] The first index to multiply. </param>
-        /// <param name="right">  [in,out] The second index to multiply. </param>
-        /// <param name="result"> [out] When the method completes, contains the multiplied index. </param>
+        /// <param name="left">   [in,out] The first vector to multiply. </param>
+        /// <param name="right">  [in,out] The second vector to multiply. </param>
+        /// <param name="result"> [out] When the method completes, contains the multiplied vector. </param>
         public static void Multiply(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X * right.X;
@@ -361,12 +361,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Multiplies a index with another by performing component-wise multiplication.
+        ///     Multiplies a vector with another by performing component-wise multiplication.
         /// </summary>
-        /// <param name="left">  The first index to multiply. </param>
-        /// <param name="right"> The index index to multiply. </param>
+        /// <param name="left">  The first vector to multiply. </param>
+        /// <param name="right"> The vector vector to multiply. </param>
         /// <returns>
-        ///     The multiplied index.
+        ///     The multiplied vector.
         /// </returns>
         public static VectorI2 Multiply(in VectorI2 left, in VectorI2 right)
         {
@@ -374,11 +374,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value">  [in,out] The index to scale. </param>
-        /// <param name="scale">  The amount by which to index the index. </param>
-        /// <param name="result"> [out] When the method completes, contains the scaled index. </param>
+        /// <param name="value">  [in,out] The vector to scale. </param>
+        /// <param name="scale">  The amount by which to vector the vector. </param>
+        /// <param name="result"> [out] When the method completes, contains the scaled vector. </param>
         public static void Divide(ref VectorI2 value, int scale, out VectorI2 result)
         {
             result.X = value.X / scale;
@@ -386,12 +386,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value"> The index to scale. </param>
-        /// <param name="scale"> The amount by which to scale the index. </param>
+        /// <param name="value"> The vector to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 Divide(in VectorI2 value, int scale)
         {
@@ -399,11 +399,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index with another by performing component-wise multiplication.
+        ///     Scales a vector with another by performing component-wise multiplication.
         /// </summary>
-        /// <param name="left">   [in,out] The first index to multiply. </param>
-        /// <param name="right">  [in,out] The second index to multiply. </param>
-        /// <param name="result"> [out] When the method completes, contains the multiplied index. </param>
+        /// <param name="left">   [in,out] The first vector to multiply. </param>
+        /// <param name="right">  [in,out] The second vector to multiply. </param>
+        /// <param name="result"> [out] When the method completes, contains the multiplied vector. </param>
         public static void Divide(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
             result.X = left.X / right.X;
@@ -411,12 +411,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index with another by performing component-wise multiplication.
+        ///     Scales a vector with another by performing component-wise multiplication.
         /// </summary>
-        /// <param name="left">  The first index to multiply. </param>
-        /// <param name="right"> The index index to multiply. </param>
+        /// <param name="left">  The first vector to multiply. </param>
+        /// <param name="right"> The vector vector to multiply. </param>
         /// <returns>
-        ///     The multiplied index.
+        ///     The multiplied vector.
         /// </returns>
         public static VectorI2 Divide(in VectorI2 left, in VectorI2 right)
         {
@@ -424,11 +424,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Reverses the direction of a given index.
+        ///     Reverses the direction of a given vector.
         /// </summary>
-        /// <param name="value">  [in,out] The index to negate. </param>
+        /// <param name="value">  [in,out] The vector to negate. </param>
         /// <param name="result">
-        ///     [out] When the method completes, contains a index facing in the opposite
+        ///     [out] When the method completes, contains a vector facing in the opposite
         ///     direction.
         /// </param>
         public static void Negate(ref VectorI2 value, out VectorI2 result)
@@ -438,11 +438,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Reverses the direction of a given index.
+        ///     Reverses the direction of a given vector.
         /// </summary>
-        /// <param name="value"> The index to negate. </param>
+        /// <param name="value"> The vector to negate. </param>
         /// <returns>
-        ///     A index facing in the opposite direction.
+        ///     A vector facing in the opposite direction.
         /// </returns>
         public static VectorI2 Negate(in VectorI2 value)
         {
@@ -450,11 +450,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns per component absolute value of a index.
+        ///     Returns per component absolute value of a vector.
         /// </summary>
-        /// <param name="value">  [in,out] Input index. </param>
+        /// <param name="value">  [in,out] Input vector. </param>
         /// <param name="result">
-        ///     [out] When the method completes, contains a index with each component
+        ///     [out] When the method completes, contains a vector with each component
         ///     being the absolute value of the input component.
         /// </param>
         public static void Abs(ref VectorI2 value, out VectorI2 result)
@@ -464,11 +464,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns per component absolute value of a index.
+        ///     Returns per component absolute value of a vector.
         /// </summary>
-        /// <param name="value"> Input index. </param>
+        /// <param name="value"> Input vector. </param>
         /// <returns>
-        ///     A index with each component being the absolute value of the input component.
+        ///     A vector with each component being the absolute value of the input component.
         /// </returns>
         public static VectorI2 Abs(in VectorI2 value)
         {
@@ -478,13 +478,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the distance between two indices.
+        ///     Calculates the distance between two vectors.
         /// </summary>
-        /// <param name="value1"> [in,out] The first index. </param>
-        /// <param name="value2"> [in,out] The second index. </param>
+        /// <param name="value1"> [in,out] The first vector. </param>
+        /// <param name="value2"> [in,out] The second vector. </param>
         /// <param name="result">
         ///     [out] When the method completes, contains the distance between the two
-        ///     indices.
+        ///     vectors.
         /// </param>
         public static void Distance(ref VectorI2 value1, ref VectorI2 value2, out double result)
         {
@@ -495,12 +495,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the distance between two indices.
+        ///     Calculates the distance between two vectors.
         /// </summary>
-        /// <param name="value1"> The first index. </param>
-        /// <param name="value2"> The second index. </param>
+        /// <param name="value1"> The first vector. </param>
+        /// <param name="value2"> The second vector. </param>
         /// <returns>
-        ///     The distance between the two indices.
+        ///     The distance between the two vectors.
         /// </returns>
         public static double Distance(in VectorI2 value1, in VectorI2 value2)
         {
@@ -511,13 +511,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the squared distance between two indices.
+        ///     Calculates the squared distance between two vectors.
         /// </summary>
-        /// <param name="value1"> [in,out] The first index. </param>
-        /// <param name="value2"> [in,out] The second index. </param>
+        /// <param name="value1"> [in,out] The first vector. </param>
+        /// <param name="value2"> [in,out] The second vector. </param>
         /// <param name="result">
         ///     [out] When the method completes, contains the squared distance between
-        ///     the two indices.
+        ///     the two vectors.
         /// </param>
         public static void DistanceSquared(ref VectorI2 value1, ref VectorI2 value2, out int result)
         {
@@ -528,12 +528,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the squared distance between two indices.
+        ///     Calculates the squared distance between two vectors.
         /// </summary>
-        /// <param name="value1"> The first index. </param>
-        /// <param name="value2"> The second index. </param>
+        /// <param name="value1"> The first vector. </param>
+        /// <param name="value2"> The second vector. </param>
         /// <returns>
-        ///     The squared distance between the two indices.
+        ///     The squared distance between the two vectors.
         /// </returns>
         public static int DistanceSquared(in VectorI2 value1, in VectorI2 value2)
         {
@@ -544,13 +544,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the dot product of two indices.
+        ///     Calculates the dot product of two vectors.
         /// </summary>
-        /// <param name="left">   [in,out] First source index. </param>
-        /// <param name="right">  [in,out] Second source index. </param>
+        /// <param name="left">   [in,out] First source vector. </param>
+        /// <param name="right">  [in,out] Second source vector. </param>
         /// <param name="result">
         ///     [out] When the method completes, contains the dot product of the two
-        ///     indices.
+        ///     vectors.
         /// </param>
         public static void Dot(ref VectorI2 left, ref VectorI2 right, out int result)
         {
@@ -558,12 +558,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Calculates the dot product of two indices.
+        ///     Calculates the dot product of two vectors.
         /// </summary>
-        /// <param name="left">  First source index. </param>
-        /// <param name="right"> Second source index. </param>
+        /// <param name="left">  First source vector. </param>
+        /// <param name="right"> Second source vector. </param>
         /// <returns>
-        ///     The dot product of the two indices.
+        ///     The dot product of the two vectors.
         /// </returns>
         public static int Dot(in VectorI2 left, in VectorI2 right)
         {
@@ -571,13 +571,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the largest components of the specified indices.
+        ///     Returns a vector containing the largest components of the specified vectors.
         /// </summary>
-        /// <param name="left">   [in,out] The first source index. </param>
-        /// <param name="right">  [in,out] The second source index. </param>
+        /// <param name="left">   [in,out] The first source vector. </param>
+        /// <param name="right">  [in,out] The second source vector. </param>
         /// <param name="result">
-        ///     [out] When the method completes, contains an new index composed of the
-        ///     largest components of the source indices.
+        ///     [out] When the method completes, contains an new vector composed of the
+        ///     largest components of the source vectors.
         /// </param>
         public static void Max(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
@@ -586,12 +586,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the largest components of the specified indices.
+        ///     Returns a vector containing the largest components of the specified vectors.
         /// </summary>
-        /// <param name="left">  The first source index. </param>
-        /// <param name="right"> The second source index. </param>
+        /// <param name="left">  The first source vector. </param>
+        /// <param name="right"> The second source vector. </param>
         /// <returns>
-        ///     A index containing the largest components of the source indices.
+        ///     A vector containing the largest components of the source vectors.
         /// </returns>
         public static VectorI2 Max(in VectorI2 left, in VectorI2 right)
         {
@@ -601,13 +601,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the smallest components of the specified indices.
+        ///     Returns a vector containing the smallest components of the specified vectors.
         /// </summary>
-        /// <param name="left">   [in,out] The first source index. </param>
-        /// <param name="right">  [in,out] The second source index. </param>
+        /// <param name="left">   [in,out] The first source vector. </param>
+        /// <param name="right">  [in,out] The second source vector. </param>
         /// <param name="result">
-        ///     [out] When the method completes, contains an new index composed of the
-        ///     smallest components of the source indices.
+        ///     [out] When the method completes, contains an new vector composed of the
+        ///     smallest components of the source vectors.
         /// </param>
         public static void Min(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
@@ -616,12 +616,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Returns a index containing the smallest components of the specified indices.
+        ///     Returns a vector containing the smallest components of the specified vectors.
         /// </summary>
-        /// <param name="left">  The first source index. </param>
-        /// <param name="right"> The second source index. </param>
+        /// <param name="left">  The first source vector. </param>
+        /// <param name="right"> The second source vector. </param>
         /// <returns>
-        ///     A index containing the smallest components of the source indices.
+        ///     A vector containing the smallest components of the source vectors.
         /// </returns>
         public static VectorI2 Min(in VectorI2 left, in VectorI2 right)
         {
@@ -631,12 +631,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Adds two indices.
+        ///     Adds two vectors.
         /// </summary>
-        /// <param name="left">  The first index to add. </param>
-        /// <param name="right"> The second index to add. </param>
+        /// <param name="left">  The first vector to add. </param>
+        /// <param name="right"> The second vector to add. </param>
         /// <returns>
-        ///     The sum of the two indices.
+        ///     The sum of the two vectors.
         /// </returns>
         public static VectorI2 operator +(in VectorI2 left, in VectorI2 right)
         {
@@ -646,10 +646,10 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise addition.
         /// </summary>
-        /// <param name="value">  The input index. </param>
+        /// <param name="value">  The input vector. </param>
         /// <param name="scalar"> The scalar value to be added on elements. </param>
         /// <returns>
-        ///     The index with added scalar for each element.
+        ///     The vector with added scalar for each element.
         /// </returns>
         public static VectorI2 operator +(in VectorI2 value, int scalar)
         {
@@ -660,9 +660,9 @@ namespace Exomia.Framework
         ///     Perform a component-wise addition.
         /// </summary>
         /// <param name="scalar"> The scalar value to be added on elements. </param>
-        /// <param name="value">  The input index. </param>
+        /// <param name="value">  The input vector. </param>
         /// <returns>
-        ///     The index with added scalar for each element.
+        ///     The vector with added scalar for each element.
         /// </returns>
         public static VectorI2 operator +(int scalar, in VectorI2 value)
         {
@@ -670,11 +670,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Assert a index (return it unchanged).
+        ///     Assert a vector (return it unchanged).
         /// </summary>
-        /// <param name="value"> The index to assert (unchanged). </param>
+        /// <param name="value"> The vector to assert (unchanged). </param>
         /// <returns>
-        ///     The asserted (unchanged) index.
+        ///     The asserted (unchanged) vector.
         /// </returns>
         public static VectorI2 operator +(in VectorI2 value)
         {
@@ -682,12 +682,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Subtract two indices.
+        ///     Subtract two vectors.
         /// </summary>
-        /// <param name="left">  The first index be subtracted from. </param>
-        /// <param name="right"> The second index to subtract. </param>
+        /// <param name="left">  The first vector be subtracted from. </param>
+        /// <param name="right"> The second vector to subtract. </param>
         /// <returns>
-        ///     The sum of the two indices.
+        ///     The sum of the two vectors.
         /// </returns>
         public static VectorI2 operator -(in VectorI2 left, in VectorI2 right)
         {
@@ -697,10 +697,10 @@ namespace Exomia.Framework
         /// <summary>
         ///     Perform a component-wise subtraction.
         /// </summary>
-        /// <param name="value">  The input index. </param>
+        /// <param name="value">  The input vector. </param>
         /// <param name="scalar"> The scalar value to be subtracted from elements. </param>
         /// <returns>
-        ///     The index with subtracted scalar from each element.
+        ///     The vector with subtracted scalar from each element.
         /// </returns>
         public static VectorI2 operator -(in VectorI2 value, int scalar)
         {
@@ -711,9 +711,9 @@ namespace Exomia.Framework
         ///     Perform a component-wise subtraction.
         /// </summary>
         /// <param name="scalar"> The scalar value to be subtracted from elements. </param>
-        /// <param name="value">  The input index. </param>
+        /// <param name="value">  The input vector. </param>
         /// <returns>
-        ///     The index with subtracted scalar from each element.
+        ///     The vector with subtracted scalar from each element.
         /// </returns>
         public static VectorI2 operator -(int scalar, in VectorI2 value)
         {
@@ -721,11 +721,11 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Reverses the direction of a given index.
+        ///     Reverses the direction of a given vector.
         /// </summary>
-        /// <param name="value"> The index to negate. </param>
+        /// <param name="value"> The vector to negate. </param>
         /// <returns>
-        ///     A index facing in the opposite direction.
+        ///     A vector facing in the opposite direction.
         /// </returns>
         public static VectorI2 operator -(in VectorI2 value)
         {
@@ -733,13 +733,13 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Multiplies a index with another by performing component-wise multiplication equivalent to
+        ///     Multiplies a vector with another by performing component-wise multiplication equivalent to
         ///     <see cref="Multiply(ref VectorI2, ref VectorI2, out VectorI2)" />.
         /// </summary>
-        /// <param name="left">  The first index to multiply. </param>
-        /// <param name="right"> The second index to multiply. </param>
+        /// <param name="left">  The first vector to multiply. </param>
+        /// <param name="right"> The second vector to multiply. </param>
         /// <returns>
-        ///     The multiplication of the two indices.
+        ///     The multiplication of the two vectors.
         /// </returns>
         public static VectorI2 operator *(in VectorI2 left, in VectorI2 right)
         {
@@ -747,12 +747,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="scale"> The amount by which to scale the index. </param>
-        /// <param name="value"> The index to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
+        /// <param name="value"> The vector to scale. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 operator *(int scale, in VectorI2 value)
         {
@@ -760,12 +760,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value"> The index to scale. </param>
-        /// <param name="scale"> The amount by which to scale the index. </param>
+        /// <param name="value"> The vector to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 operator *(in VectorI2 value, int scale)
         {
@@ -773,12 +773,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value"> The index to scale. </param>
-        /// <param name="scale"> The amount by which to scale the index. </param>
+        /// <param name="value"> The vector to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 operator /(in VectorI2 value, int scale)
         {
@@ -786,12 +786,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="scale"> The amount by which to scale the index. </param>
-        /// <param name="value"> The index to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
+        /// <param name="value"> The vector to scale. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 operator /(int scale, in VectorI2 value)
         {
@@ -799,12 +799,12 @@ namespace Exomia.Framework
         }
 
         /// <summary>
-        ///     Scales a index by the given value.
+        ///     Scales a vector by the given value.
         /// </summary>
-        /// <param name="value"> The index to scale. </param>
-        /// <param name="scale"> The amount by which to scale the index. </param>
+        /// <param name="value"> The vector to scale. </param>
+        /// <param name="scale"> The amount by which to scale the vector. </param>
         /// <returns>
-        ///     The scaled index.
+        ///     The scaled vector.
         /// </returns>
         public static VectorI2 operator /(in VectorI2 value, in VectorI2 scale)
         {
