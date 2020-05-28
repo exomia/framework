@@ -16,7 +16,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Contains the raw input from a device.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct RAWINPUT
+    struct RAWINPUT
     {
         /// <summary>
         ///     The header.

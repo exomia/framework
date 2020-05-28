@@ -17,7 +17,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Value type for raw input from a HID.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct RAWINPUTHID
+    struct RAWINPUTHID
     {
         /// <summary>Size of the HID data in bytes.</summary>
         public int Size;

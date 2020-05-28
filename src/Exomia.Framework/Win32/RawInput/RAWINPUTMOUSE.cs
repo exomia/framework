@@ -16,7 +16,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Contains information about the state of the mouse.
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
-    public struct RAWINPUTMOUSE
+    struct RAWINPUTMOUSE
     {
         /// <summary>
         ///     The mouse state.

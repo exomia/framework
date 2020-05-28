@@ -19,7 +19,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Enumeration containing flags for raw keyboard input.
     /// </summary>
     [Flags]
-    public enum RawKeyboardFlags : ushort
+    enum RawKeyboardFlags : ushort
     {
         /// <summary></summary>
         KeyMake = 0,

@@ -19,7 +19,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Enumeration containing the flags for raw mouse data.
     /// </summary>
     [Flags]
-    public enum RawMouseFlags : ushort
+    enum RawMouseFlags : ushort
     {
         /// <summary>Relative to the last position.</summary>
         MoveRelative = 0,
