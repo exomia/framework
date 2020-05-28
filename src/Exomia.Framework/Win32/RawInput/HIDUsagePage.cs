@@ -16,7 +16,7 @@ namespace Exomia.Framework.Win32.RawInput
     /// <summary>
     ///     Enumeration containing HID usage page flags.
     /// </summary>
-    public enum HIDUsagePage : ushort
+    enum HIDUsagePage : ushort
     {
         /// <summary>Unknown usage page.</summary>
         Undefined = 0x00,

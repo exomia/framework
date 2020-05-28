@@ -16,7 +16,7 @@ namespace Exomia.Framework.Win32.RawInput
     /// <summary>
     ///     Enumeration containing the HID usage values.
     /// </summary>
-    public enum HIDUsage : ushort
+    enum HIDUsage : ushort
     {
         /// <summary></summary>
         Pointer = 0x01,

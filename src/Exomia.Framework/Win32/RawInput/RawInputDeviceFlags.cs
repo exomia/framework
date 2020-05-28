@@ -17,7 +17,7 @@ namespace Exomia.Framework.Win32.RawInput
 {
     /// <summary>Enumeration containing flags for a raw input device.</summary>
     [Flags]
-    public enum RawInputDeviceFlags
+    enum RawInputDeviceFlags
     {
         /// <summary>No flags.</summary>
         None = 0,

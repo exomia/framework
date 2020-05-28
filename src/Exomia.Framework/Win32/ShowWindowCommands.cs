@@ -13,7 +13,7 @@ namespace Exomia.Framework.Win32
     /// <summary>
     ///     Values that represent ShowWindowCommands.
     /// </summary>
-    public enum ShowWindowCommands
+    enum ShowWindowCommands
     {
         /// <summary>
         ///     Hides the window and activates another window.
