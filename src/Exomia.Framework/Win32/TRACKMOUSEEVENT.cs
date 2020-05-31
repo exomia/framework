@@ -26,7 +26,7 @@ namespace Exomia.Framework.Win32
 
         public TRACKMOUSEEVENT(uint dwFlags, IntPtr hWnd, uint dwHoverTime)
         {
-            cbSize           = Marshal.SizeOf(typeof(TRACKMOUSEEVENT));
+            this.cbSize      = Marshal.SizeOf(typeof(TRACKMOUSEEVENT));
             this.dwFlags     = dwFlags;
             this.hWnd        = hWnd;
             this.dwHoverTime = dwHoverTime;
