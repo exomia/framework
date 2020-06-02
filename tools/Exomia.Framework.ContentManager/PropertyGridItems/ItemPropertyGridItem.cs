@@ -19,6 +19,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     class ItemPropertyGridItem : PropertyGridItem
     {
+        [Browsable(false)]
+        public object Item { get; }
+
         /// <summary>
         ///     Gets the importers.
         /// </summary>
@@ -62,16 +65,19 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <summary>
         ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
         /// </summary>
+        /// <param name="item">                The item. </param>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
         /// <param name="importers">           The importers. </param>
         /// <param name="exporters">           The exporters. </param>
-        public ItemPropertyGridItem(Provider.Value<string> nameProvider,
+        public ItemPropertyGridItem(object item, 
+                                    Provider.Value<string> nameProvider,
                                     Provider.Value<string> virtualPathProvider,
                                     IImporter[]            importers,
                                     IExporter[]            exporters)
             : base(nameProvider, virtualPathProvider)
         {
+            Item = item;
             Importers = importers;
             Exporters = exporters;
         }

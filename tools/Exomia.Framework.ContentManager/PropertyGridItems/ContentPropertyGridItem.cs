@@ -43,20 +43,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// </value>
         [Category("Settings")]
         [Description("The build output folder.")]
-        public string? OutputFolder { get; set; }
-
-        /// <summary>
-        ///     TODO: REMOVE.
-        /// </summary>
-        /// <value>
-        ///     The test.
-        /// </value>
-        [Category("test")]
-        [Description("...")]
-        [ReadOnly(false)]
-        [TypeConverter(typeof(ChoicesStringConverter))]
-        [Choices("a", "b", "c", "d")]
-        public string? Test { get; set; }
+        public string OutputFolder { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
@@ -65,13 +52,16 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <param name="virtualPathProvider">     The virtual path provider. </param>
         /// <param name="totalItemsProvider">      The total items provider. </param>
         /// <param name="projectLocationProvider"> The project location provider. </param>
+        /// <param name="outputFolder">            The pathname of the output folder. </param>
         public ContentPropertyGridItem(Provider.Value<string> nameProvider,
                                        Provider.Value<string> virtualPathProvider,
                                        Provider.Value<int>    totalItemsProvider,
-                                       Provider.Value<string> projectLocationProvider)
+                                       Provider.Value<string> projectLocationProvider,
+                                       string                 outputFolder)
             : base(nameProvider, virtualPathProvider, totalItemsProvider)
         {
             _projectLocationProvider = projectLocationProvider;
+            OutputFolder             = outputFolder;
         }
     }
 }

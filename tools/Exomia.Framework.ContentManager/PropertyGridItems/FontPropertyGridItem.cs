@@ -8,6 +8,7 @@
 
 #endregion
 
+using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.IO;
 using Exomia.Framework.ContentManager.IO.Exporter;
 using Exomia.Framework.ContentManager.IO.Importer;
@@ -22,17 +23,19 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <summary>
         ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
         /// </summary>
+        /// <param name="fontDescription">     The font description. </param>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        public FontPropertyGridItem(Provider.Value<string> nameProvider,
+        public FontPropertyGridItem(FontDescription        fontDescription,
+                                    Provider.Value<string> nameProvider,
                                     Provider.Value<string> virtualPathProvider)
             : base(
-                nameProvider, virtualPathProvider,
+                fontDescription, nameProvider, virtualPathProvider,
                 new IImporter[] { BMFontImporter.Default },
-                new IExporter[] { BMFontExporter.Default })
+                new IExporter[] { SpiteFontExporter.Default })
         {
             Importer = BMFontImporter.Default;
-            Exporter = BMFontExporter.Default;
+            Exporter = SpiteFontExporter.Default;
         }
     }
 }

@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Exomia.Framework.ContentManager.Extensions
@@ -55,6 +56,21 @@ namespace Exomia.Framework.ContentManager.Extensions
                 return (TResult)control.Invoke(func, control);
             }
             return func(control);
+        }
+
+        /// <summary>
+        ///     A Control extension method that executes if required on a different thread, and waits for the result.
+        /// </summary>
+        /// <typeparam name="TControl"> Type of the control. </typeparam>
+        /// <param name="action">   The action. </param>
+        /// <param name="controls"> A variable-length parameters list containing controls. </param>
+        public static void InvokeIfRequiredOn<TControl>(Action<TControl> action, params TControl[] controls)
+            where TControl : Control
+        {
+            foreach (TControl control in controls)
+            {
+                control.InvokeIfRequired(action);
+            }
         }
     }
 }

@@ -12,6 +12,6 @@ namespace Exomia.Framework.ContentManager.IO
 {
     interface IExporter
     {
-        public string Name { get; }
+        bool Export( object obj, ExporterContext context );
     }
 }

@@ -9,7 +9,9 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -30,17 +32,27 @@ namespace Exomia.Framework.ContentManager
         }
 
         /// <summary>
+        ///     Gets the project location.
+        /// </summary>
+        /// <value>
+        ///     The project location.
+        /// </value>
+        public string OutputFolder
+        {
+            get { return outputTb.Text; }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="CreateProjectForm" /> class.
         /// </summary>
         public CreateProjectForm()
         {
             InitializeComponent();
-            locationTb.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(locationTb.Text)) { return; }
+            if (string.IsNullOrEmpty(locationTb.Text) || string.IsNullOrEmpty(outputTb.Text)) { return; }
             DialogResult = DialogResult.OK;
         }
 
@@ -57,12 +69,28 @@ namespace Exomia.Framework.ContentManager
                 RestoreDirectory             = true,
                 ShowHelp                     = false,
                 SupportMultiDottedExtensions = true,
-                FileName                     = "content.ecp"
+                FileName                     = "exomia_content_project.ecp"
             })
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     locationTb.Text = dialog.FileName;
+                }
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            {
+                Title = "Build Output Folder", 
+                RestoreDirectory = true, 
+                IsFolderPicker = true
+            })
+            {
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    outputTb.Text = dialog.FileName;
                 }
             }
         }

@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
+using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.PropertyGridItems;
 
 namespace Exomia.Framework.ContentManager
@@ -36,21 +37,36 @@ namespace Exomia.Framework.ContentManager
                 if (createProjectForm.ShowDialog() == DialogResult.OK)
                 {
                     panel1.InvokeIfRequired(x => x.Enabled = true);
+                    
                     treeView1.InvokeIfRequired(
                         x =>
                         {
                             x.Nodes.Clear();
-                            var node = x.Nodes.Add("-ROOT-", "Content", 0, 0);
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, "Content", 0, 0);
                             node.Tag =
                                 new ContentPropertyGridItem(
                                     () => node.Text,
                                     Provider.Static(string.Empty),
                                     () => node.GetNodeCount(true),
-
                                     // ReSharper disable once AccessToDisposedClosure
-                                    Provider.Static(createProjectForm.ProjectLocation));
+                                    Provider.Static(createProjectForm.ProjectLocation),
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    createProjectForm.OutputFolder);
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
+
+                    menuStrip1.InvokeIfRequired(
+                        x =>
+                        {
+                            ForAll(
+                                i => i.Enabled = true, buildToolStripMenuItem, editToolStripMenuItem,
+                                closeToolStripMenuItem);
+                        });
+
+                    SetStatusLabel(
+                        StatusType.Info, "Project '{0}' created under {1}",
+                        Path.GetFileNameWithoutExtension(createProjectForm.ProjectLocation),
+                        Path.GetDirectoryName(createProjectForm.ProjectLocation));
                 }
             }
         }
@@ -76,6 +92,31 @@ namespace Exomia.Framework.ContentManager
             }
         }
 
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            menuStrip1.InvokeIfRequired(
+                x =>
+                {
+                    ForAll(
+                        i => i.Enabled = false, buildToolStripMenuItem, editToolStripMenuItem, closeToolStripMenuItem);
+                });
+
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    x.Nodes.Clear();
+                });
+
+            panel1.InvokeIfRequired(x => x.Enabled = false);
+
+            SetStatusLabel(StatusType.Info, "Project closed...");
+        }
+
+        private void buildToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Build();
+        }
+
         #endregion
 
         #region PropertyGrid1
@@ -84,6 +125,7 @@ namespace Exomia.Framework.ContentManager
 
         #region TreeView1
 
+        private const string ROOT_KEY_PREFIX   = "-ROOT-";
         private const string FOLDER_KEY_PREFIX = "-folder-";
         private const string FONT_KEY_PREFIX   = "-font-";
 
@@ -165,7 +207,7 @@ namespace Exomia.Framework.ContentManager
             {
                 string oldText = e.Node.Text;
                 e.Node.Text = label;
-
+                
                 propertyGrid1.InvokeIfRequired(
                     x =>
                     {
@@ -256,10 +298,18 @@ namespace Exomia.Framework.ContentManager
                         $"font{selectedNodeCount}.fnt", 4, 4);
                     node.Tag =
                         new FontPropertyGridItem(
+                            new FontDescription
+                            {
+                                Name = "Arial",
+                                Chars = "32-126,128,130-140,142,145-156,158-255",
+                                Size = 12,
+                                IsBold = false,
+                                AA = true,
+                                IsItalic = false
+                            },
                             () => node.Text,
                             () => node.Parent.FullPath);
 
-                    //node.ContextMenuStrip = ;
                     selectedNode.Expand();
                     treeView1.SelectedNode = node;
                     node.BeginEdit();

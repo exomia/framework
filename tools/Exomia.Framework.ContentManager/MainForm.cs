@@ -8,10 +8,11 @@
 
 #endregion
 
-using System;
-using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
-using Exomia.Framework.ContentManager.Properties;
+using System;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -26,9 +27,6 @@ namespace Exomia.Framework.ContentManager
         public MainForm()
         {
             InitializeComponent();
-            SetProgressbarValue(true);
-            SetStatusLabel(StatusType.Info, "Startup...");
-            SetStatusLabel(StatusType.Info, "Startup finished...");
             SetProgressbarValue(false);
         }
 
@@ -46,12 +44,12 @@ namespace Exomia.Framework.ContentManager
                 {
                     toolStripStatusLabel1.Image = statusType switch
                     {
-                        StatusType.Warning => Resources
-                            .StatusWarning_16x,
-                        StatusType.Error => Resources
-                            .StatusCriticalError_16x,
-                        StatusType.Info => Resources
-                            .StatusInformation_16x,
+                        StatusType.Warning => Properties.Resources
+                                                        .StatusWarning_16x,
+                        StatusType.Error => Properties.Resources
+                                                      .StatusCriticalError_16x,
+                        StatusType.Info => Properties.Resources
+                                                     .StatusInformation_16x,
                         _ => throw new ArgumentOutOfRangeException(nameof(statusType), statusType, null)
                     };
                     toolStripStatusLabel1.Text = string.Format(text, args);
@@ -72,6 +70,94 @@ namespace Exomia.Framework.ContentManager
                         : ProgressBarStyle.Continuous;
                     toolStripProgressBar1.Value = 0;
                 });
+        }
+
+        private void Clear()
+        {
+            richTextBox1.InvokeIfRequired(
+                x => { x.Clear(); });
+        }
+
+        static bool IsNumber(object? value)
+        {
+            return value is sbyte
+                || value is byte
+                || value is short
+                || value is ushort
+                || value is int
+                || value is uint
+                || value is long
+                || value is ulong
+                || value is float
+                || value is double
+                || value is decimal;
+        }
+
+        private void WriteLine(string text, params object?[] args)
+        {
+            richTextBox1.InvokeIfRequired(
+                x =>
+                {
+                    var matches = Regex.Matches(text, "\\{([0-9]+)(?:\\:([A-Za-z]+))?\\}");
+
+                    if (matches.Count <= 0)
+                    {
+                        x.AppendText($"{string.Format(text, args)}{Environment.NewLine}");
+                        return;
+                    }
+
+                    using Font boldFont = new Font(x.Font, FontStyle.Bold);
+
+                    int current = 0;
+                    foreach (Match match in matches)
+                    {
+                        x.AppendText(text.Substring(current, match.Index - current));
+                        current = match.Index + match.Length;
+
+                        x.SelectionStart  = x.TextLength;
+                        x.SelectionLength = 0;
+                        x.SelectionFont   = boldFont;
+
+                        object? value = args[int.Parse(match.Groups[1].Value)];
+
+                        if (match.Groups[2].Success)
+                        {
+                            x.SelectionColor = Color.FromName(match.Groups[2].Value);
+                        }
+                        else if (value is string)
+                        {
+                            x.SelectionColor = Color.DarkOrange;
+                        }
+                        else if (IsNumber(value))
+                        {
+                            x.SelectionColor = Color.DarkBlue;
+                        }
+                        else
+                        {
+                            x.SelectionColor = Color.DarkGreen;
+                        }
+
+                        x.AppendText(value?.ToString());
+                        x.SelectionFont  = x.Font;
+                        x.SelectionColor = x.ForeColor;
+                    }
+
+                    x.AppendText($"{text.Substring(current, text.Length - current)}{Environment.NewLine}");
+                    x.ScrollToCaret();
+                });
+        }
+
+        private static void ForAll<T>(Action<T> action, params T[] items)
+        {
+            foreach (T item in items)
+            {
+                action(item);
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            
         }
     }
 }

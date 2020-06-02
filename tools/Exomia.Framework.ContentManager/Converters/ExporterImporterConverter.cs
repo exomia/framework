@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Exomia.Framework.ContentManager.IO;
 using Exomia.Framework.ContentManager.PropertyGridItems;
 
@@ -69,8 +70,8 @@ namespace Exomia.Framework.ContentManager.Converters
         {
             return value switch
             {
-                IImporter i => i.Name,
-                IExporter e => e.Name,
+                IImporter _ => value.GetType().GetCustomAttribute<ImporterAttribute>().Name,
+                IExporter _ => value.GetType().GetCustomAttribute<ExporterAttribute>().Name,
                 _ => base.ConvertTo(context, culture, value, destinationType)
             };
         }
@@ -91,12 +92,12 @@ namespace Exomia.Framework.ContentManager.Converters
                 {
                     if (context.PropertyDescriptor.PropertyType == typeof(IImporter))
                     {
-                        return item.Importers.First(e => e.Name.Equals(s));
+                        return item.Importers.First(e => e.GetType().GetCustomAttribute<ImporterAttribute>().Name.Equals(s));
                     }
 
                     if (context.PropertyDescriptor.PropertyType == typeof(IExporter))
                     {
-                        return item.Exporters.First(e => e.Name.Equals(s));
+                        return item.Exporters.First(e => e.GetType().GetCustomAttribute<ExporterAttribute>().Name.Equals(s));
                     }
                 }
             }

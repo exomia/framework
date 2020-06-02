@@ -12,6 +12,6 @@ namespace Exomia.Framework.ContentManager.IO
 {
     interface IImporter
     {
-        public string Name { get; }
+        object? Import(object item, ImporterContext context);
     }
 }

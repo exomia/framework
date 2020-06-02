@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Exomia.Framework.ContentManager
@@ -21,6 +22,7 @@ namespace Exomia.Framework.ContentManager
         [STAThread]
         private static void Main()
         {
+            Directory.CreateDirectory("temp");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
