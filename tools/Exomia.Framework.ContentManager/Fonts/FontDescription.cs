@@ -16,7 +16,7 @@ using Exomia.Framework.ContentManager.Annotations;
 namespace Exomia.Framework.ContentManager.Fonts
 {
     [Serializable]
-    class FontDescription : INotifyPropertyChanged
+    sealed class FontDescription : INotifyPropertyChanged
     {
         private string _name = "arial";
         private string _chars = "32-126,128,130-140,142,145-156,158-255";
@@ -73,11 +73,12 @@ namespace Exomia.Framework.ContentManager.Fonts
         {
             return $"{Name} ({Size}px)";
         }
-
+        
+        [field: NonSerialized]
         public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

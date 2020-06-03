@@ -52,7 +52,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
                 new IExporter[] { SpiteFontExporter.Default })
         {
             FontDescription                 =  fontDescription;
-            fontDescription.PropertyChanged += (sender, args) =>
+            ((INotifyPropertyChanged)fontDescription).PropertyChanged += (sender, args) =>
             {
                 OnPropertyChanged(nameof(FontDescription));
             };

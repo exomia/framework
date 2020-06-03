@@ -15,22 +15,6 @@ using Exomia.Framework.ContentManager.IO;
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {
     /// <summary>
-    ///     Values that represent BuildAction.
-    /// </summary>
-    public enum BuildAction
-    {
-        /// <summary>
-        ///     An enum constant representing the build option.
-        /// </summary>
-        Build,
-
-        /// <summary>
-        ///     An enum constant representing the ignore option.
-        /// </summary>
-        Ignore
-    }
-
-    /// <summary>
     ///     A font property grid item. This class cannot be inherited.
     /// </summary>
     class ItemPropertyGridItem : PropertyGridItem
