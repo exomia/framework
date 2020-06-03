@@ -14,6 +14,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
 using Exomia.Framework.Mathematics;
@@ -23,7 +25,7 @@ namespace Exomia.Framework.ContentManager.IO.Importer
     /// <summary>
     ///     A bm font importer. This class cannot be inherited.
     /// </summary>
-    [Importer("BMFont Importer")]
+    [Importer("BMFont Importer", "fnt")]
     sealed class BMFontImporter : Importer<FontFile>
     {
         private const string         TEMP_FILE_DIR = "temp";
@@ -31,18 +33,22 @@ namespace Exomia.Framework.ContentManager.IO.Importer
 
         private readonly string _bmFontExeLocation;
 
+        private readonly IFormatter _formatter;
+
         private BMFontImporter()
         {
             if (!File.Exists(_bmFontExeLocation = Path.Combine("tools", "bmfont64.exe")))
                 throw new FileNotFoundException("The 'bmfont64.exe' is missing!", _bmFontExeLocation);
+
+            _formatter = new BinaryFormatter();
         }
 
         /// <inheritdoc />
-        public override FontFile? Import(object item, ImporterContext context)
+        public override FontFile? Import(Stream stream, ImporterContext context)
         {
-            if (!(item is FontDescription description))
+            if (!(_formatter.Deserialize(stream) is FontDescription description))
             {
-                context.AddMessage("Can't import item of type {0}!", item.GetType());
+                context.AddMessage("Can't import item expected type {0}!", typeof(FontDescription));
                 return null;
             }
             string tempFileName = $"{description.Size}_{Path.GetRandomFileName()}.fnt";
@@ -81,8 +87,8 @@ namespace Exomia.Framework.ContentManager.IO.Importer
                     {
                         if (CheckFontImageFiles(fontFile, TEMP_FILE_DIR))
                         {
-                            
-                            fontFile.Pages[0].File = Path.GetFullPath(Path.Combine(TEMP_FILE_DIR, fontFile.Pages[0].File));
+                            fontFile.Pages[0].File =
+                                Path.GetFullPath(Path.Combine(TEMP_FILE_DIR, fontFile.Pages[0].File));
                             return fontFile;
                         }
                         context.AddMessage("Font Page File ({1}) not found!", fontFile.Pages[0].File);

@@ -45,6 +45,15 @@ namespace Exomia.Framework.ContentManager
 
                         if (node.Tag is ItemPropertyGridItem gridItem)
                         {
+                            if (gridItem.BuildAction == BuildAction.Ignore)
+                            {
+                                WriteLine(
+                                    "Item {0} is ignored during build! skipping...!",
+                                    Path.Combine(gridItem.VirtualPath, gridItem.Name));
+                                Interlocked.Increment(ref skipped);
+                                return;
+                            }
+                            
                             if (gridItem.Importer == null)
                             {
                                 WriteLine(
@@ -73,7 +82,22 @@ namespace Exomia.Framework.ContentManager
 
                             WriteLine("Import item {0}...", Path.Combine(gridItem.VirtualPath, gridItem.Name));
                             ImporterContext importerContext = new ImporterContext(gridItem.Name, gridItem.VirtualPath);
-                            object?         obj             = gridItem.Importer.Import(gridItem.Item, importerContext);
+
+                            Stream stream;
+                            if (gridItem is FontPropertyGridItem fontItem)
+                            {
+                                fontItem.Serialize(stream = new MemoryStream());
+                            }
+                            else
+                            {
+                                stream = new MemoryStream();
+                            }
+                            
+                            object? obj;
+                            using (stream)
+                            {
+                                obj = gridItem.Importer.Import(stream, importerContext);
+                            }
                             if (obj == null)
                             {
                                 WriteLine("\tfailed with messages:");
@@ -89,7 +113,7 @@ namespace Exomia.Framework.ContentManager
                                 gridItem.VirtualPath,
                                 contentPropertyGridItem.OutputFolder ??
                                 Path.GetDirectoryName(contentPropertyGridItem.ProjectLocation));
-                            
+
                             if (!gridItem.Exporter.Export(obj, exporterContext))
                             {
                                 WriteLine("\tfailed with messages:");

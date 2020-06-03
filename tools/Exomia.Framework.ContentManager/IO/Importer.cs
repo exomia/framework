@@ -1,13 +1,22 @@
-﻿namespace Exomia.Framework.ContentManager.IO
+﻿using System;
+using System.IO;
+
+namespace Exomia.Framework.ContentManager.IO
 {
     abstract class Importer<T> : IImporter
         where T : class
     {
-        object? IImporter.Import(object item, ImporterContext context)
+        /// <inheritdoc />
+        public Type OutType
         {
-            return Import(item, context);
+            get { return typeof(T); }
+        }
+        
+        object? IImporter.Import(Stream stream, ImporterContext context)
+        {
+            return Import(stream, context);
         }
 
-        public abstract T? Import(object item, ImporterContext context);
+        public abstract T? Import(Stream stream, ImporterContext context);
     }
 }

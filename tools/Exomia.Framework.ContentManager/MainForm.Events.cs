@@ -296,19 +296,23 @@ namespace Exomia.Framework.ContentManager
                     var node = selectedNode.Nodes.Add(
                         $"{FONT_KEY_PREFIX}{selectedNodeCount}",
                         $"font{selectedNodeCount}.fnt", 4, 4);
-                    node.Tag =
-                        new FontPropertyGridItem(
-                            new FontDescription
-                            {
-                                Name = "Arial",
-                                Chars = "32-126,128,130-140,142,145-156,158-255",
-                                Size = 12,
-                                IsBold = false,
-                                AA = true,
-                                IsItalic = false
-                            },
-                            () => node.Text,
-                            () => node.Parent.FullPath);
+                    FontPropertyGridItem fontPropertyGridItem = new FontPropertyGridItem(
+                        new FontDescription
+                        {
+                            Name     = "Arial",
+                            Chars    = "32-126,128,130-140,142,145-156,158-255",
+                            Size     = 12,
+                            IsBold   = false,
+                            AA       = true,
+                            IsItalic = false
+                        },
+                        () => node.Text,
+                        () => node.Parent.FullPath);
+                    fontPropertyGridItem.PropertyChanged += (o, args) =>
+                    {
+                        propertyGrid1.Refresh();
+                    };
+                    node.Tag = fontPropertyGridItem;;
 
                     selectedNode.Expand();
                     treeView1.SelectedNode = node;

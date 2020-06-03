@@ -26,10 +26,19 @@ namespace Exomia.Framework.ContentManager.IO
         /// </value>
         public string Name { get; }
 
+        /// <summary>
+        ///     Gets the extensions.
+        /// </summary>
+        /// <value>
+        ///     The extensions.
+        /// </value>
+        public string[] Extensions { get; }
+        
         /// <inheritdoc />
-        public ImporterAttribute(string name)
+        public ImporterAttribute(string name, params string[] extensions)
         {
             Name = name;
+            Extensions = extensions;
         }
     }
 }

@@ -15,13 +15,26 @@ using Exomia.Framework.ContentManager.IO;
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {
     /// <summary>
+    ///     Values that represent BuildAction.
+    /// </summary>
+    public enum BuildAction
+    {
+        /// <summary>
+        ///     An enum constant representing the build option.
+        /// </summary>
+        Build,
+
+        /// <summary>
+        ///     An enum constant representing the ignore option.
+        /// </summary>
+        Ignore
+    }
+
+    /// <summary>
     ///     A font property grid item. This class cannot be inherited.
     /// </summary>
     class ItemPropertyGridItem : PropertyGridItem
     {
-        [Browsable(false)]
-        public object Item { get; }
-
         /// <summary>
         ///     Gets the importers.
         /// </summary>
@@ -46,9 +59,17 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The importer.
         /// </value>
-        [Category("Settings")]
-        [Description("The importer for this item.")]
-        [TypeConverter(typeof(ItemExporterImporterConverter))]
+        [Category("Settings"), Description("The build action for this item."), DisplayName("Build Action")]
+        public BuildAction BuildAction { get; set; } = BuildAction.Build;
+
+        /// <summary>
+        ///     The importer for this item.
+        /// </summary>
+        /// <value>
+        ///     The importer.
+        /// </value>
+        [Category("Settings"), Description("The importer for this item."),
+         TypeConverter(typeof(ItemExporterImporterConverter))]
         public IImporter? Importer { get; set; }
 
         /// <summary>
@@ -57,27 +78,23 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The exporter.
         /// </value>
-        [Category("Settings")]
-        [Description("The exporter for this item.")]
-        [TypeConverter(typeof(ItemExporterImporterConverter))]
+        [Category("Settings"), Description("The exporter for this item."),
+         TypeConverter(typeof(ItemExporterImporterConverter))]
         public IExporter? Exporter { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
         /// </summary>
-        /// <param name="item">                The item. </param>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
         /// <param name="importers">           The importers. </param>
         /// <param name="exporters">           The exporters. </param>
-        public ItemPropertyGridItem(object item, 
-                                    Provider.Value<string> nameProvider,
+        public ItemPropertyGridItem(Provider.Value<string> nameProvider,
                                     Provider.Value<string> virtualPathProvider,
                                     IImporter[]            importers,
                                     IExporter[]            exporters)
             : base(nameProvider, virtualPathProvider)
         {
-            Item = item;
             Importers = importers;
             Exporters = exporters;
         }

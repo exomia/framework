@@ -8,10 +8,14 @@
 
 #endregion
 
+using System.IO;
+
 namespace Exomia.Framework.ContentManager.IO
 {
     interface IImporter
     {
-        object? Import(object item, ImporterContext context);
+        System.Type OutType { get; }
+        
+        object? Import(Stream stream, ImporterContext context);
     }
 }
