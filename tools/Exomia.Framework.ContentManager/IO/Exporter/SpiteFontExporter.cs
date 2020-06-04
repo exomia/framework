@@ -10,6 +10,7 @@
 
 using System.Data;
 using System.IO;
+using System.Threading;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
 using Exomia.Framework.ContentSerialization;
 using Exomia.Framework.ContentSerialization.Compression;
@@ -72,7 +73,7 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
 
             string outputFile = Path.Combine(
                 context.OutputFolder, context.VirtualPath,
-                $"{Path.GetFileNameWithoutExtension(context.ItemName)}_{font.Size}px");
+                Path.GetFileNameWithoutExtension(context.ItemName));
 
             string assetName1 = outputFile + ".min" + ContentSerializer.DEFAULT_EXTENSION;
             string assetName2 = outputFile + ContentCompressor.DEFAULT_COMPRESSED_EXTENSION;

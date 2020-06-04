@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Exomia.Framework.ContentManager.IO
 {
@@ -12,7 +13,7 @@ namespace Exomia.Framework.ContentManager.IO
         
         bool IExporter.Export(object obj, ExporterContext context)
         {
-            return Export((T)obj, context);
+            return Export((T)obj, context );
         }
 
         public abstract bool Export(T obj, ExporterContext context);

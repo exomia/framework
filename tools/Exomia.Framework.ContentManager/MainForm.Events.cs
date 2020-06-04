@@ -117,6 +117,11 @@ namespace Exomia.Framework.ContentManager
             Build();
         }
 
+        private void cancelBuildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CancelBuild();
+        }
+
         #endregion
 
         #region PropertyGrid1

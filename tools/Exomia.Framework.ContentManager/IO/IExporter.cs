@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.Threading;
 
 namespace Exomia.Framework.ContentManager.IO
 {

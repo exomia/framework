@@ -77,6 +77,7 @@
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cancelBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -221,7 +222,8 @@
             this.buildToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buildToolStripMenuItem1,
             this.rebuildToolStripMenuItem,
-            this.cleanToolStripMenuItem});
+            this.cleanToolStripMenuItem,
+            this.cancelBuildToolStripMenuItem});
             this.buildToolStripMenuItem.Enabled = false;
             this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
             this.buildToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
@@ -231,21 +233,21 @@
             // 
             this.buildToolStripMenuItem1.Image = global::Exomia.Framework.ContentManager.Properties.Resources.BuildSolution_16x;
             this.buildToolStripMenuItem1.Name = "buildToolStripMenuItem1";
-            this.buildToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
+            this.buildToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.buildToolStripMenuItem1.Text = "Build...";
             this.buildToolStripMenuItem1.Click += new System.EventHandler(this.buildToolStripMenuItem1_Click);
             // 
             // rebuildToolStripMenuItem
             // 
             this.rebuildToolStripMenuItem.Name = "rebuildToolStripMenuItem";
-            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.rebuildToolStripMenuItem.Text = "Rebuild...";
             // 
             // cleanToolStripMenuItem
             // 
             this.cleanToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.CleanData_16x;
             this.cleanToolStripMenuItem.Name = "cleanToolStripMenuItem";
-            this.cleanToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.cleanToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cleanToolStripMenuItem.Text = "Clean...";
             // 
             // helpToolStripMenuItem
@@ -522,6 +524,14 @@
             this.toolStripMenuItem6.Text = "Rename...";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
+            // cancelBuildToolStripMenuItem
+            // 
+            this.cancelBuildToolStripMenuItem.Name = "cancelBuildToolStripMenuItem";
+            this.cancelBuildToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cancelBuildToolStripMenuItem.Text = "Cancel Build...";
+            this.cancelBuildToolStripMenuItem.Visible = false;
+            this.cancelBuildToolStripMenuItem.Click += new System.EventHandler(this.cancelBuildToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -608,6 +618,7 @@
         private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem1;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.ToolStripMenuItem cancelBuildToolStripMenuItem;
     }
 }
 

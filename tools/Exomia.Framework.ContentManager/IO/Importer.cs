@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Threading;
 
 namespace Exomia.Framework.ContentManager.IO
 {
@@ -12,11 +12,11 @@ namespace Exomia.Framework.ContentManager.IO
             get { return typeof(T); }
         }
         
-        object? IImporter.Import(Stream stream, ImporterContext context)
+        object? IImporter.Import(byte[] data, ImporterContext context, CancellationToken cancellationToken)
         {
-            return Import(stream, context);
+            return Import(data, context, cancellationToken);
         }
 
-        public abstract T? Import(Stream stream, ImporterContext context);
+        public abstract T? Import(byte[] data, ImporterContext context, CancellationToken cancellationToken);
     }
 }

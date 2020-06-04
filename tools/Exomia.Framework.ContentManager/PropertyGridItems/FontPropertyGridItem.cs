@@ -26,7 +26,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     sealed class FontPropertyGridItem : ItemPropertyGridItem, INotifyPropertyChanged
     {
         private readonly IFormatter _formatter = new BinaryFormatter();
-
+        
         /// <summary>
         ///     The font description.
         /// </summary>
@@ -35,7 +35,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// </value>
         [Category("Font Settings"), Description("The font description."), DisplayName("Font"),
          TypeConverter(typeof(ExpandableObjectConverter))]
-        public FontDescription FontDescription { get; }
+        public FontDescription FontDescription { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
@@ -52,7 +52,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
                 new IExporter[] { SpiteFontExporter.Default })
         {
             FontDescription                 =  fontDescription;
-            ((INotifyPropertyChanged)fontDescription).PropertyChanged += (sender, args) =>
+            fontDescription.PropertyChanged += (sender, args) =>
             {
                 OnPropertyChanged(nameof(FontDescription));
             };
@@ -60,10 +60,24 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
             Exporter                        =  SpiteFontExporter.Default;
         }
 
-        public void Serialize(Stream stream)
+        /// <inheritdoc />
+        public override byte[] Data
         {
-            _formatter.Serialize(stream, FontDescription);
-            stream.Seek(0, SeekOrigin.Begin);
+            get
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    _formatter.Serialize(ms, FontDescription);
+                    return ms.ToArray();
+                }
+            }
+            set
+            {
+                using (MemoryStream ms = new MemoryStream(value))
+                {
+                    FontDescription =  (FontDescription)_formatter.Deserialize(ms);
+                }
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
