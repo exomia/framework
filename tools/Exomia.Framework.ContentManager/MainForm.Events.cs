@@ -37,7 +37,7 @@ namespace Exomia.Framework.ContentManager
                 if (createProjectForm.ShowDialog() == DialogResult.OK)
                 {
                     panel1.InvokeIfRequired(x => x.Enabled = true);
-                    
+
                     treeView1.InvokeIfRequired(
                         x =>
                         {
@@ -48,8 +48,10 @@ namespace Exomia.Framework.ContentManager
                                     () => node.Text,
                                     Provider.Static(string.Empty),
                                     () => node.GetNodeCount(true),
+
                                     // ReSharper disable once AccessToDisposedClosure
                                     Provider.Static(createProjectForm.ProjectLocation),
+
                                     // ReSharper disable once AccessToDisposedClosure
                                     createProjectForm.OutputFolder);
                             node.ContextMenuStrip = rootContextMenuStrip;
@@ -212,7 +214,7 @@ namespace Exomia.Framework.ContentManager
             {
                 string oldText = e.Node.Text;
                 e.Node.Text = label;
-                
+
                 propertyGrid1.InvokeIfRequired(
                     x =>
                     {
@@ -317,7 +319,8 @@ namespace Exomia.Framework.ContentManager
                     {
                         propertyGrid1.Refresh();
                     };
-                    node.Tag = fontPropertyGridItem;;
+                    node.Tag = fontPropertyGridItem;
+                    ;
 
                     selectedNode.Expand();
                     treeView1.SelectedNode = node;

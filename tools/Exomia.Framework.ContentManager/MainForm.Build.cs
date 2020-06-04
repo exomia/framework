@@ -1,4 +1,14 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -14,7 +24,13 @@ namespace Exomia.Framework.ContentManager
 {
     partial class MainForm
     {
-        private int _build = 0;
+        private static readonly (Func<ItemPropertyGridItem, bool>, string)[] s_checks =
+        {
+            (i => i.BuildAction == BuildAction.Ignore, "ignored during build!"),
+            (i => i.Importer == null, "no importer set!"), (i => i.Exporter == null, "no exporter set!"),
+        };
+
+        private int _build;
 
         private CancellationTokenSource? _cancellationTokenSource;
 
@@ -24,6 +40,14 @@ namespace Exomia.Framework.ContentManager
             {
                 _cancellationTokenSource?.Cancel();
                 menuStrip1.InvokeIfRequired(m => cancelBuildToolStripMenuItem.Enabled = false);
+            }
+        }
+
+        private void WriteLineMessages(IEnumerable<(string, object?[])> messages)
+        {
+            foreach (var (text, args) in messages)
+            {
+                WriteLine($"\t> {text}", args);
             }
         }
 
@@ -92,48 +116,31 @@ namespace Exomia.Framework.ContentManager
 
                                   if (node.Tag is ItemPropertyGridItem gridItem)
                                   {
-                                      if (gridItem.BuildAction == BuildAction.Ignore)
+                                      void SkipWithMessage(string msg)
                                       {
                                           WriteLine(
-                                              "Item {0} is ignored during build! skipping...!",
+                                              $"skipping item {{0}}!  Reason: {msg}",
                                               Path.Combine(gridItem.VirtualPath, gridItem.Name));
                                           Interlocked.Increment(ref skipped);
-                                          return;
                                       }
 
-                                      if (gridItem.Importer == null)
+                                      foreach (var (check, msg) in s_checks)
                                       {
-                                          WriteLine(
-                                              "skipping item {0} no importer set!",
-                                              Path.Combine(gridItem.VirtualPath, gridItem.Name));
-                                          Interlocked.Increment(ref skipped);
-                                          return;
-                                      }
-
-                                      if (gridItem.Exporter == null)
-                                      {
-                                          WriteLine(
-                                              "skipping item {0} no exporter set!",
-                                              Path.Combine(gridItem.VirtualPath, gridItem.Name));
-                                          Interlocked.Increment(ref skipped);
-                                          return;
-                                      }
-
-                                      void WriteLineMessages(IEnumerable<(string, object?[])> messages)
-                                      {
-                                          foreach (var (text, args) in messages)
+                                          if (check(gridItem))
                                           {
-                                              WriteLine($"\t> {text}", args);
+                                              SkipWithMessage(msg);
+                                              return;
                                           }
                                       }
 
                                       WriteLine(
                                           "Import item {0}...",
                                           Path.Combine(gridItem.VirtualPath, gridItem.Name));
+
                                       ImporterContext importerContext = new ImporterContext(
                                           gridItem.Name, gridItem.VirtualPath);
 
-                                      object? obj = gridItem.Importer.Import(
+                                      object? obj = gridItem.Importer!.Import(
                                           gridItem.Data, importerContext, cancellationToken);
 
                                       if (cancellationToken.IsCancellationRequested)
@@ -154,13 +161,14 @@ namespace Exomia.Framework.ContentManager
                                       WriteLine(
                                           "Export item {0}...",
                                           Path.Combine(gridItem.VirtualPath, gridItem.Name));
+
                                       ExporterContext exporterContext = new ExporterContext(
                                           gridItem.Name,
                                           gridItem.VirtualPath,
                                           contentPropertyGridItem.OutputFolder ??
                                           Path.GetDirectoryName(contentPropertyGridItem.ProjectLocation));
 
-                                      if (!gridItem.Exporter.Export(obj, exporterContext))
+                                      if (!gridItem.Exporter!.Export(obj, exporterContext))
                                       {
                                           WriteLine("\tfailed with messages:");
                                           WriteLineMessages(exporterContext.Messages);

@@ -23,7 +23,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         ///     A T.
         /// </returns>
         public delegate T Value<out T>();
-        
+
         /// <summary>
         ///     Static access to the given item.
         /// </summary>

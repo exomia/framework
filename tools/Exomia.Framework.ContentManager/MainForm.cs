@@ -8,11 +8,11 @@
 
 #endregion
 
-using Exomia.Framework.ContentManager.Extensions;
 using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Exomia.Framework.ContentManager.Extensions;
 
 namespace Exomia.Framework.ContentManager
 {
@@ -28,6 +28,29 @@ namespace Exomia.Framework.ContentManager
         {
             InitializeComponent();
             SetProgressbarValue(false);
+        }
+
+        private static bool IsNumber(object? value)
+        {
+            return value is sbyte
+                || value is byte
+                || value is short
+                || value is ushort
+                || value is int
+                || value is uint
+                || value is long
+                || value is ulong
+                || value is float
+                || value is double
+                || value is decimal;
+        }
+
+        private static void ForAll<T>(Action<T> action, params T[] items)
+        {
+            foreach (T item in items)
+            {
+                action(item);
+            }
         }
 
         /// <summary>
@@ -76,21 +99,6 @@ namespace Exomia.Framework.ContentManager
         {
             richTextBox1.InvokeIfRequired(
                 x => { x.Clear(); });
-        }
-
-        static bool IsNumber(object? value)
-        {
-            return value is sbyte
-                || value is byte
-                || value is short
-                || value is ushort
-                || value is int
-                || value is uint
-                || value is long
-                || value is ulong
-                || value is float
-                || value is double
-                || value is decimal;
         }
 
         private void WriteLine(string text, params object?[] args)
@@ -147,17 +155,6 @@ namespace Exomia.Framework.ContentManager
                 });
         }
 
-        private static void ForAll<T>(Action<T> action, params T[] items)
-        {
-            foreach (T item in items)
-            {
-                action(item);
-            }
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            
-        }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) { }
     }
 }

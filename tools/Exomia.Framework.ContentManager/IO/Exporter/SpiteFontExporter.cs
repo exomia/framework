@@ -10,11 +10,11 @@
 
 using System.Data;
 using System.IO;
-using System.Threading;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
 using Exomia.Framework.ContentSerialization;
 using Exomia.Framework.ContentSerialization.Compression;
 using Exomia.Framework.Graphics;
+using SharpDX;
 
 namespace Exomia.Framework.ContentManager.IO.Exporter
 {
@@ -60,7 +60,7 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
                         OffsetX   = c.XOffset,
                         OffsetY   = c.YOffset,
                         XAdvance  = c.XAdvance,
-                        Subrect   = new SharpDX.Rectangle(c.X, c.Y, c.Width, c.Height)
+                        Subrect   = new Rectangle(c.X, c.Y, c.Width, c.Height)
                     });
             }
             for (int i = 0; i < fontFile.Kernings.Count; i++)
@@ -84,12 +84,12 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
                     Path.GetDirectoryName(assetName1) ?? throw new NoNullAllowedException());
             }
 
-            ContentSerializer.Write<SpriteFont>(assetName1, font, true);
+            ContentSerializer.Write(assetName1, font, true);
 
             using (FileStream fs = new FileStream(assetName1, FileMode.Open, FileAccess.Read))
             {
                 if (ContentCompressor.CompressStream(
-                    fs, out Stream compressedStream, CompressMode.Gzip))
+                    fs, out Stream compressedStream))
                 {
                     using (FileStream fs1 = new FileStream(
                         assetName2, FileMode.Create, FileAccess.Write))

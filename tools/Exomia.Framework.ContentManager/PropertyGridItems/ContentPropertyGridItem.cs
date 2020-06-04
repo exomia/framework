@@ -9,8 +9,6 @@
 #endregion
 
 using System.ComponentModel;
-using Exomia.Framework.ContentManager.Attributes;
-using Exomia.Framework.ContentManager.Converters;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {

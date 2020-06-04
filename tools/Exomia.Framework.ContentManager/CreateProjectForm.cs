@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -83,9 +82,7 @@ namespace Exomia.Framework.ContentManager
         {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
-                Title = "Build Output Folder", 
-                RestoreDirectory = true, 
-                IsFolderPicker = true
+                Title = "Build Output Folder", RestoreDirectory = true, IsFolderPicker = true
             })
             {
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)

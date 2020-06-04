@@ -28,7 +28,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// </value>
         [Browsable(false)]
         public virtual byte[] Data { get; set; } = Array.Empty<byte>();
-        
+
         /// <summary>
         ///     Gets the importers.
         /// </summary>
@@ -53,7 +53,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The importer.
         /// </value>
-        [Category("Settings"), Description("The build action for this item."), DisplayName("Build Action")]
+        [Category("Settings")]
+        [Description("The build action for this item.")]
+        [DisplayName("Build Action")]
         public BuildAction BuildAction { get; set; } = BuildAction.Build;
 
         /// <summary>
@@ -62,8 +64,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The importer.
         /// </value>
-        [Category("Settings"), Description("The importer for this item."),
-         TypeConverter(typeof(ItemExporterImporterConverter))]
+        [Category("Settings")]
+        [Description("The importer for this item.")]
+        [TypeConverter(typeof(ItemExporterImporterConverter))]
         public IImporter? Importer { get; set; }
 
         /// <summary>
@@ -72,8 +75,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// <value>
         ///     The exporter.
         /// </value>
-        [Category("Settings"), Description("The exporter for this item."),
-         TypeConverter(typeof(ItemExporterImporterConverter))]
+        [Category("Settings")]
+        [Description("The exporter for this item.")]
+        [TypeConverter(typeof(ItemExporterImporterConverter))]
         public IExporter? Exporter { get; set; }
 
         /// <summary>

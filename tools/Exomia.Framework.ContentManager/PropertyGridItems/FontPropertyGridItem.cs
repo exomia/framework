@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using Exomia.Framework.ContentManager.Annotations;
 using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.IO;
 using Exomia.Framework.ContentManager.IO.Exporter;
@@ -25,40 +24,20 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     sealed class FontPropertyGridItem : ItemPropertyGridItem, INotifyPropertyChanged
     {
-        private readonly IFormatter _formatter = new BinaryFormatter();
-        
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private readonly IFormatter               _formatter = new BinaryFormatter();
+
         /// <summary>
         ///     The font description.
         /// </summary>
         /// <value>
         ///     The font.
         /// </value>
-        [Category("Font Settings"), Description("The font description."), DisplayName("Font"),
-         TypeConverter(typeof(ExpandableObjectConverter))]
+        [Category("Font Settings")]
+        [Description("The font description.")]
+        [DisplayName("Font")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public FontDescription FontDescription { get; private set; }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
-        /// </summary>
-        /// <param name="fontDescription">     The font description. </param>
-        /// <param name="nameProvider">        The name provider. </param>
-        /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        public FontPropertyGridItem(FontDescription        fontDescription,
-                                    Provider.Value<string> nameProvider,
-                                    Provider.Value<string> virtualPathProvider)
-            : base(
-                nameProvider, virtualPathProvider,
-                new IImporter[] { BMFontImporter.Default },
-                new IExporter[] { SpiteFontExporter.Default })
-        {
-            FontDescription                 =  fontDescription;
-            fontDescription.PropertyChanged += (sender, args) =>
-            {
-                OnPropertyChanged(nameof(FontDescription));
-            };
-            Importer                        =  BMFontImporter.Default;
-            Exporter                        =  SpiteFontExporter.Default;
-        }
 
         /// <inheritdoc />
         public override byte[] Data
@@ -75,14 +54,34 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
             {
                 using (MemoryStream ms = new MemoryStream(value))
                 {
-                    FontDescription =  (FontDescription)_formatter.Deserialize(ms);
+                    FontDescription = (FontDescription)_formatter.Deserialize(ms);
                 }
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
+        /// </summary>
+        /// <param name="fontDescription">     The font description. </param>
+        /// <param name="nameProvider">        The name provider. </param>
+        /// <param name="virtualPathProvider"> The virtual path provider. </param>
+        public FontPropertyGridItem(FontDescription        fontDescription,
+                                    Provider.Value<string> nameProvider,
+                                    Provider.Value<string> virtualPathProvider)
+            : base(
+                nameProvider, virtualPathProvider,
+                new IImporter[] { BMFontImporter.Default },
+                new IExporter[] { SpiteFontExporter.Default })
+        {
+            FontDescription = fontDescription;
+            fontDescription.PropertyChanged += (sender, args) =>
+            {
+                OnPropertyChanged(nameof(FontDescription));
+            };
+            Importer = BMFontImporter.Default;
+            Exporter = SpiteFontExporter.Default;
+        }
 
-        [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

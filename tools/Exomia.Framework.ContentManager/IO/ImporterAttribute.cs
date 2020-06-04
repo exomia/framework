@@ -15,7 +15,7 @@ namespace Exomia.Framework.ContentManager.IO
     /// <summary>
     ///     Attribute for importer. This class cannot be inherited.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class ImporterAttribute : Attribute
     {
         /// <summary>
@@ -33,11 +33,11 @@ namespace Exomia.Framework.ContentManager.IO
         ///     The extensions.
         /// </value>
         public string[] Extensions { get; }
-        
+
         /// <inheritdoc />
         public ImporterAttribute(string name, params string[] extensions)
         {
-            Name = name;
+            Name       = name;
             Extensions = extensions;
         }
     }

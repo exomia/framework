@@ -8,15 +8,15 @@
 
 #endregion
 
-using System.IO;
+using System;
 using System.Threading;
 
 namespace Exomia.Framework.ContentManager.IO
 {
     interface IImporter
     {
-        System.Type OutType { get; }
-        
+        Type OutType { get; }
+
         object? Import(byte[] data, ImporterContext context, CancellationToken cancellationToken);
     }
 }

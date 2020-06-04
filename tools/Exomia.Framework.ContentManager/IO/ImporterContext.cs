@@ -16,21 +16,20 @@ namespace Exomia.Framework.ContentManager.IO
     {
         private readonly List<(string, object?[])> _messages;
 
+        public string ItemName { get; }
+
+        public string VirtualPath { get; }
+
         internal IReadOnlyList<(string text, object?[] args)> Messages
         {
             get { return _messages; }
         }
 
-        public string ItemName { get; }
-        
-        public string VirtualPath { get; }
-        
-
         public ImporterContext(string itemName, string virtualPath)
         {
-            ItemName = itemName;
+            ItemName    = itemName;
             VirtualPath = virtualPath;
-            _messages = new List<(string, object?[])>();
+            _messages   = new List<(string, object?[])>();
         }
 
         public void AddMessage(string text, params object?[] args)

@@ -92,12 +92,14 @@ namespace Exomia.Framework.ContentManager.Converters
                 {
                     if (context.PropertyDescriptor.PropertyType == typeof(IImporter))
                     {
-                        return item.Importers.First(e => e.GetType().GetCustomAttribute<ImporterAttribute>().Name.Equals(s));
+                        return item.Importers.First(
+                            e => e.GetType().GetCustomAttribute<ImporterAttribute>().Name.Equals(s));
                     }
 
                     if (context.PropertyDescriptor.PropertyType == typeof(IExporter))
                     {
-                        return item.Exporters.First(e => e.GetType().GetCustomAttribute<ExporterAttribute>().Name.Equals(s));
+                        return item.Exporters.First(
+                            e => e.GetType().GetCustomAttribute<ExporterAttribute>().Name.Equals(s));
                     }
                 }
             }
