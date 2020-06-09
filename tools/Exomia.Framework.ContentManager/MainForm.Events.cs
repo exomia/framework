@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using Exomia.Framework.ContentManager.Editor;
 using Exomia.Framework.ContentManager.Extensions;
 using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.PropertyGridItems;
@@ -36,24 +37,36 @@ namespace Exomia.Framework.ContentManager
             {
                 if (createProjectForm.ShowDialog() == DialogResult.OK)
                 {
+                    if (_projectFile != null)
+                    {
+                        using (FileStream fs = File.Create(_projectFile.Location))
+                        {
+                            _formatter.Serialize(fs, _projectFile);
+                            _projectFile = null;
+                        }
+                    }
+
+                    _projectFile = createProjectForm.CreateProjectFile();
+
                     panel1.InvokeIfRequired(x => x.Enabled = true);
 
                     treeView1.InvokeIfRequired(
                         x =>
                         {
                             x.Nodes.Clear();
-                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, "Content", 0, 0);
-                            node.Tag =
-                                new ContentPropertyGridItem(
-                                    () => node.Text,
-                                    Provider.Static(string.Empty),
-                                    () => node.GetNodeCount(true),
 
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    Provider.Static(createProjectForm.ProjectLocation),
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile.Content, 0, 0);
+                            node.Tag = new ContentPropertyGridItem(
+                                () => node.Text,
+                                Provider.Static(string.Empty),
+                                () => node.GetNodeCount(true),
 
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    createProjectForm.OutputFolder);
+                                // ReSharper disable once AccessToDisposedClosure
+                                _projectFile.Name,
+
+                                // ReSharper disable once AccessToDisposedClosure
+                                _projectFile.Location);
+
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
 
@@ -67,8 +80,8 @@ namespace Exomia.Framework.ContentManager
 
                     SetStatusLabel(
                         StatusType.Info, "Project '{0}' created under {1}",
-                        Path.GetFileNameWithoutExtension(createProjectForm.ProjectLocation),
-                        Path.GetDirectoryName(createProjectForm.ProjectLocation));
+                        Path.GetFileNameWithoutExtension(_projectFile.Name),
+                        Path.GetDirectoryName(_projectFile.Location));
                 }
             }
         }
@@ -114,9 +127,9 @@ namespace Exomia.Framework.ContentManager
             SetStatusLabel(StatusType.Info, "Project closed...");
         }
 
-        private void buildToolStripMenuItem1_Click(object sender, EventArgs e)
+        private async void buildToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Build();
+            await BuildAsync();
         }
 
         private void cancelBuildToolStripMenuItem_Click(object sender, EventArgs e)
@@ -176,7 +189,11 @@ namespace Exomia.Framework.ContentManager
 
         private void treeView1_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            if (e.Label == null) { return; }
+            if (e.Label == null)
+            {
+                treeView1.BeginInvoke(new MethodInvoker(treeView1.Sort));
+                return;
+            }
 
             string label = e.Label;
 
@@ -215,22 +232,40 @@ namespace Exomia.Framework.ContentManager
                 string oldText = e.Node.Text;
                 e.Node.Text = label;
 
+                if (e.Node.Level == 0)
+                {
+                    _projectFile!.Content = label;
+
+                    Directory.Move(
+                        Path.Combine(_projectFile!.Location, oldText),
+                        Path.Combine(_projectFile!.Location, label));
+                }
+                else
+                {
+                    Directory.Move(
+                        Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, oldText),
+                        Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, label));
+                }
+
                 propertyGrid1.InvokeIfRequired(
                     x =>
                     {
                         x.RefreshTabs(PropertyTabScope.Component);
                         x.Refresh();
                     });
+
                 SetStatusLabel(
                     StatusType.Info,
                     e.Node.Level == 0
-                        ? "The project '{0}' was successfully renamed to '{1}'."
+                        ? "'{0}' was successfully renamed to '{1}'."
                         : e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
                             ? "The folder '{0}' was successfully renamed to '{1}' under '{2}'"
                             : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
                                 ? "The font '{0}' was successfully renamed to '{1}' under '{2}'"
                                 : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
                     oldText, e.Node.Text, e.Node.Parent?.FullPath);
+
+                treeView1.BeginInvoke(new MethodInvoker(treeView1.Sort));
             }
         }
 
@@ -249,6 +284,22 @@ namespace Exomia.Framework.ContentManager
                 {
                     if (x.SelectedNode.Level > 0)
                     {
+                        FileSystemInfo fileSystemInfo = x.SelectedNode.Tag switch
+                        {
+                            ItemPropertyGridItem i => new FileInfo(
+                                Path.Combine(
+                                    _projectFile!.Location, i.VirtualPath, i.Name)),
+                            FolderPropertyGridItem f => new DirectoryInfo(
+                                Path.Combine(
+                                    _projectFile!.Location, f.VirtualPath, f.Name)),
+                            _ => throw new InvalidCastException()
+                        };
+
+                        if (fileSystemInfo.Exists)
+                        {
+                            fileSystemInfo.Delete();
+                        }
+
                         x.SelectedNode.Remove();
                         propertyGrid1.InvokeIfRequired(p => p.SelectedObject = null);
                     }
@@ -267,9 +318,15 @@ namespace Exomia.Framework.ContentManager
                     var selectedNode = x.SelectedNode ?? x.TopNode;
                     if (selectedNode == null) { return; }
                     int selectedNodeCount = selectedNode.GetNodeCount(false);
-                    var node = selectedNode.Nodes.Add(
-                        $"{FOLDER_KEY_PREFIX}{selectedNodeCount}",
-                        $"NewFolder{selectedNodeCount}", 1, 1);
+
+                    DirectoryInfo di = new DirectoryInfo(
+                        Path.Combine(_projectFile!.Location, selectedNode.FullPath, $"NewFolder{selectedNodeCount}"));
+                    if (!di.Exists)
+                    {
+                        di.Create();
+                    }
+
+                    var node = selectedNode.Nodes.Add($"{FOLDER_KEY_PREFIX}{selectedNodeCount}", di.Name, 1, 1);
                     node.Tag =
                         new FolderPropertyGridItem(
                             () => node.Text,
@@ -300,10 +357,8 @@ namespace Exomia.Framework.ContentManager
                     var selectedNode = x.SelectedNode ?? x.TopNode;
                     if (selectedNode == null) { return; }
                     int selectedNodeCount = selectedNode.GetNodeCount(false);
-                    var node = selectedNode.Nodes.Add(
-                        $"{FONT_KEY_PREFIX}{selectedNodeCount}",
-                        $"font{selectedNodeCount}.fnt", 4, 4);
-                    FontPropertyGridItem fontPropertyGridItem = new FontPropertyGridItem(
+
+                    using (var jsonEditorForm = new JsonEditorForm(
                         new FontDescription
                         {
                             Name     = "Arial",
@@ -312,19 +367,37 @@ namespace Exomia.Framework.ContentManager
                             IsBold   = false,
                             AA       = true,
                             IsItalic = false
-                        },
-                        () => node.Text,
-                        () => node.Parent.FullPath);
-                    fontPropertyGridItem.PropertyChanged += (o, args) =>
+                        }) { Text = "Add Font..." })
                     {
-                        propertyGrid1.Refresh();
-                    };
-                    node.Tag = fontPropertyGridItem;
-                    ;
+                        if (jsonEditorForm.ShowDialog() != DialogResult.OK)
+                        {
+                            SetStatusLabel(StatusType.Error, "The font is not added to the project!");
+                            return;
+                        }
 
-                    selectedNode.Expand();
-                    treeView1.SelectedNode = node;
-                    node.BeginEdit();
+                        int i = 0;
+                        if (jsonEditorForm.Deserialize<FontDescription>(out var fntDescription))
+                        {
+                            string fntFilePath;
+                            while (File.Exists(
+                                fntFilePath = Path.Combine(
+                                    _projectFile!.Location, selectedNode.FullPath,
+                                    $"{fntDescription.Name}_{fntDescription.Size}{(i++ == 0 ? string.Empty : "_" + (i - 1))}.fnt"))
+                            ) { }
+
+                            jsonEditorForm.Save(fntFilePath);
+
+                            var node = selectedNode.Nodes.Add(
+                                $"{FONT_KEY_PREFIX}{selectedNodeCount}",
+                                Path.GetFileName(fntFilePath), 4, 4);
+                            node.Tag = new FontPropertyGridItem(
+                                () => node.Text,
+                                () => node.Parent.FullPath);
+                            selectedNode.Expand();
+                            treeView1.SelectedNode = node;
+                            node.BeginEdit();
+                        }
+                    }
                 });
         }
 

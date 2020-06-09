@@ -24,7 +24,7 @@ namespace Exomia.Framework.ContentManager.Fonts.BMFont
         private Point _spacing;
 
         [XmlAttribute("face")]
-        public string Face { get; set; }
+        public string? Face { get; set; }
 
         [XmlAttribute("size")]
         public int Size { get; set; }
@@ -36,7 +36,7 @@ namespace Exomia.Framework.ContentManager.Fonts.BMFont
         public int Italic { get; set; }
 
         [XmlAttribute("charset")]
-        public string CharSet { get; set; }
+        public string? CharSet { get; set; }
 
         [XmlAttribute("unicode")]
         public int Unicode { get; set; }

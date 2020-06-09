@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 using Exomia.Framework.ContentManager.Converters;
 using Exomia.Framework.ContentManager.IO;
@@ -20,15 +19,6 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     class ItemPropertyGridItem : PropertyGridItem
     {
-        /// <summary>
-        ///     Gets or sets the data.
-        /// </summary>
-        /// <value>
-        ///     The data.
-        /// </value>
-        [Browsable(false)]
-        public virtual byte[] Data { get; set; } = Array.Empty<byte>();
-
         /// <summary>
         ///     Gets the importers.
         /// </summary>

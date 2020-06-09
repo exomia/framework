@@ -51,7 +51,109 @@ namespace Exomia.Framework.ContentManager
             }
         }
 
-        private async void Build()
+        private async Task<(int succeeded, int skipped, int failed)> BuildAsync(CancellationToken cancellationToken)
+        {
+            int succeeded = 0;
+            int skipped   = 0;
+            int failed    = 0;
+
+            var rootNode = treeView1.Nodes[ROOT_KEY_PREFIX];
+
+            async Task ForTreeNode(TreeNode node, ContentPropertyGridItem contentPropertyGridItem)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                if (node.Tag is ItemPropertyGridItem gridItem)
+                {
+                    void SkipWithMessage(string msg)
+                    {
+                        WriteLine(
+                            $"skipping item {{0}}!  Reason: {msg}",
+                            Path.Combine(gridItem.VirtualPath, gridItem.Name));
+                        Interlocked.Increment(ref skipped);
+                    }
+
+                    foreach (var (check, msg) in s_checks)
+                    {
+                        if (check(gridItem))
+                        {
+                            SkipWithMessage(msg);
+                            return;
+                        }
+                    }
+
+                    WriteLine(
+                        "Import item {0}...",
+                        Path.Combine(gridItem.VirtualPath, gridItem.Name));
+
+                    ImporterContext importerContext = new ImporterContext(
+                        gridItem.Name, gridItem.VirtualPath);
+
+                    object? obj;
+                    using (FileStream fs = new FileStream(
+                        Path.Combine(_projectFile!.Location, _projectFile.Content, gridItem.VirtualPath, gridItem.Name),
+                        FileMode.Open, FileAccess.Read))
+                    {
+                        obj = await gridItem.Importer!.ImportAsync(fs, importerContext, cancellationToken);
+                    }
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        WriteLine("\nBuild canceled!");
+                        return;
+                    }
+
+                    if (obj == null)
+                    {
+                        WriteLine("\t{0:red}", "failed with messages");
+                        WriteLineMessages(importerContext.Messages);
+                        Interlocked.Increment(ref failed);
+                        return;
+                    }
+                    WriteLineMessages(importerContext.Messages);
+
+                    WriteLine(
+                        "Export item {0}...",
+                        Path.Combine(gridItem.VirtualPath, gridItem.Name));
+
+                    ExporterContext exporterContext = new ExporterContext(
+                        gridItem.Name,
+                        gridItem.VirtualPath,
+                        contentPropertyGridItem.OutputFolder ??
+                        Path.GetDirectoryName(contentPropertyGridItem.ProjectLocation));
+
+                    if (!gridItem.Exporter!.Export(obj, exporterContext))
+                    {
+                        WriteLine("\tfailed with messages:");
+                        WriteLineMessages(exporterContext.Messages);
+                        Interlocked.Increment(ref failed);
+                        return;
+                    }
+
+                    WriteLineMessages(exporterContext.Messages);
+                    Interlocked.Increment(ref succeeded);
+                    return;
+                }
+
+                foreach (TreeNode treeNode in node.Nodes)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    await ForTreeNode(treeNode, contentPropertyGridItem);
+                }
+            }
+
+            await ForTreeNode(rootNode, (ContentPropertyGridItem)rootNode.Tag);
+
+            return (succeeded, skipped, failed);
+        }
+
+        private async Task BuildAsync()
         {
             if (Interlocked.CompareExchange(ref _build, 1, 0) == 1)
             {
@@ -88,102 +190,12 @@ namespace Exomia.Framework.ContentManager
 
             CancellationToken cancellationToken = _cancellationTokenSource.Token;
             await Task.Run(
-                          () =>
+                          async () =>
                           {
                               Stopwatch stopwatch = Stopwatch.StartNew();
-
-                              int succeeded = 0;
-                              int skipped   = 0;
-                              int failed    = 0;
-
-                              var rootNode = treeView1.Nodes[ROOT_KEY_PREFIX];
-
-                              void ForTreeNode(TreeNode node, ContentPropertyGridItem contentPropertyGridItem)
-                              {
-                                  if (cancellationToken.IsCancellationRequested)
-                                  {
-                                      return;
-                                  }
-
-                                  foreach (TreeNode treeNode in node.Nodes)
-                                  {
-                                      if (cancellationToken.IsCancellationRequested)
-                                      {
-                                          return;
-                                      }
-                                      ForTreeNode(treeNode, contentPropertyGridItem);
-                                  }
-
-                                  if (node.Tag is ItemPropertyGridItem gridItem)
-                                  {
-                                      void SkipWithMessage(string msg)
-                                      {
-                                          WriteLine(
-                                              $"skipping item {{0}}!  Reason: {msg}",
-                                              Path.Combine(gridItem.VirtualPath, gridItem.Name));
-                                          Interlocked.Increment(ref skipped);
-                                      }
-
-                                      foreach (var (check, msg) in s_checks)
-                                      {
-                                          if (check(gridItem))
-                                          {
-                                              SkipWithMessage(msg);
-                                              return;
-                                          }
-                                      }
-
-                                      WriteLine(
-                                          "Import item {0}...",
-                                          Path.Combine(gridItem.VirtualPath, gridItem.Name));
-
-                                      ImporterContext importerContext = new ImporterContext(
-                                          gridItem.Name, gridItem.VirtualPath);
-
-                                      object? obj = gridItem.Importer!.Import(
-                                          gridItem.Data, importerContext, cancellationToken);
-
-                                      if (cancellationToken.IsCancellationRequested)
-                                      {
-                                          WriteLine("\nBuild canceled!");
-                                          return;
-                                      }
-
-                                      if (obj == null)
-                                      {
-                                          WriteLine("\t{0:red}", "failed with messages");
-                                          WriteLineMessages(importerContext.Messages);
-                                          Interlocked.Increment(ref failed);
-                                          return;
-                                      }
-                                      WriteLineMessages(importerContext.Messages);
-
-                                      WriteLine(
-                                          "Export item {0}...",
-                                          Path.Combine(gridItem.VirtualPath, gridItem.Name));
-
-                                      ExporterContext exporterContext = new ExporterContext(
-                                          gridItem.Name,
-                                          gridItem.VirtualPath,
-                                          contentPropertyGridItem.OutputFolder ??
-                                          Path.GetDirectoryName(contentPropertyGridItem.ProjectLocation));
-
-                                      if (!gridItem.Exporter!.Export(obj, exporterContext))
-                                      {
-                                          WriteLine("\tfailed with messages:");
-                                          WriteLineMessages(exporterContext.Messages);
-                                          Interlocked.Increment(ref failed);
-                                          return;
-                                      }
-
-                                      WriteLineMessages(exporterContext.Messages);
-                                      Interlocked.Increment(ref succeeded);
-                                  }
-                              }
-
-                              ForTreeNode(rootNode, (ContentPropertyGridItem)rootNode.Tag);
-
+                              (int succeeded, int skipped, int failed) = await BuildAsync(cancellationToken);
                               stopwatch.Stop();
+
                               WriteLine(
                                   "\nBuild{3:Black}! {0:DarkGreen} succeeded, {1:DarkBlue} skipped, {2:Red} failed.\n",
                                   succeeded, skipped, failed,
@@ -195,8 +207,10 @@ namespace Exomia.Framework.ContentManager
                                   "\nBuild{3}! {0} succeeded, {1} skipped, {2} failed.",
                                   succeeded, skipped, failed,
                                   cancellationToken.IsCancellationRequested ? " canceled" : " successful");
-                          }, _cancellationTokenSource.Token)
+                          }
+                        , _cancellationTokenSource.Token)
                       .ConfigureAwait(false);
+
             SetProgressbarValue(false);
             splitContainer1.Panel1.InvokeIfRequired(t => t.Enabled = true);
 

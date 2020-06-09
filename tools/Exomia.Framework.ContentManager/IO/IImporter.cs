@@ -9,7 +9,9 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Exomia.Framework.ContentManager.IO
 {
@@ -17,6 +19,6 @@ namespace Exomia.Framework.ContentManager.IO
     {
         Type OutType { get; }
 
-        object? Import(byte[] data, ImporterContext context, CancellationToken cancellationToken);
+        Task<object?> ImportAsync(Stream stream, ImporterContext context, CancellationToken cancellationToken);
     }
 }

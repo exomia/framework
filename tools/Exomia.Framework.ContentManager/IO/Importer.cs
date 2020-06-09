@@ -9,7 +9,9 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Exomia.Framework.ContentManager.IO
 {
@@ -22,11 +24,15 @@ namespace Exomia.Framework.ContentManager.IO
             get { return typeof(T); }
         }
 
-        object? IImporter.Import(byte[] data, ImporterContext context, CancellationToken cancellationToken)
+        async Task<object?> IImporter.ImportAsync(Stream            stream,
+                                                  ImporterContext   context,
+                                                  CancellationToken cancellationToken)
         {
-            return Import(data, context, cancellationToken);
+            return await ImportAsync(stream, context, cancellationToken);
         }
 
-        public abstract T? Import(byte[] data, ImporterContext context, CancellationToken cancellationToken);
+        public abstract Task<T?> ImportAsync(Stream            stream,
+                                             ImporterContext   context,
+                                             CancellationToken cancellationToken);
     }
 }

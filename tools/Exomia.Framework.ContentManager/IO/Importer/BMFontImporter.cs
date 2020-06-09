@@ -15,9 +15,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using System.Threading.Tasks;
 using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
 using Exomia.Framework.Mathematics;
@@ -35,8 +34,7 @@ namespace Exomia.Framework.ContentManager.IO.Importer
 
         private readonly string _bmFontExeLocation;
 
-        private readonly IFormatter     _formatter;
-        public static    BMFontImporter Default { get; } = new BMFontImporter();
+        public static BMFontImporter Default { get; } = new BMFontImporter();
 
         private BMFontImporter()
         {
@@ -44,8 +42,121 @@ namespace Exomia.Framework.ContentManager.IO.Importer
             {
                 throw new FileNotFoundException("The 'bmfont64.exe' is missing!", _bmFontExeLocation);
             }
+        }
 
-            _formatter = new BinaryFormatter();
+        /// <inheritdoc />
+        public override async Task<FontFile?> ImportAsync(Stream            stream,
+                                                          ImporterContext   context,
+                                                          CancellationToken cancellationToken)
+        {
+            FontDescription? description = await Json.Deserialize<FontDescription>(stream);
+
+            if (description == null)
+            {
+                context.AddMessage("Importing item failed! Expected type {0}!", typeof(FontDescription));
+                return null;
+            }
+
+            FontStyle fs = FontStyle.Regular;
+            if (description.IsBold)
+            {
+                fs |= FontStyle.Bold;
+            }
+            if (description.IsItalic)
+            {
+                fs |= FontStyle.Italic;
+            }
+
+            using (Font fnt = new Font(description.Name, description.Size, fs))
+            {
+                if (string.Compare(
+                    fnt.Name, description.Name,
+                    StringComparison.InvariantCultureIgnoreCase) != 0)
+                {
+                    context.AddMessage(
+                        "Can't import the font '{0:OrangeRed}'! " +
+                        "The font doesn't exists on the current system!", description);
+                    return null;
+                }
+            }
+
+            string tempFileNameLocation =
+                Path.Combine(TEMP_FILE_DIR, $"{description.Size}_{Path.GetRandomFileName()}.fnt");
+
+            string configLocation =
+                Path.Combine("tools", $"config{Thread.CurrentThread.ManagedThreadId}.bmfc");
+
+            int textureWidth =
+                Math2.RoundUpToPowerOfTwo(
+                    (int)Math.Sqrt(GetCharCount(description.Chars) * description.Size));
+
+            while (textureWidth <= Resource.MaximumTexture2DSize)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+                File.WriteAllText(
+                    configLocation,
+                    CreateConfig(description, textureWidth, textureWidth));
+
+                using (Process p = Process.Start(
+                    new ProcessStartInfo(
+                        _bmFontExeLocation,
+                        $"-c {configLocation} -o {tempFileNameLocation}")
+                    {
+                        UseShellExecute = false, CreateNoWindow = false
+                    }))
+                {
+                    if (!p.HasExited)
+                    {
+                        int i = 0;
+                        while (!p.WaitForExit(1_000) &&
+                               !cancellationToken.IsCancellationRequested &&
+                               i++ < 45) { }
+                        if (!p.HasExited)
+                        {
+                            try
+                            {
+                                p.Kill();
+                            }
+                            catch
+                            {
+                                /* IGNORE*/
+                            }
+                        }
+                    }
+
+                    if (p.ExitCode == 0)
+                    {
+                        FontFile fontFile = FontLoader.Load(tempFileNameLocation);
+                        if (fontFile.Common!.Pages == 1)
+                        {
+                            if (CheckFontImageFiles(fontFile, TEMP_FILE_DIR))
+                            {
+                                fontFile.Pages![0].File =
+                                    Path.GetFullPath(Path.Combine(TEMP_FILE_DIR, fontFile.Pages[0].File));
+                                return fontFile;
+                            }
+                            context.AddMessage("Font page file '{1}' not found!", fontFile.Pages![0].File);
+                            return null;
+                        }
+                        foreach (string file in Directory.GetFiles(TEMP_FILE_DIR, $"{description.Size}*"))
+                        {
+                            File.Delete(file);
+                        }
+                        textureWidth <<= 1;
+                        continue;
+                    }
+                    context.AddMessage("BMFont Importer exited with code {0}!", p.ExitCode);
+                    return null;
+                }
+            }
+
+            context.AddMessage(
+                "Texture size of {0} exceeded the maximum size of {1}!",
+                textureWidth, Resource.MaximumTexture2DSize);
+            return null;
         }
 
         private static int GetCharCount(string chars)
@@ -62,7 +173,7 @@ namespace Exomia.Framework.ContentManager.IO.Importer
                     int b = int.Parse(ranges[1]);
                     if (a > b)
                     {
-                        throw new ArgumentOutOfRangeException(@group);
+                        throw new ArgumentOutOfRangeException(group);
                     }
                     charCount += b - a;
                 }
@@ -140,128 +251,6 @@ outlineThickness=0
 chars={fontDescription.Chars}
 
 # imported icon images";
-        }
-
-        /// <inheritdoc />
-        public override FontFile? Import(byte[] data, ImporterContext context, CancellationToken cancellationToken)
-        {
-            using MemoryStream ms = new MemoryStream(data);
-
-            object deserializedObj = _formatter.Deserialize(ms);
-
-            if (!(deserializedObj is FontDescription description))
-            {
-                context.AddMessage(
-                    "Can't import item of type {0} expected type {1}!",
-                    deserializedObj.GetType(), typeof(FontDescription));
-                return null;
-            }
-
-            FontStyle fs = FontStyle.Regular;
-            if (description.IsBold)
-            {
-                fs |= FontStyle.Bold;
-            }
-            if (description.IsItalic)
-            {
-                fs |= FontStyle.Italic;
-            }
-
-            using (Font fnt = new Font(description.Name, description.Size, fs))
-            {
-                if (string.Compare(
-                    fnt.Name, description.Name,
-                    StringComparison.InvariantCultureIgnoreCase) != 0)
-                {
-                    context.AddMessage(
-                        "Can't import the font '{0:OrangeRed}'! " +
-                        "The font doesn't exists on the current system!", description);
-                    return null;
-                }
-            }
-
-            string tempFileNameLocation =
-                Path.Combine(TEMP_FILE_DIR, $"{description.Size}_{Path.GetRandomFileName()}.fnt");
-
-            string configLocation =
-                Path.Combine("tools", $"config{Thread.CurrentThread.ManagedThreadId}.bmfc");
-
-            int textureWidth =
-                Math2.RoundUpToPowerOfTwo(
-                    (int)Math.Sqrt(GetCharCount(description.Chars) * description.Size));
-
-            while (textureWidth <= Resource.MaximumTexture2DSize)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-                File.WriteAllText(
-                    configLocation,
-                    CreateConfig(description, textureWidth, textureWidth));
-
-                using (Process p = Process.Start(
-                    new ProcessStartInfo(
-                        _bmFontExeLocation,
-                        $"-c {configLocation} -o {tempFileNameLocation}")
-                    {
-                        UseShellExecute = false, CreateNoWindow = false
-                    }))
-                {
-                    if (!p.HasExited)
-                    {
-                        int i = 0;
-
-                        // ReSharper disable once EmptyEmbeddedStatement
-                        while (!p.WaitForExit(1_000) &&
-                               !cancellationToken.IsCancellationRequested &&
-                               i++ < 45)
-                        {
-                            ;
-                        }
-                        if (!p.HasExited)
-                        {
-                            try
-                            {
-                                p.Kill();
-                            }
-                            catch
-                            {
-                                /* IGNORE*/
-                            }
-                        }
-                    }
-
-                    if (p.ExitCode == 0)
-                    {
-                        FontFile fontFile = FontLoader.Load(tempFileNameLocation);
-                        if (fontFile.Common.Pages == 1)
-                        {
-                            if (CheckFontImageFiles(fontFile, TEMP_FILE_DIR))
-                            {
-                                fontFile.Pages[0].File =
-                                    Path.GetFullPath(Path.Combine(TEMP_FILE_DIR, fontFile.Pages[0].File));
-                                return fontFile;
-                            }
-                            context.AddMessage("Font page file '{1}' not found!", fontFile.Pages[0].File);
-                            return null;
-                        }
-                        foreach (string file in Directory.GetFiles(TEMP_FILE_DIR, $"{description.Size}*"))
-                        {
-                            File.Delete(file);
-                        }
-                        textureWidth <<= 1;
-                        continue;
-                    }
-                    context.AddMessage("BMFont Importer exited with code {0}!", p.ExitCode);
-                    return null;
-                }
-            }
-
-            context.AddMessage(
-                "Texture size of {0} exceeded the maximum size of {1}!",
-                textureWidth, Resource.MaximumTexture2DSize);
-            return null;
         }
     }
 }

@@ -9,7 +9,10 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Drawing;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
@@ -21,6 +24,9 @@ namespace Exomia.Framework.ContentManager
     /// </summary>
     public partial class MainForm : Form
     {
+        private readonly IFormatter   _formatter = new BinaryFormatter();
+        private          ProjectFile? _projectFile;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="MainForm" /> class.
         /// </summary>
@@ -28,29 +34,8 @@ namespace Exomia.Framework.ContentManager
         {
             InitializeComponent();
             SetProgressbarValue(false);
-        }
 
-        private static bool IsNumber(object? value)
-        {
-            return value is sbyte
-                || value is byte
-                || value is short
-                || value is ushort
-                || value is int
-                || value is uint
-                || value is long
-                || value is ulong
-                || value is float
-                || value is double
-                || value is decimal;
-        }
-
-        private static void ForAll<T>(Action<T> action, params T[] items)
-        {
-            foreach (T item in items)
-            {
-                action(item);
-            }
+            treeView1.TreeViewNodeSorter = new NodeSorter();
         }
 
         /// <summary>
@@ -93,6 +78,29 @@ namespace Exomia.Framework.ContentManager
                         : ProgressBarStyle.Continuous;
                     toolStripProgressBar1.Value = 0;
                 });
+        }
+
+        private static bool IsNumber(object? value)
+        {
+            return value is sbyte
+                || value is byte
+                || value is short
+                || value is ushort
+                || value is int
+                || value is uint
+                || value is long
+                || value is ulong
+                || value is float
+                || value is double
+                || value is decimal;
+        }
+
+        private static void ForAll<T>(Action<T> action, params T[] items)
+        {
+            foreach (T item in items)
+            {
+                action(item);
+            }
         }
 
         private void Clear()
@@ -156,5 +164,28 @@ namespace Exomia.Framework.ContentManager
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) { }
+
+        private class NodeSorter : IComparer
+        {
+            // Compare the length of the strings, or the strings
+            // themselves, if they are the same length.
+            public int Compare(object x, object y)
+            {
+                if (x is TreeNode tx && y is TreeNode ty)
+                {
+                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX) && ty.Name.StartsWith(FOLDER_KEY_PREFIX))
+                    {
+                        return string.Compare(tx.Text, ty.Text, StringComparison.InvariantCultureIgnoreCase);
+                    }
+                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX))
+                    {
+                        return -1;
+                    }
+                    return 1;
+                }
+
+                return 0;
+            }
+        }
     }
 }

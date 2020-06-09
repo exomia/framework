@@ -9,6 +9,9 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -17,29 +20,9 @@ namespace Exomia.Framework.ContentManager
     /// <summary>
     ///     Form for creating projects.
     /// </summary>
-    public partial class CreateProjectForm : Form
+    partial class CreateProjectForm : Form
     {
-        /// <summary>
-        ///     Gets the project location.
-        /// </summary>
-        /// <value>
-        ///     The project location.
-        /// </value>
-        public string ProjectLocation
-        {
-            get { return locationTb.Text; }
-        }
-
-        /// <summary>
-        ///     Gets the project location.
-        /// </summary>
-        /// <value>
-        ///     The project location.
-        /// </value>
-        public string OutputFolder
-        {
-            get { return outputTb.Text; }
-        }
+        private readonly IFormatter _formatter = new BinaryFormatter();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CreateProjectForm" /> class.
@@ -49,47 +32,89 @@ namespace Exomia.Framework.ContentManager
             InitializeComponent();
         }
 
+        /// <summary>
+        ///     Creates project file.
+        /// </summary>
+        /// <returns>
+        ///     The new project file.
+        /// </returns>
+        public ProjectFile CreateProjectFile()
+        {
+            var directoryInfo = new DirectoryInfo(Path.Combine(locationTb.Text, nameTb.Text));
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+
+            var projectFile = new ProjectFile(nameTb.Text, directoryInfo.FullName);
+
+            using (FileStream fs = File.Create(projectFile.FilePath))
+            {
+                _formatter.Serialize(fs, projectFile);
+            }
+
+            DirectoryInfo dci = directoryInfo.CreateSubdirectory(projectFile.Content);
+            foreach (FileInfo file in dci.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in dci.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+
+            return projectFile;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(locationTb.Text) || string.IsNullOrEmpty(outputTb.Text)) { return; }
+            if (string.IsNullOrEmpty(locationTb.Text) || string.IsNullOrEmpty(nameTb.Text)) { return; }
+
+            var fileInfo = new FileInfo(Path.Combine(locationTb.Text, nameTb.Text, $"{nameTb.Text}.ecp"));
+            if (fileInfo.Exists)
+            {
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                switch (MessageBox.Show(
+                    $"A project with the same name '{nameTb.Text}' already exists!\n\nDo you want to overwrite it?",
+                    "Project already exists!",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Error))
+                {
+                    case DialogResult.Yes:
+                        break;
+                    case DialogResult.None:
+                    case DialogResult.Cancel:
+                        return;
+                    case DialogResult.No:
+                        DialogResult = DialogResult.No;
+                        return;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
             DialogResult = DialogResult.OK;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (SaveFileDialog dialog = new SaveFileDialog
-            {
-                Title                        = "Create an \"exomia content project\" (.ecp)",
-                Filter                       = "exomia content project (*.ecp)|*.ecp",
-                DefaultExt                   = "ecp",
-                AddExtension                 = true,
-                AutoUpgradeEnabled           = true,
-                DereferenceLinks             = true,
-                RestoreDirectory             = true,
-                ShowHelp                     = false,
-                SupportMultiDottedExtensions = true,
-                FileName                     = "exomia_content_project.ecp"
-            })
-            {
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    locationTb.Text = dialog.FileName;
-                }
-            }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
-                Title = "Build Output Folder", RestoreDirectory = true, IsFolderPicker = true
+                Title            = "Project location for an \"exomia content project\" (.ecp)",
+                RestoreDirectory = true,
+                IsFolderPicker   = true
             })
             {
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    outputTb.Text = dialog.FileName;
+                    locationTb.Text = dialog.FileName;
+                    button1.Enabled = !string.IsNullOrEmpty(locationTb.Text) && !string.IsNullOrEmpty(nameTb.Text);
                 }
             }
+        }
+
+        private void nameTb_TextChanged(object sender, EventArgs e)
+        {
+            button1.Enabled = !string.IsNullOrEmpty(locationTb.Text) && !string.IsNullOrEmpty(nameTb.Text);
         }
     }
 }

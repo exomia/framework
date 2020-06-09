@@ -10,101 +10,36 @@
 
 using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.ContentManager.Fonts
 {
     [Serializable]
-    sealed class FontDescription : INotifyPropertyChanged
+    sealed class FontDescription
     {
-        [field: NonSerialized]
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private string _name  = "arial";
-        private string _chars = "32-126,128,130-140,142,145-156,158-255";
-        private int    _size  = 12;
-        private bool   _aa    = true;
-        private bool   _isBold;
-        private bool   _isItalic;
-
         [Description("The font name")]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
-            }
-        }
+        public string Name { get; set; } = "arial";
 
         [Description("Specify the characters to use.\ne.g. 32-126,128,130-140,142,145-156,158-255")]
-        public string Chars
-        {
-            get { return _chars; }
-            set
-            {
-                _chars = value;
-                OnPropertyChanged();
-            }
-        }
+        public string Chars { get; set; } = "32-126,128,130-140,142,145-156,158-255";
 
         [Description("The size of the font in pixel.")]
-        public int Size
-        {
-            get { return _size; }
-            set
-            {
-                _size = value;
-                OnPropertyChanged();
-            }
-        }
+        public int Size { get; set; } = 12;
 
         [Description("Turn on/off antialiasing.")]
 
         // ReSharper disable once InconsistentNaming
-        public bool AA
-        {
-            get { return _aa; }
-            set
-            {
-                _aa = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool AA { get; set; } = true;
 
         [Description("Set if the font should be bold.")]
-        public bool IsBold
-        {
-            get { return _isBold; }
-            set
-            {
-                _isBold = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool IsBold { get; set; } = false;
 
         [Description("Turn on/offif the font should be italic")]
-        public bool IsItalic
-        {
-            get { return _isItalic; }
-            set
-            {
-                _isItalic = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool IsItalic { get; set; } = false;
 
         /// <inheritdoc />
         public override string ToString()
         {
             return $"{Name} ({Size}px)";
-        }
-
-        [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

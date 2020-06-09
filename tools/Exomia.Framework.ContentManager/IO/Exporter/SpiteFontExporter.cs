@@ -33,7 +33,7 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
         {
             byte[] imageData;
             using (FileStream fs = new FileStream(
-                fontFile.Pages[0].File, FileMode.Open, FileAccess.Read))
+                fontFile.Pages![0].File, FileMode.Open, FileAccess.Read))
             {
                 imageData = new byte[fs.Length];
                 fs.Read(imageData, 0, imageData.Length);
@@ -41,15 +41,15 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
             SpriteFont font = new SpriteFont
             {
                 ImageData        = imageData,
-                Face             = fontFile.Info.Face,
+                Face             = fontFile.Info!.Face,
                 Size             = fontFile.Info.Size,
                 Bold             = fontFile.Info.Bold != 0,
                 Italic           = fontFile.Info.Italic != 0,
-                LineSpacing      = fontFile.Common.LineHeight,
+                LineSpacing      = fontFile.Common!.LineHeight,
                 DefaultCharacter = -1
             };
 
-            for (int i = 0; i < fontFile.Chars.Count; i++)
+            for (int i = 0; i < fontFile.Chars!.Count; i++)
             {
                 FontChar c = fontFile.Chars[i];
                 font.Glyphs.Add(
@@ -63,7 +63,7 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
                         Subrect   = new Rectangle(c.X, c.Y, c.Width, c.Height)
                     });
             }
-            for (int i = 0; i < fontFile.Kernings.Count; i++)
+            for (int i = 0; i < fontFile.Kernings!.Count; i++)
             {
                 FontKerning k = fontFile.Kernings[i];
                 font.Kernings.Add(

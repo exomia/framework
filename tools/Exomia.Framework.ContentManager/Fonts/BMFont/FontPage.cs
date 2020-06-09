@@ -22,6 +22,6 @@ namespace Exomia.Framework.ContentManager.Fonts.BMFont
         public int ID { get; set; }
 
         [XmlAttribute("file")]
-        public string File { get; set; }
+        public string? File { get; set; }
     }
 }
