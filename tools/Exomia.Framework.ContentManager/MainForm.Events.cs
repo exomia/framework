@@ -57,7 +57,7 @@ namespace Exomia.Framework.ContentManager
                             x.Nodes.Clear();
 
                             var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name, 0, 0);
-                            node.Tag = _projectFile.Content;
+                            node.Tag              = _projectFile.Content;
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
 
@@ -78,26 +78,6 @@ namespace Exomia.Framework.ContentManager
                     panel1.InvokeIfRequired(x => x.Enabled = true);
                 }
             }
-        }
-
-        private TreeNode? GetNodeFromPath(TreeNode node, string path)
-        {
-            if (node.FullPath == path)
-            {
-                return node;
-            }
-            if (node.Nodes.Count > 0)
-            {
-                foreach (TreeNode tn in node.Nodes)
-                {
-                    TreeNode? foundNode = GetNodeFromPath(tn, path);
-                    if (foundNode != null)
-                    {
-                        return foundNode;
-                    }
-                }
-            }
-            return null;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -362,69 +342,6 @@ namespace Exomia.Framework.ContentManager
             {
                 treeView1_RemoveSelectedNode();
             }
-        }
-
-        private void DeleteIfExists(FileInfo info)
-        {
-            if (info.Exists)
-            {
-                info.Delete();
-            }
-        }
-
-        private void DeleteIfExists(DirectoryInfo info)
-        {
-            if (info.Exists)
-            {
-                info.Delete(true);
-            }
-        }
-
-        private void RemoveNode(TreeNode node)
-        {
-            if (node.Level > 0)
-            {
-                switch (node.Tag)
-                {
-                    case ItemPropertyGridItem i:
-                        DeleteIfExists(
-                            new FileInfo(
-                                Path.Combine(
-                                    _projectFile!.Location, i.VirtualPath, i.Name)));
-                        break;
-                    case FolderPropertyGridItem f:
-                        DeleteIfExists(
-                            new DirectoryInfo(
-                                Path.Combine(
-                                    _projectFile!.Location, f.VirtualPath, f.Name)));
-                        foreach (TreeNode childNodes in node.Nodes)
-                        {
-                            RemoveNode(childNodes);
-                        }
-                        break;
-                    default: throw new InvalidCastException();
-                }
-
-                if (_projectFile.Resources.Remove((PropertyGridItem)node.Tag))
-                {
-                    if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
-                    {
-                        folderPropertyGridItem.TotalItems--;
-                    }
-
-                    node.Remove();
-                }
-            }
-        }
-
-        private void treeView1_RemoveSelectedNode()
-        {
-            treeView1.InvokeIfRequired(
-                x =>
-                {
-                    RemoveNode(x.SelectedNode);
-                });
-            propertyGrid1.InvokeIfRequired(p => p.SelectedObject = null);
         }
 
         #endregion

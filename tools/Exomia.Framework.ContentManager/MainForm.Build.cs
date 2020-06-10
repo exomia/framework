@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -40,14 +39,6 @@ namespace Exomia.Framework.ContentManager
             {
                 _cancellationTokenSource?.Cancel();
                 menuStrip1.InvokeIfRequired(m => cancelBuildToolStripMenuItem.Enabled = false);
-            }
-        }
-
-        private void WriteLineMessages(IEnumerable<(string, object?[])> messages)
-        {
-            foreach (var (text, args) in messages)
-            {
-                WriteLine($"\t> {text}", args);
             }
         }
 
@@ -117,7 +108,7 @@ namespace Exomia.Framework.ContentManager
                     WriteLine(
                         "Export item {0}...",
                         Path.Combine(gridItem.VirtualPath, gridItem.Name));
-                    
+
                     string outputFolder = contentPropertyGridItem.OutputFolder;
                     if (string.IsNullOrEmpty(outputFolder))
                     {
@@ -129,7 +120,7 @@ namespace Exomia.Framework.ContentManager
                         outputFolder = Path.Combine(
                             contentPropertyGridItem.ProjectLocation!, outputFolder);
                     }
-                    
+
                     ExporterContext exporterContext = new ExporterContext(
                         gridItem.Name!, gridItem.VirtualPath!, outputFolder);
 

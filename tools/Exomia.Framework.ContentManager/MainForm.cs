@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -160,18 +161,18 @@ namespace Exomia.Framework.ContentManager
                 });
         }
 
+        private void WriteLineMessages(IEnumerable<(string, object?[])> messages)
+        {
+            foreach (var (text, args) in messages)
+            {
+                WriteLine($"\t> {text}", args);
+            }
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Save();
             _projectFile = null;
-        }
-
-        private void Save()
-        {
-            if (_projectFile != null)
-            {
-                Json.Serialize(_projectFile.FilePath, _projectFile);
-            }
         }
 
         private class NodeSorter : IComparer

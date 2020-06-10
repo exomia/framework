@@ -53,7 +53,7 @@ namespace Exomia.Framework.ContentManager
                     ProjectLocation = directoryInfo.FullName
                 }
             };
-            
+
             Json.Serialize(projectFile.FilePath, projectFile);
 
             DirectoryInfo dci = directoryInfo.CreateSubdirectory(projectFile.Content.Name);
