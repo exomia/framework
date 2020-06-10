@@ -390,7 +390,7 @@ namespace Exomia.Framework.ContentManager
                             var node = selectedNode.Nodes.Add(
                                 $"{FONT_KEY_PREFIX}{selectedNodeCount}",
                                 Path.GetFileName(fntFilePath), 4, 4);
-                            node.Tag = new FontPropertyGridItem(
+                            node.Tag = new ItemPropertyGridItem(
                                 () => node.Text,
                                 () => node.Parent.FullPath);
                             selectedNode.Expand();

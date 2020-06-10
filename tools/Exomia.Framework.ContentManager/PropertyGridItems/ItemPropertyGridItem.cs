@@ -8,7 +8,9 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using Exomia.Framework.ContentManager.Converters;
 using Exomia.Framework.ContentManager.IO;
 
@@ -19,6 +21,9 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     /// </summary>
     class ItemPropertyGridItem : PropertyGridItem
     {
+        private IImporter? _importer;
+        private IExporter? _exporter;
+
         /// <summary>
         ///     Gets the importers.
         /// </summary>
@@ -26,7 +31,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         ///     The importers.
         /// </value>
         [Browsable(false)]
-        public IImporter[] Importers { get; }
+        public List<IImporter>? Importers { get; }
 
         /// <summary>
         ///     Gets the exporters.
@@ -35,7 +40,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         ///     The exporters.
         /// </value>
         [Browsable(false)]
-        public IExporter[] Exporters { get; }
+        public List<IExporter>? Exporters { get; private set; }
 
         /// <summary>
         ///     The importer for this item.
@@ -57,7 +62,25 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Settings")]
         [Description("The importer for this item.")]
         [TypeConverter(typeof(ItemExporterImporterConverter))]
-        public IImporter? Importer { get; set; }
+        public IImporter? Importer
+        {
+            get { return _importer; }
+            set
+            {
+                _importer = value;
+                if (_importer != null)
+                {
+                    if (_exporter == null || _exporter.ImportType != _importer.OutType)
+                    {
+                        Exporters = ImporterExporterManager.GetExportersFor(_importer.OutType);
+                        if (Exporters.Count > 0)
+                        {
+                            Exporter = Exporters[0];
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
         ///     The exporter for this item.
@@ -68,23 +91,26 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Settings")]
         [Description("The exporter for this item.")]
         [TypeConverter(typeof(ItemExporterImporterConverter))]
-        public IExporter? Exporter { get; set; }
+        public IExporter? Exporter
+        {
+            get { return _exporter; }
+            set { _exporter = value; }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
         /// </summary>
         /// <param name="nameProvider">        The name provider. </param>
         /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        /// <param name="importers">           The importers. </param>
-        /// <param name="exporters">           The exporters. </param>
         public ItemPropertyGridItem(Provider.Value<string> nameProvider,
-                                    Provider.Value<string> virtualPathProvider,
-                                    IImporter[]            importers,
-                                    IExporter[]            exporters)
+                                    Provider.Value<string> virtualPathProvider)
             : base(nameProvider, virtualPathProvider)
         {
-            Importers = importers;
-            Exporters = exporters;
+            Importers = ImporterExporterManager.GetImporterFor(Path.GetExtension(nameProvider()));
+            if (Importers.Count > 0)
+            {
+                Importer = Importers[0];
+            }
         }
     }
 }

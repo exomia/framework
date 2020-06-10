@@ -27,16 +27,14 @@ namespace Exomia.Framework.ContentManager.IO.Importer
     /// <summary>
     ///     A bm font importer. This class cannot be inherited.
     /// </summary>
-    [Importer("BMFont Importer", "fnt")]
+    [Importer("BMFont Importer", ".fnt")]
     sealed class BMFontImporter : Importer<FontFile>
     {
         private const string TEMP_FILE_DIR = "temp";
 
         private readonly string _bmFontExeLocation;
 
-        public static BMFontImporter Default { get; } = new BMFontImporter();
-
-        private BMFontImporter()
+        public BMFontImporter()
         {
             if (!File.Exists(_bmFontExeLocation = Path.Combine("tools", "bmfont64.exe")))
             {

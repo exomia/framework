@@ -24,10 +24,6 @@ namespace Exomia.Framework.ContentManager.IO.Exporter
     [Exporter("SpiteFont Exporter")]
     sealed class SpiteFontExporter : Exporter<FontFile>
     {
-        public static SpiteFontExporter Default { get; } = new SpiteFontExporter();
-
-        private SpiteFontExporter() { }
-
         /// <inheritdoc />
         public override bool Export(FontFile fontFile, ExporterContext context)
         {

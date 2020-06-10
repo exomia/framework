@@ -94,7 +94,7 @@ namespace Exomia.Framework.ContentManager
 
                     object? obj;
                     using (FileStream fs = new FileStream(
-                        Path.Combine(_projectFile!.Location, _projectFile.Content, gridItem.VirtualPath, gridItem.Name),
+                        Path.Combine(_projectFile!.Location, gridItem.VirtualPath, gridItem.Name),
                         FileMode.Open, FileAccess.Read))
                     {
                         obj = await gridItem.Importer!.ImportAsync(fs, importerContext, cancellationToken);
