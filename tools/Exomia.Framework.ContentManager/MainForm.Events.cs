@@ -56,17 +56,8 @@ namespace Exomia.Framework.ContentManager
                         {
                             x.Nodes.Clear();
 
-                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, "Content", 0, 0);
-
-                            node.Tag = _projectFile.Content =
-                                new ContentPropertyGridItem
-                                {
-                                    Name            = node.Text,
-                                    TotalItems      = 0,
-                                    ProjectName     = _projectFile.Name,
-                                    ProjectLocation = _projectFile.Location
-                                };
-
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name, 0, 0);
+                            node.Tag = _projectFile.Content;
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
 
@@ -178,7 +169,7 @@ namespace Exomia.Framework.ContentManager
                         x =>
                         {
                             ForAll(
-                                i => i.Enabled = true, 
+                                i => i.Enabled = true,
                                 buildToolStripMenuItem, editToolStripMenuItem,
                                 closeToolStripMenuItem, saveToolStripMenuItem);
                         });

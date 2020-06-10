@@ -102,7 +102,6 @@ namespace Exomia.Framework.ContentManager
 
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        WriteLine("\nBuild canceled!");
                         return;
                     }
 
@@ -118,12 +117,21 @@ namespace Exomia.Framework.ContentManager
                     WriteLine(
                         "Export item {0}...",
                         Path.Combine(gridItem.VirtualPath, gridItem.Name));
-
+                    
+                    string outputFolder = contentPropertyGridItem.OutputFolder;
+                    if (string.IsNullOrEmpty(outputFolder))
+                    {
+                        outputFolder = Path.Combine(
+                            contentPropertyGridItem.ProjectLocation!, "build");
+                    }
+                    else if (Path.GetFullPath(outputFolder) != outputFolder)
+                    {
+                        outputFolder = Path.Combine(
+                            contentPropertyGridItem.ProjectLocation!, outputFolder);
+                    }
+                    
                     ExporterContext exporterContext = new ExporterContext(
-                        gridItem.Name!,
-                        gridItem.VirtualPath!,
-                        contentPropertyGridItem.OutputFolder ??
-                        contentPropertyGridItem.ProjectLocation!);
+                        gridItem.Name!, gridItem.VirtualPath!, outputFolder);
 
                     if (!gridItem.Exporter!.Export(obj, exporterContext))
                     {
@@ -198,16 +206,16 @@ namespace Exomia.Framework.ContentManager
                               stopwatch.Stop();
 
                               WriteLine(
-                                  "\nBuild{3:Black}! {0:DarkGreen} succeeded, {1:DarkBlue} skipped, {2:Red} failed.\n",
+                                  "\n{3:Black}!\n{0:DarkGreen} succeeded, {1:DarkBlue} skipped, {2:Red} failed.\n",
                                   succeeded, skipped, failed,
-                                  cancellationToken.IsCancellationRequested ? " canceled!" : " successful!");
+                                  cancellationToken.IsCancellationRequested ? "Build canceled" : "Build successful");
                               WriteLine("Time elapsed {0}", stopwatch.Elapsed);
 
                               SetStatusLabel(
                                   StatusType.Info,
-                                  "\nBuild{3}! {0} succeeded, {1} skipped, {2} failed.",
+                                  "Build {3}! {0} succeeded, {1} skipped, {2} failed.",
                                   succeeded, skipped, failed,
-                                  cancellationToken.IsCancellationRequested ? " canceled" : " successful");
+                                  cancellationToken.IsCancellationRequested ? "canceled" : "successful");
                           }
                         , _cancellationTokenSource.Token)
                       .ConfigureAwait(false);

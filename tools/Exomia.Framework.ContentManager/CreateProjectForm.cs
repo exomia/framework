@@ -11,6 +11,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Exomia.Framework.ContentManager.PropertyGridItems;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Exomia.Framework.ContentManager
@@ -42,11 +43,20 @@ namespace Exomia.Framework.ContentManager
                 directoryInfo.Create();
             }
 
-            var projectFile = new ProjectFile(nameTb.Text, directoryInfo.FullName);
-
+            var projectFile = new ProjectFile(nameTb.Text, directoryInfo.FullName)
+            {
+                Content = new ContentPropertyGridItem
+                {
+                    Name            = "Content",
+                    TotalItems      = 0,
+                    ProjectName     = nameTb.Text,
+                    ProjectLocation = directoryInfo.FullName
+                }
+            };
+            
             Json.Serialize(projectFile.FilePath, projectFile);
 
-            DirectoryInfo dci = directoryInfo.CreateSubdirectory("Content");
+            DirectoryInfo dci = directoryInfo.CreateSubdirectory(projectFile.Content.Name);
             foreach (FileInfo file in dci.GetFiles())
             {
                 file.Delete();
