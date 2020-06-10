@@ -39,7 +39,6 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.recentProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -49,6 +48,7 @@
             this.buildToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.rebuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cleanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cancelBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -77,7 +77,6 @@
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-            this.cancelBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -128,31 +127,30 @@
             this.openToolStripMenuItem,
             this.closeToolStripMenuItem,
             this.toolStripSeparator2,
-            this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem});
+            this.saveToolStripMenuItem});
             this.projectToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.DocumentCollection_16x;
             this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
-            this.projectToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.projectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.projectToolStripMenuItem.Text = "Project";
             // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.NewFileCollection_16x;
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.createToolStripMenuItem.Text = "Create...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(118, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.OpenProject_16x;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -161,52 +159,45 @@
             this.closeToolStripMenuItem.Enabled = false;
             this.closeToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.CloseDocumentGroup_16x;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeToolStripMenuItem.Text = "Close...";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(118, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Save_16x;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save...";
-            // 
-            // saveAsToolStripMenuItem
-            // 
-            this.saveAsToolStripMenuItem.Enabled = false;
-            this.saveAsToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.SaveAs_16x;
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.saveAsToolStripMenuItem.Text = "Save as...";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(161, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // recentProjectsToolStripMenuItem
             // 
             this.recentProjectsToolStripMenuItem.Name = "recentProjectsToolStripMenuItem";
-            this.recentProjectsToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.recentProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.recentProjectsToolStripMenuItem.Text = "Recent Projects...";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(161, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Exit_16x;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -233,22 +224,30 @@
             // 
             this.buildToolStripMenuItem1.Image = global::Exomia.Framework.ContentManager.Properties.Resources.BuildSolution_16x;
             this.buildToolStripMenuItem1.Name = "buildToolStripMenuItem1";
-            this.buildToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.buildToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
             this.buildToolStripMenuItem1.Text = "Build...";
             this.buildToolStripMenuItem1.Click += new System.EventHandler(this.buildToolStripMenuItem1_Click);
             // 
             // rebuildToolStripMenuItem
             // 
             this.rebuildToolStripMenuItem.Name = "rebuildToolStripMenuItem";
-            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.rebuildToolStripMenuItem.Text = "Rebuild...";
             // 
             // cleanToolStripMenuItem
             // 
             this.cleanToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.CleanData_16x;
             this.cleanToolStripMenuItem.Name = "cleanToolStripMenuItem";
-            this.cleanToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cleanToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.cleanToolStripMenuItem.Text = "Clean...";
+            // 
+            // cancelBuildToolStripMenuItem
+            // 
+            this.cancelBuildToolStripMenuItem.Name = "cancelBuildToolStripMenuItem";
+            this.cancelBuildToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.cancelBuildToolStripMenuItem.Text = "Cancel Build...";
+            this.cancelBuildToolStripMenuItem.Visible = false;
+            this.cancelBuildToolStripMenuItem.Click += new System.EventHandler(this.cancelBuildToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -524,14 +523,6 @@
             this.toolStripMenuItem6.Text = "Rename...";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
-            // cancelBuildToolStripMenuItem
-            // 
-            this.cancelBuildToolStripMenuItem.Name = "cancelBuildToolStripMenuItem";
-            this.cancelBuildToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.cancelBuildToolStripMenuItem.Text = "Cancel Build...";
-            this.cancelBuildToolStripMenuItem.Visible = false;
-            this.cancelBuildToolStripMenuItem.Click += new System.EventHandler(this.cancelBuildToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -577,7 +568,6 @@
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;

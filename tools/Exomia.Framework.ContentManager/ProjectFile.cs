@@ -8,15 +8,16 @@
 
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.IO;
+using Exomia.Framework.ContentManager.PropertyGridItems;
+using Newtonsoft.Json;
 
 namespace Exomia.Framework.ContentManager
 {
     /// <summary>
-    ///     (Serializable) a project file. This class cannot be inherited.
+    ///     A project file. This class cannot be inherited.
     /// </summary>
-    [Serializable]
     sealed class ProjectFile
     {
         /// <summary>
@@ -49,18 +50,42 @@ namespace Exomia.Framework.ContentManager
         /// <value>
         ///     The content.
         /// </value>
-        public string Content { get; set; } = "Content";
+        public ContentPropertyGridItem? Content { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the resources.
+        /// </summary>
+        /// <value>
+        ///     The resources.
+        /// </value>
+        public IList<PropertyGridItem> Resources { get; set; } = new List<PropertyGridItem>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProjectFile" /> class.
         /// </summary>
         /// <param name="projectName">     The project name. </param>
         /// <param name="projectLocation"> The project location. </param>
-        public ProjectFile(string projectName, string projectLocation)
+        [JsonConstructor]
+        public ProjectFile([JsonProperty("Name")]     string projectName,
+                           [JsonProperty("Location")] string projectLocation)
         {
             Name     = projectName;
             Location = projectLocation;
             FilePath = Path.Combine(Location, $"{Name}.ecp");
+        }
+
+        /// <summary>
+        ///     Adds a resource.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="resource"> The resource. </param>
+        /// <returns>
+        ///     A T.
+        /// </returns>
+        public T AddResource<T>(T resource) where T : PropertyGridItem
+        {
+            Resources.Add(resource);
+            return resource;
         }
     }
 }

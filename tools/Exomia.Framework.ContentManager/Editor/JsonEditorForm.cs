@@ -9,8 +9,10 @@
 #endregion
 
 using System.Text;
-using System.Text.Json;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Exomia.Framework.ContentManager.Editor
 {
@@ -34,8 +36,10 @@ namespace Exomia.Framework.ContentManager.Editor
         public JsonEditorForm(object json)
             : this()
         {
-            fastColoredTextBox1.Text = JsonSerializer.Serialize(
-                json, new JsonSerializerOptions { WriteIndented = true });
+            fastColoredTextBox1.Text =
+                JsonConvert.SerializeObject(
+                    json, Formatting.Indented,
+                    new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         }
 
         /// <summary>
@@ -50,7 +54,7 @@ namespace Exomia.Framework.ContentManager.Editor
         {
             try
             {
-                obj = JsonSerializer.Deserialize<T>(fastColoredTextBox1.Text);
+                obj = JsonConvert.DeserializeObject<T>(fastColoredTextBox1.Text);
                 return true;
             }
             catch
@@ -73,7 +77,7 @@ namespace Exomia.Framework.ContentManager.Editor
         {
             try
             {
-                JsonDocument.Parse(fastColoredTextBox1.Text);
+                JObject.Parse(fastColoredTextBox1.Text);
                 DialogResult = DialogResult.OK;
             }
             catch

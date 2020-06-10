@@ -9,6 +9,7 @@
 #endregion
 
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {
@@ -26,7 +27,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Common")]
         [Description("The name of the project.")]
         [ReadOnly(true)]
-        public string ProjectName { get; }
+        [JsonIgnore]
+        public string? ProjectName { get; set; }
 
         /// <summary>
         ///     The location of the project.
@@ -37,7 +39,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Common")]
         [Description("The location of the project.")]
         [ReadOnly(true)]
-        public string ProjectLocation { get; }
+        [JsonIgnore]
+        public string? ProjectLocation { get; set; }
 
         /// <summary>
         ///     The build output folder.
@@ -48,24 +51,5 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Settings")]
         [Description("The build output folder.")]
         public string OutputFolder { get; set; } = "build";
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
-        /// </summary>
-        /// <param name="nameProvider">        The name provider. </param>
-        /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        /// <param name="totalItemsProvider">  The total items provider. </param>
-        /// <param name="projectName">         The location. </param>
-        /// <param name="projectLocation">     The location. </param>
-        public ContentPropertyGridItem(Provider.Value<string> nameProvider,
-                                       Provider.Value<string> virtualPathProvider,
-                                       Provider.Value<int>    totalItemsProvider,
-                                       string                 projectName,
-                                       string                 projectLocation)
-            : base(nameProvider, virtualPathProvider, totalItemsProvider)
-        {
-            ProjectName     = projectName;
-            ProjectLocation = projectLocation;
-        }
     }
 }

@@ -10,8 +10,6 @@
 
 using System;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -22,8 +20,6 @@ namespace Exomia.Framework.ContentManager
     /// </summary>
     partial class CreateProjectForm : Form
     {
-        private readonly IFormatter _formatter = new BinaryFormatter();
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="CreateProjectForm" /> class.
         /// </summary>
@@ -48,12 +44,9 @@ namespace Exomia.Framework.ContentManager
 
             var projectFile = new ProjectFile(nameTb.Text, directoryInfo.FullName);
 
-            using (FileStream fs = File.Create(projectFile.FilePath))
-            {
-                _formatter.Serialize(fs, projectFile);
-            }
+            Json.Serialize(projectFile.FilePath, projectFile);
 
-            DirectoryInfo dci = directoryInfo.CreateSubdirectory(projectFile.Content);
+            DirectoryInfo dci = directoryInfo.CreateSubdirectory("Content");
             foreach (FileInfo file in dci.GetFiles())
             {
                 file.Delete();

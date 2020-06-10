@@ -11,8 +11,6 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
@@ -24,8 +22,7 @@ namespace Exomia.Framework.ContentManager
     /// </summary>
     public partial class MainForm : Form
     {
-        private readonly IFormatter   _formatter = new BinaryFormatter();
-        private          ProjectFile? _projectFile;
+        private ProjectFile? _projectFile;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MainForm" /> class.
@@ -163,7 +160,19 @@ namespace Exomia.Framework.ContentManager
                 });
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) { }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Save();
+            _projectFile = null;
+        }
+
+        private void Save()
+        {
+            if (_projectFile != null)
+            {
+                Json.Serialize(_projectFile.FilePath, _projectFile);
+            }
+        }
 
         private class NodeSorter : IComparer
         {
@@ -173,15 +182,15 @@ namespace Exomia.Framework.ContentManager
             {
                 if (x is TreeNode tx && y is TreeNode ty)
                 {
-                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX) && ty.Name.StartsWith(FOLDER_KEY_PREFIX))
-                    {
-                        return string.Compare(tx.Text, ty.Text, StringComparison.InvariantCultureIgnoreCase);
-                    }
-                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX))
+                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX) && !ty.Name.StartsWith(FOLDER_KEY_PREFIX))
                     {
                         return -1;
                     }
-                    return 1;
+                    if (!tx.Name.StartsWith(FOLDER_KEY_PREFIX) && ty.Name.StartsWith(FOLDER_KEY_PREFIX))
+                    {
+                        return 1;
+                    }
+                    return string.Compare(tx.Text, ty.Text, StringComparison.InvariantCultureIgnoreCase);
                 }
 
                 return 0;

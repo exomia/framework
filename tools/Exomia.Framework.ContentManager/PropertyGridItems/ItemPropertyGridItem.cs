@@ -13,6 +13,8 @@ using System.ComponentModel;
 using System.IO;
 using Exomia.Framework.ContentManager.Converters;
 using Exomia.Framework.ContentManager.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {
@@ -31,7 +33,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         ///     The importers.
         /// </value>
         [Browsable(false)]
-        public List<IImporter>? Importers { get; }
+        public List<IImporter>? Importers { get; set; }
 
         /// <summary>
         ///     Gets the exporters.
@@ -40,18 +42,7 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         ///     The exporters.
         /// </value>
         [Browsable(false)]
-        public List<IExporter>? Exporters { get; private set; }
-
-        /// <summary>
-        ///     The importer for this item.
-        /// </summary>
-        /// <value>
-        ///     The importer.
-        /// </value>
-        [Category("Settings")]
-        [Description("The build action for this item.")]
-        [DisplayName("Build Action")]
-        public BuildAction BuildAction { get; set; } = BuildAction.Build;
+        public List<IExporter>? Exporters { get; set; }
 
         /// <summary>
         ///     The importer for this item.
@@ -98,19 +89,25 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FolderPropertyGridItem" /> class.
+        ///     The importer for this item.
         /// </summary>
-        /// <param name="nameProvider">        The name provider. </param>
-        /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        public ItemPropertyGridItem(Provider.Value<string> nameProvider,
-                                    Provider.Value<string> virtualPathProvider)
-            : base(nameProvider, virtualPathProvider)
+        /// <value>
+        ///     The importer.
+        /// </value>
+        [Category("Settings")]
+        [Description("The build action for this item.")]
+        [DisplayName("Build Action")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public BuildAction BuildAction { get; set; } = BuildAction.Build;
+
+        public ItemPropertyGridItem Initialize()
         {
-            Importers = ImporterExporterManager.GetImporterFor(Path.GetExtension(nameProvider()));
+            Importers = ImporterExporterManager.GetImporterFor(Path.GetExtension(Name));
             if (Importers.Count > 0)
             {
                 Importer = Importers[0];
             }
+            return this;
         }
     }
 }

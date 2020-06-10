@@ -11,6 +11,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Editor;
 using Exomia.Framework.ContentManager.Extensions;
@@ -39,51 +40,68 @@ namespace Exomia.Framework.ContentManager
                 {
                     if (_projectFile != null)
                     {
-                        using (FileStream fs = File.Create(_projectFile.Location))
-                        {
-                            _formatter.Serialize(fs, _projectFile);
-                            _projectFile = null;
-                        }
+                        Json.Serialize(_projectFile.Location, _projectFile);
+                        _projectFile = null;
                     }
 
                     _projectFile = createProjectForm.CreateProjectFile();
-
-                    panel1.InvokeIfRequired(x => x.Enabled = true);
 
                     treeView1.InvokeIfRequired(
                         x =>
                         {
                             x.Nodes.Clear();
 
-                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile.Content, 0, 0);
-                            node.Tag = new ContentPropertyGridItem(
-                                () => node.Text,
-                                Provider.Static(string.Empty),
-                                () => node.GetNodeCount(true),
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, "Content", 0, 0);
 
-                                // ReSharper disable once AccessToDisposedClosure
-                                _projectFile.Name,
-
-                                // ReSharper disable once AccessToDisposedClosure
-                                _projectFile.Location);
+                            node.Tag = _projectFile.Content =
+                                new ContentPropertyGridItem
+                                {
+                                    Name            = node.Text,
+                                    TotalItems      = 0,
+                                    ProjectName     = _projectFile.Name,
+                                    ProjectLocation = _projectFile.Location
+                                };
 
                             node.ContextMenuStrip = rootContextMenuStrip;
-                        });
-
-                    menuStrip1.InvokeIfRequired(
-                        x =>
-                        {
-                            ForAll(
-                                i => i.Enabled = true, buildToolStripMenuItem, editToolStripMenuItem,
-                                closeToolStripMenuItem);
                         });
 
                     SetStatusLabel(
                         StatusType.Info, "Project '{0}' created under {1}",
                         Path.GetFileNameWithoutExtension(_projectFile.Name),
-                        Path.GetDirectoryName(_projectFile.Location));
+                        _projectFile.Location);
+
+                    menuStrip1.InvokeIfRequired(
+                        x =>
+                        {
+                            ForAll(
+                                i => i.Enabled = true,
+                                buildToolStripMenuItem, editToolStripMenuItem,
+                                closeToolStripMenuItem, saveToolStripMenuItem);
+                        });
+
+                    panel1.InvokeIfRequired(x => x.Enabled = true);
                 }
             }
+        }
+
+        private TreeNode? GetNodeFromPath(TreeNode node, string path)
+        {
+            if (node.FullPath == path)
+            {
+                return node;
+            }
+            if (node.Nodes.Count > 0)
+            {
+                foreach (TreeNode tn in node.Nodes)
+                {
+                    TreeNode? foundNode = GetNodeFromPath(tn, path);
+                    if (foundNode != null)
+                    {
+                        return foundNode;
+                    }
+                }
+            }
+            return null;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -103,7 +121,65 @@ namespace Exomia.Framework.ContentManager
                 SupportMultiDottedExtensions = true
             })
             {
-                if (dialog.ShowDialog() == DialogResult.OK) { }
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    _projectFile                         = Json.Deserialize<ProjectFile>(dialog.FileName);
+                    _projectFile!.Content!.ProjectName   = _projectFile.Name;
+                    _projectFile.Content.ProjectLocation = _projectFile.Location;
+                    treeView1.InvokeIfRequired(
+                        x =>
+                        {
+                            x.Nodes.Clear();
+
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name!, 0, 0);
+                            node.Tag              = _projectFile.Content;
+                            node.ContextMenuStrip = rootContextMenuStrip;
+
+                            foreach (FolderPropertyGridItem f in _projectFile
+                                                                 .Resources
+                                                                 .OfType<FolderPropertyGridItem>()
+                                                                 .OrderBy(p => p.VirtualPath!.Length))
+                            {
+                                var n = GetNodeFromPath(node, f.VirtualPath!)
+                                     ?? throw new InvalidDataException("The project file is corrupt!");
+                                int nodeCount = n.GetNodeCount(false);
+                                n = n.Nodes.Add(
+                                    $"{FOLDER_KEY_PREFIX}{nodeCount}", f.Name, 1, 1);
+                                n.Tag              = f;
+                                n.ContextMenuStrip = folderContextMenuStrip;
+                            }
+
+                            foreach (ItemPropertyGridItem i in _projectFile
+                                                               .Resources
+                                                               .OfType<ItemPropertyGridItem>())
+                            {
+                                var n = GetNodeFromPath(node, i.VirtualPath!)
+                                     ?? throw new InvalidDataException("The project file is corrupt!");
+                                int nodeCount = n.GetNodeCount(false);
+                                n = n.Nodes.Add(
+                                    $"{FONT_KEY_PREFIX}{nodeCount}", i.Name, 4, 4);
+                                n.Tag = i;
+                            }
+
+                            x.ExpandAll();
+                        });
+
+                    SetStatusLabel(
+                        StatusType.Info, "Project '{0}' from {1} opened!",
+                        Path.GetFileNameWithoutExtension(_projectFile!.Name),
+                        _projectFile.Location);
+
+                    menuStrip1.InvokeIfRequired(
+                        x =>
+                        {
+                            ForAll(
+                                i => i.Enabled = true, 
+                                buildToolStripMenuItem, editToolStripMenuItem,
+                                closeToolStripMenuItem, saveToolStripMenuItem);
+                        });
+
+                    panel1.InvokeIfRequired(x => x.Enabled = true);
+                }
             }
         }
 
@@ -113,18 +189,32 @@ namespace Exomia.Framework.ContentManager
                 x =>
                 {
                     ForAll(
-                        i => i.Enabled = false, buildToolStripMenuItem, editToolStripMenuItem, closeToolStripMenuItem);
+                        i => i.Enabled = false,
+                        buildToolStripMenuItem, editToolStripMenuItem,
+                        closeToolStripMenuItem, saveToolStripMenuItem);
                 });
 
             treeView1.InvokeIfRequired(
                 x =>
                 {
+                    Save();
+                    _projectFile = null;
                     x.Nodes.Clear();
                 });
 
             panel1.InvokeIfRequired(x => x.Enabled = false);
 
             SetStatusLabel(StatusType.Info, "Project closed...");
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    Save();
+                });
+            SetStatusLabel(StatusType.Info, "Project '{0}' saved under {1}", _projectFile!.Name, _projectFile.Location);
         }
 
         private async void buildToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -229,43 +319,44 @@ namespace Exomia.Framework.ContentManager
                 Check(e.Node, n => n.PrevNode) &&
                 Check(e.Node, n => n.NextNode))
             {
-                string oldText = e.Node.Text;
-                e.Node.Text = label;
-
-                if (e.Node.Level == 0)
+                if (e.Node.Tag is PropertyGridItem item)
                 {
-                    _projectFile!.Content = label;
+                    string oldText          = e.Node.Text;
+                    item.Name = e.Node.Text = label;
 
-                    Directory.Move(
-                        Path.Combine(_projectFile!.Location, oldText),
-                        Path.Combine(_projectFile!.Location, label));
-                }
-                else
-                {
-                    Directory.Move(
-                        Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, oldText),
-                        Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, label));
-                }
-
-                propertyGrid1.InvokeIfRequired(
-                    x =>
+                    if (e.Node.Level == 0)
                     {
-                        x.RefreshTabs(PropertyTabScope.Component);
-                        x.Refresh();
-                    });
+                        Directory.Move(
+                            Path.Combine(_projectFile!.Location, oldText),
+                            Path.Combine(_projectFile!.Location, label));
+                    }
+                    else
+                    {
+                        Directory.Move(
+                            Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, oldText),
+                            Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, label));
+                    }
 
-                SetStatusLabel(
-                    StatusType.Info,
-                    e.Node.Level == 0
-                        ? "'{0}' was successfully renamed to '{1}'."
-                        : e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
-                            ? "The folder '{0}' was successfully renamed to '{1}' under '{2}'"
-                            : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
-                                ? "The font '{0}' was successfully renamed to '{1}' under '{2}'"
-                                : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
-                    oldText, e.Node.Text, e.Node.Parent?.FullPath);
+                    propertyGrid1.InvokeIfRequired(
+                        x =>
+                        {
+                            x.RefreshTabs(PropertyTabScope.Component);
+                            x.Refresh();
+                        });
 
-                treeView1.BeginInvoke(new MethodInvoker(treeView1.Sort));
+                    SetStatusLabel(
+                        StatusType.Info,
+                        e.Node.Level == 0
+                            ? "'{0}' was successfully renamed to '{1}'."
+                            : e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
+                                ? "The folder '{0}' was successfully renamed to '{1}' under '{2}'"
+                                : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
+                                    ? "The font '{0}' was successfully renamed to '{1}' under '{2}'"
+                                    : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
+                        oldText, e.Node.Text, e.Node.Parent?.FullPath);
+
+                    treeView1.BeginInvoke(new MethodInvoker(treeView1.Sort));
+                }
             }
         }
 
@@ -277,33 +368,67 @@ namespace Exomia.Framework.ContentManager
             }
         }
 
+        private void DeleteIfExists(FileInfo info)
+        {
+            if (info.Exists)
+            {
+                info.Delete();
+            }
+        }
+
+        private void DeleteIfExists(DirectoryInfo info)
+        {
+            if (info.Exists)
+            {
+                info.Delete(true);
+            }
+        }
+
+        private void RemoveNode(TreeNode node)
+        {
+            if (node.Level > 0)
+            {
+                switch (node.Tag)
+                {
+                    case ItemPropertyGridItem i:
+                        DeleteIfExists(
+                            new FileInfo(
+                                Path.Combine(
+                                    _projectFile!.Location, i.VirtualPath, i.Name)));
+                        break;
+                    case FolderPropertyGridItem f:
+                        DeleteIfExists(
+                            new DirectoryInfo(
+                                Path.Combine(
+                                    _projectFile!.Location, f.VirtualPath, f.Name)));
+                        foreach (TreeNode childNodes in node.Nodes)
+                        {
+                            RemoveNode(childNodes);
+                        }
+                        break;
+                    default: throw new InvalidCastException();
+                }
+
+                if (_projectFile.Resources.Remove((PropertyGridItem)node.Tag))
+                {
+                    if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
+                    {
+                        folderPropertyGridItem.TotalItems--;
+                    }
+
+                    node.Remove();
+                }
+            }
+        }
+
         private void treeView1_RemoveSelectedNode()
         {
             treeView1.InvokeIfRequired(
                 x =>
                 {
-                    if (x.SelectedNode.Level > 0)
-                    {
-                        FileSystemInfo fileSystemInfo = x.SelectedNode.Tag switch
-                        {
-                            ItemPropertyGridItem i => new FileInfo(
-                                Path.Combine(
-                                    _projectFile!.Location, i.VirtualPath, i.Name)),
-                            FolderPropertyGridItem f => new DirectoryInfo(
-                                Path.Combine(
-                                    _projectFile!.Location, f.VirtualPath, f.Name)),
-                            _ => throw new InvalidCastException()
-                        };
-
-                        if (fileSystemInfo.Exists)
-                        {
-                            fileSystemInfo.Delete();
-                        }
-
-                        x.SelectedNode.Remove();
-                        propertyGrid1.InvokeIfRequired(p => p.SelectedObject = null);
-                    }
+                    RemoveNode(x.SelectedNode);
                 });
+            propertyGrid1.InvokeIfRequired(p => p.SelectedObject = null);
         }
 
         #endregion
@@ -327,12 +452,18 @@ namespace Exomia.Framework.ContentManager
                     }
 
                     var node = selectedNode.Nodes.Add($"{FOLDER_KEY_PREFIX}{selectedNodeCount}", di.Name, 1, 1);
-                    node.Tag =
-                        new FolderPropertyGridItem(
-                            () => node.Text,
-                            () => node.Parent.FullPath,
-                            () => node.GetNodeCount(true));
+                    node.Tag = _projectFile.AddResource(
+                        new FolderPropertyGridItem
+                        {
+                            Name = node.Text, VirtualPath = node.Parent.FullPath, TotalItems = 0
+                        });
                     node.ContextMenuStrip = folderContextMenuStrip;
+
+                    if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
+                    {
+                        folderPropertyGridItem.TotalItems++;
+                    }
+
                     selectedNode.Expand();
                     treeView1.SelectedNode = node;
                     node.BeginEdit();
@@ -390,9 +521,18 @@ namespace Exomia.Framework.ContentManager
                             var node = selectedNode.Nodes.Add(
                                 $"{FONT_KEY_PREFIX}{selectedNodeCount}",
                                 Path.GetFileName(fntFilePath), 4, 4);
-                            node.Tag = new ItemPropertyGridItem(
-                                () => node.Text,
-                                () => node.Parent.FullPath);
+                            node.Tag = _projectFile.AddResource(
+                                                       new ItemPropertyGridItem
+                                                       {
+                                                           Name = node.Text, VirtualPath = node.Parent.FullPath,
+                                                       })
+                                                   .Initialize();
+
+                            if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
+                            {
+                                folderPropertyGridItem.TotalItems++;
+                            }
+
                             selectedNode.Expand();
                             treeView1.SelectedNode = node;
                             node.BeginEdit();

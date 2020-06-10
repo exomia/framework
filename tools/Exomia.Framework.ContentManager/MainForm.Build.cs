@@ -27,7 +27,7 @@ namespace Exomia.Framework.ContentManager
         private static readonly (Func<ItemPropertyGridItem, bool>, string)[] s_checks =
         {
             (i => i.BuildAction == BuildAction.Ignore, "ignored during build!"),
-            (i => i.Importer == null, "no importer set!"), (i => i.Exporter == null, "no exporter set!"),
+            (i => i.Importer == null, "no importer set!"), (i => i.Exporter == null, "no exporter set!")
         };
 
         private int _build;
@@ -71,7 +71,7 @@ namespace Exomia.Framework.ContentManager
                     void SkipWithMessage(string msg)
                     {
                         WriteLine(
-                            $"skipping item {{0}}!  Reason: {msg}",
+                            $"skipping item {{0}}! Reason: {msg}",
                             Path.Combine(gridItem.VirtualPath, gridItem.Name));
                         Interlocked.Increment(ref skipped);
                     }
@@ -90,7 +90,7 @@ namespace Exomia.Framework.ContentManager
                         Path.Combine(gridItem.VirtualPath, gridItem.Name));
 
                     ImporterContext importerContext = new ImporterContext(
-                        gridItem.Name, gridItem.VirtualPath);
+                        gridItem.Name!, gridItem.VirtualPath!);
 
                     object? obj;
                     using (FileStream fs = new FileStream(
@@ -120,10 +120,10 @@ namespace Exomia.Framework.ContentManager
                         Path.Combine(gridItem.VirtualPath, gridItem.Name));
 
                     ExporterContext exporterContext = new ExporterContext(
-                        gridItem.Name,
-                        gridItem.VirtualPath,
+                        gridItem.Name!,
+                        gridItem.VirtualPath!,
                         contentPropertyGridItem.OutputFolder ??
-                        Path.GetDirectoryName(contentPropertyGridItem.ProjectLocation));
+                        contentPropertyGridItem.ProjectLocation!);
 
                     if (!gridItem.Exporter!.Export(obj, exporterContext))
                     {
@@ -168,7 +168,8 @@ namespace Exomia.Framework.ContentManager
                 m =>
                 {
                     ForAll(
-                        i => i.Enabled = false, buildToolStripMenuItem1, cleanToolStripMenuItem,
+                        i => i.Enabled = false,
+                        buildToolStripMenuItem1, cleanToolStripMenuItem,
                         rebuildToolStripMenuItem);
                     cancelBuildToolStripMenuItem.Enabled = true;
                     cancelBuildToolStripMenuItem.Visible = true;
@@ -218,7 +219,8 @@ namespace Exomia.Framework.ContentManager
                 m =>
                 {
                     ForAll(
-                        i => i.Enabled = true, buildToolStripMenuItem1, cleanToolStripMenuItem,
+                        i => i.Enabled = true,
+                        buildToolStripMenuItem1, cleanToolStripMenuItem,
                         rebuildToolStripMenuItem);
                     cancelBuildToolStripMenuItem.Visible = false;
                 });

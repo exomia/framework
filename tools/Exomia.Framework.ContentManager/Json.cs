@@ -9,52 +9,51 @@
 #endregion
 
 using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Exomia.Framework.ContentManager
 {
     static class Json
     {
-        public static async Task Serialize(Stream s, object value)
+        private static readonly JsonSerializer s_jsonSerializer = new JsonSerializer
         {
-            await JsonSerializer.SerializeAsync(s, value);
-        }
+            Formatting       = Formatting.Indented,
+            TypeNameHandling = TypeNameHandling.All,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
 
-        public static async Task Serialize(FileInfo fi, object value)
+        public static void Serialize(Stream s, object value)
         {
-            using (FileStream fs = fi.Create())
+            using (StreamWriter sw = new StreamWriter(s))
+            using (JsonWriter jw = new JsonTextWriter(sw))
             {
-                await Serialize(fs, value);
+                s_jsonSerializer.Serialize(jw, value);
             }
         }
 
-        public static async Task Serialize(string filePath, object value)
+        public static void Serialize(string filePath, object value)
         {
             using (FileStream fs = File.Create(filePath))
             {
-                await Serialize(fs, value);
+                Serialize(fs, value);
             }
         }
 
-        public static async Task<T?> Deserialize<T>(Stream s) where T : class
+        public static T? Deserialize<T>(Stream s) where T : class
         {
-            return await JsonSerializer.DeserializeAsync<T>(s);
-        }
-
-        public static async Task<T?> Deserialize<T>(FileInfo fi) where T : class
-        {
-            using (FileStream fs = fi.OpenRead())
+            using (var sr = new StreamReader(s))
+            using (var jr = new JsonTextReader(sr))
             {
-                return await Deserialize<T>(fs);
+                return s_jsonSerializer.Deserialize<T>(jr);
             }
         }
 
-        public static async Task<T?> Deserialize<T>(string filepath) where T : class
+        public static T? Deserialize<T>(string filePath) where T : class
         {
-            using (FileStream fs = File.OpenRead(filepath))
+            using (var sr = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                return await Deserialize<T>(fs);
+                return Deserialize<T>(sr);
             }
         }
     }
