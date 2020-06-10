@@ -3,7 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net48</TargetFramework>
     <Authors>exomia</Authors>
-    <Description>a content manager for the exomia framework</Description>
+    <Description>A content manager for the exomia framework.</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
     <Version>0.0.0.1</Version>
     <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>

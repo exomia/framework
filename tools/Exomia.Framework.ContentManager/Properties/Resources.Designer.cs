@@ -213,6 +213,16 @@ namespace Exomia.Framework.ContentManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap logo_x192 {
+            get {
+                object obj = ResourceManager.GetObject("logo_x192", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap NewFileCollection_16x {
             get {
                 object obj = ResourceManager.GetObject("NewFileCollection_16x", resourceCulture);

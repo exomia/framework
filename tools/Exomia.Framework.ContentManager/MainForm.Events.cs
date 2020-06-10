@@ -32,6 +32,11 @@ namespace Exomia.Framework.ContentManager
             Close();
         }
 
+        private void aboutExomiaFrameworkContentManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutForm().ShowDialog();
+        }
+
         private void createToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (CreateProjectForm createProjectForm = new CreateProjectForm())

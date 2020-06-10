@@ -77,6 +77,7 @@
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -251,6 +252,8 @@
             // 
             // helpToolStripMenuItem
             // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -523,6 +526,13 @@
             this.toolStripMenuItem6.Text = "Rename...";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
+            // aboutExomiaFrameworkContentManagerToolStripMenuItem
+            // 
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Name = "aboutExomiaFrameworkContentManagerToolStripMenuItem";
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Text = "About Exomia.Framework.ContentManager";
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Click += new System.EventHandler(this.aboutExomiaFrameworkContentManagerToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -609,6 +619,7 @@
         private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.ToolStripMenuItem cancelBuildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutExomiaFrameworkContentManagerToolStripMenuItem;
     }
 }
 
