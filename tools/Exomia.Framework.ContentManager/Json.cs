@@ -34,7 +34,7 @@ namespace Exomia.Framework.ContentManager
 
         public static void Serialize(string filePath, object value)
         {
-            using (FileStream fs = File.Create(filePath))
+            using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 Serialize(fs, value);
             }
@@ -51,7 +51,7 @@ namespace Exomia.Framework.ContentManager
 
         public static T? Deserialize<T>(string filePath) where T : class
         {
-            using (var sr = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var sr = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
             {
                 return Deserialize<T>(sr);
             }
