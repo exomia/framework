@@ -50,6 +50,7 @@
             this.cleanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -77,7 +78,13 @@
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutExomiaFrameworkContentManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -93,6 +100,7 @@
             this.panel2.SuspendLayout();
             this.folderContextMenuStrip.SuspendLayout();
             this.rootContextMenuStrip.SuspendLayout();
+            this.itemContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -131,27 +139,27 @@
             this.saveToolStripMenuItem});
             this.projectToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.DocumentCollection_16x;
             this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
-            this.projectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.projectToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.projectToolStripMenuItem.Text = "Project";
             // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.NewFileCollection_16x;
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.createToolStripMenuItem.Text = "Create...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(114, 6);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.OpenProject_16x;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -160,45 +168,45 @@
             this.closeToolStripMenuItem.Enabled = false;
             this.closeToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.CloseDocumentGroup_16x;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.closeToolStripMenuItem.Text = "Close...";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(114, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Save_16x;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.saveToolStripMenuItem.Text = "Save...";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(161, 6);
             // 
             // recentProjectsToolStripMenuItem
             // 
             this.recentProjectsToolStripMenuItem.Name = "recentProjectsToolStripMenuItem";
-            this.recentProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.recentProjectsToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.recentProjectsToolStripMenuItem.Text = "Recent Projects...";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(161, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Exit_16x;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -257,6 +265,13 @@
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutExomiaFrameworkContentManagerToolStripMenuItem
+            // 
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Name = "aboutExomiaFrameworkContentManagerToolStripMenuItem";
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Text = "About Exomia.Framework.ContentManager";
+            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Click += new System.EventHandler(this.aboutExomiaFrameworkContentManagerToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -355,6 +370,7 @@
             this.treeView1.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeSelect);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+            this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             this.treeView1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.treeView1_KeyUp);
             // 
             // imageList1
@@ -526,12 +542,60 @@
             this.toolStripMenuItem6.Text = "Rename...";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
-            // aboutExomiaFrameworkContentManagerToolStripMenuItem
+            // itemContextMenuStrip
             // 
-            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Name = "aboutExomiaFrameworkContentManagerToolStripMenuItem";
-            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Text = "About Exomia.Framework.ContentManager";
-            this.aboutExomiaFrameworkContentManagerToolStripMenuItem.Click += new System.EventHandler(this.aboutExomiaFrameworkContentManagerToolStripMenuItem_Click);
+            this.itemContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem1,
+            this.toolStripSeparator7,
+            this.toolStripMenuItem7,
+            this.toolStripMenuItem8,
+            this.toolStripMenuItem9,
+            this.toolStripMenuItem10});
+            this.itemContextMenuStrip.Name = "contextMenuStrip1";
+            this.itemContextMenuStrip.Size = new System.Drawing.Size(127, 120);
+            // 
+            // editToolStripMenuItem1
+            // 
+            this.editToolStripMenuItem1.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Edit_16x;
+            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
+            this.editToolStripMenuItem1.Text = "Edit Item";
+            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(123, 6);
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Cut_16x;
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(126, 22);
+            this.toolStripMenuItem7.Text = "Cut...";
+            // 
+            // toolStripMenuItem8
+            // 
+            this.toolStripMenuItem8.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Copy_16x;
+            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(126, 22);
+            this.toolStripMenuItem8.Text = "Copy...";
+            // 
+            // toolStripMenuItem9
+            // 
+            this.toolStripMenuItem9.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Cancel_16x;
+            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(126, 22);
+            this.toolStripMenuItem9.Text = "Delete...";
+            this.toolStripMenuItem9.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem10
+            // 
+            this.toolStripMenuItem10.Image = global::Exomia.Framework.ContentManager.Properties.Resources.Rename_16x;
+            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(126, 22);
+            this.toolStripMenuItem10.Text = "Rename...";
+            this.toolStripMenuItem10.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -565,6 +629,7 @@
             this.panel2.ResumeLayout(false);
             this.folderContextMenuStrip.ResumeLayout(false);
             this.rootContextMenuStrip.ResumeLayout(false);
+            this.itemContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -620,6 +685,13 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.ToolStripMenuItem cancelBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutExomiaFrameworkContentManagerToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip itemContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem9;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
     }
 }
 

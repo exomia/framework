@@ -11,7 +11,9 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Exomia.Framework.ContentManager.Editor;
 using Exomia.Framework.ContentManager.Extensions;
+using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.PropertyGridItems;
 
 namespace Exomia.Framework.ContentManager
@@ -89,6 +91,30 @@ namespace Exomia.Framework.ContentManager
                     treeView1_RemoveNode(x.SelectedNode);
                 });
             propertyGrid1.InvokeIfRequired(p => p.SelectedObject = null);
+        }
+
+        private void EditItem(TreeNode node)
+        {
+            if (node == null) { return; }
+            if (node.Tag is ItemPropertyGridItem item)
+            {
+                if (Path.GetExtension(item.Name) == ".fnt")
+                {
+                    FontDescription? description = Json.Deserialize<FontDescription>(
+                        Path.Combine(_projectFile!.Location, item.VirtualPath, item.Name));
+                    if (description == null) { return; }
+                    
+                    using (var jsonEditorForm = new JsonEditorForm(description) { Text = $"Edit font '{item.Name}'" })
+                    {
+                        if (jsonEditorForm.ShowDialog() != DialogResult.OK)
+                        {
+                            SetStatusLabel(StatusType.Error, "The font was not edited!");
+                            return;
+                        }
+                        jsonEditorForm.Save(Path.Combine(_projectFile!.Location, item.VirtualPath, item.Name));
+                    }
+                }
+            }
         }
     }
 }

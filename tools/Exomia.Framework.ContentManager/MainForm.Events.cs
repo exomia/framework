@@ -134,7 +134,8 @@ namespace Exomia.Framework.ContentManager
                                 int nodeCount = n.GetNodeCount(false);
                                 n = n.Nodes.Add(
                                     $"{FONT_KEY_PREFIX}{nodeCount}", i.Name, 4, 4);
-                                n.Tag = i;
+                                n.Tag              = i;
+                                n.ContextMenuStrip = itemContextMenuStrip;
                             }
 
                             x.ExpandAll();
@@ -205,15 +206,16 @@ namespace Exomia.Framework.ContentManager
 
         #endregion
 
-        #region PropertyGrid1
-
-        #endregion
-
         #region TreeView1
 
         private const string ROOT_KEY_PREFIX   = "-ROOT-";
         private const string FOLDER_KEY_PREFIX = "-folder-";
         private const string FONT_KEY_PREFIX   = "-font-";
+
+        private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            EditItem(e.Node);
+        }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -346,7 +348,16 @@ namespace Exomia.Framework.ContentManager
 
         #endregion
 
-        #region rootContextMenuStrip & folderContextMenuStrip
+        #region rootContextMenuStrip & folderContextMenuStrip & itemContextMenuStrip
+
+        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    EditItem(x.SelectedNode ?? x.TopNode);
+                });
+        }
 
         private void addFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -411,7 +422,7 @@ namespace Exomia.Framework.ContentManager
                             IsBold   = false,
                             AA       = true,
                             IsItalic = false
-                        }) { Text = "Add Font..." })
+                        }) { Text = "Add a new font to the project..." })
                     {
                         if (jsonEditorForm.ShowDialog() != DialogResult.OK)
                         {
@@ -440,6 +451,7 @@ namespace Exomia.Framework.ContentManager
                                                            Name = node.Text, VirtualPath = node.Parent.FullPath,
                                                        })
                                                    .Initialize();
+                            node.ContextMenuStrip = itemContextMenuStrip;
 
                             if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
                             {
