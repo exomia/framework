@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 namespace Exomia.Framework.Linq
 {
     /// <content>
-    ///     A linq extent.
+    ///     A linq extension.
     /// </content>
     public static partial class LinqExt
     {
@@ -76,13 +76,6 @@ namespace Exomia.Framework.Linq
                              .Compile(false);
         }
 
-        /// <summary>
-        ///     Gets the sum.
-        /// </summary>
-        /// <returns>
-        ///     A Func&lt;IEnumerable&lt;T&gt;,T&gt;
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         private static Func<IEnumerable<T>, T> __sum()
         {
             Type elementType    = typeof(T);
