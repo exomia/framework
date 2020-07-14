@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0;</TargetFrameworks>
-    <Authors>exomia</Authors>
+    <Company>exomia</Company>
+    <Authors>exomia;saika01</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
-    <Version>1.4.0.0</Version>
+    <Version>1.4.0</Version>
     <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -23,6 +24,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
+    <Deterministic>False</Deterministic>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -143,12 +145,12 @@
     <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
@@ -173,5 +175,18 @@
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
     <None Include="..\..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Source Link Support -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageVersion Condition="'$(cVersion)' != ''">$(Version)-$(cVersion)</PackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>
