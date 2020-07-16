@@ -103,7 +103,7 @@ namespace Exomia.Framework.ContentManager
                     FontDescription? description = Json.Deserialize<FontDescription>(
                         Path.Combine(_projectFile!.Location, item.VirtualPath, item.Name));
                     if (description == null) { return; }
-                    
+
                     using (var jsonEditorForm = new JsonEditorForm(description) { Text = $"Edit font '{item.Name}'" })
                     {
                         if (jsonEditorForm.ShowDialog() != DialogResult.OK)

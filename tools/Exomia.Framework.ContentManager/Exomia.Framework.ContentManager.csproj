@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net48</TargetFramework>
-    <Authors>exomia</Authors>
+    <Authors>exomia;saika01</Authors>
     <Description>A content manager for the exomia framework.</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
     <Version>0.0.0.1</Version>

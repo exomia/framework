@@ -9,6 +9,9 @@
 #endregion
 
 using System.ComponentModel;
+using System.Drawing.Design;
+using Exomia.Framework.ContentManager.Attributes;
+using Exomia.Framework.ContentManager.PropertyGridItems.Editor;
 using Newtonsoft.Json;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
@@ -50,6 +53,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// </value>
         [Category("Settings")]
         [Description("The build output folder.")]
+        [FolderNameEditorTitle("Select the build output folder.")]
+        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
         public string OutputFolder { get; set; } = "build";
     }
 }

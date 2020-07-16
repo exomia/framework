@@ -73,6 +73,7 @@ namespace Exomia.Framework.ContentManager
             // arrLbl
             // 
             this.arrLbl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.arrLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.arrLbl.Location = new System.Drawing.Point(143, 51);
             this.arrLbl.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.arrLbl.MaximumSize = new System.Drawing.Size(0, 17);
@@ -97,6 +98,7 @@ namespace Exomia.Framework.ContentManager
             // productNameLbl
             // 
             this.productNameLbl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.productNameLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.productNameLbl.Location = new System.Drawing.Point(143, 0);
             this.productNameLbl.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.productNameLbl.MaximumSize = new System.Drawing.Size(0, 17);
@@ -109,6 +111,7 @@ namespace Exomia.Framework.ContentManager
             // versionLbl
             // 
             this.versionLbl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.versionLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.versionLbl.Location = new System.Drawing.Point(143, 17);
             this.versionLbl.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.versionLbl.MaximumSize = new System.Drawing.Size(0, 17);
@@ -121,6 +124,7 @@ namespace Exomia.Framework.ContentManager
             // copyrightLbl
             // 
             this.copyrightLbl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.copyrightLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.copyrightLbl.Location = new System.Drawing.Point(143, 34);
             this.copyrightLbl.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.copyrightLbl.MaximumSize = new System.Drawing.Size(0, 17);
@@ -133,6 +137,7 @@ namespace Exomia.Framework.ContentManager
             // companyLbl
             // 
             this.companyLbl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.companyLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.companyLbl.Location = new System.Drawing.Point(143, 68);
             this.companyLbl.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.companyLbl.MaximumSize = new System.Drawing.Size(0, 17);
