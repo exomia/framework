@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
     steps: 
     - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1   
+      uses: actions/setup-dotnet@v1   
       with:
         dotnet-version: 3.1.300
       env:
@@ -22,14 +22,14 @@ jobs:
      - name: build debug
      - run: dotnet build src/Exomia.Framework --configuration Debug --force --nologo
      - name: build release
-      run: dotnet build src/Exomia.Framework --configuration Release --force --nologo
+     - run: dotnet build src/Exomia.Framework --configuration Release --force --nologo
   test:    
     name: test release and debug
     needs: [build]
     runs-on: windows-latest
     steps:    
     - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1   
+      uses: actions/setup-dotnet@v1   
       with:
         dotnet-version: 3.1.300
       env:
@@ -38,4 +38,4 @@ jobs:
     - name: test debug
     - run: dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo
     - name: test release
-      run: dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo
+    - run: dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo
