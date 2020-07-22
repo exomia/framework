@@ -12,9 +12,8 @@ jobs:
     name: build release and debug
     runs-on: windows-latest
     steps: 
-    - name: setup
-      uses: actions/checkout@v2
-      uses: actions/setup-dotnet@v1   
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1   
       with:
         dotnet-version: 3.1.300
     - name: build debug
@@ -31,10 +30,9 @@ jobs:
     name: test release and debug
     needs: [build]
     runs-on: windows-latest
-    steps: 
-    - name: setup   
-      uses: actions/checkout@v2
-      uses: actions/setup-dotnet@v1   
+    steps:    
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1   
       with:
         dotnet-version: 3.1.300
     - name: test debug
