@@ -19,7 +19,9 @@ jobs:
       env:
         DOTNET_NOLOGO: 1
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      run: dotnet build src/Exomia.Framework --configuration Debug --force --nologo
+     - name: build debug
+     - run: dotnet build src/Exomia.Framework --configuration Debug --force --nologo
+     - name: build release
       run: dotnet build src/Exomia.Framework --configuration Release --force --nologo
   test:    
     name: test release and debug
@@ -33,5 +35,7 @@ jobs:
       env:
         DOTNET_NOLOGO: 1
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      run: dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo
+    - name: test debug
+    - run: dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo
+    - name: test release
       run: dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo
