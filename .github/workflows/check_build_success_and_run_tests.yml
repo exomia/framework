@@ -12,7 +12,6 @@ jobs:
     name: build release and debug
     runs-on: windows-latest
     steps: 
-    - name: build release
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1   
       with:
@@ -26,7 +25,7 @@ jobs:
     name: test release and debug
     needs: [build]
     runs-on: windows-latest
-    steps:
+    steps:    
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1   
       with:
