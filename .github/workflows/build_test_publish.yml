@@ -70,7 +70,7 @@ jobs:
       env:
         DOTNET_NOLOGO: 1
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      run: |
+    - run: |
         dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=AnyCPU
         dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x86
         dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x64
