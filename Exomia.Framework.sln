@@ -15,7 +15,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65A2B0A0-B984-4A33-AFA5-A5E70862A10A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exomia.Framework.Tests", "tests\L0\Exomia.Framework.Tests\Exomia.Framework.Tests.csproj", "{E86DC9EB-8FC0-4C5D-95F2-206C67A069C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.Tests", "tests\L0\Exomia.Framework.Tests\Exomia.Framework.Tests.csproj", "{E86DC9EB-8FC0-4C5D-95F2-206C67A069C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1E7C4F0A-7153-45B0-9839-D2555568FFD2}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
