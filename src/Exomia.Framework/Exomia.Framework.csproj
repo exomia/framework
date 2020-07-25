@@ -194,6 +194,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageVersion Condition="'$(cVersion)' != ''">$(Version)-$(cVersion)</PackageVersion>
     <Deterministic>True</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
