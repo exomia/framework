@@ -1,0 +1,77 @@
+name: check build success and run tests
+on: 
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+            - development
+jobs:
+  build:
+    name: build release and debug
+    runs-on: windows-latest
+    steps: 
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1   
+      with:
+        dotnet-version: 3.1.300
+    - name: build debug
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1 
+      run: |
+        dotnet build src/Exomia.Framework --configuration Debug --force --nologo -p:Platform=AnyCPU
+        dotnet build src/Exomia.Framework --configuration Debug --force --nologo -p:Platform=x86
+        dotnet build src/Exomia.Framework --configuration Debug --force --nologo -p:Platform=x64
+    - name: build release
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1 
+      run: |
+        dotnet build src/Exomia.Framework --configuration Release --force --nologo -p:Platform=AnyCPU
+        dotnet build src/Exomia.Framework --configuration Release --force --nologo -p:Platform=x86
+        dotnet build src/Exomia.Framework --configuration Release --force --nologo -p:Platform=x64
+  test:    
+    name: test release and debug
+    needs: [build]
+    runs-on: windows-latest
+    steps:    
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1   
+      with:
+        dotnet-version: 3.1.300
+    - name: test debug
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      run: |
+        dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo -p:Platform=AnyCPU
+        dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo -p:Platform=x86
+        dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo -p:Platform=x64
+    - name: test release
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      run: |
+        dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=AnyCPU
+        dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=x86
+        dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=x64
+  publish:
+    name: build, pack & publish release
+    needs: [test]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    runs-on: windows-latest
+    steps:    
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1   
+      with:
+        dotnet-version: 3.1.300
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      run: |
+        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=AnyCPU
+        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x86
+        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x64
+        dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.EXOMIA_NUGET_API_KEY_PUSH }}
