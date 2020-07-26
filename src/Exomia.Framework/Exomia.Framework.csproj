@@ -185,7 +185,7 @@
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
-    <None Include="..\..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
   <!-- Source Link Support -->
