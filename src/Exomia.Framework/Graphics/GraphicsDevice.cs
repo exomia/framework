@@ -25,7 +25,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     The graphics device. This class cannot be inherited.
     /// </summary>
-    sealed class GraphicsDevice : IGraphicsDevice, IDisposable
+    public sealed class GraphicsDevice : IGraphicsDevice
     {
         private static readonly PresentParameters s_defaultPresentParameters = new PresentParameters();
 

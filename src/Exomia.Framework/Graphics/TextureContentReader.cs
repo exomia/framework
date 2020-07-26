@@ -25,22 +25,4 @@ namespace Exomia.Framework.Graphics
             return Texture.Load(graphicsDevice.Device, parameters.Stream);
         }
     }
-
-    /// <summary>
-    ///     A texture 2 content reader. This class cannot be inherited.
-    /// </summary>
-    sealed class Texture2ContentReader : IContentReader
-    {
-        /// <inheritdoc />
-        public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
-        {
-            ITexture2ContentManager manager =
-                contentManager.ServiceRegistry.GetService<ITexture2ContentManager>();
-            try
-            {
-                return manager.AddTexture(parameters.Stream, parameters.AssetName);
-            }
-            catch { return null; }
-        }
-    }
 }

@@ -14,7 +14,7 @@ using System.Collections.Generic;
 namespace Exomia.Framework.Linq
 {
     /// <content>
-    ///     Linq extensions.
+    ///     A linq extensions.
     /// </content>
     public static partial class LinqExt
     {
@@ -51,11 +51,38 @@ namespace Exomia.Framework.Linq
         {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (action == null) { throw new ArgumentNullException(nameof(action)); }
-
+            
             int index = 0;
             foreach (T element in source)
             {
                 action(element, index++);
+            }
+            
+        }
+
+        /// <summary>
+        ///     Immediately executes the given action on each element in the source sequence. Each
+        ///     element's index is used in the logic of the action.
+        /// </summary>
+        /// <typeparam name="T"> The type of the elements in the sequence. </typeparam>
+        /// <param name="source"> The sequence of elements. </param>
+        /// <param name="func">
+        ///     The function to execute on each element; the second parameter of the action
+        ///     represents the index of the source element; return false to break out of the loop.
+        /// </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        public static void ForEach<T>(this IEnumerable<T> source, Func<T, int, bool> func)
+        {
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
+            if (func == null) { throw new ArgumentNullException(nameof(func)); }
+
+            int index = 0;
+            foreach (T element in source)
+            {
+                if (!func(element, index++))
+                {
+                    return;
+                }
             }
         }
     }

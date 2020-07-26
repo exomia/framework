@@ -1,44 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0;</TargetFrameworks>
-    <Authors>exomia</Authors>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <LangVersion>8.0</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile></DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Version>1.4.1</Version>
+    <Company>exomia</Company>
+    <Authors>exomia;saika01</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
-    <Version>1.4.0.0</Version>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>exomia framework 2d 3d game engine xna mono</PackageTags>
     <RepositoryUrl>https://github.com/exomia/framework</RepositoryUrl>
-    <Platforms>AnyCPU;x64;x86</Platforms>
-    <LangVersion>8.0</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RepositoryType>git</RepositoryType>
-    <IncludeBuildOutput>true</IncludeBuildOutput>
     <PackageOutputPath>.</PackageOutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile></DocumentationFile>
-    <Nullable>enable</Nullable>
-    <NullableReferenceTypes>true</NullableReferenceTypes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>Exomia.Framework.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
     <DefineConstants Condition="'$(Platform)'=='AnyCPU'">DEBUG;TRACE;x86</DefineConstants>
     <DefineConstants Condition="'$(Platform)'!='AnyCPU'">DEBUG;TRACE;$(Platform)</DefineConstants>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
     <DefineConstants Condition="'$(Platform)'=='AnyCPU'">TRACE;x86</DefineConstants>
     <DefineConstants Condition="'$(Platform)'!='AnyCPU'">TRACE;$(Platform)</DefineConstants>
   </PropertyGroup>
@@ -55,6 +66,9 @@
 
   <PropertyGroup>
     <NoWarn>1701;1702;IDE0063</NoWarn>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ApplicationIcon>logo_x192_Hcn_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -91,7 +105,6 @@
     <None Remove="Resources\arial_72px.e1" />
     <None Remove="Resources\shaders\position_color.ehlsl" />
     <None Remove="Resources\shaders\position_color_texture.ehlsl" />
-    <None Remove="Resources\shaders\position_color_texture2.ehlsl" />
     <None Remove="Resources\shaders\position_normal_texture.ehlsl" />
   </ItemGroup>
 
@@ -140,15 +153,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\shaders\position_color.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl" />
-    <EmbeddedResource Include="Resources\shaders\position_color_texture2.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
@@ -169,9 +181,24 @@
       <DependentUpon>RenderForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
-
+  
   <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
-    <None Include="..\..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Source Link Support -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <IncludeSymbols>true</IncludeSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageVersion Condition="'$(cVersion)'!=''">$(Version)-$(cVersion)</PackageVersion>
+    <Deterministic>True</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)'=='true'">True</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

@@ -22,7 +22,7 @@ namespace Exomia.Framework.Graphics.Shader
         {
             IGraphicsDevice graphicsDevice =
                 contentManager.ServiceRegistry.GetService<IGraphicsDevice>();
-            return ShaderHelper.FromStream(graphicsDevice, parameters.Stream);
+            return ShaderFileLoader.FromStream(graphicsDevice, parameters.Stream);
         }
     }
 }

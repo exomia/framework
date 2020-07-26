@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using Exomia.Framework.Graphics;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -23,7 +24,11 @@ namespace Exomia.Framework.Game
         /// <summary>
         ///     The handle.
         /// </summary>
-        internal IntPtr Handle;
+        /// <remarks>
+        ///     You don't need to set the handle by yourself if your using the see <see cref="Game" /> class!
+        ///     In the case you initialize a <see cref="GraphicsDevice" /> by yourself you need to set a handle!
+        /// </remarks>
+        public IntPtr Handle;
 
         /// <summary>
         ///     Define the width of the game Window.

@@ -140,7 +140,8 @@ namespace Exomia.Framework.Game
         /// </summary>
         /// <param name="title">         (Optional) title. </param>
         /// <param name="gcLatencyMode"> (Optional) GCLatencyMode. </param>
-        protected Game(string title = "", GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
+        protected Game(string        title         = "Exomia.Framework",
+                       GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
         {
             GCSettings.LatencyMode = gcLatencyMode;
 

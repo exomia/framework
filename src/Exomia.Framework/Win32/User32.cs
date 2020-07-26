@@ -19,11 +19,11 @@ namespace Exomia.Framework.Win32
     {
         [SuppressUnmanagedCodeSecurity]
         [DllImport("user32.dll", SetLastError = false)]
-        public static extern unsafe uint GetRawInputData(IntPtr  hRawInput,
-                                                         uint    riCmd,
-                                                         byte*   pData,
-                                                         ref int pcbSize,
-                                                         int     cbSizeHeader);
+        internal static extern unsafe uint GetRawInputData(IntPtr  hRawInput,
+                                                           uint    riCmd,
+                                                           byte*   pData,
+                                                           ref int pcbSize,
+                                                           int     cbSizeHeader);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport("user32.dll", SetLastError = true)]

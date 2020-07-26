@@ -79,9 +79,9 @@ namespace Exomia.Framework.Content
 
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (a.FullName.StartsWith("System")) { continue; }
-                if (a.FullName.StartsWith("SharpDX")) { continue; }
-                if (a.FullName.StartsWith("ms")) { continue; }
+                if (a.FullName.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)) { continue; }
+                if (a.FullName.StartsWith("SharpDX", StringComparison.InvariantCultureIgnoreCase)) { continue; }
+                if (a.FullName.StartsWith("ms", StringComparison.InvariantCultureIgnoreCase)) { continue; }
 
                 foreach (Type t in a.GetTypes())
                 {
@@ -102,11 +102,10 @@ namespace Exomia.Framework.Content
                             ContentResolverAttribute contentResolverAttribute
                                 = t.GetCustomAttribute<ContentResolverAttribute>(false);
                             resolvers.Add(
-                                (
-                                    contentResolverAttribute?.Order ?? 0,
-                                    System.Activator.CreateInstance(t)
-                                        as IContentResolver ?? throw new TypeLoadException(
-                                        $"can not create an instance of {nameof(IContentResolver)} from type: {t.AssemblyQualifiedName}")));
+                                (contentResolverAttribute?.Order ?? 0,
+                                 System.Activator.CreateInstance(t)
+                                     as IContentResolver ?? throw new TypeLoadException(
+                                     $"Can't create an instance of {nameof(IContentResolver)} from type: {t.AssemblyQualifiedName}")));
                         }
 
                         if (typeof(IEmbeddedResourceResolver).IsAssignableFrom(t))
@@ -114,11 +113,10 @@ namespace Exomia.Framework.Content
                             ContentResolverAttribute contentResolverAttribute
                                 = t.GetCustomAttribute<ContentResolverAttribute>(false);
                             embeddedResourceResolvers.Add(
-                                (
-                                    contentResolverAttribute?.Order ?? 0,
-                                    System.Activator.CreateInstance(t)
-                                        as IEmbeddedResourceResolver ?? throw new TypeLoadException(
-                                        $"can not create an instance of {nameof(IEmbeddedResourceResolver)} from type: {t.AssemblyQualifiedName}")));
+                                (contentResolverAttribute?.Order ?? 0,
+                                 System.Activator.CreateInstance(t)
+                                     as IEmbeddedResourceResolver ?? throw new TypeLoadException(
+                                     $"Can't create an instance of {nameof(IEmbeddedResourceResolver)} from type: {t.AssemblyQualifiedName}")));
                         }
                     }
                 }

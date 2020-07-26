@@ -20,7 +20,7 @@ using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics.Shader
 {
-    static class ShaderHelper
+    static class ShaderFileLoader
     {
         private const string SHADER_DEFINITION     = "/** Shaderdefinition";
         private const string SHADER_DEFINITION_END = "*/";

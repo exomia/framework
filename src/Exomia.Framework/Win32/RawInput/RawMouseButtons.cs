@@ -19,7 +19,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Enumeration containing the button data for raw mouse input.
     /// </summary>
     [Flags]
-    public enum RawMouseButtons : ushort
+    enum RawMouseButtons : ushort
     {
         /// <summary>No button.</summary>
         None = 0,

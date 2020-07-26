@@ -16,7 +16,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Value type for raw input from a keyboard.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct RAWINPUTKEYBOARD
+    struct RAWINPUTKEYBOARD
     {
         /// <summary>Scan code for key depression.</summary>
         public ushort MakeCode;

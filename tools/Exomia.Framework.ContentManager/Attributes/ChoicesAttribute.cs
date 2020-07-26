@@ -24,10 +24,10 @@ namespace Exomia.Framework.ContentManager.Attributes
         /// <value>
         ///     The entries.
         /// </value>
-        public string[] Entries { get; }
+        public object[] Entries { get; }
 
         /// <inheritdoc />
-        public ChoicesAttribute(params string[] entries)
+        public ChoicesAttribute(params object[] entries)
         {
             Entries = entries;
         }

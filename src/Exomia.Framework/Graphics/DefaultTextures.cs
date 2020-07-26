@@ -10,7 +10,6 @@
 
 using System;
 using System.IO;
-using Exomia.Framework.Content;
 using SharpDX;
 using SharpDX.Direct3D11;
 
@@ -24,9 +23,8 @@ namespace Exomia.Framework.Graphics
         private const string WHITE_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 
-        private static Texture?  s_whiteTexture;
-        private static Texture2? s_whiteTexture2;
-        private static bool      s_isInitialized, s_isInitialized2;
+        private static Texture? s_whiteTexture;
+        private static bool     s_isInitialized;
 
         /// <summary>
         ///     Gets the white texture.
@@ -37,17 +35,6 @@ namespace Exomia.Framework.Graphics
         public static Texture WhiteTexture
         {
             get { return s_whiteTexture!; }
-        }
-
-        /// <summary>
-        ///     Gets the white texture 2.
-        /// </summary>
-        /// <value>
-        ///     The white texture 2.
-        /// </value>
-        public static Texture2 WhiteTexture2
-        {
-            get { return s_whiteTexture2!; }
         }
 
         /// <summary>
@@ -65,24 +52,6 @@ namespace Exomia.Framework.Graphics
                 {
                     s_whiteTexture = Texture.Load(device, ms) ??
                                      throw new NullReferenceException($"{nameof(WhiteTexture)}");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Initializes the textures 2.
-        /// </summary>
-        /// <param name="manager"> The manager. </param>
-        internal static void InitializeTextures2(ITexture2ContentManager manager)
-        {
-            if (!s_isInitialized2)
-            {
-                s_isInitialized2 = true;
-                s_disposedValue  = false;
-
-                using (Stream stream = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
-                {
-                    s_whiteTexture2 = manager.AddTexture(stream, "WHITE_TEXTURE_BASE64");
                 }
             }
         }
@@ -109,12 +78,8 @@ namespace Exomia.Framework.Graphics
                 if (disposing)
                 {
                     Utilities.Dispose(ref s_whiteTexture);
-                    Utilities.Dispose(ref s_whiteTexture2);
                 }
-
-                s_isInitialized  = false;
-                s_isInitialized2 = false;
-
+                s_isInitialized = false;
                 s_disposedValue = true;
             }
         }

@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
@@ -19,8 +18,6 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
     [DefaultProperty("Name")]
     class PropertyGridItem
     {
-        private readonly Func<string> _nameProvider;
-
         /// <summary>
         ///     The name of this project.
         /// </summary>
@@ -30,18 +27,17 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Common")]
         [Description("The name of this project.")]
         [ReadOnly(true)]
-        public string Name
-        {
-            get { return _nameProvider(); }
-        }
+        public string? Name { get; set; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PropertyGridItem" /> class.
+        ///     The virtual path to this item.
         /// </summary>
-        /// <param name="nameProvider"> The name provider. </param>
-        public PropertyGridItem(Func<string> nameProvider)
-        {
-            _nameProvider = nameProvider;
-        }
+        /// <value>
+        ///     The full pathname of the virtual file.
+        /// </value>
+        [Category("Common")]
+        [Description("The virtual path to this item.")]
+        [ReadOnly(true)]
+        public string? VirtualPath { get; set; }
     }
 }

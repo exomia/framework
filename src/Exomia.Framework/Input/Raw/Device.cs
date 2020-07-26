@@ -19,7 +19,7 @@ namespace Exomia.Framework.Input.Raw
     /// <summary>
     ///     Provides access to raw input methods.
     /// </summary>
-    public static class Device
+    static class Device
     {
         /// <summary>
         ///     Registers the device.

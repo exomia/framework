@@ -23,7 +23,7 @@ namespace Exomia.Framework.Graphics.Camera.Controller
     public sealed class RotationController : ICameraComponent, IInitializableCameraComponent,
                                              IUpdateableCameraComponent, IInputHandler
     {
-        private const float MOUSE_SPEED_X = 1f;
+        private const float MOUSE_SPEED_X = 3f;
         private const float MOUSE_SPEED_Y = MOUSE_SPEED_X;
         private const float PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
         private       float _yaw, _pitch;

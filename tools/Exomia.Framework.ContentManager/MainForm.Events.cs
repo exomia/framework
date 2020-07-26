@@ -10,8 +10,12 @@
 
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using Exomia.Framework.ContentManager.Editor;
 using Exomia.Framework.ContentManager.Extensions;
+using Exomia.Framework.ContentManager.Fonts;
 using Exomia.Framework.ContentManager.PropertyGridItems;
 
 namespace Exomia.Framework.ContentManager
@@ -28,26 +32,50 @@ namespace Exomia.Framework.ContentManager
             Close();
         }
 
+        private void aboutExomiaFrameworkContentManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutForm().ShowDialog();
+        }
+
         private void createToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (CreateProjectForm createProjectForm = new CreateProjectForm())
             {
                 if (createProjectForm.ShowDialog() == DialogResult.OK)
                 {
-                    panel1.InvokeIfRequired(x => x.Enabled = true);
+                    if (_projectFile != null)
+                    {
+                        Json.Serialize(_projectFile.Location, _projectFile);
+                        _projectFile = null;
+                    }
+
+                    _projectFile = createProjectForm.CreateProjectFile();
+
                     treeView1.InvokeIfRequired(
                         x =>
                         {
                             x.Nodes.Clear();
-                            var node = x.Nodes.Add("-ROOT-", "Content", 0, 0);
-                            node.Tag =
-                                new ContentPropertyGridItem(
-                                    () => node.Text,
-                                    () => "/",
-                                    () => node.GetNodeCount(true),
-                                    () => "C://.../test/test/test/test/test/test/test/build");
+
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name, 0, 0);
+                            node.Tag              = _projectFile.Content;
                             node.ContextMenuStrip = rootContextMenuStrip;
                         });
+
+                    SetStatusLabel(
+                        StatusType.Info, "Project '{0}' created under {1}",
+                        Path.GetFileNameWithoutExtension(_projectFile.Name),
+                        _projectFile.Location);
+
+                    menuStrip1.InvokeIfRequired(
+                        x =>
+                        {
+                            ForAll(
+                                i => i.Enabled = true,
+                                buildToolStripMenuItem, editToolStripMenuItem,
+                                closeToolStripMenuItem, saveToolStripMenuItem);
+                        });
+
+                    panel1.InvokeIfRequired(x => x.Enabled = true);
                 }
             }
         }
@@ -69,19 +97,125 @@ namespace Exomia.Framework.ContentManager
                 SupportMultiDottedExtensions = true
             })
             {
-                if (dialog.ShowDialog() == DialogResult.OK) { }
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    _projectFile                         = Json.Deserialize<ProjectFile>(dialog.FileName);
+                    _projectFile!.Content!.ProjectName   = _projectFile.Name;
+                    _projectFile.Content.ProjectLocation = _projectFile.Location;
+                    treeView1.InvokeIfRequired(
+                        x =>
+                        {
+                            x.Nodes.Clear();
+
+                            var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name!, 0, 0);
+                            node.Tag              = _projectFile.Content;
+                            node.ContextMenuStrip = rootContextMenuStrip;
+
+                            foreach (FolderPropertyGridItem f in _projectFile
+                                                                 .Resources
+                                                                 .OfType<FolderPropertyGridItem>()
+                                                                 .OrderBy(p => p.VirtualPath!.Length))
+                            {
+                                var n = GetNodeFromPath(node, f.VirtualPath!)
+                                     ?? throw new InvalidDataException("The project file is corrupt!");
+                                int nodeCount = n.GetNodeCount(false);
+                                n = n.Nodes.Add(
+                                    $"{FOLDER_KEY_PREFIX}{nodeCount}", f.Name, 1, 1);
+                                n.Tag              = f;
+                                n.ContextMenuStrip = folderContextMenuStrip;
+                            }
+
+                            foreach (ItemPropertyGridItem i in _projectFile
+                                                               .Resources
+                                                               .OfType<ItemPropertyGridItem>())
+                            {
+                                var n = GetNodeFromPath(node, i.VirtualPath!)
+                                     ?? throw new InvalidDataException("The project file is corrupt!");
+                                int nodeCount = n.GetNodeCount(false);
+                                n = n.Nodes.Add(
+                                    $"{FONT_KEY_PREFIX}{nodeCount}", i.Name, 4, 4);
+                                n.Tag              = i;
+                                n.ContextMenuStrip = itemContextMenuStrip;
+                            }
+
+                            x.ExpandAll();
+                        });
+
+                    SetStatusLabel(
+                        StatusType.Info, "Project '{0}' from {1} opened!",
+                        Path.GetFileNameWithoutExtension(_projectFile!.Name),
+                        _projectFile.Location);
+
+                    menuStrip1.InvokeIfRequired(
+                        x =>
+                        {
+                            ForAll(
+                                i => i.Enabled = true,
+                                buildToolStripMenuItem, editToolStripMenuItem,
+                                closeToolStripMenuItem, saveToolStripMenuItem);
+                        });
+
+                    panel1.InvokeIfRequired(x => x.Enabled = true);
+                }
             }
         }
 
-        #endregion
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            menuStrip1.InvokeIfRequired(
+                x =>
+                {
+                    ForAll(
+                        i => i.Enabled = false,
+                        buildToolStripMenuItem, editToolStripMenuItem,
+                        closeToolStripMenuItem, saveToolStripMenuItem);
+                });
 
-        #region PropertyGrid1
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    Save();
+                    _projectFile = null;
+                    x.Nodes.Clear();
+                });
+
+            panel1.InvokeIfRequired(x => x.Enabled = false);
+
+            SetStatusLabel(StatusType.Info, "Project closed...");
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    Save();
+                });
+            SetStatusLabel(StatusType.Info, "Project '{0}' saved under {1}", _projectFile!.Name, _projectFile.Location);
+        }
+
+        private async void buildToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            await BuildAsync();
+        }
+
+        private void cancelBuildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CancelBuild();
+        }
 
         #endregion
 
         #region TreeView1
 
+        private const string ROOT_KEY_PREFIX   = "-ROOT-";
         private const string FOLDER_KEY_PREFIX = "-folder-";
+        private const string FONT_KEY_PREFIX   = "-font-";
+
+        private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            EditItem(e.Node);
+        }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -123,7 +257,18 @@ namespace Exomia.Framework.ContentManager
 
         private void treeView1_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            if (e.Label == null) { return; }
+            if (e.Label == null)
+            {
+                treeView1.BeginInvoke(new MethodInvoker(treeView1.Sort));
+                return;
+            }
+
+            string label = e.Label;
+
+            if (e.Node.Name.StartsWith(FONT_KEY_PREFIX))
+            {
+                label = Path.ChangeExtension(label, ".fnt");
+            }
 
             e.CancelEdit = true;
 
@@ -131,15 +276,17 @@ namespace Exomia.Framework.ContentManager
             {
                 while ((node = next(node)) != null)
                 {
-                    if (node.Text.Equals(e.Label ?? e.Node.Text, StringComparison.InvariantCultureIgnoreCase))
+                    if (node.Text.Equals(label, StringComparison.InvariantCultureIgnoreCase))
                     {
                         e.Node.BeginEdit();
                         SetStatusLabel(
                             StatusType.Error,
                             e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
                                 ? "A folder with the same name '{0}' already exists in '{1}'"
-                                : "A item with the same name '{0}' already exists in '{1}'",
-                            e.Label ?? e.Node.Text, e.Node.Parent.FullPath);
+                                : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
+                                    ? "A font with the same name '{0}' already exists in '{1}'"
+                                    : "A item with the same name '{0}' already exists in '{1}'",
+                            label, e.Node.Parent.FullPath);
                         return false;
                     }
                 }
@@ -150,23 +297,44 @@ namespace Exomia.Framework.ContentManager
                 Check(e.Node, n => n.PrevNode) &&
                 Check(e.Node, n => n.NextNode))
             {
-                string oldText = e.Node.Text;
-                e.Node.Text = e.Label;
+                if (e.Node.Tag is PropertyGridItem item)
+                {
+                    string oldText          = e.Node.Text;
+                    item.Name = e.Node.Text = label;
 
-                propertyGrid1.InvokeIfRequired(
-                    x =>
+                    if (e.Node.Level == 0)
                     {
-                        x.RefreshTabs(PropertyTabScope.Component);
-                        x.Refresh();
-                    });
-                SetStatusLabel(
-                    StatusType.Info,
-                    e.Node.Level == 0
-                        ? "The project '{0}' was successfully renamed to '{1}'."
-                        : e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
-                            ? "The folder '{0}' was successfully renamed to '{1}' under '{2}'"
-                            : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
-                    oldText, e.Node.Text, e.Node.Parent?.FullPath);
+                        Directory.Move(
+                            Path.Combine(_projectFile!.Location, oldText),
+                            Path.Combine(_projectFile!.Location, label));
+                    }
+                    else
+                    {
+                        Directory.Move(
+                            Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, oldText),
+                            Path.Combine(_projectFile!.Location, e.Node.Parent.FullPath, label));
+                    }
+
+                    propertyGrid1.InvokeIfRequired(
+                        x =>
+                        {
+                            x.RefreshTabs(PropertyTabScope.Component);
+                            x.Refresh();
+                        });
+
+                    SetStatusLabel(
+                        StatusType.Info,
+                        e.Node.Level == 0
+                            ? "'{0}' was successfully renamed to '{1}'."
+                            : e.Node.Name.StartsWith(FOLDER_KEY_PREFIX)
+                                ? "The folder '{0}' was successfully renamed to '{1}' under '{2}'"
+                                : e.Node.Name.StartsWith(FONT_KEY_PREFIX)
+                                    ? "The font '{0}' was successfully renamed to '{1}' under '{2}'"
+                                    : "The item '{0}' was successfully renamed to '{1}' under '{2}'",
+                        oldText, e.Node.Text, e.Node.Parent?.FullPath);
+
+                    treeView1.BeginInvoke(new MethodInvoker(treeView1.Sort));
+                }
             }
         }
 
@@ -178,24 +346,20 @@ namespace Exomia.Framework.ContentManager
             }
         }
 
-        private void treeView1_RemoveSelectedNode()
+        #endregion
+
+        #region rootContextMenuStrip & folderContextMenuStrip & itemContextMenuStrip
+
+        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             treeView1.InvokeIfRequired(
                 x =>
                 {
-                    if (x.SelectedNode.Level > 0)
-                    {
-                        x.SelectedNode.Remove();
-                        propertyGrid1.InvokeIfRequired(p => p.SelectedObject = null);
-                    }
+                    EditItem(x.SelectedNode ?? x.TopNode);
                 });
         }
 
-        #endregion
-
-        #region rootContextMenuStrip & folderContextMenuStrip
-
-        private void folderToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1.InvokeIfRequired(
                 x =>
@@ -203,15 +367,27 @@ namespace Exomia.Framework.ContentManager
                     var selectedNode = x.SelectedNode ?? x.TopNode;
                     if (selectedNode == null) { return; }
                     int selectedNodeCount = selectedNode.GetNodeCount(false);
-                    var node = selectedNode.Nodes.Add(
-                        $"{FOLDER_KEY_PREFIX}{selectedNodeCount}",
-                        $"NewFolder{selectedNodeCount}", 1, 1);
-                    node.Tag =
-                        new FolderPropertyGridItem(
-                            () => node.Text,
-                            () => $"/{node.Parent.FullPath}",
-                            () => node.GetNodeCount(true));
+
+                    DirectoryInfo di = new DirectoryInfo(
+                        Path.Combine(_projectFile!.Location, selectedNode.FullPath, $"NewFolder{selectedNodeCount}"));
+                    if (!di.Exists)
+                    {
+                        di.Create();
+                    }
+
+                    var node = selectedNode.Nodes.Add($"{FOLDER_KEY_PREFIX}{selectedNodeCount}", di.Name, 1, 1);
+                    node.Tag = _projectFile.AddResource(
+                        new FolderPropertyGridItem
+                        {
+                            Name = node.Text, VirtualPath = node.Parent.FullPath, TotalItems = 0
+                        });
                     node.ContextMenuStrip = folderContextMenuStrip;
+
+                    if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
+                    {
+                        folderPropertyGridItem.TotalItems++;
+                    }
+
                     selectedNode.Expand();
                     treeView1.SelectedNode = node;
                     node.BeginEdit();
@@ -226,6 +402,68 @@ namespace Exomia.Framework.ContentManager
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1.InvokeIfRequired(x => x.SelectedNode.BeginEdit());
+        }
+
+        private void addFontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.InvokeIfRequired(
+                x =>
+                {
+                    var selectedNode = x.SelectedNode ?? x.TopNode;
+                    if (selectedNode == null) { return; }
+                    int selectedNodeCount = selectedNode.GetNodeCount(false);
+
+                    using (var jsonEditorForm = new JsonEditorForm(
+                        new FontDescription
+                        {
+                            Name     = "Arial",
+                            Chars    = "32-126,128,130-140,142,145-156,158-255",
+                            Size     = 12,
+                            IsBold   = false,
+                            AA       = true,
+                            IsItalic = false
+                        }) { Text = "Add a new font to the project..." })
+                    {
+                        if (jsonEditorForm.ShowDialog() != DialogResult.OK)
+                        {
+                            SetStatusLabel(StatusType.Error, "The font is not added to the project!");
+                            return;
+                        }
+
+                        int i = 0;
+                        if (jsonEditorForm.Deserialize<FontDescription>(out var fntDescription))
+                        {
+                            string fntFilePath;
+                            while (File.Exists(
+                                fntFilePath = Path.Combine(
+                                    _projectFile!.Location, selectedNode.FullPath,
+                                    $"{fntDescription.Name}_{fntDescription.Size}{(i++ == 0 ? string.Empty : "_" + (i - 1))}.fnt"))
+                            ) { }
+
+                            jsonEditorForm.Save(fntFilePath);
+
+                            var node = selectedNode.Nodes.Add(
+                                $"{FONT_KEY_PREFIX}{selectedNodeCount}",
+                                Path.GetFileName(fntFilePath), 4, 4);
+                            node.Tag = _projectFile.AddResource(
+                                                       new ItemPropertyGridItem
+                                                       {
+                                                           Name = node.Text, VirtualPath = node.Parent.FullPath,
+                                                       })
+                                                   .Initialize();
+                            node.ContextMenuStrip = itemContextMenuStrip;
+
+                            if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
+                            {
+                                folderPropertyGridItem.TotalItems++;
+                            }
+
+                            selectedNode.Expand();
+                            treeView1.SelectedNode = node;
+                            node.BeginEdit();
+                        }
+                    }
+                });
         }
 
         #endregion

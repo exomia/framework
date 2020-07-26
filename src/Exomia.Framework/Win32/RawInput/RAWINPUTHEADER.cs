@@ -17,7 +17,7 @@ namespace Exomia.Framework.Win32.RawInput
     ///     Value type for a raw input header.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct RAWINPUTHEADER
+    struct RAWINPUTHEADER
     {
         /// <summary>Type of device the input is coming from.</summary>
         public int Type;

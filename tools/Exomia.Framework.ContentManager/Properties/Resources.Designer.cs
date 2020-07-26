@@ -193,6 +193,16 @@ namespace Exomia.Framework.ContentManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Edit_16x {
+            get {
+                object obj = ResourceManager.GetObject("Edit_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Exit_16x {
             get {
                 object obj = ResourceManager.GetObject("Exit_16x", resourceCulture);
@@ -206,6 +216,16 @@ namespace Exomia.Framework.ContentManager.Properties {
         internal static System.Drawing.Bitmap Font_16x {
             get {
                 object obj = ResourceManager.GetObject("Font_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap logo_x192 {
+            get {
+                object obj = ResourceManager.GetObject("logo_x192", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

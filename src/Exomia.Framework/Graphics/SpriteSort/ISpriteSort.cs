@@ -42,15 +42,6 @@ namespace Exomia.Framework.Graphics.SpriteSort
         void SortBf(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
 
         /// <summary>
-        ///     sort a given array of <see cref="SpriteBatch2.SpriteInfo" /> into a given indirect index array
-        /// </summary>
-        /// <param name="sInfo"></param>
-        /// <param name="arr"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        void SortBf(SpriteBatch2.SpriteInfo[] sInfo, int[] arr, int offset, int length);
-
-        /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
         /// </summary>
         /// <param name="sInfo"></param>
@@ -58,14 +49,5 @@ namespace Exomia.Framework.Graphics.SpriteSort
         /// <param name="offset"></param>
         /// <param name="length"></param>
         void SortFb(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
-
-        /// <summary>
-        ///     sort a given array of <see cref="SpriteBatch2.SpriteInfo" /> into a given indirect index array
-        /// </summary>
-        /// <param name="sInfo"></param>
-        /// <param name="arr"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        void SortFb(SpriteBatch2.SpriteInfo[] sInfo, int[] arr, int offset, int length);
     }
 }

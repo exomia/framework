@@ -8,19 +8,30 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using Exomia.Framework.ContentManager.Attributes;
-using Exomia.Framework.ContentManager.Converters;
+using Exomia.Framework.ContentManager.PropertyGridItems.Editor;
+using Newtonsoft.Json;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems
 {
     /// <summary>
-    ///     A content property grid item.
+    ///     A content property grid item. This class cannot be inherited.
     /// </summary>
-    class ContentPropertyGridItem : FolderPropertyGridItem
+    sealed class ContentPropertyGridItem : FolderPropertyGridItem
     {
-        private readonly Func<string> _locationProvider;
+        /// <summary>
+        ///     The name of the project.
+        /// </summary>
+        /// <value>
+        ///     The name.
+        /// </value>
+        [Category("Common")]
+        [Description("The name of the project.")]
+        [ReadOnly(true)]
+        [JsonIgnore]
+        public string? ProjectName { get; set; }
 
         /// <summary>
         ///     The location of the project.
@@ -31,10 +42,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         [Category("Common")]
         [Description("The location of the project.")]
         [ReadOnly(true)]
-        public string Location
-        {
-            get { return _locationProvider(); }
-        }
+        [JsonIgnore]
+        public string? ProjectLocation { get; set; }
 
         /// <summary>
         ///     The build output folder.
@@ -44,35 +53,8 @@ namespace Exomia.Framework.ContentManager.PropertyGridItems
         /// </value>
         [Category("Settings")]
         [Description("The build output folder.")]
-        public string? OutputFolder { get; set; }
-
-        /// <summary>
-        ///     TODO: REMOVE.
-        /// </summary>
-        /// <value>
-        ///     The test.
-        /// </value>
-        [Category("test")]
-        [Description("...")]
-        [ReadOnly(false)]
-        [TypeConverter(typeof(ChoicesStringConverter))]
-        [Choices("a", "b", "c")]
-        public string? Test { get; set; }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentPropertyGridItem" /> class.
-        /// </summary>
-        /// <param name="nameProvider">        The name provider. </param>
-        /// <param name="virtualPathProvider"> The virtual path provider. </param>
-        /// <param name="totalItemsProvider">  The total items provider. </param>
-        /// <param name="locationProvider">    The location provider. </param>
-        public ContentPropertyGridItem(Func<string> nameProvider,
-                                       Func<string> virtualPathProvider,
-                                       Func<int>    totalItemsProvider,
-                                       Func<string> locationProvider)
-            : base(nameProvider, virtualPathProvider, totalItemsProvider)
-        {
-            _locationProvider = locationProvider;
-        }
+        [FolderNameEditorTitle("Select the build output folder.")]
+        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+        public string OutputFolder { get; set; } = "build";
     }
 }

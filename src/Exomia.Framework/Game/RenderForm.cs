@@ -10,6 +10,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Input;
 using Exomia.Framework.Input.Raw;
@@ -37,7 +38,7 @@ namespace Exomia.Framework.Game
         private IntPtr      _hWnd;
 
         private string          _windowTitle;
-        private Index2          _size;
+        private VectorI2        _size;
         private FormWindowState _windowState = FormWindowState.Normal;
         private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
 
@@ -47,7 +48,7 @@ namespace Exomia.Framework.Game
         /// <value>
         ///     The size.
         /// </value>
-        public Index2 Size
+        public VectorI2 Size
         {
             get { return _size; }
             set
@@ -196,7 +197,7 @@ namespace Exomia.Framework.Game
                 cbClsExtra    = 0,
                 cbWndExtra    = 0,
                 hInstance     = Kernel32.GetModuleHandle(null!),
-                hIcon         = IntPtr.Zero,
+                hIcon         = Shell32.ExtractIcon(IntPtr.Zero, Assembly.GetExecutingAssembly().Location, 0),
                 hCursor       = User32.LoadCursor(IntPtr.Zero, IDC_ARROW),
                 lpszMenuName  = null!,
                 lpszClassName = LP_CLASS_NAME,
