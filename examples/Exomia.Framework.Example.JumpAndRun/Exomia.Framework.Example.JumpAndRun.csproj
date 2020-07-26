@@ -3,10 +3,10 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>exomia</Authors>
-    <Description>an example project</Description>
+    <Description>an example jump and run project</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
     <Version>1.0.0.0</Version>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>AnyCPU;</Platforms>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -39,19 +39,13 @@
     <PackageId>$(MSBuildProjectName)</PackageId>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
-    <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
-    <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
-  </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Exomia.Framework\Exomia.Framework.csproj" />
+    <PackageReference Include="Exomia.Framework" Version="1.4.0" />
+    <PackageReference Include="Exomia.ECS" Version="1.2.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
-    <None Include="..\..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
-
 </Project>

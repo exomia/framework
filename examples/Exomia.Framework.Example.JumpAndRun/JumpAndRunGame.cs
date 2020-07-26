@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using Exomia.ECS;
 using Exomia.Framework.Components;
 using Exomia.Framework.Example.JumpAndRun.Scenes;
 using Exomia.Framework.Game;
@@ -20,7 +21,8 @@ namespace Exomia.Framework.Example.JumpAndRun
 {
     class JumpAndRunGame : Game.Game
     {
-        private SceneManager? _manager;
+        private SceneManager?  _manager;
+        private EntityManager? _entityManager;
 
         public JumpAndRunGame()
         {
@@ -75,6 +77,9 @@ namespace Exomia.Framework.Example.JumpAndRun
                     {
                         Enabled = true, Visible = true, DrawOrder = 1, UpdateOrder = 1
                     }));
+
+            _entityManager = Services.AddService(
+                new EntityManager { Enabled = true, Visible = true, DrawOrder = 1, UpdateOrder = 1 });
         }
 
         /// <inheritdoc />
