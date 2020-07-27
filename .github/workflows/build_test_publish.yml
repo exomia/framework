@@ -1,4 +1,4 @@
-name: check build success and run tests
+name: build, test & publish
 on: 
     push:
         branches:
@@ -7,6 +7,8 @@ on:
         branches:
             - master
             - development
+    release:
+        types: [published]
 jobs:
   build:
     name: build release and debug
@@ -58,20 +60,25 @@ jobs:
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=x86
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=x64
   publish:
-    name: build, pack & publish release
+    name: publish release or debug
     needs: [test]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/tags' }}
     runs-on: windows-latest
     steps:    
     - uses: actions/checkout@v2
+    - name: extract tag version & release or debug
+      run: |
+        echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
+        grep -q '-' <<< ${GITHUB_REF#refs/tags/v*} && echo ::set-env name=TAG_CONFIGURATION::Debug || echo ::set-env name=TAG_CONFIGURATION::Release
     - uses: actions/setup-dotnet@v1   
       with:
         dotnet-version: 3.1.300
+    - name: publish release or debug
       env:
         DOTNET_NOLOGO: 1
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
-    - run: |
-        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=AnyCPU
-        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x86
-        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x64
+      run: |
+        dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=AnyCPU -p:Version=$TAG_VERSION
+        dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=x86 -p:Version=$TAG_VERSION
+        dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=x64 -p:Version=$TAG_VERSION
         dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.EXOMIA_NUGET_API_KEY_PUSH }}

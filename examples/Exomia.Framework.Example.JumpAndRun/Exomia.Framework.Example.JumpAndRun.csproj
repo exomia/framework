@@ -40,12 +40,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Exomia.Framework" Version="1.4.0" />
-    <PackageReference Include="Exomia.ECS" Version="1.2.0" />
+    <PackageReference Include="Exomia.Framework" Version="1.4.1" />
+    <PackageReference Include="Exomia.ECS" Version="1.4.1" />
   </ItemGroup>
   
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Assets\players\" />
+    <Folder Include="Systems\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="assets\maps\001\001.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\maps\001\map_001.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

@@ -2,8 +2,8 @@
 
 namespace Exomia.Framework.Example.JumpAndRun.Components
 {
-    class PositionComponent
+    class BodyComponent
     {
-        public Vector2 Position;
+        public Rectangle Body;
     }
 }
