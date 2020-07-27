@@ -18,6 +18,25 @@ namespace Exomia.Framework
     public interface IServiceRegistry
     {
         /// <summary>
+        ///     Creates a scope.
+        /// </summary>
+        /// <param name="scope"> The scope. </param>
+        /// <returns>
+        ///     The new scope.
+        /// </returns>
+        IServiceRegistry CreateScope(string scope);
+        
+        /// <summary>
+        ///     Attempts to get an IServiceRegistry from the given scope.
+        /// </summary>
+        /// <param name="scope">    The scope. </param>
+        /// <param name="registry"> [out] The registry. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        bool TryGetScope(string scope, out IServiceRegistry registry);
+
+        /// <summary>
         ///     Adds a service to this service provider.
         /// </summary>
         /// <param name="type">     The type of service to add. </param>
@@ -49,10 +68,8 @@ namespace Exomia.Framework
         ///     The service instance.
         /// </returns>
         /// <exception cref="ArgumentNullException"> Is thrown when the type is null. </exception>
-        /// <exception cref="ArgumentException">
-        ///     Is thrown when the corresponding service is not
-        ///     registered.
-        /// </exception>
+        /// <exception cref="ArgumentException">     Is thrown when the corresponding service is not
+        ///                                          registered. </exception>
         /// <remarks>
         ///     This method will throw an exception if the service is not registered.
         /// </remarks>
@@ -67,10 +84,8 @@ namespace Exomia.Framework
         ///     The service instance.
         /// </returns>
         /// <exception cref="ArgumentNullException"> Is thrown when the type is null. </exception>
-        /// <exception cref="ArgumentException">
-        ///     Is thrown when the corresponding service is not
-        ///     registered.
-        /// </exception>
+        /// <exception cref="ArgumentException">     Is thrown when the corresponding service is not
+        ///                                          registered. </exception>
         /// <remarks>
         ///     This method will throw an exception if the service is not registered.
         /// </remarks>

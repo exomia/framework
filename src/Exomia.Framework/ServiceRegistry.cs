@@ -18,14 +18,34 @@ namespace Exomia.Framework
     /// </summary>
     sealed class ServiceRegistry : IServiceRegistry
     {
-        private readonly Dictionary<Type, object> _registeredServices;
+        private readonly Dictionary<string, IServiceRegistry> _scopedServiceRegistries;
+        private readonly Dictionary<Type, object>             _registeredServices;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServiceRegistry" /> class.
         /// </summary>
         public ServiceRegistry()
         {
-            _registeredServices = new Dictionary<Type, object>();
+            _registeredServices      = new Dictionary<Type, object>();
+            _scopedServiceRegistries = new Dictionary<string, IServiceRegistry>();
+        }
+
+        /// <inheritdoc />
+        public IServiceRegistry CreateScope(string scope)
+        {
+            lock (_scopedServiceRegistries)
+            {
+                ServiceRegistry registry = new ServiceRegistry();
+                _scopedServiceRegistries.Add(scope, registry);
+                return registry;
+            }
+        }
+
+        /// <inheritdoc />
+        public bool TryGetScope(string scope, out IServiceRegistry registry)
+        {
+            // ReSharper disable once InconsistentlySynchronizedField
+            return _scopedServiceRegistries.TryGetValue(scope, out registry);
         }
 
         /// <inheritdoc />

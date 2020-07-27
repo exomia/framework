@@ -193,7 +193,6 @@
     <IncludeSymbols>true</IncludeSymbols>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageVersion Condition="'$(cVersion)'!=''">$(Version)-$(cVersion)</PackageVersion>
     <Deterministic>True</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)'=='true'">True</ContinuousIntegrationBuild>
   </PropertyGroup>

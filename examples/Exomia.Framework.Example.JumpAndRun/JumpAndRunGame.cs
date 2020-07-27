@@ -15,6 +15,7 @@ using Exomia.Framework.Example.JumpAndRun.Scenes;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using Exomia.Framework.Scene;
+using SharpDX;
 using SharpDX.DXGI;
 
 namespace Exomia.Framework.Example.JumpAndRun
@@ -22,7 +23,11 @@ namespace Exomia.Framework.Example.JumpAndRun
     class JumpAndRunGame : Game.Game
     {
         private SceneManager?  _manager;
+
+#pragma warning disable IDE0052 // Remove unread private members
+        // ReSharper disable once NotAccessedField.Local
         private EntityManager? _entityManager;
+#pragma warning restore IDE0052 // Remove unread private members
 
         public JumpAndRunGame()
         {
@@ -47,7 +52,7 @@ namespace Exomia.Framework.Example.JumpAndRun
             parameters.Width                  = 1024;
             parameters.Height                 = 768;
             parameters.DisplayType            = DisplayType.Window;
-            parameters.IsMouseVisible         = false;
+            parameters.IsMouseVisible         = true;
             parameters.Rational               = new Rational(140, 1);
             parameters.UseVSync               = false;
             parameters.WindowAssociationFlags = WindowAssociationFlags.IgnorePrintScreen;
@@ -58,6 +63,7 @@ namespace Exomia.Framework.Example.JumpAndRun
         /// <inheritdoc />
         protected override void OnInitialize()
         {
+            Content.RootDirectory = "assets";
             Services.GetService<IInputDevice>()
                     .RegisterKeyDown(
                         (value, modifiers) =>
@@ -94,7 +100,7 @@ namespace Exomia.Framework.Example.JumpAndRun
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear();
+            GraphicsDevice.Clear(Color.White);
             base.Draw(gameTime);
         }
     }
