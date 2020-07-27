@@ -62,7 +62,7 @@ jobs:
   publish:
     name: publish release or debug
     needs: [test]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/tags' }}
+    if: ${{ github.event_name == 'release' }}
     runs-on: windows-latest
     steps:    
     - uses: actions/checkout@v2
