@@ -83,3 +83,4 @@ jobs:
         dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=x86 -p:Version=$TAG_VERSION
         dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=x64 -p:Version=$TAG_VERSION
         dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.EXOMIA_NUGET_API_KEY_PUSH }}
+      shell: bash
