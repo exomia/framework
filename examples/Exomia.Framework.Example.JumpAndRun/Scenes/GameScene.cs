@@ -179,14 +179,14 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
         {
             if (_player.Get(out PositionComponent c))
             {
-                if (keyValue == 65) // a
+                switch (keyValue)
                 {
-                    _directionL = -1;
-                }
-
-                if (keyValue == 68) // d
-                {
-                    _directionR = +1;
+                    case 65: // a
+                        _directionL = -1;
+                        break;
+                    case 68: // d
+                        _directionR = +1;
+                        break;
                 }
             }
             return false;
@@ -194,17 +194,17 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
 
         private bool OnKeyUp(int keyValue, KeyModifier modifiers)
         {
-            if (keyValue == 32 && _player.Get(out VelocityComponent vc)) // space
+            switch (keyValue)
             {
-                vc.Velocity.Y -= 500;
-            }
-            if (keyValue == 65) // a
-            {
-                _directionL = 0;
-            }
-            if (keyValue == 68) // d
-            {
-                _directionR = 0;
+                case 32 when _player.Get(out VelocityComponent vc): // space
+                    vc.Velocity.Y -= 500;
+                    break;
+                case 65: // a
+                    _directionL = 0;
+                    break;
+                case 68: // d
+                    _directionR = 0;
+                    break;
             }
             return false;
         }
