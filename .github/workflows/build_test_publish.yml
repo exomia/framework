@@ -71,10 +71,15 @@ jobs:
         echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
         grep -q '-' <<< ${GITHUB_REF#refs/tags/v*} && echo ::set-env name=TAG_CONFIGURATION::Debug || echo ::set-env name=TAG_CONFIGURATION::Release
       shell: bash
+    - name: extraction result
+      run: |
+        echo tag version: $TAG_VERSION
+        echo tag configuration: $TAG_CONFIGURATION
+      shell: bash
     - uses: actions/setup-dotnet@v1   
       with:
         dotnet-version: 3.1.300
-    - name: publish release or debug
+    - name: publish ${{ github.repository }} [v${{ env.TAG_VERSION }} | ${{ env.TAG_CONFIGURATION }}]
       env:
         DOTNET_NOLOGO: 1
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
