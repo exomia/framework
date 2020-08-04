@@ -13,6 +13,7 @@ using Exomia.ECS;
 using Exomia.ECS.Events;
 using Exomia.Framework.Example.JumpAndRun.Components;
 using Exomia.Framework.Example.JumpAndRun.Renderer;
+using Exomia.Framework.Example.JumpAndRun.Systems;
 using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using Exomia.Framework.Scene;
@@ -37,8 +38,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
             : base(key)
         {
             _mapRenderer = Add(
-                new MapRenderer(
-                    "mapRenderer") { DrawOrder = 1, Visible = true });
+                new MapRenderer("mapRenderer") { DrawOrder = 1, Visible = true });
         }
 
         /// <inheritdoc />
@@ -61,7 +61,13 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
             _entityManager = Add(
                 new EntityManager { Enabled = true, Visible = true, DrawOrder = 0, UpdateOrder = 0 });
 
-            _entityManager.Register("mapRenderer", new O<MapRenderer>(GetMapRender));
+            if (!_entityManager.TryGetSystem(out ICollisionSystem cs))
+            {
+                throw new NotImplementedException(
+                    $"No registered system implementing the {typeof(ICollisionSystem)} found!");
+            }
+
+            cs.MapRenderer = _mapRenderer;
 
             _player = _entityManager.Create(
                 (m, e) =>
@@ -79,7 +85,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
                      .Add<GravityComponent>(
                          e, true, c =>
                          {
-                             c.Gravity = 700; //pixels per sec
+                             c.Gravity = 900; //pixels per sec
                          })
                      .Add<BodyComponent>(
                          e, true, c =>
@@ -170,11 +176,6 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
             }
         }
 
-        private void GetMapRender(out MapRenderer render)
-        {
-            render = _mapRenderer;
-        }
-
         private bool OnKeyDown(int keyValue, KeyModifier modifiers)
         {
             if (_player.Get(out PositionComponent c))
@@ -197,7 +198,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
             switch (keyValue)
             {
                 case 32 when _player.Get(out VelocityComponent vc): // space
-                    vc.Velocity.Y -= 500;
+                    vc.Velocity.Y -= 450;
                     break;
                 case 65: // a
                     _directionL = 0;

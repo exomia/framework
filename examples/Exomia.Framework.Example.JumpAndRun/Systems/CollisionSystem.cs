@@ -18,23 +18,28 @@ using SharpDX;
 
 namespace Exomia.Framework.Example.JumpAndRun.Systems
 {
+    interface ICollisionSystem
+    {
+        MapRenderer MapRenderer { get; set; }
+    }
+    
     [EntitySystemConfiguration(
         nameof(CollisionSystem), EntitySystemType.Update, After = new[] { nameof(PhysicSystem) })]
-    class CollisionSystem : EntitySystemBaseR2<PositionComponent, VelocityComponent>
+    class CollisionSystem : EntitySystemBaseR2<PositionComponent, VelocityComponent>, ICollisionSystem
     {
         private MapRenderer _mapRenderer = null!;
-
+        
+        /// <inheritdoc />
+        public MapRenderer MapRenderer
+        {
+            get { return _mapRenderer; }
+            set { _mapRenderer = value; }
+        }
+        
         /// <inheritdoc />
         public CollisionSystem(EntityManager manager)
             : base(manager) { }
-
-        /// <inheritdoc />
-        public override bool Begin()
-        {
-            _manager.Get("mapRenderer", out _mapRenderer);
-            return base.Begin();
-        }
-
+        
         /// <inheritdoc />
         protected override void Tick(GameTime gameTime, Entity entity, PositionComponent c1, VelocityComponent c2)
         {

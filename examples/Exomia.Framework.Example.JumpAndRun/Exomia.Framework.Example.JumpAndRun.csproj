@@ -41,7 +41,7 @@
 
   <ItemGroup>
     <PackageReference Include="Exomia.Framework" Version="1.4.1" />
-    <PackageReference Include="Exomia.ECS" Version="1.5.2" />
+    <PackageReference Include="Exomia.ECS" Version="1.5.3-debug.1" />
   </ItemGroup>
   
   <ItemGroup>
