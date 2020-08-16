@@ -19,7 +19,7 @@ using SharpDX;
 namespace Exomia.Framework.Example.JumpAndRun.Systems
 {
     [EntitySystemConfiguration(nameof(RenderSystem), EntitySystemType.Draw)]
-    class RenderSystem : EntitySystemBaseR2<PositionComponent, BodyComponent>
+    sealed class RenderSystem : EntitySystemBaseR2<PositionComponent, BodyComponent>
     {
         private SpriteBatch _spriteBatch = null!;
 

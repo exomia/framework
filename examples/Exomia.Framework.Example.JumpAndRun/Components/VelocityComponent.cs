@@ -12,7 +12,7 @@ using SharpDX;
 
 namespace Exomia.Framework.Example.JumpAndRun.Components
 {
-    class VelocityComponent
+    sealed class VelocityComponent
     {
         public Vector2 Velocity;
     }

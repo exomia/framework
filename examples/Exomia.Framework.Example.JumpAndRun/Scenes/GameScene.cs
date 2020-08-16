@@ -9,12 +9,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using Exomia.ECS;
-using Exomia.ECS.Events;
 using Exomia.Framework.Example.JumpAndRun.Components;
 using Exomia.Framework.Example.JumpAndRun.Renderer;
 using Exomia.Framework.Example.JumpAndRun.Systems;
-using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using Exomia.Framework.Scene;
 using SharpDX;
@@ -23,15 +22,14 @@ using SharpDX;
 
 namespace Exomia.Framework.Example.JumpAndRun.Scenes
 {
-    class GameScene : SceneBase, IInputHandler
+    sealed class GameScene : SceneBase, IInputHandler
     {
         private readonly MapRenderer   _mapRenderer;
         private          EntityManager _entityManager = null!;
 
         // ReSharper disable once NotAccessedField.Local
         private Entity _player = null!;
-        private int    _directionR;
-        private int    _directionL;
+        private InputComponent _inputComponent = null!;
 
         /// <inheritdoc />
         public GameScene(string key)
@@ -40,21 +38,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
             _mapRenderer = Add(
                 new MapRenderer("mapRenderer") { DrawOrder = 1, Visible = true });
         }
-
-        /// <inheritdoc />
-        public void RegisterInput(IInputDevice device)
-        {
-            device.RegisterKeyDown(OnKeyDown);
-            device.RegisterKeyUp(OnKeyUp);
-        }
-
-        /// <inheritdoc />
-        public void UnregisterInput(IInputDevice device)
-        {
-            device.UnregisterKeyUp(OnKeyDown);
-            device.UnregisterKeyUp(OnKeyUp);
-        }
-
+        
         /// <inheritdoc />
         protected override void OnInitialize(IServiceRegistry registry)
         {
@@ -92,8 +76,14 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
                          {
                              c.Body   = new RectangleF(-16f, -48f, 32f, 48f);
                              c.Origin = new Vector2(0.5f, 1f);
-                         });
+                         })
+                     .Add<InputComponent>(e, true);
                 });
+
+            if (!_player.Get(out _inputComponent))
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         /// <inheritdoc />
@@ -167,29 +157,31 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
         }
 
         /// <inheritdoc />
-        protected override void OnUpdate(GameTime gameTime)
+        public void RegisterInput(IInputDevice device)
         {
-            int direction = _directionL + _directionR;
-            if (direction != 0 && _player.Get(out PositionComponent c))
-            {
-                c.Position.X += direction * 250 * gameTime.DeltaTimeS;
-            }
+            device.RegisterKeyDown(OnKeyDown);
+            device.RegisterKeyUp(OnKeyUp);
+        }
+
+        /// <inheritdoc />
+        public void UnregisterInput(IInputDevice device)
+        {
+            device.UnregisterKeyUp(OnKeyDown);
+            device.UnregisterKeyUp(OnKeyUp);
         }
 
         private bool OnKeyDown(int keyValue, KeyModifier modifiers)
         {
-            if (_player.Get(out PositionComponent c))
+            switch (keyValue)
             {
-                switch (keyValue)
-                {
-                    case 65: // a
-                        _directionL = -1;
-                        break;
-                    case 68: // d
-                        _directionR = +1;
-                        break;
-                }
+                case 65: // a
+                    _inputComponent.Left = true;
+                    break;
+                case 68: // d
+                    _inputComponent.Right = true;
+                    break;
             }
+
             return false;
         }
 
@@ -197,14 +189,14 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
         {
             switch (keyValue)
             {
-                case 32 when _player.Get(out VelocityComponent vc): // space
-                    vc.Velocity.Y -= 450;
+                case 32: // space
+                    _inputComponent.Jump = true;
                     break;
                 case 65: // a
-                    _directionL = 0;
+                    _inputComponent.Left = false;
                     break;
                 case 68: // d
-                    _directionR = 0;
+                    _inputComponent.Right = false;
                     break;
             }
             return false;

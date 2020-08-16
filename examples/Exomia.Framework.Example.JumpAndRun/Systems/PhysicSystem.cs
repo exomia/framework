@@ -17,7 +17,7 @@ using Exomia.Framework.Game;
 namespace Exomia.Framework.Example.JumpAndRun.Systems
 {
     [EntitySystemConfiguration(nameof(PhysicSystem), EntitySystemType.Update)]
-    class PhysicSystem : EntitySystemBaseR3<PositionComponent, VelocityComponent, GravityComponent>
+    sealed class PhysicSystem : EntitySystemBaseR3<PositionComponent, VelocityComponent, GravityComponent>
     {
         /// <inheritdoc />
         public PhysicSystem(EntityManager manager)

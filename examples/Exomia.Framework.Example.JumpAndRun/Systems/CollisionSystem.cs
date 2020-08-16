@@ -25,7 +25,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Systems
     
     [EntitySystemConfiguration(
         nameof(CollisionSystem), EntitySystemType.Update, After = new[] { nameof(PhysicSystem) })]
-    class CollisionSystem : EntitySystemBaseR2<PositionComponent, VelocityComponent>, ICollisionSystem
+    sealed class CollisionSystem : EntitySystemBaseR2<PositionComponent, VelocityComponent>, ICollisionSystem
     {
         private MapRenderer _mapRenderer = null!;
         
@@ -54,7 +54,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Systems
                 return;
             }
 
-            if (cx > map.Grid.Columns || cy > map.Grid.Row)
+            if (cx >= map.Grid.Columns || cy >= map.Grid.Row)
             {
                 c2.Velocity = Vector2.Zero;
                 return;

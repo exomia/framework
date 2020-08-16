@@ -13,7 +13,7 @@ using Exomia.ECS.Attributes;
 namespace Exomia.Framework.Example.JumpAndRun.Components
 {
     [EntityComponentConfiguration(PoolSize = 32)]
-    class GravityComponent
+    sealed class GravityComponent
     {
         public float Gravity;
     }

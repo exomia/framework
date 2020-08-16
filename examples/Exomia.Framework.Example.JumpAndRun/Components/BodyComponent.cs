@@ -14,7 +14,7 @@ using SharpDX;
 namespace Exomia.Framework.Example.JumpAndRun.Components
 {
     [EntityComponentConfiguration(PoolSize = 32)]
-    class BodyComponent
+    sealed class BodyComponent
     {
         public RectangleF Body;
         public Vector2    Origin;
