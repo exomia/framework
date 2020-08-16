@@ -1,6 +1,6 @@
 ## Information
 
-exomia/framework is a framework for building 2D and 3D games and more inspired by the XNA/Mono framework
+The exomia/framework is used for building 2D and 3D games and more inspired by the XNA/Mono framework
 
 ![](https://img.shields.io/github/issues-pr/exomia/framework.svg)
 ![](https://img.shields.io/github/issues/exomia/framework.svg)

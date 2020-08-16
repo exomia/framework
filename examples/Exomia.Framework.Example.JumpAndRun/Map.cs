@@ -1,13 +1,21 @@
-﻿using System.Reflection;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
 
 namespace Exomia.Framework.Example.JumpAndRun
 {
     class Map
     {
-        public string   MapId      { get; }
-        public Texture  Texture    { get; set; }
-        public Grid     Grid       { get; set; }
-        public string[] References { get; set; }
+        public string    MapId      { get; }
+        public Texture   Texture    { get; set; }
+        public Grid      Grid       { get; set; }
+        public string[]? References { get; set; }
 
         public Map(string mapId)
         {

@@ -283,7 +283,7 @@ namespace Exomia.Framework.Scene
         }
 
         /// <inheritdoc />
-        void ISceneInternal.Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             lock (_updateableComponent)
             {
@@ -300,18 +300,16 @@ namespace Exomia.Framework.Scene
             }
 
             _currentlyUpdateableComponent.Clear();
-
-            OnUpdate(gameTime);
         }
 
         /// <inheritdoc />
-        bool ISceneInternal.BeginDraw()
+        public virtual bool BeginDraw()
         {
-            return _visible && OnBeginDraw();
+            return _visible;
         }
 
         /// <inheritdoc />
-        void ISceneInternal.Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             lock (_drawableComponent)
             {
@@ -329,15 +327,10 @@ namespace Exomia.Framework.Scene
             }
 
             _currentlyDrawableComponent.Clear();
-
-            OnDraw(gameTime);
         }
 
         /// <inheritdoc />
-        void ISceneInternal.EndDraw()
-        {
-            OnEndDraw();
-        }
+        public virtual void EndDraw() { }
 
         /// <inheritdoc />
         void ISceneInternal.ReferenceScenesLoaded()
@@ -350,31 +343,6 @@ namespace Exomia.Framework.Scene
         {
             OnShow(comingFrom, payload);
         }
-
-        /// <summary>
-        ///     Place user code here.
-        /// </summary>
-        /// <param name="gameTime"> The game time. </param>
-        protected virtual void OnUpdate(GameTime gameTime) { }
-
-        /// <summary>
-        ///     Place user code here.
-        /// </summary>
-        protected virtual bool OnBeginDraw()
-        {
-            return true;
-        }
-
-        /// <summary>
-        ///     Place user code here.
-        /// </summary>
-        /// <param name="gameTime"> The game time. </param>
-        protected virtual void OnDraw(GameTime gameTime) { }
-
-        /// <summary>
-        ///     Place user code here.
-        /// </summary>
-        protected virtual void OnEndDraw() { }
 
         /// <summary>
         ///     Removes the given item.

@@ -8,8 +8,6 @@
 
 #endregion
 
-using Exomia.Framework.Game;
-
 namespace Exomia.Framework.Scene
 {
     /// <summary>
@@ -24,31 +22,6 @@ namespace Exomia.Framework.Scene
         ///     The scene manager.
         /// </value>
         ISceneManager SceneManager { set; }
-
-        /// <summary>
-        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
-        /// </summary>
-        /// <returns>
-        ///     <c>true</c> if Draw should occur; <c>false</c> otherwise.
-        /// </returns>
-        bool BeginDraw();
-
-        /// <summary>
-        ///     Draws this instance.
-        /// </summary>
-        /// <param name="gameTime"> The current timing. </param>
-        void Draw(GameTime gameTime);
-
-        /// <summary>
-        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
-        /// </summary>
-        void EndDraw();
-
-        /// <summary>
-        ///     This method is called when this game component is updated.
-        /// </summary>
-        /// <param name="gameTime"> The current timing. </param>
-        void Update(GameTime gameTime);
 
         /// <summary>
         ///     Is called than the scene is showed.

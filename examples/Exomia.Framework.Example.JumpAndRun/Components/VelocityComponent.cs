@@ -8,14 +8,12 @@
 
 #endregion
 
-using Exomia.ECS.Attributes;
 using SharpDX;
 
 namespace Exomia.Framework.Example.JumpAndRun.Components
 {
-    [EntityComponentConfiguration(PoolSize = 32)]
-    sealed class PositionComponent
+    sealed class VelocityComponent
     {
-        public Vector2 Position;
+        public Vector2 Velocity;
     }
 }
