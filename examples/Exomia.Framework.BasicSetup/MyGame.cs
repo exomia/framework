@@ -1,4 +1,14 @@
-﻿using Exomia.Framework.Components;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using Exomia.Framework.Components;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using SharpDX;
@@ -10,10 +20,12 @@ namespace Exomia.Framework.BasicSetup
     /// </summary>
     sealed class MyGame : Game.Game
     {
+#pragma warning disable IDE0052 // Remove unread private members
         private SpriteBatch _spriteBatch = null!;
+#pragma warning restore IDE0052 // Remove unread private members
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MyGame"/> class.
+        ///     Initializes a new instance of the <see cref="MyGame" /> class.
         /// </summary>
         public MyGame()
             : base("MyGame")
@@ -32,7 +44,7 @@ namespace Exomia.Framework.BasicSetup
             TargetElapsedTime = 1000f / 144f; //144fps
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters)
         {
             parameters.IsMouseVisible = true;
@@ -56,7 +68,7 @@ namespace Exomia.Framework.BasicSetup
         protected override void OnLoadContent()
         {
             _spriteBatch = ToDispose(new SpriteBatch(GraphicsDevice));
-            
+
             /*
              * TODO: use base.Content to load your game content here
              */

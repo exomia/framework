@@ -20,10 +20,10 @@ namespace Exomia.Framework.BasicSetup
         /// </summary>
         private static void Main()
         {
-            using(MyGame game = new MyGame())
-			{
-				game.Run();
-			}
+            using (MyGame game = new MyGame())
+            {
+                game.Run();
+            }
         }
     }
 }
