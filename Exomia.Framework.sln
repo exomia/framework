@@ -22,7 +22,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exomia.Framework.Example.JumpAndRun", "examples\Exomia.Framework.Example.JumpAndRun\Exomia.Framework.Example.JumpAndRun.csproj", "{22EC1807-99FD-4EC1-8A86-9553CD743498}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.Example.JumpAndRun", "examples\Exomia.Framework.Example.JumpAndRun\Exomia.Framework.Example.JumpAndRun.csproj", "{22EC1807-99FD-4EC1-8A86-9553CD743498}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.BasicSetup", "examples\Exomia.Framework.BasicSetup\Exomia.Framework.BasicSetup.csproj", "{8329DE95-55FA-4176-91BF-BBC793B9EBE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +96,18 @@ Global
 		{22EC1807-99FD-4EC1-8A86-9553CD743498}.Release|x64.Build.0 = Release|Any CPU
 		{22EC1807-99FD-4EC1-8A86-9553CD743498}.Release|x86.ActiveCfg = Release|Any CPU
 		{22EC1807-99FD-4EC1-8A86-9553CD743498}.Release|x86.Build.0 = Release|Any CPU
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Debug|x64.ActiveCfg = Debug|x64
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Debug|x64.Build.0 = Debug|x64
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Debug|x86.ActiveCfg = Debug|x86
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Debug|x86.Build.0 = Debug|x86
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Release|x64.ActiveCfg = Release|x64
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Release|x64.Build.0 = Release|x64
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Release|x86.ActiveCfg = Release|x86
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +117,7 @@ Global
 		{245257B7-CD93-40BA-8E10-DF23DBB32FB8} = {C900162B-CB2F-4112-98D2-2DA9D947B7C5}
 		{E86DC9EB-8FC0-4C5D-95F2-206C67A069C2} = {65A2B0A0-B984-4A33-AFA5-A5E70862A10A}
 		{22EC1807-99FD-4EC1-8A86-9553CD743498} = {9D20989E-7C37-42F4-AE05-19CED958EA7A}
+		{8329DE95-55FA-4176-91BF-BBC793B9EBE2} = {9D20989E-7C37-42F4-AE05-19CED958EA7A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E4E52C8-D1D4-488D-8700-A3E45E8968BE}
