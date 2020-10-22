@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Content;
 using SharpDX;
@@ -61,6 +62,31 @@ namespace Exomia.Framework.Graphics.Shader
         }
 
         private readonly Dictionary<string, Technique> _techniques;
+
+
+        /// <summary>
+        ///     Gets all technique names from this shader instance.
+        /// </summary>
+        /// <returns>
+        ///     An array of technique names.
+        /// </returns>
+        public string[] GetTechniqueNames()
+        {
+            return _techniques.Keys.ToArray();
+        }
+        
+        /// <summary>
+        ///     Attempts to get a <see cref="Technique"/> from the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">      The name. </param>
+        /// <param name="technique"> [out] The technique. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        public bool TryGetTechnique(string name, out Technique technique)
+        {
+            return _techniques.TryGetValue(name, out technique);
+        }
 
         /// <summary>
         ///     Specify the technique to get
