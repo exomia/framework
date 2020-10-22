@@ -66,14 +66,14 @@ namespace Exomia.Framework.Graphics.Shader
         /// <summary>
         ///     Specify the technique to get
         /// </summary>
-        /// <param name="technique"> The technique. </param>
+        /// <param name="name"> The technique name. </param>
         /// <returns>
         ///     The <see cref="Technique" />.
         /// </returns>
-        public Technique this[string technique]
+        public Technique this[string name]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _techniques[technique]; }
+            get { return GetTechnique(name); }
         }
 
         /// <summary>
@@ -96,6 +96,7 @@ namespace Exomia.Framework.Graphics.Shader
         /// <returns>
         ///     An array of technique names.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string[] GetTechniqueNames()
         {
             return _techniques.Keys.ToArray();
@@ -104,14 +105,28 @@ namespace Exomia.Framework.Graphics.Shader
         /// <summary>
         ///     Attempts to get a <see cref="Technique" /> from the given <paramref name="name" />.
         /// </summary>
-        /// <param name="name">      The name. </param>
+        /// <param name="name"> The technique name. </param>
         /// <param name="technique"> [out] The technique. </param>
         /// <returns>
         ///     True if it succeeds, false if it fails.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetTechnique(string name, out Technique technique)
         {
             return _techniques.TryGetValue(name, out technique);
+        }
+
+        /// <summary>
+        ///     Attempts to get a <see cref="Technique" /> from the given <paramref name="name" />.
+        /// </summary>
+        /// <param name="name"> The technique name. </param>
+        /// <returns>
+        ///     The <see cref="Technique" />.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Technique GetTechnique(string name)
+        {
+            return _techniques[name];
         }
 
         /// <summary>
