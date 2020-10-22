@@ -72,7 +72,6 @@ namespace Exomia.Framework.Scene
         /// </value>
         bool Visible { get; set; }
 
-
         /// <summary>
         ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
         /// </summary>

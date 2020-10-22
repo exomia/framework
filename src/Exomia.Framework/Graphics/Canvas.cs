@@ -37,12 +37,6 @@ namespace Exomia.Framework.Graphics
             iDevice.ResizeFinished += IDevice_onResizeFinished;
         }
 
-        /// <summary>
-        ///     Device on resize finished.
-        /// </summary>
-        /// <param name="viewport"> The viewport. </param>
-        private static void IDevice_onResizeFinished(ViewportF viewport) { }
-
         #region Line
 
         /// <summary>
@@ -67,6 +61,12 @@ namespace Exomia.Framework.Graphics
         }
 
         #endregion
+
+        /// <summary>
+        ///     Device on resize finished.
+        /// </summary>
+        /// <param name="viewport"> The viewport. </param>
+        private static void IDevice_onResizeFinished(ViewportF viewport) { }
 
         #region Triangle
 

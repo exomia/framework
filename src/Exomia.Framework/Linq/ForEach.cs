@@ -51,13 +51,12 @@ namespace Exomia.Framework.Linq
         {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (action == null) { throw new ArgumentNullException(nameof(action)); }
-            
+
             int index = 0;
             foreach (T element in source)
             {
                 action(element, index++);
             }
-            
         }
 
         /// <summary>

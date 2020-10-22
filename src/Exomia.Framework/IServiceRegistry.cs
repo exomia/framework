@@ -25,7 +25,7 @@ namespace Exomia.Framework
         ///     The new scope.
         /// </returns>
         IServiceRegistry CreateScope(string scope);
-        
+
         /// <summary>
         ///     Attempts to get an IServiceRegistry from the given scope.
         /// </summary>
@@ -68,8 +68,10 @@ namespace Exomia.Framework
         ///     The service instance.
         /// </returns>
         /// <exception cref="ArgumentNullException"> Is thrown when the type is null. </exception>
-        /// <exception cref="ArgumentException">     Is thrown when the corresponding service is not
-        ///                                          registered. </exception>
+        /// <exception cref="ArgumentException">
+        ///     Is thrown when the corresponding service is not
+        ///     registered.
+        /// </exception>
         /// <remarks>
         ///     This method will throw an exception if the service is not registered.
         /// </remarks>
@@ -84,8 +86,10 @@ namespace Exomia.Framework
         ///     The service instance.
         /// </returns>
         /// <exception cref="ArgumentNullException"> Is thrown when the type is null. </exception>
-        /// <exception cref="ArgumentException">     Is thrown when the corresponding service is not
-        ///                                          registered. </exception>
+        /// <exception cref="ArgumentException">
+        ///     Is thrown when the corresponding service is not
+        ///     registered.
+        /// </exception>
         /// <remarks>
         ///     This method will throw an exception if the service is not registered.
         /// </remarks>
