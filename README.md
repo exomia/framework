@@ -20,7 +20,7 @@ PM> Install-Package Exomia.Framework
 
 ## Templates
 
-You are bored of typing boiler plate code to get things up and running?
+You are bored of typing boiler plate code to get things up and running?  
 Take a look at our [exomia/templates](https://github.com/exomia/templates) repository!
 
 ---
