@@ -18,6 +18,11 @@ The exomia/framework is used for building 2D and 3D games and more inspired by t
 PM> Install-Package Exomia.Framework
 ```
 
+## Templates
+
+You are bored of typing boiler plate code to get things up and running?
+Take a look at our [exomia/templates](https://github.com/exomia/templates) repository!
+
 ---
 ## Social
 
