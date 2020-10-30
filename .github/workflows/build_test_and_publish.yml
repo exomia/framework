@@ -2,9 +2,13 @@ name: build, test & publish
 on: 
     release:
         types: [published]
+env:  
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+    DOTNET_NOLOGO: 1
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
 jobs:
-  build:
-    name: build release and debug
+  build-windows:
+    name: build release and debug for windows
     runs-on: windows-latest
     steps: 
     - uses: actions/checkout@v2
@@ -12,24 +16,18 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: build debug
-      env:
-        DOTNET_NOLOGO: 1
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1 
       run: |
         dotnet build src/Exomia.Framework --configuration Debug --force --nologo -p:Platform=AnyCPU
         dotnet build src/Exomia.Framework --configuration Debug --force --nologo -p:Platform=x86
         dotnet build src/Exomia.Framework --configuration Debug --force --nologo -p:Platform=x64
     - name: build release
-      env:
-        DOTNET_NOLOGO: 1
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1 
       run: |
         dotnet build src/Exomia.Framework --configuration Release --force --nologo -p:Platform=AnyCPU
         dotnet build src/Exomia.Framework --configuration Release --force --nologo -p:Platform=x86
         dotnet build src/Exomia.Framework --configuration Release --force --nologo -p:Platform=x64
-  test:    
-    name: test release and debug 
-    needs: [build]
+  test-windows:    
+    name: test release and debug for windows
+    needs: [build-windows]
     runs-on: windows-latest
     steps:    
     - uses: actions/checkout@v2
@@ -37,43 +35,58 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: test debug
-      env:
-        DOTNET_NOLOGO: 1
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1
       run: |
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo -p:Platform=AnyCPU
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo -p:Platform=x86
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Debug --nologo -p:Platform=x64
     - name: test release
-      env:
-        DOTNET_NOLOGO: 1
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1
       run: |
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=AnyCPU
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=x86
         dotnet test tests/L0/Exomia.Framework.Tests --configuration Release --nologo -p:Platform=x64
-  publish:
-    name: publish release or debug
-    needs: [test]
+  publish-github-windows:
+    name: publish debug for windows on github
+    needs: [test-windows]
     if: ${{ github.event_name == 'release' }}
     runs-on: windows-latest
     steps:    
     - uses: actions/checkout@v2
-    - name: extract tag version & release or debug
-      run: |
-        echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
-        grep -q '-' <<< ${GITHUB_REF#refs/tags/v*} && echo ::set-env name=TAG_CONFIGURATION::Debug || echo ::set-env name=TAG_CONFIGURATION::Release
+    - name: extract tag version
+      run: echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
       shell: bash
     - uses: actions/setup-dotnet@v1   
       with:
-        dotnet-version: 3.1.300
-    - name: publish ${{ github.repository }} [v${{ env.TAG_VERSION }} | ${{ env.TAG_CONFIGURATION }}]
-      env:
-        DOTNET_NOLOGO: 1
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+        dotnet-version: 3.1.301
+    - name: publish ${{ github.repository }} [v${{ env.TAG_VERSION }}]
       run: |
-        dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=AnyCPU -p:Version=$TAG_VERSION
-        dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=x86 -p:Version=$TAG_VERSION
-        dotnet pack src/Exomia.Framework --configuration $TAG_CONFIGURATION --verbosity m --force --nologo -p:Platform=x64 -p:Version=$TAG_VERSION
-        dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.EXOMIA_NUGET_API_KEY_PUSH }}
+        dotnet pack --configuration Debug --verbosity m --force --nologo -p:Platform=AnyCPU -p:Version=$TAG_VERSION
+        dotnet pack --configuration Debug --verbosity m --force --nologo -p:Platform=x86 -p:Version=$TAG_VERSION
+        dotnet pack --configuration Debug --verbosity m --force --nologo -p:Platform=x64 -p:Version=$TAG_VERSION
+        for f in ./*.nupkg
+           do
+             STATUSCODE=$(curl -sSX PUT --retry 3 -o /dev/null -w "%{http_code}" -u "${{ github.repository_owner }}:${{ github.token }}" -F package=@$f https://nuget.pkg.github.com/${{ github.repository_owner }}/)
+             echo "[$STATUSCODE:https://nuget.pkg.github.com/${{ github.repository_owner }}/] $f"
+             if [ "${STATUSCODE}" != 200 ] && [ "${STATUSCODE}" != 409 ]; then exit 1; fi
+           done
+      shell: bash
+      working-directory: src/Exomia.Framework
+  publish-nuget-windows:
+    name: publish release for windows on nuget
+    needs: [test-windows, publish-github-windows]
+    if: ${{ github.event_name == 'release' }}
+    runs-on: windows-latest
+    steps:    
+    - uses: actions/checkout@v2
+    - name: extract tag version
+      run: echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
+      shell: bash
+    - uses: actions/setup-dotnet@v1   
+      with:
+        dotnet-version: 3.1.301
+    - name: publish ${{ github.repository }} [v${{ env.TAG_VERSION }}]
+      run: |
+        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=AnyCPU -p:Version=$TAG_VERSION
+        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x86 -p:Version=$TAG_VERSION
+        dotnet pack src/Exomia.Framework --configuration Release --verbosity m --force --nologo -p:Platform=x64 -p:Version=$TAG_VERSION
+        dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.EXOMIA_NUGET_API_KEY_PUSH }} --skip-duplicate
       shell: bash
