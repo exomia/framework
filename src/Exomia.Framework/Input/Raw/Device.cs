@@ -33,7 +33,7 @@ namespace Exomia.Framework.Input.Raw
                                           RawInputDeviceFlags rawInputDeviceFlags,
                                           IntPtr              hWndTarget)
         {
-            var rawInputDevices = new RAWINPUTDEVICE[1];
+            RAWINPUTDEVICE[]? rawInputDevices = new RAWINPUTDEVICE[1];
             rawInputDevices[0].UsagePage    = hidUsagePage;
             rawInputDevices[0].Usage        = hidUsage;
             rawInputDevices[0].Flags        = rawInputDeviceFlags;

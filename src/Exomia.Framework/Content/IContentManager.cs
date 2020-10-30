@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.IO;
 using Exomia.Framework.Content.Resolver;
 using Exomia.Framework.Content.Resolver.EmbeddedResource;
 
@@ -83,10 +84,10 @@ namespace Exomia.Framework.Content
         bool Exists(string assetName);
 
         /// <summary>
-        ///     Loads an asset that has been processed by the Content Pipeline.
+        ///     Loads an asset that has been processed by the content pipeline.
         /// </summary>
-        /// <typeparam name="T"> . </typeparam>
-        /// <param name="assetName">            Full asset name (with its extension) </param>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="assetName">            Asset path and name (with its extension) </param>
         /// <param name="fromEmbeddedResource">
         ///     (Optional)
         ///     <c>true</c> if the asset should be loaded from an
@@ -94,7 +95,7 @@ namespace Exomia.Framework.Content
         ///     otherwise.
         /// </param>
         /// <returns>
-        ///     ``0.
+        ///     A  asset of type <typeparamref name="T" />.
         /// </returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
         ///     If the asset was not found from all
@@ -105,6 +106,24 @@ namespace Exomia.Framework.Content
         ///     decode the asset.
         /// </exception>
         T Load<T>(string assetName, bool fromEmbeddedResource = false);
+
+        /// <summary>
+        ///     Loads an asset that has been processed by the content pipeline.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="assetFileInfo"> Information describing the asset file. </param>
+        /// <returns>
+        ///     A  asset of type <typeparamref name="T" />.
+        /// </returns>
+        /// <exception cref="Exceptions.AssetNotFoundException">
+        ///     If the asset was not found from all
+        ///     <see cref="IContentResolver" />.
+        /// </exception>
+        /// <exception cref="NotSupportedException">
+        ///     If no content reader was suitable to
+        ///     decode the asset.
+        /// </exception>
+        T Load<T>(FileInfo assetFileInfo);
 
         /// <summary>
         ///     Loads an asset that has been processed by the Content Pipeline.
@@ -118,7 +137,7 @@ namespace Exomia.Framework.Content
         ///     otherwise.
         /// </param>
         /// <returns>
-        ///     Asset.
+        ///     An asset of type <paramref name="assetType" />.
         /// </returns>
         /// <exception cref="Exceptions.AssetNotFoundException">
         ///     If the asset was not found from all
@@ -131,10 +150,20 @@ namespace Exomia.Framework.Content
         object Load(Type assetType, string assetName, bool fromEmbeddedResource = false);
 
         /// <summary>
+        ///     Loads an asset that has been processed by the Content Pipeline.
+        /// </summary>
+        /// <param name="assetType">     Asset Type. </param>
+        /// <param name="assetFileInfo"> Information describing the asset file. </param>
+        /// <returns>
+        ///     An asset of type <paramref name="assetType" />.
+        /// </returns>
+        object Load(Type assetType, FileInfo assetFileInfo);
+
+        /// <summary>
         ///     Unloads all data that was loaded by this ContentManager. All data will be disposed.
         /// </summary>
         /// <remarks>
-        ///     Unlike <see cref="ContentManager.Load{T}" /> method, this method is not thread safe and
+        ///     Unlike <see cref="IContentManager.Load(Type, string, bool)" /> method, this method is not thread safe and
         ///     must be called by a single caller at a single time.
         /// </remarks>
         void Unload();
@@ -148,6 +177,16 @@ namespace Exomia.Framework.Content
         ///     <c>true</c> if the asset exists and was unloaded, <c>false</c> otherwise.
         /// </returns>
         bool Unload<T>(string assetName);
+
+        /// <summary>
+        ///     Unloads and disposes an asset.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="assetFileInfo"> Information describing the asset file. </param>
+        /// <returns>
+        ///     <c>true</c> if the asset exists and was unloaded, <c>false</c> otherwise.
+        /// </returns>
+        bool Unload<T>(FileInfo assetFileInfo);
 
         /// <summary>
         ///     Unloads and disposes an asset.

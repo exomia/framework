@@ -52,7 +52,6 @@ namespace Exomia.Framework.Graphics.Camera
         /// </value>
         Matrix ViewProjectionMatrix { get; }
 
-
         /// <summary>
         ///     Gets or sets the position.
         /// </summary>

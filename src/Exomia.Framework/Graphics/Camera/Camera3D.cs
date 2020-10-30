@@ -46,7 +46,7 @@ namespace Exomia.Framework.Graphics.Camera
 
         private int               _updateOrder;
         private Matrix            _viewMatrix, _viewProjectionMatrix;
-        private Vector3           _position, _target, _up;
+        private Vector3           _position,   _target, _up;
         private BoundingFrustum   _frustum;
         private IServiceRegistry? _registry;
 
@@ -96,7 +96,6 @@ namespace Exomia.Framework.Graphics.Camera
         {
             get { return _projectionMatrix; }
         }
-        
 
         /// <inheritdoc />
         public Matrix ViewProjectionMatrix

@@ -33,17 +33,14 @@ namespace Exomia.Framework.Collections
         private          int     _size;
 
         /// <summary>
-        ///     Gets the number of items in the heap. 
+        ///     Gets the number of items in the heap.
         /// </summary>
         /// <value>
         ///     The count.
         /// </value>
         public int Count
         {
-            get
-            {
-                return _size;
-            }
+            get { return _size; }
         }
 
         /// <summary>

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Content;
 using SharpDX;
@@ -65,14 +66,14 @@ namespace Exomia.Framework.Graphics.Shader
         /// <summary>
         ///     Specify the technique to get
         /// </summary>
-        /// <param name="technique"> The technique. </param>
+        /// <param name="name"> The technique name. </param>
         /// <returns>
         ///     The <see cref="Technique" />.
         /// </returns>
-        public Technique this[string technique]
+        public Technique this[string name]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _techniques[technique]; }
+            get { return GetTechnique(name); }
         }
 
         /// <summary>
@@ -87,6 +88,45 @@ namespace Exomia.Framework.Graphics.Shader
             {
                 _techniques.Add(technique, new Technique(passes));
             }
+        }
+
+        /// <summary>
+        ///     Gets all technique names from this shader instance.
+        /// </summary>
+        /// <returns>
+        ///     An array of technique names.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string[] GetTechniqueNames()
+        {
+            return _techniques.Keys.ToArray();
+        }
+
+        /// <summary>
+        ///     Attempts to get a <see cref="Technique" /> from the given <paramref name="name" />.
+        /// </summary>
+        /// <param name="name"> The technique name. </param>
+        /// <param name="technique"> [out] The technique. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetTechnique(string name, out Technique technique)
+        {
+            return _techniques.TryGetValue(name, out technique);
+        }
+
+        /// <summary>
+        ///     Attempts to get a <see cref="Technique" /> from the given <paramref name="name" />.
+        /// </summary>
+        /// <param name="name"> The technique name. </param>
+        /// <returns>
+        ///     The <see cref="Technique" />.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Technique GetTechnique(string name)
+        {
+            return _techniques[name];
         }
 
         /// <summary>
@@ -119,7 +159,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator VertexShader(Technique technique)
             {
-                return (VertexShader)technique._passes[Type.VertexShader].shader;
+                return technique.GetVertexShader();
             }
 
             /// <summary>
@@ -132,7 +172,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator PixelShader(Technique technique)
             {
-                return (PixelShader)technique._passes[Type.PixelShader].shader;
+                return technique.GetPixelShader();
             }
 
             /// <summary>
@@ -145,7 +185,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator DomainShader(Technique technique)
             {
-                return (DomainShader)technique._passes[Type.DomainShader].shader;
+                return technique.GetDomainShader();
             }
 
             /// <summary>
@@ -158,7 +198,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator GeometryShader(Technique technique)
             {
-                return (GeometryShader)technique._passes[Type.GeometryShader].shader;
+                return technique.GetGeometryShader();
             }
 
             /// <summary>
@@ -171,7 +211,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator HullShader(Technique technique)
             {
-                return (HullShader)technique._passes[Type.HullShader].shader;
+                return technique.GetHullShader();
             }
 
             /// <summary>
@@ -184,7 +224,79 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator ComputeShader(Technique technique)
             {
-                return (ComputeShader)technique._passes[Type.ComputeShader].shader;
+                return technique.GetComputeShader();
+            }
+
+            /// <summary>
+            ///     Gets a <see cref="VertexShader" />.
+            /// </summary>
+            /// <returns>
+            ///     The <see cref="VertexShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public VertexShader GetVertexShader()
+            {
+                return (VertexShader)_passes[Type.VertexShader].shader;
+            }
+
+            /// <summary>
+            ///     Gets a <see cref="PixelShader" />.
+            /// </summary>
+            /// <returns>
+            ///     The <see cref="PixelShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public PixelShader GetPixelShader()
+            {
+                return (PixelShader)_passes[Type.PixelShader].shader;
+            }
+
+            /// <summary>
+            ///     Gets a <see cref="DomainShader" />.
+            /// </summary>
+            /// <returns>
+            ///     The <see cref="DomainShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public DomainShader GetDomainShader()
+            {
+                return (DomainShader)_passes[Type.DomainShader].shader;
+            }
+
+            /// <summary>
+            ///     Gets a <see cref="GeometryShader" />.
+            /// </summary>
+            /// <returns>
+            ///     The <see cref="GeometryShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GeometryShader GetGeometryShader()
+            {
+                return (GeometryShader)_passes[Type.GeometryShader].shader;
+            }
+
+            /// <summary>
+            ///     Gets a <see cref="HullShader" />.
+            /// </summary>
+            /// <returns>
+            ///     The <see cref="HullShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public HullShader GetHullShader()
+            {
+                return (HullShader)_passes[Type.HullShader].shader;
+            }
+
+            /// <summary>
+            ///     Gets a <see cref="ComputeShader" />.
+            /// </summary>
+            /// <returns>
+            ///     The <see cref="ComputeShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public ComputeShader GetComputeShader()
+            {
+                return (ComputeShader)_passes[Type.ComputeShader].shader;
             }
 
             /// <summary>
