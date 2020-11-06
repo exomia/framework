@@ -231,7 +231,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Initializes this object.
+        ///     Initializes the <see cref="GraphicsDevice"/>.
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         public void Initialize(ref GameGraphicsParameters parameters)

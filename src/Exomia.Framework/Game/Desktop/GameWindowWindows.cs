@@ -11,59 +11,44 @@
 using System;
 using Exomia.Framework.Win32;
 
-namespace Exomia.Framework.Game
+namespace Exomia.Framework.Game.Desktop
 {
     /// <summary>
     ///     Form for viewing the window forms game. This class cannot be inherited.
     /// </summary>
-    sealed class WinFormsGameWindow : IWinFormsGameWindow, IGameWindowInitialize
+    sealed class GameWindowWindows : IGameWindow
     {
-        /// <summary>
-        ///     Occurs when the form is about to close.
-        /// </summary>
+        /// <inheritdoc />
         public event RefEventHandler<bool> FormClosing
         {
             add { _renderForm.FormClosing    += value; }
             remove { _renderForm.FormClosing -= value; }
         }
 
+        /// <inheritdoc />
+        public event EventHandler FormClosed
+        {
+            add { _renderForm.FormClosed    += value; }
+            remove { _renderForm.FormClosed -= value; }
+        }
+
         private readonly RenderForm _renderForm;
         private          bool       _isInitialized;
 
-        /// <summary>
-        ///     Gets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
+
+        /// <inheritdoc />
         public int Width
         {
             get { return _renderForm.Size.X; }
         }
-
-        /// <summary>
-        ///     Gets the height.
-        /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
+        
+        /// <inheritdoc />
         public int Height
         {
             get { return _renderForm.Size.Y; }
         }
 
         /// <inheritdoc />
-        public RenderForm RenderForm
-        {
-            get { return _renderForm; }
-        }
-
-        /// <summary>
-        ///     Gets or sets the title.
-        /// </summary>
-        /// <value>
-        ///     The title.
-        /// </value>
         public string Title
         {
             get { return _renderForm.WindowTitle; }
@@ -71,40 +56,33 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this object is initialized.
+        ///     Gets the render form.
         /// </summary>
         /// <value>
-        ///     True if this object is initialized, false if not.
+        ///     The render form.
         /// </value>
-        bool IGameWindowInitialize.IsInitialized
+        public RenderForm RenderForm
         {
-            get { return _isInitialized; }
+            get { return _renderForm; }
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="WinFormsGameWindow" /> class.
+        ///     Initializes a new instance of the <see cref="GameWindowWindows" /> class.
         /// </summary>
         /// <param name="title"> The title. </param>
-        public WinFormsGameWindow(string title)
+        public GameWindowWindows(string title)
         {
             _renderForm = new RenderForm(title);
         }
-
-        /// <summary>
-        ///     Resizes.
-        /// </summary>
-        /// <param name="width">  The width. </param>
-        /// <param name="height"> The height. </param>
+        
+        /// <inheritdoc />
         public void Resize(int width, int height)
         {
             _renderForm.Resize(width, height);
         }
 
-        /// <summary>
-        ///     Initializes this object.
-        /// </summary>
-        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
-        void IGameWindowInitialize.Initialize(ref GameGraphicsParameters parameters)
+        /// <inheritdoc />
+        public void Initialize(ref GameGraphicsParameters parameters)
         {
             if (_isInitialized) { return; }
 
@@ -166,16 +144,13 @@ namespace Exomia.Framework.Game
             _isInitialized = true;
         }
 
-        void IGameWindowInitialize.Show()
+        /// <inheritdoc />
+        public void Show()
         {
             _renderForm.Show();
         }
 
         #region IDisposable Support
-
-        /// <summary>
-        ///     True if disposed.
-        /// </summary>
         private bool _disposed;
 
         /// <summary>
@@ -199,9 +174,9 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="WinFormsGameWindow" /> class.
+        ///     Finalizes an instance of the <see cref="GameWindowWindows" /> class.
         /// </summary>
-        ~WinFormsGameWindow()
+        ~GameWindowWindows()
         {
             Dispose(false);
         }

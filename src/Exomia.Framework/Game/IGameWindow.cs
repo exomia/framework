@@ -12,30 +12,8 @@ using System;
 
 namespace Exomia.Framework.Game
 {
-    interface IGameWindowInitialize
-    {
-        /// <summary>
-        ///     Gets a value indicating whether this object is initialized.
-        /// </summary>
-        /// <value>
-        ///     True if this object is initialized, false if not.
-        /// </value>
-        bool IsInitialized { get; }
-
-        /// <summary>
-        ///     Initializes this object.
-        /// </summary>
-        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
-        void Initialize(ref GameGraphicsParameters parameters);
-
-        /// <summary>
-        ///     Shows this object.
-        /// </summary>
-        void Show();
-    }
-
     /// <summary>
-    ///     IGameWindow interface.
+    ///     Interface for game window.
     /// </summary>
     public interface IGameWindow : IDisposable
     {
@@ -45,12 +23,9 @@ namespace Exomia.Framework.Game
         event RefEventHandler<bool> FormClosing;
 
         /// <summary>
-        ///     Gets the height.
+        ///     Occurs when the form is closed.
         /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
-        int Height { get; }
+        event EventHandler FormClosed;
 
         /// <summary>
         ///     Gets or sets the title.
@@ -61,6 +36,14 @@ namespace Exomia.Framework.Game
         string Title { get; set; }
 
         /// <summary>
+        ///     Gets the height.
+        /// </summary>
+        /// <value>
+        ///     The height.
+        /// </value>
+        int Height { get; }
+
+        /// <summary>
         ///     Gets the width.
         /// </summary>
         /// <value>
@@ -69,10 +52,21 @@ namespace Exomia.Framework.Game
         int Width { get; }
 
         /// <summary>
-        ///     Resizes.
+        ///     Resizes the game window.
         /// </summary>
         /// <param name="width">  The width. </param>
         /// <param name="height"> The height. </param>
         void Resize(int width, int height);
+
+        /// <summary>
+        ///     Initializes this object.
+        /// </summary>
+        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
+        void Initialize(ref GameGraphicsParameters parameters);
+
+        /// <summary>
+        ///     Shows the game window.
+        /// </summary>
+        void Show();
     }
 }

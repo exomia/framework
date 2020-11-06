@@ -46,6 +46,11 @@ namespace Exomia.Framework.Game
         /// </summary>
         public event RefEventHandler<bool>? FormClosing;
 
+        /// <summary>
+        ///     Occurs when the form is closed.
+        /// </summary>
+        public event EventHandler? FormClosed;
+
         private unsafe IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             Message m;
@@ -96,6 +101,7 @@ namespace Exomia.Framework.Game
                     FormClosing?.Invoke(ref cancel);
                     if (!cancel)
                     {
+                        FormClosed?.Invoke();
                         User32.DestroyWindow(_hWnd);
                     }
                     return IntPtr.Zero;
