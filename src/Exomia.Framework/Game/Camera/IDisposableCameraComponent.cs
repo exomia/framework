@@ -6,7 +6,7 @@
 // LICENSE file in the root directory of this source tree.
 #endregion
 
-namespace Exomia.Framework.Graphics.Camera {
+namespace Exomia.Framework.Game.Camera {
     /// <summary>
     ///     Interface for disposable camera component.
     /// </summary>

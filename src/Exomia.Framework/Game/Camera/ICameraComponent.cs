@@ -8,7 +8,7 @@
 
 #endregion
 
-namespace Exomia.Framework.Graphics.Camera
+namespace Exomia.Framework.Game.Camera
 {
     /// <summary>
     ///     Interface for camera component.

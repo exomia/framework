@@ -10,12 +10,11 @@
 
 using System;
 using System.Threading;
-using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using Exomia.Framework.Mathematics;
 using SharpDX;
 
-namespace Exomia.Framework.Graphics.Camera.Controller
+namespace Exomia.Framework.Game.Camera.Controller
 {
     /// <summary>
     ///     A controller for handling rotations. This class cannot be inherited.

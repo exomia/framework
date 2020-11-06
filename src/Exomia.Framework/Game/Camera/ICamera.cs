@@ -11,7 +11,7 @@
 using Exomia.Framework.Input;
 using SharpDX;
 
-namespace Exomia.Framework.Graphics.Camera
+namespace Exomia.Framework.Game.Camera
 {
     /// <summary>
     ///     Interface for a camera.

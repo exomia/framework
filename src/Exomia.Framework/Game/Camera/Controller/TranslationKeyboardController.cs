@@ -9,11 +9,10 @@
 #endregion
 
 using System.Collections.Generic;
-using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using SharpDX;
 
-namespace Exomia.Framework.Graphics.Camera.Controller
+namespace Exomia.Framework.Game.Camera.Controller
 {
     /// <summary>
     ///     A controller for handling translation keyboards. This class cannot be inherited.

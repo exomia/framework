@@ -10,11 +10,10 @@
 
 using System;
 using System.Collections.Generic;
-using Exomia.Framework.Game;
 using Exomia.Framework.Input;
 using SharpDX;
 
-namespace Exomia.Framework.Graphics.Camera
+namespace Exomia.Framework.Game.Camera
 {
     /// <summary>
     ///     A camera base.
