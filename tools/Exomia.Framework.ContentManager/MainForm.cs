@@ -112,7 +112,7 @@ namespace Exomia.Framework.ContentManager
             richTextBox1.InvokeIfRequired(
                 x =>
                 {
-                    var matches = Regex.Matches(text, "\\{([0-9]+)(?:\\:([A-Za-z]+))?\\}");
+                    MatchCollection? matches = Regex.Matches(text, "\\{([0-9]+)(?:\\:([A-Za-z]+))?\\}");
 
                     if (matches.Count <= 0)
                     {

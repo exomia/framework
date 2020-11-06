@@ -19,12 +19,14 @@ namespace Exomia.Framework.Content
     public struct ContentReaderParameters
     {
         /// <summary>
-        ///     Name of the asset currently loaded when using <see cref="IContentManager.Load{T}" />.
+        ///     Name of the asset currently loaded when using
+        ///     <see cref="IContentManager.Load{T}(string, bool)" /> or <see cref="IContentManager.Load{T}(FileInfo)" />.
         /// </summary>
         public string AssetName { get; }
 
         /// <summary>
-        ///     Type of the asset currently loaded when using <see cref="IContentManager.Load{T}" />.
+        ///     Type of the asset currently loaded when using
+        ///     <see cref="IContentManager.Load{T}(string, bool)" /> or <see cref="IContentManager.Load{T}(FileInfo)" />.
         /// </summary>
         public Type AssetType { get; }
 

@@ -83,6 +83,7 @@ namespace Exomia.Framework.Graphics
         private int            _spriteQueueCount;
         private TextureInfo[]  _spriteTextures;
         private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
+        private Texture        _whiteTexture;
 
         private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
@@ -134,15 +135,21 @@ namespace Exomia.Framework.Graphics
                 _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm))
             };
 
-            InitializeStates(iDevice.Device);
-            DefaultTextures.InitializeTextures(iDevice.Device);
+            _defaultBlendState                    = iDevice.BlendStates.AlphaBlend;
+            _defaultSamplerState                  = iDevice.SamplerStates.LinearWrap;
+            _defaultDepthStencilState             = iDevice.DepthStencilStates.None;
+            _defaultRasterizerState               = iDevice.RasterizerStates.CullBackDepthClipOff;
+            _defaultRasterizerScissorEnabledState = iDevice.RasterizerStates.CullBackDepthClipOffScissorEnabled;
+
+            _whiteTexture = iDevice.Textures.WhiteTexture;
 
             _indexBuffer = Buffer.Create(
                 _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable);
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream(
-                $"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}"))
+            using (Stream stream =
+                assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}") ??
+                throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}"))
             {
                 Shader.Shader.Technique technique =
                     (_shader = ShaderFileLoader.FromStream(iDevice, stream) ??
@@ -520,109 +527,6 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Initializes the states.
-        /// </summary>
-        /// <param name="device"> The device. </param>
-        private void InitializeStates(Device5 device)
-        {
-            _defaultSamplerState = new SamplerState(
-                device,
-                new SamplerStateDescription
-                {
-                    AddressU           = TextureAddressMode.Wrap,
-                    AddressV           = TextureAddressMode.Wrap,
-                    AddressW           = TextureAddressMode.Wrap,
-                    BorderColor        = Color.White,
-                    ComparisonFunction = Comparison.Always,
-                    Filter             = Filter.ComparisonMinMagMipLinear,
-                    MaximumAnisotropy  = 16,
-                    MaximumLod         = float.MaxValue,
-                    MinimumLod         = 0,
-                    MipLodBias         = 0.0f
-                });
-
-            _defaultBlendState = new BlendState(
-                device,
-                new BlendStateDescription
-                {
-                    AlphaToCoverageEnable  = false,
-                    IndependentBlendEnable = false,
-                    RenderTarget =
-                    {
-                        [0] = new RenderTargetBlendDescription
-                        {
-                            IsBlendEnabled        = true,
-                            SourceBlend           = BlendOption.One,
-                            DestinationBlend      = BlendOption.InverseSourceAlpha,
-                            BlendOperation        = BlendOperation.Add,
-                            SourceAlphaBlend      = BlendOption.Zero,
-                            DestinationAlphaBlend = BlendOption.Zero,
-                            AlphaBlendOperation   = BlendOperation.Add,
-                            RenderTargetWriteMask = ColorWriteMaskFlags.All
-                        }
-                    }
-                }) { DebugName = "AlphaBlend" };
-
-            _defaultDepthStencilState = new DepthStencilState(
-                device,
-                new DepthStencilStateDescription
-                {
-                    IsDepthEnabled   = false,
-                    DepthWriteMask   = DepthWriteMask.All,
-                    DepthComparison  = Comparison.LessEqual,
-                    IsStencilEnabled = false,
-                    StencilReadMask  = 0xFF,
-                    StencilWriteMask = 0xFF,
-                    FrontFace = new DepthStencilOperationDescription
-                    {
-                        FailOperation      = StencilOperation.Keep,
-                        DepthFailOperation = StencilOperation.Increment,
-                        PassOperation      = StencilOperation.Keep,
-                        Comparison         = Comparison.Always
-                    },
-                    BackFace = new DepthStencilOperationDescription
-                    {
-                        FailOperation      = StencilOperation.Keep,
-                        DepthFailOperation = StencilOperation.Decrement,
-                        PassOperation      = StencilOperation.Keep,
-                        Comparison         = Comparison.Always
-                    }
-                });
-
-            _defaultRasterizerState = new RasterizerState(
-                device,
-                new RasterizerStateDescription
-                {
-                    FillMode                 = FillMode.Solid,
-                    CullMode                 = CullMode.Back,
-                    IsFrontCounterClockwise  = false,
-                    DepthBias                = 0,
-                    DepthBiasClamp           = 0,
-                    SlopeScaledDepthBias     = 0,
-                    IsDepthClipEnabled       = false,
-                    IsScissorEnabled         = false,
-                    IsMultisampleEnabled     = true,
-                    IsAntialiasedLineEnabled = true
-                });
-
-            _defaultRasterizerScissorEnabledState = new RasterizerState(
-                device,
-                new RasterizerStateDescription
-                {
-                    FillMode                 = FillMode.Solid,
-                    CullMode                 = CullMode.Back,
-                    IsFrontCounterClockwise  = false,
-                    DepthBias                = 0,
-                    DepthBiasClamp           = 0,
-                    SlopeScaledDepthBias     = 0,
-                    IsDepthClipEnabled       = false,
-                    IsScissorEnabled         = true,
-                    IsMultisampleEnabled     = true,
-                    IsAntialiasedLineEnabled = true
-                });
-        }
-
-        /// <summary>
         ///     Prepare for rendering.
         /// </summary>
         private void PrepareForRendering()
@@ -817,7 +721,7 @@ namespace Exomia.Framework.Graphics
         public void DrawFillRectangle(in RectangleF destinationRectangle, in Color color, float layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture, destinationRectangle, false, s_nullRectangle,
+                _whiteTexture, destinationRectangle, false, s_nullRectangle,
                 color, 0.0f, s_vector2Zero, 1.0f, SpriteEffects.None, layerDepth);
         }
 
@@ -834,7 +738,7 @@ namespace Exomia.Framework.Graphics
                                       float         layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture, destinationRectangle, false, s_nullRectangle,
+                _whiteTexture, destinationRectangle, false, s_nullRectangle,
                 color, 0.0f, s_vector2Zero, opacity, SpriteEffects.None, layerDepth);
         }
 
@@ -855,7 +759,7 @@ namespace Exomia.Framework.Graphics
                                       float         layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture, destinationRectangle, false, s_nullRectangle,
+                _whiteTexture, destinationRectangle, false, s_nullRectangle,
                 color, rotation, origin, opacity, SpriteEffects.None, layerDepth);
         }
 
@@ -897,7 +801,7 @@ namespace Exomia.Framework.Graphics
                              float      layerDepth)
         {
             DrawSprite(
-                DefaultTextures.WhiteTexture, new RectangleF(
+                _whiteTexture, new RectangleF(
                     point1.X, point1.Y, Vector2.Distance(point1, point2) * lengthFactor, lineWidth), false,
                 s_nullRectangle, color, (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X),
                 s_vector2Zero, opacity, SpriteEffects.None, layerDepth);

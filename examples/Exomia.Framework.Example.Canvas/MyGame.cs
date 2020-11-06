@@ -13,16 +13,14 @@ using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using SharpDX;
 
-namespace Exomia.Framework.BasicSetup
+namespace Exomia.Framework.Example.Canvas
 {
     /// <summary>
     ///     my game. This class cannot be inherited.
     /// </summary>
     sealed class MyGame : Game.Game
     {
-#pragma warning disable IDE0052 // Remove unread private members
         private SpriteBatch _spriteBatch = null!;
-#pragma warning restore IDE0052 // Remove unread private members
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyGame" /> class.

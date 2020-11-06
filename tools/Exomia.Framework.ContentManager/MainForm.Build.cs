@@ -48,7 +48,7 @@ namespace Exomia.Framework.ContentManager
             int skipped   = 0;
             int failed    = 0;
 
-            var rootNode = treeView1.Nodes[ROOT_KEY_PREFIX];
+            TreeNode? rootNode = treeView1.Nodes[ROOT_KEY_PREFIX];
 
             async Task ForTreeNode(TreeNode node, ContentPropertyGridItem contentPropertyGridItem)
             {

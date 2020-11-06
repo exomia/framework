@@ -1,4 +1,14 @@
-﻿using Exomia.ECS;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using Exomia.ECS;
 using Exomia.ECS.Attributes;
 using Exomia.ECS.Systems;
 using Exomia.Framework.Example.JumpAndRun.Components;
@@ -19,7 +29,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Systems
         {
             if (c1.Jump)
             {
-                c1.Jump = false;
+                c1.Jump       =  false;
                 c2.Velocity.Y -= 600;
             }
 
