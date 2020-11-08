@@ -13,9 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Content;
+using Exomia.Framework.Mathematics;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 
 namespace Exomia.Framework.Graphics.Shader
 {
@@ -81,10 +83,12 @@ namespace Exomia.Framework.Graphics.Shader
         /// </summary>
         /// <param name="techniques"> The techniques. </param>
         internal Shader(
-            IEnumerable<(string technique, IEnumerable<(Type, ComObject, ShaderSignature)> passes)> techniques)
+            IEnumerable<(string technique, IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> passes)>
+                techniques)
         {
             _techniques = new Dictionary<string, Technique>(StringComparer.InvariantCultureIgnoreCase);
-            foreach ((string technique, IEnumerable<(Type, ComObject, ShaderSignature)> passes) in techniques)
+            foreach ((string technique,
+                      IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> passes) in techniques)
             {
                 _techniques.Add(technique, new Technique(passes));
             }
@@ -134,18 +138,20 @@ namespace Exomia.Framework.Graphics.Shader
         /// </summary>
         public sealed class Technique
         {
-            private readonly Dictionary<Type, (ComObject shader, ShaderSignature signature)> _passes;
+            private readonly
+                Dictionary<Type, (ComObject shader, ShaderSignature signature, ShaderReflection reflection)> _passes;
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="Technique" /> class.
             /// </summary>
-            /// <param name="passes"> The passes. </param>
-            internal Technique(IEnumerable<(Type type, ComObject comObject, ShaderSignature signature)> passes)
+            /// <param name="passes">     The passes. </param>
+            internal Technique(IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> passes)
             {
-                _passes = new Dictionary<Type, (ComObject shader, ShaderSignature signature)>();
-                foreach ((Type type, ComObject comObject, ShaderSignature signature) in passes)
+                _passes = new Dictionary<Type, (ComObject, ShaderSignature, ShaderReflection)>();
+                foreach ((Type type, ComObject comObject, ShaderSignature signature,
+                          ShaderReflection reflection) in passes)
                 {
-                    _passes.Add(type, (comObject, signature));
+                    _passes.Add(type, (comObject, signature, reflection));
                 }
             }
 
@@ -311,6 +317,83 @@ namespace Exomia.Framework.Graphics.Shader
                 return _passes[type].signature;
             }
 
+            /// <summary>s
+            ///     Gets the <see cref="ShaderReflection" />.
+            /// </summary>
+            /// <param name="type"> The type. </param>
+            /// <returns>
+            ///     The <see cref="ShaderReflection" />.
+            /// </returns>
+            public ShaderReflection GetShaderReflection(Type type)
+            {
+                return _passes[type].reflection;
+            }
+
+            /// <summary>
+            ///     Creates input elements from the specified <see cref="Type"/>.
+            /// </summary>
+            /// <param name="type"> The type. </param>
+            /// <returns>
+            ///     A new array of input element.
+            /// </returns>
+            /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+            public InputElement[] CreateInputElements(Type type)
+            {
+                ShaderReflection shaderReflection = GetShaderReflection(type);
+                
+                InputElement[] elements = new InputElement[shaderReflection.Description.InputParameters];
+                for (int i = 0; i < shaderReflection.Description.InputParameters; i++)
+                {
+                    ShaderParameterDescription description = shaderReflection.GetInputParameterDescription(i);
+
+                    Format format = Math2.CountOnes((int)description.UsageMask) switch
+                    {
+                        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+                        1 => description.ComponentType switch
+                        {
+                            RegisterComponentType.UInt32 => Format.R32_UInt,
+                            RegisterComponentType.SInt32 => Format.R32_SInt,
+                            RegisterComponentType.Float32 => Format.R32_Float,
+                            _ => throw new ArgumentOutOfRangeException(nameof(description.ComponentType))
+                        },
+
+                        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+                        2 => description.ComponentType switch
+                        {
+                            RegisterComponentType.UInt32 => Format.R32G32_UInt,
+                            RegisterComponentType.SInt32 => Format.R32G32_SInt,
+                            RegisterComponentType.Float32 => Format.R32G32_Float,
+                            _ => throw new ArgumentOutOfRangeException(nameof(description.ComponentType))
+                        },
+
+                        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+                        3 => description.ComponentType switch
+                        {
+                            RegisterComponentType.UInt32 => Format.R32G32B32_UInt,
+                            RegisterComponentType.SInt32 => Format.R32G32B32_SInt,
+                            RegisterComponentType.Float32 => Format.R32G32B32_Float,
+                            _ => throw new ArgumentOutOfRangeException(nameof(description.ComponentType))
+                        },
+
+                        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+                        4 => description.ComponentType switch
+                        {
+                            RegisterComponentType.UInt32 => Format.R32G32B32A32_UInt,
+                            RegisterComponentType.SInt32 => Format.R32G32B32A32_SInt,
+                            RegisterComponentType.Float32 => Format.R32G32B32A32_Float,
+                            _ => throw new ArgumentOutOfRangeException(nameof(description.ComponentType))
+                        },
+                        _ => throw new ArgumentOutOfRangeException(nameof(description.UsageMask))
+                    };
+                        
+                    elements[i] = new InputElement(
+                        description.SemanticName, description.SemanticIndex, format, 
+                        InputElement.AppendAligned, description.Register, InputClassification.PerVertexData, 0);
+                }
+                
+                return elements;
+            }
+
             #region IDisposable Support
 
             private bool _disposed;
@@ -319,10 +402,13 @@ namespace Exomia.Framework.Graphics.Shader
             {
                 if (!_disposed)
                 {
-                    foreach (KeyValuePair<Type, (ComObject shader, ShaderSignature signature)> keyValuePair in _passes)
+                    // ReSharper disable once UseDeconstruction
+                    foreach (KeyValuePair<Type, (ComObject shader, ShaderSignature signature, ShaderReflection
+                        reflection)> keyValuePair in _passes)
                     {
-                        keyValuePair.Value.shader.Dispose();
+                        keyValuePair.Value.reflection.Dispose();
                         keyValuePair.Value.signature.Dispose();
+                        keyValuePair.Value.shader.Dispose();
                     }
                     if (disposing)
                     {

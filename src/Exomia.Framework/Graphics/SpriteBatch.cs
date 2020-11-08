@@ -158,15 +158,10 @@ namespace Exomia.Framework.Graphics
                 _vertexShader = technique;
                 _pixelShader  = technique;
 
-                _vertexInputLayout = new InputLayout(
-                    _device, technique.GetShaderSignature(Shader.Shader.Type.VertexShader),
-                    new[]
-                    {
-                        new InputElement(
-                            "SV_POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                        new InputElement("COLOR", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                        new InputElement("TEXCOORD", 0, Format.R32G32_Float, InputElement.AppendAligned, 0)
-                    });
+                _vertexInputLayout =  new InputLayout(
+                    _device,
+                    technique.GetShaderSignature(Shader.Shader.Type.VertexShader),
+                    technique.CreateInputElements(Shader.Shader.Type.VertexShader));
             }
 
             _vertexBuffer = new Buffer(

@@ -49,7 +49,7 @@ namespace Exomia.Framework.Content.Loader
             {
                 while (!sr.EndOfStream)
                 {
-                    string currentLine = sr.ReadLine();
+                    string? currentLine = sr.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(currentLine) || currentLine[0] == '#')
                     {
