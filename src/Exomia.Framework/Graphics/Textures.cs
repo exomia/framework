@@ -35,7 +35,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Textures"/> class.
+        ///     Initializes a new instance of the <see cref="Textures" /> class.
         /// </summary>
         /// <param name="graphicsDevice"> The graphics device. </param>
         /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>

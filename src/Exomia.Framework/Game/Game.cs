@@ -19,9 +19,6 @@ using Exomia.Framework.Input;
 using Exomia.Framework.Tools;
 using Exomia.Framework.Win32;
 using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 
 namespace Exomia.Framework.Game
 {
@@ -439,7 +436,7 @@ namespace Exomia.Framework.Game
                     {
                         Thread.Yield();
                     }
-                    
+
                     //IDLE
                     while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
                 }
@@ -483,35 +480,7 @@ namespace Exomia.Framework.Game
         /// </summary>
         private void InitializeGameGraphicsParameters()
         {
-            GameGraphicsParameters parameters = new GameGraphicsParameters
-            {
-                BufferCount = 1,
-#if DEBUG
-                DeviceCreationFlags =
-                    DeviceCreationFlags.BgraSupport |
-                    DeviceCreationFlags.Debug,
-#else
-                DeviceCreationFlags =
-                    DeviceCreationFlags.BgraSupport,
-#endif
-                DriverType             = DriverType.Hardware,
-                Format                 = Format.B8G8R8A8_UNorm,
-                Width                  = 1024,
-                Height                 = 768,
-                DisplayType            = DisplayType.Window,
-                IsMouseVisible         = false,
-                Rational               = new Rational(60, 1),
-                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
-                SwapEffect             = SwapEffect.Discard,
-                Usage                  = Usage.RenderTargetOutput,
-                UseVSync               = false,
-                WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
-                EnableMultiSampling    = false,
-                MultiSampleCount       = MultiSampleCount.None,
-                AdapterLuid            = -1,
-                OutputIndex            = -1,
-                ClipCursor             = false
-            };
+            GameGraphicsParameters parameters = GameGraphicsParameters.Create(IntPtr.Zero);
 
             OnInitializeGameGraphicsParameters(ref parameters);
 
@@ -792,7 +761,7 @@ namespace Exomia.Framework.Game
         #region IDisposable Support
 
         /// <summary>
-        ///     Adds a <see cref="IDisposable"/> object to the dispose collector.
+        ///     Adds a <see cref="IDisposable" /> object to the dispose collector.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="obj"> The object. </param>

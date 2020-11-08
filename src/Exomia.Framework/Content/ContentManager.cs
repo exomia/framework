@@ -494,7 +494,7 @@ namespace Exomia.Framework.Content
                 }
             }
         }
-        
+
         private readonly struct AssetKey : IEquatable<AssetKey>
         {
             /// <summary>
@@ -507,7 +507,7 @@ namespace Exomia.Framework.Content
                 _assetType = assetType;
                 _assetName = assetName;
             }
-            
+
             private readonly Type   _assetType;
             private readonly string _assetName;
 

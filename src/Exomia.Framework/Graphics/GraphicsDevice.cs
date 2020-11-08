@@ -231,7 +231,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Initializes the <see cref="GraphicsDevice"/>.
+        ///     Initializes the <see cref="GraphicsDevice" />.
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         public void Initialize(ref GameGraphicsParameters parameters)
@@ -498,7 +498,7 @@ namespace Exomia.Framework.Graphics
                     _depthStencilStates.Dispose();
                     _rasterizerStates.Dispose();
                     _samplerStates.Dispose();
-                    
+
                     _textures.Dispose();
 
                     Utilities.Dispose(ref _depthStencilView);

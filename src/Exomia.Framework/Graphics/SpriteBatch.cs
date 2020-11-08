@@ -74,16 +74,16 @@ namespace Exomia.Framework.Graphics
                                  _defaultRasterizerScissorEnabledState,
                                  _rasterizerState;
 
-        private SamplerState?  _defaultSamplerState, _samplerState;
-        private bool           _isBeginCalled,       _isScissorEnabled;
-        private Rectangle      _scissorRectangle;
-        private SpriteSortMode _spriteSortMode;
-        private int[]          _sortIndices;
-        private SpriteInfo[]   _spriteQueue, _sortedSprites;
-        private int            _spriteQueueCount;
-        private TextureInfo[]  _spriteTextures;
-        private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
-        private Texture        _whiteTexture;
+        private          SamplerState?  _defaultSamplerState, _samplerState;
+        private          bool           _isBeginCalled,       _isScissorEnabled;
+        private          Rectangle      _scissorRectangle;
+        private          SpriteSortMode _spriteSortMode;
+        private          int[]          _sortIndices;
+        private          SpriteInfo[]   _spriteQueue, _sortedSprites;
+        private          int            _spriteQueueCount;
+        private          TextureInfo[]  _spriteTextures;
+        private          Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
+        private readonly Texture        _whiteTexture;
 
         private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 

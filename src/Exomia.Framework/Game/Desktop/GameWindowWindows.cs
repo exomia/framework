@@ -35,13 +35,12 @@ namespace Exomia.Framework.Game.Desktop
         private readonly RenderForm _renderForm;
         private          bool       _isInitialized;
 
-
         /// <inheritdoc />
         public int Width
         {
             get { return _renderForm.Size.X; }
         }
-        
+
         /// <inheritdoc />
         public int Height
         {
@@ -74,7 +73,7 @@ namespace Exomia.Framework.Game.Desktop
         {
             _renderForm = new RenderForm(title);
         }
-        
+
         /// <inheritdoc />
         public void Resize(int width, int height)
         {
@@ -151,6 +150,7 @@ namespace Exomia.Framework.Game.Desktop
         }
 
         #region IDisposable Support
+
         private bool _disposed;
 
         /// <summary>
