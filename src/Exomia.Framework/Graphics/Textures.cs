@@ -21,7 +21,7 @@ namespace Exomia.Framework.Graphics
         private const string WHITE_TEXTURE_BASE64 =
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 
-        private readonly Texture _whiteTexture;
+        private readonly Texture _white;
 
         /// <summary>
         ///     Built-in white texture object with size of 1x1 px.
@@ -29,9 +29,9 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The white texture.
         /// </value>
-        public Texture WhiteTexture
+        public Texture White
         {
-            get { return _whiteTexture!; }
+            get { return _white!; }
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace Exomia.Framework.Graphics
         {
             using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
             {
-                _whiteTexture = Texture.Load(graphicsDevice.Device, ms) ??
-                                throw new NullReferenceException($"{nameof(WhiteTexture)}");
+                _white = Texture.Load(graphicsDevice.Device, ms) ??
+                                throw new NullReferenceException($"{nameof(White)}");
             }
         }
 
@@ -58,7 +58,7 @@ namespace Exomia.Framework.Graphics
             {
                 if (disposing)
                 {
-                    _whiteTexture.Dispose();
+                    _white.Dispose();
                 }
 
                 _disposed = true;

@@ -141,7 +141,7 @@ namespace Exomia.Framework.Graphics
             _defaultRasterizerState               = iDevice.RasterizerStates.CullBackDepthClipOff;
             _defaultRasterizerScissorEnabledState = iDevice.RasterizerStates.CullBackDepthClipOffScissorEnabled;
 
-            _whiteTexture = iDevice.Textures.WhiteTexture;
+            _whiteTexture = iDevice.Textures.White;
 
             _indexBuffer = Buffer.Create(
                 _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable);
