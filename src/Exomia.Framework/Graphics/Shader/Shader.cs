@@ -317,7 +317,8 @@ namespace Exomia.Framework.Graphics.Shader
                 return _passes[type].signature;
             }
 
-            /// <summary>s
+            /// <summary>
+            ///     s
             ///     Gets the <see cref="ShaderReflection" />.
             /// </summary>
             /// <param name="type"> The type. </param>
@@ -330,7 +331,7 @@ namespace Exomia.Framework.Graphics.Shader
             }
 
             /// <summary>
-            ///     Creates input elements from the specified <see cref="Type"/>.
+            ///     Creates input elements from the specified <see cref="Type" />.
             /// </summary>
             /// <param name="type"> The type. </param>
             /// <returns>
@@ -340,7 +341,7 @@ namespace Exomia.Framework.Graphics.Shader
             public InputElement[] CreateInputElements(Type type)
             {
                 ShaderReflection shaderReflection = GetShaderReflection(type);
-                
+
                 InputElement[] elements = new InputElement[shaderReflection.Description.InputParameters];
                 for (int i = 0; i < shaderReflection.Description.InputParameters; i++)
                 {
@@ -385,12 +386,12 @@ namespace Exomia.Framework.Graphics.Shader
                         },
                         _ => throw new ArgumentOutOfRangeException(nameof(description.UsageMask))
                     };
-                        
+
                     elements[i] = new InputElement(
-                        description.SemanticName, description.SemanticIndex, format, 
-                        InputElement.AppendAligned, description.Register, InputClassification.PerVertexData, 0);
+                        description.SemanticName, description.SemanticIndex, format,
+                        InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0);
                 }
-                
+
                 return elements;
             }
 

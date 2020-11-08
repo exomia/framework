@@ -44,7 +44,7 @@ namespace Exomia.Framework.Graphics
             using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
             {
                 _white = Texture.Load(graphicsDevice.Device, ms) ??
-                                throw new NullReferenceException($"{nameof(White)}");
+                         throw new NullReferenceException($"{nameof(White)}");
             }
         }
 

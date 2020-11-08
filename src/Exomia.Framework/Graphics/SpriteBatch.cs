@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Graphics.SpriteSort;
 using Exomia.Framework.Resources;
@@ -58,14 +59,16 @@ namespace Exomia.Framework.Graphics
         private readonly Dictionary<IntPtr, TextureInfo> _textureInfos =
             new Dictionary<IntPtr, TextureInfo>(INITIAL_QUEUE_SIZE);
 
-        private readonly VertexBufferBinding _vertexBufferBinding;
-        private readonly InputLayout         _vertexInputLayout;
+        private readonly InputLayout _vertexInputLayout;
 
-        private readonly Buffer _vertexBuffer, _indexBuffer, _perFrameBuffer;
+        private readonly IndexBuffer    _indexBuffer;
+        private readonly VertexBuffer   _vertexBuffer;
+        private readonly ConstantBuffer _perFrameBuffer;
 
         private readonly Shader.Shader _shader;
         private readonly PixelShader   _pixelShader;
         private readonly VertexShader  _vertexShader;
+        private readonly Texture       _whiteTexture;
 
         private BlendState?        _defaultBlendState,        _blendState;
         private DepthStencilState? _defaultDepthStencilState, _depthStencilState;
@@ -74,16 +77,15 @@ namespace Exomia.Framework.Graphics
                                  _defaultRasterizerScissorEnabledState,
                                  _rasterizerState;
 
-        private          SamplerState?  _defaultSamplerState, _samplerState;
-        private          bool           _isBeginCalled,       _isScissorEnabled;
-        private          Rectangle      _scissorRectangle;
-        private          SpriteSortMode _spriteSortMode;
-        private          int[]          _sortIndices;
-        private          SpriteInfo[]   _spriteQueue, _sortedSprites;
-        private          int            _spriteQueueCount;
-        private          TextureInfo[]  _spriteTextures;
-        private          Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
-        private readonly Texture        _whiteTexture;
+        private SamplerState?  _defaultSamplerState, _samplerState;
+        private bool           _isBeginCalled,       _isScissorEnabled;
+        private Rectangle      _scissorRectangle;
+        private SpriteSortMode _spriteSortMode;
+        private int[]          _sortIndices;
+        private SpriteInfo[]   _spriteQueue, _sortedSprites;
+        private int            _spriteQueueCount;
+        private TextureInfo[]  _spriteTextures;
+        private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
 
         private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
@@ -143,8 +145,7 @@ namespace Exomia.Framework.Graphics
 
             _whiteTexture = iDevice.Textures.White;
 
-            _indexBuffer = Buffer.Create(
-                _device, BindFlags.IndexBuffer, s_indices, 0, ResourceUsage.Immutable);
+            _indexBuffer = IndexBuffer.Create(iDevice, s_indices);
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             using (Stream stream =
@@ -158,19 +159,14 @@ namespace Exomia.Framework.Graphics
                 _vertexShader = technique;
                 _pixelShader  = technique;
 
-                _vertexInputLayout =  new InputLayout(
+                _vertexInputLayout = new InputLayout(
                     _device,
                     technique.GetShaderSignature(Shader.Shader.Type.VertexShader),
                     technique.CreateInputElements(Shader.Shader.Type.VertexShader));
             }
 
-            _vertexBuffer = new Buffer(
-                _device, VERTEX_STRIDE * MAX_VERTEX_COUNT, ResourceUsage.Dynamic, BindFlags.VertexBuffer,
-                CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
-            _vertexBufferBinding = new VertexBufferBinding(_vertexBuffer, VERTEX_STRIDE, 0);
-            _perFrameBuffer = new Buffer(
-                _device, sizeof(float) * 4 * 4 * 1, ResourceUsage.Default, BindFlags.ConstantBuffer,
-                CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+            _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTexture>(iDevice, MAX_VERTEX_COUNT);
+            _perFrameBuffer = ConstantBuffer.Create<Matrix>(iDevice);
 
             _sortIndices   = new int[MAX_BATCH_SIZE];
             _sortedSprites = new SpriteInfo[MAX_BATCH_SIZE];
@@ -547,15 +543,12 @@ namespace Exomia.Framework.Graphics
             _context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             _context.InputAssembler.InputLayout       = _vertexInputLayout;
 
+            Matrix worldViewProjection = Matrix.Transpose(_transformMatrix * _viewMatrix * _projectionMatrix);
+            _context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
             _context.VertexShader.SetConstantBuffer(0, _perFrameBuffer);
 
-            _context.InputAssembler.SetIndexBuffer(_indexBuffer, Format.R16_UInt, 0);
-            _context.InputAssembler.SetVertexBuffers(0, _vertexBufferBinding);
-
-            Matrix worldViewProjection = _transformMatrix * _viewMatrix * _projectionMatrix;
-            worldViewProjection.Transpose();
-
-            _context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
+            _context.InputAssembler.SetIndexBuffer(_indexBuffer, _indexBuffer.Format, 0);
+            _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);
         }
 
         internal struct SpriteInfo
@@ -1496,8 +1489,8 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref _defaultDepthStencilState);
 
                     _vertexBuffer.Dispose();
-                    _perFrameBuffer.Dispose();
                     _indexBuffer.Dispose();
+                    _perFrameBuffer.Dispose();
 
                     _shader.Dispose();
                     _vertexInputLayout.Dispose();
