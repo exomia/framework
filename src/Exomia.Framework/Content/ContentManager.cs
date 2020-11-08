@@ -258,21 +258,9 @@ namespace Exomia.Framework.Content
         }
 
         /// <inheritdoc />
-        public object Load(Type assetType, FileInfo assetFileInfo)
-        {
-            return Load(assetType, assetFileInfo.FullName);
-        }
-
-        /// <inheritdoc />
         public T Load<T>(string assetName, bool fromEmbeddedResource = false)
         {
             return (T)Load(typeof(T), assetName, fromEmbeddedResource);
-        }
-
-        /// <inheritdoc />
-        public T Load<T>(FileInfo assetFileInfo)
-        {
-            return (T)Load(typeof(T), assetFileInfo.FullName);
         }
 
         /// <inheritdoc />
@@ -342,12 +330,6 @@ namespace Exomia.Framework.Content
         public bool Unload<T>(string assetName)
         {
             return Unload(typeof(T), assetName);
-        }
-
-        /// <inheritdoc />
-        public bool Unload<T>(FileInfo assetFileInfo)
-        {
-            return Unload(typeof(T), assetFileInfo.FullName);
         }
 
         /// <summary>
@@ -479,6 +461,7 @@ namespace Exomia.Framework.Content
                 {
                     lock (_registeredContentReaderFactories)
                     {
+                        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
                         foreach (IContentReaderFactory factory in _registeredContentReaderFactories)
                         {
                             if (factory.TryCreate(assetType, out contentReader))
@@ -511,11 +494,8 @@ namespace Exomia.Framework.Content
                 }
             }
         }
-
-        /// <summary>
-        ///     An asset key.
-        /// </summary>
-        private struct AssetKey : IEquatable<AssetKey>
+        
+        private readonly struct AssetKey : IEquatable<AssetKey>
         {
             /// <summary>
             ///     Initializes a new instance of the <see cref="ContentManager" /> class.
@@ -527,15 +507,8 @@ namespace Exomia.Framework.Content
                 _assetType = assetType;
                 _assetName = assetName;
             }
-
-            /// <summary>
-            ///     Type of the asset.
-            /// </summary>
-            private readonly Type _assetType;
-
-            /// <summary>
-            ///     Name of the asset.
-            /// </summary>
+            
+            private readonly Type   _assetType;
             private readonly string _assetName;
 
             /// <inheritdoc />

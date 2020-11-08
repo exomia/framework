@@ -14,19 +14,19 @@ using System.IO;
 namespace Exomia.Framework.Content
 {
     /// <summary>
-    ///     A content reader parameters.
+    ///     The content reader parameters.
     /// </summary>
     public struct ContentReaderParameters
     {
         /// <summary>
         ///     Name of the asset currently loaded when using
-        ///     <see cref="IContentManager.Load{T}(string, bool)" /> or <see cref="IContentManager.Load{T}(FileInfo)" />.
+        ///     <see cref="IContentManager.Load{T}" />.
         /// </summary>
         public string AssetName { get; }
 
         /// <summary>
         ///     Type of the asset currently loaded when using
-        ///     <see cref="IContentManager.Load{T}(string, bool)" /> or <see cref="IContentManager.Load{T}(FileInfo)" />.
+        ///     <see cref="IContentManager.Load{T}" />.
         /// </summary>
         public Type AssetType { get; }
 
