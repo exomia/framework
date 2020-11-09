@@ -56,7 +56,7 @@ namespace Exomia.Framework.Graphics.Buffers
                                                       CpuAccessFlags  cpuAccessFlags = CpuAccessFlags.None)
             where T : unmanaged
         {
-            return Create(graphicsDevice, Math2.Ceiling(sizeof(T) / 16.0f) * 16, resourceUsage, cpuAccessFlags);
+            return Create(graphicsDevice, sizeof(T), resourceUsage, cpuAccessFlags);
         }
 
         /// <summary>
