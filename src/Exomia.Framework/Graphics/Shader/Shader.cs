@@ -234,6 +234,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="ShaderSignature" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ShaderSignature GetShaderSignature(Type type)
             {
                 return _passes[type].signature;
@@ -247,6 +248,7 @@ namespace Exomia.Framework.Graphics.Shader
             /// <returns>
             ///     The <see cref="ShaderReflection" />.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ShaderReflection GetShaderReflection(Type type)
             {
                 return _passes[type].reflection;
@@ -261,6 +263,7 @@ namespace Exomia.Framework.Graphics.Shader
             ///     The new input layout.
             /// </returns>
             /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public InputLayout CreateInputLayout(IGraphicsDevice graphicsDevice, Type type)
             {
                 return new InputLayout(
