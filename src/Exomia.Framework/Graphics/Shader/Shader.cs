@@ -423,13 +423,11 @@ namespace Exomia.Framework.Graphics.Shader
             {
                 if (!_disposed)
                 {
-                    // ReSharper disable once UseDeconstruction
-                    foreach (KeyValuePair<Type, (ComObject shader, ShaderSignature signature, ShaderReflection
-                        reflection)> keyValuePair in _passes)
+                    foreach (var (shader, signature, reflection) in _passes.Values)
                     {
-                        keyValuePair.Value.reflection.Dispose();
-                        keyValuePair.Value.signature.Dispose();
-                        keyValuePair.Value.shader.Dispose();
+                        reflection.Dispose();
+                        signature.Dispose();
+                        shader.Dispose();
                     }
                     if (disposing)
                     {
