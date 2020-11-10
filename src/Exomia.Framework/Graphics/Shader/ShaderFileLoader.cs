@@ -29,8 +29,8 @@ namespace Exomia.Framework.Graphics.Shader
             "^\\s*\\**\\s*$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private static readonly Regex s_techniqueRegex = new Regex(
-            "^\\s*\\*\\s*technique\\s*(.*)$",
+        private static readonly Regex s_groupRegex = new Regex(
+            "^\\s*\\*\\s*group\\s*(.*)$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
         private static readonly Regex s_shaderInfoRegex = new Regex(
@@ -38,9 +38,9 @@ namespace Exomia.Framework.Graphics.Shader
             RegexOptions.Compiled | RegexOptions.Singleline);
 
         /// <summary>
-        ///     A technique. This class cannot be inherited.
+        ///     A group. This class cannot be inherited.
         /// </summary>
-        private sealed class Technique
+        private sealed class Group
         {
             /// <summary>
             ///     Gets the name.
@@ -59,10 +59,10 @@ namespace Exomia.Framework.Graphics.Shader
             public IList<ShaderInfo> ShaderInfos { get; }
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="Technique" /> class.
+            ///     Initializes a new instance of the <see cref="Group" /> class.
             /// </summary>
             /// <param name="name"> The name. </param>
-            public Technique(string name)
+            public Group(string name)
             {
                 Name        = name;
                 ShaderInfos = new List<ShaderInfo>(2);
@@ -147,10 +147,10 @@ namespace Exomia.Framework.Graphics.Shader
                 return null;
             }
 
-            IList<Technique> techniques = new List<Technique>(1);
+            IList<Group> groups = new List<Group>(1);
 
-            Technique? currentTechnique = null;
-            string?    line;
+            Group?  currentGroup = null;
+            string? line;
             while ((line = sr.ReadLine()?.Trim()) != null)
             {
                 if (SHADER_DEFINITION_END.Equals(line, StringComparison.InvariantCultureIgnoreCase))
@@ -160,10 +160,10 @@ namespace Exomia.Framework.Graphics.Shader
 
                 if (!s_emptyLineRegex.IsMatch(line))
                 {
-                    Match techniqueMatch = s_techniqueRegex.Match(line);
-                    if (techniqueMatch.Success)
+                    Match groupMatch = s_groupRegex.Match(line);
+                    if (groupMatch.Success)
                     {
-                        techniques.Add(currentTechnique = new Technique(techniqueMatch.Groups[1].Value));
+                        groups.Add(currentGroup = new Group(groupMatch.Groups[1].Value));
                         continue;
                     }
 
@@ -173,9 +173,9 @@ namespace Exomia.Framework.Graphics.Shader
                         if (!Enum.TryParse(shaderInfoMatch.Groups[4].Value, out ShaderFlags flags))
                         {
                             throw new InvalidDataException(
-                                $"pass shader flags '{shaderInfoMatch.Groups[4].Value}' one or more flags are invalid or unsupported.");
+                                $"shader flags '{shaderInfoMatch.Groups[4].Value}' one or more flags are invalid or unsupported.");
                         }
-                        currentTechnique?.Add(
+                        currentGroup?.Add(
                             new ShaderInfo(
                                 shaderInfoMatch.Groups[1].Value,
                                 shaderInfoMatch.Groups[2].Value,
@@ -188,7 +188,7 @@ namespace Exomia.Framework.Graphics.Shader
             string shaderSource = sr.ReadToEnd();
 
             return new Shader(
-                techniques.Select(
+                groups.Select(
                     t =>
                     {
                         return (t.Name,
@@ -228,7 +228,7 @@ namespace Exomia.Framework.Graphics.Shader
                                                      ShaderSignature.GetInputSignature(cr),
                                                      new ShaderReflection(cr)),
                                             _ => throw new InvalidDataException(
-                                                $"pass shader type '{s.Type}' doesn't exists or is unsupported.")
+                                                $"shader type '{s.Type}' doesn't exists or is unsupported.")
                                         };
                                     })
                             );

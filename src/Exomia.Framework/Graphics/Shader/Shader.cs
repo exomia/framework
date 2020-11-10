@@ -63,95 +63,94 @@ namespace Exomia.Framework.Graphics.Shader
             ComputeShader
         }
 
-        private readonly Dictionary<string, Technique> _techniques;
+        private readonly Dictionary<string, Group> _groups;
 
         /// <summary>
-        ///     Specify the technique to get
+        ///     Specify the group to get.
         /// </summary>
-        /// <param name="name"> The technique name. </param>
+        /// <param name="name"> The group name. </param>
         /// <returns>
-        ///     The <see cref="Technique" />.
+        ///     The <see cref="Group" />.
         /// </returns>
-        public Technique this[string name]
+        public Group this[string name]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return GetTechnique(name); }
+            get { return GetGroup(name); }
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Shader" /> class.
         /// </summary>
-        /// <param name="techniques"> The techniques. </param>
-        internal Shader(
-            IEnumerable<(string technique, IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> passes)>
-                techniques)
+        /// <param name="groups"> The shader groups. </param>
+        internal Shader(IEnumerable<(string name, IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)>)>
+                            groups)
         {
-            _techniques = new Dictionary<string, Technique>(StringComparer.InvariantCultureIgnoreCase);
-            foreach ((string technique,
-                      IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> passes) in techniques)
+            _groups = new Dictionary<string, Group>(StringComparer.InvariantCultureIgnoreCase);
+            foreach ((string name,
+                      IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> entries) in groups)
             {
-                _techniques.Add(technique, new Technique(passes));
+                _groups.Add(name, new Group(entries));
             }
         }
 
         /// <summary>
-        ///     Gets all technique names from this shader instance.
+        ///     Gets all group names from this shader instance.
         /// </summary>
         /// <returns>
-        ///     An array of technique names.
+        ///     An array of group names.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string[] GetTechniqueNames()
+        public string[] GetGroupNames()
         {
-            return _techniques.Keys.ToArray();
+            return _groups.Keys.ToArray();
         }
 
         /// <summary>
-        ///     Attempts to get a <see cref="Technique" /> from the given <paramref name="name" />.
+        ///     Attempts to get a <see cref="Group" /> from the given <paramref name="name" />.
         /// </summary>
-        /// <param name="name"> The technique name. </param>
-        /// <param name="technique"> [out] The technique. </param>
+        /// <param name="name"> The group name. </param>
+        /// <param name="group"> [out] The <see cref="Group" />. </param>
         /// <returns>
         ///     True if it succeeds, false if it fails.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetTechnique(string name, out Technique technique)
+        public bool TryGetGroup(string name, out Group group)
         {
-            return _techniques.TryGetValue(name, out technique);
+            return _groups.TryGetValue(name, out group);
         }
 
         /// <summary>
-        ///     Attempts to get a <see cref="Technique" /> from the given <paramref name="name" />.
+        ///     Attempts to get a <see cref="Group" /> from the given <paramref name="name" />.
         /// </summary>
-        /// <param name="name"> The technique name. </param>
+        /// <param name="name"> The group name. </param>
         /// <returns>
-        ///     The <see cref="Technique" />.
+        ///     The <see cref="Group" />.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Technique GetTechnique(string name)
+        public Group GetGroup(string name)
         {
-            return _techniques[name];
+            return _groups[name];
         }
 
         /// <summary>
-        ///     A technique. This class cannot be inherited.
+        ///     A shader group collection. This class cannot be inherited.
         /// </summary>
-        public sealed class Technique
+        public sealed class Group
         {
             private readonly
-                Dictionary<Type, (ComObject shader, ShaderSignature signature, ShaderReflection reflection)> _passes;
+                Dictionary<Type, (ComObject shader, ShaderSignature signature, ShaderReflection reflection)> _entries;
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="Technique" /> class.
+            ///     Initializes a new instance of the <see cref="Group" /> class.
             /// </summary>
-            /// <param name="passes">     The passes. </param>
-            internal Technique(IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> passes)
+            /// <param name="entries"> The entries. </param>
+            internal Group(IEnumerable<(Type, ComObject, ShaderSignature, ShaderReflection)> entries)
             {
-                _passes = new Dictionary<Type, (ComObject, ShaderSignature, ShaderReflection)>();
+                _entries = new Dictionary<Type, (ComObject, ShaderSignature, ShaderReflection)>();
                 foreach ((Type type, ComObject comObject, ShaderSignature signature,
-                          ShaderReflection reflection) in passes)
+                          ShaderReflection reflection) in entries)
                 {
-                    _passes.Add(type, (comObject, signature, reflection));
+                    _entries.Add(type, (comObject, signature, reflection));
                 }
             }
 
@@ -164,7 +163,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public VertexShader GetVertexShader()
             {
-                return (VertexShader)_passes[Type.VertexShader].shader;
+                return (VertexShader)_entries[Type.VertexShader].shader;
             }
 
             /// <summary>
@@ -176,7 +175,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public PixelShader GetPixelShader()
             {
-                return (PixelShader)_passes[Type.PixelShader].shader;
+                return (PixelShader)_entries[Type.PixelShader].shader;
             }
 
             /// <summary>
@@ -188,7 +187,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public DomainShader GetDomainShader()
             {
-                return (DomainShader)_passes[Type.DomainShader].shader;
+                return (DomainShader)_entries[Type.DomainShader].shader;
             }
 
             /// <summary>
@@ -200,7 +199,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public GeometryShader GetGeometryShader()
             {
-                return (GeometryShader)_passes[Type.GeometryShader].shader;
+                return (GeometryShader)_entries[Type.GeometryShader].shader;
             }
 
             /// <summary>
@@ -212,7 +211,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public HullShader GetHullShader()
             {
-                return (HullShader)_passes[Type.HullShader].shader;
+                return (HullShader)_entries[Type.HullShader].shader;
             }
 
             /// <summary>
@@ -224,7 +223,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ComputeShader GetComputeShader()
             {
-                return (ComputeShader)_passes[Type.ComputeShader].shader;
+                return (ComputeShader)_entries[Type.ComputeShader].shader;
             }
 
             /// <summary>
@@ -237,11 +236,10 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ShaderSignature GetShaderSignature(Type type)
             {
-                return _passes[type].signature;
+                return _entries[type].signature;
             }
 
             /// <summary>
-            ///     s
             ///     Gets the <see cref="ShaderReflection" />.
             /// </summary>
             /// <param name="type"> The type. </param>
@@ -251,7 +249,7 @@ namespace Exomia.Framework.Graphics.Shader
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ShaderReflection GetShaderReflection(Type type)
             {
-                return _passes[type].reflection;
+                return _entries[type].reflection;
             }
 
             /// <summary>
@@ -340,79 +338,79 @@ namespace Exomia.Framework.Graphics.Shader
             /// <summary>
             ///     Implicit converts the given Shader to a <see cref="VertexShader" />.
             /// </summary>
-            /// <param name="technique"> The technique. </param>
+            /// <param name="group"> The <see cref="Group" />. </param>
             /// <returns>
             ///     The <see cref="VertexShader" />.
             /// </returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator VertexShader(Technique technique)
+            public static implicit operator VertexShader(Group group)
             {
-                return technique.GetVertexShader();
+                return group.GetVertexShader();
             }
 
             /// <summary>
             ///     Implicit converts the given Shader to a <see cref="PixelShader" />.
             /// </summary>
-            /// <param name="technique"> The technique. </param>
+            /// <param name="group"> The <see cref="Group" />. </param>
             /// <returns>
             ///     The <see cref="PixelShader" />.
             /// </returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator PixelShader(Technique technique)
+            public static implicit operator PixelShader(Group group)
             {
-                return technique.GetPixelShader();
+                return group.GetPixelShader();
             }
 
             /// <summary>
             ///     Implicit converts the given Shader to a <see cref="DomainShader" />.
             /// </summary>
-            /// <param name="technique"> The technique. </param>
+            /// <param name="group"> The <see cref="Group" />. </param>
             /// <returns>
             ///     The <see cref="DomainShader" />.
             /// </returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator DomainShader(Technique technique)
+            public static implicit operator DomainShader(Group group)
             {
-                return technique.GetDomainShader();
+                return group.GetDomainShader();
             }
 
             /// <summary>
             ///     Implicit converts the given Shader to a <see cref="GeometryShader" />.
             /// </summary>
-            /// <param name="technique"> The technique. </param>
+            /// <param name="group"> The <see cref="Group" />. </param>
             /// <returns>
             ///     The <see cref="GeometryShader" />.
             /// </returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator GeometryShader(Technique technique)
+            public static implicit operator GeometryShader(Group group)
             {
-                return technique.GetGeometryShader();
+                return group.GetGeometryShader();
             }
 
             /// <summary>
             ///     Implicit converts the given Shader to a <see cref="HullShader" />.
             /// </summary>
-            /// <param name="technique"> The technique. </param>
+            /// <param name="group"> The <see cref="Group" />. </param>
             /// <returns>
             ///     The <see cref="HullShader" />.
             /// </returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator HullShader(Technique technique)
+            public static implicit operator HullShader(Group group)
             {
-                return technique.GetHullShader();
+                return group.GetHullShader();
             }
 
             /// <summary>
             ///     Implicit converts the given Shader to a <see cref="ComputeShader" />.
             /// </summary>
-            /// <param name="technique"> The technique. </param>
+            /// <param name="group"> The <see cref="Group" />. </param>
             /// <returns>
             ///     The <see cref="ComputeShader" />.
             /// </returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator ComputeShader(Technique technique)
+            public static implicit operator ComputeShader(Group group)
             {
-                return technique.GetComputeShader();
+                return group.GetComputeShader();
             }
 
             #region IDisposable Support
@@ -423,22 +421,22 @@ namespace Exomia.Framework.Graphics.Shader
             {
                 if (!_disposed)
                 {
-                    foreach (var (shader, signature, reflection) in _passes.Values)
-                    {
-                        reflection.Dispose();
-                        signature.Dispose();
-                        shader.Dispose();
-                    }
                     if (disposing)
                     {
-                        _passes.Clear();
+                        foreach (var (shader, signature, reflection) in _entries.Values)
+                        {
+                            reflection.Dispose();
+                            signature.Dispose();
+                            shader.Dispose();
+                        }
+                        _entries.Clear();
                     }
                     _disposed = true;
                 }
             }
 
             /// <inheritdoc />
-            ~Technique()
+            ~Group()
             {
                 Dispose(false);
             }
@@ -463,13 +461,13 @@ namespace Exomia.Framework.Graphics.Shader
         {
             if (!_disposed)
             {
-                foreach (KeyValuePair<string, Technique> keyValuePair in _techniques)
-                {
-                    keyValuePair.Value.Dispose();
-                }
                 if (disposing)
                 {
-                    _techniques.Clear();
+                    foreach (Group group in _groups.Values)
+                    {
+                        group.Dispose();
+                    }
+                    _groups.Clear();
                 }
                 _disposed = true;
             }
