@@ -12,16 +12,14 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Writers
 {
-    /// <summary>
-    ///     A vector 2 cw. This class cannot be inherited.
-    /// </summary>
-    sealed class Vector2CW : ContentSerializationWriter<Vector2>
+    sealed class Vector3ContentSerializationWriter : ContentSerializationWriter<Vector3>
     {
         /// <inheritdoc />
-        public override void WriteContext(ContentSerializationContext context, Vector2 obj)
+        public override void WriteContext(ContentSerializationContext context, Vector3 obj)
         {
-            context.Set(nameof(Vector2.X), obj.X);
-            context.Set(nameof(Vector2.Y), obj.Y);
+            context.Set(nameof(Vector3.X), obj.X);
+            context.Set(nameof(Vector3.Y), obj.Y);
+            context.Set(nameof(Vector3.Z), obj.Z);
         }
     }
 }

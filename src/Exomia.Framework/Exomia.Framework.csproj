@@ -181,6 +181,20 @@
       <DependentUpon>RenderForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Mathematics\Math2.cs"></Compile>
+    <Compile Update="Mathematics\Math2.*.cs">
+      <DependentUpon>Math2.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Graphics\SpriteFont.cs"></Compile>
+    <Compile Update="Graphics\SpriteFont.*.cs">
+      <DependentUpon>SpriteFont.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
   
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />

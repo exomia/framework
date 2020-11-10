@@ -12,10 +12,7 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    /// <summary>
-    ///     A vector 3 carriage return. This class cannot be inherited.
-    /// </summary>
-    sealed class Vector3CR : ContentSerializationReader<Vector3>
+    sealed class Vector3ContentSerializationReader : ContentSerializationReader<Vector3>
     {
         /// <inheritdoc />
         public override Vector3 ReadContext(ContentSerializationContext context)

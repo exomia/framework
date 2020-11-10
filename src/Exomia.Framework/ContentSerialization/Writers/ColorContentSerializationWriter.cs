@@ -12,10 +12,7 @@ using SharpDX;
 
 namespace Exomia.Framework.ContentSerialization.Writers
 {
-    /// <summary>
-    ///     A color cw. This class cannot be inherited.
-    /// </summary>
-    sealed class ColorCW : ContentSerializationWriter<Color>
+    sealed class ColorContentSerializationWriter : ContentSerializationWriter<Color>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Color obj)

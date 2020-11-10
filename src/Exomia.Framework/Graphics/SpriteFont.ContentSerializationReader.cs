@@ -15,10 +15,7 @@ using SharpDX;
 
 namespace Exomia.Framework.Graphics
 {
-    /// <summary>
-    ///     A sprite font carriage return. This class cannot be inherited.
-    /// </summary>
-    sealed class SpriteFontCR : ContentSerializationReader<SpriteFont>
+    sealed class SpriteFontContentSerializationReader : ContentSerializationReader<SpriteFont>
     {
         /// <inheritdoc />
         public override SpriteFont ReadContext(ContentSerializationContext context)
@@ -39,10 +36,7 @@ namespace Exomia.Framework.Graphics
             };
         }
     }
-
-    /// <summary>
-    ///     A sprite font glyph carriage return. This class cannot be inherited.
-    /// </summary>
+    
     sealed class SpriteFontGlyphCR : ContentSerializationReader<SpriteFont.Glyph>
     {
         /// <inheritdoc />
@@ -58,10 +52,6 @@ namespace Exomia.Framework.Graphics
             };
         }
     }
-
-    /// <summary>
-    ///     A sprite font kerning carriage return. This class cannot be inherited.
-    /// </summary>
     sealed class SpriteFontKerningCR : ContentSerializationReader<SpriteFont.Kerning>
     {
         /// <inheritdoc />

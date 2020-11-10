@@ -21,7 +21,7 @@ namespace Exomia.Framework.Graphics
     ///     A sprite font. This class cannot be inherited.
     /// </summary>
     [ContentReadable(typeof(SpriteFontContentReader))]
-    [ContentSerializable(typeof(SpriteFontCR), typeof(SpriteFontCW))]
+    [ContentSerializable(typeof(SpriteFontContentSerializationReader), typeof(SpriteFontContentSerializationWriter))]
     public sealed class SpriteFont : IDisposable
     {
         private Glyph                  _defaultGlyph;
