@@ -29,19 +29,6 @@ namespace Exomia.Framework.Graphics.Buffers
         }
 
         /// <summary>
-        ///     Implicit cast that converts the given <see cref="ConstantBuffer" /> to a <see cref="Buffer" />.
-        /// </summary>
-        /// <param name="buffer"> Buffer for constant data. </param>
-        /// <returns>
-        ///     The result of the operation.
-        /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Buffer(ConstantBuffer buffer)
-        {
-            return buffer._buffer;
-        }
-
-        /// <summary>
         ///     Creates a new <see cref="ConstantBuffer" />.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
@@ -92,6 +79,19 @@ namespace Exomia.Framework.Graphics.Buffers
                     cpuAccessFlags,
                     ResourceOptionFlags.None,
                     0));
+        }
+
+        /// <summary>
+        ///     Implicit cast that converts the given <see cref="ConstantBuffer" /> to a <see cref="Buffer" />.
+        /// </summary>
+        /// <param name="buffer"> Buffer for constant data. </param>
+        /// <returns>
+        ///     The result of the operation.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Buffer(ConstantBuffer buffer)
+        {
+            return buffer._buffer;
         }
 
         #region IDisposable Support

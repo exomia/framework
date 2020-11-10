@@ -36,19 +36,6 @@ namespace Exomia.Framework.Graphics.Buffers
         }
 
         /// <summary>
-        ///     Implicit cast that converts the given <see cref="IndexBuffer" /> to a <see cref="Buffer" />.
-        /// </summary>
-        /// <param name="buffer"> Buffer for index data. </param>
-        /// <returns>
-        ///     The result of the operation.
-        /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Buffer(IndexBuffer buffer)
-        {
-            return buffer._buffer;
-        }
-
-        /// <summary>
         ///     Creates a new <see cref="IndexBuffer" />.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
@@ -91,6 +78,19 @@ namespace Exomia.Framework.Graphics.Buffers
                         _ => Format.Unknown
                     });
             }
+        }
+
+        /// <summary>
+        ///     Implicit cast that converts the given <see cref="IndexBuffer" /> to a <see cref="Buffer" />.
+        /// </summary>
+        /// <param name="buffer"> Buffer for index data. </param>
+        /// <returns>
+        ///     The result of the operation.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Buffer(IndexBuffer buffer)
+        {
+            return buffer._buffer;
         }
 
         #region IDisposable Support

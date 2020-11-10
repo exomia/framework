@@ -54,47 +54,6 @@ namespace Exomia.Framework.Graphics.Model
         }
 
         /// <summary>
-        ///     Initializes a new <see cref="Mesh" /> instance from the given <see cref="Obj" /> instance.
-        /// </summary>
-        /// <param name="obj">      The object. </param>
-        /// <param name="texture">  The texture. </param>
-        /// <param name="material"> The material. </param>
-        /// <returns>
-        ///     A Mesh.
-        /// </returns>
-        public static Mesh FromObj(Obj obj, Texture texture, Material material)
-        {
-            List<PositionNormalTexture2D> vertices = new List<PositionNormalTexture2D>();
-            List<uint>                    indices  = new List<uint>();
-
-            uint index = 0;
-            foreach (Obj.Face face in obj.Faces)
-            {
-                PositionNormalTexture2D FromIndex(int i)
-                {
-                    Obj.Vertex  v = obj.Vertices[face.Vertices[i].V - 1];
-                    Obj.Normal  n = obj.Normals[face.Vertices[i].N - 1];
-                    Obj.Texture t = obj.Textures[face.Vertices[i].T - 1];
-                    return new PositionNormalTexture2D(v.X, v.Y, v.Z, v.W, n.X, n.Y, n.Z, t.U, t.V);
-                }
-
-                vertices.Add(FromIndex(0));
-                vertices.Add(FromIndex(1));
-                uint indexZero = index++;
-                for (int i = 2; i < face.Vertices.Length; i++)
-                {
-                    indices.Add(indexZero);
-                    indices.Add(index++);
-                    indices.Add(index);
-                    vertices.Add(FromIndex(i));
-                }
-                index++;
-            }
-
-            return new Mesh(vertices.ToArray(), indices.ToArray(), texture, material);
-        }
-
-        /// <summary>
         ///     A position normal texture.
         /// </summary>
         [StructLayout(LayoutKind.Explicit, Size = 36)]
@@ -186,6 +145,47 @@ namespace Exomia.Framework.Graphics.Model
                 U  = u;
                 V  = v;
             }
+        }
+
+        /// <summary>
+        ///     Initializes a new <see cref="Mesh" /> instance from the given <see cref="Obj" /> instance.
+        /// </summary>
+        /// <param name="obj">      The object. </param>
+        /// <param name="texture">  The texture. </param>
+        /// <param name="material"> The material. </param>
+        /// <returns>
+        ///     A Mesh.
+        /// </returns>
+        public static Mesh FromObj(Obj obj, Texture texture, Material material)
+        {
+            List<PositionNormalTexture2D> vertices = new List<PositionNormalTexture2D>();
+            List<uint>                    indices  = new List<uint>();
+
+            uint index = 0;
+            foreach (Obj.Face face in obj.Faces)
+            {
+                PositionNormalTexture2D FromIndex(int i)
+                {
+                    Obj.Vertex  v = obj.Vertices[face.Vertices[i].V - 1];
+                    Obj.Normal  n = obj.Normals[face.Vertices[i].N - 1];
+                    Obj.Texture t = obj.Textures[face.Vertices[i].T - 1];
+                    return new PositionNormalTexture2D(v.X, v.Y, v.Z, v.W, n.X, n.Y, n.Z, t.U, t.V);
+                }
+
+                vertices.Add(FromIndex(0));
+                vertices.Add(FromIndex(1));
+                uint indexZero = index++;
+                for (int i = 2; i < face.Vertices.Length; i++)
+                {
+                    indices.Add(indexZero);
+                    indices.Add(index++);
+                    indices.Add(index);
+                    vertices.Add(FromIndex(i));
+                }
+                index++;
+            }
+
+            return new Mesh(vertices.ToArray(), indices.ToArray(), texture, material);
         }
     }
 }

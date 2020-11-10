@@ -156,84 +156,6 @@ namespace Exomia.Framework.Graphics.Shader
             }
 
             /// <summary>
-            ///     Implicit converts the given Shader to a <see cref="VertexShader" />.
-            /// </summary>
-            /// <param name="technique"> The technique. </param>
-            /// <returns>
-            ///     The <see cref="VertexShader" />.
-            /// </returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator VertexShader(Technique technique)
-            {
-                return technique.GetVertexShader();
-            }
-
-            /// <summary>
-            ///     Implicit converts the given Shader to a <see cref="PixelShader" />.
-            /// </summary>
-            /// <param name="technique"> The technique. </param>
-            /// <returns>
-            ///     The <see cref="PixelShader" />.
-            /// </returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator PixelShader(Technique technique)
-            {
-                return technique.GetPixelShader();
-            }
-
-            /// <summary>
-            ///     Implicit converts the given Shader to a <see cref="DomainShader" />.
-            /// </summary>
-            /// <param name="technique"> The technique. </param>
-            /// <returns>
-            ///     The <see cref="DomainShader" />.
-            /// </returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator DomainShader(Technique technique)
-            {
-                return technique.GetDomainShader();
-            }
-
-            /// <summary>
-            ///     Implicit converts the given Shader to a <see cref="GeometryShader" />.
-            /// </summary>
-            /// <param name="technique"> The technique. </param>
-            /// <returns>
-            ///     The <see cref="GeometryShader" />.
-            /// </returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator GeometryShader(Technique technique)
-            {
-                return technique.GetGeometryShader();
-            }
-
-            /// <summary>
-            ///     Implicit converts the given Shader to a <see cref="HullShader" />.
-            /// </summary>
-            /// <param name="technique"> The technique. </param>
-            /// <returns>
-            ///     The <see cref="HullShader" />.
-            /// </returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator HullShader(Technique technique)
-            {
-                return technique.GetHullShader();
-            }
-
-            /// <summary>
-            ///     Implicit converts the given Shader to a <see cref="ComputeShader" />.
-            /// </summary>
-            /// <param name="technique"> The technique. </param>
-            /// <returns>
-            ///     The <see cref="ComputeShader" />.
-            /// </returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator ComputeShader(Technique technique)
-            {
-                return technique.GetComputeShader();
-            }
-
-            /// <summary>
             ///     Gets a <see cref="VertexShader" />.
             /// </summary>
             /// <returns>
@@ -331,7 +253,24 @@ namespace Exomia.Framework.Graphics.Shader
             }
 
             /// <summary>
-            ///     Creates input elements from the specified <see cref="Type" />.
+            ///     Creates input layout for the specified <see cref="Type" />.
+            /// </summary>
+            /// <param name="graphicsDevice"> The graphics device. </param>
+            /// <param name="type">           The type. </param>
+            /// <returns>
+            ///     The new input layout.
+            /// </returns>
+            /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+            public InputLayout CreateInputLayout(IGraphicsDevice graphicsDevice, Type type)
+            {
+                return new InputLayout(
+                    (graphicsDevice ?? throw new ArgumentNullException(nameof(graphicsDevice))).Device,
+                    GetShaderSignature(type),
+                    CreateInputElements(type));
+            }
+
+            /// <summary>
+            ///     Creates input elements for the specified <see cref="Type" />.
             /// </summary>
             /// <param name="type"> The type. </param>
             /// <returns>
@@ -393,6 +332,84 @@ namespace Exomia.Framework.Graphics.Shader
                 }
 
                 return elements;
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="VertexShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="VertexShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator VertexShader(Technique technique)
+            {
+                return technique.GetVertexShader();
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="PixelShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="PixelShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator PixelShader(Technique technique)
+            {
+                return technique.GetPixelShader();
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="DomainShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="DomainShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator DomainShader(Technique technique)
+            {
+                return technique.GetDomainShader();
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="GeometryShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="GeometryShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator GeometryShader(Technique technique)
+            {
+                return technique.GetGeometryShader();
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="HullShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="HullShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator HullShader(Technique technique)
+            {
+                return technique.GetHullShader();
+            }
+
+            /// <summary>
+            ///     Implicit converts the given Shader to a <see cref="ComputeShader" />.
+            /// </summary>
+            /// <param name="technique"> The technique. </param>
+            /// <returns>
+            ///     The <see cref="ComputeShader" />.
+            /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator ComputeShader(Technique technique)
+            {
+                return technique.GetComputeShader();
             }
 
             #region IDisposable Support

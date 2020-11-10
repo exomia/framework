@@ -25,9 +25,6 @@ using Exomia.Framework.Resources;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Buffer = SharpDX.Direct3D11.Buffer;
-using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace Exomia.Framework.Graphics
 {
@@ -159,10 +156,7 @@ namespace Exomia.Framework.Graphics
                 _vertexShader = technique;
                 _pixelShader  = technique;
 
-                _vertexInputLayout = new InputLayout(
-                    _device,
-                    technique.GetShaderSignature(Shader.Shader.Type.VertexShader),
-                    technique.CreateInputElements(Shader.Shader.Type.VertexShader));
+                _vertexInputLayout = technique.CreateInputLayout(iDevice, Shader.Shader.Type.VertexShader);
             }
 
             _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTexture>(iDevice, MAX_VERTEX_COUNT);
@@ -286,84 +280,31 @@ namespace Exomia.Framework.Graphics
             };
         }
 
-        /// <summary>
-        ///     Updates the vertex from sprite information.
-        /// </summary>
-        /// <param name="spriteInfo"> [in,out] Information describing the sprite. </param>
-        /// <param name="vpctPtr">    [in,out] If non-null, the vpct pointer. </param>
-        /// <param name="deltaX">     The delta x coordinate. </param>
-        /// <param name="deltaY">     The delta y coordinate. </param>
-        private static unsafe void UpdateVertexFromSpriteInfo(ref SpriteInfo              spriteInfo,
-                                                              VertexPositionColorTexture* vpctPtr,
-                                                              float                       deltaX,
-                                                              float                       deltaY)
+        internal struct SpriteInfo
         {
-            Vector2 origin = spriteInfo.Origin;
+            public RectangleF    Source;
+            public RectangleF    Destination;
+            public Vector2       Origin;
+            public float         Rotation;
+            public float         Depth;
+            public SpriteEffects SpriteEffects;
+            public Color         Color;
+            public float         Opacity;
+        }
 
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (spriteInfo.Source.Width != 0f)
+        internal readonly struct TextureInfo
+        {
+            public readonly ShaderResourceView View;
+            public readonly int                Width;
+            public readonly int                Height;
+            public readonly long               Ptr64;
+
+            public TextureInfo(ShaderResourceView view, int width, int height)
             {
-                origin.X /= spriteInfo.Source.Width;
-            }
-
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (spriteInfo.Source.Height != 0f)
-            {
-                origin.Y /= spriteInfo.Source.Height;
-            }
-
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (spriteInfo.Rotation == 0f)
-            {
-                for (int j = 0; j < VERTICES_PER_SPRITE; j++)
-                {
-                    VertexPositionColorTexture* vertex = vpctPtr + j;
-
-                    Vector2 corner = s_cornerOffsets[j];
-                    float   posX   = (corner.X - origin.X) * spriteInfo.Destination.Width;
-                    float   posY   = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
-
-                    vertex->X = spriteInfo.Destination.X + posX;
-                    vertex->Y = spriteInfo.Destination.Y + posY;
-                    vertex->Z = spriteInfo.Depth;
-                    vertex->W = 1.0f;
-
-                    vertex->R = spriteInfo.Color.R * spriteInfo.Opacity;
-                    vertex->G = spriteInfo.Color.G * spriteInfo.Opacity;
-                    vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
-                    vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
-
-                    corner    = s_cornerOffsets[j ^ (int)spriteInfo.SpriteEffects];
-                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
-                    vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
-                }
-            }
-            else
-            {
-                float cos = (float)Math.Cos(spriteInfo.Rotation);
-                float sin = (float)Math.Sin(spriteInfo.Rotation);
-                for (int j = 0; j < VERTICES_PER_SPRITE; j++)
-                {
-                    VertexPositionColorTexture* vertex = vpctPtr + j;
-
-                    Vector2 corner = s_cornerOffsets[j];
-                    float   posX   = (corner.X - origin.X) * spriteInfo.Destination.Width;
-                    float   posY   = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
-
-                    vertex->X = (spriteInfo.Destination.X + (posX * cos)) - (posY * sin);
-                    vertex->Y = spriteInfo.Destination.Y + (posX * sin) + (posY * cos);
-                    vertex->Z = spriteInfo.Depth;
-                    vertex->W = 1.0f;
-
-                    vertex->R = spriteInfo.Color.R * spriteInfo.Opacity;
-                    vertex->G = spriteInfo.Color.G * spriteInfo.Opacity;
-                    vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
-                    vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
-
-                    corner    = s_cornerOffsets[j ^ (int)spriteInfo.SpriteEffects];
-                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
-                    vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
-                }
+                View   = view;
+                Width  = width;
+                Height = height;
+                Ptr64  = view.NativePointer.ToInt64();
             }
         }
 
@@ -551,34 +492,6 @@ namespace Exomia.Framework.Graphics
             _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);
         }
 
-        internal struct SpriteInfo
-        {
-            public RectangleF    Source;
-            public RectangleF    Destination;
-            public Vector2       Origin;
-            public float         Rotation;
-            public float         Depth;
-            public SpriteEffects SpriteEffects;
-            public Color         Color;
-            public float         Opacity;
-        }
-
-        internal readonly struct TextureInfo
-        {
-            public readonly ShaderResourceView View;
-            public readonly int                Width;
-            public readonly int                Height;
-            public readonly long               Ptr64;
-
-            public TextureInfo(ShaderResourceView view, int width, int height)
-            {
-                View   = view;
-                Width  = width;
-                Height = height;
-                Ptr64  = view.NativePointer.ToInt64();
-            }
-        }
-
         [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE)]
         private struct VertexPositionColorTexture
         {
@@ -611,6 +524,87 @@ namespace Exomia.Framework.Graphics
 
             [FieldOffset(36)]
             public float V;
+        }
+
+        /// <summary>
+        ///     Updates the vertex from sprite information.
+        /// </summary>
+        /// <param name="spriteInfo"> [in,out] Information describing the sprite. </param>
+        /// <param name="vpctPtr">    [in,out] If non-null, the vpct pointer. </param>
+        /// <param name="deltaX">     The delta x coordinate. </param>
+        /// <param name="deltaY">     The delta y coordinate. </param>
+        private static unsafe void UpdateVertexFromSpriteInfo(ref SpriteInfo              spriteInfo,
+                                                              VertexPositionColorTexture* vpctPtr,
+                                                              float                       deltaX,
+                                                              float                       deltaY)
+        {
+            Vector2 origin = spriteInfo.Origin;
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Source.Width != 0f)
+            {
+                origin.X /= spriteInfo.Source.Width;
+            }
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Source.Height != 0f)
+            {
+                origin.Y /= spriteInfo.Source.Height;
+            }
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (spriteInfo.Rotation == 0f)
+            {
+                for (int j = 0; j < VERTICES_PER_SPRITE; j++)
+                {
+                    VertexPositionColorTexture* vertex = vpctPtr + j;
+
+                    Vector2 corner = s_cornerOffsets[j];
+                    float   posX   = (corner.X - origin.X) * spriteInfo.Destination.Width;
+                    float   posY   = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
+
+                    vertex->X = spriteInfo.Destination.X + posX;
+                    vertex->Y = spriteInfo.Destination.Y + posY;
+                    vertex->Z = spriteInfo.Depth;
+                    vertex->W = 1.0f;
+
+                    vertex->R = spriteInfo.Color.R * spriteInfo.Opacity;
+                    vertex->G = spriteInfo.Color.G * spriteInfo.Opacity;
+                    vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
+                    vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
+
+                    corner    = s_cornerOffsets[j ^ (int)spriteInfo.SpriteEffects];
+                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
+                    vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
+                }
+            }
+            else
+            {
+                float cos = (float)Math.Cos(spriteInfo.Rotation);
+                float sin = (float)Math.Sin(spriteInfo.Rotation);
+                for (int j = 0; j < VERTICES_PER_SPRITE; j++)
+                {
+                    VertexPositionColorTexture* vertex = vpctPtr + j;
+
+                    Vector2 corner = s_cornerOffsets[j];
+                    float   posX   = (corner.X - origin.X) * spriteInfo.Destination.Width;
+                    float   posY   = (corner.Y - origin.Y) * spriteInfo.Destination.Height;
+
+                    vertex->X = (spriteInfo.Destination.X + (posX * cos)) - (posY * sin);
+                    vertex->Y = spriteInfo.Destination.Y + (posX * sin) + (posY * cos);
+                    vertex->Z = spriteInfo.Depth;
+                    vertex->W = 1.0f;
+
+                    vertex->R = spriteInfo.Color.R * spriteInfo.Opacity;
+                    vertex->G = spriteInfo.Color.G * spriteInfo.Opacity;
+                    vertex->B = spriteInfo.Color.B * spriteInfo.Opacity;
+                    vertex->A = spriteInfo.Color.A * spriteInfo.Opacity;
+
+                    corner    = s_cornerOffsets[j ^ (int)spriteInfo.SpriteEffects];
+                    vertex->U = (spriteInfo.Source.X + (corner.X * spriteInfo.Source.Width)) * deltaX;
+                    vertex->V = (spriteInfo.Source.Y + (corner.Y * spriteInfo.Source.Height)) * deltaY;
+                }
+            }
         }
 
         #region Drawing

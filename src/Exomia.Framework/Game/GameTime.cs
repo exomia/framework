@@ -100,17 +100,6 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Starts a new.
-        /// </summary>
-        /// <returns>
-        ///     A GameTime.
-        /// </returns>
-        public static GameTime StartNew()
-        {
-            return new GameTime();
-        }
-
-        /// <summary>
         ///     reset the game time.
         /// </summary>
         public void Reset()
@@ -171,6 +160,17 @@ namespace Exomia.Framework.Game
             LimitedDeltaTimeS = LimitedDeltaTimeMS * 0.001f;
 
             _prevTime = _currTime;
+        }
+
+        /// <summary>
+        ///     Starts a new.
+        /// </summary>
+        /// <returns>
+        ///     A GameTime.
+        /// </returns>
+        public static GameTime StartNew()
+        {
+            return new GameTime();
         }
     }
 }

@@ -31,61 +31,6 @@ namespace Exomia.Framework.Graphics.Buffers
         }
 
         /// <summary>
-        ///     Implicit cast that converts the given <see cref="VertexBuffer" /> to a <see cref="Buffer" />.
-        /// </summary>
-        /// <param name="buffer"> Buffer for vertex data. </param>
-        /// <returns>
-        ///     The result of the operation.
-        /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Buffer(VertexBuffer buffer)
-        {
-            return buffer._buffer;
-        }
-
-        /// <summary>
-        ///     Implicit cast that converts the given <see cref="VertexBuffer" /> to a <see cref="VertexBufferBinding" />.
-        /// </summary>
-        /// <param name="buffer"> Buffer for vertex data. </param>
-        /// <returns>
-        ///     The result of the operation.
-        /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator VertexBufferBinding(VertexBuffer buffer)
-        {
-            return buffer._vertexBufferBinding;
-        }
-
-        /// <summary>
-        ///     Creates a new <see cref="VertexBuffer" />.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="graphicsDevice"> The graphics device. </param>
-        /// <param name="vertices">       The count of the vertices to store in this vertex buffer. </param>
-        /// <param name="resourceUsage">  (Optional) The resource usage. </param>
-        /// <param name="cpuAccessFlags"> (Optional) The CPU access flags. </param>
-        /// <returns>
-        ///     A <see cref="VertexBuffer" />.
-        /// </returns>
-        public static unsafe VertexBuffer Create<T>(IGraphicsDevice graphicsDevice,
-                                                    int             vertices,
-                                                    ResourceUsage   resourceUsage  = ResourceUsage.Dynamic,
-                                                    CpuAccessFlags  cpuAccessFlags = CpuAccessFlags.Write)
-            where T : unmanaged
-        {
-            return new VertexBuffer(
-                new Buffer(
-                    graphicsDevice.Device,
-                    sizeof(T) * vertices,
-                    resourceUsage,
-                    BindFlags.VertexBuffer,
-                    cpuAccessFlags,
-                    ResourceOptionFlags.None,
-                    0),
-                sizeof(T));
-        }
-
-        /// <summary>
         ///     Map the data.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
@@ -173,6 +118,61 @@ namespace Exomia.Framework.Graphics.Buffers
                 *(vpctPtr + offset + i) = data[i + dataOffset];
             }
             context4.UnmapSubresource(_buffer, 0);
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="VertexBuffer" />.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="graphicsDevice"> The graphics device. </param>
+        /// <param name="vertices">       The count of the vertices to store in this vertex buffer. </param>
+        /// <param name="resourceUsage">  (Optional) The resource usage. </param>
+        /// <param name="cpuAccessFlags"> (Optional) The CPU access flags. </param>
+        /// <returns>
+        ///     A <see cref="VertexBuffer" />.
+        /// </returns>
+        public static unsafe VertexBuffer Create<T>(IGraphicsDevice graphicsDevice,
+                                                    int             vertices,
+                                                    ResourceUsage   resourceUsage  = ResourceUsage.Dynamic,
+                                                    CpuAccessFlags  cpuAccessFlags = CpuAccessFlags.Write)
+            where T : unmanaged
+        {
+            return new VertexBuffer(
+                new Buffer(
+                    graphicsDevice.Device,
+                    sizeof(T) * vertices,
+                    resourceUsage,
+                    BindFlags.VertexBuffer,
+                    cpuAccessFlags,
+                    ResourceOptionFlags.None,
+                    0),
+                sizeof(T));
+        }
+
+        /// <summary>
+        ///     Implicit cast that converts the given <see cref="VertexBuffer" /> to a <see cref="Buffer" />.
+        /// </summary>
+        /// <param name="buffer"> Buffer for vertex data. </param>
+        /// <returns>
+        ///     The result of the operation.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Buffer(VertexBuffer buffer)
+        {
+            return buffer._buffer;
+        }
+
+        /// <summary>
+        ///     Implicit cast that converts the given <see cref="VertexBuffer" /> to a <see cref="VertexBufferBinding" />.
+        /// </summary>
+        /// <param name="buffer"> Buffer for vertex data. </param>
+        /// <returns>
+        ///     The result of the operation.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator VertexBufferBinding(VertexBuffer buffer)
+        {
+            return buffer._vertexBufferBinding;
         }
 
         #region IDisposable Support

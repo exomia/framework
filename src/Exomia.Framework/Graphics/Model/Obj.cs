@@ -59,11 +59,6 @@ namespace Exomia.Framework.Graphics.Model
             Faces    = faces;
         }
 
-        internal static Obj Create(Vertex[] vertices, Normal[] normals, Texture[] textures, Face[] faces)
-        {
-            return new Obj(vertices, normals, textures, faces);
-        }
-
         /// <summary>
         ///     A vertex.
         /// </summary>
@@ -274,6 +269,11 @@ namespace Exomia.Framework.Graphics.Model
             {
                 return $"{string.Join(", ", Vertices)} [{Vertices.Length}]";
             }
+        }
+
+        internal static Obj Create(Vertex[] vertices, Normal[] normals, Texture[] textures, Face[] faces)
+        {
+            return new Obj(vertices, normals, textures, faces);
         }
     }
 }

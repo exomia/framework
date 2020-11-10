@@ -142,6 +142,29 @@ namespace Exomia.Framework.ContentSerialization.Types
             Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
         }
 
+        /// <summary>
+        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
+        /// </summary>
+        /// <typeparam name="TKey">   Type of the key. </typeparam>
+        /// <typeparam name="TValue"> Type of the value. </typeparam>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="key">          The key. </param>
+        /// <param name="content">      The content. </param>
+        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
+        private void Write<TKey, TValue>(Action<string, string>   writeHandler,
+                                         string                   tabSpace,
+                                         string                   key,
+                                         Dictionary<TKey, TValue> content,
+                                         bool                     useTypeInfo = true)
+        {
+            writeHandler(
+                tabSpace,
+                $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}({content.Count})]");
+            ForeachDictionaryDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
+            writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
+        }
+
         #region WriteHelper
 
         /// <summary>
@@ -178,29 +201,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         #endregion
-
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
-        /// <typeparam name="TKey">   Type of the key. </typeparam>
-        /// <typeparam name="TValue"> Type of the value. </typeparam>
-        /// <param name="writeHandler"> The write handler. </param>
-        /// <param name="tabSpace">     The tab space. </param>
-        /// <param name="key">          The key. </param>
-        /// <param name="content">      The content. </param>
-        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        private void Write<TKey, TValue>(Action<string, string>   writeHandler,
-                                         string                   tabSpace,
-                                         string                   key,
-                                         Dictionary<TKey, TValue> content,
-                                         bool                     useTypeInfo = true)
-        {
-            writeHandler(
-                tabSpace,
-                $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}({content.Count})]");
-            ForeachDictionaryDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
-            writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
-        }
 
         #region ReaderHelper
 

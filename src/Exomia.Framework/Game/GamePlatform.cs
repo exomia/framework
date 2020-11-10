@@ -30,19 +30,6 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Creates a new <see cref="GamePlatform" />.
-        /// </summary>
-        /// <param name="game">  The game. </param>
-        /// <param name="title"> The title. </param>
-        /// <returns>
-        ///     A <see cref="GamePlatform" />.
-        /// </returns>
-        public static GamePlatform Create(Game game, string title)
-        {
-            return new GamePlatformWindows(game, title);
-        }
-
-        /// <summary>
         ///     Initializes the <see cref="GamePlatform" />.
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
@@ -60,6 +47,19 @@ namespace Exomia.Framework.Game
         }
 
         private protected abstract IGameWindow CreateGameWindow(Game game, string title);
+
+        /// <summary>
+        ///     Creates a new <see cref="GamePlatform" />.
+        /// </summary>
+        /// <param name="game">  The game. </param>
+        /// <param name="title"> The title. </param>
+        /// <returns>
+        ///     A <see cref="GamePlatform" />.
+        /// </returns>
+        public static GamePlatform Create(Game game, string title)
+        {
+            return new GamePlatformWindows(game, title);
+        }
 
         #region IDisposable Support
 
