@@ -181,6 +181,30 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
+        ///     Draw font.
+        /// </summary>
+        /// <param name="texture">         The texture. </param>
+        /// <param name="position">        The position. </param>
+        /// <param name="sourceRectangle"> Source rectangle. </param>
+        /// <param name="color">           The color. </param>
+        /// <param name="rotation">        The rotation. </param>
+        /// <param name="origin">          The origin. </param>
+        /// <param name="scale">           The scale. </param>
+        /// <param name="opacity">         The opacity. </param>
+        /// <param name="effects">         The effects. </param>
+        /// <param name="layerDepth">      Depth of the layer. </param>
+        internal delegate void DrawFont(Texture       texture,
+                                        in Vector2    position,
+                                        in Rectangle? sourceRectangle,
+                                        in Color      color,
+                                        float         rotation,
+                                        in Vector2    origin,
+                                        float         scale,
+                                        float         opacity,
+                                        SpriteEffects effects,
+                                        float         layerDepth);
+
+        /// <summary>
         ///     A glyph.
         /// </summary>
         [ContentSerializable(typeof(SpriteFontGlyphCR), typeof(SpriteFontGlyphCW))]
@@ -233,30 +257,6 @@ namespace Exomia.Framework.Graphics
             /// </summary>
             public int Offset;
         }
-
-        /// <summary>
-        ///     Draw font.
-        /// </summary>
-        /// <param name="texture">         The texture. </param>
-        /// <param name="position">        The position. </param>
-        /// <param name="sourceRectangle"> Source rectangle. </param>
-        /// <param name="color">           The color. </param>
-        /// <param name="rotation">        The rotation. </param>
-        /// <param name="origin">          The origin. </param>
-        /// <param name="scale">           The scale. </param>
-        /// <param name="opacity">         The opacity. </param>
-        /// <param name="effects">         The effects. </param>
-        /// <param name="layerDepth">      Depth of the layer. </param>
-        internal delegate void DrawFont(Texture       texture,
-                                        in Vector2    position,
-                                        in Rectangle? sourceRectangle,
-                                        in Color      color,
-                                        float         rotation,
-                                        in Vector2    origin,
-                                        float         scale,
-                                        float         opacity,
-                                        SpriteEffects effects,
-                                        float         layerDepth);
 
         #region String
 

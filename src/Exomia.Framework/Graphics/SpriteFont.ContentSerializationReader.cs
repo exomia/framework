@@ -36,7 +36,7 @@ namespace Exomia.Framework.Graphics
             };
         }
     }
-    
+
     sealed class SpriteFontGlyphCR : ContentSerializationReader<SpriteFont.Glyph>
     {
         /// <inheritdoc />
@@ -52,6 +52,7 @@ namespace Exomia.Framework.Graphics
             };
         }
     }
+
     sealed class SpriteFontKerningCR : ContentSerializationReader<SpriteFont.Kerning>
     {
         /// <inheritdoc />

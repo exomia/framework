@@ -36,7 +36,7 @@ namespace Exomia.Framework.Graphics
             context.Set(nameof(SpriteFont.ImageData), Convert.ToBase64String(obj.ImageData));
         }
     }
-    
+
     sealed class SpriteFontGlyphCW : ContentSerializationWriter<SpriteFont.Glyph>
     {
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace Exomia.Framework.Graphics
             context.Set(nameof(SpriteFont.Glyph.XAdvance), obj.XAdvance);
         }
     }
-    
+
     sealed class SpriteFontKerningCW : ContentSerializationWriter<SpriteFont.Kerning>
     {
         /// <inheritdoc />

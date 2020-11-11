@@ -190,6 +190,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Graphics\SpriteBatch.cs"></Compile>
+    <Compile Update="Graphics\SpriteBatch.*.cs">
+      <DependentUpon>SpriteBatch.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Graphics\SpriteFont.cs"></Compile>
     <Compile Update="Graphics\SpriteFont.*.cs">
       <DependentUpon>SpriteFont.cs</DependentUpon>

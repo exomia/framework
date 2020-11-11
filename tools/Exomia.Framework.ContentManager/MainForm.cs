@@ -152,29 +152,6 @@ namespace Exomia.Framework.ContentManager
             _projectFile = null;
         }
 
-        private class NodeSorter : IComparer
-        {
-            // Compare the length of the strings, or the strings
-            // themselves, if they are the same length.
-            public int Compare(object x, object y)
-            {
-                if (x is TreeNode tx && y is TreeNode ty)
-                {
-                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX) && !ty.Name.StartsWith(FOLDER_KEY_PREFIX))
-                    {
-                        return -1;
-                    }
-                    if (!tx.Name.StartsWith(FOLDER_KEY_PREFIX) && ty.Name.StartsWith(FOLDER_KEY_PREFIX))
-                    {
-                        return 1;
-                    }
-                    return string.Compare(tx.Text, ty.Text, StringComparison.InvariantCultureIgnoreCase);
-                }
-
-                return 0;
-            }
-        }
-
         private static bool IsNumber(object? value)
         {
             return value is sbyte
@@ -195,6 +172,29 @@ namespace Exomia.Framework.ContentManager
             foreach (T item in items)
             {
                 action(item);
+            }
+        }
+
+        private class NodeSorter : IComparer
+        {
+            // Compare the length of the strings, or the strings
+            // themselves, if they are the same length.
+            public int Compare(object x, object y)
+            {
+                if (x is TreeNode tx && y is TreeNode ty)
+                {
+                    if (tx.Name.StartsWith(FOLDER_KEY_PREFIX) && !ty.Name.StartsWith(FOLDER_KEY_PREFIX))
+                    {
+                        return -1;
+                    }
+                    if (!tx.Name.StartsWith(FOLDER_KEY_PREFIX) && ty.Name.StartsWith(FOLDER_KEY_PREFIX))
+                    {
+                        return 1;
+                    }
+                    return string.Compare(tx.Text, ty.Text, StringComparison.InvariantCultureIgnoreCase);
+                }
+
+                return 0;
             }
         }
     }
