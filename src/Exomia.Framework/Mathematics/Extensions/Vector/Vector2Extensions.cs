@@ -20,22 +20,22 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
     public static class Vector2Extensions
     {
         /// <summary>
-        ///     calculate the angle between two vectors.
+        ///     Calculate the angle between two vectors.
         /// </summary>
         /// <param name="vec1"> this vec1. </param>
         /// <param name="vec2"> vec2. </param>
         /// <returns>
-        ///     angle between the two vectors in radians.
+        ///     The angle between the two vectors in radians.
         /// </returns>
         public static double AngleBetween(this Vector2 vec1, in Vector2 vec2)
         {
-            float scalar = (vec1.X * vec2.X) + (vec1.Y * vec2.Y);
-            float length = vec1.Length() * vec2.Length();
-            return Math.Cos(scalar / length);
+            return Math.Atan2(
+                (vec1.X * vec2.Y) - (vec2.X * vec1.Y), 
+                (vec1.X * vec2.X) + (vec1.Y * vec2.Y));
         }
 
         /// <summary>
-        ///     calculates the horizontal angle of a vector2.
+        ///     Calculates the horizontal angle of a vector2.
         /// </summary>
         /// <param name="vec"> this vec. </param>
         /// <returns>
@@ -48,7 +48,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     calculates the vertical angle of a vector2.
+        ///     Calculates the vertical angle of a vector2.
         /// </summary>
         /// <param name="vec"> this vec. </param>
         /// <returns>
@@ -61,7 +61,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     rotate a vector by an angle (in radian)
+        ///     Rotate a vector by an angle (in radian)
         /// </summary>
         /// <param name="vec">   this vec. </param>
         /// <param name="angle"> angle. </param>
@@ -76,7 +76,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     transforms the vector with a transform matrix.
+        ///     Transforms the vector with a transform matrix.
         /// </summary>
         /// <param name="vec">       this vec. </param>
         /// <param name="transform"> transform. </param>
