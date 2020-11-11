@@ -22,24 +22,24 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         /// <summary>
         ///     Calculate the angle between two vectors.
         /// </summary>
-        /// <param name="vec1"> this vec1. </param>
-        /// <param name="vec2"> vec2. </param>
+        /// <param name="vec1"> This <see cref="Vector2" />. </param>
+        /// <param name="vec2"> The <see cref="Vector2" />. </param>
         /// <returns>
         ///     The angle between the two vectors in radians.
         /// </returns>
         public static double AngleBetween(this Vector2 vec1, in Vector2 vec2)
         {
             return Math.Atan2(
-                (vec1.X * vec2.Y) - (vec2.X * vec1.Y), 
+                (vec1.X * vec2.Y) - (vec2.X * vec1.Y),
                 (vec1.X * vec2.X) + (vec1.Y * vec2.Y));
         }
 
         /// <summary>
         ///     Calculates the horizontal angle of a vector2.
         /// </summary>
-        /// <param name="vec"> this vec. </param>
+        /// <param name="vec"> This <see cref="Vector2" />. </param>
         /// <returns>
-        ///     angle horizontal.
+        ///     The angle horizontal.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngleHorizontal(this Vector2 vec)
@@ -48,11 +48,11 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     Calculates the vertical angle of a vector2.
+        ///     Calculates the vertical angle of a <see cref="Vector2" />.
         /// </summary>
-        /// <param name="vec"> this vec. </param>
+        /// <param name="vec"> This <see cref="Vector2" />. </param>
         /// <returns>
-        ///     angle vertical.
+        ///     The angle vertical.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngleVertical(this Vector2 vec)
@@ -61,12 +61,12 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     Rotate a vector by an angle (in radian)
+        ///     Rotate a <see cref="Vector2" /> by an angle (in radian)
         /// </summary>
-        /// <param name="vec">   this vec. </param>
+        /// <param name="vec">   This <see cref="Vector2" />. </param>
         /// <param name="angle"> angle. </param>
         /// <returns>
-        ///     new rotated vector2.
+        ///     The new rotated <see cref="Vector2" />.
         /// </returns>
         public static Vector2 Rotate(this Vector2 vec, double angle)
         {
@@ -76,12 +76,12 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     Transforms the vector with a transform matrix.
+        ///     Transforms the <see cref="Vector2" /> with a transform <see cref="Matrix" />.
         /// </summary>
         /// <param name="vec">       this vec. </param>
         /// <param name="transform"> transform. </param>
         /// <returns>
-        ///     new vector2.
+        ///     the new <see cref="Vector2" />.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Transform(this Vector2 vec, in Matrix transform)
