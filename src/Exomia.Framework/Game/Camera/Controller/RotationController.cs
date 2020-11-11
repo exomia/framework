@@ -99,14 +99,14 @@ namespace Exomia.Framework.Game.Camera.Controller
             device.RegisterRawMouseInput(CameraOnRawMouseInput);
         }
 
-        private bool CameraOnRawMouseInput(in MouseEventArgs mouseEventArgs)
+        private EventAction CameraOnRawMouseInput(in MouseEventArgs mouseEventArgs)
         {
             if (mouseEventArgs.X != 0 || mouseEventArgs.Y != 0)
             {
                 Interlocked.Add(ref _x, mouseEventArgs.X);
                 Interlocked.Add(ref _y, mouseEventArgs.Y);
             }
-            return false;
+            return EventAction.Continue;
         }
     }
 }

@@ -99,16 +99,16 @@ namespace Exomia.Framework.Game.Camera.Controller
             }
         }
 
-        private bool CameraOnKeyDown(int keyValue, KeyModifier modifiers)
+        private EventAction CameraOnKeyDown(int keyValue, KeyModifier modifiers)
         {
             _keysDown.Add(keyValue);
-            return false;
+            return EventAction.Continue;
         }
 
-        private bool CameraOnKeyUp(int keyValue, KeyModifier modifiers)
+        private EventAction CameraOnKeyUp(int keyValue, KeyModifier modifiers)
         {
             _keysDown.Remove(keyValue);
-            return false;
+            return EventAction.Continue;
         }
     }
 }

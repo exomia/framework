@@ -15,7 +15,7 @@ using SharpDX;
 namespace Exomia.Framework.Mathematics.Extensions.Vector
 {
     /// <summary>
-    ///     Vector2Extensions static class.
+    ///     A vector 2 extensions class.
     /// </summary>
     public static class Vector2Extensions
     {
