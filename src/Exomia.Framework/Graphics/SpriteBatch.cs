@@ -61,13 +61,13 @@ namespace Exomia.Framework.Graphics
         private readonly VertexBuffer   _vertexBuffer;
         private readonly ConstantBuffer _perFrameBuffer;
 
-        private readonly Shader.Shader _shader;
-        private readonly PixelShader   _pixelShader;
-        private readonly VertexShader  _vertexShader;
-        private readonly Texture       _whiteTexture;
-
-        private BlendState?        _defaultBlendState,        _blendState;
-        private DepthStencilState? _defaultDepthStencilState, _depthStencilState;
+        private readonly Shader.Shader      _shader;
+        private readonly PixelShader        _pixelShader;
+        private readonly VertexShader       _vertexShader;
+        private readonly Texture            _whiteTexture;
+        private readonly bool               _center;
+        private          BlendState?        _defaultBlendState,        _blendState;
+        private          DepthStencilState? _defaultDepthStencilState, _depthStencilState;
 
         private RasterizerState? _defaultRasterizerState,
                                  _defaultRasterizerScissorEnabledState,
@@ -116,32 +116,36 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpriteBatch" /> class.
         /// </summary>
-        /// <exception cref="ArgumentException">
-        ///     Thrown when one or more arguments have unsupported or
-        ///     illegal values.
-        /// </exception>
-        /// <param name="iDevice">       Zero-based index of the device. </param>
-        /// <param name="sortAlgorithm"> (Optional) The sort algorithm. </param>
-        public SpriteBatch(IGraphicsDevice iDevice, SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
+        /// <param name="graphicsDevice"> The graphics device. </param>
+        /// <param name="center">         (Optional) True to center the coordinate system in the viewport. </param>
+        /// <param name="sortAlgorithm">  (Optional) The sort algorithm. </param>
+        /// <exception cref="ArgumentException">      Thrown when one or more arguments have unsupported or
+        ///                                           illegal values. </exception>
+        /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
+        public SpriteBatch(IGraphicsDevice graphicsDevice,
+                           bool            center = false,
+                           SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
         {
-            _device  = iDevice.Device;
-            _context = iDevice.DeviceContext;
-
+            _device  = graphicsDevice.Device;
+            _context = graphicsDevice.DeviceContext;
+            
+            _center = center;
+            
             _spriteSort = sortAlgorithm switch
             {
                 SpriteSortAlgorithm.MergeSort => new SpriteMergeSort(),
                 _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm))
             };
+            
+            _defaultBlendState                    = graphicsDevice.BlendStates.AlphaBlend;
+            _defaultSamplerState                  = graphicsDevice.SamplerStates.LinearWrap;
+            _defaultDepthStencilState             = graphicsDevice.DepthStencilStates.None;
+            _defaultRasterizerState               = graphicsDevice.RasterizerStates.CullBackDepthClipOff;
+            _defaultRasterizerScissorEnabledState = graphicsDevice.RasterizerStates.CullBackDepthClipOffScissorEnabled;
 
-            _defaultBlendState                    = iDevice.BlendStates.AlphaBlend;
-            _defaultSamplerState                  = iDevice.SamplerStates.LinearWrap;
-            _defaultDepthStencilState             = iDevice.DepthStencilStates.None;
-            _defaultRasterizerState               = iDevice.RasterizerStates.CullBackDepthClipOff;
-            _defaultRasterizerScissorEnabledState = iDevice.RasterizerStates.CullBackDepthClipOffScissorEnabled;
+            _whiteTexture = graphicsDevice.Textures.White;
 
-            _whiteTexture = iDevice.Textures.White;
-
-            _indexBuffer = IndexBuffer.Create(iDevice, s_indices);
+            _indexBuffer = IndexBuffer.Create(graphicsDevice, s_indices);
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             using (Stream stream =
@@ -149,17 +153,17 @@ namespace Exomia.Framework.Graphics
                 throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE}"))
             {
                 Shader.Shader.Group group =
-                    (_shader = ShaderFileLoader.FromStream(iDevice, stream) ??
+                    (_shader = ShaderFileLoader.FromStream(graphicsDevice, stream) ??
                                throw new NullReferenceException(nameof(ShaderFileLoader.FromStream)))["DEFAULT"];
 
                 _vertexShader = group;
                 _pixelShader  = group;
 
-                _vertexInputLayout = group.CreateInputLayout(iDevice, Shader.Shader.Type.VertexShader);
+                _vertexInputLayout = group.CreateInputLayout(graphicsDevice, Shader.Shader.Type.VertexShader);
             }
 
-            _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTexture>(iDevice, MAX_VERTEX_COUNT);
-            _perFrameBuffer = ConstantBuffer.Create<Matrix>(iDevice);
+            _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTexture>(graphicsDevice, MAX_VERTEX_COUNT);
+            _perFrameBuffer = ConstantBuffer.Create<Matrix>(graphicsDevice);
 
             _sortIndices   = new int[MAX_BATCH_SIZE];
             _sortedSprites = new SpriteInfo[MAX_BATCH_SIZE];
@@ -167,9 +171,9 @@ namespace Exomia.Framework.Graphics
             _spriteQueue    = new SpriteInfo[MAX_BATCH_SIZE];
             _spriteTextures = new TextureInfo[MAX_BATCH_SIZE];
 
-            iDevice.ResizeFinished += IDevice_onResizeFinished;
+            graphicsDevice.ResizeFinished += IDevice_onResizeFinished;
 
-            Resize(iDevice.Viewport);
+            Resize(graphicsDevice.Viewport);
         }
 
         /// <summary>
@@ -268,14 +272,15 @@ namespace Exomia.Framework.Graphics
         {
             float xRatio = width > 0 ? 1f / width : 0f;
             float yRatio = height > 0 ? -1f / height : 0f;
+
             _projectionMatrix = new Matrix
             {
                 M11 = xRatio * 2f,
                 M22 = yRatio * 2f,
                 M33 = 1f,
                 M44 = 1f,
-                M41 = -1f,
-                M42 = 1f
+                M41 = -(_center ? 0f : 1f),
+                M42 = _center ? 0f : 1f
             };
         }
 
