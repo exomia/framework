@@ -20,6 +20,19 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
     public static class Vector2Extensions
     {
         /// <summary>
+        ///     Calculate the angle from the anchor point to another point vector.
+        /// </summary>
+        /// <param name="anchor"> This anchor <see cref="Vector2" />. </param>
+        /// <param name="point"> The point <see cref="Vector2" />. </param>
+        /// <returns>
+        ///     The angle from anchor vector to the point vector in radians.
+        /// </returns>
+        public static double AngleTo(this Vector2 anchor, in Vector2 point)
+        {
+            return Math.Atan2(point.Y - anchor.Y, point.X - anchor.X);
+        }
+
+        /// <summary>
         ///     Calculate the angle between two vectors.
         /// </summary>
         /// <param name="vec1"> This <see cref="Vector2" />. </param>
@@ -35,7 +48,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     Calculates the horizontal angle of a vector2.
+        ///     Calculates the horizontal angle of a <see cref="Vector2" />.
         /// </summary>
         /// <param name="vec"> This <see cref="Vector2" />. </param>
         /// <returns>
