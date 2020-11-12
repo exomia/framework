@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <NullableReferenceTypes>true</NullableReferenceTypes>
+    <DefineConstants>TRACE;$(Platform)</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -42,16 +43,13 @@
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">DEBUG;TRACE;x86</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">DEBUG;TRACE;$(Platform)</DefineConstants>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">TRACE;x86</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">TRACE;$(Platform)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
