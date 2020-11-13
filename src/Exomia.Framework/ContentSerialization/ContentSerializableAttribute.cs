@@ -13,7 +13,7 @@ using System;
 namespace Exomia.Framework.ContentSerialization
 {
     /// <summary>
-    ///     used to mark a content serializable class.
+    ///     Used to mark a content serializable class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class ContentSerializableAttribute : Attribute
@@ -33,19 +33,15 @@ namespace Exomia.Framework.ContentSerialization
         ///     The writer.
         /// </value>
         internal IContentSerializationWriter Writer { get; }
-
-        /// <inheritdoc />
+        
         /// <summary>
-        ///     ContentSerializableAttribute constructor.
+        ///     Initializes a new instance of the <see cref="ContentSerializableAttribute"/> class.
         /// </summary>
-        /// <param name="reader">
-        ///     the content reader type
-        ///     <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationReader" />
-        /// </param>
-        /// <param name="writer">
-        ///     the content writer type
-        ///     <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" />
-        /// </param>
+        /// <param name="reader"> the content reader type
+        ///                       <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationReader" /> </param>
+        /// <param name="writer"> the content writer type
+        ///                       <see cref="T:Exomia.Framework.ContentSerialization.IContentSerializationWriter" /> </param>
+        /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
         public ContentSerializableAttribute(Type reader, Type writer)
         {
             Reader = System.Activator.CreateInstance(reader) as IContentSerializationReader ??

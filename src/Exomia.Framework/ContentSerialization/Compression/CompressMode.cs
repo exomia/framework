@@ -11,12 +11,12 @@
 namespace Exomia.Framework.ContentSerialization.Compression
 {
     /// <summary>
-    ///     CompressMode.
+    ///     Values that represent CompressMode.
     /// </summary>
     public enum CompressMode : byte
     {
         /// <summary>
-        ///     gzip (default)
+        ///     An enum constant representing the gzip option (default).
         /// </summary>
         Gzip = 1
     }
