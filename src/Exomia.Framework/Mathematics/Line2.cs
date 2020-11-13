@@ -47,14 +47,14 @@ namespace Exomia.Framework.Mathematics
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
         /// </summary>
         /// <param name="x1"> The first x value. </param>
-        /// <param name="x2"> The second x value. </param>
         /// <param name="y1"> The first y value. </param>
+        /// <param name="x2"> The second x value. </param>
         /// <param name="y2"> The second y value. </param>
-        public Line2(float x1, float x2, float y1, float y2)
+        public Line2(float x1, float y1, float x2, float y2)
         {
             X1 = x1;
-            X2 = x2;
             Y1 = y1;
+            X2 = x2;
             Y2 = y2;
         }
 
@@ -64,7 +64,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="a"> The VectorI2 to process. </param>
         /// <param name="b"> The VectorI2 to process. </param>
         public Line2(VectorI2 a, VectorI2 b)
-            : this(a.X, b.X, a.Y, b.Y) { }
+            : this(a.X, a.Y, b.X, b.Y) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
@@ -72,7 +72,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="a"> The Vector2 to process. </param>
         /// <param name="b"> The Vector2 to process. </param>
         public Line2(Vector2 a, Vector2 b)
-            : this(a.X, b.X, a.Y, b.Y) { }
+            : this(a.X, a.Y, b.X, b.Y) { }
 
         /// <summary>
         ///     Determines whether the specified <see cref="Line2" /> is equal to this instance.
@@ -87,8 +87,8 @@ namespace Exomia.Framework.Mathematics
             // ReSharper disable CompareOfFloatsByEqualityOperator
             return
                 X1 == other.X1 &&
-                X2 == other.X2 &&
                 Y1 == other.Y1 &&
+                X2 == other.X2 &&
                 Y2 == other.Y2;
 
             // ReSharper restore CompareOfFloatsByEqualityOperator

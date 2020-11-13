@@ -12,7 +12,6 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <Version>1.4.1</Version>
     <Company>exomia</Company>
     <Authors>exomia;saika01</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
