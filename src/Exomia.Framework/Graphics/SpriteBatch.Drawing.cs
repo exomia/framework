@@ -9,8 +9,10 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using Exomia.Framework.Mathematics;
 using SharpDX;
 
 namespace Exomia.Framework.Graphics
@@ -28,6 +30,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="rotation">             The rotation. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawRectangle(in RectangleF destinationRectangle,
                                   in Color      color,
                                   float         lineWidth,
@@ -108,6 +111,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="color">                The color. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawFillRectangle(in RectangleF destinationRectangle, in Color color, float layerDepth)
         {
             DrawSprite(
@@ -122,6 +126,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">                The color. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawFillRectangle(in RectangleF destinationRectangle,
                                       in Color      color,
                                       float         opacity,
@@ -141,6 +146,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">               The origin. </param>
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawFillRectangle(in RectangleF destinationRectangle,
                                       in Color      color,
                                       float         rotation,
@@ -162,6 +168,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="lineWidth">  Width of the line. </param>
         /// <param name="opacity">    The opacity. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
                              in Color   color,
@@ -175,6 +182,24 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Draw line.
         /// </summary>
+        /// <param name="line">       The line. </param>
+        /// <param name="color">      The color. </param>
+        /// <param name="lineWidth">  Width of the line. </param>
+        /// <param name="opacity">    The opacity. </param>
+        /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DrawLine(in Line2 line,
+                             in Color color,
+                             float    lineWidth,
+                             float    opacity,
+                             float    layerDepth)
+        {
+            DrawLine(in line, color, lineWidth, opacity, 1.0f, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw line.
+        /// </summary>
         /// <param name="point1">       The first point. </param>
         /// <param name="point2">       The second point. </param>
         /// <param name="color">        The color. </param>
@@ -182,6 +207,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="lengthFactor"> The length factor. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
                              in Color   color,
@@ -190,10 +216,32 @@ namespace Exomia.Framework.Graphics
                              float      lengthFactor,
                              float      layerDepth)
         {
+            DrawLine(new Line2(point1, point2), color, lineWidth, opacity, lengthFactor, layerDepth);
+        }
+
+        /// <summary>
+        ///     Draw line.
+        /// </summary>
+        /// <param name="line">         The line. </param>
+        /// <param name="color">        The color. </param>
+        /// <param name="lineWidth">    Width of the line. </param>
+        /// <param name="opacity">      The opacity. </param>
+        /// <param name="lengthFactor"> The length factor. </param>
+        /// <param name="layerDepth">   Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DrawLine(in Line2 line,
+                             in Color color,
+                             float    lineWidth,
+                             float    opacity,
+                             float    lengthFactor,
+                             float    layerDepth)
+        {
+            float dx = line.X2 - line.X1;
+            float dy = line.Y2 - line.Y1;
             DrawSprite(
                 _whiteTexture, new RectangleF(
-                    point1.X, point1.Y, Vector2.Distance(point1, point2) * lengthFactor, lineWidth), false,
-                s_nullRectangle, color, (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X),
+                    line.X1, line.Y1, (float)Math.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth), false,
+                s_nullRectangle, color, (float)Math.Atan2(dy, dx),
                 s_vector2Zero, opacity, SpriteEffects.None, layerDepth);
         }
 
@@ -228,6 +276,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="segments">   The segments. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawCircle(in Vector2 center,
                                float      radius,
                                in Color   color,
@@ -286,6 +335,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="texture">  The texture. </param>
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture texture, in Vector2 position, in Color color)
         {
             DrawSprite(
@@ -299,6 +349,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="texture">              The texture. </param>
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="color">                The color. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture texture, in RectangleF destinationRectangle, in Color color)
         {
             DrawSprite(
@@ -313,6 +364,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position">        The position. </param>
         /// <param name="sourceRectangle"> Source rectangle. </param>
         /// <param name="color">           The color. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in Color color)
         {
             DrawSprite(
@@ -327,6 +379,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="destinationRectangle"> Destination rectangle. </param>
         /// <param name="sourceRectangle">      Source rectangle. </param>
         /// <param name="color">                The color. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture       texture,
                          in RectangleF destinationRectangle,
                          in Rectangle? sourceRectangle,
@@ -346,6 +399,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="rotation">   The rotation. </param>
         /// <param name="origin">     The origin. </param>
         /// <param name="layerDepth"> (Optional) Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture    texture,
                          in Vector2 position,
                          in Color   color,
@@ -367,6 +421,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="rotation">             The rotation. </param>
         /// <param name="origin">               The origin. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture       texture,
                          in RectangleF destinationRectangle,
                          in Color      color,
@@ -391,6 +446,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">              The opacity. </param>
         /// <param name="effects">              The effects. </param>
         /// <param name="layerDepth">           Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture       texture,
                          in RectangleF destinationRectangle,
                          in Rectangle? sourceRectangle,
@@ -419,6 +475,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture       texture,
                          in Vector2    position,
                          in Rectangle? sourceRectangle,
@@ -448,6 +505,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture       texture,
                          in Vector2    position,
                          in Rectangle? sourceRectangle,
@@ -601,6 +659,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position">   The position. </param>
         /// <param name="color">      The color. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color, float layerDepth)
         {
             font.Draw(
@@ -617,6 +676,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">      The color. </param>
         /// <param name="rotation">   The rotation. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont font,
                              string     text,
                              in Vector2 position,
@@ -641,6 +701,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              string        text,
                              in Vector2    position,
@@ -670,6 +731,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              string        text,
                              int           start,
@@ -702,6 +764,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              string        text,
                              int           start,
@@ -728,6 +791,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position">   The position. </param>
         /// <param name="color">      The color. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color, float layerDepth)
         {
             font.Draw(
@@ -744,6 +808,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">      The color. </param>
         /// <param name="rotation">   The rotation. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              StringBuilder text,
                              in Vector2    position,
@@ -768,6 +833,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              StringBuilder text,
                              in Vector2    position,
@@ -797,6 +863,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              StringBuilder text,
                              int           start,
@@ -829,6 +896,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont    font,
                              StringBuilder text,
                              int           start,
@@ -860,6 +928,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void DrawTextInternal(Texture       texture,
                                        in Vector2    position,
                                        in Rectangle? sourceRectangle,

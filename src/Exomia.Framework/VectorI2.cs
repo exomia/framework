@@ -79,8 +79,7 @@ namespace Exomia.Framework
         /// </summary>
         /// <param name="other"> The <see cref="VectorI2" /> to compare with this instance. </param>
         /// <returns>
-        ///     <c>true</c> if the specified <see cref="VectorI2" /> is equal to this instance; otherwise,
-        ///     <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="VectorI2" /> is equal to this instance; <c>false</c> otherwise.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Equals(in VectorI2 other)
