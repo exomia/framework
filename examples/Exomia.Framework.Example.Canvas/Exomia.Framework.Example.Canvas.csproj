@@ -49,12 +49,8 @@
   <ItemGroup>
     <Folder Include="Content\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Exomia.Framework" Version="1.4.1-debug.5" />
-  </ItemGroup>
   
-  <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
-    <PackageReference Include="Exomia.Framework.$(Platform)" Version="1.4.1-debug.5" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Exomia.Framework\Exomia.Framework.csproj" />
   </ItemGroup>
 </Project>

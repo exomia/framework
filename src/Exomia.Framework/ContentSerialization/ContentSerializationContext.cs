@@ -71,7 +71,7 @@ namespace Exomia.Framework.ContentSerialization
             }
         }
     }
-    
+
     struct ContentSerializationContextValue
     {
         public Type   Type;

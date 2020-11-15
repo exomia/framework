@@ -10,7 +10,6 @@
 
 using Exomia.Framework.Components;
 using Exomia.Framework.Game;
-using Exomia.Framework.Graphics;
 using SharpDX;
 
 namespace Exomia.Framework.Example.Canvas
@@ -20,7 +19,7 @@ namespace Exomia.Framework.Example.Canvas
     /// </summary>
     sealed class MyGame : Game.Game
     {
-        private SpriteBatch _spriteBatch = null!;
+        private Graphics.Canvas _canvas = null!;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyGame" /> class.
@@ -55,7 +54,7 @@ namespace Exomia.Framework.Example.Canvas
         protected override void OnInitialize()
         {
             Content.RootDirectory = "Content";
-            _spriteBatch          = ToDispose(new SpriteBatch(GraphicsDevice));
+            _canvas               = ToDispose(new Graphics.Canvas(GraphicsDevice));
 
             /*
              * TODO: Add your initialization logic here
@@ -97,9 +96,9 @@ namespace Exomia.Framework.Example.Canvas
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            /*
-             * TODO: Add your drawing code here
-             */
+            _canvas.Begin();
+            _canvas.DrawFillRectangle(new RectangleF(50, 50, 100, 100), Color.Red, 0, Vector2.Zero, 1);
+            _canvas.End();
 
             base.Draw(gameTime);
         }

@@ -18,7 +18,7 @@ namespace Exomia.Framework.Input
     /// <param name="keyValue">  The key value. </param>
     /// <param name="modifiers"> The modifiers. </param>
     /// <returns>
-    ///     An <see cref="EventAction"/>.
+    ///     An <see cref="EventAction" />.
     /// </returns>
     public delegate EventAction KeyEventHandler(int keyValue, KeyModifier modifiers);
 
@@ -27,7 +27,7 @@ namespace Exomia.Framework.Input
     /// </summary>
     /// <param name="key"> The key. </param>
     /// <returns>
-    ///     An <see cref="EventAction"/>.
+    ///     An <see cref="EventAction" />.
     /// </returns>
     public delegate EventAction KeyPressEventHandler(char key);
 
@@ -36,7 +36,7 @@ namespace Exomia.Framework.Input
     /// </summary>
     /// <param name="message"> The message. </param>
     /// <returns>
-    ///     An <see cref="EventAction"/>.
+    ///     An <see cref="EventAction" />.
     /// </returns>
     public delegate EventAction RawKeyEventHandler(in Message message);
 }

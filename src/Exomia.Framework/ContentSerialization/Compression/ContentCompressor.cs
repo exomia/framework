@@ -114,7 +114,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         }
 
         #region GZIP
-        
+
         private static void GzipCompress(Stream stream, Stream streamOut)
         {
             using (GZipStream gs = new GZipStream(streamOut, CompressionLevel.Optimal, true))
@@ -128,7 +128,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
             }
             streamOut.Position = 0;
         }
-        
+
         private static void GzipDecompress(Stream stream, out Stream streamOut)
         {
             streamOut = new MemoryStream();

@@ -17,6 +17,7 @@ using Exomia.Framework.ContentSerialization.Readers;
 using Exomia.Framework.ContentSerialization.Types;
 using Exomia.Framework.ContentSerialization.Writers;
 using SharpDX;
+
 #if NETSTANDARD2_0
 using Exomia.Framework.Extensions;
 #endif

@@ -61,20 +61,23 @@ namespace Exomia.Framework.Graphics
         private readonly VertexBuffer   _vertexBuffer;
         private readonly ConstantBuffer _perFrameBuffer;
 
-        private readonly Shader.Shader      _shader;
-        private readonly PixelShader        _pixelShader;
-        private readonly VertexShader       _vertexShader;
-        private readonly Texture            _whiteTexture;
-        private readonly bool               _center;
-        private          BlendState?        _defaultBlendState,        _blendState;
-        private          DepthStencilState? _defaultDepthStencilState, _depthStencilState;
+        private readonly Shader.Shader _shader;
+        private readonly PixelShader   _pixelShader;
+        private readonly VertexShader  _vertexShader;
+        private readonly Texture       _whiteTexture;
+        private readonly bool          _center;
 
-        private RasterizerState? _defaultRasterizerState,
-                                 _defaultRasterizerScissorEnabledState,
-                                 _rasterizerState;
+        private readonly BlendState         _defaultBlendState;
+        private readonly DepthStencilState  _defaultDepthStencilState;
+        private readonly RasterizerState    _defaultRasterizerState;
+        private readonly RasterizerState    _defaultRasterizerScissorEnabledState;
+        private readonly SamplerState       _defaultSamplerState;
+        private          BlendState?        _blendState;
+        private          DepthStencilState? _depthStencilState;
+        private          RasterizerState?   _rasterizerState;
+        private          SamplerState?      _samplerState;
 
-        private SamplerState?  _defaultSamplerState, _samplerState;
-        private bool           _isBeginCalled,       _isScissorEnabled;
+        private bool           _isBeginCalled, _isScissorEnabled;
         private Rectangle      _scissorRectangle;
         private SpriteSortMode _spriteSortMode;
         private int[]          _sortIndices;
@@ -119,24 +122,26 @@ namespace Exomia.Framework.Graphics
         /// <param name="graphicsDevice"> The graphics device. </param>
         /// <param name="center">         (Optional) True to center the coordinate system in the viewport. </param>
         /// <param name="sortAlgorithm">  (Optional) The sort algorithm. </param>
-        /// <exception cref="ArgumentException">      Thrown when one or more arguments have unsupported or
-        ///                                           illegal values. </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or
+        ///     illegal values.
+        /// </exception>
         /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
-        public SpriteBatch(IGraphicsDevice graphicsDevice,
-                           bool            center = false,
+        public SpriteBatch(IGraphicsDevice     graphicsDevice,
+                           bool                center        = false,
                            SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
         {
             _device  = graphicsDevice.Device;
             _context = graphicsDevice.DeviceContext;
-            
+
             _center = center;
-            
+
             _spriteSort = sortAlgorithm switch
             {
                 SpriteSortAlgorithm.MergeSort => new SpriteMergeSort(),
                 _ => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm))
             };
-            
+
             _defaultBlendState                    = graphicsDevice.BlendStates.AlphaBlend;
             _defaultSamplerState                  = graphicsDevice.SamplerStates.LinearWrap;
             _defaultDepthStencilState             = graphicsDevice.DepthStencilStates.None;
@@ -177,15 +182,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="SpriteBatch" /> class.
-        /// </summary>
-        ~SpriteBatch()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
-        ///     Begins.
+        ///     Begins a new batch.
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         /// <param name="sortMode">          (Optional) The sort mode. </param>
@@ -225,7 +222,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Ends this object.
+        ///     Ends the current batch.
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         public void End()
@@ -284,13 +281,6 @@ namespace Exomia.Framework.Graphics
             };
         }
 
-        /// <summary>
-        ///     Draw batch per texture.
-        /// </summary>
-        /// <param name="texture"> [in,out] The texture. </param>
-        /// <param name="sprites"> The sprites. </param>
-        /// <param name="offset">  The offset. </param>
-        /// <param name="count">   Number of. </param>
         private unsafe void DrawBatchPerTexture(ref TextureInfo texture, SpriteInfo[] sprites, int offset, int count)
         {
             _context.PixelShader.SetShaderResource(0, texture.View);
@@ -304,60 +294,52 @@ namespace Exomia.Framework.Graphics
                 {
                     batchSize = MAX_BATCH_SIZE;
                 }
-                lock (_device)
+
+                DataBox box = _context.MapSubresource(
+                    _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
+                VertexPositionColorTexture* vpctPtr = (VertexPositionColorTexture*)box.DataPointer;
+
+                if (batchSize > BATCH_SEQUENTIAL_THRESHOLD)
                 {
-                    DataBox box = _context.MapSubresource(
-                        _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-                    VertexPositionColorTexture* vpctPtr = (VertexPositionColorTexture*)box.DataPointer;
-
-                    if (batchSize > BATCH_SEQUENTIAL_THRESHOLD)
-                    {
-                        int middle = batchSize >> 1;
-                        Parallel.Invoke(
-                            () =>
-                            {
-                                for (int i = 0; i < middle; i++)
-                                {
-                                    UpdateVertexFromSpriteInfo(
-
-                                        // ReSharper disable once AccessToModifiedClosure
-                                        ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
-                                }
-                            },
-                            () =>
-                            {
-                                for (int i = middle; i < batchSize; i++)
-                                {
-                                    UpdateVertexFromSpriteInfo(
-
-                                        // ReSharper disable once AccessToModifiedClosure
-                                        ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
-                                }
-                            });
-                    }
-                    else
-                    {
-                        for (int i = 0; i < batchSize; i++)
+                    int middle = batchSize >> 1;
+                    Parallel.Invoke(
+                        () =>
                         {
-                            UpdateVertexFromSpriteInfo(
-                                ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
-                        }
-                    }
-                    _context.UnmapSubresource(_vertexBuffer, 0);
-                    _context.DrawIndexed(INDICES_PER_SPRITE * batchSize, 0, 0);
+                            for (int i = 0; i < middle; i++)
+                            {
+                                UpdateVertexFromSpriteInfo(
+
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
+                            }
+                        },
+                        () =>
+                        {
+                            for (int i = middle; i < batchSize; i++)
+                            {
+                                UpdateVertexFromSpriteInfo(
+
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
+                            }
+                        });
                 }
+                else
+                {
+                    for (int i = 0; i < batchSize; i++)
+                    {
+                        UpdateVertexFromSpriteInfo(
+                            ref sprites[i + offset], vpctPtr + (i << 2), deltaX, deltaY);
+                    }
+                }
+                _context.UnmapSubresource(_vertexBuffer, 0);
+                _context.DrawIndexed(INDICES_PER_SPRITE * batchSize, 0, 0);
+
                 offset += batchSize;
                 count  -= batchSize;
             }
         }
 
-        /// <summary>
-        ///     Flushes the batch.
-        /// </summary>
-        /// <exception cref="InvalidEnumArgumentException">
-        ///     Thrown when an Invalid Enum Argument error
-        ///     condition occurs.
-        /// </exception>
         private void FlushBatch()
         {
             SpriteInfo[] spriteQueueForBatch;
@@ -425,18 +407,11 @@ namespace Exomia.Framework.Graphics
             _spriteQueueCount = 0;
         }
 
-        /// <summary>
-        ///     Device on resize finished.
-        /// </summary>
-        /// <param name="viewport"> The viewport. </param>
         private void IDevice_onResizeFinished(ViewportF viewport)
         {
             Resize(viewport);
         }
 
-        /// <summary>
-        ///     Prepare for rendering.
-        /// </summary>
         private void PrepareForRendering()
         {
             _context.VertexShader.Set(_vertexShader);
@@ -468,13 +443,6 @@ namespace Exomia.Framework.Graphics
             _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);
         }
 
-        /// <summary>
-        ///     Updates the vertex from sprite information.
-        /// </summary>
-        /// <param name="spriteInfo"> [in,out] Information describing the sprite. </param>
-        /// <param name="vpctPtr">    [in,out] If non-null, the vpct pointer. </param>
-        /// <param name="deltaX">     The delta x coordinate. </param>
-        /// <param name="deltaY">     The delta y coordinate. </param>
         private static unsafe void UpdateVertexFromSpriteInfo(ref SpriteInfo              spriteInfo,
                                                               VertexPositionColorTexture* vpctPtr,
                                                               float                       deltaX,
@@ -639,12 +607,6 @@ namespace Exomia.Framework.Graphics
                     Utilities.Dispose(ref _samplerState);
                     Utilities.Dispose(ref _depthStencilState);
 
-                    Utilities.Dispose(ref _defaultBlendState);
-                    Utilities.Dispose(ref _defaultRasterizerState);
-                    Utilities.Dispose(ref _defaultSamplerState);
-                    Utilities.Dispose(ref _defaultRasterizerScissorEnabledState);
-                    Utilities.Dispose(ref _defaultDepthStencilState);
-
                     _vertexBuffer.Dispose();
                     _indexBuffer.Dispose();
                     _perFrameBuffer.Dispose();
@@ -655,6 +617,14 @@ namespace Exomia.Framework.Graphics
 
                 _disposed = true;
             }
+        }
+
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="SpriteBatch" /> class.
+        /// </summary>
+        ~SpriteBatch()
+        {
+            Dispose(false);
         }
 
         /// <inheritdoc />

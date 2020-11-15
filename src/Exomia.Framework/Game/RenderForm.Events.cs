@@ -183,7 +183,7 @@ namespace Exomia.Framework.Game
                         int          wheelDelta   = HighWord(m.wParam);
                         for (int i = 0; i < _mouseWheelPipe.Count; i++)
                         {
-                            if (_mouseWheelPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, wheelDelta)) == 
+                            if (_mouseWheelPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, wheelDelta)) ==
                                 EventAction.StopPropagation)
                             {
                                 break;
@@ -294,7 +294,8 @@ namespace Exomia.Framework.Game
             int high = HighWord(m.lParam);
             for (int i = 0; i < _mouseDownPipe.Count; i++)
             {
-                if (_mouseDownPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0)) == EventAction.StopPropagation)
+                if (_mouseDownPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0)) ==
+                    EventAction.StopPropagation)
                 {
                     break;
                 }
@@ -311,7 +312,7 @@ namespace Exomia.Framework.Game
                 int clicks = (_state & 0x4000000) == 0x4000000 ? 2 : 1;
                 for (int i = 0; i < _mouseClickPipe.Count; i++)
                 {
-                    if (_mouseClickPipe[i].Invoke(new MouseEventArgs(low, high, buttons, clicks, 0)) == 
+                    if (_mouseClickPipe[i].Invoke(new MouseEventArgs(low, high, buttons, clicks, 0)) ==
                         EventAction.StopPropagation)
                     {
                         break;
@@ -359,7 +360,7 @@ namespace Exomia.Framework.Game
             }
             for (int i = 0; i < _mouseRawInputPipe.Count; i++)
             {
-                if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.LastX, e.LastY, buttons, clicks, e.ButtonData)) == 
+                if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.LastX, e.LastY, buttons, clicks, e.ButtonData)) ==
                     EventAction.StopPropagation)
                 {
                     break;

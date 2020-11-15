@@ -27,17 +27,17 @@ namespace Exomia.Framework.Mathematics
         ///     The first x value.
         /// </summary>
         public readonly float X1;
-        
+
         /// <summary>
         ///     The second x value.
         /// </summary>
         public readonly float X2;
-        
+
         /// <summary>
         ///     The first y value.
         /// </summary>
         public readonly float Y1;
-        
+
         /// <summary>
         ///     The second y value.
         /// </summary>

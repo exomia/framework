@@ -10,9 +10,6 @@ SamplerState g_Sampler : register(s0);
 
 cbuffer PerFrame : register(b0)
 {
-	float4x4 g_WorldMatrix;
-	float4x4 g_ViewMatrix;
-	float4x4 g_ProjectionMatrix;
 	float4x4 g_WorldViewProjectionMatrix;
 };
 
@@ -21,13 +18,15 @@ struct VS_INPUT
 	float4 p  : SV_POSITION0;
 	float4 c  : COLOR0;
 	float2 uv : TEXCOORD0;
+    float  m  : TEXCOORD1;
 };
 
 struct PS_INPUT
 {
 	float4 p  : SV_POSITION0;
 	float4 c  : COLOR0;
-	float2 uv : TEXCOORD0;
+    float2 uv : TEXCOORD0;
+    float  m  : TEXCOORD1;
 };
 
 PS_INPUT VSMain(VS_INPUT input)
@@ -35,7 +34,8 @@ PS_INPUT VSMain(VS_INPUT input)
 	PS_INPUT output = (PS_INPUT)0;
 	output.p = mul(input.p, g_WorldViewProjectionMatrix);
 	output.c = input.c / 255;
-	output.uv = input.uv;
+    output.uv = input.uv;
+    output.m = input.m;
 	return output;
 }
 
@@ -43,6 +43,13 @@ float4 PSMain(PS_INPUT input) : SV_TARGET
 {
     //discard;
     //clip(-1);
-	return g_Texture.Sample(g_Sampler, input.uv) * input.c;
+    switch (input.m)
+    {
+        default:
+		case 0: // texture mode
+            return g_Texture.Sample(g_Sampler, input.uv) * input.c;
+        case 0: // color mode
+            return input.c;
+    }
 }
 
