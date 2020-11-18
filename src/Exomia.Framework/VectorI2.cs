@@ -93,11 +93,7 @@ namespace Exomia.Framework
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override readonly bool Equals(object value)
         {
-            if (value is VectorI2 other)
-            {
-                return Equals(in other);
-            }
-            return false;
+            return value is VectorI2 other && Equals(in other);
         }
 
         /// <inheritdoc />

@@ -11,8 +11,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Resources;
@@ -25,16 +23,14 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A canvas. This class cannot be inherited.
     /// </summary>
-    public sealed class Canvas : IDisposable
+    public sealed partial class Canvas : IDisposable
     {
         private const int MAX_BATCH_SIZE             = 1 << 13;
         private const int INITIAL_QUEUE_SIZE         = 1 << 7;
-        private const int VERTICES_PER_SPRITE        = 4;
-        private const int INDICES_PER_SPRITE         = 6;
-        private const int MAX_VERTEX_COUNT           = MAX_BATCH_SIZE * VERTICES_PER_SPRITE;
-        private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
+        private const int MAX_VERTEX_COUNT           = MAX_BATCH_SIZE * 4;
+        private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * 6;
         private const int BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
-        private const int VERTEX_STRIDE              = sizeof(float) * 11;
+        private const int VERTEX_STRIDE              = sizeof(float) * 9;
 
         private static readonly ushort[]   s_indices;
         private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
@@ -84,12 +80,14 @@ namespace Exomia.Framework.Graphics
             if (MAX_INDEX_COUNT > ushort.MaxValue)
 #pragma warning disable 162
             {
+#pragma warning restore IDE0079 // Remove unnecessary suppression
+
                 // ReSharper disable once NotResolvedInText
                 throw new ArgumentOutOfRangeException("MAX_INDEX_COUNT->MAX_BATCH_SIZE");
             }
 #pragma warning restore 162
             s_indices = new ushort[MAX_INDEX_COUNT];
-            for (int i = 0, k = 0; i < MAX_INDEX_COUNT; i += INDICES_PER_SPRITE, k += VERTICES_PER_SPRITE)
+            for (int i = 0, k = 0; i < MAX_INDEX_COUNT; i += 6, k += 4)
             {
                 s_indices[i + 0] = (ushort)(k + 0);
                 s_indices[i + 1] = (ushort)(k + 1);
@@ -110,7 +108,7 @@ namespace Exomia.Framework.Graphics
             _device  = graphicsDevice.Device;
             _context = graphicsDevice.DeviceContext;
 
-            _defaultBlendState                    = graphicsDevice.BlendStates.AlphaBlend;
+            _defaultBlendState                    = graphicsDevice.BlendStates.Default;
             _defaultSamplerState                  = graphicsDevice.SamplerStates.LinearWrap;
             _defaultDepthStencilState             = graphicsDevice.DepthStencilStates.None;
             _defaultRasterizerState               = graphicsDevice.RasterizerStates.CullBackDepthClipOff;
@@ -135,10 +133,10 @@ namespace Exomia.Framework.Graphics
                 _vertexInputLayout = group.CreateInputLayout(graphicsDevice, Shader.Shader.Type.VertexShader);
             }
 
-            _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTexture>(graphicsDevice, MAX_VERTEX_COUNT);
+            _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTextureMode>(graphicsDevice, MAX_VERTEX_COUNT);
             _perFrameBuffer = ConstantBuffer.Create<Matrix>(graphicsDevice);
 
-            graphicsDevice.ResizeFinished += IDevice_onResizeFinished;
+            graphicsDevice.ResizeFinished += GraphicsDeviceOnResizeFinished;
 
             Resize(graphicsDevice.Viewport);
         }
@@ -183,7 +181,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Begins.
+        ///     Begins a new batch.
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         /// <param name="blendState">        (Optional) State of the blend. </param>
@@ -220,7 +218,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Ends this object.
+        ///     Ends the current batch.
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         public void End()
@@ -230,35 +228,15 @@ namespace Exomia.Framework.Graphics
                 throw new InvalidOperationException("Begin must be called before End");
             }
 
-            PrepareForRendering();
+            //PrepareForRendering();
 
             _isBeginCalled = false;
         }
 
-        #region Line
-
-        /// <summary>
-        ///     Draw line.
-        /// </summary>
-        /// <param name="point1">       The first point. </param>
-        /// <param name="point2">       The second point. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="lineWidth">    Width of the line. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="lengthFactor"> (Optional) The length factor. </param>
-        public void DrawLine(in Vector2 point1,
-                             in Vector2 point2,
-                             in Color   color,
-                             float      lineWidth,
-                             float      opacity,
-                             float      lengthFactor = 1.0f)
+        private void GraphicsDeviceOnResizeFinished(ViewportF viewport)
         {
-            DrawFillRectangle(
-                new RectangleF(point1.X, point1.Y, Vector2.Distance(point1, point2) * lengthFactor, lineWidth), color,
-                (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X), s_vector2Zero, opacity);
+            Resize(viewport);
         }
-
-        #endregion
 
         private void PrepareForRendering()
         {
@@ -290,609 +268,6 @@ namespace Exomia.Framework.Graphics
             _context.InputAssembler.SetIndexBuffer(_indexBuffer, _indexBuffer.Format, 0);
             _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);
         }
-
-        /// <summary>
-        ///     Device on resize finished.
-        /// </summary>
-        /// <param name="viewport"> The viewport. </param>
-        private static void IDevice_onResizeFinished(ViewportF viewport) { }
-
-        [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE)]
-        private struct VertexPositionColorTexture
-        {
-            [FieldOffset(0)]
-            public readonly float X;
-
-            [FieldOffset(4)]
-            public readonly float Y;
-
-            [FieldOffset(8)]
-            public readonly float Z;
-
-            [FieldOffset(12)]
-            public readonly float W;
-
-            [FieldOffset(16)]
-            public readonly float R;
-
-            [FieldOffset(20)]
-            public readonly float G;
-
-            [FieldOffset(24)]
-            public readonly float B;
-
-            [FieldOffset(28)]
-            public readonly float A;
-
-            [FieldOffset(32)]
-            public readonly float U;
-
-            [FieldOffset(36)]
-            public readonly float V;
-
-            [FieldOffset(40)]
-            public readonly float M;
-        }
-
-        #region Triangle
-
-        /// <summary>
-        ///     Draw triangle.
-        /// </summary>
-        /// <param name="point1">    The first point. </param>
-        /// <param name="point2">    The second point. </param>
-        /// <param name="point3">    The third point. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="lineWidth"> Width of the line. </param>
-        /// <param name="opacity">   The opacity. </param>
-        public void DrawTriangle(in Vector2 point1,
-                                 in Vector2 point2,
-                                 in Vector2 point3,
-                                 in Color   color,
-                                 float      lineWidth,
-                                 float      opacity) { }
-
-        /// <summary>
-        ///     Draw fill triangle.
-        /// </summary>
-        /// <param name="point1">    The first point. </param>
-        /// <param name="point2">    The second point. </param>
-        /// <param name="point3">    The third point. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="lineWidth"> Width of the line. </param>
-        /// <param name="opacity">   The opacity. </param>
-        public void DrawFillTriangle(in Vector2 point1,
-                                     in Vector2 point2,
-                                     in Vector2 point3,
-                                     in Color   color,
-                                     float      lineWidth,
-                                     float      opacity) { }
-
-        #endregion
-
-        #region Rectangle
-
-        /// <summary>
-        ///     Draw rectangle.
-        /// </summary>
-        /// <param name="destinationRectangle"> Destination rectangle. </param>
-        /// <param name="color">                The color. </param>
-        /// <param name="lineWidth">            Width of the line. </param>
-        /// <param name="rotation">             The rotation. </param>
-        /// <param name="origin">               The origin. </param>
-        /// <param name="opacity">              The opacity. </param>
-        public void DrawRectangle(in RectangleF destinationRectangle,
-                                  in Color      color,
-                                  float         lineWidth,
-                                  float         rotation,
-                                  in Vector2    origin,
-                                  float         opacity) { }
-
-        /// <summary>
-        ///     Draw fill rectangle.
-        /// </summary>
-        /// <param name="destinationRectangle"> Destination rectangle. </param>
-        /// <param name="color">                The color. </param>
-        /// <param name="rotation">             The rotation. </param>
-        /// <param name="origin">               The origin. </param>
-        /// <param name="opacity">              The opacity. </param>
-        public void DrawFillRectangle(in RectangleF destinationRectangle,
-                                      in Color      color,
-                                      float         rotation,
-                                      in Vector2    origin,
-                                      float         opacity) { }
-
-        #endregion
-
-        #region Arc
-
-        /// <summary>
-        ///     Draw arc.
-        /// </summary>
-        /// <param name="center">    The center. </param>
-        /// <param name="radius">    The radius. </param>
-        /// <param name="start">     The start. </param>
-        /// <param name="end">       The end. </param>
-        /// <param name="width">     The width. </param>
-        /// <param name="height">    The height. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="lineWidth"> Width of the line. </param>
-        /// <param name="opacity">   The opacity. </param>
-        /// <param name="segments">  The segments. </param>
-        public void DrawArc(in Vector2 center,
-                            float      radius,
-                            float      start,
-                            float      end,
-                            float      width,
-                            float      height,
-                            in Color   color,
-                            float      lineWidth,
-                            float      opacity,
-                            int        segments) { }
-
-        /// <summary>
-        ///     Draw fill arc.
-        /// </summary>
-        /// <param name="center">    The center. </param>
-        /// <param name="radius">    The radius. </param>
-        /// <param name="start">     The start. </param>
-        /// <param name="end">       The end. </param>
-        /// <param name="width">     The width. </param>
-        /// <param name="height">    The height. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="lineWidth"> Width of the line. </param>
-        /// <param name="opacity">   The opacity. </param>
-        /// <param name="segments">  The segments. </param>
-        public void DrawFillArc(in Vector2 center,
-                                float      radius,
-                                float      start,
-                                float      end,
-                                float      width,
-                                float      height,
-                                in Color   color,
-                                float      lineWidth,
-                                float      opacity,
-                                int        segments) { }
-
-        #endregion
-
-        #region Polygon
-
-        /// <summary>
-        ///     Draw polygon.
-        /// </summary>
-        /// <param name="vertex">    The vertex. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="lineWidth"> Width of the line. </param>
-        /// <param name="opacity">   The opacity. </param>
-        public void DrawPolygon(Vector2[] vertex, in Color color, float lineWidth, float opacity)
-        {
-            if (vertex.Length > 1)
-            {
-                int l = vertex.Length - 1;
-                for (int i = 0; i < l; i++)
-                {
-                    DrawLine(vertex[i], vertex[i + 1], color, lineWidth, opacity);
-                }
-                DrawLine(vertex[l], vertex[0], color, lineWidth, opacity);
-            }
-        }
-
-        /// <summary>
-        ///     Draw fill polygon.
-        /// </summary>
-        /// <param name="vertex">    The vertex. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="lineWidth"> Width of the line. </param>
-        /// <param name="opacity">   The opacity. </param>
-        public void DrawFillPolygon(Vector2[] vertex, in Color color, float lineWidth, float opacity) { }
-
-        #endregion
-
-        #region Texture
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">  The texture. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        public void Draw(Texture texture, in Vector2 position, in Color color)
-        {
-            DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true,
-                s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None);
-        }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">              The texture. </param>
-        /// <param name="destinationRectangle"> Destination rectangle. </param>
-        /// <param name="color">                The color. </param>
-        public void Draw(Texture texture, in RectangleF destinationRectangle, in Color color)
-        {
-            DrawSprite(
-                texture, destinationRectangle, false,
-                s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None);
-        }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">         The texture. </param>
-        /// <param name="position">        The position. </param>
-        /// <param name="sourceRectangle"> Source rectangle. </param>
-        /// <param name="color">           The color. </param>
-        public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in Color color)
-        {
-            DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true,
-                sourceRectangle, color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None);
-        }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">              The texture. </param>
-        /// <param name="destinationRectangle"> Destination rectangle. </param>
-        /// <param name="sourceRectangle">      Source rectangle. </param>
-        /// <param name="color">                The color. </param>
-        public void Draw(Texture       texture,
-                         in RectangleF destinationRectangle,
-                         in Rectangle? sourceRectangle,
-                         in Color      color)
-        {
-            DrawSprite(
-                texture, destinationRectangle, false,
-                sourceRectangle, color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None);
-        }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">              The texture. </param>
-        /// <param name="destinationRectangle"> Destination rectangle. </param>
-        /// <param name="sourceRectangle">      Source rectangle. </param>
-        /// <param name="color">                The color. </param>
-        /// <param name="rotation">             The rotation. </param>
-        /// <param name="origin">               The origin. </param>
-        /// <param name="opacity">              The opacity. </param>
-        /// <param name="effects">              The effects. </param>
-        public void Draw(Texture       texture,
-                         in RectangleF destinationRectangle,
-                         in Rectangle? sourceRectangle,
-                         in Color      color,
-                         float         rotation,
-                         in Vector2    origin,
-                         float         opacity,
-                         SpriteEffects effects)
-        {
-            DrawSprite(
-                texture, destinationRectangle, false,
-                sourceRectangle, color, rotation, origin, opacity, effects);
-        }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">         The texture. </param>
-        /// <param name="position">        The position. </param>
-        /// <param name="sourceRectangle"> Source rectangle. </param>
-        /// <param name="color">           The color. </param>
-        /// <param name="rotation">        The rotation. </param>
-        /// <param name="origin">          The origin. </param>
-        /// <param name="scale">           The scale. </param>
-        /// <param name="opacity">         The opacity. </param>
-        /// <param name="effects">         The effects. </param>
-        public void Draw(Texture       texture,
-                         in Vector2    position,
-                         in Rectangle? sourceRectangle,
-                         in Color      color,
-                         float         rotation,
-                         in Vector2    origin,
-                         float         scale,
-                         float         opacity,
-                         SpriteEffects effects)
-        {
-            DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale, scale), true,
-                sourceRectangle, color, rotation, origin, opacity, effects);
-        }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="texture">         The texture. </param>
-        /// <param name="position">        The position. </param>
-        /// <param name="sourceRectangle"> Source rectangle. </param>
-        /// <param name="color">           The color. </param>
-        /// <param name="rotation">        The rotation. </param>
-        /// <param name="origin">          The origin. </param>
-        /// <param name="scale">           The scale. </param>
-        /// <param name="opacity">         The opacity. </param>
-        /// <param name="effects">         The effects. </param>
-        public void Draw(Texture       texture,
-                         in Vector2    position,
-                         in Rectangle? sourceRectangle,
-                         in Color      color,
-                         float         rotation,
-                         in Vector2    origin,
-                         in Vector2    scale,
-                         float         opacity,
-                         SpriteEffects effects)
-        {
-            DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true,
-                sourceRectangle, color, rotation, origin, opacity, effects);
-        }
-
-        /// <summary>
-        ///     Draw sprite.
-        /// </summary>
-        /// <param name="texture">          The texture. </param>
-        /// <param name="destination">      Destination for the. </param>
-        /// <param name="scaleDestination"> True to scale destination. </param>
-        /// <param name="sourceRectangle">  Source rectangle. </param>
-        /// <param name="color">            The color. </param>
-        /// <param name="rotation">         The rotation. </param>
-        /// <param name="origin">           The origin. </param>
-        /// <param name="opacity">          The opacity. </param>
-        /// <param name="effects">          The effects. </param>
-        private void DrawSprite(Texture       texture,
-                                in RectangleF destination,
-                                bool          scaleDestination,
-                                in Rectangle? sourceRectangle,
-                                in Color      color,
-                                float         rotation,
-                                in Vector2    origin,
-                                float         opacity,
-                                SpriteEffects effects) { }
-
-        #endregion
-
-        #region SpiteFont
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color)
-        {
-            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        /// <param name="rotation"> The rotation. </param>
-        public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color, float rotation)
-        {
-            font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        /// <param name="rotation"> The rotation. </param>
-        /// <param name="origin">   The origin. </param>
-        /// <param name="opacity">  The opacity. </param>
-        /// <param name="effects">  The effects. </param>
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
-        {
-            font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="start">    The start. </param>
-        /// <param name="end">      The end. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        /// <param name="rotation"> The rotation. </param>
-        /// <param name="origin">   The origin. </param>
-        /// <param name="opacity">  The opacity. </param>
-        /// <param name="effects">  The effects. </param>
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
-        {
-            font.Draw(DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">      The font. </param>
-        /// <param name="text">      The text. </param>
-        /// <param name="start">     The start. </param>
-        /// <param name="end">       The end. </param>
-        /// <param name="position">  The position. </param>
-        /// <param name="dimension"> The dimension. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="rotation">  The rotation. </param>
-        /// <param name="origin">    The origin. </param>
-        /// <param name="opacity">   The opacity. </param>
-        /// <param name="effects">   The effects. </param>
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Size2F     dimension,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
-        {
-            font.Draw(
-                DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        public void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color)
-        {
-            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        /// <param name="rotation"> The rotation. </param>
-        public void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color, float rotation)
-        {
-            font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        /// <param name="rotation"> The rotation. </param>
-        /// <param name="origin">   The origin. </param>
-        /// <param name="opacity">  The opacity. </param>
-        /// <param name="effects">  The effects. </param>
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
-        {
-            font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">     The font. </param>
-        /// <param name="text">     The text. </param>
-        /// <param name="start">    The start. </param>
-        /// <param name="end">      The end. </param>
-        /// <param name="position"> The position. </param>
-        /// <param name="color">    The color. </param>
-        /// <param name="rotation"> The rotation. </param>
-        /// <param name="origin">   The origin. </param>
-        /// <param name="opacity">  The opacity. </param>
-        /// <param name="effects">  The effects. </param>
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
-        {
-            font.Draw(DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text.
-        /// </summary>
-        /// <param name="font">      The font. </param>
-        /// <param name="text">      The text. </param>
-        /// <param name="start">     The start. </param>
-        /// <param name="end">       The end. </param>
-        /// <param name="position">  The position. </param>
-        /// <param name="dimension"> The dimension. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="rotation">  The rotation. </param>
-        /// <param name="origin">    The origin. </param>
-        /// <param name="opacity">   The opacity. </param>
-        /// <param name="effects">   The effects. </param>
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Size2F     dimension,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
-        {
-            font.Draw(
-                DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
-        }
-
-        /// <summary>
-        ///     Draw text internal.
-        /// </summary>
-        /// <param name="texture">         The texture. </param>
-        /// <param name="position">        The position. </param>
-        /// <param name="sourceRectangle"> Source rectangle. </param>
-        /// <param name="color">           The color. </param>
-        /// <param name="rotation">        The rotation. </param>
-        /// <param name="origin">          The origin. </param>
-        /// <param name="scale">           The scale. </param>
-        /// <param name="opacity">         The opacity. </param>
-        /// <param name="effects">         The effects. </param>
-        /// <param name="layerDepth">      Depth of the layer. </param>
-        internal void DrawTextInternal(Texture       texture,
-                                       in Vector2    position,
-                                       in Rectangle? sourceRectangle,
-                                       in Color      color,
-                                       float         rotation,
-                                       in Vector2    origin,
-                                       float         scale,
-                                       float         opacity,
-                                       SpriteEffects effects,
-                                       float         layerDepth)
-        {
-            DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle, color,
-                rotation, origin, opacity, effects);
-        }
-
-        #endregion
 
         #region IDisposable Support
 

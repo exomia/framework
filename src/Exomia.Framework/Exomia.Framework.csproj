@@ -62,7 +62,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <NoWarn>1701;1702;IDE0063</NoWarn>
+    <NoWarn>1701;1702;IDE0063;IDE0079</NoWarn>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ApplicationIcon>logo_x192_Hcn_icon.ico</ApplicationIcon>
@@ -192,6 +192,13 @@
     <Compile Update="Graphics\SpriteBatch.cs"></Compile>
     <Compile Update="Graphics\SpriteBatch.*.cs">
       <DependentUpon>SpriteBatch.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Graphics\Canvas.cs"></Compile>
+    <Compile Update="Graphics\Canvas.*.cs">
+      <DependentUpon>Canvas.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 

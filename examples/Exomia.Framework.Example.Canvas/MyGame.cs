@@ -10,6 +10,7 @@
 
 using Exomia.Framework.Components;
 using Exomia.Framework.Game;
+using Exomia.Framework.Mathematics;
 using SharpDX;
 
 namespace Exomia.Framework.Example.Canvas
@@ -20,6 +21,8 @@ namespace Exomia.Framework.Example.Canvas
     sealed class MyGame : Game.Game
     {
         private Graphics.Canvas _canvas = null!;
+
+        private float k;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyGame" /> class.
@@ -44,9 +47,11 @@ namespace Exomia.Framework.Example.Canvas
         /// <inheritdoc />
         protected override void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters)
         {
-            parameters.IsMouseVisible = true;
-            parameters.Width          = 1024;
-            parameters.Height         = 786;
+            parameters.IsMouseVisible      = true;
+            parameters.Width               = 1600;
+            parameters.Height              = 1024;
+            parameters.EnableMultiSampling = false;
+            parameters.MultiSampleCount    = MultiSampleCount.MsaaX8;
         }
 
         /// <inheritdoc />
@@ -97,7 +102,37 @@ namespace Exomia.Framework.Example.Canvas
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _canvas.Begin();
-            _canvas.DrawFillRectangle(new RectangleF(50, 50, 100, 100), Color.Red, 0, Vector2.Zero, 1);
+
+            k += gameTime.DeltaTimeS / 2;
+            _canvas.DrawFillTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Red, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillTriangle(
+                new Triangle2(100, 50, 150, 100, 50, 100), Color.Yellow, k, new Vector2(100, 50), 1.0f);
+            _canvas.DrawTriangle(
+                new Triangle2(100, 50, 150, 100, 50, 100), Color.Green, 5.0f, k, new Vector2(100, 50), 1.0f);
+
+            _canvas.DrawFillRectangle(new RectangleF(200, 200, 100, 50), Color.Red, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawRectangle(new RectangleF(200, 200, 100, 50), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillRectangle(new RectangleF(200, 200, 100, 50), Color.Yellow, k, Vector2.Zero, 1.0f);
+
+            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 1.0f);
+            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, 1.0f);
+            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 1.0f);
+            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f);
+
+            _canvas.DrawFillPolygon(
+                new[]
+                {
+                    new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
+                    new Vector2(400, 630)
+                }, Color.Red, 1.0f);
+            _canvas.DrawPolygon(
+                new[]
+                {
+                    new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
+                    new Vector2(400, 630)
+                }, Color.Yellow, 5.0f, 1.0f);
+
             _canvas.End();
 
             base.Draw(gameTime);
