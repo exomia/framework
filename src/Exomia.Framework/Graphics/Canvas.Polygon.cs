@@ -93,6 +93,8 @@ namespace Exomia.Framework.Graphics
         {
             if (vertices.Length < 3) { throw new ArgumentOutOfRangeException(nameof(vertices.Length)); }
 
+            Color scaledColor = color * opacity;
+
             DataBox box = _context.MapSubresource(
                 _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
             VertexPositionColorTextureMode* vpctPtr = (VertexPositionColorTextureMode*)box.DataPointer;
@@ -120,12 +122,12 @@ namespace Exomia.Framework.Graphics
                 vertex->X = vs[j].X;
                 vertex->Y = vs[j].Y;
 
-                vertex->R = color.R * opacity;
-                vertex->G = color.G * opacity;
-                vertex->B = color.B * opacity;
-                vertex->A = color.A * opacity;
+                vertex->R = scaledColor.R;
+                vertex->G = scaledColor.G;
+                vertex->B = scaledColor.B;
+                vertex->A = scaledColor.A;
 
-                vertex->M = 0.0f;
+                vertex->M = COLOR_MODE;
             }
 
             _context.UnmapSubresource(_vertexBuffer, 0);

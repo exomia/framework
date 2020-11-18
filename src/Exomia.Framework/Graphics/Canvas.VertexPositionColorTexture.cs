@@ -24,10 +24,10 @@ namespace Exomia.Framework.Graphics
             public float Y;
 
             [FieldOffset(8)]
-            public readonly float Z;
+            public float Z;
 
             [FieldOffset(12)]
-            public readonly float W;
+            public float W;
 
             [FieldOffset(16)]
             public float R;
@@ -41,14 +41,17 @@ namespace Exomia.Framework.Graphics
             [FieldOffset(28)]
             public float A;
 
-            [FieldOffset(8)]
-            public readonly float U;
-
-            [FieldOffset(12)]
-            public readonly float V;
-
             [FieldOffset(32)]
+            public float U;
+
+            [FieldOffset(36)]
+            public float V;
+
+            [FieldOffset(40)]
             public float M;
+
+            [FieldOffset(44)]
+            public float O;
         }
     }
 }

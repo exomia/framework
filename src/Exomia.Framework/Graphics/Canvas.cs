@@ -30,15 +30,17 @@ namespace Exomia.Framework.Graphics
         private const int MAX_VERTEX_COUNT           = MAX_BATCH_SIZE * 4;
         private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * 6;
         private const int BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
-        private const int VERTEX_STRIDE              = sizeof(float) * 9;
+        private const int VERTEX_STRIDE              = sizeof(float) * 12;
+
+        private const float COLOR_MODE           = 0.0f;
+        private const float TEXTURE_MODE         = 1.0f;
+        private const float FILL_CIRCLE_MODE     = 2.0f;
+        private const float FILL_CIRCLE_ARC_MODE = 3.0f;
 
         private static readonly ushort[]   s_indices;
         private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
         private static readonly Rectangle? s_nullRectangle = null;
-
-        private static readonly Vector2[]
-            s_cornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
-
+        
         private readonly Device5        _device;
         private readonly DeviceContext4 _context;
 
@@ -111,6 +113,7 @@ namespace Exomia.Framework.Graphics
             _defaultBlendState                    = graphicsDevice.BlendStates.Default;
             _defaultSamplerState                  = graphicsDevice.SamplerStates.LinearWrap;
             _defaultDepthStencilState             = graphicsDevice.DepthStencilStates.None;
+            
             _defaultRasterizerState               = graphicsDevice.RasterizerStates.CullBackDepthClipOff;
             _defaultRasterizerScissorEnabledState = graphicsDevice.RasterizerStates.CullBackDepthClipOffScissorEnabled;
 
@@ -264,6 +267,7 @@ namespace Exomia.Framework.Graphics
             Matrix worldViewProjection = Matrix.Transpose(_transformMatrix * _viewMatrix * _projectionMatrix);
             _context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
             _context.VertexShader.SetConstantBuffer(0, _perFrameBuffer);
+            _context.PixelShader.SetConstantBuffer(0, _perFrameBuffer);
 
             _context.InputAssembler.SetIndexBuffer(_indexBuffer, _indexBuffer.Format, 0);
             _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);

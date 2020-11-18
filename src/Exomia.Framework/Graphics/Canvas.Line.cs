@@ -66,13 +66,13 @@ namespace Exomia.Framework.Graphics
             // p1
             vertex->X = line.X1;
             vertex->Y = line.Y1;
-
+            
             vertex->R = color.R * opacity;
             vertex->G = color.G * opacity;
             vertex->B = color.B * opacity;
             vertex->A = color.A * opacity;
 
-            vertex->M = 0.0f;
+            vertex->M = COLOR_MODE;
             vertex++;
 
             // p2
@@ -84,7 +84,7 @@ namespace Exomia.Framework.Graphics
             vertex->B = color.B * opacity;
             vertex->A = color.A * opacity;
 
-            vertex->M = 0.0f;
+            vertex->M = COLOR_MODE;
             vertex++;
 
             // p2'
@@ -96,7 +96,7 @@ namespace Exomia.Framework.Graphics
             vertex->B = color.B * opacity;
             vertex->A = color.A * opacity;
 
-            vertex->M = 0.0f;
+            vertex->M = COLOR_MODE;
             vertex++;
 
             // p1'
@@ -108,7 +108,7 @@ namespace Exomia.Framework.Graphics
             vertex->B = color.B * opacity;
             vertex->A = color.A * opacity;
 
-            vertex->M = 0.0f;
+            vertex->M = COLOR_MODE;
 
             _context.UnmapSubresource(_vertexBuffer, 0);
 

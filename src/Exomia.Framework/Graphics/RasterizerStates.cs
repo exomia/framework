@@ -59,7 +59,7 @@ namespace Exomia.Framework.Graphics
         ///     <see cref="CullBackScissorEnabled" />.
         /// </summary>
         public readonly RasterizerState CullBackDepthClipOffScissorEnabled;
-
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="RasterizerState" /> class.
         /// </summary>

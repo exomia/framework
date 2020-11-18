@@ -178,6 +178,8 @@ namespace Exomia.Framework.Graphics
                                      in Vector2   origin,
                                      float        opacity)
         {
+            Color scaledColor = color * opacity;
+            
             DataBox box = _context.MapSubresource(
                 _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
             VertexPositionColorTextureMode* vpctmPtr = (VertexPositionColorTextureMode*)box.DataPointer;
@@ -194,13 +196,13 @@ namespace Exomia.Framework.Graphics
                         vertex->X = *(tf + (i << 1));
                         vertex->Y = *(tf + (i << 1) + 1);
                     }
+                    
+                    vertex->R = scaledColor.R;
+                    vertex->G = scaledColor.G;
+                    vertex->B = scaledColor.B;
+                    vertex->A = scaledColor.A;
 
-                    vertex->R = color.R * opacity;
-                    vertex->G = color.G * opacity;
-                    vertex->B = color.B * opacity;
-                    vertex->A = color.A * opacity;
-
-                    vertex->M = 0.0f;
+                    vertex->M = COLOR_MODE;
                 }
             }
             else
@@ -221,12 +223,12 @@ namespace Exomia.Framework.Graphics
                         vertex->Y = (sin * x) + (cos * y) + origin.Y;
                     }
 
-                    vertex->R = color.R * opacity;
-                    vertex->G = color.G * opacity;
-                    vertex->B = color.B * opacity;
-                    vertex->A = color.A * opacity;
+                    vertex->R = scaledColor.R;
+                    vertex->G = scaledColor.G;
+                    vertex->B = scaledColor.B;
+                    vertex->A = scaledColor.A;
 
-                    vertex->M = 0.0f;
+                    vertex->M = COLOR_MODE;
                 }
             }
 

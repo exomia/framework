@@ -67,6 +67,8 @@ namespace Exomia.Framework.Mathematics
             X      = x;
             Y      = y;
             Radius = radius;
+            Start  = start;
+            End    = end;
         }
 
         /// <summary>

@@ -17,38 +17,84 @@ struct VS_INPUT
 {
 	float4 p  : SV_POSITION0;
 	float4 c  : COLOR0;
-    float  m  : TEXCOORD1;
+    float2 uv : TEXCOORD0;
+    float2 mo : TEXCOORD1;
 };
 
 struct PS_INPUT
 {
-	float4 p  : SV_POSITION0;
+    float4 p  : SV_POSITION0;
 	float4 c  : COLOR0;
     float2 uv : TEXCOORD0;
-    float  m  : TEXCOORD1;
+    float2 mo : TEXCOORD1;
+    float2 zw : TEXCOORD2;
 };
 
 PS_INPUT VSMain(VS_INPUT input)
 {
-	PS_INPUT output;
-    output.uv = input.p.wz;
+    PS_INPUT output = (PS_INPUT)0;
+    output.zw = input.p.zw;
     output.p = mul(float4(input.p.xy, 0.0f, 1.0f), g_WorldViewProjectionMatrix);
 	output.c = input.c / 255.0f;
-    output.m = input.m;
+    output.uv = input.uv;
+    output.mo = input.mo;
 	return output;
 }
+
+#define COLOR_MODE           0.0f
+#define TEXTURE_MODE         1.0f
+#define FILL_CIRCLE_MODE     2.0f
+#define FILL_CIRCLE_ARC_MODE 3.0f
+
+#define PI 3.141593f
 
 float4 PSMain(PS_INPUT input) : SV_TARGET
 {
     //discard;
     //clip(-1);
-    switch (input.m)
+    switch (input.mo.x)
     {
         default:
-        case 0: // texture mode
+        case COLOR_MODE:
             return input.c;
-        case 1: // color mode
+        case TEXTURE_MODE:
             return g_Texture.Sample(g_Sampler, input.uv) * input.c;
+        case FILL_CIRCLE_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+                float radius = input.mo.y;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+       
+                if (ls > radius * radius)         
+                    discard;
+        
+                return input.c;
+            }
+        case FILL_CIRCLE_ARC_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+                float radius = input.mo.y;
+                float start = input.uv.x;
+                float end = input.uv.y;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+       
+                if (ls > radius * radius)         
+                    discard;
+            
+                float angle = PI + atan2(d.y, d.x);
+            
+                if (angle >= start && angle <= end)
+                    return input.c;
+                discard;
+                return float4(0,0,0,0);
+            }
     }
 }
+            
 
