@@ -35,14 +35,16 @@ namespace Exomia.Framework.Graphics
         private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * 6;
         private const int BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
         private const int VERTEX_STRIDE              = sizeof(float) * 12;
-        private const int MAX_TEXTURE_SLOTS          = 4;
+        private const int MAX_TEXTURE_SLOTS          = 8;
+        private const int MAX_FONT_TEXTURE_SLOTS     = 4;
 
         private const float COLOR_MODE             = 0.0f;
         private const float TEXTURE_MODE           = 1.0f;
-        private const float FILL_CIRCLE_MODE       = 2.0f;
-        private const float FILL_CIRCLE_ARC_MODE   = 3.0f;
-        private const float BORDER_CIRCLE_MODE     = 4.0f;
-        private const float BORDER_CIRCLE_ARC_MODE = 5.0f;
+        private const float FONT_TEXTURE_MODE      = 2.0f;
+        private const float FILL_CIRCLE_MODE       = 3.0f;
+        private const float FILL_CIRCLE_ARC_MODE   = 4.0f;
+        private const float BORDER_CIRCLE_MODE     = 5.0f;
+        private const float BORDER_CIRCLE_ARC_MODE = 6.0f;
 
         private static readonly ushort[]   s_indices;
         private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
@@ -82,7 +84,8 @@ namespace Exomia.Framework.Graphics
         private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
         private readonly Dictionary<long, Texture> _textures = new Dictionary<long, Texture>(INITIAL_QUEUE_SIZE);
-        private readonly Dictionary<long, int> _textureSlotMap = new Dictionary<long, int>(MAX_TEXTURE_SLOTS);
+        private readonly Dictionary<long, int> _textureSlotMap = new Dictionary<long, int>(MAX_TEXTURE_SLOTS); 
+        private readonly Dictionary<long, int> _fontTextureSlotMap = new Dictionary<long, int>(MAX_FONT_TEXTURE_SLOTS);
 
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch" /> class.
@@ -297,43 +300,78 @@ namespace Exomia.Framework.Graphics
             {
                 ref Item item = ref _itemQueue[i];
 
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (item.V1.M == TEXTURE_MODE)
+                switch (item.V1.M)
                 {
-                    long tp = item.V1.ZW;
-                    if (!_textures.TryGetValue(tp, out Texture texture))
-                    {
-                        throw new KeyNotFoundException("The looked up texture wasn't found!");
-                    }
-
-                    if (!_textureSlotMap.TryGetValue(tp, out int tSlot))
-                    {
-                        _context.PixelShader.SetShaderResource(_textureSlotMap.Count, texture.TextureView);
-                        _textureSlotMap.Add(tp, tSlot = _textureSlotMap.Count);
-                    }
-
-                    item.V1.O = tSlot;
-                    item.V2.O = tSlot;
-                    item.V3.O = tSlot;
-                    item.V4.O = tSlot;
-                    
-                    if (_textureSlotMap.Count > MAX_TEXTURE_SLOTS)
-                    {
-                        if (i > offset)
+                    case TEXTURE_MODE:
                         {
-                            DrawBatch(offset, i - offset);
-                        }
+                            long tp = item.V1.ZW;
+                            if (!_textures.TryGetValue(tp, out Texture texture))
+                            {
+                                throw new KeyNotFoundException("The looked up texture wasn't found!");
+                            }
 
-                        offset = i;
-                        _textureSlotMap.Clear();
-                    }
-                }   
+                            if (!_textureSlotMap.TryGetValue(tp, out int tSlot))
+                            {
+                                _context.PixelShader.SetShaderResource(_textureSlotMap.Count, texture.TextureView);
+                                _textureSlotMap.Add(tp, tSlot = _textureSlotMap.Count);
+                            }
+
+                            item.V1.O = tSlot;
+                            item.V2.O = tSlot;
+                            item.V3.O = tSlot;
+                            item.V4.O = tSlot;
+                    
+                            if (_textureSlotMap.Count > MAX_TEXTURE_SLOTS)
+                            {
+                                if (i > offset)
+                                {
+                                    DrawBatch(offset, i - offset);
+                                }
+
+                                offset = i;
+                                _textureSlotMap.Clear();
+                            }
+                            break;
+                        }
+                    case FONT_TEXTURE_MODE:
+                        {
+                            long tp = item.V1.ZW;
+                            if (!_textures.TryGetValue(tp, out Texture texture))
+                            {
+                                throw new KeyNotFoundException("The looked up texture wasn't found!");
+                            }
+
+                            if (!_fontTextureSlotMap.TryGetValue(tp, out int tSlot))
+                            {
+                                _context.PixelShader.SetShaderResource(MAX_TEXTURE_SLOTS + _fontTextureSlotMap.Count, texture.TextureView);
+                                _fontTextureSlotMap.Add(tp, tSlot = _fontTextureSlotMap.Count);
+                            }
+
+                            item.V1.O = tSlot;
+                            item.V2.O = tSlot;
+                            item.V3.O = tSlot;
+                            item.V4.O = tSlot;
+
+                            if (_fontTextureSlotMap.Count > MAX_FONT_TEXTURE_SLOTS)
+                            {
+                                if (i > offset)
+                                {
+                                    DrawBatch(offset, i - offset);
+                                }
+
+                                offset = i;
+                                _fontTextureSlotMap.Clear();
+                            }
+                            break;
+                        }
+                }
             }
 
             DrawBatch(offset, _itemQueueCount - offset);
 
             _itemQueueCount = 0;
             _textureSlotMap.Clear();
+            _fontTextureSlotMap.Clear();
         }
 
         private void DrawBatch(int offset, int count)

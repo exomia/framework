@@ -9,6 +9,16 @@ Texture2D g_Texture1 : register(t0);
 Texture2D g_Texture2 : register(t1);
 Texture2D g_Texture3 : register(t2);
 Texture2D g_Texture4 : register(t3);
+Texture2D g_Texture5 : register(t4);
+Texture2D g_Texture6 : register(t5);
+Texture2D g_Texture7 : register(t6);
+Texture2D g_Texture8 : register(t7);
+
+
+Texture2D g_FontTexture1 : register(t8);
+Texture2D g_FontTexture2 : register(t9);
+Texture2D g_FontTexture3 : register(t10);
+Texture2D g_FontTexture4 : register(t11);
 
 SamplerState g_Sampler : register(s0);
 
@@ -47,10 +57,11 @@ PS_INPUT VSMain(VS_INPUT input)
 
 #define COLOR_MODE             0.0f
 #define TEXTURE_MODE           1.0f
-#define FILL_CIRCLE_MODE       2.0f
-#define FILL_CIRCLE_ARC_MODE   3.0f
-#define BORDER_CIRCLE_MODE     4.0f
-#define BORDER_CIRCLE_ARC_MODE 5.0f
+#define FONT_TEXTURE_MODE      2.0f
+#define FILL_CIRCLE_MODE       3.0f
+#define FILL_CIRCLE_ARC_MODE   4.0f
+#define BORDER_CIRCLE_MODE     5.0f
+#define BORDER_CIRCLE_ARC_MODE 6.0f
 
 #define PI 3.141593f
 
@@ -71,8 +82,29 @@ float4 PSMain(PS_INPUT input) : SV_TARGET
                         return g_Texture2.Sample(g_Sampler, input.uv) * input.c;
                     case 2.0f:
                         return g_Texture3.Sample(g_Sampler, input.uv) * input.c;
+                    case 3.0f:
+                        return g_Texture4.Sample(g_Sampler, input.uv) * input.c;
+                    case 4.0f:
+                        return g_Texture5.Sample(g_Sampler, input.uv) * input.c;
+                    case 5.0f:
+                        return g_Texture6.Sample(g_Sampler, input.uv) * input.c;
+                    case 6.0f:
+                        return g_Texture7.Sample(g_Sampler, input.uv) * input.c;
                 }
-                return g_Texture4.Sample(g_Sampler, input.uv) * input.c;
+                return g_Texture8.Sample(g_Sampler, input.uv) * input.c;
+            }
+        case FONT_TEXTURE_MODE:
+            {
+                switch (input.mo.y)
+                {
+                    case 0.0f:
+                        return g_FontTexture1.Sample(g_Sampler, input.uv) * input.c;
+                    case 1.0f:
+                        return g_FontTexture2.Sample(g_Sampler, input.uv) * input.c;
+                    case 2.0f:
+                        return g_FontTexture3.Sample(g_Sampler, input.uv) * input.c;
+                }
+                return g_FontTexture4.Sample(g_Sampler, input.uv) * input.c;
             }
         case FILL_CIRCLE_MODE:
             {

@@ -159,7 +159,7 @@ namespace Exomia.Framework.Graphics
                 sourceRectangle, color, rotation, origin, opacity, effects);
         }
 
-        private void DrawTexture(Texture        texture,
+        private void DrawTexture(Texture       texture,
                                 in RectangleF  destination,
                                 bool           scaleDestination,
                                 in Rectangle?  sourceRectangle,
@@ -167,7 +167,8 @@ namespace Exomia.Framework.Graphics
                                 float          rotation,
                                 in Vector2     origin,
                                 float          opacity,
-                                TextureEffects effects)
+                                TextureEffects effects,
+                                float          mode = TEXTURE_MODE)
 
         {
             long tp = texture.TexturePointer.ToInt64();
@@ -238,7 +239,7 @@ namespace Exomia.Framework.Graphics
                     vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
                     vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;
 
-                    vertex->M = TEXTURE_MODE;
+                    vertex->M = mode;
                 }
             }
             else
@@ -267,7 +268,7 @@ namespace Exomia.Framework.Graphics
                     vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
                     vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;
 
-                    vertex->M = TEXTURE_MODE;
+                    vertex->M = mode;
                 }
             }
         }

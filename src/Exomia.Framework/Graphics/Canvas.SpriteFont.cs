@@ -250,7 +250,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawTexture(
                 texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle, color,
-                rotation, origin, opacity, effects);
+                rotation, origin, opacity, effects, FONT_TEXTURE_MODE);
         }
 
         /// <summary>
