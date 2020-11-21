@@ -246,7 +246,7 @@ namespace Exomia.Framework.Graphics
                     vertex->B = scaledColor.B;
                     vertex->A = scaledColor.A;
 
-                    corner    = s_rectangleCornerOffsets[j ^ 0];
+                    corner    = s_rectangleCornerOffsets[j ^ (int)effects];
                     vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
                     vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;
 
