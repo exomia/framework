@@ -329,7 +329,8 @@ namespace Exomia.Framework.Graphics
                                 }
 
                                 offset = i;
-                                _textureSlotMap.Clear();
+                                _textureSlotMap.Clear(); 
+                                _fontTextureSlotMap.Clear();
                             }
                             break;
                         }
@@ -360,7 +361,8 @@ namespace Exomia.Framework.Graphics
                                 }
 
                                 offset = i;
-                                _fontTextureSlotMap.Clear();
+                                _fontTextureSlotMap.Clear(); 
+                                _textureSlotMap.Clear();
                             }
                             break;
                         }
