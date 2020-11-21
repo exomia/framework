@@ -18,14 +18,14 @@ namespace Exomia.Framework.Graphics
     {
         internal struct SpriteInfo
         {
-            public RectangleF    Source;
-            public RectangleF    Destination;
-            public Vector2       Origin;
-            public float         Rotation;
-            public float         Depth;
-            public SpriteEffects SpriteEffects;
-            public Color         Color;
-            public float         Opacity;
+            public RectangleF     Source;
+            public RectangleF     Destination;
+            public Vector2        Origin;
+            public float          Rotation;
+            public float          Depth;
+            public TextureEffects SpriteEffects;
+            public Color          Color;
+            public float          Opacity;
         }
 
         internal readonly struct TextureInfo

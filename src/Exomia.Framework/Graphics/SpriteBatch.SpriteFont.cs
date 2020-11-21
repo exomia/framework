@@ -29,7 +29,7 @@ namespace Exomia.Framework.Graphics
         {
             font.Draw(
                 DrawTextInternal, text, position,
-                color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+                color, 0f, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Exomia.Framework.Graphics
         {
             font.Draw(
                 DrawTextInternal, text, position,
-                color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+                color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -67,15 +67,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects,
-                             float         layerDepth)
+        public void DrawText(SpriteFont     font,
+                             string         text,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects,
+                             float          layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, position,
@@ -97,17 +97,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects,
-                             float         layerDepth)
+        public void DrawText(SpriteFont     font,
+                             string         text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects,
+                             float          layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position,
@@ -130,18 +130,18 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Size2F     dimension,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects,
-                             float         layerDepth)
+        public void DrawText(SpriteFont     font,
+                             string         text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Size2F      dimension,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects,
+                             float          layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension,
@@ -161,7 +161,7 @@ namespace Exomia.Framework.Graphics
         {
             font.Draw(
                 DrawTextInternal, text, position,
-                color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+                color, 0f, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace Exomia.Framework.Graphics
         {
             font.Draw(
                 DrawTextInternal, text, position,
-                color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, layerDepth);
+                color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -199,15 +199,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects,
-                             float         layerDepth)
+        public void DrawText(SpriteFont     font,
+                             StringBuilder  text,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects,
+                             float          layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, position,
@@ -229,17 +229,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects,
-                             float         layerDepth)
+        public void DrawText(SpriteFont     font,
+                             StringBuilder  text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects,
+                             float          layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position,
@@ -262,18 +262,18 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">    The effects. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Size2F     dimension,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects,
-                             float         layerDepth)
+        public void DrawText(SpriteFont     font,
+                             StringBuilder  text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Size2F      dimension,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects,
+                             float          layerDepth)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension,
@@ -294,16 +294,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void DrawTextInternal(Texture       texture,
-                                       in Vector2    position,
-                                       in Rectangle? sourceRectangle,
-                                       in Color      color,
-                                       float         rotation,
-                                       in Vector2    origin,
-                                       float         scale,
-                                       float         opacity,
-                                       SpriteEffects effects,
-                                       float         layerDepth)
+        internal void DrawTextInternal(Texture        texture,
+                                       in Vector2     position,
+                                       in Rectangle?  sourceRectangle,
+                                       in Color       color,
+                                       float          rotation,
+                                       in Vector2     origin,
+                                       float          scale,
+                                       float          opacity,
+                                       TextureEffects effects,
+                                       float          layerDepth)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle,

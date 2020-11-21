@@ -59,7 +59,12 @@ namespace Exomia.Framework.Graphics
         ///     <see cref="CullBackScissorEnabled" />.
         /// </summary>
         public readonly RasterizerState CullBackDepthClipOffScissorEnabled;
-        
+
+        /// <summary>
+        ///     Built-in rasterizer state object with settings <see cref="CullBackDepthClipOff" /> and multi sample enabled.
+        /// </summary>
+        public readonly RasterizerState CullBackDepthClipOffMultiSampleOn;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="RasterizerState" /> class.
         /// </summary>
@@ -67,18 +72,24 @@ namespace Exomia.Framework.Graphics
         internal RasterizerStates(IGraphicsDevice graphicsDevice)
         {
             WireFrame = Create(
-                graphicsDevice.Device, nameof(WireFrame), FillMode.Wireframe, CullMode.Back, true, false);
+                graphicsDevice.Device, nameof(WireFrame), FillMode.Wireframe, CullMode.Back, true, false, false);
             WireFrameCullNone = Create(
-                graphicsDevice.Device, nameof(WireFrameCullNone), FillMode.Wireframe, CullMode.None, true, false);
-            CullFront = Create(graphicsDevice.Device, nameof(CullFront), FillMode.Solid, CullMode.Front, true, false);
-            CullBack  = Create(graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, true, false);
-            CullNone  = Create(graphicsDevice.Device, nameof(CullNone), FillMode.Solid, CullMode.None, true, false);
+                graphicsDevice.Device, nameof(WireFrameCullNone), FillMode.Wireframe, CullMode.None, true, false,
+                false);
+            CullFront = Create(
+                graphicsDevice.Device, nameof(CullFront), FillMode.Solid, CullMode.Front, true, false, false);
+            CullBack = Create(
+                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, true, false, false);
+            CullNone = Create(
+                graphicsDevice.Device, nameof(CullNone), FillMode.Solid, CullMode.None, true, false, false);
             CullBackDepthClipOff = Create(
-                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, false, false);
+                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, false, false, false);
             CullBackScissorEnabled = Create(
-                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, true, true);
+                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, true, true, false);
             CullBackDepthClipOffScissorEnabled = Create(
-                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, true, true);
+                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, true, true, false);
+            CullBackDepthClipOffMultiSampleOn = Create(
+                graphicsDevice.Device, nameof(CullBack), FillMode.Solid, CullMode.Back, false, false, true);
         }
 
         private static RasterizerState Create(Device5  device,
@@ -86,7 +97,8 @@ namespace Exomia.Framework.Graphics
                                               FillMode fillMode,
                                               CullMode cullMode,
                                               bool     depthClipEnabled,
-                                              bool     scissorEnabled)
+                                              bool     scissorEnabled,
+                                              bool     multiSampleEnabled)
         {
             return new RasterizerState(
                 device,
@@ -100,8 +112,8 @@ namespace Exomia.Framework.Graphics
                     SlopeScaledDepthBias     = 0,
                     IsDepthClipEnabled       = depthClipEnabled,
                     IsScissorEnabled         = scissorEnabled,
-                    IsMultisampleEnabled     = false,
-                    IsAntialiasedLineEnabled = false
+                    IsMultisampleEnabled     = multiSampleEnabled,
+                    IsAntialiasedLineEnabled = multiSampleEnabled
                 }) { DebugName = name };
         }
 
@@ -123,6 +135,7 @@ namespace Exomia.Framework.Graphics
                     CullBackDepthClipOff.Dispose();
                     CullBackScissorEnabled.Dispose();
                     CullBackDepthClipOffScissorEnabled.Dispose();
+                    CullBackDepthClipOffMultiSampleOn.Dispose();
                 }
 
                 _disposed = true;

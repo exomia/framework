@@ -193,16 +193,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">         The opacity. </param>
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      Depth of the layer. </param>
-        internal delegate void DrawFont(Texture       texture,
-                                        in Vector2    position,
-                                        in Rectangle? sourceRectangle,
-                                        in Color      color,
-                                        float         rotation,
-                                        in Vector2    origin,
-                                        float         scale,
-                                        float         opacity,
-                                        SpriteEffects effects,
-                                        float         layerDepth);
+        internal delegate void DrawFont(Texture        texture,
+                                        in Vector2     position,
+                                        in Rectangle?  sourceRectangle,
+                                        in Color       color,
+                                        float          rotation,
+                                        in Vector2     origin,
+                                        float          scale,
+                                        float          opacity,
+                                        TextureEffects effects,
+                                        float          layerDepth);
 
         /// <summary>
         ///     A glyph.
@@ -443,15 +443,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="effects">      The effects. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        internal void Draw(DrawFont      drawCallback,
-                           string        text,
-                           in Vector2    position,
-                           in Color      color,
-                           float         rotation,
-                           in Vector2    origin,
-                           float         opacity,
-                           SpriteEffects effects,
-                           float         layerDepth)
+        internal void Draw(DrawFont       drawCallback,
+                           string         text,
+                           in Vector2     position,
+                           in Color       color,
+                           float          rotation,
+                           in Vector2     origin,
+                           float          opacity,
+                           TextureEffects effects,
+                           float          layerDepth)
         {
             float x = 0;
             float y = 0;
@@ -524,17 +524,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="effects">      The effects. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        internal void Draw(DrawFont      drawCallback,
-                           string        text,
-                           int           start,
-                           int           end,
-                           in Vector2    position,
-                           in Color      color,
-                           float         rotation,
-                           in Vector2    origin,
-                           float         opacity,
-                           SpriteEffects effects,
-                           float         layerDepth)
+        internal void Draw(DrawFont       drawCallback,
+                           string         text,
+                           int            start,
+                           int            end,
+                           in Vector2     position,
+                           in Color       color,
+                           float          rotation,
+                           in Vector2     origin,
+                           float          opacity,
+                           TextureEffects effects,
+                           float          layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -609,18 +609,18 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="effects">      The effects. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        internal void Draw(DrawFont      drawCallback,
-                           string        text,
-                           int           start,
-                           int           end,
-                           in Vector2    position,
-                           in Size2F     dimension,
-                           in Color      color,
-                           float         rotation,
-                           in Vector2    origin,
-                           float         opacity,
-                           SpriteEffects effects,
-                           float         layerDepth)
+        internal void Draw(DrawFont       drawCallback,
+                           string         text,
+                           int            start,
+                           int            end,
+                           in Vector2     position,
+                           in Size2F      dimension,
+                           in Color       color,
+                           float          rotation,
+                           in Vector2     origin,
+                           float          opacity,
+                           TextureEffects effects,
+                           float          layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -870,15 +870,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="effects">      The effects. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        internal void Draw(DrawFont      drawCallback,
-                           StringBuilder text,
-                           in Vector2    position,
-                           in Color      color,
-                           float         rotation,
-                           in Vector2    origin,
-                           float         opacity,
-                           SpriteEffects effects,
-                           float         layerDepth)
+        internal void Draw(DrawFont       drawCallback,
+                           StringBuilder  text,
+                           in Vector2     position,
+                           in Color       color,
+                           float          rotation,
+                           in Vector2     origin,
+                           float          opacity,
+                           TextureEffects effects,
+                           float          layerDepth)
         {
             float x = 0;
             float y = 0;
@@ -950,17 +950,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="effects">      The effects. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        internal void Draw(DrawFont      drawCallback,
-                           StringBuilder text,
-                           int           start,
-                           int           end,
-                           in Vector2    position,
-                           in Color      color,
-                           float         rotation,
-                           in Vector2    origin,
-                           float         opacity,
-                           SpriteEffects effects,
-                           float         layerDepth)
+        internal void Draw(DrawFont       drawCallback,
+                           StringBuilder  text,
+                           int            start,
+                           int            end,
+                           in Vector2     position,
+                           in Color       color,
+                           float          rotation,
+                           in Vector2     origin,
+                           float          opacity,
+                           TextureEffects effects,
+                           float          layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 
@@ -1035,18 +1035,18 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">      The opacity. </param>
         /// <param name="effects">      The effects. </param>
         /// <param name="layerDepth">   Depth of the layer. </param>
-        internal void Draw(DrawFont      drawCallback,
-                           StringBuilder text,
-                           int           start,
-                           int           end,
-                           in Vector2    position,
-                           in Size2F     dimension,
-                           in Color      color,
-                           float         rotation,
-                           in Vector2    origin,
-                           float         opacity,
-                           SpriteEffects effects,
-                           float         layerDepth)
+        internal void Draw(DrawFont       drawCallback,
+                           StringBuilder  text,
+                           int            start,
+                           int            end,
+                           in Vector2     position,
+                           in Size2F      dimension,
+                           in Color       color,
+                           float          rotation,
+                           in Vector2     origin,
+                           float          opacity,
+                           TextureEffects effects,
+                           float          layerDepth)
         {
             if (end <= start || end > text.Length) { end = text.Length; }
 

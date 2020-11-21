@@ -12,7 +12,6 @@ using System;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
 using SharpDX;
-using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics
 {
@@ -59,14 +58,12 @@ namespace Exomia.Framework.Graphics
             float  nx = (float)((dy / dl) * lineWidth);
             float  ny = (float)((dx / dl) * lineWidth);
 
-            DataBox box = _context.MapSubresource(
-                _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-            VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)box.DataPointer;
+            VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(1);
 
             // p1
             vertex->X = line.X1;
             vertex->Y = line.Y1;
-            
+
             vertex->R = color.R * opacity;
             vertex->G = color.G * opacity;
             vertex->B = color.B * opacity;
@@ -109,12 +106,6 @@ namespace Exomia.Framework.Graphics
             vertex->A = color.A * opacity;
 
             vertex->M = COLOR_MODE;
-
-            _context.UnmapSubresource(_vertexBuffer, 0);
-
-            PrepareForRendering();
-            _context.PixelShader.SetShaderResource(0, _whiteTexture.TextureView);
-            _context.DrawIndexed(6, 0, 0);
         }
     }
 }

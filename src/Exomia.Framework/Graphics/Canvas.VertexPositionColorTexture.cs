@@ -14,6 +14,22 @@ namespace Exomia.Framework.Graphics
 {
     public sealed partial class Canvas
     {
+        [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE * 4)]
+        private struct Item
+        {
+            [FieldOffset(VERTEX_STRIDE * 0)]
+            public VertexPositionColorTextureMode V1;
+
+            [FieldOffset(VERTEX_STRIDE * 1)]
+            public VertexPositionColorTextureMode V2;
+
+            [FieldOffset(VERTEX_STRIDE * 2)]
+            public VertexPositionColorTextureMode V3;
+
+            [FieldOffset(VERTEX_STRIDE * 3)]
+            public VertexPositionColorTextureMode V4;
+        }
+
         [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE)]
         private struct VertexPositionColorTextureMode
         {
@@ -28,6 +44,9 @@ namespace Exomia.Framework.Graphics
 
             [FieldOffset(12)]
             public float W;
+
+            [FieldOffset(8)]
+            public long ZW;
 
             [FieldOffset(16)]
             public float R;

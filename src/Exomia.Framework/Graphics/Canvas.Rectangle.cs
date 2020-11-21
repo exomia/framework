@@ -11,7 +11,6 @@
 using System;
 using Exomia.Framework.Mathematics;
 using SharpDX;
-using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics
 {
@@ -23,13 +22,13 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Draw rectangle.
         /// </summary>
-        /// <param name="destinationRectangle"> The destination rectangle. </param>
-        /// <param name="color">                The color. </param>
-        /// <param name="lineWidth">            The width of the line. </param>
-        /// <param name="rotation">             The rotation. </param>
-        /// <param name="origin">               The origin. </param>
-        /// <param name="opacity">              The opacity. </param>
-        public void DrawRectangle(in RectangleF destinationRectangle,
+        /// <param name="destination"> The destination rectangle. </param>
+        /// <param name="color">       The color. </param>
+        /// <param name="lineWidth">   The width of the line. </param>
+        /// <param name="rotation">    The rotation. </param>
+        /// <param name="origin">      The origin. </param>
+        /// <param name="opacity">     The opacity. </param>
+        public void DrawRectangle(in RectangleF destination,
                                   in Color      color,
                                   float         lineWidth,
                                   float         rotation,
@@ -38,38 +37,36 @@ namespace Exomia.Framework.Graphics
         {
             Color scaledColor = color * opacity;
 
-            DataBox box = _context.MapSubresource(
-                _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-            VertexPositionColorTextureMode* vpctmPtr = (VertexPositionColorTextureMode*)box.DataPointer;
+            Vector2 tl = new Vector2(destination.Left + lineWidth, destination.Top + lineWidth);
+            Vector2 tr = new Vector2(destination.Right - lineWidth, destination.Top + lineWidth);
+            Vector2 br = new Vector2(destination.Right - lineWidth, destination.Bottom - lineWidth);
+            Vector2 bl = new Vector2(destination.Left + lineWidth, destination.Bottom - lineWidth);
 
-            Vector2 tl = new Vector2(destinationRectangle.Left + lineWidth, destinationRectangle.Top + lineWidth);
-            Vector2 tr = new Vector2(destinationRectangle.Right - lineWidth, destinationRectangle.Top + lineWidth);
-            Vector2 br = new Vector2(destinationRectangle.Right - lineWidth, destinationRectangle.Bottom - lineWidth);
-            Vector2 bl = new Vector2(destinationRectangle.Left + lineWidth, destinationRectangle.Bottom - lineWidth);
+            Item* ptr = Reserve(4);
 
             if (rotation == 0f)
             {
                 DrawRect(
-                    ref vpctmPtr,
-                    new Line2(destinationRectangle.TopLeft, destinationRectangle.TopRight),
+                    ptr + 0,
+                    new Line2(destination.TopLeft, destination.TopRight),
                     new Line2(tl, tr),
                     in scaledColor);
 
                 DrawRect(
-                    ref vpctmPtr,
-                    new Line2(destinationRectangle.TopRight, destinationRectangle.BottomRight),
+                    ptr + 1,
+                    new Line2(destination.TopRight, destination.BottomRight),
                     new Line2(tr, br),
                     in scaledColor);
 
                 DrawRect(
-                    ref vpctmPtr,
-                    new Line2(destinationRectangle.BottomRight, destinationRectangle.BottomLeft),
+                    ptr + 2,
+                    new Line2(destination.BottomRight, destination.BottomLeft),
                     new Line2(br, bl),
                     in scaledColor);
 
                 DrawRect(
-                    ref vpctmPtr,
-                    new Line2(destinationRectangle.BottomLeft, destinationRectangle.TopLeft),
+                    ptr + 3,
+                    new Line2(destination.BottomLeft, destination.TopLeft),
                     new Line2(bl, tl),
                     in scaledColor);
             }
@@ -78,26 +75,26 @@ namespace Exomia.Framework.Graphics
                 double cos = Math.Cos(rotation);
                 double sin = Math.Sin(rotation);
 
-                float tlx1 = destinationRectangle.Left - origin.X;
-                float tly1 = destinationRectangle.Top - origin.Y;
+                float tlx1 = destination.Left - origin.X;
+                float tly1 = destination.Top - origin.Y;
 
                 float tlx2 = tl.X - origin.X;
                 float tly2 = tl.Y - origin.Y;
 
-                float trx1 = destinationRectangle.Right - origin.X;
-                float try1 = destinationRectangle.Top - origin.Y;
+                float trx1 = destination.Right - origin.X;
+                float try1 = destination.Top - origin.Y;
 
                 float trx2 = tr.X - origin.X;
                 float try2 = tr.Y - origin.Y;
 
-                float brx1 = destinationRectangle.Right - origin.X;
-                float bry1 = destinationRectangle.Bottom - origin.Y;
+                float brx1 = destination.Right - origin.X;
+                float bry1 = destination.Bottom - origin.Y;
 
                 float brx2 = br.X - origin.X;
                 float bry2 = br.Y - origin.Y;
 
-                float blx1 = destinationRectangle.Left - origin.X;
-                float bly1 = destinationRectangle.Bottom - origin.Y;
+                float blx1 = destination.Left - origin.X;
+                float bly1 = destination.Bottom - origin.Y;
 
                 float blx2 = bl.X - origin.X;
                 float bly2 = bl.Y - origin.Y;
@@ -122,28 +119,22 @@ namespace Exomia.Framework.Graphics
                 Vector2 bl2 = new Vector2(
                     (float)((blx2 * cos) - (bly2 * sin)) + origin.X, (float)((blx2 * sin) + (bly2 * cos)) + origin.Y);
 
-                DrawRect(ref vpctmPtr, new Line2(tl1, tr1), new Line2(tl2, tr2), in scaledColor);
-                DrawRect(ref vpctmPtr, new Line2(tr1, br1), new Line2(tr2, br2), in scaledColor);
-                DrawRect(ref vpctmPtr, new Line2(br1, bl1), new Line2(br2, bl2), in scaledColor);
-                DrawRect(ref vpctmPtr, new Line2(bl1, tl1), new Line2(bl2, tl2), in scaledColor);
+                DrawRect(ptr + 0, new Line2(tl1, tr1), new Line2(tl2, tr2), in scaledColor);
+                DrawRect(ptr + 1, new Line2(tr1, br1), new Line2(tr2, br2), in scaledColor);
+                DrawRect(ptr + 2, new Line2(br1, bl1), new Line2(br2, bl2), in scaledColor);
+                DrawRect(ptr + 3, new Line2(bl1, tl1), new Line2(bl2, tl2), in scaledColor);
             }
-
-            _context.UnmapSubresource(_vertexBuffer, 0);
-
-            PrepareForRendering();
-            _context.PixelShader.SetShaderResource(0, _whiteTexture.TextureView);
-            _context.DrawIndexed(24, 0, 0);
         }
 
         /// <summary>
         ///     Draw fill rectangle.
         /// </summary>
-        /// <param name="destinationRectangle"> The destination rectangle. </param>
-        /// <param name="color">                The color. </param>
-        /// <param name="rotation">             The rotation. </param>
-        /// <param name="origin">               The origin. </param>
-        /// <param name="opacity">              The opacity. </param>
-        public void DrawFillRectangle(in RectangleF destinationRectangle,
+        /// <param name="destination"> The destination rectangle. </param>
+        /// <param name="color">       The color. </param>
+        /// <param name="rotation">    The rotation. </param>
+        /// <param name="origin">      The origin. </param>
+        /// <param name="opacity">     The opacity. </param>
+        public void DrawFillRectangle(in RectangleF destination,
                                       in Color      color,
                                       float         rotation,
                                       in Vector2    origin,
@@ -151,20 +142,18 @@ namespace Exomia.Framework.Graphics
         {
             Color scaledColor = color * opacity;
 
-            DataBox box = _context.MapSubresource(
-                _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-            VertexPositionColorTextureMode* vpctmPtr = (VertexPositionColorTextureMode*)box.DataPointer;
+            Item* ptr = Reserve(1);
 
             if (rotation == 0f)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    VertexPositionColorTextureMode* vertex = vpctmPtr + j;
+                    VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + j;
 
                     Vector2 corner = s_rectangleCornerOffsets[j];
 
-                    vertex->X = destinationRectangle.X + (corner.X * destinationRectangle.Width);
-                    vertex->Y = destinationRectangle.Y + (corner.Y * destinationRectangle.Height);
+                    vertex->X = destination.X + (corner.X * destination.Width);
+                    vertex->Y = destination.Y + (corner.Y * destination.Height);
 
                     vertex->R = scaledColor.R;
                     vertex->G = scaledColor.G;
@@ -181,11 +170,11 @@ namespace Exomia.Framework.Graphics
 
                 for (int j = 0; j < 4; j++)
                 {
-                    VertexPositionColorTextureMode* vertex = vpctmPtr + j;
+                    VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + j;
 
                     Vector2 corner = s_rectangleCornerOffsets[j];
-                    float   posX   = (destinationRectangle.X - origin.X) + (corner.X * destinationRectangle.Width);
-                    float   posY   = (destinationRectangle.Y - origin.Y) + (corner.Y * destinationRectangle.Height);
+                    float   posX   = (destination.X - origin.X) + (corner.X * destination.Width);
+                    float   posY   = (destination.Y - origin.Y) + (corner.Y * destination.Height);
 
                     vertex->X = (float)((origin.X + (posX * cos)) - (posY * sin));
                     vertex->Y = (float)(origin.Y + (posX * sin) + (posY * cos));
@@ -198,63 +187,53 @@ namespace Exomia.Framework.Graphics
                     vertex->M = COLOR_MODE;
                 }
             }
-
-            _context.UnmapSubresource(_vertexBuffer, 0);
-
-            PrepareForRendering();
-            _context.PixelShader.SetShaderResource(0, _whiteTexture.TextureView);
-            _context.DrawIndexed(6, 0, 0);
         }
 
-        private static void DrawRect(ref VertexPositionColorTextureMode* v, in Line2 lineA, in Line2 lineB, in Color c)
+        private static void DrawRect(Item* ptr, in Line2 lineA, in Line2 lineB, in Color c)
         {
             // p1
-            v->X = lineA.X1;
-            v->Y = lineA.Y1;
+            ptr->V1.X = lineA.X1;
+            ptr->V1.Y = lineA.Y1;
 
-            v->R = c.R;
-            v->G = c.G;
-            v->B = c.B;
-            v->A = c.A;
+            ptr->V1.R = c.R;
+            ptr->V1.G = c.G;
+            ptr->V1.B = c.B;
+            ptr->V1.A = c.A;
 
-            v->M = COLOR_MODE;
-            v++;
+            ptr->V1.M = COLOR_MODE;
 
             // p2
-            v->X = lineA.X2;
-            v->Y = lineA.Y2;
+            ptr->V2.X = lineA.X2;
+            ptr->V2.Y = lineA.Y2;
 
-            v->R = c.R;
-            v->G = c.G;
-            v->B = c.B;
-            v->A = c.A;
+            ptr->V2.R = c.R;
+            ptr->V2.G = c.G;
+            ptr->V2.B = c.B;
+            ptr->V2.A = c.A;
 
-            v->M = COLOR_MODE;
-            v++;
+            ptr->V2.M = COLOR_MODE;
 
             // p2'
-            v->X = lineB.X2;
-            v->Y = lineB.Y2;
+            ptr->V3.X = lineB.X2;
+            ptr->V3.Y = lineB.Y2;
 
-            v->R = c.R;
-            v->G = c.G;
-            v->B = c.B;
-            v->A = c.A;
+            ptr->V3.R = c.R;
+            ptr->V3.G = c.G;
+            ptr->V3.B = c.B;
+            ptr->V3.A = c.A;
 
-            v->M = COLOR_MODE;
-            v++;
+            ptr->V3.M = COLOR_MODE;
 
             // p1'
-            v->X = lineB.X1;
-            v->Y = lineB.Y1;
+            ptr->V4.X = lineB.X1;
+            ptr->V4.Y = lineB.Y1;
 
-            v->R = c.R;
-            v->G = c.G;
-            v->B = c.B;
-            v->A = c.A;
+            ptr->V4.R = c.R;
+            ptr->V4.G = c.G;
+            ptr->V4.B = c.B;
+            ptr->V4.A = c.A;
 
-            v->M = COLOR_MODE;
-            v++;
+            ptr->V4.M = COLOR_MODE;
         }
     }
 }

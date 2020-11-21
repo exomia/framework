@@ -9,8 +9,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Resources;
@@ -23,7 +27,7 @@ namespace Exomia.Framework.Graphics
     /// <summary>
     ///     A canvas. This class cannot be inherited.
     /// </summary>
-    public sealed partial class Canvas : IDisposable
+    public sealed unsafe partial class Canvas : IDisposable
     {
         private const int MAX_BATCH_SIZE             = 1 << 13;
         private const int INITIAL_QUEUE_SIZE         = 1 << 7;
@@ -31,17 +35,19 @@ namespace Exomia.Framework.Graphics
         private const int MAX_INDEX_COUNT            = MAX_BATCH_SIZE * 6;
         private const int BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
         private const int VERTEX_STRIDE              = sizeof(float) * 12;
+        private const int MAX_TEXTURE_SLOTS          = 4;
 
-        private const float COLOR_MODE           = 0.0f;
-        private const float TEXTURE_MODE         = 1.0f;
-        private const float FILL_CIRCLE_MODE     = 2.0f;
-        private const float FILL_CIRCLE_ARC_MODE = 3.0f;
+        private const float COLOR_MODE             = 0.0f;
+        private const float TEXTURE_MODE           = 1.0f;
+        private const float FILL_CIRCLE_MODE       = 2.0f;
+        private const float FILL_CIRCLE_ARC_MODE   = 3.0f;
+        private const float BORDER_CIRCLE_MODE     = 4.0f;
+        private const float BORDER_CIRCLE_ARC_MODE = 5.0f;
 
         private static readonly ushort[]   s_indices;
         private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
         private static readonly Rectangle? s_nullRectangle = null;
         
-        private readonly Device5        _device;
         private readonly DeviceContext4 _context;
 
         private readonly InputLayout _vertexInputLayout;
@@ -53,7 +59,6 @@ namespace Exomia.Framework.Graphics
         private readonly Shader.Shader _shader;
         private readonly PixelShader   _pixelShader;
         private readonly VertexShader  _vertexShader;
-        private readonly Texture       _whiteTexture;
 
         private readonly BlendState         _defaultBlendState;
         private readonly DepthStencilState  _defaultDepthStencilState;
@@ -69,6 +74,15 @@ namespace Exomia.Framework.Graphics
         private Rectangle _scissorRectangle;
 
         private Matrix _projectionMatrix, _viewMatrix, _transformMatrix;
+
+        private Item* _itemQueue;
+        private int   _itemQueueLength;
+        private int   _itemQueueCount;
+
+        private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
+
+        private readonly Dictionary<long, Texture> _textures = new Dictionary<long, Texture>(INITIAL_QUEUE_SIZE);
+        private readonly Dictionary<long, int> _textureSlotMap = new Dictionary<long, int>(MAX_TEXTURE_SLOTS);
 
         /// <summary>
         ///     Initializes static members of the <see cref="SpriteBatch" /> class.
@@ -107,17 +121,14 @@ namespace Exomia.Framework.Graphics
         /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
         public Canvas(IGraphicsDevice graphicsDevice)
         {
-            _device  = graphicsDevice.Device;
             _context = graphicsDevice.DeviceContext;
 
-            _defaultBlendState                    = graphicsDevice.BlendStates.Default;
-            _defaultSamplerState                  = graphicsDevice.SamplerStates.LinearWrap;
-            _defaultDepthStencilState             = graphicsDevice.DepthStencilStates.None;
-            
+            _defaultBlendState        = graphicsDevice.BlendStates.Default;
+            _defaultSamplerState      = graphicsDevice.SamplerStates.LinearWrap;
+            _defaultDepthStencilState = graphicsDevice.DepthStencilStates.None;
+
             _defaultRasterizerState               = graphicsDevice.RasterizerStates.CullBackDepthClipOff;
             _defaultRasterizerScissorEnabledState = graphicsDevice.RasterizerStates.CullBackDepthClipOffScissorEnabled;
-
-            _whiteTexture = graphicsDevice.Textures.White;
 
             _indexBuffer = IndexBuffer.Create(graphicsDevice, s_indices);
 
@@ -139,8 +150,9 @@ namespace Exomia.Framework.Graphics
             _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTextureMode>(graphicsDevice, MAX_VERTEX_COUNT);
             _perFrameBuffer = ConstantBuffer.Create<Matrix>(graphicsDevice);
 
-            graphicsDevice.ResizeFinished += GraphicsDeviceOnResizeFinished;
+            _itemQueue = (Item*)Marshal.AllocHGlobal(sizeof(Item) * (_itemQueueLength = MAX_BATCH_SIZE));
 
+            graphicsDevice.ResizeFinished += GraphicsDeviceOnResizeFinished;
             Resize(graphicsDevice.Viewport);
         }
 
@@ -231,7 +243,11 @@ namespace Exomia.Framework.Graphics
                 throw new InvalidOperationException("Begin must be called before End");
             }
 
-            //PrepareForRendering();
+            if (_itemQueueCount > 0)
+            {
+                PrepareForRendering();
+                FlushBatch();
+            }
 
             _isBeginCalled = false;
         }
@@ -271,6 +287,113 @@ namespace Exomia.Framework.Graphics
 
             _context.InputAssembler.SetIndexBuffer(_indexBuffer, _indexBuffer.Format, 0);
             _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);
+        }
+        
+        private void FlushBatch()
+        {
+            int offset = 0;
+
+            for (int i = 0; i < _itemQueueCount; i++)
+            {
+                ref Item item = ref _itemQueue[i];
+
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (item.V1.M == TEXTURE_MODE)
+                {
+                    long tp = item.V1.ZW;
+                    if (!_textures.TryGetValue(tp, out Texture texture))
+                    {
+                        throw new KeyNotFoundException("The looked up texture wasn't found!");
+                    }
+
+                    if (!_textureSlotMap.TryGetValue(tp, out int tSlot))
+                    {
+                        _context.PixelShader.SetShaderResource(_textureSlotMap.Count, texture.TextureView);
+                        _textureSlotMap.Add(tp, _textureSlotMap.Count);
+                    }
+
+                    item.V1.O = tSlot;
+                    item.V2.O = tSlot;
+                    item.V3.O = tSlot;
+                    item.V4.O = tSlot;
+                    
+                    if (_textureSlotMap.Count > MAX_TEXTURE_SLOTS)
+                    {
+                        if (i > offset)
+                        {
+                            DrawBatch(offset, i - offset);
+                        }
+
+                        offset = i;
+                        _textureSlotMap.Clear();
+                    }
+                }   
+            }
+
+            DrawBatch(offset, _itemQueueCount - offset);
+
+            _itemQueueCount = 0;
+            _textureSlotMap.Clear();
+        }
+
+        private void DrawBatch(int offset, int count)
+        {
+            while (count > 0)
+            {
+                int batchSize = count;
+                if (batchSize > MAX_BATCH_SIZE)
+                {
+                    batchSize = MAX_BATCH_SIZE;
+                }
+
+                DataBox box = _context.MapSubresource(
+                    _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
+                VertexPositionColorTextureMode* vpctPtr = (VertexPositionColorTextureMode*)box.DataPointer;
+
+                for (int i = 0; i < batchSize; i++)
+                {
+                    ref Item                        item = ref _itemQueue[i + offset];
+                    VertexPositionColorTextureMode* v    = vpctPtr + (i << 2);
+                    *(v + 0) = item.V1;
+                    *(v + 1) = item.V2;
+                    *(v + 2) = item.V3;
+                    *(v + 3) = item.V4;
+                }
+
+                _context.UnmapSubresource(_vertexBuffer, 0);
+                _context.DrawIndexed(6 * batchSize, 0, 0);
+
+                offset += batchSize;
+                count  -= batchSize;
+            }
+        }
+
+        private Item* Reserve(int itemCount)
+        {
+            if (_itemQueueCount >= _itemQueueLength)
+            {
+                bool lockTaken = false;
+                try
+                {
+                    _spinLock.Enter(ref lockTaken);
+                    int size = _itemQueueLength * 2;
+
+                    Item* ptr = (Item*)Marshal.AllocHGlobal(sizeof(Item) * size);
+                    Marshal.FreeHGlobal(new IntPtr(_itemQueue));
+
+                    _itemQueue       = ptr;
+                    _itemQueueLength = size;
+                }
+                finally
+                {
+                    if (lockTaken)
+                    {
+                        _spinLock.Exit(false);
+                    }
+                }
+            }
+
+            return _itemQueue + (Interlocked.Add(ref _itemQueueCount, itemCount) - itemCount);
         }
 
         #region IDisposable Support
@@ -314,6 +437,8 @@ namespace Exomia.Framework.Graphics
                     _shader.Dispose();
                     _vertexInputLayout.Dispose();
                 }
+
+                Marshal.FreeHGlobal(new IntPtr(_itemQueue));
 
                 _disposed = true;
             }

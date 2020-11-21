@@ -28,7 +28,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true, s_nullRectangle,
-                color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
+                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 texture, destinationRectangle, false, s_nullRectangle,
-                color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
+                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true, sourceRectangle,
-                color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
+                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 texture, destinationRectangle, false, sourceRectangle,
-                color, 0f, s_vector2Zero, 1.0f, SpriteEffects.None, 0f);
+                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true, s_nullRectangle,
-                color, rotation, origin, 1.0f, SpriteEffects.None, layerDepth);
+                color, rotation, origin, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 texture, destinationRectangle, false, s_nullRectangle,
-                color, rotation, origin, 1.0f, SpriteEffects.None, layerDepth);
+                color, rotation, origin, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -135,15 +135,15 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">              The effects. </param>
         /// <param name="layerDepth">           The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Draw(Texture       texture,
-                         in RectangleF destinationRectangle,
-                         in Rectangle? sourceRectangle,
-                         in Color      color,
-                         float         rotation,
-                         in Vector2    origin,
-                         float         opacity,
-                         SpriteEffects effects,
-                         float         layerDepth)
+        public void Draw(Texture        texture,
+                         in RectangleF  destinationRectangle,
+                         in Rectangle?  sourceRectangle,
+                         in Color       color,
+                         float          rotation,
+                         in Vector2     origin,
+                         float          opacity,
+                         TextureEffects effects,
+                         float          layerDepth)
         {
             DrawSprite(
                 texture, destinationRectangle, false, sourceRectangle,
@@ -164,16 +164,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Draw(Texture       texture,
-                         in Vector2    position,
-                         in Rectangle? sourceRectangle,
-                         in Color      color,
-                         float         rotation,
-                         in Vector2    origin,
-                         float         scale,
-                         float         opacity,
-                         SpriteEffects effects,
-                         float         layerDepth)
+        public void Draw(Texture        texture,
+                         in Vector2     position,
+                         in Rectangle?  sourceRectangle,
+                         in Color       color,
+                         float          rotation,
+                         in Vector2     origin,
+                         float          scale,
+                         float          opacity,
+                         TextureEffects effects,
+                         float          layerDepth)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle,
@@ -194,32 +194,32 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Draw(Texture       texture,
-                         in Vector2    position,
-                         in Rectangle? sourceRectangle,
-                         in Color      color,
-                         float         rotation,
-                         in Vector2    origin,
-                         in Vector2    scale,
-                         float         opacity,
-                         SpriteEffects effects,
-                         float         layerDepth)
+        public void Draw(Texture        texture,
+                         in Vector2     position,
+                         in Rectangle?  sourceRectangle,
+                         in Color       color,
+                         float          rotation,
+                         in Vector2     origin,
+                         in Vector2     scale,
+                         float          opacity,
+                         TextureEffects effects,
+                         float          layerDepth)
         {
             DrawSprite(
                 texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true, sourceRectangle,
                 color, rotation, origin, opacity, effects, layerDepth);
         }
 
-        private unsafe void DrawSprite(Texture       texture,
-                                       in RectangleF destination,
-                                       bool          scaleDestination,
-                                       in Rectangle? sourceRectangle,
-                                       in Color      color,
-                                       float         rotation,
-                                       in Vector2    origin,
-                                       float         opacity,
-                                       SpriteEffects effects,
-                                       float         depth)
+        private unsafe void DrawSprite(Texture        texture,
+                                       in RectangleF  destination,
+                                       bool           scaleDestination,
+                                       in Rectangle?  sourceRectangle,
+                                       in Color       color,
+                                       float          rotation,
+                                       in Vector2     origin,
+                                       float          opacity,
+                                       TextureEffects effects,
+                                       float          depth)
         {
             if (!_isBeginCalled)
             {

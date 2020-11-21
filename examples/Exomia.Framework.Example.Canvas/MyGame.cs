@@ -8,12 +8,10 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Components;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Mathematics;
-using Exomia.Framework.Mathematics.Extensions.Vector;
 using SharpDX;
 
 namespace Exomia.Framework.Example.Canvas
@@ -47,7 +45,7 @@ namespace Exomia.Framework.Example.Canvas
                     EnableTitleInformation = false,
                 });
 
-            IsFixedTimeStep   = true;
+            IsFixedTimeStep   = false;
             TargetElapsedTime = 1000f / 144f; //144fps
         }
 
@@ -57,7 +55,7 @@ namespace Exomia.Framework.Example.Canvas
             parameters.IsMouseVisible      = true;
             parameters.Width               = 1600;
             parameters.Height              = 1024;
-            parameters.EnableMultiSampling = false;
+            parameters.EnableMultiSampling = true;
             parameters.MultiSampleCount    = MultiSampleCount.MsaaX8;
         }
 
@@ -65,8 +63,8 @@ namespace Exomia.Framework.Example.Canvas
         /// This is where you can query for any required services and load any non-graphic related content.
         protected override void OnInitialize()
         {
-            Content.RootDirectory = "Content"; 
-            _spriteBatch = ToDispose(new SpriteBatch(GraphicsDevice));
+            Content.RootDirectory = "Content";
+            _spriteBatch          = ToDispose(new SpriteBatch(GraphicsDevice));
             _canvas               = ToDispose(new Graphics.Canvas(GraphicsDevice));
 
             /*
@@ -108,10 +106,11 @@ namespace Exomia.Framework.Example.Canvas
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
-            _canvas.Begin();
+
+            _canvas.Begin(rasterizerState: GraphicsDevice.RasterizerStates.CullBackDepthClipOffMultiSampleOn);
 
             k += gameTime.DeltaTimeS / 2;
+                
             _canvas.DrawFillTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Red, 0, Vector2.Zero, 1.0f);
             _canvas.DrawTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
 
@@ -135,24 +134,118 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawFillPolygon(
                 new[]
                 {
-                    new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
-                    new Vector2(400, 630)
+                    new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450)
                 }, Color.Red, 1.0f);
+
             _canvas.DrawPolygon(
+                new[]
+                {
+                    new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450)
+                }, Color.Yellow, 15.0f, 1.0f);
+
+            _canvas.DrawFillPolygon(
                 new[]
                 {
                     new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
                     new Vector2(400, 630)
+                }, Color.Red, 1.0f);
+
+            _canvas.DrawPolygon(
+                new[]
+                {
+                    new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
+
+                    new Vector2(400, 630)
                 }, Color.Yellow, 5.0f, 1.0f);
-                
+
             Vector2 center = new Vector2(800, 400);
-                
-            _canvas.DrawRectangle(new RectangleF(center.X - 100, center.Y - 100, 200, 200), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
-            _canvas.DrawFillArc(new Arc2(center, 100f), Color.Black, 1.0f);
+
+            _canvas.DrawRectangle(
+                new RectangleF(center.X - 100, center.Y - 100, 200, 200), Color.Green, 2, 0, Vector2.Zero, 0.0f);
+            _canvas.DrawFillArc(new Arc2(center, 100f), Color.Black, 0, center, 1.0f);
+
+            float l = 20;
+            float r = 100;
+            _canvas.DrawArc(
+                new Arc2(center, r, MathUtil.DegreesToRadians(90), MathUtil.DegreesToRadians(-45)), Color.Yellow, l,
+                0, Vector2.Zero, 1.0f);
+
+            float rr = (r - l) * 0.685f;
+            _canvas.DrawRectangle(
+                new RectangleF(center.X - rr, center.Y - rr, rr * 2, rr * 2), Color.Green, 2, 0, Vector2.Zero, 1.0f);
 
             Vector2 center2 = new Vector2(1200, 400);
-            _canvas.DrawRectangle(new RectangleF(center2.X - 100, center.Y - 100, 200, 200), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
-            _canvas.DrawFillArc(new Arc2(center2, 100f, -MathUtil.Pi / 2, -MathUtil.Pi / 4), Color.Blue, 1.0f);
+            _canvas.DrawRectangle(
+                new RectangleF(center2.X - 50f, center2.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center2, 50f, MathUtil.DegreesToRadians(80), MathUtil.DegreesToRadians(200)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center21 = new Vector2(1300, 400);
+            _canvas.DrawRectangle(
+                new RectangleF(center21.X - 50f, center21.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center21, 50f, MathUtil.DegreesToRadians(80), MathUtil.DegreesToRadians(-10)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center3 = new Vector2(1200, 500);
+            _canvas.DrawRectangle(
+                new RectangleF(center3.X - 50f, center3.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(new Arc2(center3, 50f, MathUtil.DegreesToRadians(80), 0), Color.Blue, 0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center31 = new Vector2(1300, 500);
+            _canvas.DrawRectangle(
+                new RectangleF(center31.X - 50f, center31.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center31, 50f, MathUtil.DegreesToRadians(-80), MathUtil.DegreesToRadians(200)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center4 = new Vector2(1200, 600);
+            _canvas.DrawRectangle(
+                new RectangleF(center4.X - 50f, center4.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center4, 50f, MathUtil.DegreesToRadians(-80), MathUtil.DegreesToRadians(-200)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center41 = new Vector2(1300, 600);
+            _canvas.DrawRectangle(
+                new RectangleF(center41.X - 50f, center41.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center41, 50f, MathUtil.DegreesToRadians(-80), MathUtil.DegreesToRadians(0)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center5 = new Vector2(1200, 700);
+            _canvas.DrawRectangle(
+                new RectangleF(center5.X - 50f, center5.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center5, 50f, MathUtil.DegreesToRadians(0), MathUtil.DegreesToRadians(200)), Color.Blue, 0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center51 = new Vector2(1300, 700);
+            _canvas.DrawRectangle(
+                new RectangleF(center51.X - 50f, center51.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center51, 50f, MathUtil.DegreesToRadians(0), MathUtil.DegreesToRadians(-200)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            Vector2 center200 = new Vector2(1400, 400);
+            _canvas.DrawRectangle(
+                new RectangleF(center200.X - 50f, center200.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center200, 50f, MathUtil.DegreesToRadians(80), MathUtil.DegreesToRadians(10)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center200, 50f, MathUtil.DegreesToRadians(80) + k, MathUtil.DegreesToRadians(10) + k),
+                Color.DeepPink, 0.0f, center200, 1.0f);
+            
+            Vector2 center400 = new Vector2(1400, 500);
+            _canvas.DrawRectangle(
+                new RectangleF(center400.X - 50f, center400.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero,
+                1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center400, 50f, MathUtil.DegreesToRadians(-200), MathUtil.DegreesToRadians(-80)), Color.Blue,
+                0.0f, Vector2.Zero, 1.0f);
+
+            _canvas.Draw(GraphicsDevice.Textures.White, new RectangleF(1400,50, 200,200), Color.YellowGreen);
 
             _canvas.End();
 

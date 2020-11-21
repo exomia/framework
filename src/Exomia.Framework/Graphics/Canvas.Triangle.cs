@@ -82,10 +82,6 @@ namespace Exomia.Framework.Graphics
             Triangle2 t           = rotation == 0.0 ? triangle : Triangle2.RotateAround(triangle, rotation, origin);
             Color     scaledColor = color * opacity;
 
-            DataBox box = _context.MapSubresource(
-                _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-            VertexPositionColorTextureMode* vpctmPtr = (VertexPositionColorTextureMode*)box.DataPointer;
-
             Line2 a              = new Line2(t.X1, t.Y1, t.X2, t.Y2);
             Line2 perpendicularA = a.GetPerpendicular(lineWidth);
 
@@ -110,15 +106,10 @@ namespace Exomia.Framework.Graphics
                 throw new ArgumentException("The lines c and a are parallel to each other! Check the triangle points!");
             }
 
-            DrawRect(ref vpctmPtr, a, new Line2(ipCa.X, ipCa.Y, ipAb.X, ipAb.Y), in scaledColor);
-            DrawRect(ref vpctmPtr, b, new Line2(ipAb.X, ipAb.Y, ipBc.X, ipBc.Y), in scaledColor);
-            DrawRect(ref vpctmPtr, c, new Line2(ipBc.X, ipBc.Y, ipCa.X, ipCa.Y), in scaledColor);
-
-            _context.UnmapSubresource(_vertexBuffer, 0);
-
-            PrepareForRendering();
-            _context.PixelShader.SetShaderResource(0, _whiteTexture.TextureView);
-            _context.DrawIndexed(18, 0, 0);
+            Item* ptr = Reserve(3);
+            DrawRect(ptr + 0, a, new Line2(ipCa.X, ipCa.Y, ipAb.X, ipAb.Y), in scaledColor);
+            DrawRect(ptr + 1, b, new Line2(ipAb.X, ipAb.Y, ipBc.X, ipBc.Y), in scaledColor);
+            DrawRect(ptr + 2, c, new Line2(ipBc.X, ipBc.Y, ipCa.X, ipCa.Y), in scaledColor);
         }
 
         /// <summary>
@@ -179,16 +170,14 @@ namespace Exomia.Framework.Graphics
                                      float        opacity)
         {
             Color scaledColor = color * opacity;
-            
-            DataBox box = _context.MapSubresource(
-                _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-            VertexPositionColorTextureMode* vpctmPtr = (VertexPositionColorTextureMode*)box.DataPointer;
+
+            Item* ptr = Reserve(1);
 
             if (rotation == 0.0f)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    VertexPositionColorTextureMode* vertex = vpctmPtr + i;
+                    VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
 
                     fixed (Triangle2* t = &triangle)
                     {
@@ -196,7 +185,7 @@ namespace Exomia.Framework.Graphics
                         vertex->X = *(tf + (i << 1));
                         vertex->Y = *(tf + (i << 1) + 1);
                     }
-                    
+
                     vertex->R = scaledColor.R;
                     vertex->G = scaledColor.G;
                     vertex->B = scaledColor.B;
@@ -212,7 +201,7 @@ namespace Exomia.Framework.Graphics
 
                 for (int i = 0; i < 3; i++)
                 {
-                    VertexPositionColorTextureMode* vertex = vpctmPtr + i;
+                    VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
 
                     fixed (Triangle2* t = &triangle)
                     {
@@ -232,11 +221,8 @@ namespace Exomia.Framework.Graphics
                 }
             }
 
-            _context.UnmapSubresource(_vertexBuffer, 0);
-
-            PrepareForRendering();
-            _context.PixelShader.SetShaderResource(0, _whiteTexture.TextureView);
-            _context.DrawIndexed(3, 0, 0);
+            // INFO: currently we need 4 vertices so we just copy the first one as the 4th one
+            *((VertexPositionColorTextureMode*)ptr + 3) = *(VertexPositionColorTextureMode*)ptr;
         }
     }
 }

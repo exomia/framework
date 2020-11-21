@@ -26,7 +26,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color)
         {
-            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
+            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color, float rotation)
         {
-            font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
+            font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -55,14 +55,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
+        public void DrawText(SpriteFont     font,
+                             string         text,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -81,16 +81,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
+        public void DrawText(SpriteFont     font,
+                             string         text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects)
         {
             font.Draw(DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -110,17 +110,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">   The opacity. </param>
         /// <param name="effects">   The effects. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             string        text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Size2F     dimension,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
+        public void DrawText(SpriteFont     font,
+                             string         text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Size2F      dimension,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
@@ -137,7 +137,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color, float rotation)
         {
-            font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
+            font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -152,14 +152,14 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
+        public void DrawText(SpriteFont     font,
+                             StringBuilder  text,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects)
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -178,16 +178,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">  The opacity. </param>
         /// <param name="effects">  The effects. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
+        public void DrawText(SpriteFont     font,
+                             StringBuilder  text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects)
         {
             font.Draw(DrawTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
         }
@@ -207,17 +207,17 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">   The opacity. </param>
         /// <param name="effects">   The effects. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont    font,
-                             StringBuilder text,
-                             int           start,
-                             int           end,
-                             in Vector2    position,
-                             in Size2F     dimension,
-                             in Color      color,
-                             float         rotation,
-                             in Vector2    origin,
-                             float         opacity,
-                             SpriteEffects effects)
+        public void DrawText(SpriteFont     font,
+                             StringBuilder  text,
+                             int            start,
+                             int            end,
+                             in Vector2     position,
+                             in Size2F      dimension,
+                             in Color       color,
+                             float          rotation,
+                             in Vector2     origin,
+                             float          opacity,
+                             TextureEffects effects)
         {
             font.Draw(
                 DrawTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
@@ -237,18 +237,18 @@ namespace Exomia.Framework.Graphics
         /// <param name="effects">         The effects. </param>
         /// <param name="layerDepth">      The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void DrawTextInternal(Texture       texture,
-                                       in Vector2    position,
-                                       in Rectangle? sourceRectangle,
-                                       in Color      color,
-                                       float         rotation,
-                                       in Vector2    origin,
-                                       float         scale,
-                                       float         opacity,
-                                       SpriteEffects effects,
-                                       float         layerDepth)
+        internal void DrawTextInternal(Texture        texture,
+                                       in Vector2     position,
+                                       in Rectangle?  sourceRectangle,
+                                       in Color       color,
+                                       float          rotation,
+                                       in Vector2     origin,
+                                       float          scale,
+                                       float          opacity,
+                                       TextureEffects effects,
+                                       float          layerDepth)
         {
-            DrawSprite(
+            DrawTexture(
                 texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle, color,
                 rotation, origin, opacity, effects);
         }
@@ -263,7 +263,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DrawText(SpriteFont font, StringBuilder text, in Vector2 position, in Color color)
         {
-            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0f);
+            font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
         }
     }
 }

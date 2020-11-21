@@ -111,7 +111,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 _whiteTexture, destinationRectangle, false, s_nullRectangle,
-                color, 0.0f, s_vector2Zero, 1.0f, SpriteEffects.None, layerDepth);
+                color, 0.0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 _whiteTexture, destinationRectangle, false, s_nullRectangle,
-                color, 0.0f, s_vector2Zero, opacity, SpriteEffects.None, layerDepth);
+                color, 0.0f, s_vector2Zero, opacity, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Exomia.Framework.Graphics
         {
             DrawSprite(
                 _whiteTexture, destinationRectangle, false, s_nullRectangle,
-                color, rotation, origin, opacity, SpriteEffects.None, layerDepth);
+                color, rotation, origin, opacity, TextureEffects.None, layerDepth);
         }
     }
 }

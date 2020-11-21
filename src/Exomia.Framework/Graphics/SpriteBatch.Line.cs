@@ -100,7 +100,7 @@ namespace Exomia.Framework.Graphics
                 _whiteTexture, new RectangleF(
                     line.X1, line.Y1, (float)Math.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth), false,
                 s_nullRectangle, color, (float)Math.Atan2(dy, dx),
-                s_vector2Zero, opacity, SpriteEffects.None, layerDepth);
+                s_vector2Zero, opacity, TextureEffects.None, layerDepth);
         }
     }
 }

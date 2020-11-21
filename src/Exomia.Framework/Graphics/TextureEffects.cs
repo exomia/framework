@@ -13,10 +13,10 @@ using System;
 namespace Exomia.Framework.Graphics
 {
     /// <summary>
-    ///     Bitfield of flags for specifying SpriteEffects.
+    ///     Bitfield of flags for specifying TextureEffects.
     /// </summary>
     [Flags]
-    public enum SpriteEffects
+    public enum TextureEffects
     {
         /// <summary>
         ///     A binary constant representing the none flag.

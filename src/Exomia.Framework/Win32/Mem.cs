@@ -47,5 +47,23 @@ namespace Exomia.Framework.Win32
         public static extern void Move(void* dest,
                                        void* src,
                                        int   count);
+
+        /// <summary>
+        ///     memset call
+        ///     Sets the first num bytes of the block of memory pointed by ptr to the specified value 
+        ///     (interpreted as an unsigned char).
+        /// </summary>
+        /// <param name="dest">  [in,out] destination addr. </param>
+        /// <param name="value"> value to be set. </param>
+        /// <param name="count"> count of bytes. </param>
+        /// <returns>
+        ///     Null if it fails, else a void*.
+        /// </returns>
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(
+            "msvcrt.dll", EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        public static extern void* Set(void* dest,
+                                       int   value,
+                                       int   count);
     }
 }

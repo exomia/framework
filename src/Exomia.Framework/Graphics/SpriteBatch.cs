@@ -230,6 +230,7 @@ namespace Exomia.Framework.Graphics
             {
                 throw new InvalidOperationException("Begin must be called before End");
             }
+
             if (_spriteQueueCount > 0)
             {
                 PrepareForRendering();

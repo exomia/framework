@@ -5,7 +5,11 @@
  *  ps PSMain ps_5_0 OptimizationLevel3
  */
 
-Texture2D g_Texture : register(t0);
+Texture2D g_Texture1 : register(t0);
+Texture2D g_Texture2 : register(t1);
+Texture2D g_Texture3 : register(t2);
+Texture2D g_Texture4 : register(t3);
+Texture2D g_Textures[4] : register(t4);
 SamplerState g_Sampler : register(s0);
 
 cbuffer PerFrame : register(b0)
@@ -41,24 +45,35 @@ PS_INPUT VSMain(VS_INPUT input)
 	return output;
 }
 
-#define COLOR_MODE           0.0f
-#define TEXTURE_MODE         1.0f
-#define FILL_CIRCLE_MODE     2.0f
-#define FILL_CIRCLE_ARC_MODE 3.0f
+#define COLOR_MODE             0.0f
+#define TEXTURE_MODE           1.0f
+#define FILL_CIRCLE_MODE       2.0f
+#define FILL_CIRCLE_ARC_MODE   3.0f
+#define BORDER_CIRCLE_MODE     4.0f
+#define BORDER_CIRCLE_ARC_MODE 5.0f
 
 #define PI 3.141593f
 
 float4 PSMain(PS_INPUT input) : SV_TARGET
 {
-    //discard;
-    //clip(-1);
     switch (input.mo.x)
     {
         default:
         case COLOR_MODE:
             return input.c;
         case TEXTURE_MODE:
-            return g_Texture.Sample(g_Sampler, input.uv) * input.c;
+            {
+                switch (input.mo.y)
+                {
+                    case 0.0f:
+                        return g_Texture1.Sample(g_Sampler, input.uv) * input.c;
+                    case 1.0f:
+                        return g_Texture2.Sample(g_Sampler, input.uv) * input.c;
+                    case 2.0f:
+                        return g_Texture3.Sample(g_Sampler, input.uv) * input.c;
+                }
+                return g_Texture4.Sample(g_Sampler, input.uv) * input.c;
+            }
         case FILL_CIRCLE_MODE:
             {
                 float2 p = input.p;
@@ -78,23 +93,71 @@ float4 PSMain(PS_INPUT input) : SV_TARGET
                 float2 p = input.p;
                 float2 center = input.zw;
                 float radius = input.mo.y;
-                float start = input.uv.x;
-                float end = input.uv.y;
             
                 float2 d = center - p;
                 float ls = (d.x * d.x) + (d.y * d.y);
        
-                if (ls > radius * radius)         
-                    discard;
+                if (ls < radius * radius)
+                {
+                    float start = input.uv.x;
+                    float end = input.uv.y;
             
-                float angle = PI + atan2(d.y, d.x);
+                    float anglePositive = atan2(d.y, d.x) + PI;
+                    float angleNegative = atan2(d.y, d.x) - PI;
             
-                if (angle >= start && angle <= end)
-                    return input.c;
+                    if (anglePositive >= start && anglePositive <= end ||
+                        angleNegative >= start && angleNegative <= end)
+                    {
+                        return input.c;
+                    }
+                }
                 discard;
-                return float4(0,0,0,0);
+                return float4(0, 0, 0, 0);
+            }
+        case BORDER_CIRCLE_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+                
+                float r = float(((uint)input.mo.y >> 16) / 10.0f);
+                float l = float(((uint)input.mo.y & 0xffff) / 10.0f);
+            
+                if (ls > r * r || ls < l * l)         
+                    discard;
+        
+                return input.c;
+            }
+        case BORDER_CIRCLE_ARC_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+                
+                float r = float(((uint) input.mo.y >> 16) / 10.0f);
+                float l = float(((uint) input.mo.y & 0xffff) / 10.0f);
+            
+                if (ls < r * r && ls > l * l)
+                {
+                    float start = input.uv.x;
+                    float end = input.uv.y;
+            
+                    float anglePositive = atan2(d.y, d.x) + PI;
+                    float angleNegative = atan2(d.y, d.x) - PI;
+            
+                    if (anglePositive >= start && anglePositive <= end ||
+                        angleNegative >= start && angleNegative <= end)
+                    {
+                        return input.c;
+                    }
+                }
+            
+                discard;
+                return float4(0, 0, 0, 0);
             }
     }
 }
-            
-
