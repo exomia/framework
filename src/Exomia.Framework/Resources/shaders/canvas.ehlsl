@@ -9,7 +9,7 @@ Texture2D g_Texture1 : register(t0);
 Texture2D g_Texture2 : register(t1);
 Texture2D g_Texture3 : register(t2);
 Texture2D g_Texture4 : register(t3);
-Texture2D g_Textures[4] : register(t4);
+
 SamplerState g_Sampler : register(s0);
 
 cbuffer PerFrame : register(b0)
