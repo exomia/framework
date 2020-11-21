@@ -45,12 +45,17 @@
     <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
     <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\src\Exomia.Framework\Exomia.Framework.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="Content\logo1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\logo2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

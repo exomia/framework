@@ -17,7 +17,7 @@ namespace Exomia.Framework.Graphics
     public sealed unsafe partial class Canvas
     {
         /// <summary>
-        ///     Draws.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">  The texture. </param>
         /// <param name="position"> The position. </param>
@@ -31,7 +31,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Draws.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">              The texture. </param>
         /// <param name="destinationRectangle"> The destination rectangle. </param>
@@ -45,7 +45,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Draws.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">         The texture. </param>
         /// <param name="position">        The position. </param>
@@ -60,7 +60,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Draws.
+        ///    Draws a texture.
         /// </summary>
         /// <param name="texture">              The texture. </param>
         /// <param name="destinationRectangle"> The destination rectangle. </param>
@@ -78,7 +78,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Draws.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">              The texture. </param>
         /// <param name="destinationRectangle"> The destination rectangle. </param>
@@ -104,7 +104,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Draws.
+        ///    Draws a texture.
         /// </summary>
         /// <param name="texture">         The texture. </param>
         /// <param name="position">        The position. </param>
@@ -132,7 +132,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///     Draws.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">         The texture. </param>
         /// <param name="position">        The position. </param>
@@ -159,18 +159,6 @@ namespace Exomia.Framework.Graphics
                 sourceRectangle, color, rotation, origin, opacity, effects);
         }
 
-        /// <summary>
-        ///     Draw sprite.
-        /// </summary>
-        /// <param name="texture">          The texture. </param>
-        /// <param name="destination">      Destination for the. </param>
-        /// <param name="scaleDestination"> True to scale destination. </param>
-        /// <param name="sourceRectangle">  The source rectangle. </param>
-        /// <param name="color">            The color. </param>
-        /// <param name="rotation">         The rotation. </param>
-        /// <param name="origin">           The origin. </param>
-        /// <param name="opacity">          The opacity. </param>
-        /// <param name="effects">          The effects. </param>
         private void DrawTexture(Texture        texture,
                                 in RectangleF  destination,
                                 bool           scaleDestination,
@@ -245,7 +233,7 @@ namespace Exomia.Framework.Graphics
                     vertex->G = scaledColor.G;
                     vertex->B = scaledColor.B;
                     vertex->A = scaledColor.A;
-
+                    
                     corner    = s_rectangleCornerOffsets[j ^ (int)effects];
                     vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
                     vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;

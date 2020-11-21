@@ -27,7 +27,10 @@ namespace Exomia.Framework.Example.Canvas
 
         private Graphics.Canvas _canvas = null!;
 
-        private float k;
+        private Texture _texture  = null!;
+        private Texture _texture2 = null!;
+        
+        private float   k;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyGame" /> class.
@@ -79,6 +82,9 @@ namespace Exomia.Framework.Example.Canvas
             /*
              * TODO: use base.Content to load your game content here
              */
+
+            _texture  = Content.Load<Texture>("logo1.jpg");
+            _texture2 = Content.Load<Texture>("logo2.png");
         }
 
         /// <inheritdoc />
@@ -245,7 +251,8 @@ namespace Exomia.Framework.Example.Canvas
                 new Arc2(center400, 50f, MathUtil.DegreesToRadians(-200), MathUtil.DegreesToRadians(-80)), Color.Blue,
                 0.0f, Vector2.Zero, 1.0f);
 
-            _canvas.Draw(GraphicsDevice.Textures.White, new RectangleF(1400,50, 200,200), Color.YellowGreen);
+            _canvas.Draw(_texture, new RectangleF(1100, 50, 200, 200), Color.White); 
+            _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
 
             _canvas.End();
 

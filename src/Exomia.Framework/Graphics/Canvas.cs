@@ -123,7 +123,7 @@ namespace Exomia.Framework.Graphics
         {
             _context = graphicsDevice.DeviceContext;
 
-            _defaultBlendState        = graphicsDevice.BlendStates.Default;
+            _defaultBlendState        = graphicsDevice.BlendStates.AlphaBlend;
             _defaultSamplerState      = graphicsDevice.SamplerStates.LinearWrap;
             _defaultDepthStencilState = graphicsDevice.DepthStencilStates.None;
 
@@ -271,8 +271,8 @@ namespace Exomia.Framework.Graphics
             {
                 _context.Rasterizer.State = _rasterizerState ?? _defaultRasterizerScissorEnabledState;
                 _context.Rasterizer.SetScissorRectangle(
-                    _scissorRectangle.Left, _scissorRectangle.Top, _scissorRectangle.Right,
-                    _scissorRectangle.Bottom);
+                    _scissorRectangle.Left, _scissorRectangle.Top, 
+                    _scissorRectangle.Right, _scissorRectangle.Bottom);
             }
 
             _context.PixelShader.SetSampler(0, _samplerState ?? _defaultSamplerState);
@@ -309,7 +309,7 @@ namespace Exomia.Framework.Graphics
                     if (!_textureSlotMap.TryGetValue(tp, out int tSlot))
                     {
                         _context.PixelShader.SetShaderResource(_textureSlotMap.Count, texture.TextureView);
-                        _textureSlotMap.Add(tp, _textureSlotMap.Count);
+                        _textureSlotMap.Add(tp, tSlot = _textureSlotMap.Count);
                     }
 
                     item.V1.O = tSlot;
