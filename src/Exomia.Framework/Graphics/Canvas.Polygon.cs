@@ -20,17 +20,39 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Draws a polygon.
         /// </summary>
-        /// <param name="vertices">  he vertices. </param>
+        /// <param name="vertices">  The vertices. </param>
         /// <param name="color">     The color. </param>
         /// <param name="lineWidth"> The width of the line. </param>
+        /// <param name="rotation">  The rotation. </param>
+        /// <param name="origin">    The origin. </param>
         /// <param name="opacity">   The opacity. </param>
-        public void DrawPolygon(Vector2[] vertices, in Color color, float lineWidth, float opacity)
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+        public void DrawPolygon(Vector2[]  vertices,
+                                in Color   color,
+                                float      lineWidth,
+                                float      rotation,
+                                in Vector2 origin,
+                                float      opacity)
         {
             if (vertices.Length < 2) { throw new ArgumentOutOfRangeException(nameof(vertices.Length)); }
 
             Color scaledColor = color * opacity;
 
             Item* ptr = Reserve(vertices.Length);
+
+            if (rotation != 0.0f)
+            {
+                double cos = Math.Cos(rotation);
+                double sin = Math.Sin(rotation);
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    float x = vertices[i].X - origin.X;
+                    float y = vertices[i].Y - origin.Y;
+                    vertices[i] = new Vector2(
+                        (float)(((cos * x) - (sin * y)) + origin.X),
+                        (float)((sin * x) + (cos * y) + origin.Y));
+                }
+            }
 
             Line2 previous              = new Line2(vertices[vertices.Length - 1], vertices[0]);
             Line2 perpendicularPrevious = previous.GetPerpendicular(lineWidth);
@@ -73,14 +95,35 @@ namespace Exomia.Framework.Graphics
         /// <summary>
         ///     Draws a filled polygon.
         /// </summary>
-        /// <param name="vertices">  The vertices. </param>
-        /// <param name="color">     The color. </param>
-        /// <param name="opacity">   The opacity. </param>
-        public void DrawFillPolygon(Vector2[] vertices, in Color color, float opacity)
+        /// <param name="vertices"> The vertices. </param>
+        /// <param name="color">    The color. </param>
+        /// <param name="rotation"> The rotation. </param>
+        /// <param name="origin">   The origin. </param>
+        /// <param name="opacity">  The opacity. </param>
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+        public void DrawFillPolygon(Vector2[]  vertices,
+                                    in Color   color,
+                                    float      rotation,
+                                    in Vector2 origin,
+                                    float      opacity)
         {
             if (vertices.Length < 3) { throw new ArgumentOutOfRangeException(nameof(vertices.Length)); }
 
             Color scaledColor = color * opacity;
+
+            if (rotation != 0.0f)
+            {
+                double cos = Math.Cos(rotation);
+                double sin = Math.Sin(rotation);
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    float x = vertices[i].X - origin.X;
+                    float y = vertices[i].Y - origin.Y;
+                    vertices[i] = new Vector2(
+                        (float)(((cos * x) - (sin * y)) + origin.X),
+                        (float)((sin * x) + (cos * y) + origin.Y));
+                }
+            }
 
             // TODO: refactor; remove list; place directly into _vertexBuffer
             List<Vector2> vs = new List<Vector2>();
@@ -114,6 +157,7 @@ namespace Exomia.Framework.Graphics
 
             if ((vs.Count & 1) == 1)
             {
+                // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
                 *((VertexPositionColorTextureMode*)ptr + vs.Count) =
                     *((VertexPositionColorTextureMode*)ptr + (vs.Count - 3));
             }

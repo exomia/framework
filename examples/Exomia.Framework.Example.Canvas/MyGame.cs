@@ -29,8 +29,8 @@ namespace Exomia.Framework.Example.Canvas
 
         private Texture _texture  = null!;
         private Texture _texture2 = null!;
-        
-        private float   k;
+
+        private float k;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyGame" /> class.
@@ -116,7 +116,7 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.Begin(rasterizerState: GraphicsDevice.RasterizerStates.CullBackDepthClipOffMultiSampleOn);
 
             k += gameTime.DeltaTimeS / 2;
-                
+
             _canvas.DrawFillTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Red, 0, Vector2.Zero, 1.0f);
             _canvas.DrawTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
 
@@ -138,31 +138,32 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f);
 
             _canvas.DrawFillPolygon(
-                new[]
-                {
-                    new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450)
-                }, Color.Red, 1.0f);
-
+                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
+                Color.Red, 0.0f, Vector2.Zero, 1.0f);
             _canvas.DrawPolygon(
-                new[]
-                {
-                    new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450)
-                }, Color.Yellow, 15.0f, 1.0f);
+                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
+                Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
+
+            _canvas.DrawFillPolygon(
+                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
+                Color.Yellow, k, new Vector2(400, 300), 1.0f);
+            _canvas.DrawPolygon(
+                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
+                Color.Green, 5.0f, k, new Vector2(400, 300), 1.0f);
 
             _canvas.DrawFillPolygon(
                 new[]
                 {
                     new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
                     new Vector2(400, 630)
-                }, Color.Red, 1.0f);
+                }, Color.Red, 0.0f, Vector2.Zero, 1.0f);
 
             _canvas.DrawPolygon(
                 new[]
                 {
                     new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
-
                     new Vector2(400, 630)
-                }, Color.Yellow, 5.0f, 1.0f);
+                }, Color.Yellow, 5.0f, 0.0f, Vector2.Zero, 1.0f);
 
             Vector2 center = new Vector2(800, 400);
 
@@ -197,7 +198,8 @@ namespace Exomia.Framework.Example.Canvas
             Vector2 center3 = new Vector2(1200, 500);
             _canvas.DrawRectangle(
                 new RectangleF(center3.X - 50f, center3.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
-            _canvas.DrawFillArc(new Arc2(center3, 50f, MathUtil.DegreesToRadians(80), 0), Color.Blue, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawFillArc(
+                new Arc2(center3, 50f, MathUtil.DegreesToRadians(80), 0), Color.Blue, 0.0f, Vector2.Zero, 1.0f);
 
             Vector2 center31 = new Vector2(1300, 500);
             _canvas.DrawRectangle(
@@ -224,7 +226,8 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawRectangle(
                 new RectangleF(center5.X - 50f, center5.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
             _canvas.DrawFillArc(
-                new Arc2(center5, 50f, MathUtil.DegreesToRadians(0), MathUtil.DegreesToRadians(200)), Color.Blue, 0.0f, Vector2.Zero, 1.0f);
+                new Arc2(center5, 50f, MathUtil.DegreesToRadians(0), MathUtil.DegreesToRadians(200)), Color.Blue, 0.0f,
+                Vector2.Zero, 1.0f);
 
             Vector2 center51 = new Vector2(1300, 700);
             _canvas.DrawRectangle(
@@ -235,14 +238,15 @@ namespace Exomia.Framework.Example.Canvas
 
             Vector2 center200 = new Vector2(1400, 400);
             _canvas.DrawRectangle(
-                new RectangleF(center200.X - 50f, center200.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero, 1.0f);
+                new RectangleF(center200.X - 50f, center200.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero,
+                1.0f);
             _canvas.DrawFillArc(
                 new Arc2(center200, 50f, MathUtil.DegreesToRadians(80), MathUtil.DegreesToRadians(10)), Color.Blue,
                 0.0f, Vector2.Zero, 1.0f);
             _canvas.DrawFillArc(
                 new Arc2(center200, 50f, MathUtil.DegreesToRadians(80) + k, MathUtil.DegreesToRadians(10) + k),
                 Color.DeepPink, 0.0f, center200, 1.0f);
-            
+
             Vector2 center400 = new Vector2(1400, 500);
             _canvas.DrawRectangle(
                 new RectangleF(center400.X - 50f, center400.Y - 50f, 100, 100), Color.Green, 2.0f, 0, Vector2.Zero,
@@ -251,7 +255,7 @@ namespace Exomia.Framework.Example.Canvas
                 new Arc2(center400, 50f, MathUtil.DegreesToRadians(-200), MathUtil.DegreesToRadians(-80)), Color.Blue,
                 0.0f, Vector2.Zero, 1.0f);
 
-            _canvas.Draw(_texture, new RectangleF(1100, 50, 200, 200), Color.White); 
+            _canvas.Draw(_texture, new RectangleF(1100, 50, 200, 200), Color.White);
             _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
 
             _canvas.End();

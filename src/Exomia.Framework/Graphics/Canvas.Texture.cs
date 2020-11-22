@@ -60,7 +60,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///    Draws a texture.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">              The texture. </param>
         /// <param name="destinationRectangle"> The destination rectangle. </param>
@@ -104,7 +104,7 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <summary>
-        ///    Draws a texture.
+        ///     Draws a texture.
         /// </summary>
         /// <param name="texture">         The texture. </param>
         /// <param name="position">        The position. </param>
@@ -159,16 +159,16 @@ namespace Exomia.Framework.Graphics
                 sourceRectangle, color, rotation, origin, opacity, effects);
         }
 
-        private void DrawTexture(Texture       texture,
-                                in RectangleF  destination,
-                                bool           scaleDestination,
-                                in Rectangle?  sourceRectangle,
-                                in Color       color,
-                                float          rotation,
-                                in Vector2     origin,
-                                float          opacity,
-                                TextureEffects effects,
-                                float          mode = TEXTURE_MODE)
+        private void DrawTexture(Texture        texture,
+                                 in RectangleF  destination,
+                                 bool           scaleDestination,
+                                 in Rectangle?  sourceRectangle,
+                                 in Color       color,
+                                 float          rotation,
+                                 in Vector2     origin,
+                                 float          opacity,
+                                 TextureEffects effects,
+                                 float          mode = TEXTURE_MODE)
 
         {
             long tp = texture.TexturePointer.ToInt64();
@@ -229,12 +229,12 @@ namespace Exomia.Framework.Graphics
                     vertex->X  = d.X + ((corner.X - origin.X) * d.Width);
                     vertex->Y  = d.Y + ((corner.Y - origin.Y) * d.Height);
                     vertex->ZW = tp;
-                    
+
                     vertex->R = scaledColor.R;
                     vertex->G = scaledColor.G;
                     vertex->B = scaledColor.B;
                     vertex->A = scaledColor.A;
-                    
+
                     corner    = s_rectangleCornerOffsets[j ^ (int)effects];
                     vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
                     vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;

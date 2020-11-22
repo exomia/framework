@@ -18,6 +18,7 @@ using System.Threading;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Resources;
+using Exomia.Framework.Win32;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -49,7 +50,7 @@ namespace Exomia.Framework.Graphics
         private static readonly ushort[]   s_indices;
         private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
         private static readonly Rectangle? s_nullRectangle = null;
-        
+
         private readonly DeviceContext4 _context;
 
         private readonly InputLayout _vertexInputLayout;
@@ -84,7 +85,7 @@ namespace Exomia.Framework.Graphics
         private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
         private readonly Dictionary<long, Texture> _textures = new Dictionary<long, Texture>(INITIAL_QUEUE_SIZE);
-        private readonly Dictionary<long, int> _textureSlotMap = new Dictionary<long, int>(MAX_TEXTURE_SLOTS); 
+        private readonly Dictionary<long, int> _textureSlotMap = new Dictionary<long, int>(MAX_TEXTURE_SLOTS);
         private readonly Dictionary<long, int> _fontTextureSlotMap = new Dictionary<long, int>(MAX_FONT_TEXTURE_SLOTS);
 
         /// <summary>
@@ -274,7 +275,7 @@ namespace Exomia.Framework.Graphics
             {
                 _context.Rasterizer.State = _rasterizerState ?? _defaultRasterizerScissorEnabledState;
                 _context.Rasterizer.SetScissorRectangle(
-                    _scissorRectangle.Left, _scissorRectangle.Top, 
+                    _scissorRectangle.Left, _scissorRectangle.Top,
                     _scissorRectangle.Right, _scissorRectangle.Bottom);
             }
 
@@ -291,7 +292,7 @@ namespace Exomia.Framework.Graphics
             _context.InputAssembler.SetIndexBuffer(_indexBuffer, _indexBuffer.Format, 0);
             _context.InputAssembler.SetVertexBuffers(0, _vertexBuffer);
         }
-        
+
         private void FlushBatch()
         {
             int offset = 0;
@@ -320,7 +321,7 @@ namespace Exomia.Framework.Graphics
                             item.V2.O = tSlot;
                             item.V3.O = tSlot;
                             item.V4.O = tSlot;
-                    
+
                             if (_textureSlotMap.Count > MAX_TEXTURE_SLOTS)
                             {
                                 if (i > offset)
@@ -329,7 +330,7 @@ namespace Exomia.Framework.Graphics
                                 }
 
                                 offset = i;
-                                _textureSlotMap.Clear(); 
+                                _textureSlotMap.Clear();
                                 _fontTextureSlotMap.Clear();
                             }
                             break;
@@ -344,7 +345,8 @@ namespace Exomia.Framework.Graphics
 
                             if (!_fontTextureSlotMap.TryGetValue(tp, out int tSlot))
                             {
-                                _context.PixelShader.SetShaderResource(MAX_TEXTURE_SLOTS + _fontTextureSlotMap.Count, texture.TextureView);
+                                _context.PixelShader.SetShaderResource(
+                                    MAX_TEXTURE_SLOTS + _fontTextureSlotMap.Count, texture.TextureView);
                                 _fontTextureSlotMap.Add(tp, tSlot = _fontTextureSlotMap.Count);
                             }
 
@@ -361,7 +363,7 @@ namespace Exomia.Framework.Graphics
                                 }
 
                                 offset = i;
-                                _fontTextureSlotMap.Clear(); 
+                                _fontTextureSlotMap.Clear();
                                 _textureSlotMap.Clear();
                             }
                             break;
@@ -416,13 +418,10 @@ namespace Exomia.Framework.Graphics
                 try
                 {
                     _spinLock.Enter(ref lockTaken);
-                    int size = _itemQueueLength * 2;
-
-                    Item* ptr = (Item*)Marshal.AllocHGlobal(sizeof(Item) * size);
-                    Marshal.FreeHGlobal(new IntPtr(_itemQueue));
-
-                    _itemQueue       = ptr;
-                    _itemQueueLength = size;
+                    if (_itemQueueCount >= _itemQueueLength)
+                    {
+                        Mem.Resize(ref _itemQueue, ref _itemQueueLength, _itemQueueLength * 2);
+                    }
                 }
                 finally
                 {

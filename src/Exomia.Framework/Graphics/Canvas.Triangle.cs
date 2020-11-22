@@ -196,8 +196,8 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                float cos = (float)Math.Cos(rotation);
-                float sin = (float)Math.Sin(rotation);
+                double cos = Math.Cos(rotation);
+                double sin = Math.Sin(rotation);
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -208,8 +208,8 @@ namespace Exomia.Framework.Graphics
                         float* tf = (float*)t;
                         float  x  = *(tf + (i << 1)) - origin.X;
                         float  y  = *(tf + (i << 1) + 1) - origin.Y;
-                        vertex->X = ((cos * x) - (sin * y)) + origin.X;
-                        vertex->Y = (sin * x) + (cos * y) + origin.Y;
+                        vertex->X = (float)(((cos * x) - (sin * y)) + origin.X);
+                        vertex->Y = (float)((sin * x) + (cos * y) + origin.Y);
                     }
 
                     vertex->R = scaledColor.R;
@@ -221,7 +221,7 @@ namespace Exomia.Framework.Graphics
                 }
             }
 
-            // INFO: currently we need 4 vertices so we just copy the first one as the 4th one
+            // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
             *((VertexPositionColorTextureMode*)ptr + 3) = *(VertexPositionColorTextureMode*)ptr;
         }
     }

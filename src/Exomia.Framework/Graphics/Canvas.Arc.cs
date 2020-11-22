@@ -260,6 +260,7 @@ namespace Exomia.Framework.Graphics
 
             // ReSharper disable CompareOfFloatsByEqualityOperator
             float m = u == 0.0f && v == MathUtil.TwoPi ? FILL_CIRCLE_MODE : FILL_CIRCLE_ARC_MODE;
+
             // ReSharper enable CompareOfFloatsByEqualityOperator
 
             Item* ptr = Reserve(1);
@@ -296,11 +297,12 @@ namespace Exomia.Framework.Graphics
                                         float    u,
                                         float    v,
                                         float    o)
-        { 
+        {
             // ReSharper disable CompareOfFloatsByEqualityOperator
             float m = u == 0.0f && v == MathUtil.TwoPi ? BORDER_CIRCLE_MODE : BORDER_CIRCLE_ARC_MODE;
+
             // ReSharper enable CompareOfFloatsByEqualityOperator
-             
+
             for (int i = 0; i < 2; i++)
             {
                 VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
