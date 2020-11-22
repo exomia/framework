@@ -52,7 +52,7 @@ jobs:
     steps:    
     - uses: actions/checkout@v2
     - name: extract tag version
-      run: echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
+      run: echo "TAG_VERSION=${GITHUB_REF#refs/tags/v*}" >> $GITHUB_ENV
       shell: bash
     - uses: actions/setup-dotnet@v1   
       with:
@@ -78,7 +78,7 @@ jobs:
     steps:    
     - uses: actions/checkout@v2
     - name: extract tag version
-      run: echo ::set-env name=TAG_VERSION::${GITHUB_REF#refs/tags/v*}
+      run: echo "TAG_VERSION=${GITHUB_REF#refs/tags/v*}" >> $GITHUB_ENV
       shell: bash
     - uses: actions/setup-dotnet@v1   
       with:
