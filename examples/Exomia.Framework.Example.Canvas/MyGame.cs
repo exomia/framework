@@ -264,7 +264,7 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
             
             _canvas.DrawText(_spriteFont1_12Px, "This is the canvas example.", new Vector2(450, 50), Color.Black);
-            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black);
+            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black); 
 
             _canvas.End();
 
