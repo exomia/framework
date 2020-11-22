@@ -199,7 +199,7 @@ namespace Exomia.Framework.Graphics
             if (scaleDestination)
             {
                 d.Width  *= s.Width;
-                d.Height *= s.Width;
+                d.Height *= s.Height;
             }
 
             if (d.Width < 0)

@@ -179,20 +179,7 @@ namespace Exomia.Framework.Graphics
         {
             Dispose(false);
         }
-
-        /// <summary>
-        ///     Draw font.
-        /// </summary>
-        /// <param name="texture">         The texture. </param>
-        /// <param name="position">        The position. </param>
-        /// <param name="sourceRectangle"> Source rectangle. </param>
-        /// <param name="color">           The color. </param>
-        /// <param name="rotation">        The rotation. </param>
-        /// <param name="origin">          The origin. </param>
-        /// <param name="scale">           The scale. </param>
-        /// <param name="opacity">         The opacity. </param>
-        /// <param name="effects">         The effects. </param>
-        /// <param name="layerDepth">      Depth of the layer. </param>
+        
         internal delegate void DrawFont(Texture        texture,
                                         in Vector2     position,
                                         in Rectangle?  sourceRectangle,
@@ -430,19 +417,7 @@ namespace Exomia.Framework.Graphics
 
             return end;
         }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="drawCallback"> The draw callback. </param>
-        /// <param name="text">         The text. </param>
-        /// <param name="position">     The position. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="rotation">     The rotation. </param>
-        /// <param name="origin">       The origin. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="effects">      The effects. </param>
-        /// <param name="layerDepth">   Depth of the layer. </param>
+        
         internal void Draw(DrawFont       drawCallback,
                            string         text,
                            in Vector2     position,
@@ -509,21 +484,7 @@ namespace Exomia.Framework.Graphics
                 key <<= 16;
             }
         }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="drawCallback"> The draw callback. </param>
-        /// <param name="text">         The text. </param>
-        /// <param name="start">        The start. </param>
-        /// <param name="end">          The end. </param>
-        /// <param name="position">     The position. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="rotation">     The rotation. </param>
-        /// <param name="origin">       The origin. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="effects">      The effects. </param>
-        /// <param name="layerDepth">   Depth of the layer. </param>
+        
         internal void Draw(DrawFont       drawCallback,
                            string         text,
                            int            start,
@@ -593,22 +554,7 @@ namespace Exomia.Framework.Graphics
                 key <<= 16;
             }
         }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="drawCallback"> The draw callback. </param>
-        /// <param name="text">         The text. </param>
-        /// <param name="start">        The start. </param>
-        /// <param name="end">          The end. </param>
-        /// <param name="position">     The position. </param>
-        /// <param name="dimension">    The dimension. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="rotation">     The rotation. </param>
-        /// <param name="origin">       The origin. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="effects">      The effects. </param>
-        /// <param name="layerDepth">   Depth of the layer. </param>
+        
         internal void Draw(DrawFont       drawCallback,
                            string         text,
                            int            start,
@@ -857,19 +803,7 @@ namespace Exomia.Framework.Graphics
 
             return end;
         }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="drawCallback"> The draw callback. </param>
-        /// <param name="text">         The text. </param>
-        /// <param name="position">     The position. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="rotation">     The rotation. </param>
-        /// <param name="origin">       The origin. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="effects">      The effects. </param>
-        /// <param name="layerDepth">   Depth of the layer. </param>
+        
         internal void Draw(DrawFont       drawCallback,
                            StringBuilder  text,
                            in Vector2     position,
@@ -935,21 +869,7 @@ namespace Exomia.Framework.Graphics
                 key <<= 16;
             }
         }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="drawCallback"> The draw callback. </param>
-        /// <param name="text">         The text. </param>
-        /// <param name="start">        The start. </param>
-        /// <param name="end">          The end. </param>
-        /// <param name="position">     The position. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="rotation">     The rotation. </param>
-        /// <param name="origin">       The origin. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="effects">      The effects. </param>
-        /// <param name="layerDepth">   Depth of the layer. </param>
+        
         internal void Draw(DrawFont       drawCallback,
                            StringBuilder  text,
                            int            start,
@@ -1019,22 +939,7 @@ namespace Exomia.Framework.Graphics
                 key <<= 16;
             }
         }
-
-        /// <summary>
-        ///     Draws.
-        /// </summary>
-        /// <param name="drawCallback"> The draw callback. </param>
-        /// <param name="text">         The text. </param>
-        /// <param name="start">        The start. </param>
-        /// <param name="end">          The end. </param>
-        /// <param name="position">     The position. </param>
-        /// <param name="dimension">    The dimension. </param>
-        /// <param name="color">        The color. </param>
-        /// <param name="rotation">     The rotation. </param>
-        /// <param name="origin">       The origin. </param>
-        /// <param name="opacity">      The opacity. </param>
-        /// <param name="effects">      The effects. </param>
-        /// <param name="layerDepth">   Depth of the layer. </param>
+        
         internal void Draw(DrawFont       drawCallback,
                            StringBuilder  text,
                            int            start,

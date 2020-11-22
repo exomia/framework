@@ -27,8 +27,10 @@ namespace Exomia.Framework.Example.Canvas
 
         private Graphics.Canvas _canvas = null!;
 
-        private Texture _texture  = null!;
-        private Texture _texture2 = null!;
+        private Texture    _texture          = null!;
+        private Texture    _texture2         = null!;
+        private SpriteFont _spriteFont1_12Px = null!;
+        private SpriteFont _spriteFont1_24Px = null!;
 
         private float k;
 
@@ -85,6 +87,9 @@ namespace Exomia.Framework.Example.Canvas
 
             _texture  = Content.Load<Texture>("logo1.jpg");
             _texture2 = Content.Load<Texture>("logo2.png");
+
+            _spriteFont1_12Px = Content.Load<SpriteFont>(Resources.Fonts.ARIAL_12_PX, true);
+            _spriteFont1_24Px = Content.Load<SpriteFont>(Resources.Fonts.ARIAL_24_PX, true);
         }
 
         /// <inheritdoc />
@@ -257,6 +262,9 @@ namespace Exomia.Framework.Example.Canvas
 
             _canvas.Draw(_texture, new RectangleF(1100, 50, 200, 200), Color.White);
             _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
+            
+            _canvas.DrawText(_spriteFont1_12Px, "This is the canvas example.", new Vector2(450, 50), Color.Black);
+            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black);
 
             _canvas.End();
 
