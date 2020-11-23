@@ -49,25 +49,25 @@ namespace Exomia.Framework.Graphics
                 DrawRect(
                     ptr + 0,
                     new Line2(destination.TopLeft, destination.TopRight),
-                    new Line2(tl, tr),
+                    new Line2(in tl, in tr),
                     in scaledColor);
 
                 DrawRect(
                     ptr + 1,
                     new Line2(destination.TopRight, destination.BottomRight),
-                    new Line2(tr, br),
+                    new Line2(in tr, in br),
                     in scaledColor);
 
                 DrawRect(
                     ptr + 2,
                     new Line2(destination.BottomRight, destination.BottomLeft),
-                    new Line2(br, bl),
+                    new Line2(in br, in bl),
                     in scaledColor);
 
                 DrawRect(
                     ptr + 3,
                     new Line2(destination.BottomLeft, destination.TopLeft),
-                    new Line2(bl, tl),
+                    new Line2(in bl, in tl),
                     in scaledColor);
             }
             else
@@ -119,10 +119,10 @@ namespace Exomia.Framework.Graphics
                 Vector2 bl2 = new Vector2(
                     (float)((blx2 * cos) - (bly2 * sin)) + origin.X, (float)((blx2 * sin) + (bly2 * cos)) + origin.Y);
 
-                DrawRect(ptr + 0, new Line2(tl1, tr1), new Line2(tl2, tr2), in scaledColor);
-                DrawRect(ptr + 1, new Line2(tr1, br1), new Line2(tr2, br2), in scaledColor);
-                DrawRect(ptr + 2, new Line2(br1, bl1), new Line2(br2, bl2), in scaledColor);
-                DrawRect(ptr + 3, new Line2(bl1, tl1), new Line2(bl2, tl2), in scaledColor);
+                DrawRect(ptr + 0, new Line2(in tl1, in tr1), new Line2(in tl2, in tr2), in scaledColor);
+                DrawRect(ptr + 1, new Line2(in tr1, in br1), new Line2(in tr2, in br2), in scaledColor);
+                DrawRect(ptr + 2, new Line2(in br1, in bl1), new Line2(in br2, in bl2), in scaledColor);
+                DrawRect(ptr + 3, new Line2(in bl1, in tl1), new Line2(in bl2, in tl2), in scaledColor);
             }
         }
 
@@ -192,8 +192,7 @@ namespace Exomia.Framework.Graphics
         private static void DrawRect(Item* ptr, in Line2 lineA, in Line2 lineB, in Color c)
         {
             // p1
-            ptr->V1.X = lineA.X1;
-            ptr->V1.Y = lineA.Y1;
+            ptr->V1.XY = lineA.XY1;
 
             ptr->V1.R = c.R;
             ptr->V1.G = c.G;
@@ -203,8 +202,7 @@ namespace Exomia.Framework.Graphics
             ptr->V1.M = COLOR_MODE;
 
             // p2
-            ptr->V2.X = lineA.X2;
-            ptr->V2.Y = lineA.Y2;
+            ptr->V2.XY = lineA.XY2;
 
             ptr->V2.R = c.R;
             ptr->V2.G = c.G;
@@ -214,8 +212,7 @@ namespace Exomia.Framework.Graphics
             ptr->V2.M = COLOR_MODE;
 
             // p2'
-            ptr->V3.X = lineB.X2;
-            ptr->V3.Y = lineB.Y2;
+            ptr->V3.XY = lineB.XY2;
 
             ptr->V3.R = c.R;
             ptr->V3.G = c.G;
@@ -225,8 +222,7 @@ namespace Exomia.Framework.Graphics
             ptr->V3.M = COLOR_MODE;
 
             // p1'
-            ptr->V4.X = lineB.X1;
-            ptr->V4.Y = lineB.Y1;
+            ptr->V4.XY = lineB.XY1;
 
             ptr->V4.R = c.R;
             ptr->V4.G = c.G;

@@ -34,7 +34,7 @@ namespace Exomia.Framework.Graphics
                              float      opacity,
                              float      lengthFactor = 1.0f)
         {
-            DrawLine(new Line2(point1, point2), color, lineWidth, opacity, lengthFactor);
+            DrawLine(new Line2(in point1, in point2), color, lineWidth, opacity, lengthFactor);
         }
 
         /// <summary>
@@ -51,6 +51,8 @@ namespace Exomia.Framework.Graphics
                              float    opacity,
                              float    lengthFactor = 1.0f)
         {
+            Color scaledColor = color * opacity;
+            
             float dx = line.X2 - line.X1;
             float dy = line.Y2 - line.Y1;
 
@@ -61,25 +63,23 @@ namespace Exomia.Framework.Graphics
             VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(1);
 
             // p1
-            vertex->X = line.X1;
-            vertex->Y = line.Y1;
+            vertex->XY = line.XY1;
 
-            vertex->R = color.R * opacity;
-            vertex->G = color.G * opacity;
-            vertex->B = color.B * opacity;
-            vertex->A = color.A * opacity;
+            vertex->R = scaledColor.R;
+            vertex->G = scaledColor.G;
+            vertex->B = scaledColor.B;
+            vertex->A = scaledColor.A;
 
             vertex->M = COLOR_MODE;
             vertex++;
 
             // p2
-            vertex->X = line.X2;
-            vertex->Y = line.Y2;
-
-            vertex->R = color.R * opacity;
-            vertex->G = color.G * opacity;
-            vertex->B = color.B * opacity;
-            vertex->A = color.A * opacity;
+            vertex->XY = line.XY2;
+            
+            vertex->R = scaledColor.R;
+            vertex->G = scaledColor.G;
+            vertex->B = scaledColor.B;
+            vertex->A = scaledColor.A;
 
             vertex->M = COLOR_MODE;
             vertex++;
@@ -88,10 +88,10 @@ namespace Exomia.Framework.Graphics
             vertex->X = line.X2 - nx;
             vertex->Y = line.Y2 + ny;
 
-            vertex->R = color.R * opacity;
-            vertex->G = color.G * opacity;
-            vertex->B = color.B * opacity;
-            vertex->A = color.A * opacity;
+            vertex->R = scaledColor.R;
+            vertex->G = scaledColor.G;
+            vertex->B = scaledColor.B;
+            vertex->A = scaledColor.A;
 
             vertex->M = COLOR_MODE;
             vertex++;
@@ -100,10 +100,10 @@ namespace Exomia.Framework.Graphics
             vertex->X = line.X1 - nx;
             vertex->Y = line.Y1 + ny;
 
-            vertex->R = color.R * opacity;
-            vertex->G = color.G * opacity;
-            vertex->B = color.B * opacity;
-            vertex->A = color.A * opacity;
+            vertex->R = scaledColor.R;
+            vertex->G = scaledColor.G;
+            vertex->B = scaledColor.B;
+            vertex->A = scaledColor.A;
 
             vertex->M = COLOR_MODE;
         }

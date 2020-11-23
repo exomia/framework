@@ -49,7 +49,7 @@ namespace Exomia.Framework.Graphics
                                  in Vector2 origin,
                                  float      opacity)
         {
-            DrawTriangle(new Triangle2(point1, point2, point3), color, lineWidth, rotation, in origin, opacity);
+            DrawTriangle(new Triangle2(in point1, in point2, in point3), color, lineWidth, rotation, in origin, opacity);
         }
 
         /// <summary>
@@ -79,16 +79,16 @@ namespace Exomia.Framework.Graphics
                                  in Vector2   origin,
                                  float        opacity)
         {
-            Triangle2 t           = rotation == 0.0 ? triangle : Triangle2.RotateAround(triangle, rotation, origin);
+            Triangle2 t           = rotation == 0.0 ? triangle : Triangle2.RotateAround(in triangle, rotation, in origin);
             Color     scaledColor = color * opacity;
 
-            Line2 a              = new Line2(t.X1, t.Y1, t.X2, t.Y2);
+            Line2 a              = new Line2(in t.XY1, in t.XY2);
             Line2 perpendicularA = a.GetPerpendicular(lineWidth);
-
-            Line2 b              = new Line2(t.X2, t.Y2, t.X3, t.Y3);
+            
+            Line2 b              = new Line2(in t.XY2, in t.XY3);
             Line2 perpendicularB = b.GetPerpendicular(lineWidth);
 
-            Line2 c              = new Line2(t.X3, t.Y3, t.X1, t.Y1);
+            Line2 c              = new Line2(in t.XY3, in t.XY1);
             Line2 perpendicularC = c.GetPerpendicular(lineWidth);
 
             if (!perpendicularA.IntersectWith(perpendicularB, out Vector2 ipAb))
@@ -107,9 +107,9 @@ namespace Exomia.Framework.Graphics
             }
 
             Item* ptr = Reserve(3);
-            DrawRect(ptr + 0, a, new Line2(ipCa.X, ipCa.Y, ipAb.X, ipAb.Y), in scaledColor);
-            DrawRect(ptr + 1, b, new Line2(ipAb.X, ipAb.Y, ipBc.X, ipBc.Y), in scaledColor);
-            DrawRect(ptr + 2, c, new Line2(ipBc.X, ipBc.Y, ipCa.X, ipCa.Y), in scaledColor);
+            DrawRect(ptr + 0, a, new Line2(in ipCa, in ipAb), in scaledColor);
+            DrawRect(ptr + 1, b, new Line2(in ipAb, in ipBc), in scaledColor);
+            DrawRect(ptr + 2, c, new Line2(in ipBc, in ipCa), in scaledColor);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Exomia.Framework.Graphics
                                      in Vector2 origin,
                                      float      opacity)
         {
-            DrawFillTriangle(new Triangle2(point1, point2, point3), color, rotation, origin, opacity);
+            DrawFillTriangle(new Triangle2(in point1, in point2, in point3), color, rotation, origin, opacity);
         }
 
         /// <summary>
@@ -181,9 +181,8 @@ namespace Exomia.Framework.Graphics
 
                     fixed (Triangle2* t = &triangle)
                     {
-                        float* tf = (float*)t;
-                        vertex->X = *(tf + (i << 1));
-                        vertex->Y = *(tf + (i << 1) + 1);
+                        Vector2* tf = (Vector2*)t;
+                        vertex->XY = *(tf + i );
                     }
 
                     vertex->R = scaledColor.R;
@@ -205,11 +204,10 @@ namespace Exomia.Framework.Graphics
 
                     fixed (Triangle2* t = &triangle)
                     {
-                        float* tf = (float*)t;
-                        float  x  = *(tf + (i << 1)) - origin.X;
-                        float  y  = *(tf + (i << 1) + 1) - origin.Y;
-                        vertex->X = (float)(((cos * x) - (sin * y)) + origin.X);
-                        vertex->Y = (float)((sin * x) + (cos * y) + origin.Y);
+                        Vector2* tf = (Vector2*)t;
+                        Vector2  v  = *(tf + i) - origin;
+                        vertex->X = (float)(((cos * v.X) - (sin * v.Y)) + origin.X);
+                        vertex->Y = (float)((sin * v.X) + (cos * v.Y) + origin.Y);
                     }
 
                     vertex->R = scaledColor.R;

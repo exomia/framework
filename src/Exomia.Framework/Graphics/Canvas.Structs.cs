@@ -9,6 +9,7 @@
 #endregion
 
 using System.Runtime.InteropServices;
+using SharpDX;
 
 namespace Exomia.Framework.Graphics
 {
@@ -38,6 +39,9 @@ namespace Exomia.Framework.Graphics
 
             [FieldOffset(4)]
             public float Y;
+            
+            [FieldOffset(0)]
+            public Vector2 XY;
 
             [FieldOffset(8)]
             public float Z;

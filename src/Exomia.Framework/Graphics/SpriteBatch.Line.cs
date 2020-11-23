@@ -74,7 +74,7 @@ namespace Exomia.Framework.Graphics
                              float      lengthFactor,
                              float      layerDepth)
         {
-            DrawLine(new Line2(point1, point2), color, lineWidth, opacity, lengthFactor, layerDepth);
+            DrawLine(new Line2(in point1, in point2), color, lineWidth, opacity, lengthFactor, layerDepth);
         }
 
         /// <summary>

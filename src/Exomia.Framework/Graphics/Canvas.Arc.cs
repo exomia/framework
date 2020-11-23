@@ -274,7 +274,7 @@ namespace Exomia.Framework.Graphics
                 vertex->Y = y + (corner.Y * arc.Radius);
                 vertex->Z = x;
                 vertex->W = y;
-
+                
                 vertex->R = scaledColor.R;
                 vertex->G = scaledColor.G;
                 vertex->B = scaledColor.B;
@@ -308,9 +308,8 @@ namespace Exomia.Framework.Graphics
                 VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
                 fixed (Line2* t = &lineA)
                 {
-                    float* lf = (float*)t;
-                    vertex->X = *(lf + (i << 1));
-                    vertex->Y = *(lf + (i << 1) + 1);
+                    Vector2* lf = (Vector2*)t;
+                    vertex->XY = *(lf + i);
                 }
 
                 vertex->Z = z;
@@ -333,9 +332,8 @@ namespace Exomia.Framework.Graphics
                 VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + 2 + (1 - i);
                 fixed (Line2* t = &lineB)
                 {
-                    float* lf = (float*)t;
-                    vertex->X = *(lf + (i << 1));
-                    vertex->Y = *(lf + (i << 1) + 1);
+                    Vector2* lf = (Vector2*)t;
+                    vertex->XY = *(lf + i);
                 }
 
                 vertex->Z = z;

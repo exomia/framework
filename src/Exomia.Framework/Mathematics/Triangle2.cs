@@ -20,39 +20,63 @@ namespace Exomia.Framework.Mathematics
     ///     A 2d triangle.
     /// </summary>
     /// <inheritdoc cref="IFormattable" />
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 24)]
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 24)]
     public readonly struct Triangle2 : IFormattable
     {
         /// <summary>
         ///     The first x value.
         /// </summary>
-        public readonly float X1; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(0)]
+        public readonly float X1;
 
         /// <summary>
         ///     The first y value.
         /// </summary>
-        public readonly float Y1; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(4)] 
+        public readonly float Y1;
+
+        /// <summary>
+        ///     The first xy.
+        /// </summary>
+        [FieldOffset(0)]
+        public readonly Vector2 XY1;
 
         /// <summary>
         ///     The second y value.
         /// </summary>
-        public readonly float X2; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(8)] 
+        public readonly float X2;
 
         /// <summary>
         ///     The second x value.
         /// </summary>
-        public readonly float Y2; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(12)] 
+        public readonly float Y2;
+
+        /// <summary>
+        ///     The second xy.
+        /// </summary>
+        [FieldOffset(8)]
+        public readonly Vector2 XY2;
 
         /// <summary>
         ///     The third x value.
         /// </summary>
-        public readonly float X3; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(16)] 
+        public readonly float X3;
 
         /// <summary>
         ///     The third y value.
         /// </summary>
-        public readonly float Y3; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(20)] 
+        public readonly float Y3;
 
+        /// <summary>
+        ///     The third xy.
+        /// </summary>
+        [FieldOffset(16)]
+        public readonly Vector2 XY3;
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
         /// </summary>
@@ -62,7 +86,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="y2"> The second y value. </param>
         /// <param name="x3"> The third x value. </param>
         /// <param name="y3"> The third y value. </param>
-        public Triangle2(float x1, float y1, float x2, float y2, float x3, float y3)
+        public Triangle2(float x1, float y1, float x2, float y2, float x3, float y3) : this()
         {
             X1 = x1;
             Y1 = y1;
@@ -75,20 +99,25 @@ namespace Exomia.Framework.Mathematics
         /// <summary>
         ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
         /// </summary>
-        /// <param name="a"> The VectorI2 to process. </param>
-        /// <param name="b"> The VectorI2 to process. </param>
-        /// <param name="c"> The VectorI2 to process. </param>
-        public Triangle2(VectorI2 a, VectorI2 b, VectorI2 c)
+        /// <param name="a"> The <see cref="VectorI2" /> to process. </param>
+        /// <param name="b"> The <see cref="VectorI2" /> to process. </param>
+        /// <param name="c"> The <see cref="VectorI2" /> to process. </param>
+        public Triangle2(in VectorI2 a, in VectorI2 b, in VectorI2 c)
             : this(a.X, a.Y, b.X, b.Y, c.X, c.Y) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
         /// </summary>
-        /// <param name="a"> The Vector2 to process. </param>
-        /// <param name="b"> The Vector2 to process. </param>
-        /// <param name="c"> The Vector2 to process. </param>
-        public Triangle2(Vector2 a, Vector2 b, Vector2 c)
-            : this(a.X, a.Y, b.X, b.Y, c.X, c.Y) { }
+        /// <param name="a"> The <see cref="Vector2" /> to process. </param>
+        /// <param name="b"> The <see cref="Vector2" /> to process. </param>
+        /// <param name="c"> The <see cref="Vector2" /> to process. </param>
+        public Triangle2(in Vector2 a, in Vector2 b, in Vector2 c)
+            : this()
+        {
+            XY1 = a;
+            XY2 = b;
+            XY3 = c;
+        }
 
         /// <summary>
         ///     Determines whether the specified <see cref="Triangle2" /> is equal to this instance.

@@ -13,7 +13,6 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using SharpDX;
-using SharpDX.Direct3D9;
 
 namespace Exomia.Framework.Mathematics
 {
@@ -21,28 +20,44 @@ namespace Exomia.Framework.Mathematics
     ///     A 2d line.
     /// </summary>
     /// <inheritdoc cref="IFormattable" />
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 16)]
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 16)]
     public readonly struct Line2 : IFormattable
     {
         /// <summary>
         ///     The first x value.
         /// </summary>
-        public readonly float X1; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(0)]
+        public readonly float X1;
 
         /// <summary>
         ///     The first y value.
         /// </summary>
-        public readonly float Y1; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(4)]
+        public readonly float Y1;
 
         /// <summary>
-        ///     The second x value.
+        ///     The first xy.
         /// </summary>
-        public readonly float X2; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(0)]
+        public readonly Vector2 XY1;
 
         /// <summary>
         ///     The second y value.
         /// </summary>
-        public readonly float Y2; //Note: do not reorder this field, unless you know what you are doing.
+        [FieldOffset(8)]
+        public readonly float X2;
+
+        /// <summary>
+        ///     The second x value.
+        /// </summary>
+        [FieldOffset(12)]
+        public readonly float Y2;
+
+        /// <summary>
+        ///     The second xy.
+        /// </summary>
+        [FieldOffset(8)]
+        public readonly Vector2 XY2;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
@@ -51,29 +66,32 @@ namespace Exomia.Framework.Mathematics
         /// <param name="y1"> The first y value. </param>
         /// <param name="x2"> The second x value. </param>
         /// <param name="y2"> The second y value. </param>
-        public Line2(float x1, float y1, float x2, float y2)
+        public Line2(float x1, float y1, float x2, float y2) : this()
         {
-            X1 = x1;
-            Y1 = y1;
-            X2 = x2;
-            Y2 = y2;
+            X1   = x1;
+            Y1   = y1;
+            X2   = x2;
+            Y2   = y2;
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
         /// </summary>
-        /// <param name="a"> The VectorI2 to process. </param>
-        /// <param name="b"> The VectorI2 to process. </param>
-        public Line2(VectorI2 a, VectorI2 b)
+        /// <param name="a"> [in,out] The <see cref="VectorI2"/> to process. </param>
+        /// <param name="b"> [in,out] The <see cref="VectorI2"/> to process. </param>
+        public Line2(in VectorI2 a, in VectorI2 b)
             : this(a.X, a.Y, b.X, b.Y) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
         /// </summary>
-        /// <param name="a"> The Vector2 to process. </param>
-        /// <param name="b"> The Vector2 to process. </param>
-        public Line2(Vector2 a, Vector2 b)
-            : this(a.X, a.Y, b.X, b.Y) { }
+        /// <param name="a"> [in,out] The <see cref="Vector2"/> to process. </param>
+        /// <param name="b"> [in,out] The <see cref="Vector2"/> to process. </param>
+        public Line2(in Vector2 a, in Vector2 b) : this()
+        {
+            XY1 = a;
+            XY2 = b;
+        }
 
         /// <summary>
         ///     Determines whether the specified <see cref="Line2" /> is equal to this instance.
@@ -172,7 +190,7 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Intersect with other <see cref="Line" />.
+        ///     Intersect with other <see cref="Line2" />.
         /// </summary>
         /// <param name="other">             The <see cref="Line2" /> to compare with this instance. </param>
         /// <param name="intersectionPoint"> [out] The intersection point. </param>
@@ -245,6 +263,30 @@ namespace Exomia.Framework.Mathematics
             return new Line2(
                 (float)((x1 * cos) - (y1 * sin)) + origin.X, (float)((x1 * sin) + (y1 * cos)) + origin.Y,
                 (float)((x2 * cos) - (y2 * sin)) + origin.X, (float)((x2 * sin) + (y2 * cos)) + origin.Y);
+        }
+
+        /// <summary>
+        ///     Creates a line out of <paramref name="p1"/> and <paramref name="p2"/>, as well the perpendicular from this line.
+        /// </summary>
+        /// <param name="p1">            [in,out] The first ref <see cref="Vector2"/>. </param>
+        /// <param name="p2">            [in,out] The second ref <see cref="Vector2"/>. </param>
+        /// <param name="offset">        The offset. </param>
+        /// <param name="perpendicular"> [out] The perpendicular. </param>
+        /// <returns>
+        ///     The line created from <paramref name="p1"/> and <paramref name="p2"/>.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2 CreateWithPerpendicular(ref Vector2 p1, ref Vector2 p2, float offset, out Line2 perpendicular)
+        {
+            float dx = p2.X - p1.X;
+            float dy = p2.Y - p1.Y;
+
+            double dl = Math.Sqrt((dx * dx) + (dy * dy));
+            float  nx = (float)((dy / dl) * offset);
+            float  ny = (float)((dx / dl) * offset);
+
+            perpendicular = new Line2(p1.X - nx, p1.Y + ny, p2.X - nx, p2.Y + ny);
+            return new Line2(p1.X, p1.Y, p2.X, p2.Y);
         }
     }
 }

@@ -46,19 +46,19 @@ namespace Exomia.Framework.Graphics
                 double sin = Math.Sin(rotation);
                 for (int i = 0; i < vertices.Length; i++)
                 {
-                    float x = vertices[i].X - origin.X;
-                    float y = vertices[i].Y - origin.Y;
-                    vertices[i] = new Vector2(
-                        (float)(((cos * x) - (sin * y)) + origin.X),
-                        (float)((sin * x) + (cos * y) + origin.Y));
+                    ref Vector2 v = ref vertices[i];
+                    float   x = v.X - origin.X;
+                    float   y = v.Y - origin.Y;
+                    v.X = (float)(((cos * x) - (sin * y)) + origin.X);
+                    v.Y = (float)((sin * x) + (cos * y) + origin.Y);
                 }
             }
-
-            Line2 previous              = new Line2(vertices[vertices.Length - 1], vertices[0]);
-            Line2 perpendicularPrevious = previous.GetPerpendicular(lineWidth);
-
-            Line2 current              = new Line2(vertices[0], vertices[1]);
-            Line2 perpendicularCurrent = current.GetPerpendicular(lineWidth);
+            
+            Line2 previous = Line2.CreateWithPerpendicular(
+                ref vertices[vertices.Length - 1], ref vertices[0], lineWidth, out Line2 perpendicularPrevious);
+            
+            Line2 current = Line2.CreateWithPerpendicular(
+                ref vertices[0], ref vertices[1], lineWidth, out Line2 perpendicularCurrent);
 
             if (!perpendicularPrevious.IntersectWith(perpendicularCurrent, out Vector2 ipE))
             {
@@ -68,15 +68,15 @@ namespace Exomia.Framework.Graphics
             Vector2 ip1 = ipE;
             for (int i = 1; i < vertices.Length - 1; i++)
             {
-                Line2 next              = new Line2(vertices[i], vertices[i + 1]);
-                Line2 perpendicularNext = next.GetPerpendicular(lineWidth);
+                Line2 next = Line2.CreateWithPerpendicular(
+                    ref vertices[i], ref vertices[i + 1], lineWidth, out Line2 perpendicularNext);
 
                 if (!perpendicularCurrent.IntersectWith(perpendicularNext, out Vector2 ip2))
                 {
                     ip2 = new Vector2(perpendicularNext.X1, perpendicularNext.Y1);
                 }
 
-                DrawRect(ptr + i, current, new Line2(ip1.X, ip1.Y, ip2.X, ip2.Y), in scaledColor);
+                DrawRect(ptr + i, current, new Line2(in ip1, in ip2), in scaledColor);
 
                 current              = next;
                 perpendicularCurrent = perpendicularNext;
@@ -88,8 +88,8 @@ namespace Exomia.Framework.Graphics
                 ip3 = new Vector2(perpendicularPrevious.X1, perpendicularPrevious.Y1);
             }
 
-            DrawRect(ptr, current, new Line2(ip1.X, ip1.Y, ip3.X, ip3.Y), in scaledColor);
-            DrawRect(ptr + (vertices.Length - 1), previous, new Line2(ip3.X, ip3.Y, ipE.X, ipE.Y), in scaledColor);
+            DrawRect(ptr, current, new Line2(in ip1, in ip3), in scaledColor);
+            DrawRect(ptr + (vertices.Length - 1), previous, new Line2(in ip3, in ipE), in scaledColor);
         }
 
         /// <summary>
@@ -135,8 +135,7 @@ namespace Exomia.Framework.Graphics
 
             for (int i = 1; i < vertices.Length - 1; i += 2)
             {
-                vertex->X = vertices[0].X;
-                vertex->Y = vertices[0].Y;
+                vertex->XY = vertices[0];
 
                 vertex->R = scaledColor.R;
                 vertex->G = scaledColor.G;
@@ -146,8 +145,7 @@ namespace Exomia.Framework.Graphics
                 vertex->M = COLOR_MODE;
                 vertex++;
 
-                vertex->X = vertices[i].X;
-                vertex->Y = vertices[i].Y;
+                vertex->XY = vertices[i];
 
                 vertex->R = scaledColor.R;
                 vertex->G = scaledColor.G;
@@ -157,8 +155,7 @@ namespace Exomia.Framework.Graphics
                 vertex->M = COLOR_MODE;
                 vertex++;
 
-                vertex->X = vertices[i + 1].X;
-                vertex->Y = vertices[i + 1].Y;
+                vertex->XY = vertices[i + 1];
 
                 vertex->R = scaledColor.R;
                 vertex->G = scaledColor.G;
@@ -170,8 +167,7 @@ namespace Exomia.Framework.Graphics
 
                 if (i + 2 < vertices.Length)
                 {
-                    vertex->X = vertices[i + 2].X;
-                    vertex->Y = vertices[i + 2].Y;
+                    vertex->XY = vertices[i + 2];
 
                     vertex->R = scaledColor.R;
                     vertex->G = scaledColor.G;
