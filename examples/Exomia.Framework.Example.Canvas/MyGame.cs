@@ -143,18 +143,25 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f);
 
             _canvas.DrawFillPolygon(
-                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
+                new[] { new Vector2(550, 250), new Vector2(550, 120), new Vector2(650, 320), new Vector2(520, 250) },
                 Color.Red, 0.0f, Vector2.Zero, 1.0f);
             _canvas.DrawPolygon(
-                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
+                new[] { new Vector2(550, 250), new Vector2(550, 120), new Vector2(650, 320), new Vector2(520, 250) },
                 Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
 
             _canvas.DrawFillPolygon(
-                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
-                Color.Yellow, k, new Vector2(400, 300), 1.0f);
+                new[] { new Vector2(450, 400), new Vector2(700, 420), new Vector2(700, 450), new Vector2(600, 480), new Vector2(600, 600) },
+                Color.Red, 0.0f, Vector2.Zero, 1.0f);
             _canvas.DrawPolygon(
-                new[] { new Vector2(400, 300), new Vector2(550, 320), new Vector2(650, 520), new Vector2(520, 450) },
-                Color.Green, 5.0f, k, new Vector2(400, 300), 1.0f);
+                new[] { new Vector2(450, 400), new Vector2(700, 420), new Vector2(700, 450), new Vector2(600, 480), new Vector2(600, 600) },
+                Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
+
+            _canvas.DrawFillPolygon(
+                new[] { new Vector2(400, 600), new Vector2(550, 620), new Vector2(650, 820), new Vector2(520, 750) },
+                Color.Yellow, k, new Vector2(400, 600), 1.0f);
+            _canvas.DrawPolygon(
+                new[] { new Vector2(400, 600), new Vector2(550, 620), new Vector2(650, 820), new Vector2(520, 750) },
+                Color.Green, 5.0f, k, new Vector2(400, 600), 1.0f);
 
             _canvas.DrawFillPolygon(
                 new[]
@@ -173,7 +180,7 @@ namespace Exomia.Framework.Example.Canvas
             Vector2 center = new Vector2(800, 400);
 
             _canvas.DrawRectangle(
-                new RectangleF(center.X - 100, center.Y - 100, 200, 200), Color.Green, 2, 0, Vector2.Zero, 0.0f);
+               new RectangleF(center.X - 100, center.Y - 100, 200, 200), Color.Green, 2, 0, Vector2.Zero, 1.0f);
             _canvas.DrawFillArc(new Arc2(center, 100f), Color.Black, 0, center, 1.0f);
 
             float l = 20;

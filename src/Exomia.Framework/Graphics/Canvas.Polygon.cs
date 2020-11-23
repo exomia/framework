@@ -101,6 +101,12 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">   The origin. </param>
         /// <param name="opacity">  The opacity. </param>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+        /// <remarks>
+        ///     Attention:
+        ///     - The <paramref name="vertices"/> must be declared in a clockwise orientation.
+        ///     - The triangulation used to fill the polygon may not work for concave polygons at the moment!
+        ///     - Complex polygons may not work at all!
+        /// </remarks>
         public void DrawFillPolygon(Vector2[]  vertices,
                                     in Color   color,
                                     float      rotation,
@@ -125,27 +131,12 @@ namespace Exomia.Framework.Graphics
                 }
             }
 
-            // TODO: refactor; remove list; place directly into _vertexBuffer
-            List<Vector2> vs = new List<Vector2>();
+            VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(vertices.Length - 2);
+
             for (int i = 1; i < vertices.Length - 1; i += 2)
             {
-                vs.Add(vertices[0]);
-                vs.Add(vertices[i]);
-                vs.Add(vertices[i + 1]);
-                if (i + 2 < vertices.Length)
-                {
-                    vs.Add(vertices[i + 2]);
-                }
-            }
-
-            Item* ptr = Reserve((vs.Count + 1) / 4);
-
-            for (int j = 0; j < vs.Count; j++)
-            {
-                VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + j;
-
-                vertex->X = vs[j].X;
-                vertex->Y = vs[j].Y;
+                vertex->X = vertices[0].X;
+                vertex->Y = vertices[0].Y;
 
                 vertex->R = scaledColor.R;
                 vertex->G = scaledColor.G;
@@ -153,13 +144,48 @@ namespace Exomia.Framework.Graphics
                 vertex->A = scaledColor.A;
 
                 vertex->M = COLOR_MODE;
-            }
+                vertex++;
 
-            if ((vs.Count & 1) == 1)
-            {
-                // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
-                *((VertexPositionColorTextureMode*)ptr + vs.Count) =
-                    *((VertexPositionColorTextureMode*)ptr + (vs.Count - 3));
+                vertex->X = vertices[i].X;
+                vertex->Y = vertices[i].Y;
+
+                vertex->R = scaledColor.R;
+                vertex->G = scaledColor.G;
+                vertex->B = scaledColor.B;
+                vertex->A = scaledColor.A;
+
+                vertex->M = COLOR_MODE;
+                vertex++;
+
+                vertex->X = vertices[i + 1].X;
+                vertex->Y = vertices[i + 1].Y;
+
+                vertex->R = scaledColor.R;
+                vertex->G = scaledColor.G;
+                vertex->B = scaledColor.B;
+                vertex->A = scaledColor.A;
+
+                vertex->M = COLOR_MODE;
+                vertex++;
+
+                if (i + 2 < vertices.Length)
+                {
+                    vertex->X = vertices[i + 2].X;
+                    vertex->Y = vertices[i + 2].Y;
+
+                    vertex->R = scaledColor.R;
+                    vertex->G = scaledColor.G;
+                    vertex->B = scaledColor.B;
+                    vertex->A = scaledColor.A;
+
+                    vertex->M = COLOR_MODE;
+                    vertex++;
+                }
+                else
+                { 
+                    // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
+                    *vertex = *(vertex - 3);
+                }
             }
         }
     }
