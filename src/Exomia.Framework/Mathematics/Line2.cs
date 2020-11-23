@@ -66,28 +66,30 @@ namespace Exomia.Framework.Mathematics
         /// <param name="y1"> The first y value. </param>
         /// <param name="x2"> The second x value. </param>
         /// <param name="y2"> The second y value. </param>
-        public Line2(float x1, float y1, float x2, float y2) : this()
+        public Line2(float x1, float y1, float x2, float y2)
+            : this()
         {
-            X1   = x1;
-            Y1   = y1;
-            X2   = x2;
-            Y2   = y2;
+            X1 = x1;
+            Y1 = y1;
+            X2 = x2;
+            Y2 = y2;
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
         /// </summary>
-        /// <param name="a"> [in,out] The <see cref="VectorI2"/> to process. </param>
-        /// <param name="b"> [in,out] The <see cref="VectorI2"/> to process. </param>
+        /// <param name="a"> [in,out] The <see cref="VectorI2" /> to process. </param>
+        /// <param name="b"> [in,out] The <see cref="VectorI2" /> to process. </param>
         public Line2(in VectorI2 a, in VectorI2 b)
             : this(a.X, a.Y, b.X, b.Y) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Line2" /> struct.
         /// </summary>
-        /// <param name="a"> [in,out] The <see cref="Vector2"/> to process. </param>
-        /// <param name="b"> [in,out] The <see cref="Vector2"/> to process. </param>
-        public Line2(in Vector2 a, in Vector2 b) : this()
+        /// <param name="a"> [in,out] The <see cref="Vector2" /> to process. </param>
+        /// <param name="b"> [in,out] The <see cref="Vector2" /> to process. </param>
+        public Line2(in Vector2 a, in Vector2 b)
+            : this()
         {
             XY1 = a;
             XY2 = b;
@@ -266,17 +268,20 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Creates a line out of <paramref name="p1"/> and <paramref name="p2"/>, as well the perpendicular from this line.
+        ///     Creates a line out of <paramref name="p1" /> and <paramref name="p2" />, as well the perpendicular from this line.
         /// </summary>
-        /// <param name="p1">            [in,out] The first ref <see cref="Vector2"/>. </param>
-        /// <param name="p2">            [in,out] The second ref <see cref="Vector2"/>. </param>
+        /// <param name="p1">            [in,out] The first ref <see cref="Vector2" />. </param>
+        /// <param name="p2">            [in,out] The second ref <see cref="Vector2" />. </param>
         /// <param name="offset">        The offset. </param>
         /// <param name="perpendicular"> [out] The perpendicular. </param>
         /// <returns>
-        ///     The line created from <paramref name="p1"/> and <paramref name="p2"/>.
+        ///     The line created from <paramref name="p1" /> and <paramref name="p2" />.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Line2 CreateWithPerpendicular(ref Vector2 p1, ref Vector2 p2, float offset, out Line2 perpendicular)
+        public static Line2 CreateWithPerpendicular(ref Vector2 p1,
+                                                    ref Vector2 p2,
+                                                    float       offset,
+                                                    out Line2   perpendicular)
         {
             float dx = p2.X - p1.X;
             float dy = p2.Y - p1.Y;

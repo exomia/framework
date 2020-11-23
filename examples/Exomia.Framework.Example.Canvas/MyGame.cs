@@ -12,6 +12,7 @@ using Exomia.Framework.Components;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Mathematics;
+using Exomia.Framework.Resources;
 using SharpDX;
 
 namespace Exomia.Framework.Example.Canvas
@@ -33,6 +34,28 @@ namespace Exomia.Framework.Example.Canvas
         private SpriteFont _spriteFont1_24Px = null!;
 
         private float k;
+
+        private readonly Vector2[] polyA =
+        {
+            new Vector2(550, 250), new Vector2(550, 120), new Vector2(650, 320), new Vector2(520, 250)
+        };
+
+        private readonly Vector2[] polyB =
+        {
+            new Vector2(450, 400), new Vector2(700, 420), new Vector2(700, 450), new Vector2(600, 480),
+            new Vector2(600, 600)
+        };
+
+        private readonly Vector2[] polyC =
+        {
+            new Vector2(400, 600), new Vector2(550, 620), new Vector2(650, 820), new Vector2(520, 750)
+        };
+
+        private readonly Vector2[] polyD =
+        {
+            new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
+            new Vector2(400, 630)
+        };
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyGame" /> class.
@@ -88,8 +111,8 @@ namespace Exomia.Framework.Example.Canvas
             _texture  = Content.Load<Texture>("logo1.jpg");
             _texture2 = Content.Load<Texture>("logo2.png");
 
-            _spriteFont1_12Px = Content.Load<SpriteFont>(Resources.Fonts.ARIAL_12_PX, true);
-            _spriteFont1_24Px = Content.Load<SpriteFont>(Resources.Fonts.ARIAL_24_PX, true);
+            _spriteFont1_12Px = Content.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
+            _spriteFont1_24Px = Content.Load<SpriteFont>(Fonts.ARIAL_24_PX, true);
         }
 
         /// <inheritdoc />
@@ -122,13 +145,13 @@ namespace Exomia.Framework.Example.Canvas
 
             k += gameTime.DeltaTimeS / 2;
 
-            _canvas.DrawFillTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Red, 0, Vector2.Zero, 1.0f);
-            _canvas.DrawTriangle(new Triangle2(100, 50, 150, 100, 50, 100), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawFillTriangle(new Triangle2(100, 250, 150, 300, 50, 300), Color.Red, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawTriangle(new Triangle2(100, 250, 150, 300, 50, 300), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
 
             _canvas.DrawFillTriangle(
-                new Triangle2(100, 50, 150, 100, 50, 100), Color.Yellow, k, new Vector2(100, 50), 1.0f);
+                new Triangle2(100, 250, 150, 300, 50, 300), Color.Yellow, k, new Vector2(100, 250), 1.0f);
             _canvas.DrawTriangle(
-                new Triangle2(100, 50, 150, 100, 50, 100), Color.Green, 5.0f, k, new Vector2(100, 50), 1.0f);
+                new Triangle2(100, 250, 150, 300, 50, 300), Color.Green, 5.0f, k, new Vector2(100, 250), 1.0f);
 
             _canvas.DrawFillRectangle(new RectangleF(200, 200, 100, 50), Color.Red, 0, Vector2.Zero, 1.0f);
             _canvas.DrawRectangle(new RectangleF(200, 200, 100, 50), Color.Green, 5.0f, 0, Vector2.Zero, 1.0f);
@@ -136,51 +159,28 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawFillRectangle(new RectangleF(200, 200, 100, 50), Color.Yellow, k, new Vector2(200, 200), 1.0f);
             _canvas.DrawRectangle(new RectangleF(200, 200, 100, 50), Color.Green, 5.0f, k, new Vector2(200, 200), 1.0f);
 
-            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 1.0f);
-            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, 1.0f);
+            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 1.0f, 0, Vector2.Zero);
+            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, 1.0f, k, new Vector2(425, 425));
 
-            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 1.0f);
-            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f);
+            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 1.0f, 0, Vector2.Zero);
+            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f, k, new Vector2(425, 425));
 
-            _canvas.DrawFillPolygon(
-                new[] { new Vector2(550, 250), new Vector2(550, 120), new Vector2(650, 320), new Vector2(520, 250) },
-                Color.Red, 0.0f, Vector2.Zero, 1.0f);
-            _canvas.DrawPolygon(
-                new[] { new Vector2(550, 250), new Vector2(550, 120), new Vector2(650, 320), new Vector2(520, 250) },
-                Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawFillPolygon(polyA, Color.Red, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawPolygon(polyA, Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
 
-            _canvas.DrawFillPolygon(
-                new[] { new Vector2(450, 400), new Vector2(700, 420), new Vector2(700, 450), new Vector2(600, 480), new Vector2(600, 600) },
-                Color.Red, 0.0f, Vector2.Zero, 1.0f);
-            _canvas.DrawPolygon(
-                new[] { new Vector2(450, 400), new Vector2(700, 420), new Vector2(700, 450), new Vector2(600, 480), new Vector2(600, 600) },
-                Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawFillPolygon(polyB, Color.Red, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawPolygon(polyB, Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
 
-            _canvas.DrawFillPolygon(
-                new[] { new Vector2(400, 600), new Vector2(550, 620), new Vector2(650, 820), new Vector2(520, 750) },
-                Color.Yellow, k, new Vector2(400, 600), 1.0f);
-            _canvas.DrawPolygon(
-                new[] { new Vector2(400, 600), new Vector2(550, 620), new Vector2(650, 820), new Vector2(520, 750) },
-                Color.Green, 5.0f, k, new Vector2(400, 600), 1.0f);
+            _canvas.DrawFillPolygon(polyC, Color.Yellow, k, new Vector2(400, 600), 1.0f);
+            _canvas.DrawPolygon(polyC, Color.Green, 5.0f, k, new Vector2(400, 600), 1.0f);
 
-            _canvas.DrawFillPolygon(
-                new[]
-                {
-                    new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
-                    new Vector2(400, 630)
-                }, Color.Red, 0.0f, Vector2.Zero, 1.0f);
-
-            _canvas.DrawPolygon(
-                new[]
-                {
-                    new Vector2(600, 600), new Vector2(650, 610), new Vector2(650, 720), new Vector2(450, 750),
-                    new Vector2(400, 630)
-                }, Color.Yellow, 5.0f, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawFillPolygon(polyD, Color.Red, 0.0f, Vector2.Zero, 1.0f);
+            _canvas.DrawPolygon(polyD, Color.Yellow, 5.0f, 0.0f, Vector2.Zero, 1.0f);
 
             Vector2 center = new Vector2(800, 400);
 
             _canvas.DrawRectangle(
-               new RectangleF(center.X - 100, center.Y - 100, 200, 200), Color.Green, 2, 0, Vector2.Zero, 1.0f);
+                new RectangleF(center.X - 100, center.Y - 100, 200, 200), Color.Green, 2, 0, Vector2.Zero, 1.0f);
             _canvas.DrawFillArc(new Arc2(center, 100f), Color.Black, 0, center, 1.0f);
 
             float l = 20;
@@ -269,9 +269,9 @@ namespace Exomia.Framework.Example.Canvas
 
             _canvas.Draw(_texture, new RectangleF(1100, 50, 200, 200), Color.White);
             _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
-            
-            _canvas.DrawText(_spriteFont1_12Px, "This is the canvas example.", new Vector2(450, 50), Color.Black);
-            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black); 
+
+            _canvas.DrawText(_spriteFont1_12Px, "This is the canvas example.", new Vector2(450, 50), Color.Black, 0);
+            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black, k, new Vector2(450, 65), 1.0f, TextureEffects.None);
 
             _canvas.End();
 

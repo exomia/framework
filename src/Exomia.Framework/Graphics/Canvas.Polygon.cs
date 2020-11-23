@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using Exomia.Framework.Mathematics;
 using SharpDX;
 
@@ -36,27 +35,33 @@ namespace Exomia.Framework.Graphics
         {
             if (vertices.Length < 2) { throw new ArgumentOutOfRangeException(nameof(vertices.Length)); }
 
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             Item* ptr = Reserve(vertices.Length);
 
             if (rotation != 0.0f)
             {
-                double cos = Math.Cos(rotation);
-                double sin = Math.Sin(rotation);
+                Vector2[] vs  = new Vector2[vertices.Length];
+                double    cos = Math.Cos(rotation);
+                double    sin = Math.Sin(rotation);
                 for (int i = 0; i < vertices.Length; i++)
                 {
                     ref Vector2 v = ref vertices[i];
-                    float   x = v.X - origin.X;
-                    float   y = v.Y - origin.Y;
-                    v.X = (float)(((cos * x) - (sin * y)) + origin.X);
-                    v.Y = (float)((sin * x) + (cos * y) + origin.Y);
+                    float       x = v.X - origin.X;
+                    float       y = v.Y - origin.Y;
+                    vs[i] = new Vector2(
+                        (float)(((cos * x) - (sin * y)) + origin.X), (float)((sin * x) + (cos * y) + origin.Y));
                 }
+                vertices = vs;
             }
-            
+
             Line2 previous = Line2.CreateWithPerpendicular(
                 ref vertices[vertices.Length - 1], ref vertices[0], lineWidth, out Line2 perpendicularPrevious);
-            
+
             Line2 current = Line2.CreateWithPerpendicular(
                 ref vertices[0], ref vertices[1], lineWidth, out Line2 perpendicularCurrent);
 
@@ -103,7 +108,7 @@ namespace Exomia.Framework.Graphics
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         /// <remarks>
         ///     Attention:
-        ///     - The <paramref name="vertices"/> must be declared in a clockwise orientation.
+        ///     - The <paramref name="vertices" /> must be declared in a clockwise orientation.
         ///     - The triangulation used to fill the polygon may not work for concave polygons at the moment!
         ///     - Complex polygons may not work at all!
         /// </remarks>
@@ -115,72 +120,90 @@ namespace Exomia.Framework.Graphics
         {
             if (vertices.Length < 3) { throw new ArgumentOutOfRangeException(nameof(vertices.Length)); }
 
-            Color scaledColor = color * opacity;
-
-            if (rotation != 0.0f)
-            {
-                double cos = Math.Cos(rotation);
-                double sin = Math.Sin(rotation);
-                for (int i = 0; i < vertices.Length; i++)
-                {
-                    float x = vertices[i].X - origin.X;
-                    float y = vertices[i].Y - origin.Y;
-                    vertices[i] = new Vector2(
-                        (float)(((cos * x) - (sin * y)) + origin.X),
-                        (float)((sin * x) + (cos * y) + origin.Y));
-                }
-            }
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(vertices.Length - 2);
 
-            for (int i = 1; i < vertices.Length - 1; i += 2)
+            if (rotation == 0.0f)
             {
-                vertex->XY = vertices[0];
-
-                vertex->R = scaledColor.R;
-                vertex->G = scaledColor.G;
-                vertex->B = scaledColor.B;
-                vertex->A = scaledColor.A;
-
-                vertex->M = COLOR_MODE;
-                vertex++;
-
-                vertex->XY = vertices[i];
-
-                vertex->R = scaledColor.R;
-                vertex->G = scaledColor.G;
-                vertex->B = scaledColor.B;
-                vertex->A = scaledColor.A;
-
-                vertex->M = COLOR_MODE;
-                vertex++;
-
-                vertex->XY = vertices[i + 1];
-
-                vertex->R = scaledColor.R;
-                vertex->G = scaledColor.G;
-                vertex->B = scaledColor.B;
-                vertex->A = scaledColor.A;
-
-                vertex->M = COLOR_MODE;
-                vertex++;
-
-                if (i + 2 < vertices.Length)
+                for (int i = 1; i < vertices.Length - 1; i += 2)
                 {
-                    vertex->XY = vertices[i + 2];
-
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    vertex->M = COLOR_MODE;
+                    vertex->XY   = vertices[0];
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
                     vertex++;
+
+                    vertex->XY   = vertices[i];
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
+                    vertex++;
+
+                    vertex->XY   = vertices[i + 1];
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
+                    vertex++;
+
+                    if (i + 2 < vertices.Length)
+                    {
+                        vertex->XY   = vertices[i + 2];
+                        vertex->RGBA = scaledColor;
+                        vertex->M    = COLOR_MODE;
+                        vertex++;
+                    }
+                    else
+                    {
+                        // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
+                        *vertex = *(vertex - 3);
+                    }
                 }
-                else
-                { 
-                    // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
-                    *vertex = *(vertex - 3);
+            }
+            else
+            {
+                Vector2* vs  = stackalloc Vector2[vertices.Length];
+                double   cos = Math.Cos(rotation);
+                double   sin = Math.Sin(rotation);
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    ref Vector2 v = ref vertices[i];
+                    float       x = v.X - origin.X;
+                    float       y = v.Y - origin.Y;
+                    *(vs + i) = new Vector2(
+                        (float)(((cos * x) - (sin * y)) + origin.X), (float)((sin * x) + (cos * y) + origin.Y));
+                }
+
+                for (int i = 1; i < vertices.Length - 1; i += 2)
+                {
+                    vertex->XY   = *vs;
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
+                    vertex++;
+
+                    vertex->XY   = *(vs + i);
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
+                    vertex++;
+
+                    vertex->XY   = *(vs + i + 1);
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
+                    vertex++;
+
+                    if (i + 2 < vertices.Length)
+                    {
+                        vertex->XY   = *(vs + i + 2);
+                        vertex->RGBA = scaledColor;
+                        vertex->M    = COLOR_MODE;
+                        vertex++;
+                    }
+                    else
+                    {
+                        // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
+                        *vertex = *(vertex - 3);
+                    }
                 }
             }
         }

@@ -52,7 +52,7 @@ namespace Exomia.Framework.Win32
 
         /// <summary>
         ///     memset call
-        ///     Sets the first num bytes of the block of memory pointed by ptr to the specified value 
+        ///     Sets the first num bytes of the block of memory pointed by ptr to the specified value
         ///     (interpreted as an unsigned char).
         /// </summary>
         /// <param name="dest">  [in,out] destination addr. </param>
@@ -67,9 +67,10 @@ namespace Exomia.Framework.Win32
         public static extern void* Set(void* dest,
                                        int   value,
                                        int   count);
-        
+
         /// <summary>
-        ///     Resizes the given <paramref name="src"/> array with the given <paramref name="srcLength"/> to the given <paramref name="newLength"/>.
+        ///     Resizes the given <paramref name="src" /> array with the given <paramref name="srcLength" /> to the given
+        ///     <paramref name="newLength" />.
         /// </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="src">       [in,out] The source array ptr. </param>
@@ -79,7 +80,7 @@ namespace Exomia.Framework.Win32
         public static void Resize<T>(ref T* src, ref int srcLength, int newLength) where T : unmanaged
         {
             T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * newLength);
-            Mem.Cpy(ptr, src, srcLength * sizeof(T));
+            Cpy(ptr, src, srcLength * sizeof(T));
             Marshal.FreeHGlobal(new IntPtr(src));
 
             src       = ptr;

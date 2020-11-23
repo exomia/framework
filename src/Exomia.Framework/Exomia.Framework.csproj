@@ -161,19 +161,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpDX" Version="4.2.0" />
-    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D10" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
-    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" />
-    <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" />
+    <PackageReference Include="SharpDX" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D10" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" IncludeAssets="all" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Update="Game\RenderForm.cs"></Compile>
     <Compile Update="Game\RenderForm.*.cs">

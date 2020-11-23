@@ -35,7 +35,11 @@ namespace Exomia.Framework.Graphics
                                   in Vector2    origin,
                                   float         opacity)
         {
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             Vector2 tl = new Vector2(destination.Left + lineWidth, destination.Top + lineWidth);
             Vector2 tr = new Vector2(destination.Right - lineWidth, destination.Top + lineWidth);
@@ -140,7 +144,11 @@ namespace Exomia.Framework.Graphics
                                       in Vector2    origin,
                                       float         opacity)
         {
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             Item* ptr = Reserve(1);
 
@@ -152,15 +160,10 @@ namespace Exomia.Framework.Graphics
 
                     Vector2 corner = s_rectangleCornerOffsets[j];
 
-                    vertex->X = destination.X + (corner.X * destination.Width);
-                    vertex->Y = destination.Y + (corner.Y * destination.Height);
-
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    vertex->M = COLOR_MODE;
+                    vertex->X    = destination.X + (corner.X * destination.Width);
+                    vertex->Y    = destination.Y + (corner.Y * destination.Height);
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
                 }
             }
             else
@@ -176,60 +179,35 @@ namespace Exomia.Framework.Graphics
                     float   posX   = (destination.X - origin.X) + (corner.X * destination.Width);
                     float   posY   = (destination.Y - origin.Y) + (corner.Y * destination.Height);
 
-                    vertex->X = (float)((origin.X + (posX * cos)) - (posY * sin));
-                    vertex->Y = (float)(origin.Y + (posX * sin) + (posY * cos));
-
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    vertex->M = COLOR_MODE;
+                    vertex->X    = (float)((origin.X + (posX * cos)) - (posY * sin));
+                    vertex->Y    = (float)(origin.Y + (posX * sin) + (posY * cos));
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
                 }
             }
         }
 
-        private static void DrawRect(Item* ptr, in Line2 lineA, in Line2 lineB, in Color c)
+        private static void DrawRect(Item* ptr, in Line2 lineA, in Line2 lineB, in Vector4 c)
         {
             // p1
-            ptr->V1.XY = lineA.XY1;
-
-            ptr->V1.R = c.R;
-            ptr->V1.G = c.G;
-            ptr->V1.B = c.B;
-            ptr->V1.A = c.A;
-
-            ptr->V1.M = COLOR_MODE;
+            ptr->V1.XY   = lineA.XY1;
+            ptr->V1.RGBA = c;
+            ptr->V1.M    = COLOR_MODE;
 
             // p2
-            ptr->V2.XY = lineA.XY2;
-
-            ptr->V2.R = c.R;
-            ptr->V2.G = c.G;
-            ptr->V2.B = c.B;
-            ptr->V2.A = c.A;
-
-            ptr->V2.M = COLOR_MODE;
+            ptr->V2.XY   = lineA.XY2;
+            ptr->V2.RGBA = c;
+            ptr->V2.M    = COLOR_MODE;
 
             // p2'
-            ptr->V3.XY = lineB.XY2;
-
-            ptr->V3.R = c.R;
-            ptr->V3.G = c.G;
-            ptr->V3.B = c.B;
-            ptr->V3.A = c.A;
-
-            ptr->V3.M = COLOR_MODE;
+            ptr->V3.XY   = lineB.XY2;
+            ptr->V3.RGBA = c;
+            ptr->V3.M    = COLOR_MODE;
 
             // p1'
-            ptr->V4.XY = lineB.XY1;
-
-            ptr->V4.R = c.R;
-            ptr->V4.G = c.G;
-            ptr->V4.B = c.B;
-            ptr->V4.A = c.A;
-
-            ptr->V4.M = COLOR_MODE;
+            ptr->V4.XY   = lineB.XY1;
+            ptr->V4.RGBA = c;
+            ptr->V4.M    = COLOR_MODE;
         }
     }
 }

@@ -192,7 +192,11 @@ namespace Exomia.Framework.Graphics
                 }
             }
 
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             Rectangle  s = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
             RectangleF d = destination;
@@ -226,18 +230,13 @@ namespace Exomia.Framework.Graphics
 
                     Vector2 corner = s_rectangleCornerOffsets[j];
 
-                    vertex->X  = d.X + ((corner.X - origin.X) * d.Width);
-                    vertex->Y  = d.Y + ((corner.Y - origin.Y) * d.Height);
-                    vertex->ZW = tp;
-
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    corner    = s_rectangleCornerOffsets[j ^ (int)effects];
-                    vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
-                    vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;
+                    vertex->X    = d.X + ((corner.X - origin.X) * d.Width);
+                    vertex->Y    = d.Y + ((corner.Y - origin.Y) * d.Height);
+                    vertex->ZW   = tp;
+                    vertex->RGBA = scaledColor;
+                    corner       = s_rectangleCornerOffsets[j ^ (int)effects];
+                    vertex->U    = (s.X + (corner.X * s.Width)) * deltaX;
+                    vertex->V    = (s.Y + (corner.Y * s.Height)) * deltaY;
 
                     vertex->M = mode;
                 }
@@ -255,18 +254,13 @@ namespace Exomia.Framework.Graphics
                     float   posX   = (corner.X - origin.X) * d.Width;
                     float   posY   = (corner.Y - origin.Y) * d.Height;
 
-                    vertex->X  = (float)((d.X + (posX * cos)) - (posY * sin));
-                    vertex->Y  = (float)(d.Y + (posX * sin) + (posY * cos));
-                    vertex->ZW = tp;
-
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    corner    = s_rectangleCornerOffsets[j ^ (int)effects];
-                    vertex->U = (s.X + (corner.X * s.Width)) * deltaX;
-                    vertex->V = (s.Y + (corner.Y * s.Height)) * deltaY;
+                    vertex->X    = (float)((d.X + (posX * cos)) - (posY * sin));
+                    vertex->Y    = (float)(d.Y + (posX * sin) + (posY * cos));
+                    vertex->ZW   = tp;
+                    vertex->RGBA = scaledColor;
+                    corner       = s_rectangleCornerOffsets[j ^ (int)effects];
+                    vertex->U    = (s.X + (corner.X * s.Width)) * deltaX;
+                    vertex->V    = (s.Y + (corner.Y * s.Height)) * deltaY;
 
                     vertex->M = mode;
                 }

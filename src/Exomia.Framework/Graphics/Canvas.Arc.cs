@@ -65,7 +65,11 @@ namespace Exomia.Framework.Graphics
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (arc.Start == arc.End) { return; }
 
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             float r  = arc.Radius;
             float rh = (arc.Radius - lineWidth) * 0.685f;
@@ -197,7 +201,11 @@ namespace Exomia.Framework.Graphics
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (arc.Start == arc.End) { return; }
 
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             float u = arc.Start;
             float v = arc.End;
@@ -270,33 +278,27 @@ namespace Exomia.Framework.Graphics
 
                 Vector2 corner = s_arcCornerOffsets[i];
 
-                vertex->X = x + (corner.X * arc.Radius);
-                vertex->Y = y + (corner.Y * arc.Radius);
-                vertex->Z = x;
-                vertex->W = y;
-                
-                vertex->R = scaledColor.R;
-                vertex->G = scaledColor.G;
-                vertex->B = scaledColor.B;
-                vertex->A = scaledColor.A;
-
-                vertex->U = u;
-                vertex->V = v;
-
-                vertex->M = m;
-                vertex->O = arc.Radius;
+                vertex->X    = x + (corner.X * arc.Radius);
+                vertex->Y    = y + (corner.Y * arc.Radius);
+                vertex->Z    = x;
+                vertex->W    = y;
+                vertex->RGBA = scaledColor;
+                vertex->U    = u;
+                vertex->V    = v;
+                vertex->M    = m;
+                vertex->O    = arc.Radius;
             }
         }
 
-        private static void DrawArcRect(Item*    ptr,
-                                        in Line2 lineA,
-                                        in Line2 lineB,
-                                        in Color c,
-                                        float    z,
-                                        float    w,
-                                        float    u,
-                                        float    v,
-                                        float    o)
+        private static void DrawArcRect(Item*      ptr,
+                                        in Line2   lineA,
+                                        in Line2   lineB,
+                                        in Vector4 c,
+                                        float      z,
+                                        float      w,
+                                        float      u,
+                                        float      v,
+                                        float      o)
         {
             // ReSharper disable CompareOfFloatsByEqualityOperator
             float m = u == 0.0f && v == MathUtil.TwoPi ? BORDER_CIRCLE_MODE : BORDER_CIRCLE_ARC_MODE;
@@ -312,19 +314,13 @@ namespace Exomia.Framework.Graphics
                     vertex->XY = *(lf + i);
                 }
 
-                vertex->Z = z;
-                vertex->W = w;
-
-                vertex->R = c.R;
-                vertex->G = c.G;
-                vertex->B = c.B;
-                vertex->A = c.A;
-
-                vertex->U = u;
-                vertex->V = v;
-
-                vertex->M = m;
-                vertex->O = o;
+                vertex->Z    = z;
+                vertex->W    = w;
+                vertex->RGBA = c;
+                vertex->U    = u;
+                vertex->V    = v;
+                vertex->M    = m;
+                vertex->O    = o;
             }
 
             for (int i = 1; i >= 0; i--)
@@ -336,19 +332,13 @@ namespace Exomia.Framework.Graphics
                     vertex->XY = *(lf + i);
                 }
 
-                vertex->Z = z;
-                vertex->W = w;
-
-                vertex->R = c.R;
-                vertex->G = c.G;
-                vertex->B = c.B;
-                vertex->A = c.A;
-
-                vertex->U = u;
-                vertex->V = v;
-
-                vertex->M = m;
-                vertex->O = o;
+                vertex->Z    = z;
+                vertex->W    = w;
+                vertex->RGBA = c;
+                vertex->U    = u;
+                vertex->V    = v;
+                vertex->M    = m;
+                vertex->O    = o;
             }
         }
     }

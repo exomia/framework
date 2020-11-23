@@ -25,6 +25,8 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">        The color. </param>
         /// <param name="lineWidth">    The width of the line. </param>
         /// <param name="opacity">      The opacity. </param>
+        /// <param name="rotation">     The rotation. </param>
+        /// <param name="origin">       The origin. </param>
         /// <param name="lengthFactor"> (Optional) The length factor. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
@@ -32,9 +34,11 @@ namespace Exomia.Framework.Graphics
                              in Color   color,
                              float      lineWidth,
                              float      opacity,
+                             float      rotation,
+                             in Vector2 origin,
                              float      lengthFactor = 1.0f)
         {
-            DrawLine(new Line2(in point1, in point2), color, lineWidth, opacity, lengthFactor);
+            DrawLine(new Line2(in point1, in point2), color, lineWidth, opacity, rotation, origin, lengthFactor);
         }
 
         /// <summary>
@@ -44,17 +48,27 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">        The color. </param>
         /// <param name="lineWidth">    The width of the line. </param>
         /// <param name="opacity">      The opacity. </param>
+        /// <param name="rotation">     The rotation. </param>
+        /// <param name="origin">       The origin. </param>
         /// <param name="lengthFactor"> (Optional) The length factor. </param>
-        public void DrawLine(in Line2 line,
-                             in Color color,
-                             float    lineWidth,
-                             float    opacity,
-                             float    lengthFactor = 1.0f)
+        public void DrawLine(in Line2   line,
+                             in Color   color,
+                             float      lineWidth,
+                             float      opacity,
+                             float      rotation,
+                             in Vector2 origin,
+                             float      lengthFactor = 1.0f)
         {
-            Color scaledColor = color * opacity;
-            
-            float dx = line.X2 - line.X1;
-            float dy = line.Y2 - line.Y1;
+            Line2 l = rotation == 0.0f ? line : Line2.RotateAround(in line, rotation, origin);
+
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
+
+            float dx = l.X2 - l.X1;
+            float dy = l.Y2 - l.Y1;
 
             double dl = Math.Sqrt((dx * dx) + (dy * dy));
             float  nx = (float)((dy / dl) * lineWidth);
@@ -63,49 +77,29 @@ namespace Exomia.Framework.Graphics
             VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(1);
 
             // p1
-            vertex->XY = line.XY1;
-
-            vertex->R = scaledColor.R;
-            vertex->G = scaledColor.G;
-            vertex->B = scaledColor.B;
-            vertex->A = scaledColor.A;
-
-            vertex->M = COLOR_MODE;
+            vertex->XY   = l.XY1;
+            vertex->RGBA = scaledColor;
+            vertex->M    = COLOR_MODE;
             vertex++;
 
             // p2
-            vertex->XY = line.XY2;
-            
-            vertex->R = scaledColor.R;
-            vertex->G = scaledColor.G;
-            vertex->B = scaledColor.B;
-            vertex->A = scaledColor.A;
-
-            vertex->M = COLOR_MODE;
+            vertex->XY   = l.XY2;
+            vertex->RGBA = scaledColor;
+            vertex->M    = COLOR_MODE;
             vertex++;
 
             // p2'
-            vertex->X = line.X2 - nx;
-            vertex->Y = line.Y2 + ny;
-
-            vertex->R = scaledColor.R;
-            vertex->G = scaledColor.G;
-            vertex->B = scaledColor.B;
-            vertex->A = scaledColor.A;
-
-            vertex->M = COLOR_MODE;
+            vertex->X    = l.X2 - nx;
+            vertex->Y    = l.Y2 + ny;
+            vertex->RGBA = scaledColor;
+            vertex->M    = COLOR_MODE;
             vertex++;
 
             // p1'
-            vertex->X = line.X1 - nx;
-            vertex->Y = line.Y1 + ny;
-
-            vertex->R = scaledColor.R;
-            vertex->G = scaledColor.G;
-            vertex->B = scaledColor.B;
-            vertex->A = scaledColor.A;
-
-            vertex->M = COLOR_MODE;
+            vertex->X    = l.X1 - nx;
+            vertex->Y    = l.Y1 + ny;
+            vertex->RGBA = scaledColor;
+            vertex->M    = COLOR_MODE;
         }
     }
 }

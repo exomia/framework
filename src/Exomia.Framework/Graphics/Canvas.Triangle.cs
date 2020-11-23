@@ -49,7 +49,8 @@ namespace Exomia.Framework.Graphics
                                  in Vector2 origin,
                                  float      opacity)
         {
-            DrawTriangle(new Triangle2(in point1, in point2, in point3), color, lineWidth, rotation, in origin, opacity);
+            DrawTriangle(
+                new Triangle2(in point1, in point2, in point3), color, lineWidth, rotation, in origin, opacity);
         }
 
         /// <summary>
@@ -79,12 +80,17 @@ namespace Exomia.Framework.Graphics
                                  in Vector2   origin,
                                  float        opacity)
         {
-            Triangle2 t           = rotation == 0.0 ? triangle : Triangle2.RotateAround(in triangle, rotation, in origin);
-            Color     scaledColor = color * opacity;
+            Triangle2 t = rotation == 0.0 ? triangle : Triangle2.RotateAround(in triangle, rotation, in origin);
+
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             Line2 a              = new Line2(in t.XY1, in t.XY2);
             Line2 perpendicularA = a.GetPerpendicular(lineWidth);
-            
+
             Line2 b              = new Line2(in t.XY2, in t.XY3);
             Line2 perpendicularB = b.GetPerpendicular(lineWidth);
 
@@ -169,7 +175,11 @@ namespace Exomia.Framework.Graphics
                                      in Vector2   origin,
                                      float        opacity)
         {
-            Color scaledColor = color * opacity;
+            Vector4 scaledColor;
+            scaledColor.X = color.R * opacity;
+            scaledColor.Y = color.G * opacity;
+            scaledColor.Z = color.B * opacity;
+            scaledColor.W = color.A * opacity;
 
             Item* ptr = Reserve(1);
 
@@ -182,15 +192,11 @@ namespace Exomia.Framework.Graphics
                     fixed (Triangle2* t = &triangle)
                     {
                         Vector2* tf = (Vector2*)t;
-                        vertex->XY = *(tf + i );
+                        vertex->XY = *(tf + i);
                     }
 
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    vertex->M = COLOR_MODE;
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
                 }
             }
             else
@@ -210,12 +216,8 @@ namespace Exomia.Framework.Graphics
                         vertex->Y = (float)((sin * v.X) + (cos * v.Y) + origin.Y);
                     }
 
-                    vertex->R = scaledColor.R;
-                    vertex->G = scaledColor.G;
-                    vertex->B = scaledColor.B;
-                    vertex->A = scaledColor.A;
-
-                    vertex->M = COLOR_MODE;
+                    vertex->RGBA = scaledColor;
+                    vertex->M    = COLOR_MODE;
                 }
             }
 

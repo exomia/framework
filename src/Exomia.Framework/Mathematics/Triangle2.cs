@@ -32,7 +32,7 @@ namespace Exomia.Framework.Mathematics
         /// <summary>
         ///     The first y value.
         /// </summary>
-        [FieldOffset(4)] 
+        [FieldOffset(4)]
         public readonly float Y1;
 
         /// <summary>
@@ -44,13 +44,13 @@ namespace Exomia.Framework.Mathematics
         /// <summary>
         ///     The second y value.
         /// </summary>
-        [FieldOffset(8)] 
+        [FieldOffset(8)]
         public readonly float X2;
 
         /// <summary>
         ///     The second x value.
         /// </summary>
-        [FieldOffset(12)] 
+        [FieldOffset(12)]
         public readonly float Y2;
 
         /// <summary>
@@ -62,13 +62,13 @@ namespace Exomia.Framework.Mathematics
         /// <summary>
         ///     The third x value.
         /// </summary>
-        [FieldOffset(16)] 
+        [FieldOffset(16)]
         public readonly float X3;
 
         /// <summary>
         ///     The third y value.
         /// </summary>
-        [FieldOffset(20)] 
+        [FieldOffset(20)]
         public readonly float Y3;
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Exomia.Framework.Mathematics
         /// </summary>
         [FieldOffset(16)]
         public readonly Vector2 XY3;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
         /// </summary>
@@ -86,7 +86,8 @@ namespace Exomia.Framework.Mathematics
         /// <param name="y2"> The second y value. </param>
         /// <param name="x3"> The third x value. </param>
         /// <param name="y3"> The third y value. </param>
-        public Triangle2(float x1, float y1, float x2, float y2, float x3, float y3) : this()
+        public Triangle2(float x1, float y1, float x2, float y2, float x3, float y3)
+            : this()
         {
             X1 = x1;
             Y1 = y1;

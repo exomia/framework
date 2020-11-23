@@ -39,7 +39,7 @@ namespace Exomia.Framework.Graphics
 
             [FieldOffset(4)]
             public float Y;
-            
+
             [FieldOffset(0)]
             public Vector2 XY;
 
@@ -53,16 +53,19 @@ namespace Exomia.Framework.Graphics
             public long ZW;
 
             [FieldOffset(16)]
-            public float R;
+            public readonly float R;
 
             [FieldOffset(20)]
-            public float G;
+            public readonly float G;
 
             [FieldOffset(24)]
-            public float B;
+            public readonly float B;
 
             [FieldOffset(28)]
-            public float A;
+            public readonly float A;
+
+            [FieldOffset(16)]
+            public Vector4 RGBA;
 
             [FieldOffset(32)]
             public float U;
