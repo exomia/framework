@@ -1,0 +1,195 @@
+﻿/** Shaderdefinition
+ *
+ * group DEFAULT
+ *  vs VSMain vs_5_0 OptimizationLevel3
+ *  ps PSMain ps_5_0 OptimizationLevel3
+ */
+
+Texture2D g_Texture1 : register(t0);
+Texture2D g_Texture2 : register(t1);
+Texture2D g_Texture3 : register(t2);
+Texture2D g_Texture4 : register(t3);
+Texture2D g_Texture5 : register(t4);
+Texture2D g_Texture6 : register(t5);
+Texture2D g_Texture7 : register(t6);
+Texture2D g_Texture8 : register(t7);
+
+
+Texture2D g_FontTexture1 : register(t8);
+Texture2D g_FontTexture2 : register(t9);
+Texture2D g_FontTexture3 : register(t10);
+Texture2D g_FontTexture4 : register(t11);
+
+SamplerState g_Sampler : register(s0);
+
+cbuffer PerFrame : register(b0)
+{
+	float4x4 g_WorldViewProjectionMatrix;
+};
+
+struct VS_INPUT
+{
+	float4 p  : SV_POSITION0;
+	float4 c  : COLOR0;
+    float2 uv : TEXCOORD0;
+    float2 mo : TEXCOORD1;
+};
+
+struct PS_INPUT
+{
+    float4 p  : SV_POSITION0;
+	float4 c  : COLOR0;
+    float2 uv : TEXCOORD0;
+    float2 mo : TEXCOORD1;
+    float2 zw : TEXCOORD2;
+};
+
+PS_INPUT VSMain(VS_INPUT input)
+{
+    PS_INPUT output = (PS_INPUT)0;
+    output.zw = input.p.zw;
+    output.p = mul(float4(input.p.xy, 0.0f, 1.0f), g_WorldViewProjectionMatrix);
+	output.c = input.c / 255.0f;
+    output.uv = input.uv;
+    output.mo = input.mo;
+	return output;
+}
+
+#define COLOR_MODE             0.0f
+#define TEXTURE_MODE           1.0f
+#define FONT_TEXTURE_MODE      2.0f
+#define FILL_CIRCLE_MODE       3.0f
+#define FILL_CIRCLE_ARC_MODE   4.0f
+#define BORDER_CIRCLE_MODE     5.0f
+#define BORDER_CIRCLE_ARC_MODE 6.0f
+
+#define PI 3.141593f
+
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    switch (input.mo.x)
+    {
+        default:
+        case COLOR_MODE:
+            return input.c;
+        case TEXTURE_MODE:
+            {
+                switch (input.mo.y)
+                {
+                    case 0.0f:
+                        return g_Texture1.Sample(g_Sampler, input.uv) * input.c;
+                    case 1.0f:
+                        return g_Texture2.Sample(g_Sampler, input.uv) * input.c;
+                    case 2.0f:
+                        return g_Texture3.Sample(g_Sampler, input.uv) * input.c;
+                    case 3.0f:
+                        return g_Texture4.Sample(g_Sampler, input.uv) * input.c;
+                    case 4.0f:
+                        return g_Texture5.Sample(g_Sampler, input.uv) * input.c;
+                    case 5.0f:
+                        return g_Texture6.Sample(g_Sampler, input.uv) * input.c;
+                    case 6.0f:
+                        return g_Texture7.Sample(g_Sampler, input.uv) * input.c;
+                }
+                return g_Texture8.Sample(g_Sampler, input.uv) * input.c;
+            }
+        case FONT_TEXTURE_MODE:
+            {
+                switch (input.mo.y)
+                {
+                    case 0.0f:
+                        return g_FontTexture1.Sample(g_Sampler, input.uv) * input.c;
+                    case 1.0f:
+                        return g_FontTexture2.Sample(g_Sampler, input.uv) * input.c;
+                    case 2.0f:
+                        return g_FontTexture3.Sample(g_Sampler, input.uv) * input.c;
+                }
+                return g_FontTexture4.Sample(g_Sampler, input.uv) * input.c;
+            }
+        case FILL_CIRCLE_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+                float radius = input.mo.y;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+       
+                if (ls > radius * radius)         
+                    discard;
+        
+                return input.c;
+            }
+        case FILL_CIRCLE_ARC_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+                float radius = input.mo.y;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+       
+                if (ls < radius * radius)
+                {
+                    float start = input.uv.x;
+                    float end = input.uv.y;
+            
+                    float anglePositive = atan2(d.y, d.x) + PI;
+                    float angleNegative = atan2(d.y, d.x) - PI;
+            
+                    if (anglePositive >= start && anglePositive <= end ||
+                        angleNegative >= start && angleNegative <= end)
+                    {
+                        return input.c;
+                    }
+                }
+                discard;
+                return float4(0, 0, 0, 0);
+            }
+        case BORDER_CIRCLE_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+                
+                float r = float(((uint)input.mo.y >> 16) / 10.0f);
+                float l = float(((uint)input.mo.y & 0xffff) / 10.0f);
+            
+                if (ls > r * r || ls < l * l)         
+                    discard;
+        
+                return input.c;
+            }
+        case BORDER_CIRCLE_ARC_MODE:
+            {
+                float2 p = input.p;
+                float2 center = input.zw;
+            
+                float2 d = center - p;
+                float ls = (d.x * d.x) + (d.y * d.y);
+                
+                float r = float(((uint) input.mo.y >> 16) / 10.0f);
+                float l = float(((uint) input.mo.y & 0xffff) / 10.0f);
+            
+                if (ls < r * r && ls > l * l)
+                {
+                    float start = input.uv.x;
+                    float end = input.uv.y;
+            
+                    float anglePositive = atan2(d.y, d.x) + PI;
+                    float angleNegative = atan2(d.y, d.x) - PI;
+            
+                    if (anglePositive >= start && anglePositive <= end ||
+                        angleNegative >= start && angleNegative <= end)
+                    {
+                        return input.c;
+                    }
+                }
+            
+                discard;
+                return float4(0, 0, 0, 0);
+            }
+    }
+}

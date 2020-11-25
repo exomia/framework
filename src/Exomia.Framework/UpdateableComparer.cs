@@ -30,16 +30,6 @@ namespace Exomia.Framework
                 return 0;
             }
 
-            if (left == null)
-            {
-                return 1;
-            }
-
-            if (right == null)
-            {
-                return -1;
-            }
-
             return left.UpdateOrder < right.UpdateOrder ? 1 : -1;
         }
     }

@@ -15,9 +15,9 @@ using Exomia.Framework.ContentSerialization.Exceptions;
 namespace Exomia.Framework.ContentSerialization
 {
     /// <summary>
-    ///     ContentSerializationContext class
+    ///     A content serialization context. This class cannot be inherited.
     /// </summary>
-    public class ContentSerializationContext
+    public sealed class ContentSerializationContext
     {
         internal Dictionary<string, ContentSerializationContextValue> Content { get; } =
             new Dictionary<string, ContentSerializationContextValue>();
@@ -72,24 +72,13 @@ namespace Exomia.Framework.ContentSerialization
         }
     }
 
-    /// <summary>
-    ///     A content serialization context value.
-    /// </summary>
     struct ContentSerializationContextValue
     {
-        /// <summary>
-        ///     The type.
-        /// </summary>
-        public Type Type;
-
-        /// <summary>
-        ///     The object.
-        /// </summary>
+        public Type   Type;
         public object Object;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentSerializationContextValue" />
-        ///     struct.
+        ///     Initializes a new instance of the <see cref="ContentSerializationContextValue" /> struct.
         /// </summary>
         /// <param name="type"> The type. </param>
         /// <param name="obj">  The object. </param>

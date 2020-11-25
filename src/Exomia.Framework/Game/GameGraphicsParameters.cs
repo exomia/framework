@@ -124,5 +124,54 @@ namespace Exomia.Framework.Game
         ///     The output index.
         /// </summary>
         public int OutputIndex;
+
+        /// <summary>
+        ///     Creates a new <see cref="GameGraphicsParameters" /> object with default settings.
+        /// </summary>
+        /// <param name="handle"> The handle. </param>
+        /// <param name="width">
+        ///     (Optional)
+        ///     Define the width of the <see cref="SwapChain4" />.
+        /// </param>
+        /// <param name="height">
+        ///     (Optional)
+        ///     Define the height of the <see cref="SwapChain4" />.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="GameGraphicsParameters" />.
+        /// </returns>
+        public static GameGraphicsParameters Create(IntPtr handle, int width = 1024, int height = 768)
+        {
+            return new GameGraphicsParameters
+            {
+                Handle      = handle,
+                BufferCount = 1,
+#if DEBUG
+                DeviceCreationFlags =
+                    DeviceCreationFlags.BgraSupport |
+                    DeviceCreationFlags.Debug,
+#else
+                DeviceCreationFlags =
+                    DeviceCreationFlags.BgraSupport,
+#endif
+                DriverType             = DriverType.Hardware,
+                Format                 = Format.B8G8R8A8_UNorm,
+                Width                  = width,
+                Height                 = height,
+                DisplayType            = DisplayType.Window,
+                IsMouseVisible         = false,
+                Rational               = new Rational(60, 1),
+                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
+                SwapEffect             = SwapEffect.Discard,
+                Usage                  = Usage.RenderTargetOutput,
+                UseVSync               = false,
+                WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
+                EnableMultiSampling    = false,
+                MultiSampleCount       = MultiSampleCount.None,
+                AdapterLuid            = -1,
+                OutputIndex            = -1,
+                ClipCursor             = false
+            };
+        }
     }
 }

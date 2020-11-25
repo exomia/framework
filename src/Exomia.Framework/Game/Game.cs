@@ -19,9 +19,6 @@ using Exomia.Framework.Input;
 using Exomia.Framework.Tools;
 using Exomia.Framework.Win32;
 using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 
 namespace Exomia.Framework.Game
 {
@@ -44,10 +41,9 @@ namespace Exomia.Framework.Game
         private readonly List<IUpdateable>              _updateableComponent;
         private readonly IServiceRegistry               _serviceRegistry;
         private readonly DisposeCollector               _collector;
-        private readonly IGameWindowInitialize          _gameWindowInitialize;
         private readonly IInputDevice                   _inputDevice;
         private readonly IContentManager                _contentManager;
-        private readonly IGameWindow                    _gameWindow;
+        private readonly GamePlatform                   _platform;
         private readonly GraphicsDevice                 _graphicsDevice;
         private          bool                           _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
@@ -81,7 +77,7 @@ namespace Exomia.Framework.Game
         /// </value>
         public IGameWindow GameWindow
         {
-            get { return _gameWindow; }
+            get { return _platform.MainWindow; }
         }
 
         /// <summary>
@@ -126,10 +122,10 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     Gets or sets the target elapsed time.
+        ///     Gets or sets the target elapsed time in ms.
         /// </summary>
         /// <value>
-        ///     The target elapsed time.
+        ///     The target elapsed time in ms.
         /// </value>
         public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
 
@@ -157,16 +153,14 @@ namespace Exomia.Framework.Game
             _collector       = new DisposeCollector();
             _serviceRegistry = new ServiceRegistry();
 
-            // TODO: use a factory?
-            WinFormsGameWindow gameWindow = new WinFormsGameWindow(title);
-            gameWindow.FormClosing += (ref bool cancel) => { Shutdown(); };
-
-            _gameWindowInitialize = gameWindow;
-            _serviceRegistry.AddService(_gameWindow = gameWindow);
-
             _serviceRegistry.AddService<IGraphicsDevice>(_graphicsDevice = new GraphicsDevice());
             _serviceRegistry.AddService(_contentManager                  = new ContentManager(_serviceRegistry));
-            _serviceRegistry.AddService(_inputDevice                     = gameWindow.RenderForm);
+
+            _platform = GamePlatform.Create(this, title);
+            _serviceRegistry.AddService(_platform.MainWindow);
+
+            // NOTE: The input device should be registered during the platform creation!
+            _inputDevice = _serviceRegistry.GetService<IInputDevice>();
         }
 
         /// <summary>
@@ -178,12 +172,12 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     add a new game system.
+        ///     Adds an item to the game.
         /// </summary>
         /// <typeparam name="T"> T. </typeparam>
         /// <param name="item"> item. </param>
         /// <returns>
-        ///     <c>true</c> if successfully added; <c>false</c> otherwise.
+        ///     The item.
         /// </returns>
         public T Add<T>(T item)
         {
@@ -281,12 +275,12 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     add a new game system.
+        ///     Remove an item from the game.
         /// </summary>
-        /// <typeparam name="T"> T. </typeparam>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="item"> item. </param>
         /// <returns>
-        ///     <c>true</c> if successfully added; <c>false</c> otherwise.
+        ///     The item.
         /// </returns>
         public T Remove<T>(T item)
         {
@@ -343,7 +337,7 @@ namespace Exomia.Framework.Game
         }
 
         /// <summary>
-        ///     get a game system by name.
+        ///     Get a game component by its name.
         /// </summary>
         /// <param name="name">   the game system name. </param>
         /// <param name="system"> [out] out found game system. </param>
@@ -364,7 +358,7 @@ namespace Exomia.Framework.Game
         {
             if (_isRunning)
             {
-                throw new InvalidOperationException("Can't run this instance while it is already running.");
+                throw new InvalidOperationException("The instance is already running!");
             }
 
             _isRunning = true;
@@ -373,6 +367,9 @@ namespace Exomia.Framework.Game
             {
                 Initialize();
                 LoadContent();
+
+                _platform.ShowMainWindow();
+
                 Renderloop();
                 UnloadContent();
             }
@@ -425,6 +422,7 @@ namespace Exomia.Framework.Game
                 }
 
                 Update(gameTime);
+
                 if (BeginFrame())
                 {
                     Draw(gameTime);
@@ -434,9 +432,9 @@ namespace Exomia.Framework.Game
                 if (IsFixedTimeStep)
                 {
                     //SLEEP
-                    while (TargetElapsedTime - stopwatch.Elapsed.TotalMilliseconds > FIXED_TIMESTAMP_THRESHOLD)
+                    while (TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds)
                     {
-                        Thread.Sleep(1);
+                        Thread.Yield();
                     }
 
                     //IDLE
@@ -482,39 +480,11 @@ namespace Exomia.Framework.Game
         /// </summary>
         private void InitializeGameGraphicsParameters()
         {
-            GameGraphicsParameters parameters = new GameGraphicsParameters
-            {
-                BufferCount = 1,
-#if DEBUG
-                DeviceCreationFlags =
-                    DeviceCreationFlags.BgraSupport |
-                    DeviceCreationFlags.Debug,
-#else
-                DeviceCreationFlags =
-                    DeviceCreationFlags.BgraSupport,
-#endif
-                DriverType             = DriverType.Hardware,
-                Format                 = Format.B8G8R8A8_UNorm,
-                Width                  = 1024,
-                Height                 = 768,
-                DisplayType            = DisplayType.Window,
-                IsMouseVisible         = false,
-                Rational               = new Rational(60, 1),
-                SwapChainFlags         = SwapChainFlags.AllowModeSwitch,
-                SwapEffect             = SwapEffect.Discard,
-                Usage                  = Usage.RenderTargetOutput,
-                UseVSync               = false,
-                WindowAssociationFlags = WindowAssociationFlags.IgnoreAll,
-                EnableMultiSampling    = false,
-                MultiSampleCount       = MultiSampleCount.None,
-                AdapterLuid            = -1,
-                OutputIndex            = -1,
-                ClipCursor             = false
-            };
+            GameGraphicsParameters parameters = GameGraphicsParameters.Create(IntPtr.Zero);
 
             OnInitializeGameGraphicsParameters(ref parameters);
 
-            _gameWindowInitialize.Initialize(ref parameters);
+            _platform.Initialize(ref parameters);
             _graphicsDevice.Initialize(ref parameters);
 
             GameGraphicsParameters = parameters;
@@ -544,8 +514,8 @@ namespace Exomia.Framework.Game
                 OnInitialize();
                 InitializePendingInitializations();
                 _isInitialized = true;
+
                 OnAfterInitialize();
-                _gameWindowInitialize.Show();
             }
         }
 
@@ -570,7 +540,6 @@ namespace Exomia.Framework.Game
         {
             if (!_isContentLoaded)
             {
-                _isContentLoaded = true;
                 OnLoadContent();
 
                 lock (_contentableComponent)
@@ -584,6 +553,8 @@ namespace Exomia.Framework.Game
                 }
 
                 _currentlyContentableComponent.Clear();
+
+                _isContentLoaded = true;
             }
         }
 
@@ -607,11 +578,12 @@ namespace Exomia.Framework.Game
                 _currentlyContentableComponent.Clear();
 
                 OnUnloadContent();
+
                 _isContentLoaded = false;
             }
         }
 
-        #endregion Content
+        #endregion
 
         #region Update
 
@@ -789,10 +761,10 @@ namespace Exomia.Framework.Game
         #region IDisposable Support
 
         /// <summary>
-        ///     adds a IDisposable object to the dispose collector.
+        ///     Adds a <see cref="IDisposable" /> object to the dispose collector.
         /// </summary>
-        /// <typeparam name="T"> . </typeparam>
-        /// <param name="obj"> . </param>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="obj"> The object. </param>
         /// <returns>
         ///     Obj as a T.
         /// </returns>
@@ -801,9 +773,6 @@ namespace Exomia.Framework.Game
             return _collector.Collect(obj);
         }
 
-        /// <summary>
-        ///     True if disposed.
-        /// </summary>
         private bool _disposed;
 
         /// <summary>
@@ -845,9 +814,10 @@ namespace Exomia.Framework.Game
                     _gameComponents.Clear();
                     _pendingInitializables.Clear();
 
+                    _platform.Dispose();
+
                     _contentManager.Dispose();
                     _graphicsDevice.Dispose();
-                    _gameWindow.Dispose();
                 }
                 _collector.DisposeAndClear(disposing);
 

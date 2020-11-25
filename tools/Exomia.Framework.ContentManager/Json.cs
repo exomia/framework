@@ -42,8 +42,8 @@ namespace Exomia.Framework.ContentManager
 
         public static T? Deserialize<T>(Stream s) where T : class
         {
-            using (var sr = new StreamReader(s))
-            using (var jr = new JsonTextReader(sr))
+            using (StreamReader? sr = new StreamReader(s))
+            using (JsonTextReader? jr = new JsonTextReader(sr))
             {
                 return s_jsonSerializer.Deserialize<T>(jr);
             }
@@ -51,7 +51,7 @@ namespace Exomia.Framework.ContentManager
 
         public static T? Deserialize<T>(string filePath) where T : class
         {
-            using (var sr = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+            using (FileStream? sr = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
             {
                 return Deserialize<T>(sr);
             }

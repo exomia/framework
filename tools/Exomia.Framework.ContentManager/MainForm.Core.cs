@@ -104,7 +104,8 @@ namespace Exomia.Framework.ContentManager
                         Path.Combine(_projectFile!.Location, item.VirtualPath, item.Name));
                     if (description == null) { return; }
 
-                    using (var jsonEditorForm = new JsonEditorForm(description) { Text = $"Edit font '{item.Name}'" })
+                    using (JsonEditorForm? jsonEditorForm =
+                        new JsonEditorForm(description) { Text = $"Edit font '{item.Name}'" })
                     {
                         if (jsonEditorForm.ShowDialog() != DialogResult.OK)
                         {

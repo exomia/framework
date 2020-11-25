@@ -277,6 +277,15 @@ namespace Exomia.Framework.Collections
             }
 
             /// <summary>
+            ///     Invalidates this object.
+            /// </summary>
+            internal void Invalidate()
+            {
+                Next     = null;
+                Previous = null;
+            }
+
+            /// <summary>
             ///     Implicit cast that converts the given LinkedListNode to a T.
             /// </summary>
             /// <param name="node"> The node. </param>
@@ -286,15 +295,6 @@ namespace Exomia.Framework.Collections
             public static implicit operator T(LinkedListNode node)
             {
                 return node.Item;
-            }
-
-            /// <summary>
-            ///     Invalidates this object.
-            /// </summary>
-            internal void Invalidate()
-            {
-                Next     = null;
-                Previous = null;
             }
         }
 

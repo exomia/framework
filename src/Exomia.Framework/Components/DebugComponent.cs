@@ -38,7 +38,6 @@ namespace Exomia.Framework.Components
                       _sampleBuffer;
 
         private IGameWindow? _gameWindow;
-        private Vector2      _position1;
         private int          _sampleCount, _totalFrames;
         private SpriteBatch? _spriteBatch;
         private string       _title = string.Empty;
@@ -71,13 +70,18 @@ namespace Exomia.Framework.Components
 
             if (EnableTitleInformation)
             {
-                _gameWindow!.Title = _title + " " + _fpsInfo;
+                _gameWindow!.Title = $"{_title} {_fpsInfo}";
             }
 
             _spriteBatch!.Begin();
 
             _spriteBatch.DrawText(
-                _arial12Px!, _fpsInfo, _position1, _fpsCurrent <= FRAME_DANGER_THRESHOLD ? Color.Red : Color.White,
+                _arial12Px!,
+                _fpsInfo,
+                Vector2.Zero,
+                _fpsCurrent <= FRAME_DANGER_THRESHOLD
+                    ? Color.Red
+                    : Color.White,
                 0.0f);
 
             _spriteBatch.End();
@@ -136,9 +140,7 @@ namespace Exomia.Framework.Components
             IGraphicsDevice graphicsDevice = registry.GetService<IGraphicsDevice>();
             _spriteBatch = new SpriteBatch(graphicsDevice);
 
-            _position1 = new Vector2(0, 0);
-
-            _gpuName = graphicsDevice.Adapter.Desc3.Description;
+            _gpuName = graphicsDevice.Adapter?.Desc3.Description ?? "<unknown>";
         }
 
         /// <inheritdoc />

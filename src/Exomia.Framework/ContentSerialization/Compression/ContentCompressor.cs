@@ -16,12 +16,12 @@ using System.Linq;
 namespace Exomia.Framework.ContentSerialization.Compression
 {
     /// <summary>
-    ///     ContentCompressor class.
+    ///     A content compressor.
     /// </summary>
     public static class ContentCompressor
     {
         /// <summary>
-        ///     the default compressed e1 extension.
+        ///     The default compressed e1 extension.
         /// </summary>
         public const string DEFAULT_COMPRESSED_EXTENSION = ".e1";
 
@@ -29,7 +29,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         private static readonly byte[] s_magicHeader = { 64, 101, 120, 49 };
 
         /// <summary>
-        ///     compress a given stream with the given compression mode.
+        ///     Compress a given stream with the given compression mode.
         /// </summary>
         /// <param name="stream">       the stream to compress. </param>
         /// <param name="streamOut">    [out] than finished the compressed out stream. </param>
@@ -71,7 +71,7 @@ namespace Exomia.Framework.ContentSerialization.Compression
         }
 
         /// <summary>
-        ///     decompress a given stream with the given compression mode.
+        ///     Decompress a given stream with the given compression mode.
         /// </summary>
         /// <param name="stream">    the stream to compress. </param>
         /// <param name="streamOut"> [out] than finished the decompressed out stream. </param>
@@ -115,11 +115,6 @@ namespace Exomia.Framework.ContentSerialization.Compression
 
         #region GZIP
 
-        /// <summary>
-        ///     Gzip compress.
-        /// </summary>
-        /// <param name="stream">    the stream to compress. </param>
-        /// <param name="streamOut"> [out] than finished the compressed out stream. </param>
         private static void GzipCompress(Stream stream, Stream streamOut)
         {
             using (GZipStream gs = new GZipStream(streamOut, CompressionLevel.Optimal, true))
@@ -134,11 +129,6 @@ namespace Exomia.Framework.ContentSerialization.Compression
             streamOut.Position = 0;
         }
 
-        /// <summary>
-        ///     Gzip decompress.
-        /// </summary>
-        /// <param name="stream">    the stream to compress. </param>
-        /// <param name="streamOut"> [out] than finished the compressed out stream. </param>
         private static void GzipDecompress(Stream stream, out Stream streamOut)
         {
             streamOut = new MemoryStream();

@@ -38,7 +38,7 @@ namespace Exomia.Framework
 
         /// <summary>
         ///     Gets a value indicating whether the <see cref="Draw" /> method should be called by
-        ///     <see cref="Game" />.
+        ///     the <see cref="Game" />.
         /// </summary>
         /// <value>
         ///     <c>true</c> if this drawable component is visible; otherwise, <c>false</c>.

@@ -37,13 +37,13 @@ namespace Exomia.Framework.ContentManager
         /// </returns>
         public ProjectFile CreateProjectFile()
         {
-            var directoryInfo = new DirectoryInfo(Path.Combine(locationTb.Text, nameTb.Text));
+            DirectoryInfo? directoryInfo = new DirectoryInfo(Path.Combine(locationTb.Text, nameTb.Text));
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
 
-            var projectFile = new ProjectFile(nameTb.Text, directoryInfo.FullName)
+            ProjectFile? projectFile = new ProjectFile(nameTb.Text, directoryInfo.FullName)
             {
                 Content = new ContentPropertyGridItem
                 {
@@ -73,7 +73,7 @@ namespace Exomia.Framework.ContentManager
         {
             if (string.IsNullOrEmpty(locationTb.Text) || string.IsNullOrEmpty(nameTb.Text)) { return; }
 
-            var fileInfo = new FileInfo(Path.Combine(locationTb.Text, nameTb.Text, $"{nameTb.Text}.ecp"));
+            FileInfo? fileInfo = new FileInfo(Path.Combine(locationTb.Text, nameTb.Text, $"{nameTb.Text}.ecp"));
             if (fileInfo.Exists)
             {
                 // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault

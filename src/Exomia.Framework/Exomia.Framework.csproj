@@ -8,10 +8,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <NullableReferenceTypes>true</NullableReferenceTypes>
+    <DefineConstants>TRACE;$(Platform)</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup>
-    <Version>1.4.1</Version>
     <Company>exomia</Company>
     <Authors>exomia;saika01</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
@@ -42,16 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">DEBUG;TRACE;x86</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">DEBUG;TRACE;$(Platform)</DefineConstants>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <DefineConstants Condition="'$(Platform)'=='AnyCPU'">TRACE;x86</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'!='AnyCPU'">TRACE;$(Platform)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
@@ -65,7 +62,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <NoWarn>1701;1702;IDE0063</NoWarn>
+    <NoWarn>1701;1702;IDE0063;IDE0079</NoWarn>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ApplicationIcon>logo_x192_Hcn_icon.ico</ApplicationIcon>
@@ -103,6 +100,7 @@
     <None Remove="Resources\arial_68px.e1" />
     <None Remove="Resources\arial_70px.e1" />
     <None Remove="Resources\arial_72px.e1" />
+    <None Remove="Resources\shaders\canvas.ehlsl" />
     <None Remove="Resources\shaders\position_color.ehlsl" />
     <None Remove="Resources\shaders\position_color_texture.ehlsl" />
     <None Remove="Resources\shaders\position_normal_texture.ehlsl" />
@@ -151,6 +149,7 @@
     <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1">
       <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_38px.e1</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\shaders\canvas.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_color.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl" />
     <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl" />
@@ -162,23 +161,51 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpDX" Version="4.2.0" />
-    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D10" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
-    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" />
-    <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" />
+    <PackageReference Include="SharpDX" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D10" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" IncludeAssets="all" />
+    <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" IncludeAssets="all" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Update="Game\RenderForm.cs"></Compile>
     <Compile Update="Game\RenderForm.*.cs">
       <DependentUpon>RenderForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Mathematics\Math2.cs"></Compile>
+    <Compile Update="Mathematics\Math2.*.cs">
+      <DependentUpon>Math2.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Graphics\SpriteBatch.cs"></Compile>
+    <Compile Update="Graphics\SpriteBatch.*.cs">
+      <DependentUpon>SpriteBatch.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Graphics\Canvas.cs"></Compile>
+    <Compile Update="Graphics\Canvas.*.cs">
+      <DependentUpon>Canvas.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Graphics\SpriteFont.cs"></Compile>
+    <Compile Update="Graphics\SpriteFont.*.cs">
+      <DependentUpon>SpriteFont.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   

@@ -15,7 +15,7 @@ namespace Exomia.Framework.Input
     /// </summary>
     /// <param name="mouseEventArgs"> In mouse event information. </param>
     /// <returns>
-    ///     <c>true</c> if the mouse event was handled; <c>false</c> otherwise.
+    ///     An <see cref="EventAction" />.
     /// </returns>
-    public delegate bool MouseEventHandler(in MouseEventArgs mouseEventArgs);
+    public delegate EventAction MouseEventHandler(in MouseEventArgs mouseEventArgs);
 }

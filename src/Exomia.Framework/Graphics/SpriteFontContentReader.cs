@@ -15,16 +15,13 @@ using Exomia.Framework.ContentSerialization;
 
 namespace Exomia.Framework.Graphics
 {
-    /// <summary>
-    ///     A sprite font content reader. This class cannot be inherited.
-    /// </summary>
     sealed class SpriteFontContentReader : IContentReader
     {
         /// <inheritdoc />
         public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
         {
             SpriteFont font = ContentSerializer.Read<SpriteFont>(parameters.Stream);
-            if (font.ImageData == null)
+            if (font.ImageData.Length <= 0)
             {
                 return null;
             }
@@ -34,9 +31,11 @@ namespace Exomia.Framework.Graphics
 
             try
             {
-                using MemoryStream ms = new MemoryStream(font.ImageData) { Position = 0 };
-                font.Texture = Texture.Load(graphicsDevice.Device, ms) ??
-                               throw new NullReferenceException($"{nameof(font.Texture)}");
+                using (MemoryStream ms = new MemoryStream(font.ImageData) { Position = 0 })
+                {
+                    font.Texture = Texture.Load(graphicsDevice.Device, ms) ??
+                                   throw new NullReferenceException($"{nameof(font.Texture)}");
+                }
             }
             catch { return null; }
 

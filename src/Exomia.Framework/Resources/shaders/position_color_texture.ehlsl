@@ -1,6 +1,6 @@
 /** Shaderdefinition
  *
- * technique DEFAULT
+ * group DEFAULT
  *  vs VSMain vs_5_0 OptimizationLevel3
  *  ps PSMain ps_5_0 OptimizationLevel3
  */

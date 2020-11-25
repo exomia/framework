@@ -28,7 +28,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
         private          EntityManager _entityManager = null!;
 
         // ReSharper disable once NotAccessedField.Local
-        private Entity _player = null!;
+        private Entity         _player         = null!;
         private InputComponent _inputComponent = null!;
 
         /// <inheritdoc />
@@ -38,7 +38,21 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
             _mapRenderer = Add(
                 new MapRenderer("mapRenderer") { DrawOrder = 1, Visible = true });
         }
-        
+
+        /// <inheritdoc />
+        public void RegisterInput(IInputDevice device)
+        {
+            device.RegisterKeyDown(OnKeyDown);
+            device.RegisterKeyUp(OnKeyUp);
+        }
+
+        /// <inheritdoc />
+        public void UnregisterInput(IInputDevice device)
+        {
+            device.UnregisterKeyUp(OnKeyDown);
+            device.UnregisterKeyUp(OnKeyUp);
+        }
+
         /// <inheritdoc />
         protected override void OnInitialize(IServiceRegistry registry)
         {
@@ -154,20 +168,6 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
                     ),
                     References = Array.Empty<string>()
                 });
-        }
-
-        /// <inheritdoc />
-        public void RegisterInput(IInputDevice device)
-        {
-            device.RegisterKeyDown(OnKeyDown);
-            device.RegisterKeyUp(OnKeyUp);
-        }
-
-        /// <inheritdoc />
-        public void UnregisterInput(IInputDevice device)
-        {
-            device.UnregisterKeyUp(OnKeyDown);
-            device.UnregisterKeyUp(OnKeyUp);
         }
 
         private bool OnKeyDown(int keyValue, KeyModifier modifiers)

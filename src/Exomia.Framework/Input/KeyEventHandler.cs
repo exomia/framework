@@ -18,25 +18,25 @@ namespace Exomia.Framework.Input
     /// <param name="keyValue">  The key value. </param>
     /// <param name="modifiers"> The modifiers. </param>
     /// <returns>
-    ///     <c>true</c> if the key event was handled; <c>false</c> otherwise.
+    ///     An <see cref="EventAction" />.
     /// </returns>
-    public delegate bool KeyEventHandler(int keyValue, KeyModifier modifiers);
+    public delegate EventAction KeyEventHandler(int keyValue, KeyModifier modifiers);
 
     /// <summary>
     ///     Delegate for handling key press events.
     /// </summary>
     /// <param name="key"> The key. </param>
     /// <returns>
-    ///     <c>true</c> if the key press event was handled; <c>false</c> otherwise.
+    ///     An <see cref="EventAction" />.
     /// </returns>
-    public delegate bool KeyPressEventHandler(char key);
+    public delegate EventAction KeyPressEventHandler(char key);
 
     /// <summary>
     ///     Delegate for handling raw key events.
     /// </summary>
     /// <param name="message"> The message. </param>
     /// <returns>
-    ///     <c>true</c> if the message event was handled; <c>false</c> otherwise.
+    ///     An <see cref="EventAction" />.
     /// </returns>
-    public delegate bool RawKeyEventHandler(in Message message);
+    public delegate EventAction RawKeyEventHandler(in Message message);
 }

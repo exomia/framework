@@ -116,8 +116,8 @@ namespace Exomia.Framework.ContentManager
                                                                  .OfType<FolderPropertyGridItem>()
                                                                  .OrderBy(p => p.VirtualPath!.Length))
                             {
-                                var n = GetNodeFromPath(node, f.VirtualPath!)
-                                     ?? throw new InvalidDataException("The project file is corrupt!");
+                                TreeNode? n = GetNodeFromPath(node, f.VirtualPath!)
+                                           ?? throw new InvalidDataException("The project file is corrupt!");
                                 int nodeCount = n.GetNodeCount(false);
                                 n = n.Nodes.Add(
                                     $"{FOLDER_KEY_PREFIX}{nodeCount}", f.Name, 1, 1);
@@ -129,8 +129,8 @@ namespace Exomia.Framework.ContentManager
                                                                .Resources
                                                                .OfType<ItemPropertyGridItem>())
                             {
-                                var n = GetNodeFromPath(node, i.VirtualPath!)
-                                     ?? throw new InvalidDataException("The project file is corrupt!");
+                                TreeNode? n = GetNodeFromPath(node, i.VirtualPath!)
+                                           ?? throw new InvalidDataException("The project file is corrupt!");
                                 int nodeCount = n.GetNodeCount(false);
                                 n = n.Nodes.Add(
                                     $"{FONT_KEY_PREFIX}{nodeCount}", i.Name, 4, 4);
@@ -364,7 +364,7 @@ namespace Exomia.Framework.ContentManager
             treeView1.InvokeIfRequired(
                 x =>
                 {
-                    var selectedNode = x.SelectedNode ?? x.TopNode;
+                    TreeNode? selectedNode = x.SelectedNode ?? x.TopNode;
                     if (selectedNode == null) { return; }
                     int selectedNodeCount = selectedNode.GetNodeCount(false);
 
@@ -375,7 +375,7 @@ namespace Exomia.Framework.ContentManager
                         di.Create();
                     }
 
-                    var node = selectedNode.Nodes.Add($"{FOLDER_KEY_PREFIX}{selectedNodeCount}", di.Name, 1, 1);
+                    TreeNode? node = selectedNode.Nodes.Add($"{FOLDER_KEY_PREFIX}{selectedNodeCount}", di.Name, 1, 1);
                     node.Tag = _projectFile.AddResource(
                         new FolderPropertyGridItem
                         {
@@ -409,11 +409,11 @@ namespace Exomia.Framework.ContentManager
             treeView1.InvokeIfRequired(
                 x =>
                 {
-                    var selectedNode = x.SelectedNode ?? x.TopNode;
+                    TreeNode? selectedNode = x.SelectedNode ?? x.TopNode;
                     if (selectedNode == null) { return; }
                     int selectedNodeCount = selectedNode.GetNodeCount(false);
 
-                    using (var jsonEditorForm = new JsonEditorForm(
+                    using (JsonEditorForm? jsonEditorForm = new JsonEditorForm(
                         new FontDescription
                         {
                             Name     = "Arial",
@@ -442,7 +442,7 @@ namespace Exomia.Framework.ContentManager
 
                             jsonEditorForm.Save(fntFilePath);
 
-                            var node = selectedNode.Nodes.Add(
+                            TreeNode? node = selectedNode.Nodes.Add(
                                 $"{FONT_KEY_PREFIX}{selectedNodeCount}",
                                 Path.GetFileName(fntFilePath), 4, 4);
                             node.Tag = _projectFile.AddResource(

@@ -1,18 +1,18 @@
 ﻿/** Shaderdefinition
  * 
- * technique VERTEX_LIGHTING_PHONG
+ * group VERTEX_LIGHTING_PHONG
  *  vs VS_VERTEX_LIGHTING_PHONG vs_5_0 OptimizationLevel3
  *  ps PS_VERTEX_LIGHTING ps_5_0 OptimizationLevel3
  *
- * technique VERTEX_LIGHTING_BLINNPHONG
+ * group VERTEX_LIGHTING_BLINNPHONG
  *  vs VS_VERTEX_LIGHTING_BLINNPHONG vs_5_0 OptimizationLevel3
  *  ps PS_VERTEX_LIGHTING ps_5_0 OptimizationLevel3
  *
- * technique PIXEL_LIGHTING_PHONG
+ * group PIXEL_LIGHTING_PHONG
  *  vs VS_PIXEL_LIGHTING_PHONG vs_5_0 OptimizationLevel3
  *  ps PS_PIXEL_LIGHTING_PHONG ps_5_0 OptimizationLevel3
  *
- * technique PIXEL_LIGHTING_BLINNPHONG
+ * group PIXEL_LIGHTING_BLINNPHONG
  *  vs VS_PIXEL_LIGHTING_BLINNPHONG vs_5_0 OptimizationLevel3
  *  ps PS_PIXEL_LIGHTING_BLINNPHONG ps_5_0 OptimizationLevel3
  */
@@ -40,15 +40,15 @@ struct Material
 //--------------------------------------------------------------------------------------
 cbuffer PerFrame : register(b0)
 {
-	float4x4 g_WorldMatrix;
 	float4x4 g_ViewMatrix;
 	float4x4 g_ProjectionMatrix;
-	float4x4 g_WorldViewProjectionMatrix;
+	float4x4 g_ViewProjectionMatrix;
 	float3 g_EyeVector;
 };
 
 cbuffer PerObject : register(b1)
 {
+    float4x4 g_TransformMatrix;
 	Material g_Material;
 };
 
@@ -59,7 +59,7 @@ struct VS_INPUT
 {
 	float4 p : SV_POSITION0;
 	float3 n : NORMAL0;
-	float2 t : TEXCOORD0;
+    float2 t : TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
@@ -74,10 +74,10 @@ struct PS_INPUT_PV
 
 struct PS_INPUT_PP_PHONG
 {
-	float4 p : SV_POSITION;
+	float4 p  : SV_POSITION;
 	float4 wp : POSITION;
-	float2 t : TEXCOORD;
-	float3 n : TEXCOORD1;
+	float2 t  : TEXCOORD;
+	float3 n  : TEXCOORD1;
 };
 
 struct PS_INPUT_PP_BLINNPHONG
@@ -131,13 +131,13 @@ PS_INPUT_PV VS_VERTEX_LIGHTING_PHONG(VS_INPUT input)
 	PS_INPUT_PV output;
 
 	//transform position to clip space
-	output.p = mul(input.p, g_WorldViewProjectionMatrix);
+	output.p = mul(input.p, mul(g_TransformMatrix, g_ViewProjectionMatrix));
 
 	//set texture coords
 	output.t = input.t;
 
 	//calculate lighting vectors
-	float3 n = normalize(mul(input.n, (float3x3)g_WorldMatrix));
+    float3 n = normalize(mul(input.n, (float3x3)g_TransformMatrix));
 	float3 v = normalize(g_EyeVector - (float3)input.p);
 	//DONOT USE -light.dir since the reflection returns a ray from the surface	
 	float3 r = reflect(light.direction, n);
@@ -156,14 +156,14 @@ PS_INPUT_PV VS_VERTEX_LIGHTING_BLINNPHONG(VS_INPUT input)
 	PS_INPUT_PV output;
 
 	//transform position to clip space
-	output.p = mul(input.p, g_WorldViewProjectionMatrix);
+    output.p = mul(input.p, mul(g_TransformMatrix, g_ViewProjectionMatrix));
 
 	//set texture coords
 	output.t = input.t;
-
+	
 	//calculate lighting
-	float3 n = normalize(mul(input.n, (float3x3)g_WorldMatrix));
-	float3 v = normalize(g_EyeVector - (float3)input.p);
+    float3 n = normalize(mul(input.n, (float3x3)g_TransformMatrix));
+    float3 v = normalize(g_EyeVector - (float3)input.p);
 	float3 h = normalize(-light.direction + v);
 
 	//calculate per vertex lighting intensity and interpolate it like a color
@@ -178,7 +178,7 @@ PS_INPUT_PV VS_VERTEX_LIGHTING_BLINNPHONG(VS_INPUT input)
 float4 PS_VERTEX_LIGHTING(PS_INPUT_PV input) : SV_Target
 {
 	//with texturing
-	return input.i * g_Texture.Sample(g_Sampler, input.t);
+    return input.i * g_Texture.Sample(g_Sampler, input.t);
 }
 
 //--------------------------------------------------------------------------------------
@@ -189,14 +189,14 @@ PS_INPUT_PP_PHONG VS_PIXEL_LIGHTING_PHONG(VS_INPUT input)
 	PS_INPUT_PP_PHONG output;
 
 	//transform position to clip space - keep worldspace position
-	output.wp = mul(input.p, g_WorldMatrix);
-	output.p = mul(input.p, g_WorldViewProjectionMatrix);
+    output.wp = mul(input.p, g_TransformMatrix);
+    output.p = mul(input.p, mul(g_TransformMatrix, g_ViewProjectionMatrix));
 
 	//set texture coords
 	output.t = input.t;
 
 	//set required lighting vectors for interpolation
-	output.n = normalize(mul(input.n, (float3x3)g_WorldMatrix));
+    output.n = normalize(mul(input.n, (float3x3) g_TransformMatrix));
 
 	return output;
 }
@@ -225,14 +225,14 @@ PS_INPUT_PP_BLINNPHONG VS_PIXEL_LIGHTING_BLINNPHONG(VS_INPUT input)
 	PS_INPUT_PP_BLINNPHONG output;
 
 	//set position into clip space
-	output.p = mul(input.p, g_WorldViewProjectionMatrix);
+    output.p = mul(input.p, mul(g_TransformMatrix, g_ViewProjectionMatrix));
 
 	//set texture coords
 	output.t = input.t;
 
 	//set required lighting vectors for interpolation
 	float3 v = normalize(g_EyeVector - (float3)input.p);
-	output.n = normalize(mul(input.n, (float3x3)g_WorldMatrix));
+    output.n = normalize(mul(input.n, (float3x3)g_TransformMatrix));
 	output.h = normalize(-light.direction + v);
 
 	return output;

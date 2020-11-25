@@ -24,7 +24,7 @@ namespace Exomia.Framework.ContentManager
 
         private void OnLoad(object sender, EventArgs e)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            Assembly? assembly = Assembly.GetExecutingAssembly();
             Text                = $"About {assembly.GetCustomAttribute<AssemblyTitleAttribute>().Title}";
             productNameLbl.Text = assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
             versionLbl.Text     = $"Version {assembly.GetName().Version}";

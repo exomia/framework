@@ -41,47 +41,52 @@ namespace Exomia.Framework.Graphics
         public event EventHandler<ViewportF>? ResizeFinished;
 
         private Adapter4?          _adapter4;
-        private RenderTargetView1? _currentRenderView;
-        private Device5?           _d3DDevice5;
-        private DeviceContext4?    _d3DDeviceContext;
-        private DepthStencilView?  _depthStencilView;
-        private Device4?           _dxgiDevice4;
-        private Factory5?          _dxgiFactory;
-        private bool               _needResize;
-        private Output6?           _output6;
-        private RenderTargetView1? _renderView1;
+        private RenderTargetView1  _currentRenderView  = null!;
+        private Device5            _d3DDevice5         = null!;
+        private DeviceContext4     _d3DDeviceContext   = null!;
+        private DepthStencilView   _depthStencilView   = null!;
+        private Device4            _dxgiDevice4        = null!;
+        private Factory5           _dxgiFactory        = null!;
+        private Output6            _output6            = null!;
+        private RenderTargetView1  _renderView1        = null!;
+        private SwapChain4         _swapChain4         = null!;
+        private BlendStates        _blendStates        = null!;
+        private DepthStencilStates _depthStencilStates = null!;
+        private RasterizerStates   _rasterizerStates   = null!;
+        private SamplerStates      _samplerStates      = null!;
+        private Textures           _textures           = null!;
         private ResizeParameters   _resizeParameters;
-        private SwapChain4?        _swapChain4;
+        private bool               _needResize;
         private int                _vSync;
 
         /// <inheritdoc />
-        public Adapter4 Adapter
+        public Adapter4? Adapter
         {
-            get { return _adapter4!; }
+            get { return _adapter4; }
         }
 
         /// <inheritdoc />
         public Device5 Device
         {
-            get { return _d3DDevice5!; }
+            get { return _d3DDevice5; }
         }
 
         /// <inheritdoc />
         public DeviceContext4 DeviceContext
         {
-            get { return _d3DDeviceContext!; }
+            get { return _d3DDeviceContext; }
         }
 
         /// <inheritdoc />
         public Device4 DxgiDevice
         {
-            get { return _dxgiDevice4!; }
+            get { return _dxgiDevice4; }
         }
 
         /// <inheritdoc />
         public Factory5 Factory
         {
-            get { return _dxgiFactory!; }
+            get { return _dxgiFactory; }
         }
 
         /// <inheritdoc />
@@ -90,13 +95,13 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public RenderTargetView1 RenderView
         {
-            get { return _renderView1!; }
+            get { return _renderView1; }
         }
 
         /// <inheritdoc />
         public SwapChain4 SwapChain
         {
-            get { return _swapChain4!; }
+            get { return _swapChain4; }
         }
 
         /// <inheritdoc />
@@ -110,6 +115,36 @@ namespace Exomia.Framework.Graphics
         }
 
         /// <inheritdoc />
+        public BlendStates BlendStates
+        {
+            get { return _blendStates; }
+        }
+
+        /// <inheritdoc />
+        public DepthStencilStates DepthStencilStates
+        {
+            get { return _depthStencilStates; }
+        }
+
+        /// <inheritdoc />
+        public RasterizerStates RasterizerStates
+        {
+            get { return _rasterizerStates; }
+        }
+
+        /// <inheritdoc />
+        public SamplerStates SamplerStates
+        {
+            get { return _samplerStates; }
+        }
+
+        /// <inheritdoc />
+        public Textures Textures
+        {
+            get { return _textures; }
+        }
+
+        /// <inheritdoc />
         public void Clear()
         {
             Clear(Color.CornflowerBlue);
@@ -118,9 +153,9 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void Clear(Color color)
         {
-            _d3DDeviceContext!.ClearDepthStencilView(
-                _depthStencilView!, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
-            _d3DDeviceContext!.ClearRenderTargetView(_currentRenderView!, color);
+            _d3DDeviceContext.ClearDepthStencilView(
+                _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            _d3DDeviceContext!.ClearRenderTargetView(_currentRenderView, color);
         }
 
         /// <inheritdoc />
@@ -141,7 +176,7 @@ namespace Exomia.Framework.Graphics
         {
             _resizeParameters = new ResizeParameters
             {
-                BufferCount    = _swapChain4!.Description1.BufferCount,
+                BufferCount    = _swapChain4.Description1.BufferCount,
                 Width          = width,
                 Height         = height,
                 SwapChainFlags = _swapChain4.Description1.Flags
@@ -154,21 +189,21 @@ namespace Exomia.Framework.Graphics
         {
             if (GetFullscreenState() != state)
             {
-                _swapChain4!.SetFullscreenState(state, output);
+                _swapChain4.SetFullscreenState(state, output);
             }
         }
 
         /// <inheritdoc />
         public bool GetFullscreenState()
         {
-            return _swapChain4!.IsFullScreen;
+            return _swapChain4.IsFullScreen;
         }
 
         /// <inheritdoc />
         public void SetRenderTarget(RenderTargetView1? target)
         {
             _currentRenderView = target ?? _renderView1;
-            _d3DDeviceContext!.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
+            _d3DDeviceContext.OutputMerger.SetRenderTargets(_depthStencilView, _currentRenderView);
         }
 
         /// <summary>
@@ -192,11 +227,11 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         public void EndFrame()
         {
-            _swapChain4!.Present(_vSync, PresentFlags.None, s_defaultPresentParameters);
+            _swapChain4.Present(_vSync, PresentFlags.None, s_defaultPresentParameters);
         }
 
         /// <summary>
-        ///     Initializes this object.
+        ///     Initializes the <see cref="GraphicsDevice" />.
         /// </summary>
         /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         public void Initialize(ref GameGraphicsParameters parameters)
@@ -242,10 +277,10 @@ namespace Exomia.Framework.Graphics
                                           featureLevel: SharpDX.Direct3D11.Device.GetSupportedFeatureLevel(a)))
                                 .GroupBy(t => t.featureLevel)
                                 .OrderByDescending(t => t.Key)
-                                .FirstOrDefault()
+                                .First()
                                 .Select(k => k.adapter);
 
-                _adapter4 = null!;
+                _adapter4 = null;
                 foreach (Adapter adapter in adapters)
                 {
                     using (adapter)
@@ -299,7 +334,7 @@ namespace Exomia.Framework.Graphics
                     Console.WriteLine($"Scaling:\t\t{modeDescription.Scaling}");
                     Console.WriteLine($"ScanlineOrdering:\t{modeDescription.ScanlineOrdering}");
                     Console.WriteLine();
-                    Console.WriteLine($"DeviceName:\t\t{_output6!.Description.DeviceName}");
+                    Console.WriteLine($"DeviceName:\t\t{_output6.Description.DeviceName}");
                     Console.WriteLine(
                         $"DesktopBounds:\t\t{_output6.Description.DesktopBounds.Left};{_output6.Description.DesktopBounds.Top};{_output6.Description.DesktopBounds.Right};{_output6.Description.DesktopBounds.Bottom}");
                     Console.WriteLine($"MonitorHandle:\t\t{_output6.Description.MonitorHandle}");
@@ -351,7 +386,7 @@ namespace Exomia.Framework.Graphics
 
             _dxgiFactory.MakeWindowAssociation(parameters.Handle, parameters.WindowAssociationFlags);
 
-            _swapChain4!.ResizeTarget(ref modeDescription);
+            _swapChain4.ResizeTarget(ref modeDescription);
 
             SetFullscreenState(parameters.DisplayType == DisplayType.Fullscreen);
 
@@ -365,6 +400,12 @@ namespace Exomia.Framework.Graphics
 
             Resize(_resizeParameters);
 
+            _blendStates        = new BlendStates(this);
+            _depthStencilStates = new DepthStencilStates(this);
+            _rasterizerStates   = new RasterizerStates(this);
+            _samplerStates      = new SamplerStates(this);
+            _textures           = new Textures(this);
+
             IsInitialized = true;
         }
 
@@ -373,9 +414,9 @@ namespace Exomia.Framework.Graphics
             Utilities.Dispose(ref _renderView1);
             Utilities.Dispose(ref _depthStencilView);
 
-            _d3DDeviceContext!.ClearState();
+            _d3DDeviceContext.ClearState();
 
-            _swapChain4!.ResizeBuffers(
+            _swapChain4.ResizeBuffers(
                 args.BufferCount, args.Width, args.Height, Format.Unknown, args.SwapChainFlags);
 
             using (Texture2D backBuffer = _swapChain4.GetBackBuffer<Texture2D>(0))
@@ -410,7 +451,7 @@ namespace Exomia.Framework.Graphics
                     });
             }
 
-            _d3DDeviceContext!.Rasterizer.SetViewport(Viewport = new Viewport(0, 0, args.Width, args.Height));
+            _d3DDeviceContext.Rasterizer.SetViewport(Viewport = new Viewport(0, 0, args.Width, args.Height));
 
             SetRenderTarget(null);
 
@@ -453,6 +494,13 @@ namespace Exomia.Framework.Graphics
             {
                 if (disposing)
                 {
+                    _blendStates.Dispose();
+                    _depthStencilStates.Dispose();
+                    _rasterizerStates.Dispose();
+                    _samplerStates.Dispose();
+
+                    _textures.Dispose();
+
                     Utilities.Dispose(ref _depthStencilView);
                     Utilities.Dispose(ref _renderView1);
                     Utilities.Dispose(ref _dxgiDevice4);

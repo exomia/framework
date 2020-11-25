@@ -22,24 +22,24 @@ namespace Exomia.Framework.Example.JumpAndRun.Systems
     {
         MapRenderer MapRenderer { get; set; }
     }
-    
+
     [EntitySystemConfiguration(
         nameof(CollisionSystem), EntitySystemType.Update, After = new[] { nameof(PhysicSystem) })]
     sealed class CollisionSystem : EntitySystemBaseR2<PositionComponent, VelocityComponent>, ICollisionSystem
     {
         private MapRenderer _mapRenderer = null!;
-        
+
         /// <inheritdoc />
         public MapRenderer MapRenderer
         {
             get { return _mapRenderer; }
             set { _mapRenderer = value; }
         }
-        
+
         /// <inheritdoc />
         public CollisionSystem(EntityManager manager)
             : base(manager) { }
-        
+
         /// <inheritdoc />
         protected override void Tick(GameTime gameTime, Entity entity, PositionComponent c1, VelocityComponent c2)
         {

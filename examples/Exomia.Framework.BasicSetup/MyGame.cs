@@ -57,6 +57,7 @@ namespace Exomia.Framework.BasicSetup
         protected override void OnInitialize()
         {
             Content.RootDirectory = "Content";
+            _spriteBatch          = ToDispose(new SpriteBatch(GraphicsDevice));
 
             /*
              * TODO: Add your initialization logic here
@@ -67,8 +68,6 @@ namespace Exomia.Framework.BasicSetup
         /// OnLoadContent will be called once per game and is the place to load all of your content.
         protected override void OnLoadContent()
         {
-            _spriteBatch = ToDispose(new SpriteBatch(GraphicsDevice));
-
             /*
              * TODO: use base.Content to load your game content here
              */

@@ -78,29 +78,6 @@ namespace Exomia.Framework.ContentManager
                 });
         }
 
-        private static bool IsNumber(object? value)
-        {
-            return value is sbyte
-                || value is byte
-                || value is short
-                || value is ushort
-                || value is int
-                || value is uint
-                || value is long
-                || value is ulong
-                || value is float
-                || value is double
-                || value is decimal;
-        }
-
-        private static void ForAll<T>(Action<T> action, params T[] items)
-        {
-            foreach (T item in items)
-            {
-                action(item);
-            }
-        }
-
         private void Clear()
         {
             richTextBox1.InvokeIfRequired(
@@ -112,7 +89,7 @@ namespace Exomia.Framework.ContentManager
             richTextBox1.InvokeIfRequired(
                 x =>
                 {
-                    var matches = Regex.Matches(text, "\\{([0-9]+)(?:\\:([A-Za-z]+))?\\}");
+                    MatchCollection? matches = Regex.Matches(text, "\\{([0-9]+)(?:\\:([A-Za-z]+))?\\}");
 
                     if (matches.Count <= 0)
                     {
@@ -173,6 +150,29 @@ namespace Exomia.Framework.ContentManager
         {
             Save();
             _projectFile = null;
+        }
+
+        private static bool IsNumber(object? value)
+        {
+            return value is sbyte
+                || value is byte
+                || value is short
+                || value is ushort
+                || value is int
+                || value is uint
+                || value is long
+                || value is ulong
+                || value is float
+                || value is double
+                || value is decimal;
+        }
+
+        private static void ForAll<T>(Action<T> action, params T[] items)
+        {
+            foreach (T item in items)
+            {
+                action(item);
+            }
         }
 
         private class NodeSorter : IComparer

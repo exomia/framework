@@ -41,7 +41,7 @@ namespace Exomia.Framework.Graphics
         /// <value>
         ///     The adapter.
         /// </value>
-        Adapter4 Adapter { get; }
+        Adapter4? Adapter { get; }
 
         /// <summary>
         ///     Gets the device.
@@ -106,6 +106,46 @@ namespace Exomia.Framework.Graphics
         ///     True if synchronise, false if not.
         /// </value>
         bool VSync { get; set; }
+
+        /// <summary>
+        ///     Gets the <see cref="Graphics.BlendStates" /> for this graphics device.
+        /// </summary>
+        /// <value>
+        ///     The blend states.
+        /// </value>
+        BlendStates BlendStates { get; }
+
+        /// <summary>
+        ///     Gets the <see cref="Graphics.DepthStencilStates" /> for this graphics device.
+        /// </summary>
+        /// <value>
+        ///     The depth stencil states.
+        /// </value>
+        DepthStencilStates DepthStencilStates { get; }
+
+        /// <summary>
+        ///     Gets the <see cref="Graphics.RasterizerStates" /> for this graphics device.
+        /// </summary>
+        /// <value>
+        ///     The rasterizer states.
+        /// </value>
+        RasterizerStates RasterizerStates { get; }
+
+        /// <summary>
+        ///     Gets the <see cref="Graphics.SamplerStates" /> for this graphics device.
+        /// </summary>
+        /// <value>
+        ///     The sample states.
+        /// </value>
+        SamplerStates SamplerStates { get; }
+
+        /// <summary>
+        ///     Gets the <see cref="Graphics.Textures" /> for this graphics device.
+        /// </summary>
+        /// <value>
+        ///     The textures.
+        /// </value>
+        Textures Textures { get; }
 
         /// <summary>
         ///     Clears this object to its blank/initial state.

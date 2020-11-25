@@ -125,6 +125,28 @@ namespace Exomia.Framework.ContentSerialization.Types
             Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
         }
 
+        /// <summary>
+        ///     Writes.
+        /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="writeHandler"> The write handler. </param>
+        /// <param name="tabSpace">     The tab space. </param>
+        /// <param name="key">          The key. </param>
+        /// <param name="content">      The content. </param>
+        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
+        private void Write<T>(Action<string, string> writeHandler,
+                              string                 tabSpace,
+                              string                 key,
+                              List<T>                content,
+                              bool                   useTypeInfo = true)
+        {
+            writeHandler(
+                tabSpace,
+                $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}({content.Count})]");
+            ForeachListDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
+            writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
+        }
+
         #region WriteHelper
 
         /// <summary>
@@ -154,28 +176,6 @@ namespace Exomia.Framework.ContentSerialization.Types
         }
 
         #endregion
-
-        /// <summary>
-        ///     Writes.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="writeHandler"> The write handler. </param>
-        /// <param name="tabSpace">     The tab space. </param>
-        /// <param name="key">          The key. </param>
-        /// <param name="content">      The content. </param>
-        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        private void Write<T>(Action<string, string> writeHandler,
-                              string                 tabSpace,
-                              string                 key,
-                              List<T>                content,
-                              bool                   useTypeInfo = true)
-        {
-            writeHandler(
-                tabSpace,
-                $"[{key}:{(useTypeInfo ? CreateTypeInfo(content.GetType()) : string.Empty)}({content.Count})]");
-            ForeachListDimension(writeHandler, tabSpace + ContentSerializer.TABSPACE, content);
-            writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
-        }
 
         #region ReaderHelper
 
