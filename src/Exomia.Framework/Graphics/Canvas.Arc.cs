@@ -304,16 +304,11 @@ namespace Exomia.Framework.Graphics
             float m = u == 0.0f && v == MathUtil.TwoPi ? BORDER_CIRCLE_MODE : BORDER_CIRCLE_ARC_MODE;
 
             // ReSharper enable CompareOfFloatsByEqualityOperator
-
+            Vector2* laPtr = (Vector2*)Unsafe.AsPointer(ref Unsafe.AsRef(lineA));
             for (int i = 0; i < 2; i++)
             {
                 VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
-                fixed (Line2* t = &lineA)
-                {
-                    Vector2* lf = (Vector2*)t;
-                    vertex->XY = *(lf + i);
-                }
-
+                vertex->XY   = *(laPtr + i);
                 vertex->Z    = z;
                 vertex->W    = w;
                 vertex->RGBA = c;
@@ -322,16 +317,11 @@ namespace Exomia.Framework.Graphics
                 vertex->M    = m;
                 vertex->O    = o;
             }
-
+            Vector2* lbPtr = (Vector2*)Unsafe.AsPointer(ref Unsafe.AsRef(lineB));
             for (int i = 1; i >= 0; i--)
             {
                 VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + 2 + (1 - i);
-                fixed (Line2* t = &lineB)
-                {
-                    Vector2* lf = (Vector2*)t;
-                    vertex->XY = *(lf + i);
-                }
-
+                vertex->XY   = *(lbPtr + i);
                 vertex->Z    = z;
                 vertex->W    = w;
                 vertex->RGBA = c;

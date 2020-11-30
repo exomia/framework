@@ -46,10 +46,10 @@ namespace Exomia.Framework
         bool Visible { get; }
 
         /// <summary>
-        ///     Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw.
+        ///     Starts the drawing of a frame. This method is followed by calls to <see cref="Draw"/> and <see cref="EndDraw"/>.
         /// </summary>
         /// <returns>
-        ///     <c>true</c> if Draw should occur, <c>false</c> otherwise.
+        ///     <c>true</c> if the <see cref="Draw"/> method should be called, <c>false</c> otherwise.
         /// </returns>
         bool BeginDraw();
 
@@ -60,7 +60,7 @@ namespace Exomia.Framework
         void Draw(GameTime gameTime);
 
         /// <summary>
-        ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.
+        ///     Ends the drawing of a frame. This method is preceded by calls to <see cref="Draw"/> and <see cref="BeginDraw"/>.
         /// </summary>
         void EndDraw();
     }

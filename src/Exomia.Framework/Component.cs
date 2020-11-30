@@ -136,12 +136,12 @@ namespace Exomia.Framework
         protected virtual void OnUnloadContent(IServiceRegistry registry) { }
 
         /// <summary>
-        ///     adds a <see cref="IDisposable" /> object to the dispose collector.
+        ///     Adds an <see cref="IDisposable" /> object to the dispose collector.
         /// </summary>
-        /// <typeparam name="T"> IDisposable. </typeparam>
-        /// <param name="obj"> object to add. </param>
+        /// <typeparam name="T"> The <see cref="IDisposable"/> object type. </typeparam>
+        /// <param name="obj"> The object to add. </param>
         /// <returns>
-        ///     same obj.
+        ///     The <paramref name="obj"/>.
         /// </returns>
         protected T ToDispose<T>(T obj)
         {

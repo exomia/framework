@@ -8,11 +8,16 @@
 
 #endregion
 
+using System;
 using Exomia.Framework.Components;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
+using Exomia.Framework.Input;
 using Exomia.Framework.Mathematics;
 using Exomia.Framework.Resources;
+using Exomia.Framework.UI;
+using Exomia.Framework.UI.Brushes;
+using Exomia.Framework.UI.Controls;
 using SharpDX;
 
 namespace Exomia.Framework.Example.Canvas
@@ -81,9 +86,9 @@ namespace Exomia.Framework.Example.Canvas
         protected override void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters)
         {
             parameters.IsMouseVisible      = true;
-            parameters.Width               = 1600;
-            parameters.Height              = 1024;
-            parameters.EnableMultiSampling = true;
+            parameters.Width               = 1920;
+            parameters.Height              = 1080;
+            parameters.EnableMultiSampling = false;
             parameters.MultiSampleCount    = MultiSampleCount.MsaaX8;
         }
 
@@ -95,10 +100,51 @@ namespace Exomia.Framework.Example.Canvas
             _spriteBatch          = ToDispose(new SpriteBatch(GraphicsDevice));
             _canvas               = ToDispose(new Graphics.Canvas(GraphicsDevice));
 
+            var uiManager = Add(new UiManager("uiManager")
+            {
+                Visible = true,
+                DrawOrder = 1
+            });
+            
+            var container = new Container
+            {
+                Enabled = true,
+                Visible = true,
+                BackgroundBrush = new SolidColorBrush(Color.Orange),
+                ClientRectangle = new RectangleF(50,800,400,200)
+            };
+            container.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("entered...");
+            }; 
+            container.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("leaved...");
+            };
+            var container2 = new Container
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.BlueViolet),
+                ClientRectangle = new RectangleF(50, 50, 150, 75)
+            };
+            container2.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("2 entered...");
+            };
+            container2.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("2 leaved...");
+            };
+            container.Add(container2);
+            uiManager.Add(container);
+
             /*
              * TODO: Add your initialization logic here
              */
         }
+
+
 
         /// <inheritdoc />
         /// OnLoadContent will be called once per game and is the place to load all of your content.
@@ -140,7 +186,6 @@ namespace Exomia.Framework.Example.Canvas
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
             _canvas.Begin(rasterizerState: GraphicsDevice.RasterizerStates.CullBackDepthClipOffMultiSampleOn);
 
             k += gameTime.DeltaTimeS / 2;
@@ -159,11 +204,11 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawFillRectangle(new RectangleF(200, 200, 100, 50), Color.Yellow, k, new Vector2(200, 200), 1.0f);
             _canvas.DrawRectangle(new RectangleF(200, 200, 100, 50), Color.Green, 5.0f, k, new Vector2(200, 200), 1.0f);
 
-            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 1.0f, 0, Vector2.Zero);
-            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, 1.0f, k, new Vector2(425, 425));
+            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, k, new Vector2(425, 425), 1.0f);
 
-            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 1.0f, 0, Vector2.Zero);
-            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f, k, new Vector2(425, 425));
+            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, k, new Vector2(425, 425), 1.0f);
 
             _canvas.DrawFillPolygon(polyA, Color.Red, 0.0f, Vector2.Zero, 1.0f);
             _canvas.DrawPolygon(polyA, Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
@@ -271,7 +316,9 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
 
             _canvas.DrawText(_spriteFont1_12Px, "This is the canvas example.", new Vector2(450, 50), Color.Black, 0);
-            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black, k, new Vector2(450, 65), 1.0f, TextureEffects.None);
+            _canvas.DrawText(
+                _spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black, k,
+                new Vector2(450, 65), 1.0f, TextureEffects.None);
 
             _canvas.End();
 
