@@ -294,6 +294,7 @@ namespace Exomia.Framework.UI
                     {
                         return eventAction;
                     }
+                    Interlocked.Exchange(ref _enteredControl, _enteredControl._parent);
                 }
             }
             return EventAction.Continue;
