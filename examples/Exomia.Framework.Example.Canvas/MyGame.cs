@@ -100,23 +100,19 @@ namespace Exomia.Framework.Example.Canvas
             _spriteBatch          = ToDispose(new SpriteBatch(GraphicsDevice));
             _canvas               = ToDispose(new Graphics.Canvas(GraphicsDevice));
 
-            var uiManager = Add(new UiManager("uiManager")
-            {
-                Visible = true,
-                DrawOrder = 1
-            });
-            
+            var uiManager = Add(new UiManager("uiManager") { Visible = true, DrawOrder = 1 });
+
             var container = new Container
             {
-                Enabled = true,
-                Visible = true,
+                Enabled         = true,
+                Visible         = true,
                 BackgroundBrush = new SolidColorBrush(Color.Orange),
-                ClientRectangle = new RectangleF(50,800,400,200)
+                ClientRectangle = new RectangleF(50, 800, 400, 200)
             };
             container.MouseEntered += (Control sender, in MouseEventArgs args) =>
             {
                 Console.WriteLine("entered...");
-            }; 
+            };
             container.MouseLeaved += (Control sender, in MouseEventArgs args) =>
             {
                 Console.WriteLine("leaved...");
@@ -139,12 +135,63 @@ namespace Exomia.Framework.Example.Canvas
             container.Add(container2);
             uiManager.Add(container);
 
+            _spriteFont1_12Px = Content.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
+            _spriteFont1_24Px = Content.Load<SpriteFont>(Fonts.ARIAL_24_PX, true);
+
+            var label1 = new Label(_spriteFont1_24Px, "Hello there!")
+            {
+                Enabled         = true, 
+                Visible         = true, 
+                BackgroundBrush = new BorderBrush(Color.BlueViolet),
+                ClientRectangle = new RectangleF(900, 800, 400, 80),
+                TextAlignment   = TextAlignment.MiddleCenter
+            };
+            label1.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                label1.Text = "entered...";
+            };
+            label1.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                label1.Text = "leaved...";
+            };
+            uiManager.Add(label1);
+
+            var button1 = new Button(_spriteFont1_24Px, "click me!")
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.Yellow),
+                ClientRectangle = new RectangleF(900, 900, 400, 80),
+                TextAlignment   = TextAlignment.MiddleCenter
+            };
+            button1.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                button1.Text = "entered...";
+            };
+            button1.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                button1.Text = "leaved...";
+            };
+            button1.MouseClick += (Control sender, in MouseEventArgs args, ref EventAction action) =>
+            {
+                button1.Text = "clicked...";
+            };
+            button1.GotFocus += (Control sender) =>
+            {
+                button1.Text = "got focus...";
+            };
+            button1.LostFocus += (Control sender) =>
+            {
+                button1.Text = "lost focus...";
+            };
+            uiManager.Add(button1);
+
+
             /*
              * TODO: Add your initialization logic here
              */
         }
-
-
+        
 
         /// <inheritdoc />
         /// OnLoadContent will be called once per game and is the place to load all of your content.
@@ -156,9 +203,6 @@ namespace Exomia.Framework.Example.Canvas
 
             _texture  = Content.Load<Texture>("logo1.jpg");
             _texture2 = Content.Load<Texture>("logo2.png");
-
-            _spriteFont1_12Px = Content.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
-            _spriteFont1_24Px = Content.Load<SpriteFont>(Fonts.ARIAL_24_PX, true);
         }
 
         /// <inheritdoc />

@@ -13,7 +13,6 @@ using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
-using Exomia.Framework.Mathematics;
 using Exomia.Framework.UI.Controls;
 
 namespace Exomia.Framework.UI
@@ -25,45 +24,18 @@ namespace Exomia.Framework.UI
     {
         internal const int INITIAL_LIST_SIZE = 8;
 
-        private const float DEFAULT_FREQUENCY = 30.0f;
-
         private Control[] _controls;
         private Control[] _currentlyControls;
         private int       _controlCount;
         private int       _currentlyControlCount;
 
-        private float _frequency = DEFAULT_FREQUENCY;
-        private float _cycleTime = 1f / DEFAULT_FREQUENCY;
-        private int   _drawedThisCycle;
-
         private Canvas _canvas = null!;
+
+        private bool _isDirty;
 
         private IKeyListener? _keyListener;
         private Control?      _focusedControl;
         private Control?      _enteredControl;
-
-        /// <summary>
-        ///     Gets or sets the frequency.
-        /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-        /// <value>
-        ///     The frequency.
-        /// </value>
-        public float Frequency
-        {
-            get { return _frequency; }
-            set
-            {
-                if (value < 1.0f)
-                {
-                    throw new ArgumentOutOfRangeException(
-                        nameof(value), "Frequency must be greater or equal than 1.0f.");
-                }
-
-                _frequency = value;
-                _cycleTime = 1f / _frequency;
-            }
-        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UiManager" /> class.
@@ -101,7 +73,7 @@ namespace Exomia.Framework.UI
         /// <inheritdoc />
         public override void Draw(GameTime gameTime)
         {
-            if (_currentlyControlCount == 0)
+            if (_isDirty)
             {
                 lock (_controls)
                 {
@@ -115,33 +87,22 @@ namespace Exomia.Framework.UI
                     }
                     Array.Copy(_controls, _currentlyControls, _currentlyControlCount = _controlCount);
                 }
-                _canvas.Begin();
+                _isDirty = false;
             }
 
-            int remaining = _currentlyControlCount - _drawedThisCycle;
-            int toDraw = Math.Min(
-                remaining, Math2.Ceiling((gameTime.DeltaTimeS / _cycleTime) * _currentlyControlCount));
+            _canvas.Begin();
 
-            if (toDraw > 0)
+            for (int i = _currentlyControlCount - 1; i >= 0; i--)
             {
-                for (int i = (_drawedThisCycle + toDraw) - 1; i >= _drawedThisCycle; i--)
+                Control control = _currentlyControls[i];
+                if (control.BeginDraw())
                 {
-                    Control control = _currentlyControls[i];
-                    if (control.BeginDraw())
-                    {
-                        control.Draw(_cycleTime, _canvas);
-                        control.EndDraw();
-                    }
+                    control.Draw(gameTime.DeltaTimeS, _canvas);
+                    control.EndDraw();
                 }
-                _drawedThisCycle += toDraw;
             }
 
-            if (_drawedThisCycle >= _currentlyControlCount)
-            {
-                _drawedThisCycle       = 0;
-                _currentlyControlCount = 0;
-                _canvas.End();
-            }
+            _canvas.End();
         }
 
         /// <summary>
@@ -165,6 +126,8 @@ namespace Exomia.Framework.UI
                 }
                 _controls[control._uiListIndex = _controlCount++] = control;
             }
+
+            _isDirty = true;
         }
 
         /// <summary>
@@ -199,6 +162,8 @@ namespace Exomia.Framework.UI
                 _controls[index]._uiListIndex = index;
                 _controls[_controlCount]      = null!;
             }
+
+            _isDirty = true;
         }
 
         /// <summary>
@@ -211,6 +176,8 @@ namespace Exomia.Framework.UI
                 _controlCount = 0;
                 Array.Clear(_controls, 0, _controls.Length);
             }
+
+            _isDirty = true;
         }
 
         /// <inheritdoc />
