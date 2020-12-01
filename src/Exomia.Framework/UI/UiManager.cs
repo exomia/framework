@@ -38,8 +38,9 @@ namespace Exomia.Framework.UI
 
         private Canvas _canvas = null!;
 
-        private Control? _focusedControl;
-        private Control? _enteredControl;
+        private IKeyListener? _keyListener;
+        private Control?      _focusedControl;
+        private Control?      _enteredControl;
 
         /// <summary>
         ///     Gets or sets the frequency.
@@ -220,7 +221,22 @@ namespace Exomia.Framework.UI
 
         internal void SetFocusedControl(Control control, bool focus)
         {
-            Interlocked.Exchange(ref _focusedControl, focus ? control : null)?.InternalSetFocus(false);
+            if (focus)
+            {
+                Interlocked.Exchange(ref _focusedControl, control)?.InternalSetFocus(false);
+
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                if (control is IKeyListener listener)
+                {
+                    Interlocked.Exchange(ref _keyListener, listener);
+                }
+            }
+            else
+            {
+                Interlocked.Exchange(ref _focusedControl, null)?.InternalSetFocus(false);
+                Interlocked.Exchange(ref _keyListener, null);
+            }
+
             control.InternalSetFocus(focus);
         }
 
@@ -232,10 +248,9 @@ namespace Exomia.Framework.UI
 
         private EventAction KeyDown(int keyValue, KeyModifier modifiers)
         {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            if (_focusedControl is IKeyListener listener)
+            if (_keyListener != null)
             {
-                listener.KeyDown(keyValue, modifiers);
+                _keyListener.KeyDown(keyValue, modifiers);
                 return EventAction.StopPropagation;
             }
             return EventAction.Continue;
@@ -243,10 +258,9 @@ namespace Exomia.Framework.UI
 
         private EventAction KeyPress(char key)
         {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            if (_focusedControl is IKeyListener listener)
+            if (_keyListener != null)
             {
-                listener.KeyPress(key);
+                _keyListener.KeyPress(key);
                 return EventAction.StopPropagation;
             }
             return EventAction.Continue;
@@ -254,10 +268,9 @@ namespace Exomia.Framework.UI
 
         private EventAction KeyUp(int keyValue, KeyModifier modifiers)
         {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            if (_focusedControl is IKeyListener listener)
+            if (_keyListener != null)
             {
-                listener.KeyUp(keyValue, modifiers);
+                _keyListener.KeyUp(keyValue, modifiers);
                 return EventAction.StopPropagation;
             }
             return EventAction.Continue;

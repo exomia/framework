@@ -126,7 +126,7 @@ namespace Exomia.Framework.Example.Canvas
                 Enabled         = true,
                 Visible         = true,
                 BackgroundBrush = new SolidColorBrush(Color.BlueViolet),
-                ClientRectangle = new RectangleF(50, 50, 150, 75)
+                ClientRectangle = new RectangleF(50, 50, 500, 75)
             };
             container2.MouseEntered += (Control sender, in MouseEventArgs args) =>
             {

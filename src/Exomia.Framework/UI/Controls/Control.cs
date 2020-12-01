@@ -81,11 +81,11 @@ namespace Exomia.Framework.UI.Controls
 
         internal Control? _parent = null;
 
-        private readonly DisposeCollector _collector;
-        private          UiManager?       _uiManager;
+        private readonly  DisposeCollector _collector;
+        private protected UiManager?       _uiManager;
 
-        private RectangleF _clientRectangle = RectangleF.Empty;
-        private RectangleF _drawRectangle   = RectangleF.Empty;
+        private           RectangleF _clientRectangle = RectangleF.Empty;
+        private protected RectangleF _drawRectangle   = RectangleF.Empty;
 
         private Margin  _margin  = Margin.Default;
         private Padding _padding = Padding.Default;
@@ -98,8 +98,8 @@ namespace Exomia.Framework.UI.Controls
 
         private float _opacity = 1.0f;
 
-        private bool _hasFocus;
-        private bool _isMouseEntered;
+        private           bool _hasFocus;
+        private protected bool _isMouseEntered;
 
         private object? _tag;
 

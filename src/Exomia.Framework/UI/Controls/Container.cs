@@ -146,17 +146,28 @@ namespace Exomia.Framework.UI.Controls
         /// <inheritdoc />
         internal override bool InternalMouseMove(in MouseEventArgs e, ref EventAction eventAction)
         {
-            lock (_controls)
+            if (_drawRectangle.Contains(e.Position))
             {
-                for (int i = _controlCount - 1; i >= 0; i--)
+                lock (_controls)
                 {
-                    if (_controls[i].Enabled && _controls[i].InternalMouseMove(in e, ref eventAction))
+                    for (int i = _controlCount - 1; i >= 0; i--)
                     {
-                        return true;
+                        if (_controls[i].Enabled && _controls[i].InternalMouseMove(in e, ref eventAction))
+                        {
+                            return true;
+                        }
                     }
                 }
+
+                OnMouseMove(in e, ref eventAction);
+                if (!_isMouseEntered)
+                {
+                    _uiManager!.SetEnteredControl(this, in e);
+                }
+                return true;
             }
-            return base.InternalMouseMove(in e, ref eventAction);
+
+            return false; 
         }
     }
 }
