@@ -102,19 +102,6 @@ namespace Exomia.Framework.UI.Controls
         }
 
         /// <inheritdoc />
-        internal override void SetUiManager(UiManager? manager)
-        {
-            lock (_controls)
-            {
-                for (int i = _controlCount - 1; i >= 0; i--)
-                {
-                    _controls[i].SetUiManager(manager);
-                }
-            }
-            base.SetUiManager(manager);
-        }
-
-        /// <inheritdoc />
         public override void Draw(float elapsedSeconds, Canvas canvas)
         {
             base.Draw(elapsedSeconds, canvas);
@@ -144,6 +131,19 @@ namespace Exomia.Framework.UI.Controls
         }
 
         /// <inheritdoc />
+        internal override void SetUiManager(UiManager? manager)
+        {
+            lock (_controls)
+            {
+                for (int i = _controlCount - 1; i >= 0; i--)
+                {
+                    _controls[i].SetUiManager(manager);
+                }
+            }
+            base.SetUiManager(manager);
+        }
+
+        /// <inheritdoc />
         internal override bool InternalMouseMove(in MouseEventArgs e, ref EventAction eventAction)
         {
             if (_drawRectangle.Contains(e.Position))
@@ -167,7 +167,7 @@ namespace Exomia.Framework.UI.Controls
                 return true;
             }
 
-            return false; 
+            return false;
         }
     }
 }

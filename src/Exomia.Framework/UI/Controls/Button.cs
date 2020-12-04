@@ -1,4 +1,14 @@
-﻿using Exomia.Framework.Graphics;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
 
 namespace Exomia.Framework.UI.Controls
@@ -38,6 +48,13 @@ namespace Exomia.Framework.UI.Controls
                 MouseClick?.Invoke(this, in e, ref eventAction);
             }
             base.OnMouseUp(in e, ref eventAction);
+        }
+
+        /// <inheritdoc />
+        protected override void OnMouseLeaved(in MouseEventArgs e)
+        {
+            _isMouseDown = false;
+            base.OnMouseLeaved(in e);
         }
     }
 }

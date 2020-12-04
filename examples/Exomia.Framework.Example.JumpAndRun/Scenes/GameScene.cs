@@ -170,7 +170,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
                 });
         }
 
-        private bool OnKeyDown(int keyValue, KeyModifier modifiers)
+        private EventAction OnKeyDown(int keyValue, KeyModifier modifiers)
         {
             switch (keyValue)
             {
@@ -182,10 +182,10 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
                     break;
             }
 
-            return false;
+            return EventAction.Continue;
         }
 
-        private bool OnKeyUp(int keyValue, KeyModifier modifiers)
+        private EventAction OnKeyUp(int keyValue, KeyModifier modifiers)
         {
             switch (keyValue)
             {
@@ -199,7 +199,7 @@ namespace Exomia.Framework.Example.JumpAndRun.Scenes
                     _inputComponent.Right = false;
                     break;
             }
-            return false;
+            return EventAction.Continue;
         }
     }
 }

@@ -140,10 +140,10 @@ namespace Exomia.Framework.Example.Canvas
 
             var label1 = new Label(_spriteFont1_24Px, "Hello there!")
             {
-                Enabled         = true, 
-                Visible         = true, 
+                Enabled         = true,
+                Visible         = true,
                 BackgroundBrush = new BorderBrush(Color.BlueViolet),
-                ClientRectangle = new RectangleF(900, 800, 400, 80),
+                ClientRectangle = new RectangleF(900, 800, 100, 80),
                 TextAlignment   = TextAlignment.MiddleCenter
             };
             label1.MouseEntered += (Control sender, in MouseEventArgs args) =>
@@ -186,12 +186,37 @@ namespace Exomia.Framework.Example.Canvas
             };
             uiManager.Add(button1);
 
+            var checkbox1 = new Checkbox
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.Yellow),
+                CheckedBrush    = new SolidColorBrush(Color.Blue),
+                ClientRectangle = new RectangleF(900, 1000, 50, 50),
+                Padding         = new Padding(5)
+            };
+            uiManager.Add(checkbox1);
+
+            var progressbar1 = new Progressbar
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.Yellow),
+                BarBrush        = new SolidColorBrush(Color.Blue),
+                ClientRectangle = new RectangleF(1000, 1000, 200, 50),
+                Padding         = new Padding(10, 5),
+                Value           = 0.13f
+            };
+            progressbar1.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                progressbar1.Value += 0.05f;
+            };
+            uiManager.Add(progressbar1);
 
             /*
              * TODO: Add your initialization logic here
              */
         }
-        
 
         /// <inheritdoc />
         /// OnLoadContent will be called once per game and is the place to load all of your content.

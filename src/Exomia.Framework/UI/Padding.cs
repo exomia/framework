@@ -54,5 +54,25 @@ namespace Exomia.Framework.UI
             S = s < 0 ? 0 : s;
             W = w < 0 ? 0 : w;
         }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Padding" /> struct.
+        /// </summary>
+        /// <param name="ns"> The north and south padding amount. </param>
+        /// <param name="ew"> The east and west padding amount. </param>
+        public Padding(int ns, int ew)
+        {
+            N = S = ns < 0 ? 0 : ns;
+            E = W = ew < 0 ? 0 : ew;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Padding" /> struct.
+        /// </summary>
+        /// <param name="nesw"> The north, east, south and west padding amount. </param>
+        public Padding(int nesw)
+        {
+            N = E = S = W = nesw < 0 ? 0 : nesw;
+        }
     }
 }

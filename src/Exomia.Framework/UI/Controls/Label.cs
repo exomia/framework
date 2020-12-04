@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Graphics;
 using SharpDX;
 
@@ -25,7 +26,8 @@ namespace Exomia.Framework.UI.Controls
         private Vector2       _offset;
         private string        _text;
         private SpriteFont    _font;
-        private TextAlignment _alignment = TextAlignment.TopLeft;
+        private TextAlignment _alignment       = TextAlignment.TopLeft;
+        private Color         _foregroundColor = Color.Black;
 
         /// <summary>
         ///     Gets or sets the text.
@@ -35,7 +37,9 @@ namespace Exomia.Framework.UI.Controls
         /// </value>
         public string Text
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _text; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 _text    = value;
@@ -51,7 +55,9 @@ namespace Exomia.Framework.UI.Controls
         /// </value>
         public SpriteFont Font
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _font; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 _font    = value;
@@ -67,7 +73,9 @@ namespace Exomia.Framework.UI.Controls
         /// </value>
         public TextAlignment TextAlignment
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _alignment; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 _alignment = value;
@@ -81,7 +89,11 @@ namespace Exomia.Framework.UI.Controls
         /// <value>
         ///     The color of the foreground.
         /// </value>
-        public Color ForegroundColor { get; set; } = Color.Black;
+        public Color ForegroundColor
+        {
+            get { return _foregroundColor; }
+            set { _foregroundColor = value; }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Label" /> class.
@@ -106,12 +118,12 @@ namespace Exomia.Framework.UI.Controls
                 _isDirty = false;
             }
 
-            canvas.DrawText(Font, Text, _drawRectangle.TopLeft + _offset, ForegroundColor);
+            canvas.DrawText(_font, _text, _drawRectangle.TopLeft + _offset, in _foregroundColor);
         }
 
         private void CalculateTextOffset()
         {
-            Vector2 size = Font.MeasureText(Text);
+            Vector2 size = _font.MeasureText(Text);
 
             int flags = (int)TextAlignment;
             if ((flags & TEXT_ALIGN_TOP) == TEXT_ALIGN_TOP)
@@ -120,7 +132,7 @@ namespace Exomia.Framework.UI.Controls
             }
             else if ((flags & TEXT_ALIGN_MIDDLE) == TEXT_ALIGN_MIDDLE)
             {
-                _offset.Y = (_drawRectangle.Height * 0.5f) - (size.Y * 0.5f);
+                _offset.Y = (_drawRectangle.Height - size.Y) * 0.5f;
             }
             else if ((flags & TEXT_ALIGN_BOTTOM) == TEXT_ALIGN_BOTTOM)
             {
@@ -133,7 +145,7 @@ namespace Exomia.Framework.UI.Controls
             }
             else if ((flags & TEXT_ALIGN_CENTER) == TEXT_ALIGN_CENTER)
             {
-                _offset.X = (_drawRectangle.Width * 0.5f) - (size.X * 0.5f);
+                _offset.X = (_drawRectangle.Width - size.X) * 0.5f;
             }
             else if ((flags & TEXT_ALIGN_RIGHT) == TEXT_ALIGN_RIGHT)
             {

@@ -81,14 +81,9 @@ namespace Exomia.Framework.UI.Controls
 
         internal Control? _parent = null;
 
-        private readonly  DisposeCollector _collector;
-        private protected UiManager?       _uiManager;
+        private readonly DisposeCollector _collector;
 
-        private           RectangleF _clientRectangle = RectangleF.Empty;
-        private protected RectangleF _drawRectangle   = RectangleF.Empty;
-
-        private Margin  _margin  = Margin.Default;
-        private Padding _padding = Padding.Default;
+        private RectangleF _clientRectangle = RectangleF.Empty;
 
         private IBrush? _backgroundBrush;
 
@@ -96,12 +91,17 @@ namespace Exomia.Framework.UI.Controls
         private bool _visible;
         private bool _isDirty = true;
 
-        private float _opacity = 1.0f;
+        private bool _hasFocus;
 
-        private           bool _hasFocus;
-        private protected bool _isMouseEntered;
+        private           object?    _tag;
+        private protected UiManager? _uiManager;
+        private protected RectangleF _drawRectangle = RectangleF.Empty;
 
-        private object? _tag;
+        private protected Margin  _margin  = Margin.Default;
+        private protected Padding _padding = Padding.Default;
+
+        private protected float _opacity = 1.0f;
+        private protected bool  _isMouseEntered;
 
         /// <summary>
         ///     Gets or sets the tag.
@@ -209,6 +209,18 @@ namespace Exomia.Framework.UI.Controls
                     _isDirty         = true;
                 }
             }
+        }
+
+        /// <summary>
+        ///     Gets or sets the tag.
+        /// </summary>
+        /// <value>
+        ///     The tag.
+        /// </value>
+        private protected bool IsDirty
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return _isDirty; }
         }
 
         /// <summary>
@@ -399,11 +411,11 @@ namespace Exomia.Framework.UI.Controls
         }
 
         /// <summary>
-        ///     Starts the drawing of this control. 
-        ///     This method is followed by calls to <see cref="Draw"/> and <see cref="EndDraw"/>.
+        ///     Starts the drawing of this control.
+        ///     This method is followed by calls to <see cref="Draw" /> and <see cref="EndDraw" />.
         /// </summary>
         /// <returns>
-        ///     <c>true</c> if the <see cref="Draw"/> method should be called, <c>false</c> otherwise.
+        ///     <c>true</c> if the <see cref="Draw" /> method should be called, <c>false</c> otherwise.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual bool BeginDraw()
@@ -438,6 +450,7 @@ namespace Exomia.Framework.UI.Controls
                         _clientRectangle.Width - _margin.E,
                         _clientRectangle.Height - _margin.S);
                 }
+                OnDrawRectangleChanged();
                 _isDirty = false;
             }
 
@@ -445,8 +458,14 @@ namespace Exomia.Framework.UI.Controls
         }
 
         /// <summary>
-        ///     Ends the drawing of this control. 
-        ///     This method is preceded by calls to <see cref="Draw"/> and <see cref="BeginDraw"/>.
+        ///     Called if the control was dirty and the draw rectangle was changed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected virtual void OnDrawRectangleChanged() { }
+
+        /// <summary>
+        ///     Ends the drawing of this control.
+        ///     This method is preceded by calls to <see cref="Draw" /> and <see cref="BeginDraw" />.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual void EndDraw() { }
