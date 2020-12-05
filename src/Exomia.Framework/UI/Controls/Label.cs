@@ -22,9 +22,14 @@ namespace Exomia.Framework.UI.Controls
     /// </summary>
     public class Label : Control
     {
+        /// <summary>
+        ///     Occurs when Text Changed.
+        /// </summary>
+        public event EventHandler<Label>? TextChanged;
+
         private bool          _isDirty = true;
-        private Vector2       _offset;
         private string        _text;
+        private Vector2       _offset;
         private SpriteFont    _font;
         private TextAlignment _alignment       = TextAlignment.TopLeft;
         private Color         _foregroundColor = Color.Black;
@@ -44,6 +49,7 @@ namespace Exomia.Framework.UI.Controls
             {
                 _text    = value;
                 _isDirty = true;
+                TextChanged?.Invoke(this);
             }
         }
 
@@ -112,7 +118,7 @@ namespace Exomia.Framework.UI.Controls
         {
             base.Draw(elapsedSeconds, canvas);
 
-            if (_isDirty)
+            if (_isDirty | IsDirty)
             {
                 CalculateTextOffset();
                 _isDirty = false;

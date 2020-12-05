@@ -66,20 +66,13 @@ namespace Exomia.Framework.UI.Controls
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { _barBrush = value; }
         }
-
-        /// <inheritdoc />
-        public override bool BeginDraw()
-        {
-            _isDirty |= IsDirty;
-            return base.BeginDraw();
-        }
-
+        
         /// <inheritdoc />
         public override void Draw(float elapsedSeconds, Canvas canvas)
         {
             base.Draw(elapsedSeconds, canvas);
 
-            if (_isDirty)
+            if (_isDirty | IsDirty)
             {
                 _barRectangle.X      = _drawRectangle.X + _padding.W;
                 _barRectangle.Y      = _drawRectangle.Y + _padding.N;

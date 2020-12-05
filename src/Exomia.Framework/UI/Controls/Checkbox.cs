@@ -26,12 +26,11 @@ namespace Exomia.Framework.UI.Controls
         /// </summary>
         public event EventHandler<Checkbox>? CheckedChanged;
 
+        private bool       _isMouseDown;
         private bool       _checked;
         private IBrush?    _checkedBrush;
         private RectangleF _checkedRectangle;
-
-        private bool _isMouseDown;
-
+        
         /// <summary>
         ///     Gets or sets a value indicating whether the checkbox is checked or not.
         /// </summary>
