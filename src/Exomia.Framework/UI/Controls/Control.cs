@@ -495,7 +495,7 @@ namespace Exomia.Framework.UI.Controls
 
         internal virtual bool InternalMouseMove(in MouseEventArgs e, ref EventAction eventAction)
         {
-            if (_visibleRectangle.Contains(e.Position))
+            if (_drawRectangle.Contains(e.Position))
             {
                 OnMouseMove(in e, ref eventAction);
                 if (!_isMouseEntered)

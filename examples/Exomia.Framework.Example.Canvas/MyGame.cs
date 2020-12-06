@@ -213,6 +213,28 @@ namespace Exomia.Framework.Example.Canvas
             };
             uiManager.Add(progressbar1);
 
+            var slider1 = new Slider
+            {
+                Enabled          = true,
+                Visible          = true,
+                SliderTrackBrush = new SolidColorBrush(Color.Gray),
+                SliderCaretBrush = new SolidColorBrush(Color.DarkGray),
+                ClientRectangle  = new RectangleF(1250, 1000, 200, 50),
+                Padding          = new Padding(20, 5),
+                Value            = 0
+            };
+            uiManager.Add(slider1);
+
+            var label2 = new Label(_spriteFont1_24Px, "0")
+            {
+                Enabled         = true,
+                Visible         = true,
+                ClientRectangle = new RectangleF(1455, 1000, 200, 50),
+                TextAlignment   = TextAlignment.MiddleLeft
+            };
+            slider1.ValueChanged += slider => { label2.Text = slider.Value.ToString(); };
+            uiManager.Add(label2);
+
             /*
              * TODO: Add your initialization logic here
              */

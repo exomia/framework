@@ -31,7 +31,7 @@ namespace Exomia.Framework.UI.Controls
         private RectangleF _barRectangle;
 
         /// <summary>
-        ///     Gets the value [0.0f, 1.0f] indicating the percentage this progressbar is filled.
+        ///     Gets or sets the value [0.0f, 1.0f] indicating the percentage this progressbar is filled.
         /// </summary>
         /// <value>
         ///     The value in the range from 0 to 1.
@@ -54,7 +54,7 @@ namespace Exomia.Framework.UI.Controls
         }
 
         /// <summary>
-        ///     Gets the bar brush.
+        ///     Gets or sets the bar brush.
         /// </summary>
         /// <value>
         ///     The bar brush.
