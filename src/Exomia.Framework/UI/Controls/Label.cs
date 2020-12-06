@@ -124,9 +124,17 @@ namespace Exomia.Framework.UI.Controls
                 _isDirty = false;
             }
 
-            canvas.DrawText(
-                _font, _text, 0, _text.Length, _drawRectangle.TopLeft + _offset, new Size2F(_visibleRectangle.Width - _offset.X, _visibleRectangle.Height - _offset.Y),
-                in _foregroundColor, 0, Vector2.Zero, _opacity, TextureEffects.None);
+            if (_visibleRectangle == _drawRectangle) // use the "faster" draw text method if we know that we don't need to clip.
+            {
+                 canvas.DrawText(_font, _text, _drawRectangle.TopLeft + _offset, in _foregroundColor);
+            }
+            else
+            {
+                canvas.DrawText(
+                    _font, _text, 0, _text.Length, _drawRectangle.TopLeft + _offset,
+                    new Size2F(_visibleRectangle.Width - _offset.X, _visibleRectangle.Height - _offset.Y),
+                    in _foregroundColor, 0, Vector2.Zero, _opacity, TextureEffects.None);
+            }
         }
 
         private void CalculateTextOffset()
