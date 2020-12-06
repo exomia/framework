@@ -8,6 +8,7 @@
 
 #endregion
 
+using System;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.UI.Brushes;
@@ -76,11 +77,14 @@ namespace Exomia.Framework.UI.Controls
             {
                 _barRectangle.X      = _drawRectangle.X + _padding.W;
                 _barRectangle.Y      = _drawRectangle.Y + _padding.N;
-                _barRectangle.Width  = (_drawRectangle.Width - _padding.W - _padding.E) * _value;
-                _barRectangle.Height = _drawRectangle.Height - _padding.N - _padding.S;
+
+                _barRectangle.Width = Math.Min(
+                    (_drawRectangle.Width - _padding.W - _padding.E) * _value, _visibleRectangle.Width - _padding.W);
+                _barRectangle.Height = Math.Min(
+                    _drawRectangle.Height - _padding.N - _padding.S, _visibleRectangle.Height - _padding.N);
             }
 
-            _barBrush?.Render(canvas, _barRectangle, _opacity);
+            _barBrush?.Render(canvas, in _barRectangle, _opacity);
         }
     }
 }

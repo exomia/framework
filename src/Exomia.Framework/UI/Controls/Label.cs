@@ -124,12 +124,22 @@ namespace Exomia.Framework.UI.Controls
                 _isDirty = false;
             }
 
-            canvas.DrawText(_font, _text, _drawRectangle.TopLeft + _offset, in _foregroundColor);
+            canvas.DrawText(
+                _font, _text, 0, _text.Length, _drawRectangle.TopLeft + _offset, new Size2F(_visibleRectangle.Width - _offset.X, _visibleRectangle.Height - _offset.Y),
+                in _foregroundColor, 0, Vector2.Zero, _opacity, TextureEffects.None);
         }
 
         private void CalculateTextOffset()
         {
             Vector2 size = _font.MeasureText(Text);
+            if (size.X > _visibleRectangle.Width)
+            {
+                size.X = _visibleRectangle.Width;
+            }
+            if (size.Y > _visibleRectangle.Height)
+            {
+                size.Y = _visibleRectangle.Height;
+            }
 
             int flags = (int)TextAlignment;
             if ((flags & TEXT_ALIGN_TOP) == TEXT_ALIGN_TOP)

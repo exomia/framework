@@ -86,16 +86,17 @@ namespace Exomia.Framework.UI.Controls
         private bool       _enabled;
         private bool       _visible;
         private bool       _hasFocus;
-        private object?    _tag; 
+        private object?    _tag;
         private IBrush?    _backgroundBrush;
         private RectangleF _clientRectangle = RectangleF.Empty;
 
         private protected UiManager? _uiManager;
-        
-        private protected Margin     _margin        = Margin.Default;
-        private protected Padding    _padding       = Padding.Default;
 
-        private protected RectangleF _drawRectangle = RectangleF.Empty;
+        private protected Margin  _margin  = Margin.Default;
+        private protected Padding _padding = Padding.Default;
+
+        private protected RectangleF _drawRectangle    = RectangleF.Empty;
+        private protected RectangleF _visibleRectangle = RectangleF.Empty;
 
         private protected float _opacity = 1.0f;
         private protected bool  _isMouseEntered;
@@ -429,26 +430,38 @@ namespace Exomia.Framework.UI.Controls
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual void Draw(float elapsedSeconds, Canvas canvas)
         {
-            if (_isDirty)
+            if (_parent != null)
             {
-                if (_parent != null)
+                if (_isDirty)
                 {
-                    _drawRectangle.X = _parent._drawRectangle.X + _parent._padding.W + _clientRectangle.X + _margin.W;
-                    _drawRectangle.Y = _parent._drawRectangle.Y + _parent._padding.N + _clientRectangle.Y + _margin.N;
-                    _drawRectangle.Width = _clientRectangle.Width - _parent.Padding.E - _margin.E;
+                    _visibleRectangle.X = _drawRectangle.X = _parent._drawRectangle.X + _parent._padding.W +
+                                                             _clientRectangle.X + _margin.W;
+                    _visibleRectangle.Y = _drawRectangle.Y = _parent._drawRectangle.Y + _parent._padding.N +
+                                                             _clientRectangle.Y + _margin.N;
+                    _drawRectangle.Width  = _clientRectangle.Width - _parent.Padding.E - _margin.E;
                     _drawRectangle.Height = _clientRectangle.Height - _parent.Padding.S - _margin.S;
+
+                    _visibleRectangle.Width = Math.Min(_drawRectangle.Right, _parent._drawRectangle.Right) -
+                                              Math.Max(_drawRectangle.Left, _parent._drawRectangle.Left);
+                    _visibleRectangle.Height = Math.Min(_drawRectangle.Bottom, _parent._drawRectangle.Bottom) -
+                                               Math.Max(_drawRectangle.Top, _parent._drawRectangle.Top);
+                    OnDrawRectangleChanged();
                 }
-                else
+                _backgroundBrush?.RenderClipped(canvas, in _drawRectangle, in _visibleRectangle, _opacity);
+            }
+            else
+            {
+                if (_isDirty)
                 {
-                    _drawRectangle = new RectangleF(
+                    _visibleRectangle = _drawRectangle = new RectangleF(
                         _clientRectangle.X + _margin.W,
                         _clientRectangle.Y + _margin.N,
                         _clientRectangle.Width - _margin.E,
                         _clientRectangle.Height - _margin.S);
+                    OnDrawRectangleChanged();
                 }
-                OnDrawRectangleChanged();
+                _backgroundBrush?.Render(canvas, in _drawRectangle, _opacity);
             }
-            _backgroundBrush?.Render(canvas, _drawRectangle, _opacity);
         }
 
         /// <summary>
@@ -495,7 +508,7 @@ namespace Exomia.Framework.UI.Controls
 
         internal virtual bool InternalMouseMove(in MouseEventArgs e, ref EventAction eventAction)
         {
-            if (_drawRectangle.Contains(e.Position))
+            if (_visibleRectangle.Contains(e.Position))
             {
                 OnMouseMove(in e, ref eventAction);
                 if (!_isMouseEntered)

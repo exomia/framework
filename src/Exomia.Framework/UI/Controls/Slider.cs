@@ -171,8 +171,8 @@ namespace Exomia.Framework.UI.Controls
                 _isDirty = true;
             }
 
-            _sliderTrackBrush?.Render(canvas, _sliderTrackRectangle, _opacity);
-            _sliderCaretBrush?.Render(canvas, _sliderCaretRectangle, _opacity);
+            _sliderTrackBrush?.Render(canvas, in _sliderTrackRectangle, _opacity);
+            _sliderCaretBrush?.Render(canvas, in _sliderCaretRectangle, _opacity);
         }
 
         /// <inheritdoc />
@@ -180,8 +180,8 @@ namespace Exomia.Framework.UI.Controls
         {
             _sliderTrackRectangle.X      = _drawRectangle.X + _padding.W;
             _sliderTrackRectangle.Y      = _drawRectangle.Y + _padding.N;
-            _sliderTrackRectangle.Width  = _drawRectangle.Width - _padding.W - _padding.E;
-            _sliderTrackRectangle.Height = _drawRectangle.Height - _padding.N - _padding.S;
+            _sliderTrackRectangle.Width  = Math.Min(_drawRectangle.Width - _padding.W - _padding.E, _visibleRectangle.Width - _padding.W);
+            _sliderTrackRectangle.Height = Math.Min(_drawRectangle.Height - _padding.N - _padding.S, _visibleRectangle.Height - _padding.N);
 
             _sliderCaretRectangle.Y      = _drawRectangle.Y;
             _sliderCaretRectangle.Height = _drawRectangle.Height;

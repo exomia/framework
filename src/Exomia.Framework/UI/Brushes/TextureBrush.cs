@@ -31,9 +31,20 @@ namespace Exomia.Framework.UI.Brushes
             _texture = texture ?? throw new ArgumentNullException(nameof(texture));
         }
 
-        void IBrush.Render(Canvas canvas, RectangleF region, float opacity)
+        void IBrush.Render(Canvas canvas, in RectangleF region, float opacity)
         {
             canvas.Draw(_texture, region, null, Color.White, 0, Vector2.Zero, opacity, TextureEffects.None);
+        }
+
+        void IBrush.RenderClipped(Canvas canvas, in RectangleF region, in RectangleF visibleRegion, float opacity)
+        {
+            canvas.Draw(
+                _texture, visibleRegion,
+                new Rectangle(
+                    0, 0, 
+                    (int)((_texture.Width / region.Width) * visibleRegion.Width),
+                    (int)((_texture.Height / region.Height) * visibleRegion.Height)), 
+                Color.White, 0, Vector2.Zero, opacity, TextureEffects.None);
         }
     }
 }

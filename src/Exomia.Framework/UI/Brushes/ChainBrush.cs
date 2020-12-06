@@ -29,11 +29,19 @@ namespace Exomia.Framework.UI.Brushes
             _brushChain = args;
         }
 
-        void IBrush.Render(Canvas canvas, RectangleF region, float opacity)
+        void IBrush.Render(Canvas canvas, in RectangleF region, float opacity)
         {
             for (int i = 0; i < _brushChain.Length; i++)
             {
-                _brushChain[i].Render(canvas, region, opacity);
+                _brushChain[i].Render(canvas, in region, opacity);
+            }
+        }
+
+        void IBrush.RenderClipped(Canvas canvas, in RectangleF region, in RectangleF visibleRegion, float opacity)
+        {
+            for (int i = 0; i < _brushChain.Length; i++)
+            {
+                _brushChain[i].RenderClipped(canvas, in region, in visibleRegion, opacity);
             }
         }
     }

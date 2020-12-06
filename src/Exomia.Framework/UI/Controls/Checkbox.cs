@@ -8,6 +8,7 @@
 
 #endregion
 
+using System;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
@@ -30,7 +31,7 @@ namespace Exomia.Framework.UI.Controls
         private bool       _checked;
         private IBrush?    _checkedBrush;
         private RectangleF _checkedRectangle;
-        
+
         /// <summary>
         ///     Gets or sets a value indicating whether the checkbox is checked or not.
         /// </summary>
@@ -73,7 +74,7 @@ namespace Exomia.Framework.UI.Controls
 
             if (_checked)
             {
-                _checkedBrush?.Render(canvas, _checkedRectangle, _opacity);
+                _checkedBrush?.Render(canvas, in _checkedRectangle, _opacity);
             }
         }
 
@@ -109,10 +110,12 @@ namespace Exomia.Framework.UI.Controls
         /// <inheritdoc />
         protected override void OnDrawRectangleChanged()
         {
-            _checkedRectangle.X      = _drawRectangle.X + _padding.W;
-            _checkedRectangle.Y      = _drawRectangle.Y + _padding.N;
-            _checkedRectangle.Width  = _drawRectangle.Width - _padding.W - _padding.E;
-            _checkedRectangle.Height = _drawRectangle.Height - _padding.N - _padding.S;
+            _checkedRectangle.X = _drawRectangle.X + _padding.W;
+            _checkedRectangle.Y = _drawRectangle.Y + _padding.N;
+            _checkedRectangle.Width = Math.Min(
+                _drawRectangle.Width - _padding.W - _padding.E, _visibleRectangle.Width - _padding.W);
+            _checkedRectangle.Height = Math.Min(
+                _drawRectangle.Height - _padding.N - _padding.S, _visibleRectangle.Height - _padding.N);
         }
     }
 }

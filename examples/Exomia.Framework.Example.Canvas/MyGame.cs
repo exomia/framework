@@ -107,7 +107,7 @@ namespace Exomia.Framework.Example.Canvas
                 Enabled         = true,
                 Visible         = true,
                 BackgroundBrush = new SolidColorBrush(Color.Orange),
-                ClientRectangle = new RectangleF(50, 800, 400, 200)
+                ClientRectangle = new RectangleF(50, 700, 400, 400)
             };
             container.MouseEntered += (Control sender, in MouseEventArgs args) =>
             {
@@ -117,11 +117,14 @@ namespace Exomia.Framework.Example.Canvas
             {
                 Console.WriteLine("leaved...");
             };
+
+            _texture = Content.Load<Texture>("logo1.jpg");
+
             var container2 = new Container
             {
                 Enabled         = true,
                 Visible         = true,
-                BackgroundBrush = new SolidColorBrush(Color.BlueViolet),
+                BackgroundBrush = new TextureBrush(_texture),
                 ClientRectangle = new RectangleF(50, 50, 500, 75)
             };
             container2.MouseEntered += (Control sender, in MouseEventArgs args) =>
@@ -143,7 +146,7 @@ namespace Exomia.Framework.Example.Canvas
                 Enabled         = true,
                 Visible         = true,
                 BackgroundBrush = new BorderBrush(Color.BlueViolet),
-                ClientRectangle = new RectangleF(900, 800, 100, 80),
+                ClientRectangle = new RectangleF(320, 300, 200, 50),
                 TextAlignment   = TextAlignment.MiddleCenter
             };
             label1.MouseEntered += (Control sender, in MouseEventArgs args) =>
@@ -154,7 +157,7 @@ namespace Exomia.Framework.Example.Canvas
             {
                 label1.Text = "leaved...";
             };
-            uiManager.Add(label1);
+            container.Add(label1);
 
             var button1 = new Button(_spriteFont1_24Px, "click me!")
             {
@@ -192,18 +195,18 @@ namespace Exomia.Framework.Example.Canvas
                 Visible         = true,
                 BackgroundBrush = new SolidColorBrush(Color.Yellow),
                 CheckedBrush    = new SolidColorBrush(Color.Blue),
-                ClientRectangle = new RectangleF(900, 1000, 50, 50),
+                ClientRectangle = new RectangleF(380, 0, 40, 40),
                 Padding         = new Padding(5)
             };
-            uiManager.Add(checkbox1);
+            container.Add(checkbox1);
 
             var progressbar1 = new Progressbar
             {
                 Enabled         = true,
                 Visible         = true,
-                BackgroundBrush = new SolidColorBrush(Color.Yellow),
+                BackgroundBrush = new BorderBrush(Color.Yellow),
                 BarBrush        = new SolidColorBrush(Color.Blue),
-                ClientRectangle = new RectangleF(1000, 1000, 200, 50),
+                ClientRectangle = new RectangleF(300, 180, 200, 50),
                 Padding         = new Padding(10, 5),
                 Value           = 0.13f
             };
@@ -211,7 +214,7 @@ namespace Exomia.Framework.Example.Canvas
             {
                 progressbar1.Value += 0.05f;
             };
-            uiManager.Add(progressbar1);
+            container.Add(progressbar1);
 
             var slider1 = new Slider
             {
@@ -219,36 +222,27 @@ namespace Exomia.Framework.Example.Canvas
                 Visible          = true,
                 SliderTrackBrush = new SolidColorBrush(Color.Gray),
                 SliderCaretBrush = new SolidColorBrush(Color.DarkGray),
-                ClientRectangle  = new RectangleF(1250, 1000, 200, 50),
+                ClientRectangle  = new RectangleF(300, 250, 200, 50),
                 Padding          = new Padding(20, 5),
                 Value            = 0
             };
-            uiManager.Add(slider1);
+            container.Add(slider1);
 
             var label2 = new Label(_spriteFont1_24Px, "0")
             {
                 Enabled         = true,
                 Visible         = true,
-                ClientRectangle = new RectangleF(1455, 1000, 200, 50),
+                ClientRectangle = new RectangleF(555, 950, 200, 50),
                 TextAlignment   = TextAlignment.MiddleLeft
             };
             slider1.ValueChanged += slider => { label2.Text = slider.Value.ToString(); };
             uiManager.Add(label2);
-
-            /*
-             * TODO: Add your initialization logic here
-             */
         }
 
         /// <inheritdoc />
         /// OnLoadContent will be called once per game and is the place to load all of your content.
         protected override void OnLoadContent()
         {
-            /*
-             * TODO: use base.Content to load your game content here
-             */
-
-            _texture  = Content.Load<Texture>("logo1.jpg");
             _texture2 = Content.Load<Texture>("logo2.png");
         }
 
@@ -256,9 +250,7 @@ namespace Exomia.Framework.Example.Canvas
         /// OnUnloadContent will be called once per game and is the place to unload all content
         protected override void OnUnloadContent()
         {
-            /*
-             * TODO: Unload any non ContentManager content here
-             */
+            Content.Unload<Texture>("logo2.png");
         }
 
         /// <inheritdoc />

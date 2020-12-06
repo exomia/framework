@@ -32,9 +32,14 @@ namespace Exomia.Framework.UI.Brushes
             _opacity = opacity;
         }
 
-        void IBrush.Render(Canvas canvas, RectangleF region, float opacity)
+        void IBrush.Render(Canvas canvas, in RectangleF region, float opacity)
         {
             canvas.DrawFillRectangle(region, _color, 0, Vector2.Zero, _opacity * opacity);
+        }
+
+        void IBrush.RenderClipped(Canvas canvas, in RectangleF region, in RectangleF visibleRegion, float opacity)
+        {
+            canvas.DrawFillRectangle(visibleRegion, _color, 0, Vector2.Zero, _opacity * opacity);
         }
     }
 }

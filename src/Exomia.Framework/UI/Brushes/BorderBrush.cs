@@ -68,9 +68,36 @@ namespace Exomia.Framework.UI.Brushes
             _options   = options;
         }
 
-        void IBrush.Render(Canvas canvas, RectangleF region, float opacity)
+        void IBrush.Render(Canvas canvas, in RectangleF region, float opacity)
         {
-            if (!_color.Equals(Color.Transparent))
+            if (_options == Options.All)
+            {
+                canvas.DrawRectangle(region, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                return;
+            }
+
+            if ((_options & Options.North) == Options.North)
+            {
+                canvas.DrawLine(region.TopLeft, region.TopRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+            }
+            if ((_options & Options.South) == Options.South)
+            {
+                canvas.DrawLine(
+                    region.BottomLeft, region.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+            }
+            if ((_options & Options.West) == Options.West)
+            {
+                canvas.DrawLine(region.TopLeft, region.BottomLeft, _color, _lineWidth, 0, Vector2.Zero, opacity);
+            }
+            if ((_options & Options.East) == Options.East)
+            {
+                canvas.DrawLine(region.TopRight, region.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+            }
+        }
+
+        void IBrush.RenderClipped(Canvas canvas, in RectangleF region, in RectangleF visibleRegion, float opacity)
+        {
+            if (region == visibleRegion) 
             {
                 if (_options == Options.All)
                 {
@@ -95,6 +122,28 @@ namespace Exomia.Framework.UI.Brushes
                 {
                     canvas.DrawLine(region.TopRight, region.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
                 }
+            }
+            else
+            {
+                // ReSharper disable CompareOfFloatsByEqualityOperator
+                if ((_options & Options.North) == Options.North && visibleRegion.Top == region.Top)
+                {
+                    canvas.DrawLine(visibleRegion.TopLeft, visibleRegion.TopRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                }
+                if ((_options & Options.South) == Options.South && visibleRegion.Bottom == region.Bottom)
+                {
+                    canvas.DrawLine(
+                        visibleRegion.BottomLeft, visibleRegion.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                }
+                if ((_options & Options.West) == Options.West && visibleRegion.Left == region.Left)
+                {
+                    canvas.DrawLine(visibleRegion.TopLeft, visibleRegion.BottomLeft, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                }
+                if ((_options & Options.East) == Options.East && visibleRegion.Right == region.Right)
+                {
+                    canvas.DrawLine(visibleRegion.TopRight, visibleRegion.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                }
+                // ReSharper restore CompareOfFloatsByEqualityOperator
             }
         }
     }

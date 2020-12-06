@@ -146,7 +146,7 @@ namespace Exomia.Framework.UI.Controls
         /// <inheritdoc />
         internal override bool InternalMouseMove(in MouseEventArgs e, ref EventAction eventAction)
         {
-            if (_drawRectangle.Contains(e.Position))
+            if (_visibleRectangle.Contains(e.Position))
             {
                 lock (_controls)
                 {
