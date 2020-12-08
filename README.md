@@ -31,7 +31,7 @@ Take a look at our [exomia/templates](https://github.com/exomia/templates) repos
 
 ---
 
-## Q&A, Ideas, Show & tell us
+## Q&A, Ideas or Show & tell us
 
 You have questions, ideas or want to show or tell us something?  
 Open a new [discussion](https://github.com/exomia/framework/discussions) or join an existing one!
