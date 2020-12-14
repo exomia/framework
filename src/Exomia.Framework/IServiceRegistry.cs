@@ -78,6 +78,16 @@ namespace Exomia.Framework
         object GetService(Type type);
 
         /// <summary>
+        ///     Attempts to get service.
+        /// </summary>
+        /// <param name="type">    The type of service. </param>
+        /// <param name="service"> [out] The service instance. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        bool TryGetService(Type type, out object service);
+
+        /// <summary>
         ///     Gets the service object of specified type. The service must be registered with the
         ///     <typeparamref name="T" /> type key.
         /// </summary>
@@ -94,6 +104,16 @@ namespace Exomia.Framework
         ///     This method will throw an exception if the service is not registered.
         /// </remarks>
         T GetService<T>();
+
+        /// <summary>
+        ///     Attempts to get service.
+        /// </summary>
+        /// <typeparam name="T"> The type of the service to get. </typeparam>
+        /// <param name="service"> [out] The service instance. </param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        bool TryGetService<T>(out T service);
 
         /// <summary>
         ///     Removes the object providing a specified service.
