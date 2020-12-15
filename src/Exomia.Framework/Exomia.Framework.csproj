@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <NullableReferenceTypes>true</NullableReferenceTypes>
+    <Configurations>Windows-Debug;Windows-Release;Linux-Debug;Linux-Release</Configurations>
     <DefineConstants>TRACE;$(Platform)</DefineConstants>
   </PropertyGroup>
   
@@ -39,26 +40,43 @@
     <AssemblyOriginatorKeyFile>Exomia.Framework.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+  <PropertyGroup>
+    <OS Condition="'$(Configuration)'=='Windows-Debug' Or '$(Configuration)'=='Windows-Release'">Windows</OS>
+    <OS Condition="'$(Configuration)'=='Linux-Debug' Or '$(Configuration)'=='Linux-Release'">Linux</OS>
+    <IsDebug Condition="'$(Configuration)'=='Windows-Debug' Or '$(Configuration)'=='Linux-Debug'">true</IsDebug>
+    <DefineConstants>$(DefineConstants);$(OS.toUpper())</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsDebug)'=='true'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Condition="'$(IsDebug)'!='true'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+  <PropertyGroup Condition="'$(OS)'=='Windows' And '$(Platform)'=='AnyCPU'">
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <PackageId>$(MSBuildProjectName)</PackageId>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
+  <PropertyGroup Condition="'$(OS)'=='Windows' And '$(Platform)'!='AnyCPU'">
     <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
     <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)'!='Windows' And '$(Platform)'=='AnyCPU' ">
+    <AssemblyName>$(MSBuildProjectName).$(OS)</AssemblyName>
+    <PackageId>$(MSBuildProjectName).$(OS)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)'!='Windows' And '$(Platform)'!='AnyCPU' ">
+    <AssemblyName>$(MSBuildProjectName).$(OS).$(Platform)</AssemblyName>
+    <PackageId>$(MSBuildProjectName).$(OS).$(Platform)</PackageId>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -108,51 +126,59 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\fonts\arial\arial_12px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_12px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_12px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_14px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_14px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_14px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_16px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_16px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_16px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_18px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_18px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_18px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_20px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_20px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_20px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_22px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_22px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_22px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_24px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_24px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_24px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_26px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_26px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_26px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_28px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_28px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_28px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_30px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_30px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_30px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_32px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_32px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_32px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_34px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_34px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_34px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_36px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_36px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_36px.e1</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1">
-      <LogicalName>$(MSBuildProjectName).Resources.fonts.arial.arial_38px.e1</LogicalName>
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_38px.e1</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\shaders\canvas.ehlsl" />
-    <EmbeddedResource Include="Resources\shaders\position_color.ehlsl" />
-    <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl" />
-    <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl" />
+    <EmbeddedResource Include="Resources\shaders\canvas.ehlsl">
+      <LogicalName>$(AssemblyName).Resources.shaders.canvas.ehlsl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\shaders\position_color.ehlsl">
+      <LogicalName>$(AssemblyName).Resources.shaders.position_color.ehlsl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl">
+      <LogicalName>$(AssemblyName).Resources.shaders.position_color_texture.ehlsl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl">
+      <LogicalName>$(AssemblyName).Resources.shaders.position_normal_texture.ehlsl</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -175,8 +201,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Game\RenderForm.cs"></Compile>
-    <Compile Update="Game\RenderForm.*.cs">
+    <Compile Update="**\*Game\RenderForm.cs"></Compile>
+    <Compile Update="**\*Game\RenderForm.*.cs">
       <DependentUpon>RenderForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -16,8 +16,8 @@ using System.Threading;
 using Exomia.Framework.Content;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
+using Exomia.Framework.Platform.Windows.Win32;
 using Exomia.Framework.Tools;
-using Exomia.Framework.Win32;
 using SharpDX;
 
 namespace Exomia.Framework.Game
@@ -386,6 +386,7 @@ namespace Exomia.Framework.Game
         /// </summary>
         private void Renderloop()
         {
+#if WINDOWS
             MSG m;
             m.hWnd   = IntPtr.Zero;
             m.msg    = 0;
@@ -393,7 +394,8 @@ namespace Exomia.Framework.Game
             m.wParam = IntPtr.Zero;
             m.time   = 0;
             m.pt     = Point.Zero;
-
+#endif
+            
             Stopwatch stopwatch = new Stopwatch();
             GameTime  gameTime  = GameTime.StartNew();
 
@@ -408,13 +410,15 @@ namespace Exomia.Framework.Game
             while (!_shutdown)
             {
                 stopwatch.Restart();
-
+#if WINDOWS
                 while (User32.PeekMessage(out m, IntPtr.Zero, 0, 0, PM_REMOVE))
                 {
                     User32.TranslateMessage(ref m);
                     User32.DispatchMessage(ref m);
                 }
-
+#elif LINUX
+                throw new NotImplementedException();
+#endif
                 if (!_isRunning)
                 {
                     Thread.Sleep(16);

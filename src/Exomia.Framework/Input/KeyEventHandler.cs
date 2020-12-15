@@ -8,7 +8,11 @@
 
 #endregion
 
-using Exomia.Framework.Win32;
+#if WINDOWS
+using Exomia.Framework.Platform.Windows.Win32;
+#elif LINUX
+using Exomia.Framework.Platform.Linux.Lib;
+#endif
 
 namespace Exomia.Framework.Input
 {

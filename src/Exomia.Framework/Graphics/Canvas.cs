@@ -18,10 +18,14 @@ using System.Threading;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Resources;
-using Exomia.Framework.Win32;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
+#if WINDOWS
+using Exomia.Framework.Platform.Windows.Win32;
+#elif LINUX
+using Exomia.Framework.Platform.Linux.Lib;
+#endif
 
 namespace Exomia.Framework.Graphics
 {

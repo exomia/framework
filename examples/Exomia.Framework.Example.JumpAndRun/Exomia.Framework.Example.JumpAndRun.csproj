@@ -38,9 +38,12 @@
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <PackageId>$(MSBuildProjectName)</PackageId>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <PackageReference Include="Exomia.Framework" Version="1.*" />
+    <ProjectReference Include="..\..\src\Exomia.Framework\Exomia.Framework.csproj" />
+  </ItemGroup>
+    
+  <ItemGroup>
     <PackageReference Include="Exomia.ECS" Version="1.*" />
   </ItemGroup>
   

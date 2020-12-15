@@ -11,10 +11,16 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Exomia.Framework.Win32;
+#if WINDOWS
+using Exomia.Framework.Platform.Windows.Win32;
+#elif LINUX
+using Exomia.Framework.Platform.Linux.Lib;
+#endif
 
 namespace Exomia.Framework.Graphics.SpriteSort
 {
+
+
     // ReSharper disable ArrangeRedundantParentheses
     /// <summary>
     ///     A sprite merge sort. This class cannot be inherited.

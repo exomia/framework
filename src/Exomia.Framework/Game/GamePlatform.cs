@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using Exomia.Framework.Game.Desktop;
 
 namespace Exomia.Framework.Game
 {
@@ -58,7 +57,13 @@ namespace Exomia.Framework.Game
         /// </returns>
         public static GamePlatform Create(Game game, string title)
         {
-            return new GamePlatformWindows(game, title);
+#if WINDOWS
+            return new Platform.Windows.Game.Desktop.GamePlatform(game, title);
+#elif LINUX
+            return new Platform.Linux.Game.Desktop.GamePlatform(game, title);
+#else
+            throw new PlatformNotSupportedException();
+#endif
         }
 
         #region IDisposable Support
@@ -99,6 +104,6 @@ namespace Exomia.Framework.Game
         /// <param name="disposing">true if user code; false called by finalizer</param>
         protected virtual void OnDispose(bool disposing) { }
 
-        #endregion
+#endregion
     }
 }
