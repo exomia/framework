@@ -58,10 +58,10 @@ namespace Exomia.Framework.ContentManager.Fonts.BMFont
             {
                 string[] padding = value.Split(',');
                 _padding = new Rectangle(
-                    Convert.ToInt32(padding[0]),
-                    Convert.ToInt32(padding[1]),
-                    Convert.ToInt32(padding[2]),
-                    Convert.ToInt32(padding[3]));
+                    System.Convert.ToInt32(padding[0]),
+                    System.Convert.ToInt32(padding[1]),
+                    System.Convert.ToInt32(padding[2]),
+                    System.Convert.ToInt32(padding[3]));
             }
         }
 
@@ -73,8 +73,8 @@ namespace Exomia.Framework.ContentManager.Fonts.BMFont
             {
                 string[] spacing = value.Split(',');
                 _spacing = new Point(
-                    Convert.ToInt32(spacing[0]),
-                    Convert.ToInt32(spacing[1]));
+                    System.Convert.ToInt32(spacing[0]),
+                    System.Convert.ToInt32(spacing[1]));
             }
         }
 

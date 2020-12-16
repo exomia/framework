@@ -257,7 +257,7 @@ namespace Exomia.Framework.ContentSerialization.Types
             {
                 stream.ReadStartTag(out string key, out string dimensionInfo);
 
-                dic.Add((TKey)Convert.ChangeType(key, typeof(TKey)), (dynamic)readCallback(stream, dimensionInfo));
+                dic.Add((TKey)System.Convert.ChangeType(key, typeof(TKey)), (dynamic)readCallback(stream, dimensionInfo));
             }
         }
 

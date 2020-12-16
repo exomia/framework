@@ -8,11 +8,16 @@
 
 #endregion
 
+using System;
 using Exomia.Framework.Components;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
+using Exomia.Framework.Input;
 using Exomia.Framework.Mathematics;
 using Exomia.Framework.Resources;
+using Exomia.Framework.UI;
+using Exomia.Framework.UI.Brushes;
+using Exomia.Framework.UI.Controls;
 using SharpDX;
 
 namespace Exomia.Framework.Example.Canvas
@@ -81,9 +86,9 @@ namespace Exomia.Framework.Example.Canvas
         protected override void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters)
         {
             parameters.IsMouseVisible      = true;
-            parameters.Width               = 1600;
-            parameters.Height              = 1024;
-            parameters.EnableMultiSampling = true;
+            parameters.Width               = 1920;
+            parameters.Height              = 1080;
+            parameters.EnableMultiSampling = false;
             parameters.MultiSampleCount    = MultiSampleCount.MsaaX8;
         }
 
@@ -95,33 +100,157 @@ namespace Exomia.Framework.Example.Canvas
             _spriteBatch          = ToDispose(new SpriteBatch(GraphicsDevice));
             _canvas               = ToDispose(new Graphics.Canvas(GraphicsDevice));
 
-            /*
-             * TODO: Add your initialization logic here
-             */
+            var uiManager = Add(new UiManager("uiManager") { Visible = true, DrawOrder = 1 });
+
+            var container = new Container
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.Orange),
+                ClientRectangle = new RectangleF(50, 700, 400, 400)
+            };
+            container.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("entered...");
+            };
+            container.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("leaved...");
+            };
+
+            _texture = Content.Load<Texture>("logo1.jpg");
+
+            var container2 = new Container
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new TextureBrush(_texture),
+                ClientRectangle = new RectangleF(50, 50, 500, 75)
+            };
+            container2.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("2 entered...");
+            };
+            container2.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                Console.WriteLine("2 leaved...");
+            };
+            container.Add(container2);
+            uiManager.Add(container);
+
+            _spriteFont1_12Px = Content.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
+            _spriteFont1_24Px = Content.Load<SpriteFont>(Fonts.ARIAL_24_PX, true);
+
+            var label1 = new Label(_spriteFont1_24Px, "Hello there!")
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new BorderBrush(Color.BlueViolet),
+                ClientRectangle = new RectangleF(320, 300, 200, 50),
+                TextAlignment   = TextAlignment.MiddleCenter
+            };
+            label1.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                label1.Text = "entered...";
+            };
+            label1.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                label1.Text = "leaved...";
+            };
+            container.Add(label1);
+
+            var button1 = new Button(_spriteFont1_24Px, "click me!")
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.Yellow),
+                ClientRectangle = new RectangleF(900, 900, 400, 80),
+                TextAlignment   = TextAlignment.MiddleCenter
+            };
+            button1.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                button1.Text = "entered...";
+            };
+            button1.MouseLeaved += (Control sender, in MouseEventArgs args) =>
+            {
+                button1.Text = "leaved...";
+            };
+            button1.MouseClick += (Control sender, in MouseEventArgs args, ref EventAction action) =>
+            {
+                button1.Text = "clicked...";
+            };
+            button1.GotFocus += (Control sender) =>
+            {
+                button1.Text = "got focus...";
+            };
+            button1.LostFocus += (Control sender) =>
+            {
+                button1.Text = "lost focus...";
+            };
+            uiManager.Add(button1);
+
+            var checkbox1 = new Checkbox
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new SolidColorBrush(Color.Yellow),
+                CheckedBrush    = new SolidColorBrush(Color.Blue),
+                ClientRectangle = new RectangleF(380, 0, 40, 40),
+                Padding         = new Padding(5)
+            };
+            container.Add(checkbox1);
+
+            var progressbar1 = new Progressbar
+            {
+                Enabled         = true,
+                Visible         = true,
+                BackgroundBrush = new BorderBrush(Color.Yellow),
+                BarBrush        = new SolidColorBrush(Color.Blue),
+                ClientRectangle = new RectangleF(300, 180, 200, 50),
+                Padding         = new Padding(10, 5),
+                Value           = 0.13f
+            };
+            progressbar1.MouseEntered += (Control sender, in MouseEventArgs args) =>
+            {
+                progressbar1.Value += 0.05f;
+            };
+            container.Add(progressbar1);
+
+            var slider1 = new Slider
+            {
+                Enabled          = true,
+                Visible          = true,
+                SliderTrackBrush = new SolidColorBrush(Color.Gray),
+                SliderCaretBrush = new SolidColorBrush(Color.DarkGray),
+                ClientRectangle  = new RectangleF(300, 250, 200, 50),
+                Padding          = new Padding(20, 5),
+                Value            = 0
+            };
+            container.Add(slider1);
+
+            var label2 = new Label(_spriteFont1_24Px, "0")
+            {
+                Enabled         = true,
+                Visible         = true,
+                ClientRectangle = new RectangleF(555, 950, 200, 50),
+                TextAlignment   = TextAlignment.MiddleLeft
+            };
+            slider1.ValueChanged += slider => { label2.Text = slider.Value.ToString(); };
+            uiManager.Add(label2);
         }
 
         /// <inheritdoc />
         /// OnLoadContent will be called once per game and is the place to load all of your content.
         protected override void OnLoadContent()
         {
-            /*
-             * TODO: use base.Content to load your game content here
-             */
-
-            _texture  = Content.Load<Texture>("logo1.jpg");
             _texture2 = Content.Load<Texture>("logo2.png");
-
-            _spriteFont1_12Px = Content.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
-            _spriteFont1_24Px = Content.Load<SpriteFont>(Fonts.ARIAL_24_PX, true);
         }
 
         /// <inheritdoc />
         /// OnUnloadContent will be called once per game and is the place to unload all content
         protected override void OnUnloadContent()
         {
-            /*
-             * TODO: Unload any non ContentManager content here
-             */
+            Content.Unload<Texture>("logo2.png");
         }
 
         /// <inheritdoc />
@@ -140,7 +269,6 @@ namespace Exomia.Framework.Example.Canvas
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
             _canvas.Begin(rasterizerState: GraphicsDevice.RasterizerStates.CullBackDepthClipOffMultiSampleOn);
 
             k += gameTime.DeltaTimeS / 2;
@@ -159,11 +287,11 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.DrawFillRectangle(new RectangleF(200, 200, 100, 50), Color.Yellow, k, new Vector2(200, 200), 1.0f);
             _canvas.DrawRectangle(new RectangleF(200, 200, 100, 50), Color.Green, 5.0f, k, new Vector2(200, 200), 1.0f);
 
-            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 1.0f, 0, Vector2.Zero);
-            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, 1.0f, k, new Vector2(425, 425));
+            _canvas.DrawLine(new Line2(300, 400, 345, 400), Color.Red, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawLine(new Line2(400, 400, 450, 450), Color.Red, 5.0f, k, new Vector2(425, 425), 1.0f);
 
-            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 1.0f, 0, Vector2.Zero);
-            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, 1.0f, k, new Vector2(425, 425));
+            _canvas.DrawLine(new Line2(300, 450, 345, 450), Color.Yellow, 5.0f, 0, Vector2.Zero, 1.0f);
+            _canvas.DrawLine(new Line2(400, 450, 450, 400), Color.Yellow, 5.0f, k, new Vector2(425, 425), 1.0f);
 
             _canvas.DrawFillPolygon(polyA, Color.Red, 0.0f, Vector2.Zero, 1.0f);
             _canvas.DrawPolygon(polyA, Color.Green, 5.0f, 0.0f, Vector2.Zero, 1.0f);
@@ -271,7 +399,9 @@ namespace Exomia.Framework.Example.Canvas
             _canvas.Draw(_texture2, new RectangleF(1350, 50, 200, 200), Color.White);
 
             _canvas.DrawText(_spriteFont1_12Px, "This is the canvas example.", new Vector2(450, 50), Color.Black, 0);
-            _canvas.DrawText(_spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black, k, new Vector2(450, 65), 1.0f, TextureEffects.None);
+            _canvas.DrawText(
+                _spriteFont1_24Px, "This is the canvas example.", new Vector2(450, 65), Color.Black, k,
+                new Vector2(450, 65), 1.0f, TextureEffects.None);
 
             _canvas.End();
 

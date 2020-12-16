@@ -32,7 +32,7 @@ namespace Exomia.Framework.Graphics
                 SpacingY         = context.Get<int>(nameof(SpriteFont.SpacingY)),
                 Glyphs           = context.Get<Dictionary<int, SpriteFont.Glyph>>(nameof(SpriteFont.Glyphs)),
                 Kernings         = context.Get<Dictionary<int, SpriteFont.Kerning>>(nameof(SpriteFont.Kernings)),
-                ImageData        = Convert.FromBase64String(context.Get<string>(nameof(SpriteFont.ImageData)))
+                ImageData        = System.Convert.FromBase64String(context.Get<string>(nameof(SpriteFont.ImageData)))
             };
         }
     }

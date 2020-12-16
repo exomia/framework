@@ -10,6 +10,7 @@
 
 using System;
 using Exomia.Framework.Game;
+using SharpDX;
 
 namespace Exomia.Framework
 {
@@ -28,8 +29,14 @@ namespace Exomia.Framework
         /// </summary>
         public event EventHandler? VisibleChanged;
 
-        private int  _drawOrder;
-        private bool _visible;
+        /// <summary>
+        ///     Flag to identify, if the component is already initialized.
+        /// </summary>
+        protected bool _isInitialized;
+
+        private readonly DisposeCollector _collector;
+        private          int              _drawOrder;
+        private          bool             _visible;
 
         /// <inheritdoc />
         public int DrawOrder
@@ -68,11 +75,9 @@ namespace Exomia.Framework
         /// <param name="name"> name. </param>
         protected Renderer(string name)
         {
-            Name = name;
+            Name       = name;
+            _collector = new DisposeCollector();
         }
-
-        /// <inheritdoc />
-        public abstract void Dispose();
 
         /// <inheritdoc />
         public virtual bool BeginDraw()
@@ -81,12 +86,85 @@ namespace Exomia.Framework
         }
 
         /// <inheritdoc />
-        public virtual void Draw(GameTime gameTime) { }
+        public abstract void Draw(GameTime gameTime);
 
         /// <inheritdoc />
         public virtual void EndDraw() { }
 
         /// <inheritdoc />
-        public virtual void Initialize(IServiceRegistry registry) { }
+        void IInitializable.Initialize(IServiceRegistry registry)
+        {
+            if (!_isInitialized)
+            {
+                OnInitialize(registry);
+                _isInitialized = true;
+            }
+        }
+
+        /// <summary>
+        ///     called than the component is initialized (once)
+        /// </summary>
+        /// <param name="registry"> IServiceRegistry. </param>
+        protected virtual void OnInitialize(IServiceRegistry registry) { }
+
+        /// <summary>
+        ///     Adds an <see cref="IDisposable" /> object to the dispose collector.
+        /// </summary>
+        /// <typeparam name="T"> The <see cref="IDisposable"/> object type. </typeparam>
+        /// <param name="obj"> The object to add. </param>
+        /// <returns>
+        ///     The <paramref name="obj"/>.
+        /// </returns>
+        protected T ToDispose<T>(T obj)
+        {
+            return _collector.Collect(obj);
+        }
+
+        #region IDisposable Support
+
+        /// <summary>
+        ///     flag to identify if the component is already disposed.
+        /// </summary>
+        protected bool _disposed;
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
+        /// </summary>
+        /// <param name="disposing"> true if user code; false called by finalizer. </param>
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                OnDispose(disposing);
+                _collector.DisposeAndClear(disposing);
+                _disposed = true;
+            }
+        }
+
+        /// <inheritdoc />
+        ~Renderer()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        ///     called then the instance is disposing.
+        /// </summary>
+        /// <param name="disposing"> true if user code; false called by finalizer. </param>
+        protected virtual void OnDispose(bool disposing) { }
+
+        #endregion
     }
 }

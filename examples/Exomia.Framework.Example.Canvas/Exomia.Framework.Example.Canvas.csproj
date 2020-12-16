@@ -6,6 +6,7 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <NullableReferenceTypes>true</NullableReferenceTypes>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -45,7 +46,7 @@
     <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
     <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Exomia.Framework\Exomia.Framework.csproj" />
   </ItemGroup>

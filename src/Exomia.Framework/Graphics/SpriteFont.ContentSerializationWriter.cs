@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.ContentSerialization;
 
 namespace Exomia.Framework.Graphics
@@ -33,7 +32,7 @@ namespace Exomia.Framework.Graphics
             context.Set(nameof(SpriteFont.Glyphs), obj.Glyphs);
             context.Set(nameof(SpriteFont.Kernings), obj.Kernings);
 
-            context.Set(nameof(SpriteFont.ImageData), Convert.ToBase64String(obj.ImageData));
+            context.Set(nameof(SpriteFont.ImageData), System.Convert.ToBase64String(obj.ImageData));
         }
     }
 
