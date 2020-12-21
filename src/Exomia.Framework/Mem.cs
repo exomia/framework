@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -33,6 +34,8 @@ namespace Exomia.Framework
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Resize<T>(ref T* src, ref int srcLength, int newLength) where T : unmanaged
         {
+            Debug.Assert(srcLength < newLength, $"{nameof(newLength)} must be greater than {nameof(srcLength)}!");
+            
             T* s = src;
             Unsafe.CopyBlock(src = (T*)Marshal.AllocHGlobal(sizeof(T) * newLength), s, (uint)(srcLength * sizeof(T)));
             Marshal.FreeHGlobal(new IntPtr(s));
