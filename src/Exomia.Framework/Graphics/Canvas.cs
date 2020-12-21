@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
@@ -388,13 +389,9 @@ namespace Exomia.Framework.Graphics
 
                 DataBox box = _context.MapSubresource(
                     _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-                Item* vpctPtr = (Item*)box.DataPointer;
-
-                for (int i = 0; i < batchSize; i++)
-                {
-                    *(vpctPtr + i) = _itemQueue[i + offset];
-                }
-
+                
+                Unsafe.CopyBlock(box.DataPointer.ToPointer(), _itemQueue + offset, (uint)(batchSize * sizeof(Item)));
+                
                 _context.UnmapSubresource(_vertexBuffer, 0);
                 _context.DrawIndexed(6 * batchSize, 0, 0);
 
