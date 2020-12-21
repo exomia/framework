@@ -72,7 +72,7 @@ namespace Exomia.Framework.Graphics
 
             double  dl = Math.Sqrt((dx * dx) + (dy * dy));
             Vector2 n;
-            n.X = (float)((-dy / dl) * lineWidth); 
+            n.X = (float)((-dy / dl) * lineWidth);
             n.Y = (float)((dx / dl) * lineWidth);
 
             VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(1);
@@ -90,7 +90,7 @@ namespace Exomia.Framework.Graphics
             vertex++;
 
             // p2'
-            vertex->XY    = l.XY2 + n;
+            vertex->XY   = l.XY2 + n;
             vertex->RGBA = scaledColor;
             vertex->M    = COLOR_MODE;
             vertex++;

@@ -8,20 +8,11 @@
 
 #endregion
 
+using System;
+
 namespace Exomia.Framework.Graphics.SpriteSort
 {
-    /// <summary>
-    ///     SpriteSortAlgorithm
-    /// </summary>
-    public enum SpriteSortAlgorithm
-    {
-        /// <summary>
-        ///     MergeSort (default)
-        /// </summary>
-        MergeSort
-    }
-
-    interface ISpriteSort
+    interface ISpriteSort : IDisposable
     {
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.TextureInfo" /> into a given indirect index array

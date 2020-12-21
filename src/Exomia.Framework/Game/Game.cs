@@ -433,7 +433,8 @@ namespace Exomia.Framework.Game
                     }
 
                     Update(gameTimeUpdate);
-                } while (IsFixedTimeStep && TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds);
+                } while (IsFixedTimeStep &&
+                         TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds);
 
                 if (BeginFrame())
                 {

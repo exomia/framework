@@ -551,6 +551,8 @@ namespace Exomia.Framework.Graphics
 
                     _shader.Dispose();
                     _vertexInputLayout.Dispose();
+
+                    _spriteSort.Dispose();
                 }
 
                 _disposed = true;

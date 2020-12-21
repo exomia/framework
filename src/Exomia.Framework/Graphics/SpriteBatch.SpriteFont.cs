@@ -10,7 +10,7 @@
 
 using System.Runtime.CompilerServices;
 using SharpDX;
-    
+
 #if NETSTANDARD2_1
 using System;
 

@@ -54,7 +54,7 @@ namespace Exomia.Framework.Graphics
                     float       x = v.X - origin.X;
                     float       y = v.Y - origin.Y;
                     vs[i] = new Vector2(
-                        (float)(((cos * x) - (sin * y)) + origin.X), 
+                        (float)(((cos * x) - (sin * y)) + origin.X),
                         (float)((sin * x) + (cos * y) + origin.Y));
                 }
                 vertices = vs;
@@ -173,7 +173,7 @@ namespace Exomia.Framework.Graphics
                     float       x = v.X - origin.X;
                     float       y = v.Y - origin.Y;
                     *(vs + i) = new Vector2(
-                        (float)(((cos * x) - (sin * y)) + origin.X), 
+                        (float)(((cos * x) - (sin * y)) + origin.X),
                         (float)((sin * x) + (cos * y) + origin.Y));
                 }
 

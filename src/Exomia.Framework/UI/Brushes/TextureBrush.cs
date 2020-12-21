@@ -41,9 +41,9 @@ namespace Exomia.Framework.UI.Brushes
             canvas.Draw(
                 _texture, visibleRegion,
                 new Rectangle(
-                    0, 0, 
+                    0, 0,
                     (int)((_texture.Width / region.Width) * visibleRegion.Width),
-                    (int)((_texture.Height / region.Height) * visibleRegion.Height)), 
+                    (int)((_texture.Height / region.Height) * visibleRegion.Height)),
                 Color.White, 0, Vector2.Zero, opacity, TextureEffects.None);
         }
     }

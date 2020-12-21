@@ -1,4 +1,12 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2020, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
 
 namespace Exomia.Framework
 {
@@ -11,12 +19,12 @@ namespace Exomia.Framework
         private const int UPPERCASE_A_OFFSET = 'A' - 10;
 
         /// <summary>
-        ///     Converts the <paramref name="value"/> to an <see cref="UInt32"/>.
+        ///     Converts the <paramref name="value" /> to an <see cref="uint" />.
         /// </summary>
         /// <param name="value"> The value. </param>
         /// <param name="b">     (Optional) The number base. </param>
         /// <returns>
-        ///     The given <paramref name="value"/> converted to an <see cref="UInt32"/>.
+        ///     The given <paramref name="value" /> converted to an <see cref="uint" />.
         /// </returns>
         public static unsafe uint ToUInt32(string value, uint b = 10)
         {
@@ -37,31 +45,41 @@ namespace Exomia.Framework
                 for (uint c = *cPtr; cPtr < ptr + value.Length; c = *++cPtr)
                 {
                     if (c >= '0' && c <= '9')
+                    {
                         c -= '0';
+                    }
                     else if (c >= 'a' && c <= 'f')
+                    {
                         c -= LOWERCASE_A_OFFSET;
+                    }
                     else if (c >= 'A' && c <= 'F')
+                    {
                         c -= UPPERCASE_A_OFFSET;
+                    }
                     else
+                    {
                         break;
+                    }
                     if (c >= b)
+                    {
                         break;
+                    }
 
                     acc *= b;
                     acc += c;
                 }
-                
+
                 return acc;
             }
         }
 
         /// <summary>
-        ///     Converts the <paramref name="value"/> to an <see cref="UInt64"/>.
+        ///     Converts the <paramref name="value" /> to an <see cref="ulong" />.
         /// </summary>
         /// <param name="value"> The value. </param>
         /// <param name="b">     (Optional) The number base. </param>
         /// <returns>
-        ///     The given <paramref name="value"/> converted to an <see cref="UInt64"/>.
+        ///     The given <paramref name="value" /> converted to an <see cref="ulong" />.
         /// </returns>
         public static unsafe ulong ToUInt64(string value, uint b = 10)
         {
@@ -82,15 +100,25 @@ namespace Exomia.Framework
                 for (uint c = *cPtr; cPtr < ptr + value.Length; c = *++cPtr)
                 {
                     if (c >= '0' && c <= '9')
+                    {
                         c -= '0';
+                    }
                     else if (c >= 'a' && c <= 'f')
+                    {
                         c -= LOWERCASE_A_OFFSET;
+                    }
                     else if (c >= 'A' && c <= 'F')
+                    {
                         c -= UPPERCASE_A_OFFSET;
+                    }
                     else
+                    {
                         break;
+                    }
                     if (c >= b)
+                    {
                         break;
+                    }
 
                     acc *= b;
                     acc += c;

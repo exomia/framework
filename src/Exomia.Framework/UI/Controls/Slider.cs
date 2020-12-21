@@ -12,6 +12,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
+using Exomia.Framework.UI.Brushes;
 using SharpDX;
 
 namespace Exomia.Framework.UI.Controls
@@ -26,15 +27,15 @@ namespace Exomia.Framework.UI.Controls
         /// </summary>
         public event EventHandler<Slider>? ValueChanged;
 
-        private bool _isDirty          = true;
-        private int  _value            = 0;
-        private int  _minValue         = 0;
+        private bool _isDirty = true;
+        private int  _value;
+        private int  _minValue;
         private int  _maxValue         = 100;
         private int  _sliderCaretWidth = 5;
-        private bool _isMouseDown      = false;
+        private bool _isMouseDown;
 
-        private Brushes.IBrush? _sliderTrackBrush;
-        private Brushes.IBrush? _sliderCaretBrush;
+        private IBrush? _sliderTrackBrush;
+        private IBrush? _sliderCaretBrush;
 
         private RectangleF _sliderTrackRectangle;
         private RectangleF _sliderCaretRectangle;
@@ -112,7 +113,7 @@ namespace Exomia.Framework.UI.Controls
         /// <value>
         ///     The slider track brush.
         /// </value>
-        public Brushes.IBrush? SliderTrackBrush
+        public IBrush? SliderTrackBrush
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _sliderTrackBrush; }
@@ -126,7 +127,7 @@ namespace Exomia.Framework.UI.Controls
         /// <value>
         ///     The slider caret brush.
         /// </value>
-        public Brushes.IBrush? SliderCaretBrush
+        public IBrush? SliderCaretBrush
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _sliderCaretBrush; }
@@ -178,10 +179,12 @@ namespace Exomia.Framework.UI.Controls
         /// <inheritdoc />
         protected override void OnDrawRectangleChanged()
         {
-            _sliderTrackRectangle.X      = _drawRectangle.X + _padding.W;
-            _sliderTrackRectangle.Y      = _drawRectangle.Y + _padding.N;
-            _sliderTrackRectangle.Width  = Math.Min(_drawRectangle.Width - _padding.W - _padding.E, _visibleRectangle.Width - _padding.W);
-            _sliderTrackRectangle.Height = Math.Min(_drawRectangle.Height - _padding.N - _padding.S, _visibleRectangle.Height - _padding.N);
+            _sliderTrackRectangle.X = _drawRectangle.X + _padding.W;
+            _sliderTrackRectangle.Y = _drawRectangle.Y + _padding.N;
+            _sliderTrackRectangle.Width = Math.Min(
+                _drawRectangle.Width - _padding.W - _padding.E, _visibleRectangle.Width - _padding.W);
+            _sliderTrackRectangle.Height = Math.Min(
+                _drawRectangle.Height - _padding.N - _padding.S, _visibleRectangle.Height - _padding.N);
 
             _sliderCaretRectangle.Y      = _drawRectangle.Y;
             _sliderCaretRectangle.Height = _drawRectangle.Height;

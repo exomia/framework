@@ -120,7 +120,8 @@ namespace Exomia.Framework.Tools
             {
                 TweenItem item  = _items[i];
                 float     value = _callback(_time, item.From, item.To, _duration);
-                item.PropertyInfo.SetValue(_target, System.Convert.ChangeType(value, item.PropertyInfo.PropertyType), null);
+                item.PropertyInfo.SetValue(
+                    _target, System.Convert.ChangeType(value, item.PropertyInfo.PropertyType), null);
             }
         }
 

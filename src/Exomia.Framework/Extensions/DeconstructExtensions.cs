@@ -13,7 +13,6 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework.Extensions
 {
-
     /// <summary>
     ///     A deconstruct extensions.
     /// </summary>
@@ -27,9 +26,11 @@ namespace Exomia.Framework.Extensions
         /// <param name="kvp">   The kvp. </param>
         /// <param name="key">   [out] The key. </param>
         /// <param name="value"> [out] The value. </param>
-        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
+        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp,
+                                                     out  TKey                       key,
+                                                     out  TValue                     value)
         {
-            key = kvp.Key;
+            key   = kvp.Key;
             value = kvp.Value;
         }
     }

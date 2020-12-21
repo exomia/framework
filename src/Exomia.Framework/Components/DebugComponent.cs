@@ -113,7 +113,7 @@ namespace Exomia.Framework.Components
 
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     $"{_gpuName}\nFPS: {_fpsCurrent:0} / {(_fpsAverage == -1 ? "NA" : _fpsAverage.ToString("0"))} ({gameTime.DeltaTimeMS:0.00}ms) [max: {_maxFrameTime:0.00}ms]";
-                
+
                 if (EnableTitleInformation)
                 {
                     _gameWindow!.Title = $"{_title} {_fpsInfo}";

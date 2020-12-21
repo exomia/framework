@@ -124,9 +124,10 @@ namespace Exomia.Framework.UI.Controls
                 _isDirty = false;
             }
 
-            if (_visibleRectangle == _drawRectangle) // use the "faster" draw text method if we know that we don't need to clip.
+            if (_visibleRectangle == _drawRectangle
+            ) // use the "faster" draw text method if we know that we don't need to clip.
             {
-                 canvas.DrawText(_font, _text, _drawRectangle.TopLeft + _offset, in _foregroundColor);
+                canvas.DrawText(_font, _text, _drawRectangle.TopLeft + _offset, in _foregroundColor);
             }
             else
             {

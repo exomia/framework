@@ -190,7 +190,7 @@ namespace Exomia.Framework.Game
 
             _wndClassEx = new WndClassEx
             {
-                cbSize = Marshal.SizeOf(typeof(WndClassEx)),
+                cbSize = Marshal.SizeOf<WndClassEx>(),
                 style = ClassStyles.HorizontalRedraw | ClassStyles.VerticalRedraw |
                         ClassStyles.DoubleClicks | ClassStyles.OwnDC,
                 hbrBackground = (IntPtr)COLOR_WINDOW + 1, //null,

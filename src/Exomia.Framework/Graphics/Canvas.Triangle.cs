@@ -10,7 +10,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Exomia.Framework.Mathematics;
 using SharpDX;
 using SharpDX.Direct3D11;

@@ -23,17 +23,6 @@ namespace Exomia.Framework.Graphics
     [ContentSerializable(typeof(SpriteFontContentSerializationReader), typeof(SpriteFontContentSerializationWriter))]
     public sealed partial class SpriteFont : IDisposable
     {
-        internal delegate void DrawFont(Texture        texture,
-                                        in Vector2     position,
-                                        in Rectangle?  sourceRectangle,
-                                        in Color       color,
-                                        float          rotation,
-                                        in Vector2     origin,
-                                        float          scale,
-                                        float          opacity,
-                                        TextureEffects effects,
-                                        float          layerDepth);
-        
         private Glyph                  _defaultGlyph;
         private Dictionary<int, Glyph> _glyphs;
         private Texture                _texture;
@@ -182,10 +171,21 @@ namespace Exomia.Framework.Graphics
             _texture = Texture.Empty;
         }
 
+        internal delegate void DrawFont(Texture        texture,
+                                        in Vector2     position,
+                                        in Rectangle?  sourceRectangle,
+                                        in Color       color,
+                                        float          rotation,
+                                        in Vector2     origin,
+                                        float          scale,
+                                        float          opacity,
+                                        TextureEffects effects,
+                                        float          layerDepth);
+
         #region IDisposable Support
-        
+
         private bool _disposed;
-        
+
         private void Dispose(bool disposing)
         {
             if (!_disposed)

@@ -110,10 +110,10 @@ namespace Exomia.Framework
         /// <summary>
         ///     Adds an <see cref="IDisposable" /> object to the dispose collector.
         /// </summary>
-        /// <typeparam name="T"> The <see cref="IDisposable"/> object type. </typeparam>
+        /// <typeparam name="T"> The <see cref="IDisposable" /> object type. </typeparam>
         /// <param name="obj"> The object to add. </param>
         /// <returns>
-        ///     The <paramref name="obj"/>.
+        ///     The <paramref name="obj" />.
         /// </returns>
         protected T ToDispose<T>(T obj)
         {

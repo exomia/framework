@@ -97,7 +97,7 @@ namespace Exomia.Framework.UI.Brushes
 
         void IBrush.RenderClipped(Canvas canvas, in RectangleF region, in RectangleF visibleRegion, float opacity)
         {
-            if (region == visibleRegion) 
+            if (region == visibleRegion)
             {
                 if (_options == Options.All)
                 {
@@ -128,21 +128,27 @@ namespace Exomia.Framework.UI.Brushes
                 // ReSharper disable CompareOfFloatsByEqualityOperator
                 if ((_options & Options.North) == Options.North && visibleRegion.Top == region.Top)
                 {
-                    canvas.DrawLine(visibleRegion.TopLeft, visibleRegion.TopRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                    canvas.DrawLine(
+                        visibleRegion.TopLeft, visibleRegion.TopRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
                 }
                 if ((_options & Options.South) == Options.South && visibleRegion.Bottom == region.Bottom)
                 {
                     canvas.DrawLine(
-                        visibleRegion.BottomLeft, visibleRegion.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                        visibleRegion.BottomLeft, visibleRegion.BottomRight, _color, _lineWidth, 0, Vector2.Zero,
+                        opacity);
                 }
                 if ((_options & Options.West) == Options.West && visibleRegion.Left == region.Left)
                 {
-                    canvas.DrawLine(visibleRegion.TopLeft, visibleRegion.BottomLeft, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                    canvas.DrawLine(
+                        visibleRegion.TopLeft, visibleRegion.BottomLeft, _color, _lineWidth, 0, Vector2.Zero, opacity);
                 }
                 if ((_options & Options.East) == Options.East && visibleRegion.Right == region.Right)
                 {
-                    canvas.DrawLine(visibleRegion.TopRight, visibleRegion.BottomRight, _color, _lineWidth, 0, Vector2.Zero, opacity);
+                    canvas.DrawLine(
+                        visibleRegion.TopRight, visibleRegion.BottomRight, _color, _lineWidth, 0, Vector2.Zero,
+                        opacity);
                 }
+
                 // ReSharper restore CompareOfFloatsByEqualityOperator
             }
         }
