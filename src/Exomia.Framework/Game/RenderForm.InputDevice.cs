@@ -206,9 +206,12 @@ namespace Exomia.Framework.Game
                 {
                     _list.Insert(position, handler);
                 }
-                else if (position < 0 && _list.Count + position >= 0)
+                else if (position < 0)
                 {
-                    _list.Insert(_list.Count + position, handler);
+                    _list.Insert(
+                        _list.Count + position >= 0
+                            ? _list.Count + position
+                            : 0, handler);
                 }
                 else
                 {
