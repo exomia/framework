@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using Exomia.Framework.Game;
+using Exomia.Framework.Input;
 using SharpDX;
 
 namespace Exomia.Framework.Scene
@@ -26,7 +27,7 @@ namespace Exomia.Framework.Scene
         ///     Occurs when Scene State Changed.
         /// </summary>
         public event EventHandler<SceneBase, SceneState>? SceneStateChanged;
-
+        
         private readonly List<IContentable>             _contentableComponent;
         private readonly List<IContentable>             _currentlyContentableComponent;
         private readonly List<IDrawable>                _currentlyDrawableComponent;
@@ -101,8 +102,8 @@ namespace Exomia.Framework.Scene
         /// <param name="key"> The key. </param>
         protected SceneBase(string key)
         {
-            _key = key;
-
+            _key = key ?? throw new ArgumentNullException(nameof(key));
+            
             _sceneComponents               = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
             _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
             _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
@@ -111,8 +112,7 @@ namespace Exomia.Framework.Scene
             _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
             _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
             _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
-
-            _collector = new DisposeCollector();
+            _collector                     = new DisposeCollector();
         }
 
         /// <inheritdoc />
