@@ -24,21 +24,21 @@ namespace Exomia.Framework.Graphics
         /// <param name="point2">       The second point. </param>
         /// <param name="color">        The color. </param>
         /// <param name="lineWidth">    The width of the line. </param>
-        /// <param name="opacity">      The opacity. </param>
         /// <param name="rotation">     The rotation. </param>
         /// <param name="origin">       The origin. </param>
+        /// <param name="opacity">      The opacity. </param>
         /// <param name="lengthFactor"> (Optional) The length factor. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
                              in Color   color,
                              float      lineWidth,
-                             float      opacity,
                              float      rotation,
                              in Vector2 origin,
+                             float      opacity,
                              float      lengthFactor = 1.0f)
         {
-            DrawLine(new Line2(in point1, in point2), color, lineWidth, opacity, rotation, origin, lengthFactor);
+            DrawLine(new Line2(in point1, in point2), color, lineWidth, rotation, origin, opacity, lengthFactor);
         }
 
         /// <summary>
@@ -47,16 +47,16 @@ namespace Exomia.Framework.Graphics
         /// <param name="line">         The line. </param>
         /// <param name="color">        The color. </param>
         /// <param name="lineWidth">    The width of the line. </param>
-        /// <param name="opacity">      The opacity. </param>
         /// <param name="rotation">     The rotation. </param>
         /// <param name="origin">       The origin. </param>
+        /// <param name="opacity">      The opacity. </param>
         /// <param name="lengthFactor"> (Optional) The length factor. </param>
         public void DrawLine(in Line2   line,
                              in Color   color,
                              float      lineWidth,
-                             float      opacity,
                              float      rotation,
                              in Vector2 origin,
+                             float      opacity,
                              float      lengthFactor = 1.0f)
         {
             Line2 l = rotation == 0.0f ? line : Line2.RotateAround(in line, rotation, origin);
@@ -70,9 +70,10 @@ namespace Exomia.Framework.Graphics
             float dx = l.X2 - l.X1;
             float dy = l.Y2 - l.Y1;
 
-            double dl = Math.Sqrt((dx * dx) + (dy * dy));
-            float  nx = (float)((dy / dl) * lineWidth);
-            float  ny = (float)((dx / dl) * lineWidth);
+            double  dl = Math.Sqrt((dx * dx) + (dy * dy));
+            Vector2 n;
+            n.X = (float)((-dy / dl) * lineWidth);
+            n.Y = (float)((dx / dl) * lineWidth);
 
             VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)Reserve(1);
 
@@ -89,15 +90,13 @@ namespace Exomia.Framework.Graphics
             vertex++;
 
             // p2'
-            vertex->X    = l.X2 - nx;
-            vertex->Y    = l.Y2 + ny;
+            vertex->XY   = l.XY2 + n;
             vertex->RGBA = scaledColor;
             vertex->M    = COLOR_MODE;
             vertex++;
 
             // p1'
-            vertex->X    = l.X1 - nx;
-            vertex->Y    = l.Y1 + ny;
+            vertex->XY   = l.XY1 + n;
             vertex->RGBA = scaledColor;
             vertex->M    = COLOR_MODE;
         }

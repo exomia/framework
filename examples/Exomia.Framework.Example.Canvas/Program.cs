@@ -8,6 +8,8 @@
 
 #endregion
 
+using System;
+
 namespace Exomia.Framework.Example.Canvas
 {
     /// <summary>

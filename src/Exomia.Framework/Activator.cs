@@ -84,7 +84,7 @@ namespace Exomia.Framework
             where TDelegate : Delegate
         {
             Type dType = typeof(TDelegate);
-            return (TDelegate)Convert.ChangeType(GetCreator(dType), dType);
+            return (TDelegate)System.Convert.ChangeType(GetCreator(dType), dType);
         }
 
         /// <summary>

@@ -81,23 +81,36 @@ namespace Exomia.Framework
         /// <inheritdoc />
         public object GetService(Type type)
         {
+            if (!TryGetService(type, out object service))
+            {
+                throw new ArgumentException($"Service of type {type} is not registered.");
+            }
+            return service;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetService(Type type, out object service)
+        {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
 
             lock (_registeredServices)
             {
-                if (_registeredServices.TryGetValue(type, out object obj))
-                {
-                    return obj;
-                }
+                return _registeredServices.TryGetValue(type, out service);
             }
-
-            throw new ArgumentException($"Service of type {type} is not registered.");
         }
 
         /// <inheritdoc />
         public T GetService<T>()
         {
             return (T)GetService(typeof(T));
+        }
+
+        /// <inheritdoc />
+        public bool TryGetService<T>(out T service)
+        {
+            bool found = TryGetService(typeof(T), out object s);
+            service = (T)s;
+            return found;
         }
 
         /// <inheritdoc />

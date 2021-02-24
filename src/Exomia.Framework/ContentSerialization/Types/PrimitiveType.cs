@@ -76,7 +76,7 @@ namespace Exomia.Framework.ContentSerialization.Types
                             string content = sb.ToString();
                             try
                             {
-                                return Convert.ChangeType(content, BaseType);
+                                return System.Convert.ChangeType(content, BaseType);
                             }
                             catch
                             {

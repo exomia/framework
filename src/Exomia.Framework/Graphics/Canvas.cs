@@ -13,12 +13,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Resources;
-using Exomia.Framework.Win32;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -154,7 +153,7 @@ namespace Exomia.Framework.Graphics
             _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTextureMode>(graphicsDevice, MAX_VERTEX_COUNT);
             _perFrameBuffer = ConstantBuffer.Create<Matrix>(graphicsDevice);
 
-            _itemQueue = (Item*)Marshal.AllocHGlobal(sizeof(Item) * (_itemQueueLength = MAX_BATCH_SIZE));
+            Mem.Allocate(out _itemQueue, _itemQueueLength = MAX_BATCH_SIZE);
 
             graphicsDevice.ResizeFinished += GraphicsDeviceOnResizeFinished;
             Resize(graphicsDevice.Viewport);
@@ -390,18 +389,9 @@ namespace Exomia.Framework.Graphics
 
                 DataBox box = _context.MapSubresource(
                     _vertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
-                VertexPositionColorTextureMode* vpctPtr = (VertexPositionColorTextureMode*)box.DataPointer;
-
-                for (int i = 0; i < batchSize; i++)
-                {
-                    ref Item                        item = ref _itemQueue[i + offset];
-                    VertexPositionColorTextureMode* v    = vpctPtr + (i << 2);
-                    *(v + 0) = item.V1;
-                    *(v + 1) = item.V2;
-                    *(v + 2) = item.V3;
-                    *(v + 3) = item.V4;
-                }
-
+                
+                Unsafe.CopyBlock(box.DataPointer.ToPointer(), _itemQueue + offset, (uint)(batchSize * sizeof(Item)));
+                
                 _context.UnmapSubresource(_vertexBuffer, 0);
                 _context.DrawIndexed(6 * batchSize, 0, 0);
 
@@ -420,7 +410,7 @@ namespace Exomia.Framework.Graphics
                     _spinLock.Enter(ref lockTaken);
                     if (_itemQueueCount >= _itemQueueLength)
                     {
-                        Mem.Resize(ref _itemQueue, ref _itemQueueLength, _itemQueueLength * 2);
+                        Mem.Resize(ref _itemQueue, ref _itemQueueLength, _itemQueueLength << 1);
                     }
                 }
                 finally
@@ -477,7 +467,7 @@ namespace Exomia.Framework.Graphics
                     _vertexInputLayout.Dispose();
                 }
 
-                Marshal.FreeHGlobal(new IntPtr(_itemQueue));
+                Mem.Free(_itemQueue, _itemQueueLength);
 
                 _disposed = true;
             }

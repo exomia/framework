@@ -21,7 +21,7 @@ namespace Exomia.Framework.Graphics
         /// </summary>
         /// <param name="text"> The text. </param>
         /// <returns>
-        ///     A <see cref="Vector2"/> with x and y set to width and height of <paramref name="text" />
+        ///     A <see cref="Vector2" /> with x and y set to width and height of <paramref name="text" />
         /// </returns>
 #if NETSTANDARD2_1
         public Vector2 MeasureText(ReadOnlySpan<char> text)
@@ -39,7 +39,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="start"> The start. </param>
         /// <param name="end">   The end. </param>
         /// <returns>
-        ///     A <see cref="Vector2"/> with x and y set to width and height of <paramref name="text" />
+        ///     A <see cref="Vector2" /> with x and y set to width and height of <paramref name="text" />
         /// </returns>
 #if NETSTANDARD2_1
         public Vector2 MeasureText(ReadOnlySpan<char> text, int start, int end)
@@ -198,7 +198,7 @@ namespace Exomia.Framework.Graphics
 
             return end;
         }
-        
+
 #if NETSTANDARD2_1
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Draw(DrawFont           drawCallback,
@@ -223,7 +223,7 @@ namespace Exomia.Framework.Graphics
                            float          layerDepth)
 #endif
         {
-        Draw(
+            Draw(
                 drawCallback, text, 0, text.Length,
                 in position, in color, rotation, in origin,
                 opacity, effects, layerDepth);

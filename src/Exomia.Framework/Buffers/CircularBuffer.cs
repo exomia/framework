@@ -101,7 +101,7 @@ namespace Exomia.Framework.Buffers
         ///     Thrown when one or more arguments have unsupported or
         ///     illegal values.
         /// </exception>
-        public CircularBuffer(int capacity = 1024, T[] items = null!)
+        public CircularBuffer(int capacity = 1024, T[]? items = null)
         {
             if (capacity < 1)
             {

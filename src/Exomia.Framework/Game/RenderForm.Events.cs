@@ -162,29 +162,26 @@ namespace Exomia.Framework.Game
                             }
                         }
 
-                        int          x            = LowWord(m.lParam);
-                        int          y            = HighWord(m.lParam);
-                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.wParam);
+                        MouseEventArgs args = new MouseEventArgs(
+                            LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 0, 0);
                         for (int i = 0; i < _mouseMovePipe.Count; i++)
                         {
-                            if (_mouseMovePipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 0, 0)) ==
-                                EventAction.StopPropagation)
+                            if (_mouseMovePipe[i].Invoke(args) == EventAction.StopPropagation)
                             {
                                 break;
                             }
                         }
+
                         return IntPtr.Zero;
                     }
                 case WM.MOUSEWHEEL:
                     {
-                        int          x            = LowWord(m.lParam);
-                        int          y            = HighWord(m.lParam);
-                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.wParam);
-                        int          wheelDelta   = HighWord(m.wParam);
+                        MouseEventArgs args = new MouseEventArgs(
+                            LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 0,
+                            HighWord(m.wParam));
                         for (int i = 0; i < _mouseWheelPipe.Count; i++)
                         {
-                            if (_mouseWheelPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, wheelDelta)) ==
-                                EventAction.StopPropagation)
+                            if (_mouseWheelPipe[i].Invoke(args) == EventAction.StopPropagation)
                             {
                                 break;
                             }
@@ -197,13 +194,11 @@ namespace Exomia.Framework.Game
                 case WM.XBUTTONDBLCLK:
                     {
                         _state |= 0xC000000;
-                        int          x            = LowWord(m.lParam);
-                        int          y            = HighWord(m.lParam);
-                        MouseButtons mouseButtons = (MouseButtons)LowWord(m.wParam);
+                        MouseEventArgs args = new MouseEventArgs(
+                            LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 2, 0);
                         for (int i = 0; i < _mouseClickPipe.Count; i++)
                         {
-                            if (_mouseClickPipe[i].Invoke(new MouseEventArgs(x, y, mouseButtons, 2, 0)) ==
-                                EventAction.StopPropagation)
+                            if (_mouseClickPipe[i].Invoke(args) == EventAction.StopPropagation)
                             {
                                 break;
                             }
@@ -290,12 +285,12 @@ namespace Exomia.Framework.Game
         private void RawMouseDown(ref Message m, MouseButtons buttons)
         {
             _state |= 0x8000000;
-            int low  = LowWord(m.lParam);
-            int high = HighWord(m.lParam);
+
+            MouseEventArgs args = new MouseEventArgs(
+                LowWord(m.lParam), HighWord(m.lParam), buttons, 1, 0);
             for (int i = 0; i < _mouseDownPipe.Count; i++)
             {
-                if (_mouseDownPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0)) ==
-                    EventAction.StopPropagation)
+                if (_mouseDownPipe[i].Invoke(args) == EventAction.StopPropagation)
                 {
                     break;
                 }
@@ -305,24 +300,28 @@ namespace Exomia.Framework.Game
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RawMouseUp(ref Message m, MouseButtons buttons)
         {
-            int low  = LowWord(m.lParam);
-            int high = HighWord(m.lParam);
+            int x = LowWord(m.lParam);
+            int y = HighWord(m.lParam);
+
             if ((_state & 0x8000000) == 0x8000000)
             {
-                int clicks = (_state & 0x4000000) == 0x4000000 ? 2 : 1;
+                MouseEventArgs argsClick = new MouseEventArgs(
+                    x, y, buttons, (_state & 0x4000000) == 0x4000000 ? 2 : 1, 0);
                 for (int i = 0; i < _mouseClickPipe.Count; i++)
                 {
-                    if (_mouseClickPipe[i].Invoke(new MouseEventArgs(low, high, buttons, clicks, 0)) ==
-                        EventAction.StopPropagation)
+                    if (_mouseClickPipe[i].Invoke(argsClick) == EventAction.StopPropagation)
                     {
                         break;
                     }
                 }
             }
+
             _state &= ~0xC000000;
+
+            MouseEventArgs argsUp = new MouseEventArgs(x, y, buttons, 1, 0);
             for (int i = 0; i < _mouseUpPipe.Count; i++)
             {
-                if (_mouseUpPipe[i].Invoke(new MouseEventArgs(low, high, buttons, 1, 0)) == EventAction.StopPropagation)
+                if (_mouseUpPipe[i].Invoke(argsUp) == EventAction.StopPropagation)
                 {
                     break;
                 }
@@ -331,39 +330,44 @@ namespace Exomia.Framework.Game
 
         private void RawMouseInput(in RAWINPUTMOUSE e)
         {
-            MouseButtons buttons = MouseButtons.None;
-            int          clicks  = 0;
-            if ((e.ButtonFlags & RawMouseButtons.LeftDown) == RawMouseButtons.LeftDown)
+            if (_mouseRawInputPipe.Count > 0)
             {
-                buttons |= MouseButtons.Left;
-                clicks  =  1;
-            }
-            if ((e.ButtonFlags & RawMouseButtons.RightDown) == RawMouseButtons.RightDown)
-            {
-                buttons |= MouseButtons.Right;
-                clicks  =  1;
-            }
-            if ((e.ButtonFlags & RawMouseButtons.MiddleDown) == RawMouseButtons.MiddleDown)
-            {
-                buttons |= MouseButtons.Middle;
-                clicks  =  1;
-            }
-            if ((e.ButtonFlags & RawMouseButtons.Button4Down) == RawMouseButtons.Button4Down)
-            {
-                buttons |= MouseButtons.XButton1;
-                clicks  =  1;
-            }
-            if ((e.ButtonFlags & RawMouseButtons.Button5Down) == RawMouseButtons.Button5Down)
-            {
-                buttons |= MouseButtons.XButton2;
-                clicks  =  1;
-            }
-            for (int i = 0; i < _mouseRawInputPipe.Count; i++)
-            {
-                if (_mouseRawInputPipe[i].Invoke(new MouseEventArgs(e.LastX, e.LastY, buttons, clicks, e.ButtonData)) ==
-                    EventAction.StopPropagation)
+                MouseButtons buttons = MouseButtons.None;
+                int          clicks  = 0;
+                if ((e.ButtonFlags & RawMouseButtons.LeftDown) == RawMouseButtons.LeftDown)
                 {
-                    break;
+                    buttons |= MouseButtons.Left;
+                    clicks  =  1;
+                }
+                if ((e.ButtonFlags & RawMouseButtons.RightDown) == RawMouseButtons.RightDown)
+                {
+                    buttons |= MouseButtons.Right;
+                    clicks  =  1;
+                }
+                if ((e.ButtonFlags & RawMouseButtons.MiddleDown) == RawMouseButtons.MiddleDown)
+                {
+                    buttons |= MouseButtons.Middle;
+                    clicks  =  1;
+                }
+                if ((e.ButtonFlags & RawMouseButtons.Button4Down) == RawMouseButtons.Button4Down)
+                {
+                    buttons |= MouseButtons.XButton1;
+                    clicks  =  1;
+                }
+                if ((e.ButtonFlags & RawMouseButtons.Button5Down) == RawMouseButtons.Button5Down)
+                {
+                    buttons |= MouseButtons.XButton2;
+                    clicks  =  1;
+                }
+
+                MouseEventArgs args = new MouseEventArgs(
+                    e.LastX, e.LastY, buttons, clicks, e.ButtonData);
+                for (int i = 0; i < _mouseRawInputPipe.Count; i++)
+                {
+                    if (_mouseRawInputPipe[i].Invoke(args) == EventAction.StopPropagation)
+                    {
+                        break;
+                    }
                 }
             }
         }

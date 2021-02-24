@@ -93,10 +93,10 @@ namespace Exomia.Framework.Tools
 
             foreach (PropertyInfo info in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                PropertyInfo info2 = targetType.GetProperty(info.Name);
+                PropertyInfo? info2 = targetType.GetProperty(info.Name);
                 if (info2 == null) { return; }
-                float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float));
-                float to   = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float));
+                float from = (float)System.Convert.ChangeType(info2.GetValue(target, null), typeof(float));
+                float to   = (float)System.Convert.ChangeType(info.GetValue(values, null), typeof(float));
 
                 _items.Add(new TweenItem(from, to, info2));
             }
@@ -120,7 +120,8 @@ namespace Exomia.Framework.Tools
             {
                 TweenItem item  = _items[i];
                 float     value = _callback(_time, item.From, item.To, _duration);
-                item.PropertyInfo.SetValue(_target, Convert.ChangeType(value, item.PropertyInfo.PropertyType), null);
+                item.PropertyInfo.SetValue(
+                    _target, System.Convert.ChangeType(value, item.PropertyInfo.PropertyType), null);
             }
         }
 

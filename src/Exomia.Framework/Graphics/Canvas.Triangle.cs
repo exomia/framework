@@ -181,20 +181,14 @@ namespace Exomia.Framework.Graphics
             scaledColor.Z = color.B * opacity;
             scaledColor.W = color.A * opacity;
 
-            Item* ptr = Reserve(1);
-
+            Item*    ptr  = Reserve(1);
+            Vector2* tPtr = (Vector2*)Unsafe.AsPointer(ref Unsafe.AsRef(triangle));
             if (rotation == 0.0f)
             {
                 for (int i = 0; i < 3; i++)
                 {
                     VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
-
-                    fixed (Triangle2* t = &triangle)
-                    {
-                        Vector2* tf = (Vector2*)t;
-                        vertex->XY = *(tf + i);
-                    }
-
+                    vertex->XY   = *(tPtr + i);
                     vertex->RGBA = scaledColor;
                     vertex->M    = COLOR_MODE;
                 }
@@ -207,14 +201,9 @@ namespace Exomia.Framework.Graphics
                 for (int i = 0; i < 3; i++)
                 {
                     VertexPositionColorTextureMode* vertex = (VertexPositionColorTextureMode*)ptr + i;
-
-                    fixed (Triangle2* t = &triangle)
-                    {
-                        Vector2* tf = (Vector2*)t;
-                        Vector2  v  = *(tf + i) - origin;
-                        vertex->X = (float)(((cos * v.X) - (sin * v.Y)) + origin.X);
-                        vertex->Y = (float)((sin * v.X) + (cos * v.Y) + origin.Y);
-                    }
+                    Vector2                         v      = *(tPtr + i) - origin;
+                    vertex->X = (float)(((cos * v.X) - (sin * v.Y)) + origin.X);
+                    vertex->Y = (float)((sin * v.X) + (cos * v.Y) + origin.Y);
 
                     vertex->RGBA = scaledColor;
                     vertex->M    = COLOR_MODE;

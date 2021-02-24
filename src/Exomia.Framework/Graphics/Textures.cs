@@ -41,7 +41,7 @@ namespace Exomia.Framework.Graphics
         /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
         internal Textures(IGraphicsDevice graphicsDevice)
         {
-            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
+            using (MemoryStream ms = new MemoryStream(System.Convert.FromBase64String(WHITE_TEXTURE_BASE64)))
             {
                 _white = Texture.Load(graphicsDevice.Device, ms) ??
                          throw new NullReferenceException($"{nameof(White)}");

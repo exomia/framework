@@ -394,13 +394,22 @@ namespace Exomia.Framework.Game
             m.time   = 0;
             m.pt     = Point.Zero;
 
-            Stopwatch stopwatch = new Stopwatch();
-            GameTime  gameTime  = GameTime.StartNew();
+            Stopwatch stopwatch      = new Stopwatch();
+            GameTime  gameTimeUpdate = GameTime.StartNew();
+            GameTime  gameTimeDraw   = GameTime.StartNew();
 
             void OnIsRunningChanged(Game s, bool v)
             {
-                if (v) { gameTime.Start(); }
-                else { gameTime.Stop(); }
+                if (v)
+                {
+                    gameTimeUpdate.Start();
+                    gameTimeDraw.Start();
+                }
+                else
+                {
+                    gameTimeUpdate.Stop();
+                    gameTimeDraw.Stop();
+                }
             }
 
             _IsRunningChanged += OnIsRunningChanged;
@@ -408,40 +417,38 @@ namespace Exomia.Framework.Game
             while (!_shutdown)
             {
                 stopwatch.Restart();
-
-                while (User32.PeekMessage(out m, IntPtr.Zero, 0, 0, PM_REMOVE))
+                do
                 {
-                    User32.TranslateMessage(ref m);
-                    User32.DispatchMessage(ref m);
-                }
+                    gameTimeUpdate.Tick();
+                    while (User32.PeekMessage(out m, IntPtr.Zero, 0, 0, PM_REMOVE))
+                    {
+                        User32.TranslateMessage(ref m);
+                        User32.DispatchMessage(ref m);
+                    }
 
-                if (!_isRunning)
-                {
-                    Thread.Sleep(16);
-                    continue;
-                }
+                    if (!_isRunning)
+                    {
+                        Thread.Sleep(16);
+                        continue;
+                    }
 
-                Update(gameTime);
+                    Update(gameTimeUpdate);
+                } while (IsFixedTimeStep &&
+                         TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds);
 
                 if (BeginFrame())
                 {
-                    Draw(gameTime);
+                    Draw(gameTimeDraw);
                     EndFrame();
                 }
 
                 if (IsFixedTimeStep)
                 {
-                    //SLEEP
-                    while (TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds)
-                    {
-                        Thread.Yield();
-                    }
-
                     //IDLE
                     while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
                 }
 
-                gameTime.Tick();
+                gameTimeDraw.Tick();
             }
 
             _IsRunningChanged -= OnIsRunningChanged;
