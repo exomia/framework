@@ -9,20 +9,41 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
 using Exomia.Framework.UI.Controls;
+using SharpDX;
 
 namespace Exomia.Framework.UI
 {
     /// <summary>
     ///     A ui manager. This class cannot be inherited.
     /// </summary>
-    public sealed class UiManager : Renderer, IInputHandler
+    public sealed class UiManager : IComponent, IInitializable, IDrawable, IDisposable, IInputHandler
     {
         internal const int INITIAL_LIST_SIZE = 8;
+
+        /// <summary>
+        ///     Occurs when the <see cref="DrawOrder" /> property changes.
+        /// </summary>
+        public event EventHandler? DrawOrderChanged;
+
+        /// <summary>
+        ///     Occurs when the <see cref="Visible" /> property changes.
+        /// </summary>
+        public event EventHandler? VisibleChanged;
+
+        /// <summary>
+        ///     Flag to identify, if the component is already initialized.
+        /// </summary>
+        private bool _isInitialized;
+
+        private readonly DisposeCollector _collector;
+        private          int              _drawOrder;
+        private          bool             _visible;
 
         private Control[] _controls;
         private Control[] _currentlyControls;
@@ -37,13 +58,57 @@ namespace Exomia.Framework.UI
         private Control?      _focusedControl;
         private Control?      _enteredControl;
 
+        /// <inheritdoc />
+        public int DrawOrder
+        {
+            get { return _drawOrder; }
+            set
+            {
+                if (_drawOrder != value)
+                {
+                    _drawOrder = value;
+                    DrawOrderChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public string Name { get; }
+
+        /// <inheritdoc />
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                if (_visible != value)
+                {
+                    _visible = value;
+                    VisibleChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the input handler.
+        /// </summary>
+        /// <value>
+        ///     The input handler.
+        /// </value>
+        public IInputHandler InputHandler
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return this; }
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="UiManager" /> class.
         /// </summary>
         /// <param name="name"> The name. </param>
         public UiManager(string name)
-            : base(name)
         {
+            Name               = name ?? throw new ArgumentNullException(nameof(name));
+            _collector         = new DisposeCollector();
             _controls          = new Control[INITIAL_LIST_SIZE];
             _currentlyControls = new Control[INITIAL_LIST_SIZE];
         }
@@ -69,9 +134,13 @@ namespace Exomia.Framework.UI
             device.UnregisterKeyUp(KeyUp);
             device.UnregisterKeyPress(KeyPress);
         }
-
-        /// <inheritdoc />
-        public override void Draw(GameTime gameTime)
+        
+        bool IDrawable.BeginDraw()
+        {
+            return _visible;
+        }
+        
+        void IDrawable.Draw(GameTime gameTime)
         {
             if (_isDirty)
             {
@@ -104,12 +173,15 @@ namespace Exomia.Framework.UI
 
             _canvas.End();
         }
+        
+        void IDrawable.EndDraw() { }
 
         /// <summary>
         ///     Adds the <paramref name="control" /> to this ui manger.
         /// </summary>
         /// <param name="control"> The control to add. </param>
-        public void Add(Control control)
+        /// <returns>The <paramref name="control"/></returns>
+        public Control Add(Control control)
         {
             if (control.GetUiManager() != null || control._parent != null)
             {
@@ -128,14 +200,18 @@ namespace Exomia.Framework.UI
             }
 
             _isDirty = true;
+
+            return _collector.Collect(control);
         }
 
         /// <summary>
         ///     Removes the given <paramref name="control" /> from this ui manager.
         /// </summary>
         /// <param name="control"> The control to remove. </param>
+        /// <param name="dispose"> True to dispose the control after removing. </param>
+        /// <returns>The <paramref name="control"/></returns>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
-        public void Remove(Control control)
+        public Control Remove(Control control, bool dispose = false)
         {
             if (control._parent != null)
             {
@@ -144,6 +220,15 @@ namespace Exomia.Framework.UI
             }
 
             RemoveAt(control._uiListIndex);
+
+            _collector.Remove(control);
+            
+            if (dispose)
+            {
+                control.Dispose();
+            }
+            
+            return control;
         }
 
         /// <summary>
@@ -181,9 +266,13 @@ namespace Exomia.Framework.UI
         }
 
         /// <inheritdoc />
-        protected override void OnInitialize(IServiceRegistry registry)
+        void IInitializable.Initialize(IServiceRegistry registry)
         {
-            _canvas = new Canvas(registry.GetService<IGraphicsDevice>());
+            if (!_isInitialized)
+            {
+                _canvas        = new Canvas(registry.GetService<IGraphicsDevice>());
+                _isInitialized = true;
+            }
         }
 
         internal void SetFocusedControl(Control control, bool focus)
@@ -303,5 +392,42 @@ namespace Exomia.Framework.UI
 
             return EventAction.Continue;
         }
+
+        #region IDisposable Support
+
+        private bool _disposed;
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
+        ///     unmanaged/managed resources.
+        /// </summary>
+        /// <param name="disposing"> true if user code; false called by finalizer. </param>
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                _collector.DisposeAndClear(disposing);
+                _disposed = true;
+            }
+        }
+
+        /// <inheritdoc />
+        ~UiManager()
+        {
+            Dispose(false);
+        }
+
+        #endregion
     }
 }
