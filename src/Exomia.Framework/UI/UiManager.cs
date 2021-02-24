@@ -35,10 +35,7 @@ namespace Exomia.Framework.UI
         ///     Occurs when the <see cref="Visible" /> property changes.
         /// </summary>
         public event EventHandler? VisibleChanged;
-
-        /// <summary>
-        ///     Flag to identify, if the component is already initialized.
-        /// </summary>
+        
         private bool _isInitialized;
 
         private readonly DisposeCollector _collector;
@@ -90,6 +87,19 @@ namespace Exomia.Framework.UI
         }
 
         /// <summary>
+        ///     Gets or sets the position the <see cref="IInputHandler"/> should be using while registering the callbacks.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         e.g. <see cref="IInputDevice.RegisterRawKeyEvent" /> a negative index inserts the handler from the back
+        ///     </para>
+        ///     <para>
+        ///         e.g. <see cref="IInputDevice.RegisterRawKeyEvent" /> a positive index inserts the handler from the start
+        ///     </para>
+        /// </remarks>
+        public int InputHandlerInsertPosition { get; set; } = 0;
+
+        /// <summary>
         ///     Gets the input handler.
         /// </summary>
         /// <value>
@@ -115,13 +125,13 @@ namespace Exomia.Framework.UI
 
         void IInputHandler.RegisterInput(IInputDevice device)
         {
-            device.RegisterMouseMove(MouseMove);
-            device.RegisterMouseDown(MouseDown);
-            device.RegisterMouseUp(MouseUp);
+            device.RegisterMouseMove(MouseMove, InputHandlerInsertPosition);
+            device.RegisterMouseDown(MouseDown, InputHandlerInsertPosition);
+            device.RegisterMouseUp(MouseUp, InputHandlerInsertPosition);
 
-            device.RegisterKeyDown(KeyDown);
-            device.RegisterKeyUp(KeyUp);
-            device.RegisterKeyPress(KeyPress);
+            device.RegisterKeyDown(KeyDown, InputHandlerInsertPosition);
+            device.RegisterKeyUp(KeyUp, InputHandlerInsertPosition);
+            device.RegisterKeyPress(KeyPress, InputHandlerInsertPosition);
         }
 
         void IInputHandler.UnregisterInput(IInputDevice device)
@@ -179,9 +189,10 @@ namespace Exomia.Framework.UI
         /// <summary>
         ///     Adds the <paramref name="control" /> to this ui manger.
         /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="control"> The control to add. </param>
         /// <returns>The <paramref name="control"/></returns>
-        public Control Add(Control control)
+        public T Add<T>(T control) where T : Control
         {
             if (control.GetUiManager() != null || control._parent != null)
             {
@@ -207,11 +218,12 @@ namespace Exomia.Framework.UI
         /// <summary>
         ///     Removes the given <paramref name="control" /> from this ui manager.
         /// </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="control"> The control to remove. </param>
         /// <param name="dispose"> True to dispose the control after removing. </param>
         /// <returns>The <paramref name="control"/></returns>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
-        public Control Remove(Control control, bool dispose = false)
+        public T Remove<T>(T control, bool dispose = false) where T : Control
         {
             if (control._parent != null)
             {

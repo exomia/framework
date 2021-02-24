@@ -26,6 +26,19 @@ namespace Exomia.Framework.Game.Camera.Controller
         public string Name { get; }
 
         /// <summary>
+        ///     Gets or sets the position the <see cref="IInputHandler"/> should be using while registering the callbacks.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         e.g. <see cref="IInputDevice.RegisterRawKeyEvent" /> a negative index inserts the handler from the back
+        ///     </para>
+        ///     <para>
+        ///         e.g. <see cref="IInputDevice.RegisterRawKeyEvent" /> a positive index inserts the handler from the start
+        ///     </para>
+        /// </remarks>
+        public int InputHandlerInsertPosition { get; set; } = -1;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="TranslationKeyboardController" /> class.
         /// </summary>
         /// <param name="name"> The name. </param>
@@ -42,8 +55,8 @@ namespace Exomia.Framework.Game.Camera.Controller
         /// <inheritdoc />
         void IInputHandler.RegisterInput(IInputDevice device)
         {
-            device.RegisterKeyDown(CameraOnKeyDown);
-            device.RegisterKeyUp(CameraOnKeyUp);
+            device.RegisterKeyDown(CameraOnKeyDown, InputHandlerInsertPosition);
+            device.RegisterKeyUp(CameraOnKeyUp, InputHandlerInsertPosition);
         }
 
         /// <inheritdoc />

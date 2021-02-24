@@ -202,8 +202,18 @@ namespace Exomia.Framework.Game
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Register(in TDelegate handler, int position = -1)
             {
-                if (position == -1) { _list.Add(handler); }
-                else { _list.Insert(position >= 0 ? position : _list.Count + position, handler); }
+                if (position >= 0 && position < _list.Count)
+                {
+                    _list.Insert(position, handler);
+                }
+                else if (_list.Count + position >= 0)
+                {
+                    _list.Insert(_list.Count + position, handler);
+                }
+                else
+                {
+                    _list.Add(handler);
+                }
             }
 
             /// <summary>

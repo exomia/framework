@@ -32,6 +32,19 @@ namespace Exomia.Framework.Game.Camera.Controller
         public string Name { get; }
 
         /// <summary>
+        ///     Gets or sets the position the <see cref="IInputHandler"/> should be using while registering the callbacks.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         e.g. <see cref="IInputDevice.RegisterRawKeyEvent" /> a negative index inserts the handler from the back
+        ///     </para>
+        ///     <para>
+        ///         e.g. <see cref="IInputDevice.RegisterRawKeyEvent" /> a positive index inserts the handler from the start
+        ///     </para>
+        /// </remarks>
+        public int InputHandlerInsertPosition { get; set; } = -1;
+        
+        /// <summary>
         ///     Initializes a new instance of the <see cref="RotationController" /> class.
         /// </summary>
         /// <param name="name"> The name. </param>
@@ -90,13 +103,13 @@ namespace Exomia.Framework.Game.Camera.Controller
         /// <inheritdoc />
         void IInputHandler.RegisterInput(IInputDevice device)
         {
-            device.RegisterRawMouseInput(CameraOnRawMouseInput);
+            device.RegisterRawMouseInput(CameraOnRawMouseInput, InputHandlerInsertPosition);
         }
 
         /// <inheritdoc />
         void IInputHandler.UnregisterInput(IInputDevice device)
         {
-            device.RegisterRawMouseInput(CameraOnRawMouseInput);
+            device.UnregisterRawMouseInput(CameraOnRawMouseInput);
         }
 
         private EventAction CameraOnRawMouseInput(in MouseEventArgs mouseEventArgs)

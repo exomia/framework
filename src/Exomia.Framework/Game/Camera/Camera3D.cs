@@ -364,6 +364,8 @@ namespace Exomia.Framework.Game.Camera
         /// </summary>
         private bool _disposed;
 
+        private int _insertPosition;
+
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
         /// </summary>
