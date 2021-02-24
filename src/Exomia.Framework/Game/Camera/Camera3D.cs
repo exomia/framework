@@ -363,7 +363,7 @@ namespace Exomia.Framework.Game.Camera
         ///     true if the instance is already disposed; false otherwise
         /// </summary>
         private bool _disposed;
-
+        
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
         /// </summary>
