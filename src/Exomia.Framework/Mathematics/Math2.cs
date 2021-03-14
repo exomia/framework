@@ -51,6 +51,74 @@ namespace Exomia.Framework.Mathematics
         /// PI / 4
         /// </summary>
         public const float PI_OVER_FOUR = (float)(Math.PI / 4.0);
+        
+        /// <summary>
+        /// Determines whether the specified value is close to zero (0.0f).
+        /// </summary>
+        /// <param name="a">The floating value.</param>
+        /// <returns><c>true</c> if the specified value is close to zero (0.0f); otherwise, <c>false</c>.</returns>
+        public static bool IsZero(float a)
+        {
+            return Math.Abs(a) < ZERO_TOLERANCE;
+        }
+        
+        /// <summary>
+        /// Determines whether the specified value is close to one (1.0f).
+        /// </summary>
+        /// <param name="a">The floating value.</param>
+        /// <returns><c>true</c> if the specified value is close to one (1.0f); otherwise, <c>false</c>.</returns>
+        public static bool IsOne(float a)
+        {
+            return IsZero(a - 1.0f);
+        }
+        
+        /// <summary>
+        /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.
+        /// See remarks.
+        /// </summary>
+        /// <param name="a">The left value to compare.</param>
+        /// <param name="b">The right value to compare.</param>
+        /// <returns><c>true</c> if a almost equal to b, <c>false</c> otherwise</returns>
+        /// <remarks>
+        /// The code is using the technique described by Bruce Dawson in 
+        /// <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating point numbers 2012 edition</a>. 
+        /// </remarks>
+        public static unsafe bool NearEqual(float a, float b)
+        {
+            // Check if the numbers are really close -- needed
+            // when comparing numbers near zero.
+            if (IsZero(a - b))
+                return true;
+
+            // Original from Bruce Dawson: http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+            int aInt = *(int*)&a;
+            int bInt = *(int*)&b;
+
+            // Different signs means they do not match.
+            if ((aInt < 0) != (bInt < 0))
+                return false;
+
+            // Find the difference in ULPs.
+            int ulp = Math.Abs(aInt - bInt);
+
+            // Choose of maxUlp = 4
+            // according to http://code.google.com/p/googletest/source/browse/trunk/include/gtest/internal/gtest-internal.h
+            const int maxUlp = 4;
+            return (ulp <= maxUlp);
+        }
+        
+        /// <summary>
+        /// Checks if a - b are almost equals within a float epsilon.
+        /// </summary>
+        /// <param name="a">The left value to compare.</param>
+        /// <param name="b">The right value to compare.</param>
+        /// <param name="epsilon">Epsilon value</param>
+        /// <returns><c>true</c> if a almost equal to b within a float epsilon, <c>false</c> otherwise</returns>
+        public static bool WithinEpsilon(float a, float b, float epsilon)
+        {
+            float num = a - b;
+            return ((-epsilon <= num) && (num <= epsilon));
+        }
 
         /// <summary>
         ///     calculates the absolute value of x.
@@ -232,6 +300,34 @@ namespace Exomia.Framework.Mathematics
             atan = PI_OVER_TWO - (z / ((z * z) + 0.28f));
             return y < 0f ? atan - PI : atan;
         }
+
+        #region Clamp
+        
+        /// <summary>
+        /// Clamps the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The min.</param>
+        /// <param name="max">The max.</param>
+        /// <returns>The result of clamping a value between min and max</returns>
+        public static float Clamp(float value, float min, float max)
+        {
+            return value < min ? min : value > max ? max : value;
+        }
+
+        /// <summary>
+        /// Clamps the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The min.</param>
+        /// <param name="max">The max.</param>
+        /// <returns>The result of clamping a value between min and max</returns>
+        public static int Clamp(int value, int min, int max)
+        {
+            return value < min ? min : value > max ? max : value;
+        }
+        
+        #endregion
 
         #region RoundUpToPowerOfTwo
 
@@ -605,6 +701,87 @@ namespace Exomia.Framework.Mathematics
         public static Vector2 Lerp(Vector2 a, Vector2 b, double t)
         {
             return new Vector2(Lerp(a.X, b.X, t), Lerp(a.Y, b.Y, t));
+        }
+
+        #endregion
+
+        #region SmoothStep
+        
+        /// <summary>
+        /// Performs smooth (cubic Hermite) interpolation between 0 and 1.
+        /// </summary>
+        /// <remarks>
+        /// See https://en.wikipedia.org/wiki/Smoothstep
+        /// </remarks>
+        /// <param name="amount">Value between 0 and 1 indicating interpolation amount.</param>
+        public static float SmoothStep(float amount)
+        {
+            return (amount <= 0) ? 0
+                : (amount >= 1)  ? 1
+                                   : amount * amount * (3 - (2 * amount));
+        }
+
+        /// <summary>
+        /// Performs a smooth(er) interpolation between 0 and 1 with 1st and 2nd order derivatives of zero at endpoints.
+        /// </summary>
+        /// <remarks>
+        /// See https://en.wikipedia.org/wiki/Smoothstep
+        /// </remarks>
+        /// <param name="amount">Value between 0 and 1 indicating interpolation amount.</param>
+        public static float SmootherStep(float amount)
+        {
+            return (amount <= 0) ? 0
+                : (amount >= 1)  ? 1
+                                   : amount * amount * amount * (amount * ((amount * 6) - 15) + 10);
+        }
+
+        #endregion
+
+        #region Wrap
+        
+        /// <summary>
+        /// Wraps the specified value into a range [min, max]
+        /// </summary>
+        /// <param name="value">The value to wrap.</param>
+        /// <param name="min">The min.</param>
+        /// <param name="max">The max.</param>
+        /// <returns>Result of the wrapping.</returns>
+        /// <exception cref="ArgumentException">Is thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
+        public static int Wrap(int value, int min, int max)
+        {
+            if (min > max)
+                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max), "min");
+
+            // Code from http://stackoverflow.com/a/707426/1356325
+            int range_size = max - min + 1;
+
+            if (value < min)
+                value += range_size * ((min - value) / range_size + 1);
+
+            return min + (value - min) % range_size;
+        }
+
+        /// <summary>
+        /// Wraps the specified value into a range [min, max[
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The min.</param>
+        /// <param name="max">The max.</param>
+        /// <returns>Result of the wrapping.</returns>
+        /// <exception cref="ArgumentException">Is thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
+        public static float Wrap(float value, float min, float max)
+        {
+            if (NearEqual(min, max)) return min;
+
+            double mind   = min;
+            double maxd   = max;
+            double valued = value;
+
+            if (mind > maxd)
+                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max), "min");
+
+            var range_size = maxd - mind;
+            return (float)(mind + (valued - mind) - (range_size * Math.Floor((valued - mind) / range_size)));
         }
 
         #endregion
