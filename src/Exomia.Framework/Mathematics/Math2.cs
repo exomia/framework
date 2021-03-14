@@ -9,9 +9,9 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace Exomia.Framework.Mathematics
 {
@@ -20,11 +20,37 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     public static partial class Math2
     {
-        private const long  L_OFFSET_MAX = int.MaxValue + 1L;
-        private const float PI           = (float)Math.PI;
-        private const float TWOPI        = (float)(2.0 * Math.PI);
-        private const float ITWOPI       = 1.0f / TWOPI;
-        private const float PITWO        = (float)(Math.PI * 0.5);
+        private const long L_OFFSET_MAX = int.MaxValue + 1L;
+
+        /// <summary>
+        /// 1e-6f
+        /// </summary>
+        public const float ZERO_TOLERANCE = 1e-6f;
+
+        /// <summary>
+        /// 3.14159265358979323846
+        /// </summary>
+        public const float PI = (float)Math.PI;
+
+        /// <summary>
+        /// 2PI
+        /// </summary>
+        public const float TWO_PI = (float)(2.0 * Math.PI);
+
+        /// <summary>
+        /// 1 / 2PI
+        /// </summary>
+        public const float ONE_OVER_TWO_PI = 1.0f / TWO_PI;
+
+        /// <summary>
+        /// PI / 2
+        /// </summary>
+        public const float PI_OVER_TWO = (float)(Math.PI / 2.0);
+
+        /// <summary>
+        /// PI / 4
+        /// </summary>
+        public const float PI_OVER_FOUR = (float)(Math.PI / 4.0);
 
         /// <summary>
         ///     calculates the absolute value of x.
@@ -127,7 +153,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sin(float x)
         {
-            return Cos(x - PITWO);
+            return Cos(x - PI_OVER_TWO);
         }
 
         /// <summary>
@@ -140,7 +166,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(float x)
         {
-            x *= ITWOPI;
+            x *= ONE_OVER_TWO_PI;
             x -= 0.25f + Floor(x + 0.25f);
             x *= 16.0f * (Math.Abs(x) - 0.5f);
             x += 0.225f * x * (Math.Abs(x) - 1.0f);
@@ -157,12 +183,12 @@ namespace Exomia.Framework.Mathematics
         public static void SinCos(float x, out float sin, out float cos)
         {
             const float A = 1.27323954f, B = 0.405284735f;
-            x   -= TWOPI * Floor((x / TWOPI) + 0.5f);
+            x   -= TWO_PI * Floor((x / TWO_PI) + 0.5f);
             sin =  x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
-            x   += PITWO;
+            x   += PI_OVER_TWO;
             if (x > PI)
             {
-                x -= TWOPI;
+                x -= TWO_PI;
             }
             cos = x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
         }
@@ -183,7 +209,7 @@ namespace Exomia.Framework.Mathematics
             {
                 if (y > 0f)
                 {
-                    return PITWO;
+                    return PI_OVER_TWO;
                 }
 
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -191,7 +217,7 @@ namespace Exomia.Framework.Mathematics
                 {
                     return 0f;
                 }
-                return -PITWO;
+                return -PI_OVER_TWO;
             }
             float atan, z = y / x;
             if (Math.Abs(z) < 1f)
@@ -203,7 +229,7 @@ namespace Exomia.Framework.Mathematics
                 }
                 return atan;
             }
-            atan = PITWO - (z / ((z * z) + 0.28f));
+            atan = PI_OVER_TWO - (z / ((z * z) + 0.28f));
             return y < 0f ? atan - PI : atan;
         }
 
