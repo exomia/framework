@@ -191,8 +191,8 @@ namespace Exomia.Framework.Mathematics
         {
             return value is ViewportF other && Equals(in other);
         }
-        
-        /// <inheritdoc/>
+
+        /// <inheritdoc />
         public override readonly string ToString()
         {
             return string.Format(

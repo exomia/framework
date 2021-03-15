@@ -113,7 +113,7 @@ namespace Exomia.Framework.Mathematics
             return value is BoundingBox other && Equals(in other);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override readonly string ToString()
         {
             return string.Format(

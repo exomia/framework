@@ -252,8 +252,8 @@ namespace Exomia.Framework.Mathematics
                    Math2.NearEqual(other.Top,    Top) &&
                    Math2.NearEqual(other.Bottom, Bottom);
         }
-        
-        /// <inheritdoc/>
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(

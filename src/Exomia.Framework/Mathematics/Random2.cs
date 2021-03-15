@@ -191,8 +191,10 @@ namespace Exomia.Framework.Mathematics
 
         /// <summary> Fills a byte array with random values. </summary>
         /// <param name="buffer"> the byte array to fill with random values. </param>
-        /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or
-        ///                                      illegal values. </exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or
+        ///     illegal values.
+        /// </exception>
         public unsafe void NextBytesUnsafe(byte[] buffer)
         {
             int l = buffer.Length;

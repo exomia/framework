@@ -88,7 +88,7 @@ namespace Exomia.Framework.Mathematics
             return value is Ray other && Equals(in other);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(
