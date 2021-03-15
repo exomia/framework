@@ -144,7 +144,7 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void Clear()
         {
-            Clear(VkColor.CornflowerBlue);
+            Clear(Colors.CornflowerBlue);
         }
 
         /// <inheritdoc />
