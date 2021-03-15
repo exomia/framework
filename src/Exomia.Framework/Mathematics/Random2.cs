@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,16 +8,12 @@
 
 #endregion
 
-using Exomia.Framework.Graphics;
 using System;
 using System.Numerics;
-using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     A random 2. This class cannot be inherited.
-    /// </summary>
+    /// <summary> A random 2. This class cannot be inherited. </summary>
     public sealed class Random2
     {
         private const float  SINGLE_UNIT_INT = 1.0f / int.MaxValue;
@@ -26,22 +22,16 @@ namespace Exomia.Framework.Mathematics
         private const double REAL_UNIT_UINT1 = 1.0 / (uint.MaxValue + 1.0);
         private const uint   Y               = 842502087, Z = 3579807591, W = 273326509;
 
-        /// <summary>
-        ///     Default Random2.
-        /// </summary>
+        /// <summary> Default Random2. </summary>
         public static Random2 Default = new Random2();
 
         private uint _x, _y, _z, _w;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Random2" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Random2" /> class. </summary>
         public Random2()
             : this(DateTime.Now.Ticks ^ Environment.TickCount) { }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Random2" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Random2" /> class. </summary>
         /// <param name="seed"> The seed. </param>
         public Random2(long seed)
         {
@@ -51,12 +41,8 @@ namespace Exomia.Framework.Mathematics
             _w = W;
         }
 
-        /// <summary>
-        ///     Gets the next random byte value.
-        /// </summary>
-        /// <returns>
-        ///     A random byte value between 0 and int.MaxValue.
-        /// </returns>
+        /// <summary> Gets the next random byte value. </summary>
+        /// <returns> A random byte value between 0 and int.MaxValue. </returns>
         public int Next()
         {
             uint t = _x ^ (_x << 11);
@@ -71,9 +57,7 @@ namespace Exomia.Framework.Mathematics
         ///     maximum value.
         /// </summary>
         /// <param name="max"> The exclusive maximum value. </param>
-        /// <returns>
-        ///     A random int value between zero and the specified maximum value.
-        /// </returns>
+        /// <returns> A random int value between zero and the specified maximum value. </returns>
         public int Next(int max)
         {
             uint t = _x ^ (_x << 11);
@@ -88,9 +72,7 @@ namespace Exomia.Framework.Mathematics
         /// </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The exclusive maximum value. </param>
-        /// <returns>
-        ///     A random int value between the specified minimum and maximum values.
-        /// </returns>
+        /// <returns> A random int value between the specified minimum and maximum values. </returns>
         public int Next(int min, int max)
         {
             uint t = _x ^ (_x << 11);
@@ -103,26 +85,19 @@ namespace Exomia.Framework.Mathematics
             {
                 return min + (int)(REAL_UNIT_UINT1 * (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)) * (max - (long)min));
             }
+
             return min + (int)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * range);
         }
 
-        /// <summary>
-        ///     Gets the next random angle value.
-        /// </summary>
-        /// <returns>
-        ///     A random angle value.
-        /// </returns>
+        /// <summary> Gets the next random angle value. </summary>
+        /// <returns> A random angle value. </returns>
         public float NextAngle()
         {
             return (float)NextDouble(-Math.PI, Math.PI);
         }
 
-        /// <summary>
-        ///     Gets the next random byte value.
-        /// </summary>
-        /// <returns>
-        ///     A random byte value between 0 and 255.
-        /// </returns>
+        /// <summary> Gets the next random byte value. </summary>
+        /// <returns> A random byte value between 0 and 255. </returns>
         public byte NextByte()
         {
             uint t = _x ^ (_x << 11);
@@ -137,9 +112,7 @@ namespace Exomia.Framework.Mathematics
         ///     specified maximum value.
         /// </summary>
         /// <param name="max"> The exclusive maximum value. </param>
-        /// <returns>
-        ///     A random byte value between zero and the specified maximum value.
-        /// </returns>
+        /// <returns> A random byte value between zero and the specified maximum value. </returns>
         public byte NextByte(byte max)
         {
             uint t = _x ^ (_x << 11);
@@ -154,9 +127,7 @@ namespace Exomia.Framework.Mathematics
         /// </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The exclusive maximum value. </param>
-        /// <returns>
-        ///     A random byte value between the specified minimum and maximum values.
-        /// </returns>
+        /// <returns> A random byte value between the specified minimum and maximum values. </returns>
         public byte NextByte(byte min, byte max)
         {
             uint t = _x ^ (_x << 11);
@@ -167,9 +138,7 @@ namespace Exomia.Framework.Mathematics
                                  (max - min)));
         }
 
-        /// <summary>
-        ///     Fills a byte array with random values.
-        /// </summary>
+        /// <summary> Fills a byte array with random values. </summary>
         /// <param name="buffer"> the byte array to fill with random values. </param>
         public void NextBytes(byte[] buffer)
         {
@@ -213,20 +182,17 @@ namespace Exomia.Framework.Mathematics
                     }
                 }
             }
+
             _x = x;
             _y = y;
             _z = z;
             _w = w;
         }
 
-        /// <summary>
-        ///     Fills a byte array with random values.
-        /// </summary>
+        /// <summary> Fills a byte array with random values. </summary>
         /// <param name="buffer"> the byte array to fill with random values. </param>
-        /// <exception cref="ArgumentException">
-        ///     Thrown when one or more arguments have unsupported or
-        ///     illegal values.
-        /// </exception>
+        /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or
+        ///                                      illegal values. </exception>
         public unsafe void NextBytesUnsafe(byte[] buffer)
         {
             int l = buffer.Length;
@@ -262,44 +228,8 @@ namespace Exomia.Framework.Mathematics
             _w = w;
         }
 
-        /// <summary>
-        ///     Gets the next random color. Note: alpha = 255.
-        /// </summary>
-        /// <returns>
-        ///     a random color between min and max.
-        /// </returns>
-        public VkColor NextColor()
-        {
-            return new VkColor(
-                Next(255),
-                Next(255),
-                Next(255),
-                255);
-        }
-
-        /// <summary>
-        ///     Gets the next random color between min and max.
-        /// </summary>
-        /// <param name="min"> min color. </param>
-        /// <param name="max"> max color. </param>
-        /// <returns>
-        ///     a random color between min and max.
-        /// </returns>
-        public VkColor NextColor(VkColor min, VkColor max)
-        {
-            return new VkColor(
-                Next(min.R, max.R),
-                Next(min.G, max.G),
-                Next(min.B, max.B),
-                Next(min.A, max.A));
-        }
-
-        /// <summary>
-        ///     Gets the next random double value.
-        /// </summary>
-        /// <returns>
-        ///     A random double value between 0 and 1.
-        /// </returns>
+        /// <summary> Gets the next random double value. </summary>
+        /// <returns> A random double value between 0 and 1. </returns>
         public double NextDouble()
         {
             uint t = _x ^ (_x << 11);
@@ -314,9 +244,7 @@ namespace Exomia.Framework.Mathematics
         ///     the specified maximum value.
         /// </summary>
         /// <param name="max"> The inclusive maximum value. </param>
-        /// <returns>
-        ///     A random double value between zero and the specified maximum value.
-        /// </returns>
+        /// <returns> A random double value between zero and the specified maximum value. </returns>
         public double NextDouble(double max)
         {
             uint t = _x ^ (_x << 11);
@@ -331,9 +259,7 @@ namespace Exomia.Framework.Mathematics
         /// </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The inclusive maximum value. </param>
-        /// <returns>
-        ///     A random double value between the specified minimum and maximum values.
-        /// </returns>
+        /// <returns> A random double value between the specified minimum and maximum values. </returns>
         public double NextDouble(double min, double max)
         {
             uint t = _x ^ (_x << 11);
@@ -343,12 +269,8 @@ namespace Exomia.Framework.Mathematics
             return min + (REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
         }
 
-        /// <summary>
-        ///     Gets the next random single value.
-        /// </summary>
-        /// <returns>
-        ///     A random single value between 0 and 1.
-        /// </returns>
+        /// <summary> Gets the next random single value. </summary>
+        /// <returns> A random single value between 0 and 1. </returns>
         public float NextSingle()
         {
             uint t = _x ^ (_x << 11);
@@ -363,9 +285,7 @@ namespace Exomia.Framework.Mathematics
         ///     the specified maximum value.
         /// </summary>
         /// <param name="max"> The exclusive maximum value. </param>
-        /// <returns>
-        ///     A random single value between zero and the specified maximum value.
-        /// </returns>
+        /// <returns> A random single value between zero and the specified maximum value. </returns>
         public float NextSingle(float max)
         {
             uint t = _x ^ (_x << 11);
@@ -380,9 +300,7 @@ namespace Exomia.Framework.Mathematics
         /// </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The inclusive maximum value. </param>
-        /// <returns>
-        ///     A random single value between the specified minimum and maximum values.
-        /// </returns>
+        /// <returns> A random single value between the specified minimum and maximum values. </returns>
         public float NextSingle(float min, float max)
         {
             uint t = _x ^ (_x << 11);
@@ -392,12 +310,8 @@ namespace Exomia.Framework.Mathematics
             return min + (SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
         }
 
-        /// <summary>
-        ///     Gets the next random unit vector.
-        /// </summary>
-        /// <returns>
-        ///     A random unit vector.
-        /// </returns>
+        /// <summary> Gets the next random unit vector. </summary>
+        /// <returns> A random unit vector. </returns>
         public Vector2 NextUnitVector()
         {
             Vector2 v;
@@ -405,9 +319,14 @@ namespace Exomia.Framework.Mathematics
             return v;
         }
 
-        /// <summary>
-        ///     Gets the next random unit vector.
-        /// </summary>
+        /// <summary> Gets the next random unit vector. </summary>
+        /// <param name="v"> [out] The out Vector2 to process. </param>
+        public void NextUnitVector(out Vector2 v)
+        {
+            Math2.SinCos(NextAngle(), out v.X, out v.Y);
+        }
+
+        /// <summary> Gets the next random unit vector. </summary>
         /// <param name="vector"> [in,out] If non-null, the vector. </param>
         public unsafe void NextUnitVector(Vector2* vector)
         {

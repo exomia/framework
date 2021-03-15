@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -21,7 +21,7 @@ namespace Exomia.Framework.Mathematics
     /// </summary>
     /// <inheritdoc cref="IFormattable" />
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 20)]
-    public readonly struct Arc2 : IFormattable
+    public readonly struct Arc2
     {
         /// <summary>
         ///     The x value.
@@ -103,6 +103,13 @@ namespace Exomia.Framework.Mathematics
         public Arc2(Vector2 center, float radius, float start = 0, float end = Math2.TWO_PI)
             : this(center.X, center.Y, radius, start, end) { }
 
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (((((((X.GetHashCode() * 307) ^ Y.GetHashCode()) * 521) ^ Radius.GetHashCode()) * 853) ^
+                     Start.GetHashCode()) * 443) ^ End.GetHashCode();
+        }
+
         /// <summary>
         ///     Determines whether the specified <see cref="Arc2" /> is equal to this instance.
         /// </summary>
@@ -126,16 +133,9 @@ namespace Exomia.Framework.Mathematics
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object value)
+        public override bool Equals(object? value)
         {
             return value is Arc2 other && Equals(in other);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return (((((((X.GetHashCode() * 307) ^ Y.GetHashCode()) * 521) ^ Radius.GetHashCode()) * 853) ^
-                     Start.GetHashCode()) * 443) ^ End.GetHashCode();
         }
 
         /// <inheritdoc />
@@ -143,63 +143,12 @@ namespace Exomia.Framework.Mathematics
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X:{0} Y:{1} | Radius:{2}, Start:{3}, End:{4}", X, Y, Radius, Start, End);
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="format"> The format. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public string ToString(string? format)
-        {
-            if (format == null)
-            {
-                return ToString();
-            }
-
-            return string.Format(
-                CultureInfo.CurrentCulture,
                 "X:{0} Y:{1} | Radius:{2}, Start:{3}, End:{4}",
-                X.ToString(format, CultureInfo.CurrentCulture),
-                Y.ToString(format, CultureInfo.CurrentCulture),
-                Radius.ToString(format, CultureInfo.CurrentCulture),
-                Start.ToString(format, CultureInfo.CurrentCulture),
-                End.ToString(format, CultureInfo.CurrentCulture));
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="formatProvider"> The format provider. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public string ToString(IFormatProvider formatProvider)
-        {
-            return string.Format(
-                formatProvider,
-                "X:{0} Y:{1} | Radius:{2}, Start:{3}, End:{4}", X, Y, Radius, Start, End);
-        }
-
-        /// <inheritdoc />
-        public string ToString(string? format, IFormatProvider formatProvider)
-        {
-            if (format == null)
-            {
-                return ToString(formatProvider);
-            }
-
-            return string.Format(
-                formatProvider,
-                "X:{0} Y:{1} | Radius:{2}, Start:{3}, End:{4}",
-                X.ToString(format, formatProvider),
-                Y.ToString(format, formatProvider),
-                Radius.ToString(format, formatProvider),
-                Start.ToString(format, formatProvider),
-                End.ToString(format, formatProvider));
+                X.ToString(CultureInfo.CurrentCulture),
+                Y.ToString(CultureInfo.CurrentCulture),
+                Radius.ToString(CultureInfo.CurrentCulture),
+                Start.ToString(CultureInfo.CurrentCulture),
+                End.ToString(CultureInfo.CurrentCulture));
         }
     }
 }

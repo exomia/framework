@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,9 +14,7 @@ using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Mathematics.Extensions.Vector
 {
-    /// <summary>
-    ///     A vector 2 extensions class.
-    /// </summary>
+    /// <summary> A vector 2 extensions class. </summary>
     public static class Vector2Extensions
     {
         /// <summary>

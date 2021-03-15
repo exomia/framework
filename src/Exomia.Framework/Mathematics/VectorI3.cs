@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -19,9 +19,8 @@ namespace Exomia.Framework.Mathematics
     /// <summary>
     ///     Represents a three dimensional mathematical vector.
     /// </summary>
-    /// <inheritdoc cref="IFormattable" />
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 12)]
-    public struct VectorI3 : IFormattable
+    public struct VectorI3
     {
         /// <summary>
         ///     A <see cref="VectorI3" /> with all of its components set to zero.
@@ -100,6 +99,19 @@ namespace Exomia.Framework.Mathematics
             Z = z;
         }
 
+        /// <inheritdoc />
+        public override readonly int GetHashCode()
+        {
+            unchecked
+            {
+                // ReSharper disable NonReadonlyMemberInGetHashCode
+                return (((X.GetHashCode() * 307) ^
+                         Y.GetHashCode()) * 521) ^ Z.GetHashCode();
+
+                // ReSharper restore NonReadonlyMemberInGetHashCode
+            }
+        }
+
         /// <summary>
         ///     Determines whether the specified <see cref="VectorI3" /> is equal to this instance.
         /// </summary>
@@ -124,84 +136,14 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <inheritdoc />
-        public override readonly int GetHashCode()
-        {
-            unchecked
-            {
-                // ReSharper disable NonReadonlyMemberInGetHashCode
-                return (((X.GetHashCode() * 307) ^
-                         Y.GetHashCode()) * 521) ^ Z.GetHashCode();
-
-                // ReSharper restore NonReadonlyMemberInGetHashCode
-            }
-        }
-
-        /// <inheritdoc />
         public override readonly string ToString()
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X:{0} Y:{1} Z:{2}", X, Y, Z);
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="format"> The format. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public readonly string ToString(string? format)
-        {
-            if (format == null)
-            {
-                return ToString();
-            }
-
-            return string.Format(
-                CultureInfo.CurrentCulture,
                 "X:{0} Y:{1} Z:{2}",
-                X.ToString(format, CultureInfo.CurrentCulture),
-                Y.ToString(format, CultureInfo.CurrentCulture),
-                Z.ToString(format, CultureInfo.CurrentCulture));
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="formatProvider"> The format provider. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public readonly string ToString(IFormatProvider? formatProvider)
-        {
-            return string.Format(
-                formatProvider,
-                "X:{0} Y:{1} Z:{2}", X, Y, Z);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Returns a <see cref="T:System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="format">         The format. </param>
-        /// <param name="formatProvider"> The format provider. </param>
-        /// <returns>
-        ///     A <see cref="T:System.String" /> that represents this instance.
-        /// </returns>
-        public readonly string ToString(string? format, IFormatProvider? formatProvider)
-        {
-            if (format == null)
-            {
-                return ToString(formatProvider);
-            }
-
-            return string.Format(
-                formatProvider,
-                "X:{0} Y:{1} Z:{2}",
-                X.ToString(format, formatProvider),
-                Y.ToString(format, formatProvider),
-                Z.ToString(format, formatProvider));
+                X.ToString(CultureInfo.CurrentCulture),
+                Y.ToString(CultureInfo.CurrentCulture),
+                Z.ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -630,9 +572,15 @@ namespace Exomia.Framework.Mathematics
         /// </param>
         public static void Max(ref VectorI3 left, ref VectorI3 right, out VectorI3 result)
         {
-            result.X = left.X > right.X ? left.X : right.X;
-            result.Y = left.Y > right.Y ? left.Y : right.Y;
-            result.Z = left.Z > right.Z ? left.Z : right.Z;
+            result.X = left.X > right.X
+                ? left.X
+                : right.X;
+            result.Y = left.Y > right.Y
+                ? left.Y
+                : right.Y;
+            result.Z = left.Z > right.Z
+                ? left.Z
+                : right.Z;
         }
 
         /// <summary>
@@ -646,9 +594,15 @@ namespace Exomia.Framework.Mathematics
         public static VectorI3 Max(in VectorI3 left, in VectorI3 right)
         {
             return new VectorI3(
-                left.X > right.X ? left.X : right.X,
-                left.Y > right.Y ? left.Y : right.Y,
-                left.Z > right.Z ? left.Z : right.Z);
+                left.X > right.X
+                    ? left.X
+                    : right.X,
+                left.Y > right.Y
+                    ? left.Y
+                    : right.Y,
+                left.Z > right.Z
+                    ? left.Z
+                    : right.Z);
         }
 
         /// <summary>
@@ -662,9 +616,15 @@ namespace Exomia.Framework.Mathematics
         /// </param>
         public static void Min(ref VectorI3 left, ref VectorI3 right, out VectorI3 result)
         {
-            result.X = left.X < right.X ? left.X : right.X;
-            result.Y = left.Y < right.Y ? left.Y : right.Y;
-            result.Z = left.Z < right.Z ? left.Z : right.Z;
+            result.X = left.X < right.X
+                ? left.X
+                : right.X;
+            result.Y = left.Y < right.Y
+                ? left.Y
+                : right.Y;
+            result.Z = left.Z < right.Z
+                ? left.Z
+                : right.Z;
         }
 
         /// <summary>
@@ -678,9 +638,15 @@ namespace Exomia.Framework.Mathematics
         public static VectorI3 Min(in VectorI3 left, in VectorI3 right)
         {
             return new VectorI3(
-                left.X < right.X ? left.X : right.X,
-                left.Y < right.Y ? left.Y : right.Y,
-                left.Z < right.Z ? left.Z : right.Z);
+                left.X < right.X
+                    ? left.X
+                    : right.X,
+                left.Y < right.Y
+                    ? left.Y
+                    : right.Y,
+                left.Z < right.Z
+                    ? left.Z
+                    : right.Z);
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -19,9 +19,8 @@ namespace Exomia.Framework.Mathematics
     /// <summary>
     ///     A 2d line.
     /// </summary>
-    /// <inheritdoc cref="IFormattable" />
     [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 16)]
-    public readonly struct Line2 : IFormattable
+    public readonly struct Line2
     {
         /// <summary>
         ///     The first x value.
@@ -95,6 +94,14 @@ namespace Exomia.Framework.Mathematics
             XY2 = b;
         }
 
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            return (((((X1.GetHashCode() * 307) ^ Y1.GetHashCode()) * 521) ^ X2.GetHashCode()) * 853) ^
+                   Y2.GetHashCode();
+        }
+
         /// <summary>
         ///     Determines whether the specified <see cref="Line2" /> is equal to this instance.
         /// </summary>
@@ -117,16 +124,9 @@ namespace Exomia.Framework.Mathematics
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object value)
+        public override bool Equals(object? value)
         {
             return value is Line2 other && Equals(in other);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return (((((X1.GetHashCode() * 307) ^ Y1.GetHashCode()) * 521) ^ X2.GetHashCode()) * 853) ^
-                   Y2.GetHashCode();
         }
 
         /// <inheritdoc />
@@ -134,61 +134,11 @@ namespace Exomia.Framework.Mathematics
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X1:{0} Y1:{1} | X2:{2} Y2:{3}", X1, Y1, X2, Y2);
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="format"> The format. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public string ToString(string? format)
-        {
-            if (format == null)
-            {
-                return ToString();
-            }
-
-            return string.Format(
-                CultureInfo.CurrentCulture,
                 "X1:{0} Y1:{1} | X2:{2} Y2:{3}",
-                X1.ToString(format, CultureInfo.CurrentCulture),
-                Y1.ToString(format, CultureInfo.CurrentCulture),
-                X2.ToString(format, CultureInfo.CurrentCulture),
-                Y2.ToString(format, CultureInfo.CurrentCulture));
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="formatProvider"> The format provider. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public string ToString(IFormatProvider formatProvider)
-        {
-            return string.Format(
-                formatProvider,
-                "X1:{0} Y1:{1} | X2:{2} Y2:{3}", X1, Y1, X2, Y2);
-        }
-
-        /// <inheritdoc />
-        public string ToString(string? format, IFormatProvider formatProvider)
-        {
-            if (format == null)
-            {
-                return ToString(formatProvider);
-            }
-
-            return string.Format(
-                formatProvider,
-                "X1:{0} Y1:{1} | X2:{2} Y2:{3}",
-                X1.ToString(format, formatProvider),
-                Y1.ToString(format, formatProvider),
-                X2.ToString(format, formatProvider),
-                Y2.ToString(format, formatProvider));
+                X1.ToString(CultureInfo.CurrentCulture),
+                Y1.ToString(CultureInfo.CurrentCulture),
+                X2.ToString(CultureInfo.CurrentCulture),
+                Y2.ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>

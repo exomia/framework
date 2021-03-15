@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -23,37 +23,37 @@ namespace Exomia.Framework.Mathematics
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
 
         /// <summary>
-        /// 1e-6f
+        ///     1e-6f
         /// </summary>
         public const float ZERO_TOLERANCE = 1e-6f;
 
         /// <summary>
-        /// 3.14159265358979323846
+        ///     3.14159265358979323846
         /// </summary>
         public const float PI = (float)Math.PI;
 
         /// <summary>
-        /// 2PI
+        ///     2PI
         /// </summary>
         public const float TWO_PI = (float)(2.0 * Math.PI);
 
         /// <summary>
-        /// 1 / 2PI
+        ///     1 / 2PI
         /// </summary>
         public const float ONE_OVER_TWO_PI = 1.0f / TWO_PI;
 
         /// <summary>
-        /// PI / 2
+        ///     PI / 2
         /// </summary>
         public const float PI_OVER_TWO = (float)(Math.PI / 2.0);
 
         /// <summary>
-        /// PI / 4
+        ///     PI / 4
         /// </summary>
         public const float PI_OVER_FOUR = (float)(Math.PI / 4.0);
-        
+
         /// <summary>
-        /// Determines whether the specified value is close to zero (0.0f).
+        ///     Determines whether the specified value is close to zero (0.0f).
         /// </summary>
         /// <param name="a">The floating value.</param>
         /// <returns><c>true</c> if the specified value is close to zero (0.0f); otherwise, <c>false</c>.</returns>
@@ -61,9 +61,19 @@ namespace Exomia.Framework.Mathematics
         {
             return Math.Abs(a) < ZERO_TOLERANCE;
         }
-        
+
         /// <summary>
-        /// Determines whether the specified value is close to one (1.0f).
+        ///     Determines whether the specified value is not close to zero (0.0f).
+        /// </summary>
+        /// <param name="a">The floating value.</param>
+        /// <returns><c>true</c> if the specified value is not close to zero (0.0f); otherwise, <c>false</c>.</returns>
+        public static bool IsNotZero(float a)
+        {
+            return Math.Abs(a) >= ZERO_TOLERANCE;
+        }
+
+        /// <summary>
+        ///     Determines whether the specified value is close to one (1.0f).
         /// </summary>
         /// <param name="a">The floating value.</param>
         /// <returns><c>true</c> if the specified value is close to one (1.0f); otherwise, <c>false</c>.</returns>
@@ -71,24 +81,30 @@ namespace Exomia.Framework.Mathematics
         {
             return IsZero(a - 1.0f);
         }
-        
+
         /// <summary>
-        /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.
-        /// See remarks.
+        ///     Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike
+        ///     <see cref="WithinEpsilon" /> method). See Remarks.
+        ///     See remarks.
         /// </summary>
         /// <param name="a">The left value to compare.</param>
         /// <param name="b">The right value to compare.</param>
         /// <returns><c>true</c> if a almost equal to b, <c>false</c> otherwise</returns>
         /// <remarks>
-        /// The code is using the technique described by Bruce Dawson in 
-        /// <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating point numbers 2012 edition</a>. 
+        ///     The code is using the technique described by Bruce Dawson in
+        ///     <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
+        ///         Comparing Floating point numbers 2012 edition
+        ///     </a>
+        ///     .
         /// </remarks>
         public static unsafe bool NearEqual(float a, float b)
         {
             // Check if the numbers are really close -- needed
             // when comparing numbers near zero.
             if (IsZero(a - b))
+            {
                 return true;
+            }
 
             // Original from Bruce Dawson: http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
             int aInt = *(int*)&a;
@@ -96,7 +112,9 @@ namespace Exomia.Framework.Mathematics
 
             // Different signs means they do not match.
             if ((aInt < 0) != (bInt < 0))
+            {
                 return false;
+            }
 
             // Find the difference in ULPs.
             int ulp = Math.Abs(aInt - bInt);
@@ -106,9 +124,9 @@ namespace Exomia.Framework.Mathematics
             const int maxUlp = 4;
             return (ulp <= maxUlp);
         }
-        
+
         /// <summary>
-        /// Checks if a - b are almost equals within a float epsilon.
+        ///     Checks if a - b are almost equals within a float epsilon.
         /// </summary>
         /// <param name="a">The left value to compare.</param>
         /// <param name="b">The right value to compare.</param>
@@ -170,7 +188,10 @@ namespace Exomia.Framework.Mathematics
         /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public static double Pow(double b, int e)
         {
-            if (e < 0) { throw new ArgumentException($"{nameof(e)} must be positive", nameof(e)); }
+            if (e < 0)
+            {
+                throw new ArgumentException($"{nameof(e)} must be positive", nameof(e));
+            }
 
             double result = 1;
             while (e != 0)
@@ -179,9 +200,11 @@ namespace Exomia.Framework.Mathematics
                 {
                     result *= b;
                 }
+
                 e >>= 1;
                 b *=  b;
             }
+
             return result;
         }
 
@@ -196,7 +219,10 @@ namespace Exomia.Framework.Mathematics
         /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public static float Pow(float b, int e)
         {
-            if (e < 0) { throw new ArgumentException($"{nameof(e)} must be positive", nameof(e)); }
+            if (e < 0)
+            {
+                throw new ArgumentException($"{nameof(e)} must be positive", nameof(e));
+            }
 
             float result = 1;
             while (e != 0)
@@ -205,9 +231,11 @@ namespace Exomia.Framework.Mathematics
                 {
                     result *= b;
                 }
+
                 e >>= 1;
                 b *=  b;
             }
+
             return result;
         }
 
@@ -251,14 +279,19 @@ namespace Exomia.Framework.Mathematics
         public static void SinCos(float x, out float sin, out float cos)
         {
             const float A = 1.27323954f, B = 0.405284735f;
-            x   -= TWO_PI * Floor((x / TWO_PI) + 0.5f);
-            sin =  x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
-            x   += PI_OVER_TWO;
+            x -= TWO_PI * Floor((x / TWO_PI) + 0.5f);
+            sin = x < 0
+                ? (A + (B * x)) * x
+                : (A - (B * x)) * x;
+            x += PI_OVER_TWO;
             if (x > PI)
             {
                 x -= TWO_PI;
             }
-            cos = x < 0 ? (A + (B * x)) * x : (A - (B * x)) * x;
+
+            cos = x < 0
+                ? (A + (B * x)) * x
+                : (A - (B * x)) * x;
         }
 
         /// <summary>
@@ -285,26 +318,34 @@ namespace Exomia.Framework.Mathematics
                 {
                     return 0f;
                 }
+
                 return -PI_OVER_TWO;
             }
+
             float atan, z = y / x;
             if (Math.Abs(z) < 1f)
             {
                 atan = z / (1f + (0.28f * z * z));
                 if (x < 0f)
                 {
-                    return atan + (y < 0f ? -PI : PI);
+                    return atan + (y < 0f
+                        ? -PI
+                        : PI);
                 }
+
                 return atan;
             }
+
             atan = PI_OVER_TWO - (z / ((z * z) + 0.28f));
-            return y < 0f ? atan - PI : atan;
+            return y < 0f
+                ? atan - PI
+                : atan;
         }
 
         #region Clamp
-        
+
         /// <summary>
-        /// Clamps the specified value.
+        ///     Clamps the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="min">The min.</param>
@@ -312,11 +353,15 @@ namespace Exomia.Framework.Mathematics
         /// <returns>The result of clamping a value between min and max</returns>
         public static float Clamp(float value, float min, float max)
         {
-            return value < min ? min : value > max ? max : value;
+            return value < min
+                ? min
+                : value > max
+                    ? max
+                    : value;
         }
 
         /// <summary>
-        /// Clamps the specified value.
+        ///     Clamps the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="min">The min.</param>
@@ -324,9 +369,13 @@ namespace Exomia.Framework.Mathematics
         /// <returns>The result of clamping a value between min and max</returns>
         public static int Clamp(int value, int min, int max)
         {
-            return value < min ? min : value > max ? max : value;
+            return value < min
+                ? min
+                : value > max
+                    ? max
+                    : value;
         }
-        
+
         #endregion
 
         #region RoundUpToPowerOfTwo
@@ -343,7 +392,9 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int RoundUpToPowerOfTwo(int value)
         {
-            return value <= 0 ? 0 : (int)RoundUpToPowerOfTwo((uint)value);
+            return value <= 0
+                ? 0
+                : (int)RoundUpToPowerOfTwo((uint)value);
         }
 
         /// <summary>
@@ -362,6 +413,7 @@ namespace Exomia.Framework.Mathematics
             {
                 throw new ArgumentOutOfRangeException();
             }
+
             value--;
             value |= value >> 1;
             value |= value >> 2;
@@ -383,7 +435,9 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long RoundUpToPowerOfTwo(long value)
         {
-            return value <= 0 ? 0 : (long)RoundUpToPowerOfTwo((ulong)value);
+            return value <= 0
+                ? 0
+                : (long)RoundUpToPowerOfTwo((ulong)value);
         }
 
         /// <summary>
@@ -402,6 +456,7 @@ namespace Exomia.Framework.Mathematics
             {
                 throw new ArgumentOutOfRangeException();
             }
+
             value--;
             value |= value >> 1;
             value |= value >> 2;
@@ -427,7 +482,11 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Sqrt(long value)
         {
-            if (value < 0) { throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative"); }
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative");
+            }
+
             return Sqrt((ulong)value);
         }
 
@@ -457,8 +516,10 @@ namespace Exomia.Framework.Mathematics
                     g     += b;
                     value -= temp;
                 }
+
                 b >>= 1;
-            } while (bshft-- > 0);
+            }
+            while (bshft-- > 0);
 
             return g;
         }
@@ -474,7 +535,11 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sqrt(int value)
         {
-            if (value < 0) { throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative"); }
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Can't compute Sqrt of a negative");
+            }
+
             return (int)Sqrt((uint)value);
         }
 
@@ -503,8 +568,10 @@ namespace Exomia.Framework.Mathematics
                     g     += b;
                     value -= temp;
                 }
+
                 b >>= 1;
-            } while (bshft-- > 0);
+            }
+            while (bshft-- > 0);
 
             return g;
         }
@@ -596,7 +663,11 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Floor(int x)
         {
-            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            if (x < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative");
+            }
+
             return Log2Floor((uint)x);
         }
 
@@ -618,6 +689,7 @@ namespace Exomia.Framework.Mathematics
             {
                 return 32 + Log2Floor(xHi);
             }
+
             return Log2Floor((uint)x);
         }
 
@@ -635,7 +707,11 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Floor(long x)
         {
-            if (x < 0) { throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative"); }
+            if (x < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(x), "Can't compute Log2Floor of a negative");
+            }
+
             return Log2Floor((ulong)x);
         }
 
@@ -706,81 +782,96 @@ namespace Exomia.Framework.Mathematics
         #endregion
 
         #region SmoothStep
-        
+
         /// <summary>
-        /// Performs smooth (cubic Hermite) interpolation between 0 and 1.
+        ///     Performs smooth (cubic Hermite) interpolation between 0 and 1.
         /// </summary>
         /// <remarks>
-        /// See https://en.wikipedia.org/wiki/Smoothstep
+        ///     See https://en.wikipedia.org/wiki/Smoothstep
         /// </remarks>
         /// <param name="amount">Value between 0 and 1 indicating interpolation amount.</param>
         public static float SmoothStep(float amount)
         {
-            return (amount <= 0) ? 0
-                : (amount >= 1)  ? 1
-                                   : amount * amount * (3 - (2 * amount));
+            return (amount <= 0)
+                ? 0
+                : (amount >= 1)
+                    ? 1
+                    : amount * amount * (3 - (2 * amount));
         }
 
         /// <summary>
-        /// Performs a smooth(er) interpolation between 0 and 1 with 1st and 2nd order derivatives of zero at endpoints.
+        ///     Performs a smooth(er) interpolation between 0 and 1 with 1st and 2nd order derivatives of zero at endpoints.
         /// </summary>
         /// <remarks>
-        /// See https://en.wikipedia.org/wiki/Smoothstep
+        ///     See https://en.wikipedia.org/wiki/Smoothstep
         /// </remarks>
         /// <param name="amount">Value between 0 and 1 indicating interpolation amount.</param>
         public static float SmootherStep(float amount)
         {
-            return (amount <= 0) ? 0
-                : (amount >= 1)  ? 1
-                                   : amount * amount * amount * (amount * ((amount * 6) - 15) + 10);
+            return (amount <= 0)
+                ? 0
+                : (amount >= 1)
+                    ? 1
+                    : amount * amount * amount * (amount * ((amount * 6) - 15) + 10);
         }
 
         #endregion
 
         #region Wrap
-        
+
         /// <summary>
-        /// Wraps the specified value into a range [min, max]
+        ///     Wraps the specified value into a range [min, max]
         /// </summary>
         /// <param name="value">The value to wrap.</param>
         /// <param name="min">The min.</param>
         /// <param name="max">The max.</param>
         /// <returns>Result of the wrapping.</returns>
-        /// <exception cref="ArgumentException">Is thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
+        /// <exception cref="ArgumentException">Is thrown when <paramref name="min" /> is greater than <paramref name="max" />.</exception>
         public static int Wrap(int value, int min, int max)
         {
             if (min > max)
-                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max), "min");
+            {
+                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max),
+                    "min");
+            }
 
             // Code from http://stackoverflow.com/a/707426/1356325
             int range_size = max - min + 1;
 
             if (value < min)
+            {
                 value += range_size * ((min - value) / range_size + 1);
+            }
 
             return min + (value - min) % range_size;
         }
 
         /// <summary>
-        /// Wraps the specified value into a range [min, max[
+        ///     Wraps the specified value into a range [min, max[
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="min">The min.</param>
         /// <param name="max">The max.</param>
         /// <returns>Result of the wrapping.</returns>
-        /// <exception cref="ArgumentException">Is thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
+        /// <exception cref="ArgumentException">Is thrown when <paramref name="min" /> is greater than <paramref name="max" />.</exception>
         public static float Wrap(float value, float min, float max)
         {
-            if (NearEqual(min, max)) return min;
+            if (NearEqual(min, max))
+            {
+                return min;
+            }
 
             double mind   = min;
             double maxd   = max;
             double valued = value;
 
             if (mind > maxd)
-                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max), "min");
+            {
+                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max),
+                    "min");
+            }
 
-            var range_size = maxd - mind;
+            double range_size = maxd - mind;
             return (float)(mind + (valued - mind) - (range_size * Math.Floor((valued - mind) / range_size)));
         }
 

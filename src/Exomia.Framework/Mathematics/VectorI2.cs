@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -19,9 +19,8 @@ namespace Exomia.Framework.Mathematics
     /// <summary>
     ///     Represents a two dimensional mathematical vector.
     /// </summary>
-    /// <inheritdoc cref="IFormattable" />
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
-    public struct VectorI2 : IFormattable
+    public struct VectorI2
     {
         /// <summary>
         ///     A <see cref="VectorI2" /> with all of its components set to zero.
@@ -74,6 +73,18 @@ namespace Exomia.Framework.Mathematics
             Y = y;
         }
 
+        /// <inheritdoc />
+        public override readonly int GetHashCode()
+        {
+            unchecked
+            {
+                // ReSharper disable NonReadonlyMemberInGetHashCode
+                return (X.GetHashCode() * 307) ^ Y.GetHashCode();
+
+                // ReSharper restore NonReadonlyMemberInGetHashCode
+            }
+        }
+
         /// <summary>
         ///     Determines whether the specified <see cref="VectorI2" /> is equal to this instance.
         /// </summary>
@@ -97,73 +108,13 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <inheritdoc />
-        public override readonly int GetHashCode()
-        {
-            unchecked
-            {
-                // ReSharper disable NonReadonlyMemberInGetHashCode
-                return (X.GetHashCode() * 307) ^ Y.GetHashCode();
-
-                // ReSharper restore NonReadonlyMemberInGetHashCode
-            }
-        }
-
-        /// <inheritdoc />
         public override readonly string ToString()
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "X:{0} Y:{1}", X, Y);
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="format"> The format. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public readonly string ToString(string? format)
-        {
-            if (format == null)
-            {
-                return ToString();
-            }
-
-            return string.Format(
-                CultureInfo.CurrentCulture,
                 "X:{0} Y:{1}",
-                X.ToString(format, CultureInfo.CurrentCulture),
-                Y.ToString(format, CultureInfo.CurrentCulture));
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <param name="formatProvider"> The format provider. </param>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public readonly string ToString(IFormatProvider? formatProvider)
-        {
-            return string.Format(
-                formatProvider,
-                "X:{0} Y:{1}", X, Y);
-        }
-
-        /// <inheritdoc />
-        public readonly string ToString(string? format, IFormatProvider? formatProvider)
-        {
-            if (format == null)
-            {
-                return ToString(formatProvider);
-            }
-
-            return string.Format(
-                formatProvider,
-                "X:{0} Y:{1}",
-                X.ToString(format, formatProvider),
-                Y.ToString(format, formatProvider));
+                X.ToString(CultureInfo.CurrentCulture),
+                Y.ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -576,8 +527,12 @@ namespace Exomia.Framework.Mathematics
         /// </param>
         public static void Max(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
-            result.X = left.X > right.X ? left.X : right.X;
-            result.Y = left.Y > right.Y ? left.Y : right.Y;
+            result.X = left.X > right.X
+                ? left.X
+                : right.X;
+            result.Y = left.Y > right.Y
+                ? left.Y
+                : right.Y;
         }
 
         /// <summary>
@@ -591,8 +546,12 @@ namespace Exomia.Framework.Mathematics
         public static VectorI2 Max(in VectorI2 left, in VectorI2 right)
         {
             return new VectorI2(
-                left.X > right.X ? left.X : right.X,
-                left.Y > right.Y ? left.Y : right.Y);
+                left.X > right.X
+                    ? left.X
+                    : right.X,
+                left.Y > right.Y
+                    ? left.Y
+                    : right.Y);
         }
 
         /// <summary>
@@ -606,8 +565,12 @@ namespace Exomia.Framework.Mathematics
         /// </param>
         public static void Min(ref VectorI2 left, ref VectorI2 right, out VectorI2 result)
         {
-            result.X = left.X < right.X ? left.X : right.X;
-            result.Y = left.Y < right.Y ? left.Y : right.Y;
+            result.X = left.X < right.X
+                ? left.X
+                : right.X;
+            result.Y = left.Y < right.Y
+                ? left.Y
+                : right.Y;
         }
 
         /// <summary>
@@ -621,8 +584,12 @@ namespace Exomia.Framework.Mathematics
         public static VectorI2 Min(in VectorI2 left, in VectorI2 right)
         {
             return new VectorI2(
-                left.X < right.X ? left.X : right.X,
-                left.Y < right.Y ? left.Y : right.Y);
+                left.X < right.X
+                    ? left.X
+                    : right.X,
+                left.Y < right.Y
+                    ? left.Y
+                    : right.Y);
         }
 
         /// <summary>

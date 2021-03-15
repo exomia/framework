@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,7 +10,6 @@
 
 using System;
 using System.Numerics;
-using Exomia.Framework.Mathematics.Extensions.Vector;
 
 namespace Exomia.Framework.Mathematics
 {
@@ -27,10 +26,10 @@ namespace Exomia.Framework.Mathematics
         /// <param name="scale">     scale. </param>
         /// <param name="rotation">  rotation. </param>
         /// <param name="transform"> [out] out transform matrix. </param>
-        public static void CalculateTransformMatrix(in Vector2 position,
-                                                    in Vector2 origin,
-                                                    in Vector2 scale,
-                                                    float      rotation,
+        public static void CalculateTransformMatrix(in Vector2    position,
+                                                    in Vector2    origin,
+                                                    in Vector2    scale,
+                                                    float         rotation,
                                                     out Matrix4x4 transform)
         {
             transform = Matrix4x4.CreateTranslation(-origin.X, -origin.Y, 0) *
@@ -50,9 +49,9 @@ namespace Exomia.Framework.Mathematics
         ///     transform matrix.
         /// </returns>
         public static Matrix4x4 CalculateTransformMatrix(in Vector2 position,
-                                                      in Vector2 origin,
-                                                      in Vector2 scale,
-                                                      float      rotation)
+                                                         in Vector2 origin,
+                                                         in Vector2 scale,
+                                                         float      rotation)
         {
             return Matrix4x4.CreateTranslation(-origin.X, -origin.Y, 0) *
                    Matrix4x4.CreateRotationZ(rotation) *
@@ -71,7 +70,7 @@ namespace Exomia.Framework.Mathematics
         {
             Vector2 leftTop     = Vector2.Zero.Transform(transform);
             Vector2 rightTop    = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom  = new Vector2(0, height).Transform(transform);
+            Vector2 leftBottom  = new Vector2(0,     height).Transform(transform);
             Vector2 rightBottom = new Vector2(width, height).Transform(transform);
 
             Vector2 min = new Vector2(
@@ -97,7 +96,7 @@ namespace Exomia.Framework.Mathematics
         {
             Vector2 leftTop     = Vector2.Zero.Transform(transform);
             Vector2 rightTop    = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom  = new Vector2(0, height).Transform(transform);
+            Vector2 leftBottom  = new Vector2(0,     height).Transform(transform);
             Vector2 rightBottom = new Vector2(width, height).Transform(transform);
 
             Vector2 min = new Vector2(
