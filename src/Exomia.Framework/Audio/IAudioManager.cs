@@ -10,8 +10,7 @@
 
 using System;
 using System.IO;
-using SharpDX;
-using SharpDX.X3DAudio;
+using System.Numerics;
 
 namespace Exomia.Framework.Audio
 {

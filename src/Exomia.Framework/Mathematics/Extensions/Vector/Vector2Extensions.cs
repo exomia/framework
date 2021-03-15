@@ -9,8 +9,8 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using SharpDX;
 
 namespace Exomia.Framework.Mathematics.Extensions.Vector
 {
@@ -89,7 +89,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         }
 
         /// <summary>
-        ///     Transforms the <see cref="Vector2" /> with a transform <see cref="Matrix" />.
+        ///     Transforms the <see cref="Vector2" /> with a transform <see cref="Matrix4x4" />.
         /// </summary>
         /// <param name="vec">       this vec. </param>
         /// <param name="transform"> transform. </param>
@@ -97,7 +97,7 @@ namespace Exomia.Framework.Mathematics.Extensions.Vector
         ///     the new <see cref="Vector2" />.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Transform(this Vector2 vec, in Matrix transform)
+        public static Vector2 Transform(this Vector2 vec, in Matrix4x4 transform)
         {
             return new Vector2(
                 (vec.X * transform.M11) + (vec.Y * transform.M21) + transform.M41,

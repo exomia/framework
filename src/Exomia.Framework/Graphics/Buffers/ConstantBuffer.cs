@@ -11,8 +11,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
-using SharpDX.Direct3D11;
-using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace Exomia.Framework.Graphics.Buffers
 {

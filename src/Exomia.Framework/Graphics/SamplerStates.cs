@@ -9,8 +9,7 @@
 #endregion
 
 using System;
-using SharpDX;
-using SharpDX.Direct3D11;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -102,7 +101,7 @@ namespace Exomia.Framework.Graphics
                     AddressU           = textureAddressMode,
                     AddressV           = textureAddressMode,
                     AddressW           = textureAddressMode,
-                    BorderColor        = Color.White,
+                    BorderColor        = VkColor.White,
                     ComparisonFunction = Comparison.Never,
                     Filter             = filter,
                     MaximumAnisotropy  = 16,

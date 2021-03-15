@@ -8,8 +8,8 @@
 
 #endregion
 
+using System.Numerics;
 using Exomia.Framework.Input;
-using SharpDX;
 
 namespace Exomia.Framework.Game.Camera
 {
@@ -34,7 +34,7 @@ namespace Exomia.Framework.Game.Camera
         /// <value>
         ///     The view matrix.
         /// </value>
-        Matrix ViewMatrix { get; }
+        Matrix4x4 ViewMatrix { get; }
 
         /// <summary>
         ///     Gets the projection matrix.
@@ -42,7 +42,7 @@ namespace Exomia.Framework.Game.Camera
         /// <value>
         ///     The projection matrix.
         /// </value>
-        Matrix ProjectionMatrix { get; }
+        Matrix4x4 ProjectionMatrix { get; }
 
         /// <summary>
         ///     Gets the view * projection matrix.
@@ -50,7 +50,7 @@ namespace Exomia.Framework.Game.Camera
         /// <value>
         ///     The view * projection matrix.
         /// </value>
-        Matrix ViewProjectionMatrix { get; }
+        Matrix4x4 ViewProjectionMatrix { get; }
 
         /// <summary>
         ///     Gets or sets the position.

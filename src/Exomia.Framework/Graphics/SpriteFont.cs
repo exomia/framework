@@ -10,9 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Exomia.Framework.Content;
 using Exomia.Framework.ContentSerialization;
-using SharpDX;
+using Exomia.Framework.Mathematics;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -26,7 +28,7 @@ namespace Exomia.Framework.Graphics
         internal delegate void DrawFont(Texture        texture,
                                         in Vector2     position,
                                         in Rectangle?  sourceRectangle,
-                                        in Color       color,
+                                        in VkColor       color,
                                         float          rotation,
                                         in Vector2     origin,
                                         float          scale,

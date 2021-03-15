@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Input;
+using Exomia.Framework.Mathematics;
 using Exomia.Framework.Platform.Windows.Input.Raw;
 using Exomia.Framework.Platform.Windows.Win32;
 using Exomia.Framework.Platform.Windows.Win32.RawInput;

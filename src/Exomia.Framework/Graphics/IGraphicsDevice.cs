@@ -10,10 +10,8 @@
 
 using System;
 using Exomia.Framework.Game;
-using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Device4 = SharpDX.DXGI.Device4;
+using Exomia.Framework.Mathematics;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -156,7 +154,7 @@ namespace Exomia.Framework.Graphics
         ///     Clears this object to its blank/initial state.
         /// </summary>
         /// <param name="color"> The color. </param>
-        void Clear(Color color);
+        void Clear(VkColor color);
 
         /// <summary>
         ///     Resizes.

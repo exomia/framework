@@ -8,7 +8,7 @@
 
 #endregion
 
-using SharpDX;
+using System.Numerics;
 
 namespace Exomia.Framework.ContentSerialization.Writers
 {

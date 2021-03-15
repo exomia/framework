@@ -10,9 +10,9 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace Exomia.Framework.Mathematics
 {

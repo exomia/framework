@@ -9,9 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -52,7 +53,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">       The origin. </param>
         /// <param name="lengthFactor"> (Optional) The length factor. </param>
         public void DrawLine(in Line2   line,
-                             in Color   color,
+                             in VkColor   color,
                              float      lineWidth,
                              float      opacity,
                              float      rotation,

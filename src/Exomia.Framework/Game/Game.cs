@@ -18,7 +18,6 @@ using Exomia.Framework.Graphics;
 using Exomia.Framework.Input;
 using Exomia.Framework.Platform.Windows.Win32;
 using Exomia.Framework.Tools;
-using SharpDX;
 
 namespace Exomia.Framework.Game
 {

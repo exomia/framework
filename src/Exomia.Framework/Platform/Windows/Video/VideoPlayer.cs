@@ -10,15 +10,13 @@
 
 using System;
 using System.IO;
+using System.Numerics;
 using System.Threading;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
+using Exomia.Framework.Mathematics;
 using Exomia.Framework.Platform.Windows.Win32;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using SharpDX.MediaFoundation;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Platform.Windows.Video
 {
@@ -30,7 +28,7 @@ namespace Exomia.Framework.Platform.Windows.Video
         private readonly ManualResetEvent   _eventReadyToPlay = new ManualResetEvent(false);
         private readonly Texture2D          _outputTexture;
         private          string?            _assetName;
-        private          Color              _backgroundColor;
+        private          VkColor              _backgroundColor;
         private          ByteStream?        _byteStream;
         private          DXGIDeviceManager? _dxgiDeviceManager;
         private          bool               _isPlaying, _isVideoStopped = true, _isEndOfStream;
@@ -58,7 +56,7 @@ namespace Exomia.Framework.Platform.Windows.Video
         /// <value>
         ///     The color of the background.
         /// </value>
-        public Color BackgroundColor
+        public VkColor BackgroundColor
         {
             get { return _backgroundColor; }
             set { _backgroundColor = value; }
@@ -167,7 +165,7 @@ namespace Exomia.Framework.Platform.Windows.Video
             : base(nameof(VideoPlayer))
         {
             _outputTexture   = TextureHelper.CreateTexture(device, width, height);
-            _backgroundColor = Color.Transparent;
+            _backgroundColor = VkColor.Transparent;
         }
 
         /// <inheritdoc />
@@ -180,7 +178,7 @@ namespace Exomia.Framework.Platform.Windows.Video
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch!.Begin();
-            _spriteBatch.Draw(_texture!, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(_texture!, Vector2.Zero, VkColor.White);
             _spriteBatch.End();
         }
 

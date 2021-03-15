@@ -9,9 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -30,7 +31,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawCircle(in Vector2 center,
                                float      radius,
-                               in Color   color,
+                               in VkColor color,
                                float      lineWidth,
                                float      opacity,
                                int        segments,
@@ -50,7 +51,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawCircle(in Circle2 circle,
-                               in Color   color,
+                               in VkColor   color,
                                float      lineWidth,
                                float      opacity,
                                int        segments,
@@ -76,7 +77,7 @@ namespace Exomia.Framework.Graphics
                             float      radius,
                             float      start,
                             float      end,
-                            in Color   color,
+                            in VkColor   color,
                             float      lineWidth,
                             float      opacity,
                             int        segments,
@@ -95,7 +96,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="segments">   The segments. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         public void DrawArc(in Arc2  arc,
-                            in Color color,
+                            in VkColor color,
                             float    lineWidth,
                             float    opacity,
                             int      segments,

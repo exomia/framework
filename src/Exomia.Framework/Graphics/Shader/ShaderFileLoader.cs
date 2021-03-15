@@ -14,9 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using SharpDX;
-using SharpDX.D3DCompiler;
-using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics.Shader
 {

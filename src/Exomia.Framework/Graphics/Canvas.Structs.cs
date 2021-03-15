@@ -8,8 +8,8 @@
 
 #endregion
 
+using System.Numerics;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace Exomia.Framework.Graphics
 {

@@ -8,7 +8,8 @@
 
 #endregion
 
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
+using System.Numerics;
 
 namespace Exomia.Framework.Graphics
 {
@@ -22,7 +23,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="lineWidth">  The width of the line. </param>
         /// <param name="opacity">    The opacity. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
-        public void DrawPolygon(Vector2[] vertex, in Color color, float lineWidth, float opacity, float layerDepth)
+        public void DrawPolygon(Vector2[] vertex, in VkColor color, float lineWidth, float opacity, float layerDepth)
         {
             if (vertex.Length > 1)
             {

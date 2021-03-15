@@ -13,7 +13,7 @@ using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Mathematics;
 using Exomia.Framework.Resources;
-using SharpDX;
+using System.Numerics;
 
 namespace Exomia.Framework.Example.Canvas
 {

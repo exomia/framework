@@ -10,8 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Exomia.Framework.Input;
-using SharpDX;
+using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Game.Camera
 {
@@ -173,7 +174,7 @@ namespace Exomia.Framework.Game.Camera
                         Vector3                   up,
                         float                     aspectRatio,
                         params ICameraComponent[] components)
-            : this(position, target, up, aspectRatio, MathUtil.PiOverFour, 0.1f, 10000f, components) { }
+            : this(position, target, up, aspectRatio, Math2.PI_OVER_FOUR, 0.1f, 10000f, components) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Camera3D" /> class.
@@ -209,7 +210,7 @@ namespace Exomia.Framework.Game.Camera
                         float                     zNear,
                         float                     zFar,
                         params ICameraComponent[] components)
-            : this(position, target, up, aspectRatio, MathUtil.PiOverFour, zNear, zFar, components) { }
+            : this(position, target, up, aspectRatio, Math2.PI_OVER_FOUR, zNear, zFar, components) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Camera3D" /> class.

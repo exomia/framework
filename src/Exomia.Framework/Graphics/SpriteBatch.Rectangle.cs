@@ -9,8 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
+using RectangleF = Exomia.Framework.Mathematics.RectangleF;
 
 namespace Exomia.Framework.Graphics
 {
@@ -27,7 +29,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="layerDepth">           The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawRectangle(in RectangleF destinationRectangle,
-                                  in Color      color,
+                                  in VkColor      color,
                                   float         lineWidth,
                                   float         rotation,
                                   float         opacity,
@@ -47,7 +49,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           The depth of the layer. </param>
         public void DrawRectangle(in RectangleF destinationRectangle,
-                                  in Color      color,
+                                  in VkColor      color,
                                   float         lineWidth,
                                   float         rotation,
                                   in Vector2    origin,
@@ -107,7 +109,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">                The color. </param>
         /// <param name="layerDepth">           The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawFillRectangle(in RectangleF destinationRectangle, in Color color, float layerDepth)
+        public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color, float layerDepth)
         {
             DrawSprite(
                 _whiteTexture, destinationRectangle, false, s_nullRectangle,

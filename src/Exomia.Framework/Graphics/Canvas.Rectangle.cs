@@ -9,15 +9,16 @@
 #endregion
 
 using System;
+using System.Numerics;
 using Exomia.Framework.Mathematics;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
+using RectangleF = Exomia.Framework.Mathematics.RectangleF;
 
 namespace Exomia.Framework.Graphics
 {
     public sealed unsafe partial class Canvas
     {
-        private static readonly Vector2[]
-            s_rectangleCornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
+        private static readonly Vector2[] s_rectangleCornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
 
         /// <summary>
         ///     Draw rectangle.
@@ -29,7 +30,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">      The origin. </param>
         /// <param name="opacity">     The opacity. </param>
         public void DrawRectangle(in RectangleF destination,
-                                  in Color      color,
+                                  in VkColor      color,
                                   float         lineWidth,
                                   float         rotation,
                                   in Vector2    origin,
@@ -139,7 +140,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">      The origin. </param>
         /// <param name="opacity">     The opacity. </param>
         public void DrawFillRectangle(in RectangleF destination,
-                                      in Color      color,
+                                      in VkColor      color,
                                       float         rotation,
                                       in Vector2    origin,
                                       float         opacity)

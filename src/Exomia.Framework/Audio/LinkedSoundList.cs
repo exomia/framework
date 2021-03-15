@@ -11,11 +11,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using SharpDX.X3DAudio;
-using SharpDX.XAudio2;
 
 namespace Exomia.Framework.Audio
 {
+    
+    // TODO: 
+    #if AUDIO_SUPPORT
     /// <summary>
     ///     List of linked sounds. This class cannot be inherited.
     /// </summary>
@@ -266,4 +267,5 @@ namespace Exomia.Framework.Audio
             }
         }
     }
+#endif
 }

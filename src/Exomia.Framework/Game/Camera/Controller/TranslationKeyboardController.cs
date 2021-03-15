@@ -9,9 +9,9 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Numerics;
 using Exomia.Framework.Input;
 using Exomia.Framework.Platform.Windows.Input;
-using SharpDX;
 
 namespace Exomia.Framework.Game.Camera.Controller
 {

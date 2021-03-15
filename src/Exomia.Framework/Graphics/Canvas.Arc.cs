@@ -9,9 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -37,7 +38,7 @@ namespace Exomia.Framework.Graphics
                             float      radius,
                             float      start,
                             float      end,
-                            in Color   color,
+                            in VkColor   color,
                             float      lineWidth,
                             float      rotation,
                             in Vector2 origin,
@@ -56,7 +57,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">    The origin. </param>
         /// <param name="opacity">   The opacity. </param>
         public void DrawArc(in Arc2    arc,
-                            in Color   color,
+                            in VkColor   color,
                             float      lineWidth,
                             float      rotation,
                             in Vector2 origin,
@@ -78,30 +79,30 @@ namespace Exomia.Framework.Graphics
             float u = arc.Start;
             float v = arc.End;
 
-            if (u > MathUtil.TwoPi)
+            if (u > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(u / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor(u / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
-            else if (u < -MathUtil.TwoPi)
+            else if (u < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((u + MathUtil.TwoPi) / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor((u + Math2.TWO_PI) / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
 
-            if (v > MathUtil.TwoPi)
+            if (v > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(v / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor(v / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
-            else if (v < -MathUtil.TwoPi)
+            else if (v < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((v + MathUtil.TwoPi) / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor((v + Math2.TWO_PI) / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
 
             if (v < u)
@@ -113,8 +114,8 @@ namespace Exomia.Framework.Graphics
 
             if (u < 0 && v < 0)
             {
-                u += MathUtil.TwoPi;
-                v += MathUtil.TwoPi;
+                u += Math2.TWO_PI;
+                v += Math2.TWO_PI;
             }
 
             float x;
@@ -176,7 +177,7 @@ namespace Exomia.Framework.Graphics
                                 float      radius,
                                 float      start,
                                 float      end,
-                                in Color   color,
+                                in VkColor   color,
                                 float      rotation,
                                 in Vector2 origin,
                                 float      opacity)
@@ -193,7 +194,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="origin">   The origin. </param>
         /// <param name="opacity">  The opacity. </param>
         public void DrawFillArc(in Arc2    arc,
-                                in Color   color,
+                                in VkColor   color,
                                 float      rotation,
                                 in Vector2 origin,
                                 float      opacity)
@@ -210,30 +211,30 @@ namespace Exomia.Framework.Graphics
             float u = arc.Start;
             float v = arc.End;
 
-            if (u > MathUtil.TwoPi)
+            if (u > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(u / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor(u / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
-            else if (u < -MathUtil.TwoPi)
+            else if (u < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((u + MathUtil.TwoPi) / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor((u + Math2.TWO_PI) / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
 
-            if (v > MathUtil.TwoPi)
+            if (v > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(v / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor(v / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
-            else if (v < -MathUtil.TwoPi)
+            else if (v < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((v + MathUtil.TwoPi) / MathUtil.TwoPi);
-                u -= times * MathUtil.TwoPi;
-                v -= times * MathUtil.TwoPi;
+                float times = (float)Math.Floor((v + Math2.TWO_PI) / Math2.TWO_PI);
+                u -= times * Math2.TWO_PI;
+                v -= times * Math2.TWO_PI;
             }
 
             if (v < u)
@@ -245,8 +246,8 @@ namespace Exomia.Framework.Graphics
 
             if (u < 0 && v < 0)
             {
-                u += MathUtil.TwoPi;
-                v += MathUtil.TwoPi;
+                u += Math2.TWO_PI;
+                v += Math2.TWO_PI;
             }
 
             float x;
@@ -267,7 +268,7 @@ namespace Exomia.Framework.Graphics
             }
 
             // ReSharper disable CompareOfFloatsByEqualityOperator
-            float m = u == 0.0f && v == MathUtil.TwoPi ? FILL_CIRCLE_MODE : FILL_CIRCLE_ARC_MODE;
+            float m = u == 0.0f && v == Math2.TWO_PI ? FILL_CIRCLE_MODE : FILL_CIRCLE_ARC_MODE;
 
             // ReSharper enable CompareOfFloatsByEqualityOperator
 
@@ -301,7 +302,7 @@ namespace Exomia.Framework.Graphics
                                         float      o)
         {
             // ReSharper disable CompareOfFloatsByEqualityOperator
-            float m = u == 0.0f && v == MathUtil.TwoPi ? BORDER_CIRCLE_MODE : BORDER_CIRCLE_ARC_MODE;
+            float m = u == 0.0f && v == Math2.TWO_PI ? BORDER_CIRCLE_MODE : BORDER_CIRCLE_ARC_MODE;
 
             // ReSharper enable CompareOfFloatsByEqualityOperator
 

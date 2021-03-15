@@ -8,16 +8,16 @@
 
 #endregion
 
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {
-    sealed class ColorContentSerializationReader : ContentSerializationReader<Color>
+    sealed class ColorContentSerializationReader : ContentSerializationReader<VkColor>
     {
         /// <inheritdoc />
-        public override Color ReadContext(ContentSerializationContext context)
+        public override VkColor ReadContext(ContentSerializationContext context)
         {
-            return new Color
+            return new VkColor
             {
                 A = context.Get<byte>(nameof(Color.A)),
                 R = context.Get<byte>(nameof(Color.R)),

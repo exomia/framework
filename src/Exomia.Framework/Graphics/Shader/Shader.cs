@@ -14,10 +14,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Content;
 using Exomia.Framework.Mathematics;
-using SharpDX;
-using SharpDX.D3DCompiler;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 
 namespace Exomia.Framework.Graphics.Shader
 {

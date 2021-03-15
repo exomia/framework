@@ -10,10 +10,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace Exomia.Framework.Graphics.Buffers
 {

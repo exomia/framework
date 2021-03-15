@@ -13,12 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Exomia.Framework.Game;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Device = SharpDX.Direct3D11.Device;
-using Device4 = SharpDX.DXGI.Device4;
+using Exomia.Framework.Mathematics;
+using Exomia.Framework.Platform.Windows.Input.Raw;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -147,11 +144,11 @@ namespace Exomia.Framework.Graphics
         /// <inheritdoc />
         public void Clear()
         {
-            Clear(Color.CornflowerBlue);
+            Clear(VkColor.CornflowerBlue);
         }
 
         /// <inheritdoc />
-        public void Clear(Color color)
+        public void Clear(VkColor color)
         {
             _d3DDeviceContext.ClearDepthStencilView(
                 _depthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);

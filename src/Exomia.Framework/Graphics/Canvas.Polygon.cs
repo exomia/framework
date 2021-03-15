@@ -9,8 +9,9 @@
 #endregion
 
 using System;
+using System.Numerics;
 using Exomia.Framework.Mathematics;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -27,7 +28,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="opacity">   The opacity. </param>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         public void DrawPolygon(Vector2[]  vertices,
-                                in Color   color,
+                                in VkColor   color,
                                 float      lineWidth,
                                 float      rotation,
                                 in Vector2 origin,

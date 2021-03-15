@@ -8,9 +8,11 @@
 
 #endregion
 
+using Exomia.Framework.Mathematics;
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -23,7 +25,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="position"> The position. </param>
         /// <param name="color">    The color. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Draw(Texture texture, in Vector2 position, in Color color)
+        public void Draw(Texture texture, in Vector2 position, in VkColor color)
         {
             DrawTexture(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true,
@@ -37,7 +39,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="destinationRectangle"> The destination rectangle. </param>
         /// <param name="color">                The color. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Draw(Texture texture, in RectangleF destinationRectangle, in Color color)
+        public void Draw(Texture texture, in RectangleF destinationRectangle, in VkColor color)
         {
             DrawTexture(
                 texture, destinationRectangle, false,
@@ -52,7 +54,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="sourceRectangle"> The source rectangle. </param>
         /// <param name="color">           The color. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in Color color)
+        public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in VkColor color)
         {
             DrawTexture(
                 texture, new RectangleF(position.X, position.Y, 1f, 1f), true,
@@ -70,7 +72,7 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture       texture,
                          in RectangleF destinationRectangle,
                          in Rectangle? sourceRectangle,
-                         in Color      color)
+                         in VkColor      color)
         {
             DrawTexture(
                 texture, destinationRectangle, false,
@@ -92,7 +94,7 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture        texture,
                          in RectangleF  destinationRectangle,
                          in Rectangle?  sourceRectangle,
-                         in Color       color,
+                         in VkColor       color,
                          float          rotation,
                          in Vector2     origin,
                          float          opacity,
@@ -119,7 +121,7 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture        texture,
                          in Vector2     position,
                          in Rectangle?  sourceRectangle,
-                         in Color       color,
+                         in VkColor       color,
                          float          rotation,
                          in Vector2     origin,
                          float          scale,
@@ -147,7 +149,7 @@ namespace Exomia.Framework.Graphics
         public void Draw(Texture        texture,
                          in Vector2     position,
                          in Rectangle?  sourceRectangle,
-                         in Color       color,
+                         in VkColor       color,
                          float          rotation,
                          in Vector2     origin,
                          in Vector2     scale,
@@ -163,7 +165,7 @@ namespace Exomia.Framework.Graphics
                                  in RectangleF  destination,
                                  bool           scaleDestination,
                                  in Rectangle?  sourceRectangle,
-                                 in Color       color,
+                                 in VkColor       color,
                                  float          rotation,
                                  in Vector2     origin,
                                  float          opacity,

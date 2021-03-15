@@ -8,19 +8,20 @@
 
 #endregion
 
-using SharpDX;
+using Exomia.Framework.Graphics;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.ContentSerialization.Writers
 {
-    sealed class ColorContentSerializationWriter : ContentSerializationWriter<Color>
+    sealed class ColorContentSerializationWriter : ContentSerializationWriter<VkColor>
     {
         /// <inheritdoc />
-        public override void WriteContext(ContentSerializationContext context, Color obj)
+        public override void WriteContext(ContentSerializationContext context, VkColor obj)
         {
-            context.Set(nameof(Color.A), obj.A);
-            context.Set(nameof(Color.R), obj.R);
-            context.Set(nameof(Color.G), obj.G);
-            context.Set(nameof(Color.B), obj.B);
+            context.Set(nameof(VkColor.A), obj.A);
+            context.Set(nameof(VkColor.R), obj.R);
+            context.Set(nameof(VkColor.G), obj.G);
+            context.Set(nameof(VkColor.B), obj.B);
         }
     }
 }

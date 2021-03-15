@@ -10,9 +10,9 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace Exomia.Framework.Mathematics
 {
@@ -62,7 +62,7 @@ namespace Exomia.Framework.Mathematics
         ///     (Optional)
         ///     The end angle in radians.
         /// </param>
-        public Arc2(float x, float y, float radius, float start = 0, float end = MathUtil.TwoPi)
+        public Arc2(float x, float y, float radius, float start = 0, float end = Math2.TWO_PI)
         {
             X      = x;
             Y      = y;
@@ -84,7 +84,7 @@ namespace Exomia.Framework.Mathematics
         ///     (Optional)
         ///     The end angle in radians.
         /// </param>
-        public Arc2(VectorI2 center, float radius, float start = 0, float end = MathUtil.TwoPi)
+        public Arc2(VectorI2 center, float radius, float start = 0, float end = Math2.TWO_PI)
             : this(center.X, center.Y, radius, start, end) { }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Exomia.Framework.Mathematics
         ///     (Optional)
         ///     The end angle in radians.
         /// </param>
-        public Arc2(Vector2 center, float radius, float start = 0, float end = MathUtil.TwoPi)
+        public Arc2(Vector2 center, float radius, float start = 0, float end = Math2.TWO_PI)
             : this(center.X, center.Y, radius, start, end) { }
 
         /// <summary>

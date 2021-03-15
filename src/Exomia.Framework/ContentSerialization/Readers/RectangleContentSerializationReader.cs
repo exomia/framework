@@ -8,7 +8,7 @@
 
 #endregion
 
-using SharpDX;
+using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.ContentSerialization.Readers
 {

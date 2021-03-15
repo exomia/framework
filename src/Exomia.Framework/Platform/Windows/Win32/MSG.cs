@@ -9,8 +9,8 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace Exomia.Framework.Platform.Windows.Win32
 {
@@ -22,6 +22,6 @@ namespace Exomia.Framework.Platform.Windows.Win32
         public IntPtr wParam;
         public IntPtr lParam;
         public uint   time;
-        public Point  pt;
+        public Vector2  pt;
     }
 }

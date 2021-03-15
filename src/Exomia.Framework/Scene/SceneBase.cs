@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using Exomia.Framework.Game;
-using SharpDX;
 
 namespace Exomia.Framework.Scene
 {

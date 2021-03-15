@@ -8,8 +8,11 @@
 
 #endregion
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
+using Rectangle = Exomia.Framework.Mathematics.Rectangle;
+using RectangleF = Exomia.Framework.Mathematics.RectangleF;
 
 #if NETSTANDARD2_1
 using System;
@@ -29,10 +32,10 @@ namespace Exomia.Framework.Graphics
         /// <param name="color">    The color. </param>
 #if NETSTANDARD2_1
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont font, ReadOnlySpan<char> text, in Vector2 position, in Color color)
+        public void DrawText(SpriteFont font, ReadOnlySpan<char> text, in Vector2 position, in VkColor color)
 #else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color)
+        public void DrawText(SpriteFont font, string text, in Vector2 position, in VkColor color)
 #endif
         {
             font.Draw(DrawTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
@@ -51,11 +54,11 @@ namespace Exomia.Framework.Graphics
         public void DrawText(SpriteFont         font,
                              ReadOnlySpan<char> text,
                              in Vector2         position,
-                             in Color           color,
+                             in VkColor           color,
                              float              rotation)
 #else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawText(SpriteFont font, string text, in Vector2 position, in Color color, float rotation)
+        public void DrawText(SpriteFont font, string text, in Vector2 position, in VkColor color, float rotation)
 #endif
         {
             font.Draw(DrawTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
@@ -77,7 +80,7 @@ namespace Exomia.Framework.Graphics
         public void DrawText(SpriteFont         font,
                              ReadOnlySpan<char> text,
                              in Vector2         position,
-                             in Color           color,
+                             in VkColor           color,
                              float              rotation,
                              in Vector2         origin,
                              float              opacity,
@@ -87,7 +90,7 @@ namespace Exomia.Framework.Graphics
         public void DrawText(SpriteFont     font,
                              string         text,
                              in Vector2     position,
-                             in Color       color,
+                             in VkColor       color,
                              float          rotation,
                              in Vector2     origin,
                              float          opacity,
@@ -117,7 +120,7 @@ namespace Exomia.Framework.Graphics
                              int                start,
                              int                end,
                              in Vector2         position,
-                             in Color           color,
+                             in VkColor           color,
                              float              rotation,
                              in Vector2         origin,
                              float              opacity,
@@ -129,7 +132,7 @@ namespace Exomia.Framework.Graphics
                              int            start,
                              int            end,
                              in Vector2     position,
-                             in Color       color,
+                             in VkColor       color,
                              float          rotation,
                              in Vector2     origin,
                              float          opacity,
@@ -161,7 +164,7 @@ namespace Exomia.Framework.Graphics
                              int                end,
                              in Vector2         position,
                              in Size2F          dimension,
-                             in Color           color,
+                             in VkColor           color,
                              float              rotation,
                              in Vector2         origin,
                              float              opacity,
@@ -174,7 +177,7 @@ namespace Exomia.Framework.Graphics
                              int            end,
                              in Vector2     position,
                              in Size2F      dimension,
-                             in Color       color,
+                             in VkColor       color,
                              float          rotation,
                              in Vector2     origin,
                              float          opacity,
@@ -189,7 +192,7 @@ namespace Exomia.Framework.Graphics
         internal void DrawTextInternal(Texture        texture,
                                        in Vector2     position,
                                        in Rectangle?  sourceRectangle,
-                                       in Color       color,
+                                       in VkColor       color,
                                        float          rotation,
                                        in Vector2     origin,
                                        float          scale,

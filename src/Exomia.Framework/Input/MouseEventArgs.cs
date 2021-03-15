@@ -9,6 +9,7 @@
 #endregion
 
 using System.Runtime.InteropServices;
+using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Input
 {

@@ -13,16 +13,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Exomia.Framework.Graphics.Buffers;
 using Exomia.Framework.Graphics.Shader;
 using Exomia.Framework.Graphics.SpriteSort;
+using Exomia.Framework.Mathematics;
 using Exomia.Framework.Resources;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics
 {
@@ -40,8 +39,7 @@ namespace Exomia.Framework.Graphics
         private const int BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
         private const int VERTEX_STRIDE              = sizeof(float) * 10;
 
-        private static readonly Vector2[]
-            s_cornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
+        private static readonly Vector2[]  s_cornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
 
         private static readonly ushort[]   s_indices;
         private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
@@ -83,7 +81,7 @@ namespace Exomia.Framework.Graphics
         private SpriteInfo[]   _spriteQueue, _sortedSprites;
         private int            _spriteQueueCount;
         private TextureInfo[]  _spriteTextures;
-        private Matrix         _projectionMatrix, _viewMatrix, _transformMatrix;
+        private Matrix4x4      _projectionMatrix, _viewMatrix, _transformMatrix;
 
         private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
@@ -197,8 +195,8 @@ namespace Exomia.Framework.Graphics
                           SamplerState?      samplerState      = null,
                           DepthStencilState? depthStencilState = null,
                           RasterizerState?   rasterizerState   = null,
-                          Matrix?            transformMatrix   = null,
-                          Matrix?            viewMatrix        = null,
+                          Matrix4x4?         transformMatrix   = null,
+                          Matrix4x4?         viewMatrix        = null,
                           Rectangle?         scissorRectangle  = null)
         {
             if (_isBeginCalled)
@@ -211,8 +209,8 @@ namespace Exomia.Framework.Graphics
             _samplerState      = samplerState;
             _depthStencilState = depthStencilState;
             _rasterizerState   = rasterizerState;
-            _transformMatrix   = transformMatrix ?? Matrix.Identity;
-            _viewMatrix        = viewMatrix ?? Matrix.Identity;
+            _transformMatrix   = transformMatrix ?? Matrix4x4.Identity;
+            _viewMatrix        = viewMatrix ?? Matrix4x4.Identity;
 
             _isScissorEnabled = scissorRectangle.HasValue;
             _scissorRectangle = scissorRectangle ?? Rectangle.Empty;
@@ -270,7 +268,7 @@ namespace Exomia.Framework.Graphics
             float xRatio = width > 0 ? 1f / width : 0f;
             float yRatio = height > 0 ? -1f / height : 0f;
 
-            _projectionMatrix = new Matrix
+            _projectionMatrix = new Matrix4x4
             {
                 M11 = xRatio * 2f,
                 M22 = yRatio * 2f,
@@ -435,7 +433,7 @@ namespace Exomia.Framework.Graphics
             _context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             _context.InputAssembler.InputLayout       = _vertexInputLayout;
 
-            Matrix worldViewProjection = Matrix.Transpose(_transformMatrix * _viewMatrix * _projectionMatrix);
+            Matrix4x4 worldViewProjection = Matrix4x4.Transpose(_transformMatrix * _viewMatrix * _projectionMatrix);
             _context.UpdateSubresource(ref worldViewProjection, _perFrameBuffer);
             _context.VertexShader.SetConstantBuffer(0, _perFrameBuffer);
 

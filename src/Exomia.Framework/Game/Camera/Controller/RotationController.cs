@@ -9,10 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Threading;
 using Exomia.Framework.Input;
 using Exomia.Framework.Mathematics;
-using SharpDX;
 
 namespace Exomia.Framework.Game.Camera.Controller
 {
@@ -24,7 +24,7 @@ namespace Exomia.Framework.Game.Camera.Controller
     {
         private const float MOUSE_SPEED_X = 3f;
         private const float MOUSE_SPEED_Y = MOUSE_SPEED_X;
-        private const float PITCH_LIMIT   = MathUtil.PiOverTwo - 0.01f;
+        private const float PITCH_LIMIT   = Math2.PI_OVER_TWO - 0.01f;
         private       float _yaw, _pitch;
         private       int   _x,   _y;
 
@@ -64,8 +64,8 @@ namespace Exomia.Framework.Game.Camera.Controller
             float invSqrt = Math2.FastInverseSqrt((x * x) + (y * y));
 
             _yaw -= x * invSqrt * MOUSE_SPEED_X * gameTime.DeltaTimeS;
-            _yaw = (float)((-MathUtil.Pi + (_yaw + MathUtil.Pi)) -
-                           (MathUtil.TwoPi * Math.Floor((_yaw + MathUtil.Pi) / MathUtil.TwoPi)));
+            _yaw = (float)((-Math2.PI + (_yaw + Math2.PI)) -
+                           (Math2.TWO_PI * Math.Floor((_yaw + Math2.PI) / Math2.TWO_PI)));
 
             _pitch -= y * invSqrt * MOUSE_SPEED_Y * gameTime.DeltaTimeS;
             if (_pitch < -PITCH_LIMIT) { _pitch     = -PITCH_LIMIT; }
@@ -77,7 +77,7 @@ namespace Exomia.Framework.Game.Camera.Controller
             lookX *= distance;
             lookZ *= distance;
 
-            Math2.SinCos(_yaw + MathUtil.PiOverTwo, out float strafeZ, out float strafeX);
+            Math2.SinCos(_yaw + Math2.PI_OVER_TWO, out float strafeZ, out float strafeX);
 
             camera.Up = Vector3.Cross(
                 new Vector3(strafeX * distance, 0, strafeZ * distance), new Vector3(lookX, height, lookZ));

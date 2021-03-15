@@ -9,8 +9,8 @@
 #endregion
 
 using System;
+using System.Numerics;
 using Exomia.Framework.Mathematics.Extensions.Vector;
-using SharpDX;
 
 namespace Exomia.Framework.Mathematics
 {
@@ -31,12 +31,12 @@ namespace Exomia.Framework.Mathematics
                                                     in Vector2 origin,
                                                     in Vector2 scale,
                                                     float      rotation,
-                                                    out Matrix transform)
+                                                    out Matrix4x4 transform)
         {
-            transform = Matrix.Translation(-origin.X, -origin.Y, 0) *
-                        Matrix.RotationZ(rotation) *
-                        Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                        Matrix.Translation(position.X, position.Y, 0);
+            transform = Matrix4x4.CreateTranslation(-origin.X, -origin.Y, 0) *
+                        Matrix4x4.CreateRotationZ(rotation) *
+                        Matrix4x4.CreateScale(scale.X, scale.Y, 0.0f) *
+                        Matrix4x4.CreateTranslation(position.X, position.Y, 0);
         }
 
         /// <summary>
@@ -49,15 +49,15 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     transform matrix.
         /// </returns>
-        public static Matrix CalculateTransformMatrix(in Vector2 position,
+        public static Matrix4x4 CalculateTransformMatrix(in Vector2 position,
                                                       in Vector2 origin,
                                                       in Vector2 scale,
                                                       float      rotation)
         {
-            return Matrix.Translation(-origin.X, -origin.Y, 0) *
-                   Matrix.RotationZ(rotation) *
-                   Matrix.Scaling(scale.X, scale.Y, 0.0f) *
-                   Matrix.Translation(position.X, position.Y, 0);
+            return Matrix4x4.CreateTranslation(-origin.X, -origin.Y, 0) *
+                   Matrix4x4.CreateRotationZ(rotation) *
+                   Matrix4x4.CreateScale(scale.X, scale.Y, 0.0f) *
+                   Matrix4x4.CreateTranslation(position.X, position.Y, 0);
         }
 
         /// <summary>

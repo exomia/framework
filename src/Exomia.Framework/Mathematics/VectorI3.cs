@@ -10,11 +10,11 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SharpDX;
 
-namespace Exomia.Framework
+namespace Exomia.Framework.Mathematics
 {
     /// <summary>
     ///     Represents a three dimensional mathematical vector.
@@ -118,7 +118,7 @@ namespace Exomia.Framework
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override readonly bool Equals(object value)
+        public override readonly bool Equals(object? value)
         {
             return value is VectorI3 other && Equals(in other);
         }
@@ -151,7 +151,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public readonly string ToString(string format)
+        public readonly string ToString(string? format)
         {
             if (format == null)
             {
@@ -173,7 +173,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public readonly string ToString(IFormatProvider formatProvider)
+        public readonly string ToString(IFormatProvider? formatProvider)
         {
             return string.Format(
                 formatProvider,
@@ -189,7 +189,7 @@ namespace Exomia.Framework
         /// <returns>
         ///     A <see cref="T:System.String" /> that represents this instance.
         /// </returns>
-        public readonly string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string? format, IFormatProvider? formatProvider)
         {
             if (format == null)
             {

@@ -8,9 +8,10 @@
 
 #endregion
 
+using System.Numerics;
 using System.Runtime.InteropServices;
-using SharpDX;
-using SharpDX.Direct3D11;
+using Exomia.Framework.Mathematics;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -24,7 +25,7 @@ namespace Exomia.Framework.Graphics
             public float          Rotation;
             public float          Depth;
             public TextureEffects SpriteEffects;
-            public Color          Color;
+            public VkColor          Color;
             public float          Opacity;
         }
 

@@ -8,8 +8,10 @@
 
 #endregion
 
+using Exomia.Framework.Graphics;
 using System;
-using SharpDX;
+using System.Numerics;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Mathematics
 {
@@ -266,9 +268,9 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     a random color between min and max.
         /// </returns>
-        public Color NextColor()
+        public VkColor NextColor()
         {
-            return new Color(
+            return new VkColor(
                 Next(255),
                 Next(255),
                 Next(255),
@@ -283,9 +285,9 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     a random color between min and max.
         /// </returns>
-        public Color NextColor(Color min, Color max)
+        public VkColor NextColor(VkColor min, VkColor max)
         {
-            return new Color(
+            return new VkColor(
                 Next(min.R, max.R),
                 Next(min.G, max.G),
                 Next(min.B, max.B),

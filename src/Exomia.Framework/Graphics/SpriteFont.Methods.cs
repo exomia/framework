@@ -8,9 +8,10 @@
 
 #endregion
 
+using Exomia.Vulkan.Api.Core;
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using SharpDX;
 
 namespace Exomia.Framework.Graphics
 {
@@ -215,7 +216,7 @@ namespace Exomia.Framework.Graphics
         internal void Draw(DrawFont       drawCallback,
                            string         text,
                            in Vector2     position,
-                           in Color       color,
+                           in VkColor       color,
                            float          rotation,
                            in Vector2     origin,
                            float          opacity,
@@ -247,7 +248,7 @@ namespace Exomia.Framework.Graphics
                            int            start,
                            int            end,
                            in Vector2     position,
-                           in Color       color,
+                           in VkColor       color,
                            float          rotation,
                            in Vector2     origin,
                            float          opacity,
@@ -395,7 +396,7 @@ namespace Exomia.Framework.Graphics
                            int            end,
                            in Vector2     position,
                            in Size2F      dimension,
-                           in Color       color,
+                           in VkColor       color,
                            float          rotation,
                            in Vector2     origin,
                            float          opacity,

@@ -8,11 +8,12 @@
 
 #endregion
 
+using System.Numerics;
 using Exomia.Framework.Content;
 using Exomia.Framework.Game;
 using Exomia.Framework.Graphics;
 using Exomia.Framework.Resources;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Components
 {
@@ -80,8 +81,8 @@ namespace Exomia.Framework.Components
                 _fpsInfo,
                 Vector2.Zero,
                 _fpsCurrent <= FRAME_DANGER_THRESHOLD
-                    ? Color.Red
-                    : Color.White,
+                    ? VkColor.Red
+                    : VkColor.White,
                 0.0f);
 
             _spriteBatch.End();

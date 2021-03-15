@@ -9,9 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
-using SharpDX;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -29,7 +30,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
-                             in Color   color,
+                             in VkColor   color,
                              float      lineWidth,
                              float      opacity,
                              float      layerDepth)
@@ -47,7 +48,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Line2 line,
-                             in Color color,
+                             in VkColor color,
                              float    lineWidth,
                              float    opacity,
                              float    layerDepth)
@@ -68,7 +69,7 @@ namespace Exomia.Framework.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
-                             in Color   color,
+                             in VkColor   color,
                              float      lineWidth,
                              float      opacity,
                              float      lengthFactor,
@@ -88,7 +89,7 @@ namespace Exomia.Framework.Graphics
         /// <param name="layerDepth">   The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Line2 line,
-                             in Color color,
+                             in VkColor color,
                              float    lineWidth,
                              float    opacity,
                              float    lengthFactor,

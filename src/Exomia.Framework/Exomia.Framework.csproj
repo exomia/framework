@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;</TargetFrameworks>
+    <TargetFramework>net5.0</TargetFramework>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -14,7 +14,7 @@
   
   <PropertyGroup>
     <Company>exomia</Company>
-    <Authors>exomia;saika01</Authors>
+    <Authors>exomia; Daniel Bätz; Daniel Baumert</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
   </PropertyGroup>
@@ -182,24 +182,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.171.3" />
+    <PackageReference Include="Exomia.Vulkan.Api.Windows" Version="0.2.171.3" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SharpDX" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.Direct3D10" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" IncludeAssets="all" />
-    <PackageReference Include="SharpDX.XAudio2" Version="4.2.0" IncludeAssets="all" />
-  </ItemGroup>
-  
   <ItemGroup>
     <Compile Update="**\*Game\RenderForm.cs"></Compile>
     <Compile Update="**\*Game\RenderForm.*.cs">

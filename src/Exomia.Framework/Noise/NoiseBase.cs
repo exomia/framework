@@ -9,8 +9,8 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using SharpDX;
 
 namespace Exomia.Framework.Noise
 {

@@ -9,10 +9,10 @@
 #endregion
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Mathematics;
-using SharpDX;
-using SharpDX.Direct3D11;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Graphics
 {
@@ -43,7 +43,7 @@ namespace Exomia.Framework.Graphics
         public void DrawTriangle(in Vector2 point1,
                                  in Vector2 point2,
                                  in Vector2 point3,
-                                 in Color   color,
+                                 in VkColor   color,
                                  float      lineWidth,
                                  float      rotation,
                                  in Vector2 origin,
@@ -74,7 +74,7 @@ namespace Exomia.Framework.Graphics
         ///     p3     p2    p1     p3    p2     p1.
         /// </remarks>
         public void DrawTriangle(in Triangle2 triangle,
-                                 in Color     color,
+                                 in VkColor     color,
                                  float        lineWidth,
                                  float        rotation,
                                  in Vector2   origin,
@@ -142,7 +142,7 @@ namespace Exomia.Framework.Graphics
         public void DrawFillTriangle(in Vector2 point1,
                                      in Vector2 point2,
                                      in Vector2 point3,
-                                     in Color   color,
+                                     in VkColor   color,
                                      float      rotation,
                                      in Vector2 origin,
                                      float      opacity)
@@ -170,7 +170,7 @@ namespace Exomia.Framework.Graphics
         ///     p3     p2    p1     p3    p2     p1.
         /// </remarks>
         public void DrawFillTriangle(in Triangle2 triangle,
-                                     in Color     color,
+                                     in VkColor     color,
                                      float        rotation,
                                      in Vector2   origin,
                                      float        opacity)

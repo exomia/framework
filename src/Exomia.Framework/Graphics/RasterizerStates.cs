@@ -9,7 +9,6 @@
 #endregion
 
 using System;
-using SharpDX.Direct3D11;
 
 namespace Exomia.Framework.Graphics
 {

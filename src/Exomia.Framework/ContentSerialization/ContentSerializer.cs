@@ -11,12 +11,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Reflection;
 using Exomia.Framework.ContentSerialization.Exceptions;
 using Exomia.Framework.ContentSerialization.Readers;
 using Exomia.Framework.ContentSerialization.Types;
 using Exomia.Framework.ContentSerialization.Writers;
-using SharpDX;
+using Exomia.Framework.Graphics;
+using Exomia.Framework.Mathematics;
+using Exomia.Vulkan.Api.Core;
 
 #if NETSTANDARD2_0
 using Exomia.Framework.Extensions;
@@ -140,13 +143,13 @@ namespace Exomia.Framework.ContentSerialization
 
             AddWriter<Vector3>(new Vector3ContentSerializationWriter());
             AddWriter<Vector2>(new Vector2ContentSerializationWriter());
-            AddWriter<Color>(new ColorContentSerializationWriter());
+            AddWriter<VkColor>(new ColorContentSerializationWriter());
             AddWriter<Rectangle>(new RectangleContentSerializationWriter());
             AddWriter<RectangleF>(new RectangleFContentSerializationWriter());
 
             AddReader<Vector3>(new Vector3ContentSerializationReader());
             AddReader<Vector2>(new Vector2ContentSerializationReader());
-            AddReader<Color>(new ColorContentSerializationReader());
+            AddReader<VkColor>(new ColorContentSerializationReader());
             AddReader<Rectangle>(new RectangleContentSerializationReader());
             AddReader<RectangleF>(new RectangleFContentSerializationReader());
 

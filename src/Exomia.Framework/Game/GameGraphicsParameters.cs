@@ -10,16 +10,14 @@
 
 using System;
 using Exomia.Framework.Graphics;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
+using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Game
 {
     /// <summary>
     ///     GameGraphicsParameters struct.
     /// </summary>
-    public struct GameGraphicsParameters
+    public struct GameGraphicsParameters2
     {
         /// <summary>
         ///     The handle.
@@ -154,8 +152,9 @@ namespace Exomia.Framework.Game
                 DeviceCreationFlags =
                     DeviceCreationFlags.BgraSupport,
 #endif
-                DriverType             = DriverType.Hardware,
-                Format                 = Format.B8G8R8A8_UNorm,
+                // only hardware
+                // DriverType             = DriverType.Hardware,
+                Format                 = VkFormat.B8G8R8A8_UNORM,
                 Width                  = width,
                 Height                 = height,
                 DisplayType            = DisplayType.Window,
