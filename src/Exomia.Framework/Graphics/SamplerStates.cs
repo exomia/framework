@@ -101,7 +101,7 @@ namespace Exomia.Framework.Graphics
                     AddressU           = textureAddressMode,
                     AddressV           = textureAddressMode,
                     AddressW           = textureAddressMode,
-                    BorderColor        = VkColor.White,
+                    BorderColor        = Colors.White,
                     ComparisonFunction = Comparison.Never,
                     Filter             = filter,
                     MaximumAnisotropy  = 16,

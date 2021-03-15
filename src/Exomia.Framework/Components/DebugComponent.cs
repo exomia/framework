@@ -81,8 +81,8 @@ namespace Exomia.Framework.Components
                 _fpsInfo,
                 Vector2.Zero,
                 _fpsCurrent <= FRAME_DANGER_THRESHOLD
-                    ? VkColor.Red
-                    : VkColor.White,
+                    ? Colors.Red
+                    : Colors.White,
                 0.0f);
 
             _spriteBatch.End();

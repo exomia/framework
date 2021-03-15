@@ -165,7 +165,7 @@ namespace Exomia.Framework.Platform.Windows.Video
             : base(nameof(VideoPlayer))
         {
             _outputTexture   = TextureHelper.CreateTexture(device, width, height);
-            _backgroundColor = VkColor.Transparent;
+            _backgroundColor = Colors.Transparent;
         }
 
         /// <inheritdoc />
@@ -178,7 +178,7 @@ namespace Exomia.Framework.Platform.Windows.Video
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch!.Begin();
-            _spriteBatch.Draw(_texture!, Vector2.Zero, VkColor.White);
+            _spriteBatch.Draw(_texture!, Vector2.Zero, Colors.White);
             _spriteBatch.End();
         }
 
