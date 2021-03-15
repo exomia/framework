@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using Exomia.Framework.Graphics;
 using System;
 using System.Numerics;
 using Exomia.Vulkan.Api.Core;
@@ -270,11 +269,14 @@ namespace Exomia.Framework.Mathematics
         /// </returns>
         public VkColor NextColor()
         {
-            return new VkColor(
-                Next(255),
-                Next(255),
-                Next(255),
-                255);
+            VkColor color;
+
+            color.R = NextSingle();
+            color.G = NextSingle();
+            color.B = NextSingle();
+            color.A = 1.0f;
+
+            return color;
         }
 
         /// <summary>
@@ -287,11 +289,14 @@ namespace Exomia.Framework.Mathematics
         /// </returns>
         public VkColor NextColor(VkColor min, VkColor max)
         {
-            return new VkColor(
-                Next(min.R, max.R),
-                Next(min.G, max.G),
-                Next(min.B, max.B),
-                Next(min.A, max.A));
+            VkColor color;
+
+            color.R = NextSingle(min.R, max.R);
+            color.G = NextSingle(min.G, max.G);
+            color.B = NextSingle(min.B, max.B);
+            color.A = NextSingle(min.A, max.A);
+
+            return color;
         }
 
         /// <summary>
