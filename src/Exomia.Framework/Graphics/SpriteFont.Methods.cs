@@ -317,8 +317,8 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                double cos = Math.Cos(rotation);
-                double sin = Math.Sin(rotation);
+                float cos = MathF.Cos(rotation);
+                float sin = MathF.Sin(rotation);
 
                 for (int i = start; i < end; i++)
                 {
@@ -361,8 +361,8 @@ namespace Exomia.Framework.Graphics
                                 drawCallback(
                                     _texture,
                                     new Vector2(
-                                        (float)(((cos * ox) - (sin * oy)) + origin.X),
-                                        (float)((sin * ox) + (cos * oy) + origin.Y)),
+                                        ((cos * ox) - (sin * oy) + origin.X),
+                                        (sin * ox) + (cos * oy) + origin.Y),
                                     glyph.Subrect,
                                     color, rotation, Vector2.Zero, 1.0f, opacity, effects, layerDepth);
 
@@ -467,8 +467,8 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                double cos = Math.Cos(rotation);
-                double sin = Math.Sin(rotation);
+                float cos = MathF.Cos(rotation);
+                float sin = MathF.Sin(rotation);
 
                 for (int i = start; i < end; i++)
                 {
@@ -514,8 +514,8 @@ namespace Exomia.Framework.Graphics
                                 drawCallback(
                                     _texture,
                                     new Vector2(
-                                        (float)(((cos * ox) - (sin * oy)) + origin.X),
-                                        (float)((sin * ox) + (cos * oy) + origin.Y)),
+                                        ((cos * ox) - (sin * oy) + origin.X),
+                                        (sin * ox) + (cos * oy) + origin.Y),
                                     glyph.Subrect, color, rotation, Vector2.Zero,
                                     1.0f, opacity, effects, layerDepth);
 

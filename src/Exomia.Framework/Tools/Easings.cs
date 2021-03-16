@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using Exomia.Framework.Mathematics;
 
 namespace Exomia.Framework.Tools
 {
@@ -117,7 +118,7 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseIn(float t, float b, float c, float d)
             {
-                return (-c * ((float)Math.Sqrt(1 - ((t /= d) * t)) - 1)) + b;
+                return (-c * (MathF.Sqrt(1 - ((t /= d) * t)) - 1)) + b;
             }
 
             /// <summary>
@@ -132,8 +133,8 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseInOut(float t, float b, float c, float d)
             {
-                if ((t /= d / 2) < 1) { return ((-c / 2) * ((float)Math.Sqrt(1 - (t * t)) - 1)) + b; }
-                return ((c / 2) * ((float)Math.Sqrt(1 - ((t -= 2) * t)) + 1)) + b;
+                if ((t /= d / 2) < 1) { return ((-c / 2) * (MathF.Sqrt(1 - (t * t)) - 1)) + b; }
+                return ((c / 2) * (MathF.Sqrt(1 - ((t -= 2) * t)) + 1)) + b;
             }
 
             /// <summary>
@@ -148,7 +149,7 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseOut(float t, float b, float c, float d)
             {
-                return (c * (float)Math.Sqrt(1 - ((t = (t / d) - 1) * t))) + b;
+                return (c * MathF.Sqrt(1 - ((t = (t / d) - 1) * t))) + b;
             }
         }
 
@@ -221,7 +222,7 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseIn(float t, float b, float c, float d)
             {
-                return t == 0 ? b : (c * (float)Math.Pow(2, 10 * ((t / d) - 1))) + b;
+                return t == 0 ? b : (c * MathF.Pow(2, 10 * ((t / d) - 1))) + b;
             }
 
             /// <summary>
@@ -237,9 +238,10 @@ namespace Exomia.Framework.Tools
             public static float EaseInOut(float t, float b, float c, float d)
             {
                 if (t == 0) { return b; }
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (t == d) { return b + c; }
-                if ((t /= d / 2) < 1) { return ((c / 2) * (float)Math.Pow(2, 10 * (t - 1))) + b; }
-                return ((c / 2) * (-(float)Math.Pow(2, -10 * --t) + 2)) + b;
+                if ((t /= d / 2) < 1) { return ((c / 2) * MathF.Pow(2, 10 * (t - 1))) + b; }
+                return ((c / 2) * (-MathF.Pow(2, -10 * --t) + 2)) + b;
             }
 
             /// <summary>
@@ -254,7 +256,8 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseOut(float t, float b, float c, float d)
             {
-                return t == d ? b + c : (c * (-(float)Math.Pow(2, (-10 * t) / d) + 1)) + b;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                return t == d ? b + c : (c * (-MathF.Pow(2, (-10 * t) / d) + 1)) + b;
             }
         }
 
@@ -452,7 +455,7 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseIn(float t, float b, float c, float d)
             {
-                return (-c * (float)Math.Cos((t / d) * (Math.PI / 2))) + c + b;
+                return (-c * MathF.Cos((t / d) * (Math2.PI_OVER_TWO))) + c + b;
             }
 
             /// <summary>
@@ -467,7 +470,7 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseInOut(float t, float b, float c, float d)
             {
-                return ((-c / 2) * ((float)Math.Cos((Math.PI * t) / d) - 1)) + b;
+                return ((-c / 2) * (MathF.Cos((Math2.PI * t) / d) - 1)) + b;
             }
 
             /// <summary>
@@ -482,7 +485,7 @@ namespace Exomia.Framework.Tools
             /// </returns>
             public static float EaseOut(float t, float b, float c, float d)
             {
-                return (c * (float)Math.Sin((t / d) * (Math.PI / 2))) + b;
+                return (c * MathF.Sin((t / d) * (Math2.PI_OVER_TWO))) + b;
             }
         }
     }

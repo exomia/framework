@@ -591,7 +591,7 @@ namespace Exomia.Framework.Mathematics
             //inerence: Page 179
 
             distance = 0.0f;
-            float tmax = float.MaxValue;
+            float tMax = float.MaxValue;
 
             if (Math2.IsZero(ray.Direction.X))
             {
@@ -614,9 +614,9 @@ namespace Exomia.Framework.Mathematics
                     t2 = temp;
                 }
                 distance = Math.Max(t1, distance);
-                tmax     = Math.Min(t2, tmax);
+                tMax     = Math.Min(t2, tMax);
 
-                if (distance > tmax)
+                if (distance > tMax)
                 {
                     distance = 0f;
                     return false;
@@ -645,9 +645,9 @@ namespace Exomia.Framework.Mathematics
                 }
 
                 distance = Math.Max(t1, distance);
-                tmax     = Math.Min(t2, tmax);
+                tMax     = Math.Min(t2, tMax);
 
-                if (distance > tmax)
+                if (distance > tMax)
                 {
                     distance = 0f;
                     return false;
@@ -676,9 +676,9 @@ namespace Exomia.Framework.Mathematics
                 }
 
                 distance = Math.Max(t1, distance);
-                tmax     = Math.Min(t2, tmax);
+                tMax     = Math.Min(t2, tMax);
 
-                if (distance > tmax)
+                if (distance > tMax)
                 {
                     distance = 0f;
                     return false;
@@ -879,11 +879,12 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="BoundingBox" />.
+        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a
+        ///     <see cin="BoundingBox" />.
         /// </summary>
-        /// <param name="plane">The plane to test.</param>
-        /// <param name="box">The box to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <param name="plane"> The plane to test. </param>
+        /// <param name="box">   The box to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static PlaneIntersectionType PlaneIntersectsBox(in Plane plane, in BoundingBox box)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -948,6 +949,22 @@ namespace Exomia.Framework.Mathematics
             }
 
             return PlaneIntersectionType.Intersecting;
+        }
+
+        /// <summary>
+        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a
+        ///     <see cin="BoundingFrustum" />.
+        /// </summary>
+        /// <param name="plane">   The plane to test. </param>
+        /// <param name="frustum"> The frustum to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
+        public static PlaneIntersectionType PlaneIntersectsFrustum(in Plane plane, in BoundingFrustum frustum)
+        {
+            PlaneIntersectionType result = plane.Intersects(ref _corners[0]);
+            for (int i = 1; i < _corners.Length; i++)
+                if (plane.Intersects(ref _corners[i]) != result)
+                    result = PlaneIntersectionType.Intersecting;
+            return result;
         }
 
         /// <summary>

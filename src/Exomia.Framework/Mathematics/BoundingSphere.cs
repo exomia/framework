@@ -50,7 +50,7 @@ namespace Exomia.Framework.Mathematics
         ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             unchecked
             {
@@ -68,7 +68,7 @@ namespace Exomia.Framework.Mathematics
         ///     <c>true</c> if the specified <see cin="BoundingSphere" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(in BoundingSphere value)
+        public readonly bool Equals(in BoundingSphere value)
         {
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             return Center == value.Center && Radius == value.Radius;
@@ -82,7 +82,7 @@ namespace Exomia.Framework.Mathematics
         ///     <c>true</c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object? value)
+        public override readonly bool Equals(object? value)
         {
             return value is BoundingSphere other && Equals(in other);
         }
@@ -108,7 +108,7 @@ namespace Exomia.Framework.Mathematics
         /// </param>
         /// <returns>Whether the two objects intersected.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(in Ray ray, out float distance)
+        public readonly bool Intersects(in Ray ray, out float distance)
         {
             return Collision.RayIntersectsSphere(in ray, in this, out distance);
         }
@@ -123,7 +123,7 @@ namespace Exomia.Framework.Mathematics
         /// </param>
         /// <returns>Whether the two objects intersected.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(in Ray ray, out Vector3 point)
+        public readonly bool Intersects(in Ray ray, out Vector3 point)
         {
             return Collision.RayIntersectsSphere(in ray, in this, out point);
         }
@@ -134,7 +134,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="plane">The plane to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public PlaneIntersectionType Intersects(in Plane plane)
+        public readonly PlaneIntersectionType Intersects(in Plane plane)
         {
             return Collision.PlaneIntersectsSphere(in plane, in this);
         }
@@ -147,7 +147,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="vertex3">The third vertex of the triangle to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
+        public readonly bool Intersects(in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
         {
             return Collision.SphereIntersectsTriangle(in this, in vertex1, in vertex2, in vertex3);
         }
@@ -158,7 +158,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="box">The box to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(in BoundingBox box)
+        public readonly bool Intersects(in BoundingBox box)
         {
             return Collision.BoxIntersectsSphere(in box, in this);
         }
@@ -169,7 +169,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="sphere">The sphere to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(in BoundingSphere sphere)
+        public readonly bool Intersects(in BoundingSphere sphere)
         {
             return Collision.SphereIntersectsSphere(in this, in sphere);
         }
@@ -179,9 +179,9 @@ namespace Exomia.Framework.Mathematics
         ///     Determines whether the current objects contains a point.
         /// </summary>
         /// <param name="point">The point to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
+        /// <returns>Whether the sphere contains the point.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ContainmentType Contains(in Vector3 point)
+        public readonly bool Contains(in Vector3 point)
         {
             return Collision.SphereContainsPoint(in this, in point);
         }
@@ -194,7 +194,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="vertex3">The third vertex of the triangle to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ContainmentType Contains(in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
+        public readonly ContainmentType Contains(in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
         {
             return Collision.SphereContainsTriangle(in this, in vertex1, in vertex2, in vertex3);
         }
@@ -205,7 +205,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="box">The box to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ContainmentType Contains(in BoundingBox box)
+        public readonly ContainmentType Contains(in BoundingBox box)
         {
             return Collision.SphereContainsBox(in this, in box);
         }
@@ -216,7 +216,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="sphere">The sphere to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ContainmentType Contains(in BoundingSphere sphere)
+        public readonly ContainmentType Contains(in BoundingSphere sphere)
         {
             return Collision.SphereContainsSphere(in this, in sphere);
         }
@@ -275,7 +275,7 @@ namespace Exomia.Framework.Mathematics
             }
 
             //Find the real distance from the DistanceSquared.
-            radius = (float)Math.Sqrt(radius);
+            radius = MathF.Sqrt(radius);
 
             //Construct the sphere.
             result.Center = center;
@@ -306,8 +306,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BoundingSphere FromPoints(Vector3[] points)
         {
-            BoundingSphere result;
-            FromPoints(points, out result);
+            FromPoints(points, out BoundingSphere result);
             return result;
         }
 
@@ -320,13 +319,10 @@ namespace Exomia.Framework.Mathematics
         public static void FromBox(in BoundingBox box, out BoundingSphere result)
         {
             result.Center = Vector3.Lerp(box.Minimum, box.Maximum, 0.5f);
-
             float x = box.Minimum.X - box.Maximum.X;
             float y = box.Minimum.Y - box.Maximum.Y;
             float z = box.Minimum.Z - box.Maximum.Z;
-
-            float distance = (float)(Math.Sqrt((x * x) + (y * y) + (z * z)));
-            result.Radius = distance * 0.5f;
+            result.Radius = MathF.Sqrt((x * x) + (y * y) + (z * z)) * 0.5f;
         }
 
         /// <summary>
@@ -337,8 +333,7 @@ namespace Exomia.Framework.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BoundingSphere FromBox(in BoundingBox box)
         {
-            BoundingSphere result;
-            FromBox(in box, out result);
+            FromBox(in box, out BoundingSphere result);
             return result;
         }
 
@@ -388,10 +383,9 @@ namespace Exomia.Framework.Mathematics
         /// <param name="value2">The second sphere to merge.</param>
         /// <returns>The newly constructed bounding sphere.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static BoundingSphere Merge(BoundingSphere value1, BoundingSphere value2)
+        public static BoundingSphere Merge(in BoundingSphere value1, in BoundingSphere value2)
         {
-            BoundingSphere result;
-            Merge(in value1, in value2, out result);
+            Merge(in value1, in value2, out BoundingSphere result);
             return result;
         }
 

@@ -124,9 +124,9 @@ namespace Exomia.Framework.Mathematics
         ///     The length of the vector.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float Length()
+        public readonly double Length()
         {
-            return (float)Math.Sqrt((X * X) + (Y * Y));
+            return Math.Sqrt((X * X) + (Y * Y));
         }
 
         /// <summary>

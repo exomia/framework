@@ -44,8 +44,8 @@ namespace Exomia.Framework.Game.Camera.Controller
         void IInitializableCameraComponent.Initialize(IServiceRegistry registry, ICamera camera)
         {
             Vector3 lookAt = camera.Target - camera.Position;
-            _yaw   = (float)Math.Atan2(lookAt.X, lookAt.Z);
-            _pitch = (float)Math.Atan2(lookAt.Y, Math.Sqrt((lookAt.X * lookAt.X) + (lookAt.Z * lookAt.Z)));
+            _yaw   = MathF.Atan2(lookAt.X, lookAt.Z);
+            _pitch = MathF.Atan2(lookAt.Y, MathF.Sqrt((lookAt.X * lookAt.X) + (lookAt.Z * lookAt.Z)));
             _x     = 0;
             _y     = 0;
         }
@@ -64,8 +64,7 @@ namespace Exomia.Framework.Game.Camera.Controller
             float invSqrt = Math2.FastInverseSqrt((x * x) + (y * y));
 
             _yaw -= x * invSqrt * MOUSE_SPEED_X * gameTime.DeltaTimeS;
-            _yaw = (float)((-Math2.PI + (_yaw + Math2.PI)) -
-                           (Math2.TWO_PI * Math.Floor((_yaw + Math2.PI) / Math2.TWO_PI)));
+            _yaw = (-Math2.PI + (_yaw + Math2.PI)) - (Math2.TWO_PI * MathF.Floor((_yaw + Math2.PI) / Math2.TWO_PI));
 
             _pitch -= y * invSqrt * MOUSE_SPEED_Y * gameTime.DeltaTimeS;
             if (_pitch < -PITCH_LIMIT) { _pitch     = -PITCH_LIMIT; }

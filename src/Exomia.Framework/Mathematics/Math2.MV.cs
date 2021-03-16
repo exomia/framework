@@ -66,12 +66,12 @@ namespace Exomia.Framework.Mathematics
         /// <param name="width">     width. </param>
         /// <param name="height">    height. </param>
         /// <param name="aabb">      [out] out aabb. </param>
-        public static void CreateAABB(in Matrix transform, float width, float height, out RectangleF aabb)
+        public static void CreateAABB(in Matrix4x4 transform, float width, float height, out RectangleF aabb)
         {
-            Vector2 leftTop     = Vector2.Zero.Transform(transform);
-            Vector2 rightTop    = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom  = new Vector2(0,     height).Transform(transform);
-            Vector2 rightBottom = new Vector2(width, height).Transform(transform);
+            Vector2 leftTop     = Vector2.Transform(Vector2.Zero,               transform);
+            Vector2 rightTop    = Vector2.Transform(new Vector2(width, 0),      transform);
+            Vector2 leftBottom  = Vector2.Transform(new Vector2(0,     height), transform);
+            Vector2 rightBottom = Vector2.Transform(new Vector2(width, height), transform);
 
             Vector2 min = new Vector2(
                 Math.Min(leftTop.X, Math.Min(rightTop.X, Math.Min(leftBottom.X, rightBottom.X))),
@@ -92,12 +92,12 @@ namespace Exomia.Framework.Mathematics
         /// <returns>
         ///     axis aligned bounding box.
         /// </returns>
-        public static RectangleF CreateAABB(in Matrix transform, float width, float height)
+        public static RectangleF CreateAABB(in Matrix4x4 transform, float width, float height)
         {
-            Vector2 leftTop     = Vector2.Zero.Transform(transform);
-            Vector2 rightTop    = new Vector2(width, 0).Transform(transform);
-            Vector2 leftBottom  = new Vector2(0,     height).Transform(transform);
-            Vector2 rightBottom = new Vector2(width, height).Transform(transform);
+            Vector2 leftTop     = Vector2.Transform(Vector2.Zero,               transform);
+            Vector2 rightTop    = Vector2.Transform(new Vector2(width, 0),      transform);
+            Vector2 leftBottom  = Vector2.Transform(new Vector2(0,     height), transform);
+            Vector2 rightBottom = Vector2.Transform(new Vector2(width, height), transform);
 
             Vector2 min = new Vector2(
                 Math.Min(leftTop.X, Math.Min(rightTop.X, Math.Min(leftBottom.X, rightBottom.X))),

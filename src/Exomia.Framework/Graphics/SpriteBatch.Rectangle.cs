@@ -85,8 +85,8 @@ namespace Exomia.Framework.Graphics
                     o.Y /= destinationRectangle.Height;
                 }
 
-                float cos = (float)Math.Cos(rotation);
-                float sin = (float)Math.Sin(rotation);
+                float cos = MathF.Cos(rotation);
+                float sin = MathF.Sin(rotation);
                 for (int j = 0; j < VERTICES_PER_SPRITE; j++)
                 {
                     Vector2 corner = s_cornerOffsets[j];

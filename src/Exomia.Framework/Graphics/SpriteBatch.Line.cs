@@ -99,8 +99,8 @@ namespace Exomia.Framework.Graphics
             float dy = line.Y2 - line.Y1;
             DrawSprite(
                 _whiteTexture, new RectangleF(
-                    line.X1, line.Y1, (float)Math.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth), false,
-                s_nullRectangle, color, (float)Math.Atan2(dy, dx),
+                    line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth), false,
+                s_nullRectangle, color, MathF.Atan2(dy, dx),
                 s_vector2Zero, opacity, TextureEffects.None, layerDepth);
         }
     }

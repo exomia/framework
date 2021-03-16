@@ -109,8 +109,8 @@ namespace Exomia.Framework.Graphics
 
             for (int i = 0; i < segments; i++)
             {
-                vertex[i].X =  arc.X + (arc.Radius * (float)Math.Cos(theta));
-                vertex[i].Y =  arc.Y + (arc.Radius * (float)Math.Sin(theta));
+                vertex[i].X =  arc.X + (arc.Radius * MathF.Cos(theta));
+                vertex[i].Y =  arc.Y + (arc.Radius * MathF.Sin(theta));
                 theta       += increment;
             }
 

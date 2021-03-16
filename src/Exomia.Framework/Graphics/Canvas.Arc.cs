@@ -81,26 +81,26 @@ namespace Exomia.Framework.Graphics
 
             if (u > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(u / Math2.TWO_PI);
+                float times = MathF.Floor(u / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
             else if (u < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((u + Math2.TWO_PI) / Math2.TWO_PI);
+                float times = MathF.Floor((u + Math2.TWO_PI) / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
 
             if (v > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(v / Math2.TWO_PI);
+                float times = MathF.Floor(v / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
             else if (v < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((v + Math2.TWO_PI) / Math2.TWO_PI);
+                float times = MathF.Floor((v + Math2.TWO_PI) / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
@@ -127,8 +127,8 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                float cos = (float)Math.Cos(rotation);
-                float sin = (float)Math.Sin(rotation);
+                float cos = MathF.Cos(rotation);
+                float sin = MathF.Sin(rotation);
                 float dx  = arc.X - origin.X;
                 float dy  = arc.Y - origin.Y;
                 x = ((cos * dx) - (sin * dy)) + origin.X;
@@ -213,26 +213,26 @@ namespace Exomia.Framework.Graphics
 
             if (u > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(u / Math2.TWO_PI);
+                float times = MathF.Floor(u / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
             else if (u < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((u + Math2.TWO_PI) / Math2.TWO_PI);
+                float times = MathF.Floor((u + Math2.TWO_PI) / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
 
             if (v > Math2.TWO_PI)
             {
-                float times = (float)Math.Floor(v / Math2.TWO_PI);
+                float times = MathF.Floor(v / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
             else if (v < -Math2.TWO_PI)
             {
-                float times = (float)Math.Floor((v + Math2.TWO_PI) / Math2.TWO_PI);
+                float times = MathF.Floor((v + Math2.TWO_PI) / Math2.TWO_PI);
                 u -= times * Math2.TWO_PI;
                 v -= times * Math2.TWO_PI;
             }
@@ -259,8 +259,8 @@ namespace Exomia.Framework.Graphics
             }
             else
             {
-                float cos = (float)Math.Cos(rotation);
-                float sin = (float)Math.Sin(rotation);
+                float cos = MathF.Cos(rotation);
+                float sin = MathF.Sin(rotation);
                 float dx  = arc.X - origin.X;
                 float dy  = arc.Y - origin.Y;
                 x = ((cos * dx) - (sin * dy)) + origin.X;
