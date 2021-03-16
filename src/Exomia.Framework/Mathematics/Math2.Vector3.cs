@@ -13,10 +13,11 @@ using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Mathematics
 {
+    /// <content> The mathematics 2. </content>
     public static partial class Math2
     {
         /// <summary> Projects a 3D vector from object space into screen space. </summary>
-        /// <param name="vector">              [in,out] The vector to project. </param>
+        /// <param name="vector">              The vector to project. </param>
         /// <param name="x">                   The X position of the viewport. </param>
         /// <param name="y">                   The Y position of the viewport. </param>
         /// <param name="width">               The width of the viewport. </param>
@@ -24,10 +25,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="minZ">                The minimum depth of the viewport. </param>
         /// <param name="maxZ">                The maximum depth of the viewport. </param>
         /// <param name="worldViewProjection"> The combined world-view-projection matrix. </param>
-        /// <param name="result">
-        ///     [out] When the method completes, contains the vector in
-        ///     screen space.
-        /// </param>
+        /// <param name="result">              [out] When the method completes, contains the vector in screen space. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Project(in Vector3    vector,
                                    float         x,
@@ -72,7 +70,7 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary> Projects a 3D vector from screen space into object space. </summary>
-        /// <param name="vector">              [in,out] The vector to project. </param>
+        /// <param name="vector">              The vector to project. </param>
         /// <param name="x">                   The X position of the viewport. </param>
         /// <param name="y">                   The Y position of the viewport. </param>
         /// <param name="width">               The width of the viewport. </param>
@@ -80,10 +78,7 @@ namespace Exomia.Framework.Mathematics
         /// <param name="minZ">                The minimum depth of the viewport. </param>
         /// <param name="maxZ">                The maximum depth of the viewport. </param>
         /// <param name="worldViewProjection"> The combined world-view-projection matrix. </param>
-        /// <param name="result">
-        ///     [out] When the method completes, contains the vector in
-        ///     object space.
-        /// </param>
+        /// <param name="result">              [out] When the method completes, contains the vector in object space. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Unproject(in Vector3    vector,
                                      float         x,
@@ -129,18 +124,16 @@ namespace Exomia.Framework.Mathematics
             return result;
         }
 
-        /// <summary>
-        ///     Performs a coordinate transformation using the given <see cref="Matrix4x4" />.
-        /// </summary>
-        /// <param name="coordinate">The coordinate vector to transform.</param>
-        /// <param name="transform">The transformation <see cref="Matrix4x4" />.</param>
-        /// <param name="result">When the method completes, contains the transformed coordinates.</param>
+        /// <summary> Performs a coordinate transformation using the given <see cref="Matrix4x4" />. </summary>
+        /// <param name="coordinate"> The coordinate vector to transform. </param>
+        /// <param name="transform">  The transformation <see cref="Matrix4x4" />. </param>
+        /// <param name="result">     [out] When the method completes, contains the transformed coordinates. </param>
         /// <remarks>
-        ///     A coordinate transform performs the transformation with the assumption that the w component
-        ///     is one. The four dimensional vector obtained from the transformation operation has each
-        ///     component in the vector divided by the w component. This forces the w component to be one and
-        ///     therefore makes the vector homogeneous. The homogeneous vector is often preferred when working
-        ///     with coordinates as the w component can safely be ignored.
+        ///     A coordinate transform performs the transformation with the assumption that the w component is one. The four
+        ///     dimensional vector obtained from the transformation
+        ///     operation has each component in the vector divided by the w component. This forces the w component to be one and
+        ///     therefore makes the vector homogeneous. The homogeneous
+        ///     vector is often preferred when working with coordinates as the w component can safely be ignored.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void TransformCoordinate(in Vector3 coordinate, in Matrix4x4 transform, out Vector3 result)
@@ -156,18 +149,16 @@ namespace Exomia.Framework.Mathematics
                         (coordinate.Z * transform.M33) + transform.M43) * w;
         }
 
-        /// <summary>
-        ///     Performs a coordinate transformation using the given <see cref="Matrix4x4" />.
-        /// </summary>
-        /// <param name="coordinate">The coordinate vector to transform.</param>
-        /// <param name="transform">The transformation <see cref="Matrix4x4" />.</param>
-        /// <returns>The transformed coordinates.</returns>
+        /// <summary> Performs a coordinate transformation using the given <see cref="Matrix4x4" />. </summary>
+        /// <param name="coordinate"> The coordinate vector to transform. </param>
+        /// <param name="transform">  The transformation <see cref="Matrix4x4" />. </param>
+        /// <returns> The transformed coordinates. </returns>
         /// <remarks>
-        ///     A coordinate transform performs the transformation with the assumption that the w component
-        ///     is one. The four dimensional vector obtained from the transformation operation has each
-        ///     component in the vector divided by the w component. This forces the w component to be one and
-        ///     therefore makes the vector homogeneous. The homogeneous vector is often preferred when working
-        ///     with coordinates as the w component can safely be ignored.
+        ///     A coordinate transform performs the transformation with the assumption that the w component is one. The four
+        ///     dimensional vector obtained from the transformation
+        ///     operation has each component in the vector divided by the w component. This forces the w component to be one and
+        ///     therefore makes the vector homogeneous. The homogeneous
+        ///     vector is often preferred when working with coordinates as the w component can safely be ignored.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 TransformCoordinate(in Vector3 coordinate, in Matrix4x4 transform)

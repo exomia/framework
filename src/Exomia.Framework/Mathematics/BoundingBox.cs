@@ -76,10 +76,7 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary> Returns a hash code for this instance. </summary>
-        /// <returns>
-        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures
-        ///     like a hash table.
-        /// </returns>
+        /// <returns> A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. </returns>
         public override readonly int GetHashCode()
         {
             unchecked
@@ -91,9 +88,7 @@ namespace Exomia.Framework.Mathematics
             }
         }
 
-        /// <summary>
-        ///     Determines whether the specified <see cref="BoundingBox" /> is equal to this instance.
-        /// </summary>
+        /// <summary> Determines whether the specified <see cref="BoundingBox" /> is equal to this instance. </summary>
         /// <param name="value"> The <see cref="BoundingBox" /> to compare with this instance. </param>
         /// <returns>
         ///     <c>true</c> if the specified <see cref="BoundingBox" /> is equal to this instance;
@@ -105,9 +100,7 @@ namespace Exomia.Framework.Mathematics
             return Minimum == value.Minimum && Maximum == value.Maximum;
         }
 
-        /// <summary>
-        ///     Determines whether the specified <see cref="System.Object" /> is equal to this instance.
-        /// </summary>
+        /// <summary> Determines whether the specified <see cref="System.Object" /> is equal to this instance. </summary>
         /// <param name="value"> The <see cref="System.Object" /> to compare with this instance. </param>
         /// <returns>
         ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance;
@@ -129,16 +122,10 @@ namespace Exomia.Framework.Mathematics
                 Maximum.ToString());
         }
 
-        /// <summary>
-        ///     Constructs a <see cref="BoundingBox" /> that fully contains the given points.
-        /// </summary>
+        /// <summary> Constructs a <see cref="BoundingBox" /> that fully contains the given points. </summary>
         /// <param name="points"> The points that will be contained by the box. </param>
-        /// <param name="result">
-        ///     [out] When the method completes, contains the newly constructed bounding box.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown when <paramref name="points" /> is <c>null</c>.
-        /// </exception>
+        /// <param name="result"> [out] When the method completes, contains the newly constructed bounding box. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when <paramref name="points" /> is <c>null</c>. </exception>
         public static void FromPoints(Vector3[] points, out BoundingBox result)
         {
             if (points == null)
@@ -158,14 +145,10 @@ namespace Exomia.Framework.Mathematics
             result = new BoundingBox(min, max);
         }
 
-        /// <summary>
-        ///     Constructs a <see cref="BoundingBox" /> that fully contains the given points.
-        /// </summary>
+        /// <summary> Constructs a <see cref="BoundingBox" /> that fully contains the given points. </summary>
         /// <param name="points"> The points that will be contained by the box. </param>
         /// <returns> The newly constructed bounding box. </returns>
-        /// <exception cref="ArgumentNullException">
-        ///     Thrown when <paramref name="points" /> is <c>null</c>.
-        /// </exception>
+        /// <exception cref="ArgumentNullException"> Thrown when <paramref name="points" /> is <c>null</c>. </exception>
         public static BoundingBox FromPoints(Vector3[] points)
         {
             if (points == null)
@@ -187,9 +170,7 @@ namespace Exomia.Framework.Mathematics
 
         /// <summary> Constructs a <see cref="BoundingBox" /> from a given sphere. </summary>
         /// <param name="sphere"> The sphere that will designate the extents of the box. </param>
-        /// <param name="result">
-        ///     [out] When the method completes, contains the newly constructed bounding box.
-        /// </param>
+        /// <param name="result"> [out] When the method completes, contains the newly constructed bounding box. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FromSphere(in BoundingSphere sphere, out BoundingBox result)
         {
@@ -214,14 +195,12 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Constructs a <see cref="BoundingBox" /> that is as large as the total combined area of
-        ///     the two specified boxes.
+        ///     Constructs a <see cref="BoundingBox" /> that is as large as the total combined area of the two specified
+        ///     boxes.
         /// </summary>
         /// <param name="value1"> The first box to merge. </param>
         /// <param name="value2"> The second box to merge. </param>
-        /// <param name="result">
-        ///     [out] When the method completes, contains the newly constructed bounding box.
-        /// </param>
+        /// <param name="result"> [out] When the method completes, contains the newly constructed bounding box. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Merge(in BoundingBox value1, in BoundingBox value2, out BoundingBox result)
         {
@@ -230,8 +209,8 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Constructs a <see cref="BoundingBox" /> that is as large as the total combined area of
-        ///     the two specified boxes.
+        ///     Constructs a <see cref="BoundingBox" /> that is as large as the total combined area of the two specified
+        ///     boxes.
         /// </summary>
         /// <param name="value1"> The first box to merge. </param>
         /// <param name="value2"> The second box to merge. </param>
@@ -295,13 +274,11 @@ namespace Exomia.Framework.Mathematics
             corners[7] = new Vector3(Minimum.X, Minimum.Y, Minimum.Z);
         }
 
-        /// <summary>
-        ///     Determines if there is an intersection between the current object and a <see cref="Ray" />.
-        /// </summary>
+        /// <summary> Determines if there is an intersection between the current object and a <see cref="Ray" />. </summary>
         /// <param name="ray">      The ray to test. </param>
         /// <param name="distance">
-        ///     [out] When the method completes, contains the distance of the
-        ///     intersection, or 0 if there was no intersection.
+        ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
+        ///     no intersection.
         /// </param>
         /// <returns> Whether the two objects intersected. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -310,9 +287,7 @@ namespace Exomia.Framework.Mathematics
             return Collision.RayIntersectsBox(in ray, in this, out distance);
         }
 
-        /// <summary>
-        ///     Determines if there is an intersection between the current object and a <see cref="Ray" />.
-        /// </summary>
+        /// <summary> Determines if there is an intersection between the current object and a <see cref="Ray" />. </summary>
         /// <param name="ray">   The ray to test. </param>
         /// <param name="point">
         ///     [out] When the method completes, contains the point of intersection, or
@@ -337,9 +312,7 @@ namespace Exomia.Framework.Mathematics
             return Collision.PlaneIntersectsBox(in plane, in this);
         }
 
-        /// <summary>
-        ///     Determines if there is an intersection between the current object and a <see cref="BoundingBox" />.
-        /// </summary>
+        /// <summary> Determines if there is an intersection between the current object and a <see cref="BoundingBox" />. </summary>
         /// <param name="box"> The box to test. </param>
         /// <returns> Whether the two objects intersected. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -348,9 +321,7 @@ namespace Exomia.Framework.Mathematics
             return Collision.BoxIntersectsBox(in this, in box);
         }
 
-        /// <summary>
-        ///     Determines if there is an intersection between the current object and a <see cref="BoundingSphere" />.
-        /// </summary>
+        /// <summary> Determines if there is an intersection between the current object and a <see cref="BoundingSphere" />. </summary>
         /// <param name="sphere"> The sphere to test. </param>
         /// <returns> Whether the two objects intersected. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -368,9 +339,7 @@ namespace Exomia.Framework.Mathematics
             return Collision.BoxContainsPoint(in this, in point);
         }
 
-        /// <summary>
-        ///     Determines whether the current objects contains a <see cref="BoundingBox" />.
-        /// </summary>
+        /// <summary> Determines whether the current objects contains a <see cref="BoundingBox" />. </summary>
         /// <param name="box"> The box to test. </param>
         /// <returns> The type of containment the two objects have. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -379,9 +348,7 @@ namespace Exomia.Framework.Mathematics
             return Collision.BoxContainsBox(in this, in box);
         }
 
-        /// <summary>
-        ///     Determines whether the current objects contains a <see cref="BoundingSphere" />.
-        /// </summary>
+        /// <summary> Determines whether the current objects contains a <see cref="BoundingSphere" />. </summary>
         /// <param name="sphere"> The sphere to test. </param>
         /// <returns> The type of containment the two objects have. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

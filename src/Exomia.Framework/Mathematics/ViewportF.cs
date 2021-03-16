@@ -15,46 +15,30 @@ using System.Runtime.InteropServices;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     Defines the viewport dimensions using float coordinates for (X,Y,Width,Height).
-    /// </summary>
+    /// <summary> Defines the viewport dimensions using float coordinates for (X,Y,Width,Height). </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct ViewportF
     {
-        /// <summary>
-        ///     Position of the pixel coordinate of the upper-left corner of the viewport.
-        /// </summary>
+        /// <summary> Position of the pixel coordinate of the upper-left corner of the viewport. </summary>
         public float X;
 
-        /// <summary>
-        ///     Position of the pixel coordinate of the upper-left corner of the viewport.
-        /// </summary>
+        /// <summary> Position of the pixel coordinate of the upper-left corner of the viewport. </summary>
         public float Y;
 
-        /// <summary>
-        ///     Width dimension of the viewport.
-        /// </summary>
+        /// <summary> Width dimension of the viewport. </summary>
         public float Width;
 
-        /// <summary>
-        ///     Height dimension of the viewport.
-        /// </summary>
+        /// <summary> Height dimension of the viewport. </summary>
         public float Height;
 
-        /// <summary>
-        ///     Gets or sets the minimum depth of the clip volume.
-        /// </summary>
+        /// <summary> Gets or sets the minimum depth of the clip volume. </summary>
         public float MinDepth;
 
-        /// <summary>
-        ///     Gets or sets the maximum depth of the clip volume.
-        /// </summary>
+        /// <summary> Gets or sets the maximum depth of the clip volume. </summary>
         public float MaxDepth;
 
-        /// <summary>
-        ///     Gets the aspect ratio used by the viewport.
-        /// </summary>
-        /// <value>The aspect ratio.</value>
+        /// <summary> Gets the aspect ratio used by the viewport. </summary>
+        /// <value> The aspect ratio. </value>
         public readonly float AspectRatio
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,10 +53,8 @@ namespace Exomia.Framework.Mathematics
             }
         }
 
-        /// <summary>
-        ///     Gets the size of this resource.
-        /// </summary>
-        /// <value>The bounds.</value>
+        /// <summary> Gets the size of this resource. </summary>
+        /// <value> The bounds. </value>
         public RectangleF Bounds
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,13 +69,11 @@ namespace Exomia.Framework.Mathematics
             }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ViewportF" /> struct.
-        /// </summary>
-        /// <param name="x">The x coordinate of the upper-left corner of the viewport in pixels.</param>
-        /// <param name="y">The y coordinate of the upper-left corner of the viewport in pixels.</param>
-        /// <param name="width">The width of the viewport in pixels.</param>
-        /// <param name="height">The height of the viewport in pixels.</param>
+        /// <summary> Initializes a new instance of the <see cref="ViewportF" /> struct. </summary>
+        /// <param name="x">      The x coordinate of the upper-left corner of the viewport in pixels. </param>
+        /// <param name="y">      The y coordinate of the upper-left corner of the viewport in pixels. </param>
+        /// <param name="width">  The width of the viewport in pixels. </param>
+        /// <param name="height"> The height of the viewport in pixels. </param>
         public ViewportF(float x, float y, float width, float height)
         {
             X        = x;
@@ -104,15 +84,13 @@ namespace Exomia.Framework.Mathematics
             MaxDepth = 1f;
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ViewportF" /> struct.
-        /// </summary>
-        /// <param name="x">The x coordinate of the upper-left corner of the viewport in pixels.</param>
-        /// <param name="y">The y coordinate of the upper-left corner of the viewport in pixels.</param>
-        /// <param name="width">The width of the viewport in pixels.</param>
-        /// <param name="height">The height of the viewport in pixels.</param>
-        /// <param name="minDepth">The minimum depth of the clip volume.</param>
-        /// <param name="maxDepth">The maximum depth of the clip volume.</param>
+        /// <summary> Initializes a new instance of the <see cref="ViewportF" /> struct. </summary>
+        /// <param name="x">        The x coordinate of the upper-left corner of the viewport in pixels. </param>
+        /// <param name="y">        The y coordinate of the upper-left corner of the viewport in pixels. </param>
+        /// <param name="width">    The width of the viewport in pixels. </param>
+        /// <param name="height">   The height of the viewport in pixels. </param>
+        /// <param name="minDepth"> The minimum depth of the clip volume. </param>
+        /// <param name="maxDepth"> The maximum depth of the clip volume. </param>
         public ViewportF(float x, float y, float width, float height, float minDepth, float maxDepth)
         {
             X        = x;
@@ -123,10 +101,8 @@ namespace Exomia.Framework.Mathematics
             MaxDepth = maxDepth;
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ViewportF" /> struct.
-        /// </summary>
-        /// <param name="bounds">A bounding box that defines the location and size of the viewport in a render target.</param>
+        /// <summary> Initializes a new instance of the <see cref="ViewportF" /> struct. </summary>
+        /// <param name="bounds"> A bounding box that defines the location and size of the viewport in a render target. </param>
         public ViewportF(RectangleF bounds)
         {
             X        = bounds.X;
@@ -137,12 +113,8 @@ namespace Exomia.Framework.Mathematics
             MaxDepth = 1f;
         }
 
-        /// <summary>
-        ///     Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>
-        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
-        /// </returns>
+        /// <summary> Returns a hash code for this instance. </summary>
+        /// <returns> A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override readonly int GetHashCode()
         {
@@ -161,13 +133,9 @@ namespace Exomia.Framework.Mathematics
             }
         }
 
-        /// <summary>
-        ///     Determines whether the specified <see cref="ViewportF" /> is equal to this instance.
-        /// </summary>
-        /// <param name="other">The <see cref="ViewportF" /> to compare with this instance.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified <see cref="ViewportF" /> is equal to this instance; otherwise, <c>false</c>.
-        /// </returns>
+        /// <summary> Determines whether the specified <see cref="ViewportF" /> is equal to this instance. </summary>
+        /// <param name="other"> The <see cref="ViewportF" /> to compare with this instance. </param>
+        /// <returns> <c>true</c> if the specified <see cref="ViewportF" /> is equal to this instance; otherwise, <c>false</c>. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Equals(in ViewportF other)
         {
@@ -179,13 +147,9 @@ namespace Exomia.Framework.Mathematics
                    Math2.NearEqual(MaxDepth, other.MaxDepth);
         }
 
-        /// <summary>
-        ///     Determines whether the specified object is equal to this instance.
-        /// </summary>
-        /// <param name="value">The object to compare with this instance.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified object is equal to this instance; otherwise, <c>false</c>.
-        /// </returns>
+        /// <summary> Determines whether the specified object is equal to this instance. </summary>
+        /// <param name="value"> The object to compare with this instance. </param>
+        /// <returns> <c>true</c> if the specified object is equal to this instance; otherwise, <c>false</c>. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override readonly bool Equals(object? value)
         {
@@ -206,14 +170,12 @@ namespace Exomia.Framework.Mathematics
                 MaxDepth.ToString(CultureInfo.CurrentCulture));
         }
 
-        /// <summary>
-        ///     Projects a 3D vector from object space into screen space.
-        /// </summary>
-        /// <param name="source">The vector to project.</param>
-        /// <param name="projection">The projection matrix.</param>
-        /// <param name="view">The view matrix.</param>
-        /// <param name="world">The world matrix.</param>
-        /// <returns>The projected vector.</returns>
+        /// <summary> Projects a 3D vector from object space into screen space. </summary>
+        /// <param name="source">     The vector to project. </param>
+        /// <param name="projection"> The projection matrix. </param>
+        /// <param name="view">       The view matrix. </param>
+        /// <param name="world">      The world matrix. </param>
+        /// <returns> The projected vector. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector3 Project(in Vector3   source,
                                         in Matrix4x4 projection,
@@ -224,12 +186,10 @@ namespace Exomia.Framework.Mathematics
             return vector;
         }
 
-        /// <summary>
-        ///     Projects a 3D vector from object space into screen space.
-        /// </summary>
-        /// <param name="source">The vector to project.</param>
-        /// <param name="matrix">A combined WorldViewProjection matrix.</param>
-        /// <param name="vector">The projected vector.</param>
+        /// <summary> Projects a 3D vector from object space into screen space. </summary>
+        /// <param name="source"> The vector to project. </param>
+        /// <param name="matrix"> A combined WorldViewProjection matrix. </param>
+        /// <param name="vector"> [out] The projected vector. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly void Project(in Vector3 source, in Matrix4x4 matrix, out Vector3 vector)
         {
@@ -246,14 +206,12 @@ namespace Exomia.Framework.Mathematics
             vector.Z = vector.Z * (MaxDepth - MinDepth) + MinDepth;
         }
 
-        /// <summary>
-        ///     Converts a screen space point into a corresponding point in world space.
-        /// </summary>
-        /// <param name="source">The vector to project.</param>
-        /// <param name="projection">The projection matrix.</param>
-        /// <param name="view">The view matrix.</param>
-        /// <param name="world">The world matrix.</param>
-        /// <returns>The unprojected Vector.</returns>
+        /// <summary> Converts a screen space point into a corresponding point in world space. </summary>
+        /// <param name="source">     The vector to project. </param>
+        /// <param name="projection"> The projection matrix. </param>
+        /// <param name="view">       The view matrix. </param>
+        /// <param name="world">      The world matrix. </param>
+        /// <returns> The unprojected Vector. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector3 Unproject(in Vector3   source,
                                           in Matrix4x4 projection,
@@ -265,12 +223,10 @@ namespace Exomia.Framework.Mathematics
             return vector;
         }
 
-        /// <summary>
-        ///     Converts a screen space point into a corresponding point in world space.
-        /// </summary>
-        /// <param name="source">The vector to project.</param>
-        /// <param name="matrix">An inverted combined WorldViewProjection matrix.</param>
-        /// <param name="vector">The unprojected vector.</param>
+        /// <summary> Converts a screen space point into a corresponding point in world space. </summary>
+        /// <param name="source"> The vector to project. </param>
+        /// <param name="matrix"> An inverted combined WorldViewProjection matrix. </param>
+        /// <param name="vector"> [out] The unprojected vector. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly void Unproject(in Vector3 source, in Matrix4x4 matrix, out Vector3 vector)
         {
@@ -287,35 +243,29 @@ namespace Exomia.Framework.Mathematics
             }
         }
 
-        /// <summary>
-        ///     Implements the operator ==.
-        /// </summary>
-        /// <param name="left">The left.</param>
-        /// <param name="right">The right.</param>
-        /// <returns>The result of the operator.</returns>
+        /// <summary> Implements the operator ==. </summary>
+        /// <param name="left">  The left. </param>
+        /// <param name="right"> The right. </param>
+        /// <returns> The result of the operator. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(in ViewportF left, in ViewportF right)
         {
             return left.Equals(in right);
         }
 
-        /// <summary>
-        ///     Implements the operator !=.
-        /// </summary>
-        /// <param name="left">The left.</param>
-        /// <param name="right">The right.</param>
-        /// <returns>The result of the operator.</returns>
+        /// <summary> Implements the operator !=. </summary>
+        /// <param name="left">  The left. </param>
+        /// <param name="right"> The right. </param>
+        /// <returns> The result of the operator. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(in ViewportF left, in ViewportF right)
         {
             return !left.Equals(in right);
         }
 
-        /// <summary>
-        ///     Performs an explicit conversion from <see cref="Viewport" /> to <see cref="ViewportF" />.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
+        /// <summary> Performs an explicit conversion from <see cref="Viewport" /> to <see cref="ViewportF" />. </summary>
+        /// <param name="value"> The value. </param>
+        /// <returns> The result of the conversion. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ViewportF(in Viewport value)
         {

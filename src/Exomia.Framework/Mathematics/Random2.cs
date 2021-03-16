@@ -52,10 +52,7 @@ namespace Exomia.Framework.Mathematics
             return (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
         }
 
-        /// <summary>
-        ///     Gets the next random int value which is greater than zero and less than the specified
-        ///     maximum value.
-        /// </summary>
+        /// <summary> Gets the next random int value which is greater than zero and less than the specified maximum value. </summary>
         /// <param name="max"> The exclusive maximum value. </param>
         /// <returns> A random int value between zero and the specified maximum value. </returns>
         public int Next(int max)
@@ -67,9 +64,7 @@ namespace Exomia.Framework.Mathematics
             return (int)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max);
         }
 
-        /// <summary>
-        ///     Gets the next random int value between the specified minimum and maximum values.
-        /// </summary>
+        /// <summary> Gets the next random int value between the specified minimum and maximum values. </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The exclusive maximum value. </param>
         /// <returns> A random int value between the specified minimum and maximum values. </returns>
@@ -108,8 +103,8 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Gets the next random byte value which is greater than zero and less than or equal to the
-        ///     specified maximum value.
+        ///     Gets the next random byte value which is greater than zero and less than or equal to the specified maximum
+        ///     value.
         /// </summary>
         /// <param name="max"> The exclusive maximum value. </param>
         /// <returns> A random byte value between zero and the specified maximum value. </returns>
@@ -122,9 +117,7 @@ namespace Exomia.Framework.Mathematics
             return (byte)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max);
         }
 
-        /// <summary>
-        ///     Gets the next random byte value between the specified minimum and maximum values.
-        /// </summary>
+        /// <summary> Gets the next random byte value between the specified minimum and maximum values. </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The exclusive maximum value. </param>
         /// <returns> A random byte value between the specified minimum and maximum values. </returns>
@@ -191,10 +184,7 @@ namespace Exomia.Framework.Mathematics
 
         /// <summary> Fills a byte array with random values. </summary>
         /// <param name="buffer"> the byte array to fill with random values. </param>
-        /// <exception cref="ArgumentException">
-        ///     Thrown when one or more arguments have unsupported or
-        ///     illegal values.
-        /// </exception>
+        /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public unsafe void NextBytesUnsafe(byte[] buffer)
         {
             int l = buffer.Length;
@@ -242,8 +232,8 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Gets the next random double value which is greater than zero and less than or equal to
-        ///     the specified maximum value.
+        ///     Gets the next random double value which is greater than zero and less than or equal to the specified maximum
+        ///     value.
         /// </summary>
         /// <param name="max"> The inclusive maximum value. </param>
         /// <returns> A random double value between zero and the specified maximum value. </returns>
@@ -256,9 +246,7 @@ namespace Exomia.Framework.Mathematics
             return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
         }
 
-        /// <summary>
-        ///     Gets the next random double value between the specified minimum and maximum values.
-        /// </summary>
+        /// <summary> Gets the next random double value between the specified minimum and maximum values. </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The inclusive maximum value. </param>
         /// <returns> A random double value between the specified minimum and maximum values. </returns>
@@ -283,8 +271,8 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Gets the next random single value which is greater than zero and less than or equal to
-        ///     the specified maximum value.
+        ///     Gets the next random single value which is greater than zero and less than or equal to the specified maximum
+        ///     value.
         /// </summary>
         /// <param name="max"> The exclusive maximum value. </param>
         /// <returns> A random single value between zero and the specified maximum value. </returns>
@@ -297,9 +285,7 @@ namespace Exomia.Framework.Mathematics
             return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
         }
 
-        /// <summary>
-        ///     Gets the next random single value between the specified minimum and maximum values.
-        /// </summary>
+        /// <summary> Gets the next random single value between the specified minimum and maximum values. </summary>
         /// <param name="min"> The inclusive minimum value. </param>
         /// <param name="max"> The inclusive maximum value. </param>
         /// <returns> A random single value between the specified minimum and maximum values. </returns>

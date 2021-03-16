@@ -10,9 +10,7 @@
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     Describes the type of angle.
-    /// </summary>
+    /// <summary> Describes the type of angle. </summary>
     public enum AngleType
     {
         /// <summary>

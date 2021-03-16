@@ -10,9 +10,7 @@
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     Describes how one bounding volume contains another.
-    /// </summary>
+    /// <summary> Describes how one bounding volume contains another. </summary>
     public enum ContainmentType
     {
         /// <summary>

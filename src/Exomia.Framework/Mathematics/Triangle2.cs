@@ -16,69 +16,47 @@ using System.Runtime.InteropServices;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     A 2d triangle.
-    /// </summary>
+    /// <summary> A 2d triangle. </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 24)]
     public readonly struct Triangle2
     {
-        /// <summary>
-        ///     The first x value.
-        /// </summary>
+        /// <summary> The first x value. </summary>
         [FieldOffset(0)]
         public readonly float X1;
 
-        /// <summary>
-        ///     The first y value.
-        /// </summary>
+        /// <summary> The first y value. </summary>
         [FieldOffset(4)]
         public readonly float Y1;
 
-        /// <summary>
-        ///     The first xy.
-        /// </summary>
+        /// <summary> The first xy. </summary>
         [FieldOffset(0)]
         public readonly Vector2 XY1;
 
-        /// <summary>
-        ///     The second y value.
-        /// </summary>
+        /// <summary> The second y value. </summary>
         [FieldOffset(8)]
         public readonly float X2;
 
-        /// <summary>
-        ///     The second x value.
-        /// </summary>
+        /// <summary> The second x value. </summary>
         [FieldOffset(12)]
         public readonly float Y2;
 
-        /// <summary>
-        ///     The second xy.
-        /// </summary>
+        /// <summary> The second xy. </summary>
         [FieldOffset(8)]
         public readonly Vector2 XY2;
 
-        /// <summary>
-        ///     The third x value.
-        /// </summary>
+        /// <summary> The third x value. </summary>
         [FieldOffset(16)]
         public readonly float X3;
 
-        /// <summary>
-        ///     The third y value.
-        /// </summary>
+        /// <summary> The third y value. </summary>
         [FieldOffset(20)]
         public readonly float Y3;
 
-        /// <summary>
-        ///     The third xy.
-        /// </summary>
+        /// <summary> The third xy. </summary>
         [FieldOffset(16)]
         public readonly Vector2 XY3;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Triangle2" /> struct. </summary>
         /// <param name="x1"> The first x value. </param>
         /// <param name="y1"> The first y value. </param>
         /// <param name="x2"> The second x value. </param>
@@ -96,18 +74,14 @@ namespace Exomia.Framework.Mathematics
             Y3 = y3;
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Triangle2" /> struct. </summary>
         /// <param name="a"> The <see cref="VectorI2" /> to process. </param>
         /// <param name="b"> The <see cref="VectorI2" /> to process. </param>
         /// <param name="c"> The <see cref="VectorI2" /> to process. </param>
         public Triangle2(in VectorI2 a, in VectorI2 b, in VectorI2 c)
             : this(a.X, a.Y, b.X, b.Y, c.X, c.Y) { }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Triangle2" /> struct.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Triangle2" /> struct. </summary>
         /// <param name="a"> The <see cref="Vector2" /> to process. </param>
         /// <param name="b"> The <see cref="Vector2" /> to process. </param>
         /// <param name="c"> The <see cref="Vector2" /> to process. </param>
@@ -126,13 +100,9 @@ namespace Exomia.Framework.Mathematics
                        Y2.GetHashCode()) * 443) ^ X3.GetHashCode()) * 937) ^ Y3.GetHashCode();
         }
 
-        /// <summary>
-        ///     Determines whether the specified <see cref="Triangle2" /> is equal to this instance.
-        /// </summary>
+        /// <summary> Determines whether the specified <see cref="Triangle2" /> is equal to this instance. </summary>
         /// <param name="other"> The <see cref="Triangle2" /> to compare with this instance. </param>
-        /// <returns>
-        ///     <c>true</c> if the specified <see cref="Triangle2" /> is equal to this instance; <c>false</c> otherwise.
-        /// </returns>
+        /// <returns> <c>true</c> if the specified <see cref="Triangle2" /> is equal to this instance; <c>false</c> otherwise. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(in Triangle2 other)
         {
@@ -169,15 +139,11 @@ namespace Exomia.Framework.Mathematics
                 Y3.ToString(CultureInfo.CurrentCulture));
         }
 
-        /// <summary>
-        ///     Rotates the triangle around the given <paramref name="origin" />.
-        /// </summary>
+        /// <summary> Rotates the triangle around the given <paramref name="origin" />. </summary>
         /// <param name="triangle"> The triangle. </param>
         /// <param name="rotation"> The rotation (in radians). </param>
         /// <param name="origin">   The origin. </param>
-        /// <returns>
-        ///     A new <see cref="Triangle2" />.
-        /// </returns>
+        /// <returns> A new <see cref="Triangle2" />. </returns>
         public static Triangle2 RotateAround(in Triangle2 triangle, float rotation, in Vector2 origin)
         {
             double sin = Math.Sin(rotation);

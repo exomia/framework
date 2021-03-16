@@ -15,30 +15,20 @@ using System.Runtime.InteropServices;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     A 2d circle.
-    /// </summary>
+    /// <summary> A 2d circle. </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 12)]
     public readonly struct Circle2
     {
-        /// <summary>
-        ///     The x value.
-        /// </summary>
+        /// <summary> The x value. </summary>
         public readonly float X; //Note: do not reorder this field, unless you know what you are doing.
 
-        /// <summary>
-        ///     The y value.
-        /// </summary>
+        /// <summary> The y value. </summary>
         public readonly float Y; //Note: do not reorder this field, unless you know what you are doing.
 
-        /// <summary>
-        ///     The radius.
-        /// </summary>
+        /// <summary> The radius. </summary>
         public readonly float Radius; //Note: do not reorder this field, unless you know what you are doing.
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Circle2" /> struct.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Circle2" /> struct. </summary>
         /// <param name="x">      The x value. </param>
         /// <param name="y">      The y value. </param>
         /// <param name="radius"> The radius. </param>
@@ -49,17 +39,13 @@ namespace Exomia.Framework.Mathematics
             Radius = radius;
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Circle2" /> struct.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Circle2" /> struct. </summary>
         /// <param name="center"> The center. </param>
         /// <param name="radius"> The radius. </param>
         public Circle2(VectorI2 center, float radius)
             : this(center.X, center.Y, radius) { }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Circle2" /> struct.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="Circle2" /> struct. </summary>
         /// <param name="center"> The center. </param>
         /// <param name="radius"> The radius. </param>
         public Circle2(Vector2 center, float radius)
@@ -72,13 +58,9 @@ namespace Exomia.Framework.Mathematics
             return (((X.GetHashCode() * 307) ^ Y.GetHashCode()) * 521) ^ Radius.GetHashCode();
         }
 
-        /// <summary>
-        ///     Determines whether the specified <see cref="Circle2" /> is equal to this instance.
-        /// </summary>
+        /// <summary> Determines whether the specified <see cref="Circle2" /> is equal to this instance. </summary>
         /// <param name="other"> The <see cref="Line2" /> to compare with this instance. </param>
-        /// <returns>
-        ///     <c>true</c> if the specified <see cref="Circle2" /> is equal to this instance; <c>false</c> otherwise.
-        /// </returns>
+        /// <returns> <c>true</c> if the specified <see cref="Circle2" /> is equal to this instance; <c>false</c> otherwise. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(in Circle2 other)
         {

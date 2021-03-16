@@ -15,68 +15,48 @@ using System.Runtime.InteropServices;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     The mathematics 2.
-    /// </summary>
+    /// <summary> The mathematics 2. </summary>
     public static partial class Math2
     {
         private const long L_OFFSET_MAX = int.MaxValue + 1L;
 
-        /// <summary>
-        ///     1e-6f
-        /// </summary>
+        /// <summary> 1e-6f. </summary>
         public const float ZERO_TOLERANCE = 1e-6f;
 
-        /// <summary>
-        ///     3.14159265358979323846
-        /// </summary>
+        /// <summary> 3.14159265358979323846. </summary>
         public const float PI = (float)Math.PI;
 
-        /// <summary>
-        ///     2PI
-        /// </summary>
+        /// <summary> 2PI. </summary>
         public const float TWO_PI = (float)(2.0 * Math.PI);
 
-        /// <summary>
-        ///     1 / 2PI
-        /// </summary>
+        /// <summary> 1 / 2PI. </summary>
         public const float ONE_OVER_TWO_PI = 1.0f / TWO_PI;
 
-        /// <summary>
-        ///     PI / 2
-        /// </summary>
+        /// <summary> PI / 2. </summary>
         public const float PI_OVER_TWO = (float)(Math.PI / 2.0);
 
-        /// <summary>
-        ///     PI / 4
-        /// </summary>
+        /// <summary> PI / 4. </summary>
         public const float PI_OVER_FOUR = (float)(Math.PI / 4.0);
 
-        /// <summary>
-        ///     Determines whether the specified value is close to zero (0.0f).
-        /// </summary>
-        /// <param name="a">The floating value.</param>
-        /// <returns><c>true</c> if the specified value is close to zero (0.0f); otherwise, <c>false</c>.</returns>
+        /// <summary> Determines whether the specified value is close to zero (0.0f). </summary>
+        /// <param name="a"> The floating value. </param>
+        /// <returns> <c>true</c> if the specified value is close to zero (0.0f); otherwise, <c>false</c>. </returns>
         public static bool IsZero(float a)
         {
             return Math.Abs(a) < ZERO_TOLERANCE;
         }
 
-        /// <summary>
-        ///     Determines whether the specified value is not close to zero (0.0f).
-        /// </summary>
-        /// <param name="a">The floating value.</param>
-        /// <returns><c>true</c> if the specified value is not close to zero (0.0f); otherwise, <c>false</c>.</returns>
+        /// <summary> Determines whether the specified value is not close to zero (0.0f). </summary>
+        /// <param name="a"> The floating value. </param>
+        /// <returns> <c>true</c> if the specified value is not close to zero (0.0f); otherwise, <c>false</c>. </returns>
         public static bool IsNotZero(float a)
         {
             return Math.Abs(a) >= ZERO_TOLERANCE;
         }
 
-        /// <summary>
-        ///     Determines whether the specified value is close to one (1.0f).
-        /// </summary>
-        /// <param name="a">The floating value.</param>
-        /// <returns><c>true</c> if the specified value is close to one (1.0f); otherwise, <c>false</c>.</returns>
+        /// <summary> Determines whether the specified value is close to one (1.0f). </summary>
+        /// <param name="a"> The floating value. </param>
+        /// <returns> <c>true</c> if the specified value is close to one (1.0f); otherwise, <c>false</c>. </returns>
         public static bool IsOne(float a)
         {
             return IsZero(a - 1.0f);
@@ -87,9 +67,9 @@ namespace Exomia.Framework.Mathematics
         ///     <see cref="WithinEpsilon" /> method). See Remarks.
         ///     See remarks.
         /// </summary>
-        /// <param name="a">The left value to compare.</param>
-        /// <param name="b">The right value to compare.</param>
-        /// <returns><c>true</c> if a almost equal to b, <c>false</c> otherwise</returns>
+        /// <param name="a"> The left value to compare. </param>
+        /// <param name="b"> The right value to compare. </param>
+        /// <returns> <c>true</c> if a almost equal to b, <c>false</c> otherwise. </returns>
         /// <remarks>
         ///     The code is using the technique described by Bruce Dawson in
         ///     <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
@@ -125,66 +105,48 @@ namespace Exomia.Framework.Mathematics
             return (ulp <= maxUlp);
         }
 
-        /// <summary>
-        ///     Checks if a - b are almost equals within a float epsilon.
-        /// </summary>
-        /// <param name="a">The left value to compare.</param>
-        /// <param name="b">The right value to compare.</param>
-        /// <param name="epsilon">Epsilon value</param>
-        /// <returns><c>true</c> if a almost equal to b within a float epsilon, <c>false</c> otherwise</returns>
+        /// <summary> Checks if a - b are almost equals within a float epsilon. </summary>
+        /// <param name="a">       The left value to compare. </param>
+        /// <param name="b">       The right value to compare. </param>
+        /// <param name="epsilon"> Epsilon value. </param>
+        /// <returns> <c>true</c> if a almost equal to b within a float epsilon, <c>false</c> otherwise. </returns>
         public static bool WithinEpsilon(float a, float b, float epsilon)
         {
             float num = a - b;
             return ((-epsilon <= num) && (num <= epsilon));
         }
 
-        /// <summary>
-        ///     calculates the absolute value of x.
-        /// </summary>
+        /// <summary> calculates the absolute value of x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     positive x.
-        /// </returns>
+        /// <returns> positive x. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Abs(int x)
         {
             return (x + (x >> 31)) ^ (x >> 31);
         }
 
-        /// <summary>
-        ///     Returns the smallest integer greater than or equal to the specified floating-point number.
-        /// </summary>
+        /// <summary> Returns the smallest integer greater than or equal to the specified floating-point number. </summary>
         /// <param name="f"> A floating-point number with single precision. </param>
-        /// <returns>
-        ///     The smallest integer, which is greater than or equal to f.
-        /// </returns>
+        /// <returns> The smallest integer, which is greater than or equal to f. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Ceiling(double f)
         {
             return (int)(L_OFFSET_MAX - (long)(L_OFFSET_MAX - f));
         }
 
-        /// <summary>
-        ///     Returns the largest integer less than or equal to the specified floating-point number.
-        /// </summary>
+        /// <summary> Returns the largest integer less than or equal to the specified floating-point number. </summary>
         /// <param name="f"> A floating-point number with single precision. </param>
-        /// <returns>
-        ///     The largest integer, which is less than or equal to f.
-        /// </returns>
+        /// <returns> The largest integer, which is less than or equal to f. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Floor(double f)
         {
             return (int)((long)(f + L_OFFSET_MAX) - L_OFFSET_MAX);
         }
 
-        /// <summary>
-        ///     raise b to the power of e.
-        /// </summary>
+        /// <summary> raise b to the power of e. </summary>
         /// <param name="b"> base. </param>
         /// <param name="e"> exponent. </param>
-        /// <returns>
-        ///     b^e.
-        /// </returns>
+        /// <returns> b^e. </returns>
         /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public static double Pow(double b, int e)
         {
@@ -208,14 +170,10 @@ namespace Exomia.Framework.Mathematics
             return result;
         }
 
-        /// <summary>
-        ///     raise b to the power of e.
-        /// </summary>
+        /// <summary> raise b to the power of e. </summary>
         /// <param name="b"> base. </param>
         /// <param name="e"> exponent. </param>
-        /// <returns>
-        ///     b^e.
-        /// </returns>
+        /// <returns> b^e. </returns>
         /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public static float Pow(float b, int e)
         {
@@ -239,26 +197,18 @@ namespace Exomia.Framework.Mathematics
             return result;
         }
 
-        /// <summary>
-        ///     Returns the approximated sinus of a specified number.
-        /// </summary>
+        /// <summary> Returns the approximated sinus of a specified number. </summary>
         /// <param name="x"> The value. </param>
-        /// <returns>
-        ///     A float.
-        /// </returns>
+        /// <returns> A float. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sin(float x)
         {
             return Cos(x - PI_OVER_TWO);
         }
 
-        /// <summary>
-        ///     Returns the approximated cosine of a specified number.
-        /// </summary>
+        /// <summary> Returns the approximated cosine of a specified number. </summary>
         /// <param name="x"> The value. </param>
-        /// <returns>
-        ///     A float.
-        /// </returns>
+        /// <returns> A float. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(float x)
         {
@@ -269,9 +219,7 @@ namespace Exomia.Framework.Mathematics
             return x;
         }
 
-        /// <summary>
-        ///     Sine cosine.
-        /// </summary>
+        /// <summary> Sine cosine. </summary>
         /// <param name="x">   The value in radians. </param>
         /// <param name="sin"> [out] The sine. </param>
         /// <param name="cos"> [out] The cosine. </param>
@@ -294,14 +242,10 @@ namespace Exomia.Framework.Mathematics
                 : (A - (B * x)) * x;
         }
 
-        /// <summary>
-        ///     Atan 2.
-        /// </summary>
+        /// <summary> Atan 2. </summary>
         /// <param name="y"> The y value. </param>
         /// <param name="x"> The x value. </param>
-        /// <returns>
-        ///     A float.
-        /// </returns>
+        /// <returns> A float. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atan2(float y, float x)
         {
@@ -344,13 +288,11 @@ namespace Exomia.Framework.Mathematics
 
         #region Clamp
 
-        /// <summary>
-        ///     Clamps the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="min">The min.</param>
-        /// <param name="max">The max.</param>
-        /// <returns>The result of clamping a value between min and max</returns>
+        /// <summary> Clamps the specified value. </summary>
+        /// <param name="value"> The value. </param>
+        /// <param name="min">   The min. </param>
+        /// <param name="max">   The max. </param>
+        /// <returns> The result of clamping a value between min and max. </returns>
         public static float Clamp(float value, float min, float max)
         {
             return value < min
@@ -360,13 +302,11 @@ namespace Exomia.Framework.Mathematics
                     : value;
         }
 
-        /// <summary>
-        ///     Clamps the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="min">The min.</param>
-        /// <param name="max">The max.</param>
-        /// <returns>The result of clamping a value between min and max</returns>
+        /// <summary> Clamps the specified value. </summary>
+        /// <param name="value"> The value. </param>
+        /// <param name="min">   The min. </param>
+        /// <param name="max">   The max. </param>
+        /// <returns> The result of clamping a value between min and max. </returns>
         public static int Clamp(int value, int min, int max)
         {
             return value < min
@@ -381,14 +321,11 @@ namespace Exomia.Framework.Mathematics
         #region RoundUpToPowerOfTwo
 
         /// <summary>
-        ///     Rounds the given value up to a power of two.
-        ///     If it is already a power of two, it is returned unchanged.
-        ///     If it is negative or zero, zero is returned.
+        ///     Rounds the given value up to a power of two. If it is already a power of two, it is returned unchanged. If it
+        ///     is negative or zero, zero is returned.
         /// </summary>
         /// <param name="value"> . </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int RoundUpToPowerOfTwo(int value)
         {
@@ -398,13 +335,11 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Rounds the given value up to a power of two.
-        ///     If it is already a power of two, or zero, it is returned unchanged.
+        ///     Rounds the given value up to a power of two. If it is already a power of two, or zero, it is returned
+        ///     unchanged.
         /// </summary>
         /// <param name="value"> . </param>
-        /// <returns>
-        ///     An uint.
-        /// </returns>
+        /// <returns> An uint. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint RoundUpToPowerOfTwo(uint value)
@@ -424,14 +359,11 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Rounds the given value up to a power of two.
-        ///     If it is already a power of two, it is returned unchanged.
-        ///     If it is negative or zero, zero is returned.
+        ///     Rounds the given value up to a power of two. If it is already a power of two, it is returned unchanged. If it
+        ///     is negative or zero, zero is returned.
         /// </summary>
         /// <param name="value"> . </param>
-        /// <returns>
-        ///     A long.
-        /// </returns>
+        /// <returns> A long. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long RoundUpToPowerOfTwo(long value)
         {
@@ -441,13 +373,11 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Rounds the given value up to a power of two.
-        ///     If it is already a power of two, or zero, it is returned unchanged.
+        ///     Rounds the given value up to a power of two. If it is already a power of two, or zero, it is returned
+        ///     unchanged.
         /// </summary>
         /// <param name="value"> . </param>
-        /// <returns>
-        ///     An ulong.
-        /// </returns>
+        /// <returns> An ulong. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong RoundUpToPowerOfTwo(ulong value)
@@ -471,13 +401,9 @@ namespace Exomia.Framework.Mathematics
 
         #region SQRT
 
-        /// <summary>
-        ///     Returns the square root of a specified number.
-        /// </summary>
+        /// <summary> Returns the square root of a specified number. </summary>
         /// <param name="value"> The number whose square root is to be found. </param>
-        /// <returns>
-        ///     the square root.
-        /// </returns>
+        /// <returns> the square root. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Sqrt(long value)
@@ -490,13 +416,9 @@ namespace Exomia.Framework.Mathematics
             return Sqrt((ulong)value);
         }
 
-        /// <summary>
-        ///     Returns the square root of a specified number.
-        /// </summary>
+        /// <summary> Returns the square root of a specified number. </summary>
         /// <param name="value"> The number whose square root is to be found. </param>
-        /// <returns>
-        ///     the square root.
-        /// </returns>
+        /// <returns> the square root. </returns>
         public static uint Sqrt(ulong value)
         {
             if (value == 0)
@@ -524,13 +446,9 @@ namespace Exomia.Framework.Mathematics
             return g;
         }
 
-        /// <summary>
-        ///     Returns the square root of a specified number.
-        /// </summary>
+        /// <summary> Returns the square root of a specified number. </summary>
         /// <param name="value"> The number whose square root is to be found. </param>
-        /// <returns>
-        ///     the square root.
-        /// </returns>
+        /// <returns> the square root. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sqrt(int value)
@@ -543,13 +461,9 @@ namespace Exomia.Framework.Mathematics
             return (int)Sqrt((uint)value);
         }
 
-        /// <summary>
-        ///     Returns the square root of a specified number.
-        /// </summary>
+        /// <summary> Returns the square root of a specified number. </summary>
         /// <param name="value"> The number whose square root is to be found. </param>
-        /// <returns>
-        ///     the square root.
-        /// </returns>
+        /// <returns> the square root. </returns>
         public static uint Sqrt(uint value)
         {
             if (value == 0)
@@ -576,13 +490,9 @@ namespace Exomia.Framework.Mathematics
             return g;
         }
 
-        /// <summary>
-        ///     Returns the approximated square root of a specified number.
-        /// </summary>
+        /// <summary> Returns the approximated square root of a specified number. </summary>
         /// <param name="value"> The number whose square root is to be found. </param>
-        /// <returns>
-        ///     the approximation of the square root.
-        /// </returns>
+        /// <returns> the approximation of the square root. </returns>
         public static unsafe float SqrtFast(float value)
         {
             uint i = *(uint*)&value;
@@ -596,13 +506,9 @@ namespace Exomia.Framework.Mathematics
             return *(float*)&i;
         }
 
-        /// <summary>
-        ///     Fast inverse sqrt.
-        /// </summary>
+        /// <summary> Fast inverse sqrt. </summary>
         /// <param name="number"> The number whose inverse square root is to be found. </param>
-        /// <returns>
-        ///     A float.
-        /// </returns>
+        /// <returns> A float. </returns>
         public static float FastInverseSqrt(float number)
         {
             const float    THREEHALFS = 1.5F;
@@ -613,15 +519,14 @@ namespace Exomia.Framework.Mathematics
             return s.F * (THREEHALFS - (number * 0.5F * s.F * s.F));
         }
 
-        /// <summary>
-        ///     A fast i sqrt.
-        /// </summary>
         [StructLayout(LayoutKind.Explicit)]
         private struct FastISqrtUnion
         {
+            /// <summary> The float to process. </summary>
             [FieldOffset(0)]
             public float F;
 
+            /// <summary> Zero-based index of the. </summary>
             [FieldOffset(0)]
             public int I;
         }
@@ -630,16 +535,10 @@ namespace Exomia.Framework.Mathematics
 
         #region Log2Floor
 
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9.
-        /// </summary>
+        /// <summary> Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
+        /// <returns> An int. </returns>
+        /// <remarks> The return value is -1 for an input of zero (for which the logarithm is technically undefined.) </remarks>
         public static int Log2Floor(uint x)
         {
             x |= x >> 1;
@@ -649,17 +548,11 @@ namespace Exomia.Framework.Mathematics
             return CountOnes(x | (x >> 16)) - 1;
         }
 
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9.
-        /// </summary>
+        /// <summary> Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
+        /// <remarks> The return value is -1 for an input of zero (for which the logarithm is technically undefined.) </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Floor(int x)
         {
@@ -671,16 +564,10 @@ namespace Exomia.Framework.Mathematics
             return Log2Floor((uint)x);
         }
 
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9.
-        /// </summary>
+        /// <summary> Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
+        /// <returns> An int. </returns>
+        /// <remarks> The return value is -1 for an input of zero (for which the logarithm is technically undefined.) </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Floor(ulong x)
         {
@@ -693,17 +580,11 @@ namespace Exomia.Framework.Mathematics
             return Log2Floor((uint)x);
         }
 
-        /// <summary>
-        ///     Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9.
-        /// </summary>
+        /// <summary> Returns the floor of the base-2 logarithm of x. e.g. 1024 -> 10, 1000 -> 9. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-        /// <remarks>
-        ///     The return value is -1 for an input of zero (for which the logarithm is technically undefined.)
-        /// </remarks>
+        /// <remarks> The return value is -1 for an input of zero (for which the logarithm is technically undefined.) </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Floor(long x)
         {
@@ -719,60 +600,44 @@ namespace Exomia.Framework.Mathematics
 
         #region Lerp
 
-        /// <summary>
-        ///     Interpolates between two values using a linear function by a given amount.
-        /// </summary>
+        /// <summary> Interpolates between two values using a linear function by a given amount. </summary>
         /// <param name="a"> Value to interpolate from. </param>
         /// <param name="b"> Value to interpolate to. </param>
         /// <param name="t"> Interpolation amount. </param>
-        /// <returns>
-        ///     The result of linear interpolation of values based on the amount.
-        /// </returns>
+        /// <returns> The result of linear interpolation of values based on the amount. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Lerp(byte a, byte b, double t)
         {
             return (byte)(a + (t * (b - a)));
         }
 
-        /// <summary>
-        ///     Interpolates between two values using a linear function by a given amount.
-        /// </summary>
+        /// <summary> Interpolates between two values using a linear function by a given amount. </summary>
         /// <param name="a"> Value to interpolate from. </param>
         /// <param name="b"> Value to interpolate to. </param>
         /// <param name="t"> Interpolation amount. </param>
-        /// <returns>
-        ///     The result of linear interpolation of values based on the amount.
-        /// </returns>
+        /// <returns> The result of linear interpolation of values based on the amount. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Lerp(float a, float b, double t)
         {
             return (float)(a + (t * (b - a)));
         }
 
-        /// <summary>
-        ///     Interpolates between two values using a linear function by a given amount.
-        /// </summary>
+        /// <summary> Interpolates between two values using a linear function by a given amount. </summary>
         /// <param name="a"> Value to interpolate from. </param>
         /// <param name="b"> Value to interpolate to. </param>
         /// <param name="t"> Interpolation amount. </param>
-        /// <returns>
-        ///     The result of linear interpolation of values based on the amount.
-        /// </returns>
+        /// <returns> The result of linear interpolation of values based on the amount. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Lerp(double a, double b, double t)
         {
             return a + (t * (b - a));
         }
 
-        /// <summary>
-        ///     LinearInterpolate.
-        /// </summary>
+        /// <summary> LinearInterpolate. </summary>
         /// <param name="a"> a. </param>
         /// <param name="b"> b. </param>
         /// <param name="t"> t. </param>
-        /// <returns>
-        ///     new Vector2.
-        /// </returns>
+        /// <returns> new Vector2. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Lerp(Vector2 a, Vector2 b, double t)
         {
@@ -783,13 +648,10 @@ namespace Exomia.Framework.Mathematics
 
         #region SmoothStep
 
-        /// <summary>
-        ///     Performs smooth (cubic Hermite) interpolation between 0 and 1.
-        /// </summary>
-        /// <remarks>
-        ///     See https://en.wikipedia.org/wiki/Smoothstep
-        /// </remarks>
-        /// <param name="amount">Value between 0 and 1 indicating interpolation amount.</param>
+        /// <summary> Performs smooth (cubic Hermite) interpolation between 0 and 1. </summary>
+        /// <param name="amount"> Value between 0 and 1 indicating interpolation amount. </param>
+        /// <returns> A float. </returns>
+        /// <remarks> See https://en.wikipedia.org/wiki/Smoothstep. </remarks>
         public static float SmoothStep(float amount)
         {
             return (amount <= 0)
@@ -799,13 +661,10 @@ namespace Exomia.Framework.Mathematics
                     : amount * amount * (3 - (2 * amount));
         }
 
-        /// <summary>
-        ///     Performs a smooth(er) interpolation between 0 and 1 with 1st and 2nd order derivatives of zero at endpoints.
-        /// </summary>
-        /// <remarks>
-        ///     See https://en.wikipedia.org/wiki/Smoothstep
-        /// </remarks>
-        /// <param name="amount">Value between 0 and 1 indicating interpolation amount.</param>
+        /// <summary> Performs a smooth(er) interpolation between 0 and 1 with 1st and 2nd order derivatives of zero at endpoints. </summary>
+        /// <param name="amount"> Value between 0 and 1 indicating interpolation amount. </param>
+        /// <returns> A float. </returns>
+        /// <remarks> See https://en.wikipedia.org/wiki/Smoothstep. </remarks>
         public static float SmootherStep(float amount)
         {
             return (amount <= 0)
@@ -819,14 +678,12 @@ namespace Exomia.Framework.Mathematics
 
         #region Wrap
 
-        /// <summary>
-        ///     Wraps the specified value into a range [min, max]
-        /// </summary>
-        /// <param name="value">The value to wrap.</param>
-        /// <param name="min">The min.</param>
-        /// <param name="max">The max.</param>
-        /// <returns>Result of the wrapping.</returns>
-        /// <exception cref="ArgumentException">Is thrown when <paramref name="min" /> is greater than <paramref name="max" />.</exception>
+        /// <summary> Wraps the specified value into a range [min, max]. </summary>
+        /// <param name="value"> The value to wrap. </param>
+        /// <param name="min">   The min. </param>
+        /// <param name="max">   The max. </param>
+        /// <returns> Result of the wrapping. </returns>
+        /// <exception cref="ArgumentException"> Is thrown when <paramref name="min" /> is greater than <paramref name="max" />. </exception>
         public static int Wrap(int value, int min, int max)
         {
             if (min > max)
@@ -847,14 +704,12 @@ namespace Exomia.Framework.Mathematics
             return min + (value - min) % range_size;
         }
 
-        /// <summary>
-        ///     Wraps the specified value into a range [min, max[
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="min">The min.</param>
-        /// <param name="max">The max.</param>
-        /// <returns>Result of the wrapping.</returns>
-        /// <exception cref="ArgumentException">Is thrown when <paramref name="min" /> is greater than <paramref name="max" />.</exception>
+        /// <summary> Wraps the specified value into a range [min, max[. </summary>
+        /// <param name="value"> The value. </param>
+        /// <param name="min">   The min. </param>
+        /// <param name="max">   The max. </param>
+        /// <returns> Result of the wrapping. </returns>
+        /// <exception cref="ArgumentException"> Is thrown when <paramref name="min" /> is greater than <paramref name="max" />. </exception>
         public static float Wrap(float value, float min, float max)
         {
             if (NearEqual(min, max))
@@ -881,34 +736,26 @@ namespace Exomia.Framework.Mathematics
 
         #region Map
 
-        /// <summary>
-        ///     Maps a value from l1 to u1 to l2 to u2.
-        /// </summary>
+        /// <summary> Maps a value from l1 to u1 to l2 to u2. </summary>
         /// <param name="v">  Value. </param>
         /// <param name="l1"> Lower 1. </param>
         /// <param name="u1"> Upper 1. </param>
         /// <param name="l2"> Lower 2. </param>
         /// <param name="u2"> Upper 2. </param>
-        /// <returns>
-        ///     maped value.
-        /// </returns>
+        /// <returns> maped value. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Map(float v, float l1, float u1, float l2, float u2)
         {
             return (((v - l1) / (u1 - l1)) * (u2 - l2)) + l2;
         }
 
-        /// <summary>
-        ///     Maps a value from l1 to u1 to l2 to u2.
-        /// </summary>
+        /// <summary> Maps a value from l1 to u1 to l2 to u2. </summary>
         /// <param name="v">  Value. </param>
         /// <param name="l1"> Lower 1. </param>
         /// <param name="u1"> Upper 1. </param>
         /// <param name="l2"> Lower 2. </param>
         /// <param name="u2"> Upper 2. </param>
-        /// <returns>
-        ///     maped value.
-        /// </returns>
+        /// <returns> maped value. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Map(double v, double l1, double u1, double l2, double u2)
         {
@@ -919,13 +766,9 @@ namespace Exomia.Framework.Mathematics
 
         #region CountOnes
 
-        /// <summary>
-        ///     Returns the number of 'on' bits in x.
-        /// </summary>
+        /// <summary> Returns the number of 'on' bits in x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     The total number of ones.
-        /// </returns>
+        /// <returns> The total number of ones. </returns>
         public static int CountOnes(byte x)
         {
             int y = x;
@@ -934,13 +777,9 @@ namespace Exomia.Framework.Mathematics
             return (y & 0x0F) + (y >> 4);
         }
 
-        /// <summary>
-        ///     Returns the number of 'on' bits in x.
-        /// </summary>
+        /// <summary> Returns the number of 'on' bits in x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     The total number of ones.
-        /// </returns>
+        /// <returns> The total number of ones. </returns>
         public static int CountOnes(ushort x)
         {
             int y = x;
@@ -950,26 +789,18 @@ namespace Exomia.Framework.Mathematics
             return (y + (y >> 8)) & 0x001F;
         }
 
-        /// <summary>
-        ///     Returns the number of 'on' bits in x.
-        /// </summary>
+        /// <summary> Returns the number of 'on' bits in x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     The total number of ones.
-        /// </returns>
+        /// <returns> The total number of ones. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CountOnes(int x)
         {
             return CountOnes((uint)x);
         }
 
-        /// <summary>
-        ///     Returns the number of 'on' bits in x.
-        /// </summary>
+        /// <summary> Returns the number of 'on' bits in x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     The total number of ones.
-        /// </returns>
+        /// <returns> The total number of ones. </returns>
         public static int CountOnes(uint x)
         {
             x -= (x >> 1) & 0x55555555;
@@ -979,26 +810,18 @@ namespace Exomia.Framework.Mathematics
             return (int)((x + (x >> 16)) & 0x0000003F);
         }
 
-        /// <summary>
-        ///     Returns the number of 'on' bits in x.
-        /// </summary>
+        /// <summary> Returns the number of 'on' bits in x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     The total number of ones.
-        /// </returns>
+        /// <returns> The total number of ones. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CountOnes(long x)
         {
             return CountOnes((ulong)x);
         }
 
-        /// <summary>
-        ///     Returns the number of 'on' bits in x.
-        /// </summary>
+        /// <summary> Returns the number of 'on' bits in x. </summary>
         /// <param name="x"> value. </param>
-        /// <returns>
-        ///     The total number of ones.
-        /// </returns>
+        /// <returns> The total number of ones. </returns>
         public static int CountOnes(ulong x)
         {
             x -= (x >> 1) & 0x5555555555555555u;

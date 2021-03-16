@@ -13,14 +13,10 @@ using System.Numerics;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <content>
-    ///     The mathematics 2.
-    /// </content>
+    /// <content> The mathematics 2. </content>
     public static partial class Math2
     {
-        /// <summary>
-        ///     calculates a transform matrix.
-        /// </summary>
+        /// <summary> calculates a transform matrix. </summary>
         /// <param name="position">  position. </param>
         /// <param name="origin">    origin. </param>
         /// <param name="scale">     scale. </param>
@@ -38,16 +34,12 @@ namespace Exomia.Framework.Mathematics
                         Matrix4x4.CreateTranslation(position.X, position.Y, 0);
         }
 
-        /// <summary>
-        ///     calculates a transform matrix.
-        /// </summary>
+        /// <summary> calculates a transform matrix. </summary>
         /// <param name="position"> position. </param>
         /// <param name="origin">   origin. </param>
         /// <param name="scale">    scale. </param>
         /// <param name="rotation"> rotation. </param>
-        /// <returns>
-        ///     transform matrix.
-        /// </returns>
+        /// <returns> transform matrix. </returns>
         public static Matrix4x4 CalculateTransformMatrix(in Vector2 position,
                                                          in Vector2 origin,
                                                          in Vector2 scale,
@@ -59,9 +51,7 @@ namespace Exomia.Framework.Mathematics
                    Matrix4x4.CreateTranslation(position.X, position.Y, 0);
         }
 
-        /// <summary>
-        ///     creates an axis aligned bounding box.
-        /// </summary>
+        /// <summary> creates an axis aligned bounding box. </summary>
         /// <param name="transform"> transform. </param>
         /// <param name="width">     width. </param>
         /// <param name="height">    height. </param>
@@ -83,15 +73,11 @@ namespace Exomia.Framework.Mathematics
             aabb = new RectangleF(min.X, min.Y, max.X - min.X, max.Y - min.Y);
         }
 
-        /// <summary>
-        ///     creates an axis aligned bounding box.
-        /// </summary>
+        /// <summary> creates an axis aligned bounding box. </summary>
         /// <param name="transform"> transform. </param>
         /// <param name="width">     width. </param>
         /// <param name="height">    height. </param>
-        /// <returns>
-        ///     axis aligned bounding box.
-        /// </returns>
+        /// <returns> axis aligned bounding box. </returns>
         public static RectangleF CreateAABB(in Matrix4x4 transform, float width, float height)
         {
             Vector2 leftTop     = Vector2.Transform(Vector2.Zero,               transform);
@@ -109,18 +95,14 @@ namespace Exomia.Framework.Mathematics
             return new RectangleF(min.X, min.Y, max.X - min.X, max.Y - min.Y);
         }
 
-        /// <summary>
-        ///     creates an axis aligned bounding box.
-        /// </summary>
+        /// <summary> creates an axis aligned bounding box. </summary>
         /// <param name="position"> position. </param>
         /// <param name="origin">   origin. </param>
         /// <param name="scale">    scale. </param>
         /// <param name="rotation"> rotation. </param>
         /// <param name="width">    width. </param>
         /// <param name="height">   height. </param>
-        /// <returns>
-        ///     axis aligned bounding box.
-        /// </returns>
+        /// <returns> axis aligned bounding box. </returns>
         public static RectangleF CreateAABB(in Vector2 position,
                                             in Vector2 origin,
                                             in Vector2 scale,

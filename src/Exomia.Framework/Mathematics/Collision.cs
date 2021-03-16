@@ -13,19 +13,15 @@ using System.Numerics;
 
 namespace Exomia.Framework.Mathematics
 {
-    /// <summary>
-    ///     Contains static methods to help in determining intersections, containment, etc.
-    /// </summary>
+    /// <summary> Contains static methods to help in determining intersections, containment, etc. </summary>
     public static class Collision
     {
-        /// <summary>
-        ///     Determines the closest point between a point and a triangle.
-        /// </summary>
-        /// <param name="point">The point to test.</param>
-        /// <param name="vertex1">The first vertex to test.</param>
-        /// <param name="vertex2">The second vertex to test.</param>
-        /// <param name="vertex3">The third vertex to test.</param>
-        /// <param name="result">When the method completes, contains the closest point between the two objects.</param>
+        /// <summary> Determines the closest point between a point and a triangle. </summary>
+        /// <param name="point">   The point to test. </param>
+        /// <param name="vertex1"> The first vertex to test. </param>
+        /// <param name="vertex2"> The second vertex to test. </param>
+        /// <param name="vertex3"> The third vertex to test. </param>
+        /// <param name="result">  [out] When the method completes, contains the closest point between the two objects. </param>
         public static void ClosestPointPointTriangle(in  Vector3 point,
                                                      in  Vector3 vertex1,
                                                      in  Vector3 vertex2,
@@ -102,12 +98,10 @@ namespace Exomia.Framework.Mathematics
             result = vertex1 + ab * v2 + ac * w2; //= u*vertex1 + v*vertex2 + w*vertex3, u = va * denom = 1.0f - v - w
         }
 
-        /// <summary>
-        ///     Determines the closest point between a <see cin="Plane" /> and a point.
-        /// </summary>
-        /// <param name="plane">The plane to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <param name="result">When the method completes, contains the closest point between the two objects.</param>
+        /// <summary> Determines the closest point between a <see cin="Plane" /> and a point. </summary>
+        /// <param name="plane">  The plane to test. </param>
+        /// <param name="point">  The point to test. </param>
+        /// <param name="result"> [out] When the method completes, contains the closest point between the two objects. </param>
         public static void ClosestPointPlanePoint(in Plane plane, in Vector3 point, out Vector3 result)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -116,12 +110,10 @@ namespace Exomia.Framework.Mathematics
             result = point - ((Vector3.Dot(plane.Normal, point) - plane.D) * plane.Normal);
         }
 
-        /// <summary>
-        ///     Determines the closest point between a <see cin="BoundingBox" /> and a point.
-        /// </summary>
-        /// <param name="box">The box to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <param name="result">When the method completes, contains the closest point between the two objects.</param>
+        /// <summary> Determines the closest point between a <see cin="BoundingBox" /> and a point. </summary>
+        /// <param name="box">    The box to test. </param>
+        /// <param name="point">  The point to test. </param>
+        /// <param name="result"> [out] When the method completes, contains the closest point between the two objects. </param>
         public static void ClosestPointBoxPoint(in BoundingBox box, in Vector3 point, out Vector3 result)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -130,13 +122,11 @@ namespace Exomia.Framework.Mathematics
             result = Vector3.Min(Vector3.Max(point, box.Minimum), box.Maximum);
         }
 
-        /// <summary>
-        ///     Determines the closest point between a <see cin="BoundingSphere" /> and a point.
-        /// </summary>
-        /// <param name="sphere"></param>
-        /// <param name="point">The point to test.</param>
+        /// <summary> Determines the closest point between a <see cin="BoundingSphere" /> and a point. </summary>
+        /// <param name="sphere"> . </param>
+        /// <param name="point">  The point to test. </param>
         /// <param name="result">
-        ///     When the method completes, contains the closest point between the two objects;
+        ///     [out] When the method completes, contains the closest point between the two objects;
         ///     or, if the point is directly in the center of the sphere, contains <see cin="Vector3.Zero" />.
         /// </param>
         public static void ClosestPointSpherePoint(in BoundingSphere sphere, in Vector3 point, out Vector3 result)
@@ -144,19 +134,17 @@ namespace Exomia.Framework.Mathematics
             result = (Vector3.Normalize(Vector3.Subtract(point, sphere.Center)) * sphere.Radius) + sphere.Center;
         }
 
-        /// <summary>
-        ///     Determines the closest point between a <see cin="BoundingSphere" /> and a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="sphere1">The first sphere to test.</param>
-        /// <param name="sphere2">The second sphere to test.</param>
+        /// <summary> Determines the closest point between a <see cin="BoundingSphere" /> and a <see cin="BoundingSphere" />. </summary>
+        /// <param name="sphere1"> The first sphere to test. </param>
+        /// <param name="sphere2"> The second sphere to test. </param>
         /// <param name="result">
-        ///     When the method completes, contains the closest point between the two objects;
+        ///     [out] When the method completes, contains the closest point between the two objects;
         ///     or, if the point is directly in the center of the sphere, contains <see cin="Vector3.Zero" />.
         /// </param>
         /// <remarks>
-        ///     If the two spheres are overlapping, but not directly on top of each other, the closest point
-        ///     is the 'closest' point of intersection. This can also be considered is the deepest point of
-        ///     intersection.
+        ///     If the two spheres are overlapping, but not directly on top of each other, the closest point is the 'closest' point
+        ///     of intersection. This can also be considered is the
+        ///     deepest point of intersection.
         /// </remarks>
         public static void ClosestPointSphereSphere(in  BoundingSphere sphere1,
                                                     in  BoundingSphere sphere2,
@@ -165,12 +153,10 @@ namespace Exomia.Framework.Mathematics
             result = (Vector3.Normalize(Vector3.Subtract(sphere2.Center, sphere1.Center)) * sphere1.Radius) + sphere1.Center;
         }
 
-        /// <summary>
-        ///     Determines the distance between a <see cin="Plane" /> and a point.
-        /// </summary>
-        /// <param name="plane">The plane to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <returns>The distance between the two objects.</returns>
+        /// <summary> Determines the distance between a <see cin="Plane" /> and a point. </summary>
+        /// <param name="plane"> The plane to test. </param>
+        /// <param name="point"> The point to test. </param>
+        /// <returns> The distance between the two objects. </returns>
         public static float DistancePlanePoint(in Plane plane, in Vector3 point)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -178,12 +164,10 @@ namespace Exomia.Framework.Mathematics
             return Vector3.Dot(plane.Normal, point) - plane.D;
         }
 
-        /// <summary>
-        ///     Determines the distance between a <see cin="BoundingBox" /> and a point.
-        /// </summary>
-        /// <param name="box">The box to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <returns>The distance between the two objects.</returns>
+        /// <summary> Determines the distance between a <see cin="BoundingBox" /> and a point. </summary>
+        /// <param name="box">   The box to test. </param>
+        /// <param name="point"> The point to test. </param>
+        /// <returns> The distance between the two objects. </returns>
         public static float DistanceBoxPoint(in BoundingBox box, in Vector3 point)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -224,12 +208,10 @@ namespace Exomia.Framework.Mathematics
             return MathF.Sqrt(distance);
         }
 
-        /// <summary>
-        ///     Determines the distance between a <see cin="BoundingBox" /> and a <see cin="BoundingBox" />.
-        /// </summary>
-        /// <param name="box1">The first box to test.</param>
-        /// <param name="box2">The second box to test.</param>
-        /// <returns>The distance between the two objects.</returns>
+        /// <summary> Determines the distance between a <see cin="BoundingBox" /> and a <see cin="BoundingBox" />. </summary>
+        /// <param name="box1"> The first box to test. </param>
+        /// <param name="box2"> The second box to test. </param>
+        /// <returns> The distance between the two objects. </returns>
         public static float DistanceBoxBox(in BoundingBox box1, in BoundingBox box2)
         {
             float distance = 0f;
@@ -273,34 +255,28 @@ namespace Exomia.Framework.Mathematics
             return MathF.Sqrt(distance);
         }
 
-        /// <summary>
-        ///     Determines the distance between a <see cin="BoundingSphere" /> and a point.
-        /// </summary>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <returns>The distance between the two objects.</returns>
+        /// <summary> Determines the distance between a <see cin="BoundingSphere" /> and a point. </summary>
+        /// <param name="sphere"> The sphere to test. </param>
+        /// <param name="point">  The point to test. </param>
+        /// <returns> The distance between the two objects. </returns>
         public static float DistanceSpherePoint(in BoundingSphere sphere, in Vector3 point)
         {
             return Math.Max(Vector3.Distance(sphere.Center, point) - sphere.Radius, 0f);
         }
 
-        /// <summary>
-        ///     Determines the distance between a <see cin="BoundingSphere" /> and a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="sphere1">The first sphere to test.</param>
-        /// <param name="sphere2">The second sphere to test.</param>
-        /// <returns>The distance between the two objects.</returns>
+        /// <summary> Determines the distance between a <see cin="BoundingSphere" /> and a <see cin="BoundingSphere" />. </summary>
+        /// <param name="sphere1"> The first sphere to test. </param>
+        /// <param name="sphere2"> The second sphere to test. </param>
+        /// <returns> The distance between the two objects. </returns>
         public static float DistanceSphereSphere(in BoundingSphere sphere1, in BoundingSphere sphere2)
         {
             return Math.Max(Vector3.Distance(sphere1.Center, sphere2.Center) - (sphere1.Radius + sphere2.Radius), 0f);
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a point.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <returns>Whether the two objects intersect.</returns>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a point. </summary>
+        /// <param name="ray">   The ray to test. </param>
+        /// <param name="point"> The point to test. </param>
+        /// <returns> Whether the two objects intersect. </returns>
         public static bool RayIntersectsPoint(in Ray ray, in Vector3 point)
         {
             Vector3 m = Vector3.Subtract(ray.Position, point);
@@ -314,19 +290,16 @@ namespace Exomia.Framework.Mathematics
             return b * b - c >= 0f;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Ray" />.
-        /// </summary>
-        /// <param name="ray1">The first ray to test.</param>
-        /// <param name="ray2">The second ray to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Ray" />. </summary>
+        /// <param name="ray1">  The first ray to test. </param>
+        /// <param name="ray2">  The second ray to test. </param>
         /// <param name="point">
-        ///     When the method completes, contains the point of intersection,
-        ///     or <see cin="Vector3.Zero" /> if there was no intersection.
+        ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
+        ///     if there was no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersect.</returns>
+        /// <returns> Whether the two objects intersect. </returns>
         /// <remarks>
-        ///     This method performs a ray vs ray intersection test based on the following formula
-        ///     from Goldman.
+        ///     This method performs a ray vs ray intersection test based on the following formula from Goldman.
         ///     <code>s = det([o_2 - o_1, d_2, d_1 x d_2]) / ||d_1 x d_2||^2</code>
         ///     <code>t = det([o_2 - o_1, d_1, d_1 x d_2]) / ||d_1 x d_2||^2</code>
         ///     Where o_1 is the position of the first ray, o_2 is the position of the second ray,
@@ -406,16 +379,14 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="plane">The plane to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />. </summary>
+        /// <param name="ray">      The ray to test. </param>
+        /// <param name="plane">    The plane to test. </param>
         /// <param name="distance">
-        ///     When the method completes, contains the distance of the intersection,
-        ///     or 0 if there was no intersection.
+        ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
+        ///     no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersect.</returns>
+        /// <returns> Whether the two objects intersect. </returns>
         public static bool RayIntersectsPlane(in Ray ray, in Plane plane, out float distance)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -440,16 +411,14 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="plane">The plane to test</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />. </summary>
+        /// <param name="ray">   The ray to test. </param>
+        /// <param name="plane"> The plane to test. </param>
         /// <param name="point">
-        ///     When the method completes, contains the point of intersection,
-        ///     or <see cin="Vector3.Zero" /> if there was no intersection.
+        ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
+        ///     if there was no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool RayIntersectsPlane(in Ray ray, in Plane plane, out Vector3 point)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -465,23 +434,21 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a triangle.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="vertex1">The first vertex of the triangle to test.</param>
-        /// <param name="vertex2">The second vertex of the triangle to test.</param>
-        /// <param name="vertex3">The third vertex of the triangle to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a triangle. </summary>
+        /// <param name="ray">      The ray to test. </param>
+        /// <param name="vertex1">  The first vertex of the triangle to test. </param>
+        /// <param name="vertex2">  The second vertex of the triangle to test. </param>
+        /// <param name="vertex3">  The third vertex of the triangle to test. </param>
         /// <param name="distance">
-        ///     When the method completes, contains the distance of the intersection,
-        ///     or 0 if there was no intersection.
+        ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
+        ///     no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         /// <remarks>
-        ///     This method tests if the ray intersects either the front or back of the triangle.
-        ///     If the ray is parallel to the triangle's plane, no intersection is assumed to have
-        ///     happened. If the intersection of the ray and the triangle is behind the origin of
-        ///     the ray, no intersection is assumed to have happened. In both cases of assumptions,
+        ///     This method tests if the ray intersects either the front or back of the triangle. If the ray is parallel to the
+        ///     triangle's plane, no intersection is assumed to have
+        ///     happened. If the intersection of the ray and the triangle is behind the origin of the ray, no intersection is
+        ///     assumed to have happened. In both cases of assumptions,
         ///     this method returns false.
         /// </remarks>
         public static bool RayIntersectsTriangle(in  Ray     ray,
@@ -547,18 +514,16 @@ namespace Exomia.Framework.Mathematics
             return true;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a triangle.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="vertex1">The first vertex of the triangle to test.</param>
-        /// <param name="vertex2">The second vertex of the triangle to test.</param>
-        /// <param name="vertex3">The third vertex of the triangle to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a triangle. </summary>
+        /// <param name="ray">     The ray to test. </param>
+        /// <param name="vertex1"> The first vertex of the triangle to test. </param>
+        /// <param name="vertex2"> The second vertex of the triangle to test. </param>
+        /// <param name="vertex3"> The third vertex of the triangle to test. </param>
         /// <param name="point">
-        ///     When the method completes, contains the point of intersection,
-        ///     or <see cin="Vector3.Zero" /> if there was no intersection.
+        ///     [out] When the method completes, contains the point of intersection, or
+        ///     <see cin="Vector3.Zero" /> if there was no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool RayIntersectsTriangle(in  Ray     ray,
                                                  in  Vector3 vertex1,
                                                  in  Vector3 vertex2,
@@ -575,16 +540,14 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingBox" />.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="box">The box to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingBox" />. </summary>
+        /// <param name="ray">      The ray to test. </param>
+        /// <param name="box">      The box to test. </param>
         /// <param name="distance">
-        ///     When the method completes, contains the distance of the intersection,
-        ///     or 0 if there was no intersection.
+        ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
+        ///     no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool RayIntersectsBox(in Ray ray, in BoundingBox box, out float distance)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -688,16 +651,14 @@ namespace Exomia.Framework.Mathematics
             return true;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="box">The box to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />. </summary>
+        /// <param name="ray">   The ray to test. </param>
+        /// <param name="box">   The box to test. </param>
         /// <param name="point">
-        ///     When the method completes, contains the point of intersection,
-        ///     or <see cin="Vector3.Zero" /> if there was no intersection.
+        ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
+        ///     if there was no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool RayIntersectsBox(in Ray ray, in BoundingBox box, out Vector3 point)
         {
             if (RayIntersectsBox(in ray, in box, out float distance))
@@ -710,16 +671,14 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="sphere">The sphere to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingSphere" />. </summary>
+        /// <param name="ray">      The ray to test. </param>
+        /// <param name="sphere">   The sphere to test. </param>
         /// <param name="distance">
-        ///     When the method completes, contains the distance of the intersection,
-        ///     or 0 if there was no intersection.
+        ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
+        ///     no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool RayIntersectsSphere(in Ray ray, in BoundingSphere sphere, out float distance)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -754,16 +713,14 @@ namespace Exomia.Framework.Mathematics
             return true;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="ray">The ray to test.</param>
-        /// <param name="sphere">The sphere to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingSphere" />. </summary>
+        /// <param name="ray">    The ray to test. </param>
+        /// <param name="sphere"> The sphere to test. </param>
         /// <param name="point">
-        ///     When the method completes, contains the point of intersection,
-        ///     or <see cin="Vector3.Zero" /> if there was no intersection.
+        ///     [out] When the method completes, contains the point of intersection, or
+        ///     <see cin="Vector3.Zero" /> if there was no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool RayIntersectsSphere(in Ray ray, in BoundingSphere sphere, out Vector3 point)
         {
             if (RayIntersectsSphere(in ray, in sphere, out float distance))
@@ -776,12 +733,10 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a point.
-        /// </summary>
-        /// <param name="plane">The plane to test.</param>
-        /// <param name="point">The point to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a point. </summary>
+        /// <param name="plane"> The plane to test. </param>
+        /// <param name="point"> The point to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static PlaneIntersectionType PlaneIntersectsPoint(in Plane plane, in Vector3 point)
         {
             float distance = Vector3.Dot(plane.Normal, point) + plane.D;
@@ -796,31 +751,27 @@ namespace Exomia.Framework.Mathematics
                 : PlaneIntersectionType.Intersecting;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="Plane" />.
-        /// </summary>
-        /// <param name="plane1">The first plane to test.</param>
-        /// <param name="plane2">The second plane to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="Plane" />. </summary>
+        /// <param name="plane1"> The first plane to test. </param>
+        /// <param name="plane2"> The second plane to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool PlaneIntersectsPlane(in Plane plane1, in Plane plane2)
         {
             Vector3 direction = Vector3.Cross(plane1.Normal, plane2.Normal);
             return Math2.IsNotZero(Vector3.Dot(direction, direction));
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="Plane" />.
-        /// </summary>
-        /// <param name="plane1">The first plane to test.</param>
-        /// <param name="plane2">The second plane to test.</param>
+        /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="Plane" />. </summary>
+        /// <param name="plane1"> The first plane to test. </param>
+        /// <param name="plane2"> The second plane to test. </param>
         /// <param name="line">
-        ///     When the method completes, contains the line of intersection
-        ///     as a <see cin="Ray" />, or a zero ray if there was no intersection.
+        ///     [out] When the method completes, contains the line of intersection as a <see cin="Ray" />, or a
+        ///     zero ray if there was no intersection.
         /// </param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <returns> Whether the two objects intersected. </returns>
         /// <remarks>
-        ///     Although a ray is set to have an origin, the ray returned by this method is really
-        ///     a line in three dimensions which has no real origin. The ray is considered valid when
+        ///     Although a ray is set to have an origin, the ray returned by this method is really a line in three dimensions which
+        ///     has no real origin. The ray is considered valid when
         ///     both the positive direction is used and when the negative direction is used.
         /// </remarks>
         public static bool PlaneIntersectsPlane(in Plane plane1, in Plane plane2, out Ray line)
@@ -841,14 +792,12 @@ namespace Exomia.Framework.Mathematics
             return false;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a triangle.
-        /// </summary>
-        /// <param name="plane">The plane to test.</param>
-        /// <param name="vertex1">The first vertex of the triangle to test.</param>
-        /// <param name="vertex2">The second vertex of the triangle to test.</param>
-        /// <param name="vertex3">The third vertex of the triangle to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a triangle. </summary>
+        /// <param name="plane">   The plane to test. </param>
+        /// <param name="vertex1"> The first vertex of the triangle to test. </param>
+        /// <param name="vertex2"> The second vertex of the triangle to test. </param>
+        /// <param name="vertex3"> The third vertex of the triangle to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static PlaneIntersectionType PlaneIntersectsTriangle(in Plane   plane,
                                                                     in Vector3 vertex1,
                                                                     in Vector3 vertex2,
@@ -925,12 +874,10 @@ namespace Exomia.Framework.Mathematics
             return PlaneIntersectionType.Intersecting;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="plane">The plane to test.</param>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="BoundingSphere" />. </summary>
+        /// <param name="plane">  The plane to test. </param>
+        /// <param name="sphere"> The sphere to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static PlaneIntersectionType PlaneIntersectsSphere(in Plane plane, in BoundingSphere sphere)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -963,16 +910,19 @@ namespace Exomia.Framework.Mathematics
             PlaneIntersectionType result = plane.Intersects(ref _corners[0]);
             for (int i = 1; i < _corners.Length; i++)
                 if (plane.Intersects(ref _corners[i]) != result)
+                {
                     result = PlaneIntersectionType.Intersecting;
+                }
             return result;
         }
 
         /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="BoundingBox" /> and a <see cin="BoundingBox" />.
+        ///     Determines whether there is an intersection between a <see cin="BoundingBox" /> and a
+        ///     <see cin="BoundingBox" />.
         /// </summary>
-        /// <param name="box1">The first box to test.</param>
-        /// <param name="box2">The second box to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <param name="box1"> The first box to test. </param>
+        /// <param name="box2"> The second box to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool BoxIntersectsBox(in BoundingBox box1, in BoundingBox box2)
         {
             if (box1.Minimum.X > box2.Maximum.X || box2.Minimum.X > box1.Maximum.X)
@@ -994,11 +944,12 @@ namespace Exomia.Framework.Mathematics
         }
 
         /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="BoundingBox" /> and a <see cin="BoundingSphere" />.
+        ///     Determines whether there is an intersection between a <see cin="BoundingBox" /> and a
+        ///     <see cin="BoundingSphere" />.
         /// </summary>
-        /// <param name="box">The box to test.</param>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <param name="box">    The box to test. </param>
+        /// <param name="sphere"> The sphere to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool BoxIntersectsSphere(in BoundingBox box, in BoundingSphere sphere)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
@@ -1008,14 +959,12 @@ namespace Exomia.Framework.Mathematics
                 Vector3.Clamp(sphere.Center, box.Minimum, box.Maximum)) <= sphere.Radius * sphere.Radius;
         }
 
-        /// <summary>
-        ///     Determines whether there is an intersection between a <see cin="BoundingSphere" /> and a triangle.
-        /// </summary>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <param name="vertex1">The first vertex of the triangle to test.</param>
-        /// <param name="vertex2">The second vertex of the triangle to test.</param>
-        /// <param name="vertex3">The third vertex of the triangle to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <summary> Determines whether there is an intersection between a <see cin="BoundingSphere" /> and a triangle. </summary>
+        /// <param name="sphere">  The sphere to test. </param>
+        /// <param name="vertex1"> The first vertex of the triangle to test. </param>
+        /// <param name="vertex2"> The second vertex of the triangle to test. </param>
+        /// <param name="vertex3"> The third vertex of the triangle to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool SphereIntersectsTriangle(in BoundingSphere sphere,
                                                     in Vector3        vertex1,
                                                     in Vector3        vertex2,
@@ -1033,9 +982,9 @@ namespace Exomia.Framework.Mathematics
         ///     Determines whether there is an intersection between a <see cin="BoundingSphere" /> and a
         ///     <see cin="BoundingSphere" />.
         /// </summary>
-        /// <param name="sphere1">First sphere to test.</param>
-        /// <param name="sphere2">Second sphere to test.</param>
-        /// <returns>Whether the two objects intersected.</returns>
+        /// <param name="sphere1"> First sphere to test. </param>
+        /// <param name="sphere2"> Second sphere to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
         public static bool SphereIntersectsSphere(in BoundingSphere sphere1, in BoundingSphere sphere2)
         {
             float radiisum = sphere1.Radius + sphere2.Radius;
@@ -1053,12 +1002,10 @@ namespace Exomia.Framework.Mathematics
                    box.Minimum.Z <= point.Z && box.Maximum.Z >= point.Z;
         }
 
-        /// <summary>
-        ///     Determines whether a <see cin="BoundingBox" /> contains a <see cin="BoundingBox" />.
-        /// </summary>
-        /// <param name="box1">The first box to test.</param>
-        /// <param name="box2">The second box to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
+        /// <summary> Determines whether a <see cin="BoundingBox" /> contains a <see cin="BoundingBox" />. </summary>
+        /// <param name="box1"> The first box to test. </param>
+        /// <param name="box2"> The second box to test. </param>
+        /// <returns> The type of containment the two objects have. </returns>
         public static ContainmentType BoxContainsBox(in BoundingBox box1, in BoundingBox box2)
         {
             if (box1.Maximum.X < box2.Minimum.X ||
@@ -1084,12 +1031,10 @@ namespace Exomia.Framework.Mathematics
             return ContainmentType.Intersects;
         }
 
-        /// <summary>
-        ///     Determines whether a <see cin="BoundingBox" /> contains a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="box">The box to test.</param>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
+        /// <summary> Determines whether a <see cin="BoundingBox" /> contains a <see cin="BoundingSphere" />. </summary>
+        /// <param name="box">    The box to test. </param>
+        /// <param name="sphere"> The sphere to test. </param>
+        /// <returns> The type of containment the two objects have. </returns>
         public static ContainmentType BoxContainsSphere(in BoundingBox box, in BoundingSphere sphere)
         {
             if (Vector3.DistanceSquared(sphere.Center, Vector3.Clamp(sphere.Center, box.Minimum, box.Maximum)) > sphere.Radius * sphere.Radius)
@@ -1122,14 +1067,12 @@ namespace Exomia.Framework.Mathematics
             return Vector3.DistanceSquared(point, sphere.Center) <= sphere.Radius * sphere.Radius;
         }
 
-        /// <summary>
-        ///     Determines whether a <see cin="BoundingSphere" /> contains a triangle.
-        /// </summary>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <param name="vertex1">The first vertex of the triangle to test.</param>
-        /// <param name="vertex2">The second vertex of the triangle to test.</param>
-        /// <param name="vertex3">The third vertex of the triangle to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
+        /// <summary> Determines whether a <see cin="BoundingSphere" /> contains a triangle. </summary>
+        /// <param name="sphere">  The sphere to test. </param>
+        /// <param name="vertex1"> The first vertex of the triangle to test. </param>
+        /// <param name="vertex2"> The second vertex of the triangle to test. </param>
+        /// <param name="vertex3"> The third vertex of the triangle to test. </param>
+        /// <returns> The type of containment the two objects have. </returns>
         public static ContainmentType SphereContainsTriangle(in BoundingSphere sphere,
                                                              in Vector3        vertex1,
                                                              in Vector3        vertex2,
@@ -1153,12 +1096,10 @@ namespace Exomia.Framework.Mathematics
             return ContainmentType.Disjoint;
         }
 
-        /// <summary>
-        ///     Determines whether a <see cin="BoundingSphere" /> contains a <see cin="BoundingBox" />.
-        /// </summary>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <param name="box">The box to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
+        /// <summary> Determines whether a <see cin="BoundingSphere" /> contains a <see cin="BoundingBox" />. </summary>
+        /// <param name="sphere"> The sphere to test. </param>
+        /// <param name="box">    The box to test. </param>
+        /// <returns> The type of containment the two objects have. </returns>
         public static ContainmentType SphereContainsBox(in BoundingSphere sphere, in BoundingBox box)
         {
             if (!BoxIntersectsSphere(in box, in sphere))
@@ -1244,12 +1185,10 @@ namespace Exomia.Framework.Mathematics
             return ContainmentType.Contains;
         }
 
-        /// <summary>
-        ///     Determines whether a <see cin="BoundingSphere" /> contains a <see cin="BoundingSphere" />.
-        /// </summary>
-        /// <param name="sphere1">The first sphere to test.</param>
-        /// <param name="sphere2">The second sphere to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
+        /// <summary> Determines whether a <see cin="BoundingSphere" /> contains a <see cin="BoundingSphere" />. </summary>
+        /// <param name="sphere1"> The first sphere to test. </param>
+        /// <param name="sphere2"> The second sphere to test. </param>
+        /// <returns> The type of containment the two objects have. </returns>
         public static ContainmentType SphereContainsSphere(in BoundingSphere sphere1, in BoundingSphere sphere2)
         {
             float distance = Vector3.Distance(sphere1.Center, sphere2.Center);
