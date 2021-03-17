@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>exomia;saika01</Authors>
     <Description>A content manager for the exomia framework.</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
@@ -12,7 +12,7 @@
     <PackageTags>exomia framework 2d 3d game engine xna mono content manager contentmanager</PackageTags>
     <RepositoryUrl>https://github.com/exomia/framework</RepositoryUrl>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RepositoryType>git</RepositoryType>
     <IncludeBuildOutput>true</IncludeBuildOutput>
