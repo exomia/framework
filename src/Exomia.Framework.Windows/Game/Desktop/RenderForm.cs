@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Core.Mathematics;
+using Exomia.Framework.Windows.Input;
 using Exomia.Framework.Windows.Input.Raw;
 using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
@@ -152,7 +153,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             }
         }
 
-        /// <summary> Initializes a new instance of the <see cref="Linux.Game.RenderForm" /> class. </summary>
+        /// <summary> Initializes a new instance of the <see cref="RenderForm" /> class. </summary>
         /// <param name="windowTitle"> (Optional) The window title. </param>
         /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
         public RenderForm(string windowTitle = "RenderForm")
@@ -301,7 +302,8 @@ namespace Exomia.Framework.Windows.Game.Desktop
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
             }
-
+            
+            // ReSharper disable once InconsistentNaming
             const int CW_USEDEFAULT = unchecked((int)0x80000000);
             if ((_hWnd =
                 User32.CreateWindowEx(

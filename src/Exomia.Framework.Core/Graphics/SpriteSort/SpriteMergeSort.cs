@@ -9,14 +9,9 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-
-#if WINDOWS
-using Exomia.Framework.Platform.Windows.Win32;
-#elif LINUX
-using Exomia.Framework.Platform.Linux.Lib;
-#endif
 
 namespace Exomia.Framework.Core.Graphics.SpriteSort
 {
@@ -214,13 +209,13 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
+                Utils.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
+                Utils.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
             }
-            Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
+            Utils.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
         }
 
         /// <summary>
@@ -258,13 +253,13 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
+                Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + middle1, (uint)(((right - middle) + 1) * sizeof(int)));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
+                Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + left, (uint)(((middle - left) + 1) * sizeof(int)));
             }
-            Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
+            Unsafe.CopyBlockUnaligned(arr + oldPosition, tempArray + oldPosition, (uint)(size * sizeof(int)));
         }
 
         /// <summary>
@@ -302,13 +297,13 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
+                Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + middle1, (uint)(((right - middle) + 1) * sizeof(int)));
             }
             else
             {
-                Mem.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
+                Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + left, (uint)(((middle - left) + 1) * sizeof(int)));
             }
-            Mem.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
+            Unsafe.CopyBlockUnaligned(arr + oldPosition, tempArray + oldPosition, (uint)(size * sizeof(int)));
         }
     }
 }

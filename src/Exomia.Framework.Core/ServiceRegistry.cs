@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Exomia.Framework.Core
 {
@@ -18,35 +19,16 @@ namespace Exomia.Framework.Core
     /// </summary>
     sealed class ServiceRegistry : IServiceRegistry
     {
-        private readonly Dictionary<string, IServiceRegistry> _scopedServiceRegistries;
-        private readonly Dictionary<Type, object>             _registeredServices;
+        private readonly Dictionary<Type, object> _registeredServices;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServiceRegistry" /> class.
         /// </summary>
         public ServiceRegistry()
         {
-            _registeredServices      = new Dictionary<Type, object>();
-            _scopedServiceRegistries = new Dictionary<string, IServiceRegistry>();
+            _registeredServices = new Dictionary<Type, object>(32);
         }
 
-        /// <inheritdoc />
-        public IServiceRegistry CreateScope(string scope)
-        {
-            lock (_scopedServiceRegistries)
-            {
-                ServiceRegistry registry = new ServiceRegistry();
-                _scopedServiceRegistries.Add(scope, registry);
-                return registry;
-            }
-        }
-
-        /// <inheritdoc />
-        public bool TryGetScope(string scope, out IServiceRegistry registry)
-        {
-            // ReSharper disable once InconsistentlySynchronizedField
-            return _scopedServiceRegistries.TryGetValue(scope, out registry);
-        }
 
         /// <inheritdoc />
         public object AddService(Type type, object provider)
@@ -75,20 +57,16 @@ namespace Exomia.Framework.Core
         /// <inheritdoc />
         public T AddService<T>(T provider)
         {
+            // ReSharper disable once HeapView.PossibleBoxingAllocation
             return (T)AddService(typeof(T), provider!);
         }
 
         /// <inheritdoc />
         public object GetService(Type type)
         {
-            if (type == null) { throw new ArgumentNullException(nameof(type)); }
-
-            lock (_registeredServices)
+            if (TryGetService(type, out object? obj))
             {
-                if (_registeredServices.TryGetValue(type, out object obj))
-                {
-                    return obj;
-                }
+                return obj;
             }
 
             throw new ArgumentException($"Service of type {type} is not registered.");
@@ -98,6 +76,30 @@ namespace Exomia.Framework.Core
         public T GetService<T>()
         {
             return (T)GetService(typeof(T));
+        }
+
+        /// <inheritdoc />
+        public bool TryGetService(Type type, [NotNullWhen(true)] out object? service)
+        {
+            if (type == null) { throw new ArgumentNullException(nameof(type)); }
+
+            lock (_registeredServices)
+            {
+                return _registeredServices.TryGetValue(type, out service);
+            }
+        }
+
+        /// <inheritdoc />
+        public bool TryGetService<T>([NotNullWhen(true)] out T? service)
+        {
+            if (TryGetService(typeof(T), out object? obj))
+            {
+                service = (T)obj;
+                return true;
+            }
+
+            service = default;
+            return false;
         }
 
         /// <inheritdoc />

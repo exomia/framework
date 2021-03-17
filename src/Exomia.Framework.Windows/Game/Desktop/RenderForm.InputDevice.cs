@@ -12,10 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Input;
+using Exomia.Framework.Windows.Input;
 
 namespace Exomia.Framework.Windows.Game.Desktop
 {
-    sealed partial class RenderForm : IInputDevice
+    sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
     {
         private readonly Pipe<RawKeyEventHandler>   _rawKeyPipe;
         private readonly Pipe<KeyEventHandler>      _keyUpPipe, _keyDownPipe;
@@ -30,7 +31,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
         private readonly Pipe<MouseEventHandler> _mouseRawInputPipe;
 
         /// <inheritdoc/>
-        void IInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
+        void IWindowsInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
         {
             _rawKeyPipe.Register(handler, position);
         }
@@ -90,7 +91,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
         }
 
         /// <inheritdoc/>
-        void IInputDevice.UnregisterRawKeyEvent(RawKeyEventHandler handler)
+        void IWindowsInputDevice.UnregisterRawKeyEvent(RawKeyEventHandler handler)
         {
             _rawKeyPipe.Unregister(handler);
         }

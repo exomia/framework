@@ -10,20 +10,14 @@
 
 namespace Exomia.Framework.Core.Input
 {
-    /// <summary>
-    ///     Interface for raw input handler.
-    /// </summary>
+    /// <summary> Interface for raw input handler. </summary>
     public interface IInputHandler
     {
-        /// <summary>
-        ///     Register the input events on the given input device.
-        /// </summary>
+        /// <summary> Register the input events on the given input device. </summary>
         /// <param name="device"> The device. </param>
         void RegisterInput(IInputDevice device);
 
-        /// <summary>
-        ///     Unregister the input events on the given input device.
-        /// </summary>
+        /// <summary> Unregister the input events on the given input device. </summary>
         /// <param name="device"> The device. </param>
         void UnregisterInput(IInputDevice device);
     }

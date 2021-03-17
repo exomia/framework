@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -57,24 +55,5 @@ namespace Exomia.Framework.Windows.Win32
         [SuppressUnmanagedCodeSecurity]
         [DllImport("msvcrt.dll", EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void* Set(void* dest, int value, int count);
-
-        /// <summary>
-        ///     Resizes the given <paramref name="src" /> array with the given <paramref name="srcLength" /> to the given
-        ///     <paramref name="newLength" />.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="src">       [in,out] The source array ptr. </param>
-        /// <param name="srcLength"> [in,out] The length of the source array. </param>
-        /// <param name="newLength"> The length of the new array. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Resize<T>(ref T* src, ref int srcLength, int newLength) where T : unmanaged
-        {
-            T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * newLength);
-            Cpy(ptr, src, srcLength * sizeof(T));
-            Marshal.FreeHGlobal(new IntPtr(src));
-
-            src       = ptr;
-            srcLength = newLength;
-        }
     }
 }

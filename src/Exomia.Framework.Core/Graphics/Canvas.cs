@@ -21,12 +21,6 @@ using Exomia.Framework.Core.Graphics.Shader;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Resources;
 
-#if WINDOWS
-using Exomia.Framework.Platform.Windows.Win32;
-#elif LINUX
-using Exomia.Framework.Platform.Linux.Lib;
-#endif
-
 namespace Exomia.Framework.Core.Graphics
 {
     /// <summary>
@@ -156,7 +150,7 @@ namespace Exomia.Framework.Core.Graphics
             }
 
             _vertexBuffer   = VertexBuffer.Create<VertexPositionColorTextureMode>(graphicsDevice, MAX_VERTEX_COUNT);
-            _perFrameBuffer = ConstantBuffer.Create<Matrix>(graphicsDevice);
+            _perFrameBuffer = ConstantBuffer.Create<Matrix4x4>(graphicsDevice);
 
             _itemQueue = (Item*)Marshal.AllocHGlobal(sizeof(Item) * (_itemQueueLength = MAX_BATCH_SIZE));
 
@@ -168,9 +162,9 @@ namespace Exomia.Framework.Core.Graphics
         ///     Resizes.
         /// </summary>
         /// <param name="size"> The size. </param>
-        public void Resize(Size2F size)
+        public void Resize(Vector2 size)
         {
-            Resize(size.Width, size.Height);
+            Resize(size.X, size.Y);
         }
 
         /// <summary>
@@ -310,7 +304,7 @@ namespace Exomia.Framework.Core.Graphics
                     case TEXTURE_MODE:
                         {
                             long tp = item.V1.ZW;
-                            if (!_textures.TryGetValue(tp, out Texture texture))
+                            if (!_textures.TryGetValue(tp, out Texture? texture))
                             {
                                 throw new KeyNotFoundException("The looked up texture wasn't found!");
                             }
@@ -342,7 +336,7 @@ namespace Exomia.Framework.Core.Graphics
                     case FONT_TEXTURE_MODE:
                         {
                             long tp = item.V1.ZW;
-                            if (!_textures.TryGetValue(tp, out Texture texture))
+                            if (!_textures.TryGetValue(tp, out Texture? texture))
                             {
                                 throw new KeyNotFoundException("The looked up texture wasn't found!");
                             }
@@ -423,7 +417,7 @@ namespace Exomia.Framework.Core.Graphics
                     _spinLock.Enter(ref lockTaken);
                     if (_itemQueueCount >= _itemQueueLength)
                     {
-                        Mem.Resize(ref _itemQueue, ref _itemQueueLength, _itemQueueLength * 2);
+                        Utils.Resize(ref _itemQueue, ref _itemQueueLength, _itemQueueLength * 2);
                     }
                 }
                 finally

@@ -10,9 +10,7 @@
 
 namespace Exomia.Framework.Core.Input
 {
-    /// <summary>
-    ///     Values that represent EventAction.
-    /// </summary>
+    /// <summary> Values that represent EventAction. </summary>
     public enum EventAction
     {
         /// <summary>

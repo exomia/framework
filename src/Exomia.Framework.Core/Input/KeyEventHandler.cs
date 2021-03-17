@@ -8,39 +8,16 @@
 
 #endregion
 
-#if WINDOWS
-using Exomia.Framework.Platform.Windows.Win32;
-#elif LINUX
-using Exomia.Framework.Platform.Linux.Lib;
-#endif
-
 namespace Exomia.Framework.Core.Input
 {
-    /// <summary>
-    ///     Delegate for handling key events.
-    /// </summary>
+    /// <summary> Delegate for handling key events. </summary>
     /// <param name="keyValue">  The key value. </param>
     /// <param name="modifiers"> The modifiers. </param>
-    /// <returns>
-    ///     An <see cref="EventAction" />.
-    /// </returns>
+    /// <returns> An <see cref="EventAction" />. </returns>
     public delegate EventAction KeyEventHandler(int keyValue, KeyModifier modifiers);
 
-    /// <summary>
-    ///     Delegate for handling key press events.
-    /// </summary>
+    /// <summary> Delegate for handling key press events. </summary>
     /// <param name="key"> The key. </param>
-    /// <returns>
-    ///     An <see cref="EventAction" />.
-    /// </returns>
+    /// <returns> An <see cref="EventAction" />. </returns>
     public delegate EventAction KeyPressEventHandler(char key);
-
-    /// <summary>
-    ///     Delegate for handling raw key events.
-    /// </summary>
-    /// <param name="message"> The message. </param>
-    /// <returns>
-    ///     An <see cref="EventAction" />.
-    /// </returns>
-    public delegate EventAction RawKeyEventHandler(in Message message);
 }

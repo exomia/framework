@@ -16,11 +16,16 @@ namespace Exomia.Framework.Core.Game
     {
         private readonly IGameWindow _mainWindow;
 
+        /// <summary> Gets the main window. </summary>
+        /// <value> The main window. </value>
         public IGameWindow MainWindow
         {
             get { return _mainWindow; }
         }
 
+        /// <summary> Initializes a new instance of the <see cref="GamePlatform"/> class. </summary>
+        /// <param name="game">  The game. </param>
+        /// <param name="title"> The title. </param>
         protected GamePlatform(Game game, string title)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
@@ -28,35 +33,27 @@ namespace Exomia.Framework.Core.Game
             _mainWindow.FormClosed += game.Shutdown;
         }
 
-        /// <summary>
-        ///     Initializes the <see cref="GamePlatform" />.
-        /// </summary>
-        /// <param name="parameters"> [in,out] Options for controlling the operation. </param>
         public void Initialize(ref GameGraphicsParameters parameters)
         {
             _mainWindow.Initialize(ref parameters);
         }
 
-        /// <summary>
-        ///     Shows the main window.
-        /// </summary>
         public void ShowMainWindow()
         {
             _mainWindow.Show();
         }
 
-        private protected abstract IGameWindow CreateGameWindow(Game game, string title);
+        protected internal abstract void DoEvents();
 
-        /// <summary>
-        ///     Creates a new <see cref="GamePlatform" />.
-        /// </summary>
+        /// <summary> Creates game window. </summary>
         /// <param name="game">  The game. </param>
         /// <param name="title"> The title. </param>
-        /// <returns>
-        ///     A <see cref="GamePlatform" />.
-        /// </returns>
+        /// <returns> The new game window. </returns>
+        private protected abstract IGameWindow CreateGameWindow(Game game, string title);
+
         public static GamePlatform Create(Game game, string title)
         {
+            // TODO: 
 #if WINDOWS
             return new Platform.Windows.Game.Desktop.GamePlatform(game, title);
 #elif LINUX
@@ -70,9 +67,6 @@ namespace Exomia.Framework.Core.Game
 
         private bool _disposed;
 
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources.
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -92,16 +86,14 @@ namespace Exomia.Framework.Core.Game
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         ~GamePlatform()
         {
             Dispose(false);
         }
 
-        /// <summary>
-        ///     called then the instance is disposing
-        /// </summary>
-        /// <param name="disposing">true if user code; false called by finalizer</param>
+        /// <summary> called then the instance is disposing. </summary>
+        /// <param name="disposing"> true if user code; false called by finalizer. </param>
         protected virtual void OnDispose(bool disposing) { }
 
 #endregion
