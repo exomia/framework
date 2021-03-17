@@ -47,7 +47,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Exomia.Framework\Exomia.Framework.csproj" />
+    <ProjectReference Include="..\..\src\Exomia.Framework.Windows\Exomia.Framework.Windows.csproj" />
   </ItemGroup>
   
   <ItemGroup>
