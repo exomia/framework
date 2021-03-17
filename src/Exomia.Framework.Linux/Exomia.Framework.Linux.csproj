@@ -1,0 +1,110 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <LangVersion>9.0</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile></DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <Configurations>Debug;Release</Configurations>
+    <DefineConstants>TRACE;$(Platform)</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Company>exomia</Company>
+    <Authors>exomia; Daniel Bätz; Daniel Baumert</Authors>
+    <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
+    <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageTags>exomia framework 2d 3d game engine xna mono</PackageTags>
+    <RepositoryUrl>https://github.com/exomia/framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageOutputPath>.</PackageOutputPath>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>Exomia.Framework.Linux.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
+    <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
+    <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>1701;1702;IDE0063;IDE0079</NoWarn>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ApplicationIcon>logo_x192_Hcn_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.171.3" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Game\Desktop\RenderForm.cs"></Compile>
+    <Compile Update="Game\Desktop\RenderForm.*.cs">
+      <DependentUpon>RenderForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <None Include="..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Source Link Support -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <IncludeSymbols>true</IncludeSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>True</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)'=='true'">True</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Game\Desktop\" />
+  </ItemGroup>
+</Project>
