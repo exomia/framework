@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <LangVersion>3.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
