@@ -21,7 +21,7 @@ namespace Exomia.Framework.Windows.Win32
     static class User32
     {
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "GetRawInputData", SetLastError = false)]
         internal static extern unsafe uint GetRawInputData(IntPtr  hRawInput,
                                                            uint    riCmd,
                                                            byte*   pData,
@@ -29,11 +29,11 @@ namespace Exomia.Framework.Windows.Win32
                                                            int     cbSizeHeader);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "DispatchMessage", SetLastError = true)]
         internal static extern int DispatchMessage(ref MSG lpMsg);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "PeekMessage", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool PeekMessage(out MSG lpMsg,
                                                 IntPtr  hWnd,
@@ -42,21 +42,21 @@ namespace Exomia.Framework.Windows.Win32
                                                 uint    wRemoveMsg);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "TranslateMessage", SetLastError = true)]
         internal static extern int TranslateMessage(ref MSG lpMsg);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "ClientToScreen", SetLastError = false)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "ClipCursor", SetLastError = false)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ClipCursor(ref RECT lpRect);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "CreateWindowEx", SetLastError = true)]
         internal static extern IntPtr CreateWindowEx(uint                                    dwExStyle,
                                                      [MarshalAs(UnmanagedType.LPStr)] string lpClassName,
                                                      [MarshalAs(UnmanagedType.LPStr)] string lpWindowName,
@@ -71,42 +71,42 @@ namespace Exomia.Framework.Windows.Win32
                                                      IntPtr                                  lpParam);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "RegisterClassEx", SetLastError = false)]
         internal static extern ushort RegisterClassEx([In] ref WndClassEx lpWndClass);
 
-        [DllImport("user32.dll")]
+        [DllImport(ExternDll.User32, EntryPoint = "UnregisterClass")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool UnregisterClass(string lpClassName, IntPtr hInstance);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "DefWindowProc", SetLastError = false)]
         internal static extern IntPtr DefWindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "PostQuitMessage", SetLastError = false)]
         internal static extern void PostQuitMessage(int nExitCode);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "LoadCursor", SetLastError = false)]
         internal static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "UpdateWindow", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool UpdateWindow(IntPtr hWnd);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "ShowWindow", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = false)]
+        [DllImport(ExternDll.User32, EntryPoint = "DestroyWindow", SetLastError = false)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool DestroyWindow(IntPtr hWnd);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "SetWindowPos", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetWindowPos(IntPtr            hWnd,
                                                  IntPtr            hWndInsertAfter,
@@ -117,7 +117,7 @@ namespace Exomia.Framework.Windows.Win32
                                                  SetWindowPosFlags uFlags);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "AdjustWindowRectEx", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool AdjustWindowRectEx(ref RECT lpRect,
                                                        uint     dwStyle,
@@ -125,48 +125,48 @@ namespace Exomia.Framework.Windows.Win32
                                                        uint     dwExStyle);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll")]
+        [DllImport(ExternDll.User32, EntryPoint = "SetForegroundWindow")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "SetFocus", SetLastError = true)]
         internal static extern IntPtr SetFocus(IntPtr hWnd);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(ExternDll.User32, EntryPoint = "SetWindowText", SetLastError = true, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetWindowText(IntPtr hWnd, string lpString);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+        [DllImport(ExternDll.User32, EntryPoint = "SetWindowLongPtr")]
         internal static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll")]
+        [DllImport(ExternDll.User32, EntryPoint = "GetClientRect")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll")]
+        [DllImport(ExternDll.User32, EntryPoint = "GetSystemMetrics")]
         internal static extern int GetSystemMetrics(int smIndex);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll")]
+        [DllImport(ExternDll.User32, EntryPoint = "GetWindowRect")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "TrackMouseEvent", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll")]
+        [DllImport(ExternDll.User32, EntryPoint = "ShowCursor")]
         internal static extern int ShowCursor(bool bShow);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(ExternDll.User32, EntryPoint = "RegisterRawInputDevices", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool RegisterRawInputDevices([MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)]
                                                             RAWINPUTDEVICE[] pRawInputDevices,

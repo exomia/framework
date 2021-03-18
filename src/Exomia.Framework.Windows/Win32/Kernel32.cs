@@ -17,15 +17,15 @@ namespace Exomia.Framework.Windows.Win32
     static class Kernel32
     {
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("kernel32.dll", EntryPoint = "SetEvent")]
+        [DllImport(ExternDll.Kernel32, EntryPoint = "SetEvent")]
         internal static extern bool SetEvent(IntPtr hEvent);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("kernel32.dll", EntryPoint = "GetLastError")]
+        [DllImport(ExternDll.Kernel32, EntryPoint = "GetLastError")]
         internal static extern int GetLastError();
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        [DllImport(ExternDll.Kernel32, EntryPoint = "GetModuleHandle", CharSet = CharSet.Auto)]
         internal static extern IntPtr GetModuleHandle(string lpModuleName);
     }
 }
