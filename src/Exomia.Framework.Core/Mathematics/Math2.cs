@@ -116,9 +116,31 @@ namespace Exomia.Framework.Core.Mathematics
             return ((-epsilon <= num) && (num <= epsilon));
         }
 
-        /// <summary> calculates the absolute value of x. </summary>
-        /// <param name="x"> value. </param>
-        /// <returns> positive x. </returns>
+        /// <summary> Returns the larger of two 32-bit signed integers. </summary>
+        /// <param name="a"> The first of two 32-bit signed integers to compare. </param>
+        /// <param name="b"> The second of two 32-bit signed integers to compare. </param>
+        /// <returns> Returns the larger of two 32-bit signed integers. </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Max(int a, int b)
+        {
+            int diff = a - b;
+            return a - (diff & (diff >> 31));
+        }
+
+        /// <summary> Returns the smaller of two 32-bit signed integers. </summary>
+        /// <param name="a"> The first of two 32-bit signed integers to compare. </param>
+        /// <param name="b"> The second of two 32-bit signed integers to compare. </param>
+        /// <returns> Returns the smaller of two 32-bit signed integers. </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Min(int a, int b)
+        {
+            int diff = a - b;
+            return b + (diff & (diff >> 31));
+        }
+
+        /// <summary> Calculates the absolute value of x. </summary>
+        /// <param name="x"> The value 32-bit signed integer. </param>
+        /// <returns> Return the absolute value of <paramref name="x"/>. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Abs(int x)
         {
@@ -320,10 +342,7 @@ namespace Exomia.Framework.Core.Mathematics
 
         #region RoundUpToPowerOfTwo
 
-        /// <summary>
-        ///     Rounds the given value up to a power of two. If it is already a power of two, it is returned unchanged. If it
-        ///     is negative or zero, zero is returned.
-        /// </summary>
+        /// <summary> Rounds the given value up to a power of two. If it is already a power of two, it is returned unchanged. If it is negative or zero, zero is returned. </summary>
         /// <param name="value"> . </param>
         /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -334,10 +353,7 @@ namespace Exomia.Framework.Core.Mathematics
                 : (int)RoundUpToPowerOfTwo((uint)value);
         }
 
-        /// <summary>
-        ///     Rounds the given value up to a power of two. If it is already a power of two, or zero, it is returned
-        ///     unchanged.
-        /// </summary>
+        /// <summary> Rounds the given value up to a power of two. If it is already a power of two, or zero, it is returned unchanged. </summary>
         /// <param name="value"> . </param>
         /// <returns> An uint. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
@@ -358,10 +374,7 @@ namespace Exomia.Framework.Core.Mathematics
             return value + 1;
         }
 
-        /// <summary>
-        ///     Rounds the given value up to a power of two. If it is already a power of two, it is returned unchanged. If it
-        ///     is negative or zero, zero is returned.
-        /// </summary>
+        /// <summary> Rounds the given value up to a power of two. If it is already a power of two, it is returned unchanged. If it is negative or zero, zero is returned. </summary>
         /// <param name="value"> . </param>
         /// <returns> A long. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -372,10 +385,7 @@ namespace Exomia.Framework.Core.Mathematics
                 : (long)RoundUpToPowerOfTwo((ulong)value);
         }
 
-        /// <summary>
-        ///     Rounds the given value up to a power of two. If it is already a power of two, or zero, it is returned
-        ///     unchanged.
-        /// </summary>
+        /// <summary> Rounds the given value up to a power of two. If it is already a power of two, or zero, it is returned unchanged. </summary>
         /// <param name="value"> . </param>
         /// <returns> An ulong. </returns>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
