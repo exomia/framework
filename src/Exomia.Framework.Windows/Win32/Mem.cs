@@ -26,7 +26,7 @@ namespace Exomia.Framework.Windows.Win32
         /// <param name="src">source ptr</param>
         /// <param name="count">count of bytes to copy</param>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        [DllImport(ExternDll.Ntdll, EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void Cpy(void* dest, void* src, int count);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Exomia.Framework.Windows.Win32
         /// <param name="src">source ptr</param>
         /// <param name="count">count of bytes to copy</param>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("msvcrt.dll", EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        [DllImport(ExternDll.Ntdll, EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void Move(void* dest, void* src, int count);
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Exomia.Framework.Windows.Win32
         ///     Null if it fails, else a void*.
         /// </returns>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("msvcrt.dll", EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        [DllImport(ExternDll.Ntdll, EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void* Set(void* dest, int value, int count);
     }
 }

@@ -21,7 +21,7 @@ namespace Exomia.Framework.Windows.Win32
     static class Shell32
     {
         [SuppressUnmanagedCodeSecurity]
-        [DllImport("shell32.dll", CharSet = CharSet.Auto, BestFitMapping = false)]
+        [DllImport(ExternDll.Shell32, EntryPoint ="ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
         internal static extern IntPtr ExtractIcon(IntPtr hInst, string exeFileName, int iconIndex);
     }
 }
