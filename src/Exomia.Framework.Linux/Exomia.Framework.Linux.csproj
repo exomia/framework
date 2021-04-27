@@ -74,7 +74,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.171.3" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
