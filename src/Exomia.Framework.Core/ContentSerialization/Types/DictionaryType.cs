@@ -48,12 +48,12 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             genericTypeInfo.GetKeyValueInnerType(
                 out string keyBaseTypeInfo, out string valueBaseTypeInfo, out string valueGenericTypeInfo);
 
-            if (!ContentSerializer.s_types.TryGetValue(keyBaseTypeInfo, out IType itk) || !itk.IsPrimitive)
+            if (!ContentSerializer.s_types.TryGetValue(keyBaseTypeInfo, out IType? itk) || !itk.IsPrimitive)
             {
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
-            return ContentSerializer.s_types.TryGetValue(valueBaseTypeInfo, out IType itv)
+            return ContentSerializer.s_types.TryGetValue(valueBaseTypeInfo, out IType? itv)
                 ? BaseType.MakeGenericType(itk.CreateType(string.Empty), itv.CreateType(valueGenericTypeInfo))
                 : BaseType.MakeGenericType(itk.CreateType(string.Empty), valueBaseTypeInfo.CreateType());
         }
@@ -65,12 +65,12 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             if (gArgs.Length == 2)
             {
                 string genericTypeInfo1 =
-                    ContentSerializer.s_types.TryGetValue(gArgs[0].Name.ToUpper(), out IType itk)
+                    ContentSerializer.s_types.TryGetValue(gArgs[0].Name.ToUpper(), out IType? itk)
                         ? itk.CreateTypeInfo(gArgs[0])
                         : throw new NotSupportedException(
                             $"the type of '{gArgs[0]}' is not supported as dictionary key");
                 string genericTypeInfo2 =
-                    ContentSerializer.s_types.TryGetValue(gArgs[1].Name.ToUpper(), out IType itv) ||
+                    ContentSerializer.s_types.TryGetValue(gArgs[1].Name.ToUpper(), out IType? itv) ||
                     ContentSerializer.s_types.TryGetValue(
                         (gArgs[1].BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
                         out itv)
@@ -96,36 +96,32 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
                     "ERROR: NO GENERIC TYPE INFO DEFINED -> DICTIONARY<GENERIC_TYPE_INFO1, GENERIC_TYPE_INFO2>");
             }
 
+            // ReSharper disable IdentifierTypo
             genericTypeInfo.GetKeyValueInnerType(out string kbti, out string vbti, out string vgti);
-
-            if (!ContentSerializer.s_types.TryGetValue(kbti, out IType itk) || !itk.IsPrimitive)
+            // ReSharper enable IdentifierTypo
+           
+            if (!ContentSerializer.s_types.TryGetValue(kbti, out IType? itk) || !itk.IsPrimitive)
             {
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
             Type                                 valueType;
             Func<CSStreamReader, string, object> readCallback;
-            if (ContentSerializer.s_types.TryGetValue(vbti, out IType it))
+            if (ContentSerializer.s_types.TryGetValue(vbti, out IType? it))
             {
-                valueType = it.CreateType(vgti);
-                readCallback = (s, d) =>
-                {
-                    return it.Read(stream, string.Empty, vgti, d);
-                };
+                valueType    = it.CreateType(vgti);
+                readCallback = (s, d) => it.Read(stream, string.Empty, vgti, d);
             }
             else
             {
-                valueType = vbti.CreateType();
-                readCallback = (s, d) =>
-                {
-                    return ContentSerializer.Read(stream, valueType, string.Empty);
-                };
+                valueType    = vbti.CreateType();
+                readCallback = (s, d) => ContentSerializer.Read(stream, valueType, string.Empty);
             }
 
             int count = GetDictionaryCount(dimensionInfo);
 
             Type   dic = BaseType.MakeGenericType(itk.CreateType(string.Empty), valueType);
-            object obj = System.Activator.CreateInstance(dic, count);
+            object obj = System.Activator.CreateInstance(dic, count) ?? throw new NullReferenceException(dic.ToString());
             AddDictionaryContent(stream, readCallback, (dynamic)obj, count);
             stream.ReadTag($"/{key}");
             return obj;
@@ -152,11 +148,12 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         /// <param name="key">          The key. </param>
         /// <param name="content">      The content. </param>
         /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        private void Write<TKey, TValue>(Action<string, string>   writeHandler,
-                                         string                   tabSpace,
-                                         string                   key,
+        private void Write<TKey, TValue>(Action<string, string>    writeHandler,
+                                         string                    tabSpace,
+                                         string                    key,
                                          Dictionary<TKey, TValue> content,
-                                         bool                     useTypeInfo = true)
+                                         bool                      useTypeInfo = true) 
+            where TKey : notnull
         {
             writeHandler(
                 tabSpace,
@@ -178,23 +175,24 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
         private static void ForeachDictionaryDimension<TKey, TValue>(Action<string, string>   writeHandler,
                                                                      string                   tabSpace,
-                                                                     Dictionary<TKey, TValue> dic)
+                                                                     Dictionary<TKey, TValue> dic) 
+            where TKey : notnull
         {
-            foreach (KeyValuePair<TKey, TValue> entry in dic)
+            foreach ((TKey key, TValue value) in dic)
             {
-                Type elementType = entry.Value!.GetType();
-                if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
+                Type elementType = value!.GetType();
+                if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType? it) ||
                     ContentSerializer.s_types.TryGetValue(
                         (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
                         out it))
                 {
-                    it.Write(writeHandler, tabSpace, entry.Key!.ToString(), entry.Value, false);
+                    it.Write(writeHandler, tabSpace, key.ToString()!, value, false);
                 }
                 else
                 {
-                    writeHandler(tabSpace, $"[{entry.Key}:]");
+                    writeHandler(tabSpace, $"[{key}:]");
                     ContentSerializer.Write(
-                        writeHandler, tabSpace + ContentSerializer.TABSPACE, entry.Value, elementType);
+                        writeHandler, tabSpace + ContentSerializer.TABSPACE, value, elementType);
                     writeHandler(tabSpace, "[/]");
                 }
             }
@@ -251,7 +249,8 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         private static void AddDictionaryContent<TKey, TValue>(CSStreamReader                       stream,
                                                                Func<CSStreamReader, string, object> readCallback,
                                                                Dictionary<TKey, TValue>             dic,
-                                                               int                                  count)
+                                                               int                                  count) 
+            where TKey : notnull
         {
             for (int i = 0; i < count; i++)
             {

@@ -105,10 +105,10 @@ namespace Exomia.Framework.Core.Tools
         /// <inheritdoc />
         public void Update(GameTime gameTime)
         {
-            _delayTime = Math.Min(_delayTime + gameTime.DeltaTimeMS, _delay);
+            _delayTime = Math.Min(_delayTime + gameTime.DeltaTimeMs, _delay);
             if (_delayTime < _delay) { return; }
 
-            _time += gameTime.DeltaTimeMS;
+            _time += gameTime.DeltaTimeMs;
 
             if (_time > _duration)
             {

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,103 +10,198 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Exomia.Framework.Core.Game;
 using Exomia.Framework.Core.Input;
 
 namespace Exomia.Framework.Core.Scene
 {
-    /// <summary>
-    ///     Manager for scenes. This class cannot be inherited.
-    /// </summary>
-    public sealed class SceneManager : DrawableComponent, ISceneManager
+    internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable, IDrawable, IDisposable
     {
         private const int INITIAL_QUEUE_SIZE = 16;
 
-        private readonly List<ISceneInternal>               _currentDrawableScenes;
-        private readonly List<ISceneInternal>               _currentScenes;
-        private readonly List<ISceneInternal>               _currentUpdateableScenes;
-        private readonly List<ISceneInternal>               _pendingInitializableScenes;
-        private readonly Dictionary<string, ISceneInternal> _scenes;
-        private readonly List<ISceneInternal>               _scenesToUnload;
-        private          IServiceRegistry?                  _registry;
-        private          IInputDevice                       _inputDevice;
+        /// <summary> Occurs when Enabled Changed. </summary>
+        public event EventHandler? EnabledChanged;
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SceneManager" /> class.
-        /// </summary>
-        public SceneManager(IScene startScene, string name = "SceneManager")
-            : base(name)
+        /// <summary> Occurs when Update Order Changed. </summary>
+        public event EventHandler? UpdateOrderChanged;
+
+        /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
+        public event EventHandler? DrawOrderChanged;
+
+        /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
+        public event EventHandler? VisibleChanged;
+
+        private readonly List<SceneBase>               _currentDrawableScenes;
+        private readonly List<SceneBase>               _currentScenes;
+        private readonly List<SceneBase>               _currentUpdateableScenes;
+        private readonly List<SceneBase>               _pendingInitializableScenes;
+        private readonly Dictionary<string, SceneBase> _scenes;
+        private readonly List<SceneBase>               _scenesToUnload;
+        private readonly IInputDevice                  _inputDevice;
+        private          bool                          _isInitialized;
+        private          bool                          _enabled;
+        private          int                           _updateOrder;
+        private          int                           _drawOrder;
+        private          bool                          _visible;
+
+        /// <inheritdoc/>
+        public bool Enabled
         {
-            if (startScene == null) { throw new ArgumentNullException(nameof(startScene)); }
-            _scenes        = new Dictionary<string, ISceneInternal>(INITIAL_QUEUE_SIZE);
-            _currentScenes = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
-
-            _currentUpdateableScenes    = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
-            _currentDrawableScenes      = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
-            _pendingInitializableScenes = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
-            _scenesToUnload             = new List<ISceneInternal>(INITIAL_QUEUE_SIZE);
-
-            _inputDevice = null!;
-
-            AddScene(startScene);
+            get { return _enabled; }
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    EnabledChanged?.Invoke();
+                }
+            }
         }
 
-        /// <inheritdoc />
-        public bool AddScene(IScene scene, bool initialize = true)
+        /// <inheritdoc/>
+        public int UpdateOrder
         {
-            if (!(scene is ISceneInternal intern))
+            get { return _updateOrder; }
+            set
             {
-                throw new InvalidCastException();
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    UpdateOrderChanged?.Invoke();
+                }
             }
+        }
 
-            if (string.IsNullOrEmpty(intern.Key) && _scenes.ContainsKey(intern.Key)) { return false; }
-
-            intern.SceneManager = this;
-
-            if (initialize)
+        /// <inheritdoc/>
+        public int DrawOrder
+        {
+            get { return _drawOrder; }
+            set
             {
-                if (!_isInitialized)
+                if (_drawOrder != value)
+                {
+                    _drawOrder = value;
+                    DrawOrderChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                if (_visible != value)
+                {
+                    _visible = value;
+                    VisibleChanged?.Invoke();
+                }
+            }
+        }
+
+        public SceneManager(IInputDevice inputDevice, IEnumerable<(bool, SceneBase)> sceneCollection)
+        {
+            _inputDevice = inputDevice ?? throw new ArgumentNullException(nameof(inputDevice));
+
+            _scenes        = new Dictionary<string, SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+
+            _currentUpdateableScenes    = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _currentDrawableScenes      = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _pendingInitializableScenes = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+            _scenesToUnload             = new List<SceneBase>(INITIAL_QUEUE_SIZE);
+
+            foreach ((bool initialize, SceneBase scene) in sceneCollection)
+            {
+                if (_scenes.ContainsKey(scene.Key)) { throw new NotSupportedException("A scene with the same key already exists!"); }
+
+                scene.SceneManager = this;
+                _scenes.Add(scene.Key, scene);
+
+                if (initialize)
                 {
                     lock (_pendingInitializableScenes)
                     {
-                        _pendingInitializableScenes.Add(intern);
+                        _pendingInitializableScenes.Add(scene);
                     }
                 }
-                else
+            }
+        }
+
+        /// <inheritdoc/>
+        bool IDrawable.BeginDraw()
+        {
+            return _visible;
+        }
+
+        /// <inheritdoc/>
+        void IDrawable.Draw(GameTime gameTime)
+        {
+            lock (_currentScenes)
+            {
+                _currentDrawableScenes.AddRange(_currentScenes);
+            }
+            for (int i = 0; i < _currentDrawableScenes.Count; i++)
+            {
+                SceneBase scene = _currentDrawableScenes[i];
+                if (scene.State == SceneState.Ready && scene.BeginDraw())
                 {
-                    intern.Initialize(_registry!);
+                    scene.Draw(gameTime);
+                    scene.EndDraw();
                 }
             }
 
-            _scenes.Add(intern.Key, intern);
-
-            return true;
+            _currentDrawableScenes.Clear();
         }
 
-        /// <inheritdoc />
-        public bool GetScene(string key, out IScene scene)
+        /// <inheritdoc/>
+        void IDrawable.EndDraw() { }
+
+        /// <inheritdoc/>
+        void IInitializable.Initialize()
         {
-            bool result = _scenes.TryGetValue(key, out ISceneInternal intern);
-            scene = intern;
-            return result;
+            if (!_isInitialized)
+            {
+                lock (_pendingInitializableScenes)
+                {
+                    _pendingInitializableScenes[0].Initialize();
+                    _pendingInitializableScenes[0].LoadContent();
+                    _pendingInitializableScenes.RemoveAt(0);
+
+                    while (_pendingInitializableScenes.Count != 0)
+                    {
+                        _pendingInitializableScenes[0].Initialize();
+                        _pendingInitializableScenes.RemoveAt(0);
+                    }
+                }
+
+                _isInitialized = true;
+            }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
+        public bool GetScene(string key, [NotNullWhen(true)] out SceneBase? scene)
+        {
+            return _scenes.TryGetValue(key, out scene);
+        }
+
+        /// <inheritdoc/>
         public SceneState GetSceneState(string key)
         {
-            if (_scenes.TryGetValue(key, out ISceneInternal scene))
+            if (_scenes.TryGetValue(key, out SceneBase? scene))
             {
-                return scene.State;
+                return scene!.State;
             }
             throw new NullReferenceException($"no scene with key: '{key}' found.");
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool RemoveScene(string key)
         {
-            if (!_scenes.TryGetValue(key, out ISceneInternal scene))
+            if (!_scenes.TryGetValue(key, out SceneBase? scene))
             {
                 return false;
             }
@@ -114,19 +209,17 @@ namespace Exomia.Framework.Core.Scene
             HideScene(scene);
 
             _scenes.Remove(key);
-            scene.UnloadContent(_registry!);
+            scene.UnloadContent();
             scene.Dispose();
 
             return true;
         }
 
-        /// <inheritdoc />
-        public ShowSceneResult ShowScene(IScene s, params object[] payload)
+        /// <inheritdoc/>
+        public ShowSceneResult ShowScene(SceneBase scene, params object[] payload)
         {
             lock (this)
             {
-                if (!(s is ISceneInternal scene)) { return ShowSceneResult.NoScene; }
-
                 // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (scene.State)
                 {
@@ -136,7 +229,7 @@ namespace Exomia.Framework.Core.Scene
                     default: throw new Exception($"Scene is in wrong state to be shown {scene.State}");
                 }
 
-                IScene? oldScene = null;
+                SceneBase? oldScene = null;
                 if (_currentScenes.Count > 0)
                 {
                     oldScene = _currentScenes[_currentScenes.Count - 1];
@@ -161,7 +254,7 @@ namespace Exomia.Framework.Core.Scene
                         {
                             for (int i = _scenesToUnload.Count - 1; i >= 0; --i)
                             {
-                                IScene uScene = _scenesToUnload[i];
+                                SceneBase uScene = _scenesToUnload[i];
                                 if (uScene.Key == scene.Key)
                                 {
                                     _scenesToUnload.RemoveAt(i);
@@ -180,7 +273,8 @@ namespace Exomia.Framework.Core.Scene
                                 }
                                 if (!isReferenced)
                                 {
-                                    uScene.UnloadContent(_registry!);
+                                    // ReSharper disable once SuspiciousTypeConversion.Global
+                                    ((IContentable)uScene).UnloadContent();
                                     _scenesToUnload.RemoveAt(i);
                                 }
                             }
@@ -193,13 +287,13 @@ namespace Exomia.Framework.Core.Scene
                         for (int i = scene.ReferenceScenes.Length - 1; i >= 0; --i)
                         {
                             string referenceSceneKey = scene.ReferenceScenes[i];
-                            if (!GetScene(referenceSceneKey, out IScene rScene))
+                            if (!GetScene(referenceSceneKey, out SceneBase? rScene))
                             {
                                 throw new ArgumentNullException(referenceSceneKey);
                             }
                             if (rScene.State == SceneState.StandBy)
                             {
-                                rScene.LoadContent(_registry!);
+                                rScene.LoadContent();
                             }
                         }
                         scene.ReferenceScenesLoaded();
@@ -216,38 +310,52 @@ namespace Exomia.Framework.Core.Scene
                     _currentScenes.Add(scene);
                 }
 
-                return scene.State == SceneState.Ready ? ShowSceneResult.Success : ShowSceneResult.NotReady;
+                return scene.State == SceneState.Ready
+                    ? ShowSceneResult.Success
+                    : ShowSceneResult.NotReady;
             }
         }
 
-        /// <inheritdoc />
-        public ShowSceneResult ShowScene(string key, out IScene scene, params object[] payload)
+        /// <inheritdoc/>
+        public ShowSceneResult ShowScene(string key, out SceneBase? scene, params object[] payload)
         {
-            ShowSceneResult result = !_scenes.TryGetValue(key, out ISceneInternal intern)
+            ShowSceneResult result = !_scenes.TryGetValue(key, out scene)
                 ? ShowSceneResult.NoScene
-                : ShowScene(intern, payload);
-            scene = intern;
+                : ShowScene(scene, payload);
             return result;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool HideScene(string key)
         {
-            return _scenes.TryGetValue(key, out ISceneInternal intern) && HideScene(intern);
+            return _scenes.TryGetValue(key, out SceneBase? intern) && HideScene(intern);
         }
 
-        /// <summary>
-        ///     Hides the scene.
-        /// </summary>
-        /// <param name="scene"> The scene. </param>
-        /// <returns>
-        ///     True if it succeeds, false if it fails.
-        /// </returns>
-        public bool HideScene(IScene scene)
+        /// <inheritdoc/>
+        void IUpdateable.Update(GameTime gameTime)
         {
             lock (_currentScenes)
             {
-                if (!_currentScenes.Remove((ISceneInternal)scene)) { return false; }
+                _currentUpdateableScenes.AddRange(_currentScenes);
+            }
+
+            for (int i = _currentUpdateableScenes.Count - 1; i >= 0; i--)
+            {
+                SceneBase scene = _currentUpdateableScenes[i];
+                if (scene.State == SceneState.Ready && scene.Enabled)
+                {
+                    scene.Update(gameTime);
+                }
+            }
+
+            _currentUpdateableScenes.Clear();
+        }
+
+        public bool HideScene(SceneBase scene)
+        {
+            lock (_currentScenes)
+            {
+                if (!_currentScenes.Remove(scene)) { return false; }
 
                 // ReSharper disable once SuspiciousTypeConversion.Global
                 if (scene is IInputHandler inputHandler)
@@ -266,84 +374,45 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc />
-        public override void Update(GameTime gameTime)
+        #region IDisposable Support
+
+        private bool _disposed;
+
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            lock (_currentScenes)
-            {
-                _currentUpdateableScenes.AddRange(_currentScenes);
-            }
-
-            for (int i = _currentUpdateableScenes.Count - 1; i >= 0; i--)
-            {
-                ISceneInternal scene = _currentUpdateableScenes[i];
-                if (scene.State == SceneState.Ready && scene.Enabled)
-                {
-                    scene.Update(gameTime);
-                }
-            }
-
-            _currentUpdateableScenes.Clear();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
-        public override void Draw(GameTime gameTime)
+        private void Dispose(bool disposing)
         {
-            lock (_currentScenes)
+            if (!_disposed)
             {
-                _currentDrawableScenes.AddRange(_currentScenes);
-            }
-            for (int i = 0; i < _currentDrawableScenes.Count; i++)
-            {
-                ISceneInternal scene = _currentDrawableScenes[i];
-                if (scene.State == SceneState.Ready && scene.BeginDraw())
+                if (disposing)
                 {
-                    scene.Draw(gameTime);
-                    scene.EndDraw();
+                    lock (_currentScenes)
+                    {
+                        _currentScenes.Clear();
+                    }
+
+                    foreach (SceneBase scene in _scenes.Values)
+                    {
+                        scene.UnloadContent();
+                        scene.Dispose();
+                    }
+
+                    _scenes.Clear();
                 }
-            }
-
-            _currentDrawableScenes.Clear();
-        }
-
-        /// <inheritdoc />
-        protected override void OnInitialize(IServiceRegistry registry)
-        {
-            _registry    = registry;
-            _inputDevice = registry.GetService<IInputDevice>();
-
-            lock (_pendingInitializableScenes)
-            {
-                _pendingInitializableScenes[0].Initialize(registry);
-                _pendingInitializableScenes[0].LoadContent(registry);
-                _pendingInitializableScenes.RemoveAt(0);
-
-                while (_pendingInitializableScenes.Count != 0)
-                {
-                    _pendingInitializableScenes[0].Initialize(registry);
-                    _pendingInitializableScenes.RemoveAt(0);
-                }
+                _disposed = true;
             }
         }
 
-        /// <inheritdoc />
-        protected override void OnDispose(bool dispose)
+        ~SceneManager()
         {
-            if (dispose)
-            {
-                lock (_currentScenes)
-                {
-                    _currentScenes.Clear();
-                }
-
-                foreach (ISceneInternal scene in _scenes.Values)
-                {
-                    scene.UnloadContent(_registry!);
-                    scene.Dispose();
-                }
-
-                _scenes.Clear();
-            }
+            Dispose(false);
         }
+
+        #endregion
     }
 }

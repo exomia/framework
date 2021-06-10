@@ -22,14 +22,10 @@ namespace Exomia.Framework.Core
         /// </summary>
         bool IsRunning { get; }
 
-        /// <summary>
-        ///     starts the run
-        /// </summary>
+        /// <summary> Runs this object. </summary>
         void Run();
 
-        /// <summary>
-        ///     shutdown the run
-        /// </summary>
+        /// <summary> Shuts down this object and frees any resources it is using. </summary>
         void Shutdown();
     }
 }

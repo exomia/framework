@@ -47,11 +47,6 @@
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <PackageId>$(MSBuildProjectName)</PackageId>
@@ -164,7 +159,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.171.3" />
+    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.175.10" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
@@ -202,6 +197,13 @@
       <DependentUpon>SpriteFont.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Vulkan\Vulkan.cs"></Compile>
+    <Compile Update="Vulkan\Vulkan.*.cs">
+      <DependentUpon>Vulkan.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
   
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
@@ -213,7 +215,7 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Exomia.Framework.Linux, PublicKey=0024000004800000940000000602000000240000525341310004000001000100111D63825C642F083C556D1BA149712DDA5D8FC325CA82AE6EFE7A4D369553D73350DB65D40FFCD2605B335CAA9BF73B54D5096B46E5BE52F2C75D437107CC07BCB31021CA76061241EF29C33417C84AFC50479433591A9229D995195B33A81F27243A2FDC34572EBC739F89FFAA76D18789A803DAB9EA71C00813AF38C79ECA</_Parameter1>
     </AssemblyAttribute>
-    <AssemblyAttribute  Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Exomia.Framework.Windows, PublicKey=0024000004800000940000000602000000240000525341310004000001000100D9B97247D3E971F73B46B0571023D6963CB74FD2C2CACCFE8BAD12539C2695E3E463DBC1693DC2E1D1B669DCDFD986CCA875370DBE134689C8FC1578876D97FE8309E7CBA4AF90A7EFDE4718EC77C4EC9D2825D9BB62310AF962CDF2C77F5C5500550F4C9EA902453ABC4B953326A3B4A4C9A5E78B67409D4F99D4F57D28A3F5</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>

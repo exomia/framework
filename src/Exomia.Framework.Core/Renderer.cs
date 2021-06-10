@@ -8,30 +8,23 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Core.Game;
 
 namespace Exomia.Framework.Core
 {
-    /// <summary>
-    ///     A renderer.
-    /// </summary>
-    public abstract class Renderer : IComponent, IInitializable, IDrawable, IDisposable
+    /// <summary> A renderer. </summary>
+    public abstract class Renderer : IDrawable
     {
-        /// <summary>
-        ///     Occurs when the <see cref="DrawOrder" /> property changes.
-        /// </summary>
+        /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
         public event EventHandler? DrawOrderChanged;
 
-        /// <summary>
-        ///     Occurs when the <see cref="Visible" /> property changes.
-        /// </summary>
+        /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
         public event EventHandler? VisibleChanged;
 
         private int  _drawOrder;
         private bool _visible;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public int DrawOrder
         {
             get { return _drawOrder; }
@@ -45,10 +38,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc />
-        public string Name { get; }
-
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool Visible
         {
             get { return _visible; }
@@ -62,31 +52,16 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Renderer" /> class.
-        /// </summary>
-        /// <param name="name"> name. </param>
-        protected Renderer(string name)
-        {
-            Name = name;
-        }
-
-        /// <inheritdoc />
-        public abstract void Dispose();
-
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public virtual bool BeginDraw()
         {
             return _visible;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public virtual void Draw(GameTime gameTime) { }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public virtual void EndDraw() { }
-
-        /// <inheritdoc />
-        public virtual void Initialize(IServiceRegistry registry) { }
     }
 }

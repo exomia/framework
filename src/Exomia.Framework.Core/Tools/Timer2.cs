@@ -139,7 +139,7 @@ namespace Exomia.Framework.Core.Tools
         {
             if (!_enabled) { return; }
 
-            _elapsedTime += gameTime.DeltaTimeMS;
+            _elapsedTime += gameTime.DeltaTimeMs;
             if (_elapsedTime >= TimerTick)
             {
                 _elapsedTime -= TimerTick;

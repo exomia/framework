@@ -29,7 +29,7 @@ namespace Exomia.Framework.Core.Game
         /// <value>
         ///     The limited delta time milliseconds.
         /// </value>
-        public float LimitedDeltaTimeMS { get; private set; }
+        public float LimitedDeltaTimeMs { get; private set; }
 
         /// <summary>
         ///     this value will be limited to <see cref="MAX_FRAME_TIME" /> (1.0f / 60.0f)
@@ -45,7 +45,7 @@ namespace Exomia.Framework.Core.Game
         /// <value>
         ///     The delta time milliseconds.
         /// </value>
-        public float DeltaTimeMS { get; private set; }
+        public float DeltaTimeMs { get; private set; }
 
         /// <summary>
         ///     Gets the delta time s.
@@ -61,7 +61,7 @@ namespace Exomia.Framework.Core.Game
         /// <value>
         ///     The total number of time milliseconds.
         /// </value>
-        public float TotalTimeMS
+        public float TotalTimeMs
         {
             get
             {
@@ -143,21 +143,21 @@ namespace Exomia.Framework.Core.Game
         {
             if (_stopped)
             {
-                LimitedDeltaTimeS = LimitedDeltaTimeMS = DeltaTimeS = DeltaTimeMS = 0;
+                LimitedDeltaTimeS = LimitedDeltaTimeMs = DeltaTimeS = DeltaTimeMs = 0;
                 return;
             }
 
             _currTime = Stopwatch.GetTimestamp();
 
-            DeltaTimeMS = (float)((_currTime - _prevTime) * _countsPerMSec);
-            DeltaTimeS  = DeltaTimeMS * 0.001f;
+            DeltaTimeMs = (float)((_currTime - _prevTime) * _countsPerMSec);
+            DeltaTimeS  = DeltaTimeMs * 0.001f;
 
-            LimitedDeltaTimeMS = DeltaTimeMS;
-            if (LimitedDeltaTimeMS > MAX_FRAME_TIME)
+            LimitedDeltaTimeMs = DeltaTimeMs;
+            if (LimitedDeltaTimeMs > MAX_FRAME_TIME)
             {
-                LimitedDeltaTimeMS = MAX_FRAME_TIME;
+                LimitedDeltaTimeMs = MAX_FRAME_TIME;
             }
-            LimitedDeltaTimeS = LimitedDeltaTimeMS * 0.001f;
+            LimitedDeltaTimeS = LimitedDeltaTimeMs * 0.001f;
 
             _prevTime = _currTime;
         }

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,19 +8,15 @@
 
 #endregion
 
+using System;
+
 namespace Exomia.Framework.Core
 {
-    /// <summary>
-    ///     An interface to define a game component.
-    /// </summary>
+    /// <summary> Interface for a component. </summary>
     public interface IComponent
     {
-        /// <summary>
-        ///     the name of the component.
-        /// </summary>
-        /// <value>
-        ///     The name.
-        /// </value>
-        string Name { get; }
+        /// <summary> Gets a unique identifier. </summary>
+        /// <value> The identifier of the unique. </value>
+        Guid Guid { get; }
     }
 }

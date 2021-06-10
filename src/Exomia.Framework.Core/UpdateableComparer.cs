@@ -12,25 +12,22 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework.Core
 {
-    /// <summary>
-    ///     An updateable comparer. This class cannot be inherited.
-    /// </summary>
     sealed class UpdateableComparer : IComparer<IUpdateable>
     {
-        /// <summary>
-        ///     The default.
-        /// </summary>
+        /// <summary> The default. </summary>
         public static readonly UpdateableComparer Default = new UpdateableComparer();
 
-        /// <inheritdoc />
-        public int Compare(IUpdateable left, IUpdateable right)
+        /// <inheritdoc/>
+        public int Compare(IUpdateable? left, IUpdateable? right)
         {
-            if (Equals(left, right))
-            {
-                return 0;
-            }
+            if (Equals(left, right)) { return 0; }
 
-            return left.UpdateOrder < right.UpdateOrder ? 1 : -1;
+            if (left is null) { return 1; }
+            if (right is null) { return -1; }
+
+            return left.UpdateOrder < right.UpdateOrder
+                ? 1
+                : -1;
         }
     }
 }

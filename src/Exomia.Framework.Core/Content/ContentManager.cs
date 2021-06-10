@@ -54,17 +54,15 @@ namespace Exomia.Framework.Core.Content
         }
 
         /// <inheritdoc />
-        public IServiceRegistry ServiceRegistry { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentManager" /> class.
-        /// </summary>
-        /// <param name="serviceRegistry"> IServiceRegistry. </param>
+        /// <summary> Initializes a new instance of the <see cref="ContentManager" /> class. </summary>
+        /// <param name="serviceProvider"> The service provider. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         /// <exception cref="TypeLoadException">     Thrown when a Type Load error condition occurs. </exception>
-        public ContentManager(IServiceRegistry serviceRegistry)
+        public ContentManager(IServiceProvider serviceProvider)
         {
-            ServiceRegistry = serviceRegistry ?? throw new ArgumentNullException(nameof(serviceRegistry));
+            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
             _loadedAssets                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
             _registeredContentResolvers          = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
@@ -79,17 +77,15 @@ namespace Exomia.Framework.Core.Content
 
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (a.FullName.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)) { continue; }
-                if (a.FullName.StartsWith("SharpDX", StringComparison.InvariantCultureIgnoreCase)) { continue; }
-                if (a.FullName.StartsWith("ms", StringComparison.InvariantCultureIgnoreCase)) { continue; }
+                if (a.FullName!.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)) { continue; }
+                if (a.FullName!.StartsWith("ms", StringComparison.InvariantCultureIgnoreCase)) { continue; }
 
                 foreach (Type t in a.GetTypes())
                 {
                     if (t.IsClass && !t.IsInterface || t.IsValueType && !t.IsEnum)
                     {
-                        ContentReadableAttribute contentReadableAttribute;
-                        if ((contentReadableAttribute
-                            = t.GetCustomAttribute<ContentReadableAttribute>(false)) != null)
+                        ContentReadableAttribute? contentReadableAttribute = t.GetCustomAttribute<ContentReadableAttribute>(false);
+                        if (contentReadableAttribute != null)
                         {
                             AddContentReader(t, contentReadableAttribute.Reader);
                         }
@@ -99,8 +95,7 @@ namespace Exomia.Framework.Core.Content
                     {
                         if (typeof(IContentResolver).IsAssignableFrom(t))
                         {
-                            ContentResolverAttribute contentResolverAttribute
-                                = t.GetCustomAttribute<ContentResolverAttribute>(false);
+                            ContentResolverAttribute? contentResolverAttribute = t.GetCustomAttribute<ContentResolverAttribute>(false);
                             resolvers.Add(
                                 (contentResolverAttribute?.Order ?? 0,
                                  System.Activator.CreateInstance(t)
@@ -110,8 +105,7 @@ namespace Exomia.Framework.Core.Content
 
                         if (typeof(IEmbeddedResourceResolver).IsAssignableFrom(t))
                         {
-                            ContentResolverAttribute contentResolverAttribute
-                                = t.GetCustomAttribute<ContentResolverAttribute>(false);
+                            ContentResolverAttribute? contentResolverAttribute = t.GetCustomAttribute<ContentResolverAttribute>(false);
                             embeddedResourceResolvers.Add(
                                 (contentResolverAttribute?.Order ?? 0,
                                  System.Activator.CreateInstance(t)
@@ -237,7 +231,7 @@ namespace Exomia.Framework.Core.Content
             AssetKey assetKey = new AssetKey(assetType, assetName);
             lock (GetAssetLocker(assetKey, true)!)
             {
-                if (_loadedAssets.TryGetValue(assetKey, out object result))
+                if (_loadedAssets.TryGetValue(assetKey, out object? result))
                 {
                     return result;
                 }
@@ -302,7 +296,7 @@ namespace Exomia.Framework.Core.Content
             object? assetLockerRead = GetAssetLocker(assetKey, false);
             if (assetLockerRead == null) { return false; }
 
-            object asset;
+            object? asset;
 
             lock (assetLockerRead)
             {
@@ -431,7 +425,7 @@ namespace Exomia.Framework.Core.Content
         {
             lock (_assetLockers)
             {
-                if (!_assetLockers.TryGetValue(assetKey, out object assetLockerRead) && create)
+                if (!_assetLockers.TryGetValue(assetKey, out object? assetLockerRead) && create)
                 {
                     assetLockerRead = new object();
                     _assetLockers.Add(assetKey, assetLockerRead);
@@ -457,7 +451,7 @@ namespace Exomia.Framework.Core.Content
 
             try
             {
-                if (!_registeredContentReaders.TryGetValue(assetType, out IContentReader contentReader))
+                if (!_registeredContentReaders.TryGetValue(assetType, out IContentReader? contentReader))
                 {
                     lock (_registeredContentReaderFactories)
                     {
@@ -519,7 +513,7 @@ namespace Exomia.Framework.Core.Content
             }
 
             /// <inheritdoc />
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is AssetKey key && Equals(key);
             }

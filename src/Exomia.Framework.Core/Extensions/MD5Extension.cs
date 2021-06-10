@@ -14,9 +14,9 @@ using System.Text;
 namespace Exomia.Framework.Core.Extensions
 {
     /// <summary>
-    ///     md5 extension class
+    ///     A md5 extension class
     /// </summary>
-    public static class MD5Extension
+    public static class Md5Extension
     {
         /// <summary>
         ///     Convert an object via the 'ToString' method into an md5-format string
@@ -24,15 +24,14 @@ namespace Exomia.Framework.Core.Extensions
         /// <param name="input">the object</param>
         /// <param name="format">the format</param>
         /// <returns>md5-format string</returns>
-        public static string ToMD5(this object input, string format = "x2")
+        public static string ToMd5(this string input, string format = "x2")
         {
             using (MD5 md5 = MD5.Create())
             {
-                byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(input.ToString()));
+                byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(input));
 
                 StringBuilder sb = new StringBuilder();
-                int           l  = hash.Length;
-                for (int i = 0; i < l; i++)
+                for (int i = 0; i < hash.Length; i++)
                 {
                     sb.Append(hash[i].ToString(format));
                 }

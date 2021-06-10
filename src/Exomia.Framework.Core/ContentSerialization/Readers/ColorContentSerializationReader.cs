@@ -19,10 +19,10 @@ namespace Exomia.Framework.Core.ContentSerialization.Readers
         {
             return new VkColor
             {
-                A = context.Get<byte>(nameof(Color.A)),
-                R = context.Get<byte>(nameof(Color.R)),
-                G = context.Get<byte>(nameof(Color.G)),
-                B = context.Get<byte>(nameof(Color.B))
+                A = context.Get<byte>(nameof(VkColor.A)),
+                R = context.Get<byte>(nameof(VkColor.R)),
+                G = context.Get<byte>(nameof(VkColor.G)),
+                B = context.Get<byte>(nameof(VkColor.B))
             };
         }
     }

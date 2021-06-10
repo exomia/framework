@@ -20,10 +20,6 @@ using Exomia.Framework.Core.ContentSerialization.Writers;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Vulkan.Api.Core;
 
-#if NETSTANDARD2_0
-using Exomia.Framework.Extensions;
-#endif
-
 namespace Exomia.Framework.Core.ContentSerialization
 {
     /// <summary>
@@ -121,13 +117,14 @@ namespace Exomia.Framework.Core.ContentSerialization
 
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (a.FullName.StartsWith("System") ||
+                if (a.FullName == null ||
+                    a.FullName.StartsWith("System") ||
                     a.FullName.StartsWith("SharpDX") ||
                     a.FullName.StartsWith("ms")) { continue; }
 
                 foreach (Type t in a.GetTypes())
                 {
-                    ContentSerializableAttribute attribute;
+                    ContentSerializableAttribute? attribute;
                     if ((attribute = t.GetCustomAttribute<ContentSerializableAttribute>(false)) != null)
                     {
                         AddWriter(t, attribute.Writer);
@@ -138,7 +135,7 @@ namespace Exomia.Framework.Core.ContentSerialization
 
             #endregion
 
-            #region SharpDX
+            #region Defaults
 
             AddWriter<Vector3>(new Vector3ContentSerializationWriter());
             AddWriter<Vector2>(new Vector2ContentSerializationWriter());
@@ -216,8 +213,8 @@ namespace Exomia.Framework.Core.ContentSerialization
 
         private static void AddAssembly(Assembly assembly)
         {
-            string assemblyName = assembly.GetName().Name;
-            if (!s_assemblies.ContainsKey(assemblyName))
+            string? assemblyName = assembly.GetName().Name;
+            if (assemblyName != null && !s_assemblies.ContainsKey(assemblyName))
             {
                 s_assemblies.Add(assemblyName, assembly);
             }
@@ -276,7 +273,7 @@ namespace Exomia.Framework.Core.ContentSerialization
         {
             if (obj == null) { return; }
 
-            if (!s_contentPipeLineWriters.TryGetValue(type, out IContentSerializationWriter writer))
+            if (!s_contentPipeLineWriters.TryGetValue(type, out IContentSerializationWriter? writer))
             {
                 throw new CSWriterException($"The content pipeline has not registered a writer of the type: '{type}'");
             }
@@ -288,7 +285,7 @@ namespace Exomia.Framework.Core.ContentSerialization
             {
                 if (value.Object == null) { continue; }
 
-                if (s_types.TryGetValue(value.Type.Name.ToUpper(), out IType it) ||
+                if (s_types.TryGetValue(value.Type.Name.ToUpper(), out IType? it) ||
                     s_types.TryGetValue(value.Type.BaseType!.Name.ToUpper(), out it))
                 {
                     it.Write(writeHandler, tabSpace, key, value.Object);
@@ -360,7 +357,7 @@ namespace Exomia.Framework.Core.ContentSerialization
         /// </exception>
         internal static object Read(CSStreamReader stream, Type type, string objKey)
         {
-            if (!s_contentPipeLineReaders.TryGetValue(type, out IContentSerializationReader reader))
+            if (!s_contentPipeLineReaders.TryGetValue(type, out IContentSerializationReader? reader))
             {
                 throw new CSReaderException($"The content pipeline has no reader of the type '{type}' registered");
             }
@@ -392,7 +389,7 @@ namespace Exomia.Framework.Core.ContentSerialization
                                 out string key, out string baseTypeInfo, out string genericTypeInfo,
                                 out string dimensionInfo))
                             {
-                                if (s_types.TryGetValue(baseTypeInfo, out IType it))
+                                if (s_types.TryGetValue(baseTypeInfo, out IType? it))
                                 {
                                     if (it.IsPrimitive)
                                     {

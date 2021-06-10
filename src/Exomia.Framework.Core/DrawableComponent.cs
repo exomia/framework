@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,32 +12,19 @@ using Exomia.Framework.Core.Game;
 
 namespace Exomia.Framework.Core
 {
-    /// <summary>
-    ///     A drawable game component.
-    /// </summary>
+    /// <summary> A drawable game component. </summary>
     public abstract class DrawableComponent : Component, IDrawable
     {
-        /// <summary>
-        ///     Occurs when the <see cref="DrawOrder" /> property changes.
-        /// </summary>
+        /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
         public event EventHandler? DrawOrderChanged;
 
-        /// <summary>
-        ///     Occurs when the <see cref="Visible" /> property changes.
-        /// </summary>
+        /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
         public event EventHandler? VisibleChanged;
 
-        /// <summary>
-        ///     The draw order.
-        /// </summary>
-        private int _drawOrder;
-
-        /// <summary>
-        ///     True to show, false to hide.
-        /// </summary>
+        private int  _drawOrder;
         private bool _visible;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public int DrawOrder
         {
             get { return _drawOrder; }
@@ -51,7 +38,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool Visible
         {
             get { return _visible; }
@@ -65,20 +52,16 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc />
-        protected DrawableComponent(string name)
-            : base(name) { }
-
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public virtual bool BeginDraw()
         {
             return _visible;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public abstract void Draw(GameTime gameTime);
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public virtual void EndDraw() { }
     }
 }

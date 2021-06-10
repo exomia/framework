@@ -8,23 +8,17 @@
 
 #endregion
 
+using Exomia.Framework.Core.IOC;
+
 namespace Exomia.Framework.Core
 {
-    /// <summary>
-    ///     An interface to load and unload content.
-    /// </summary>
+    /// <summary> An interface to load and unload content. </summary>
     public interface IContentable
     {
-        /// <summary>
-        ///     Loads the content.
-        /// </summary>
-        /// <param name="registry"> The registry. </param>
-        void LoadContent(IServiceRegistry registry);
+        /// <summary> Loads the content. </summary>
+        void LoadContent();
 
-        /// <summary>
-        ///     Called when graphics resources need to be unloaded.
-        /// </summary>
-        /// <param name="registry"> The registry. </param>
-        void UnloadContent(IServiceRegistry registry);
+        /// <summary> Called when graphics resources need to be unloaded. </summary>
+        void UnloadContent();
     }
 }

@@ -31,9 +31,9 @@ namespace Exomia.Framework.Core.ContentSerialization
         public T Get<T>(string key)
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
-            if (Content.ContainsKey(key))
+            if (Content.TryGetValue(key, out ContentSerializationContextValue? value))
             {
-                return (T)Content[key].Object;
+                return (T)value.Object!;
             }
             return default!;
         }
@@ -56,7 +56,7 @@ namespace Exomia.Framework.Core.ContentSerialization
         /// <param name="obj">Object</param>
         /// <param name="type">typeof Object</param>
         /// <exception cref="CSContextKeyException">CPContextKeyException</exception>
-        internal void Set(string key, object obj, Type type)
+        internal void Set(string key, object? obj, Type type)
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
 
@@ -67,22 +67,22 @@ namespace Exomia.Framework.Core.ContentSerialization
             else
             {
                 throw new CSContextKeyException(
-                    "the context already contains a key with name: '" + key + "'", nameof(key));
+                    $"The context already contains a key with name: '{key}'.", nameof(key));
             }
         }
     }
 
-    struct ContentSerializationContextValue
+    class ContentSerializationContextValue
     {
-        public Type   Type;
-        public object Object;
+        public Type    Type   { get; set; }
+        public object? Object { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ContentSerializationContextValue" /> struct.
         /// </summary>
         /// <param name="type"> The type. </param>
         /// <param name="obj">  The object. </param>
-        public ContentSerializationContextValue(Type type, object obj)
+        public ContentSerializationContextValue(Type type, object? obj)
         {
             Type   = type;
             Object = obj;

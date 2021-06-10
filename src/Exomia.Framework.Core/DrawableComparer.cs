@@ -12,25 +12,22 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework.Core
 {
-    /// <summary>
-    ///     A drawable comparer. This class cannot be inherited.
-    /// </summary>
     sealed class DrawableComparer : IComparer<IDrawable>
     {
-        /// <summary>
-        ///     The default.
-        /// </summary>
+        /// <summary> The default. </summary>
         public static readonly DrawableComparer Default = new DrawableComparer();
 
-        /// <inheritdoc />
-        public int Compare(IDrawable left, IDrawable right)
+        /// <inheritdoc/>
+        public int Compare(IDrawable? left, IDrawable? right)
         {
-            if (Equals(left, right))
-            {
-                return 0;
-            }
+            if (Equals(left, right)) { return 0; }
 
-            return left.DrawOrder < right.DrawOrder ? 1 : -1;
+            if (left is null) { return 1; }
+            if (right is null) { return -1; }
+
+            return left.DrawOrder < right.DrawOrder
+                ? 1
+                : -1;
         }
     }
 }
