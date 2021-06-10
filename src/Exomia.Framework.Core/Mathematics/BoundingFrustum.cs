@@ -416,7 +416,7 @@ namespace Exomia.Framework.Core.Mathematics
                 for (int i = 0; i < 6; i++)
                 {
                     ref readonly Plane    plane       = ref *(((Plane*)ptr) + i);
-                    PlaneIntersectionType planeResult = Collision.PlaneIntersectsFrustum(in plane, in this);
+                    PlaneIntersectionType planeResult = Intersects(in plane);
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (planeResult)
                     {
@@ -486,7 +486,7 @@ namespace Exomia.Framework.Core.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly PlaneIntersectionType Intersects(in Plane plane)
         {
-            return PlaneIntersectsPoints(in plane, GetCorners());
+            return Collision.PlaneIntersectsPoints(in plane, GetCorners());
         }
 
         /// <summary> Checks whether the current BoundingFrustum intersects the specified Plane. </summary>
@@ -495,7 +495,7 @@ namespace Exomia.Framework.Core.Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly void Intersects(in Plane plane, out PlaneIntersectionType result)
         {
-            result = PlaneIntersectsPoints(in plane, GetCorners());
+            result = Collision.PlaneIntersectsPoints(in plane, GetCorners());
         }
 
         /// <summary> Get the width of the frustum at specified depth. </summary>
@@ -735,17 +735,6 @@ namespace Exomia.Framework.Core.Mathematics
             {
                 n.Z = box.Minimum.Z;
             }
-        }
-
-        private readonly PlaneIntersectionType PlaneIntersectsPoints(in Plane plane, Vector3[] points)
-        {
-            PlaneIntersectionType result = Collision.PlaneIntersectsPoint(in plane, in points[0]);
-            for (int i = 1; i < points.Length; i++)
-                if (Collision.PlaneIntersectsPoint(in plane, in points[i]) != result)
-                {
-                    return PlaneIntersectionType.Intersecting;
-                }
-            return result;
         }
 
         private readonly BoundingFrustum GetInsideOutClone()

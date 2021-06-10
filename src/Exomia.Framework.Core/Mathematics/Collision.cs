@@ -751,6 +751,23 @@ namespace Exomia.Framework.Core.Mathematics
                 : PlaneIntersectionType.Intersecting;
         }
 
+        /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a point. </summary>
+        /// <param name="plane"> The plane to test. </param>
+        /// <param name="points"> The points to test. </param>
+        /// <returns> Whether the two objects intersected. </returns>
+        public static PlaneIntersectionType PlaneIntersectsPoints(in Plane plane, Vector3[] points)
+        {
+            PlaneIntersectionType result = PlaneIntersectsPoint(in plane, in points[0]);
+            for (int i = 1; i < points.Length; i++)
+            {
+                if (PlaneIntersectsPoint(in plane, in points[i]) != result)
+                {
+                    return PlaneIntersectionType.Intersecting;
+                }
+            }
+            return result;
+        }
+
         /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="Plane" />. </summary>
         /// <param name="plane1"> The first plane to test. </param>
         /// <param name="plane2"> The second plane to test. </param>
@@ -907,12 +924,15 @@ namespace Exomia.Framework.Core.Mathematics
         /// <returns> Whether the two objects intersected. </returns>
         public static PlaneIntersectionType PlaneIntersectsFrustum(in Plane plane, in BoundingFrustum frustum)
         {
-            PlaneIntersectionType result = plane.Intersects(ref _corners[0]);
-            for (int i = 1; i < _corners.Length; i++)
-                if (plane.Intersects(ref _corners[i]) != result)
+            Vector3[]             corners = frustum.GetCorners();
+            PlaneIntersectionType result  = PlaneIntersectsPoint(in plane, in corners[0]);
+            for (int i = 1; i < corners.Length; i++)
+            {
+                if (PlaneIntersectsPoint(in plane, in corners[i]) != result)
                 {
                     result = PlaneIntersectionType.Intersecting;
                 }
+            }
             return result;
         }
 

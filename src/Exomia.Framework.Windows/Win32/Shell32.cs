@@ -20,8 +20,10 @@ namespace Exomia.Framework.Windows.Win32
 {
     static class Shell32
     {
+        private const string SHELL32 = "shell32.dll";
+
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(ExternDll.Shell32, EntryPoint ="ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
+        [DllImport(SHELL32, EntryPoint ="ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
         internal static extern IntPtr ExtractIcon(IntPtr hInst, string exeFileName, int iconIndex);
     }
 }

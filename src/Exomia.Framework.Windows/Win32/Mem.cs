@@ -17,6 +17,8 @@ namespace Exomia.Framework.Windows.Win32
 {
     internal static unsafe class Mem
     {
+        private const string NTDLL = "ntdll.dll";
+
         /// <summary>
         ///     memcpy call
         ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
@@ -26,7 +28,7 @@ namespace Exomia.Framework.Windows.Win32
         /// <param name="src">source ptr</param>
         /// <param name="count">count of bytes to copy</param>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(ExternDll.Ntdll, EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        [DllImport(NTDLL, EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void Cpy(void* dest, void* src, int count);
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace Exomia.Framework.Windows.Win32
         /// <param name="src">source ptr</param>
         /// <param name="count">count of bytes to copy</param>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(ExternDll.Ntdll, EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        [DllImport(NTDLL, EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void Move(void* dest, void* src, int count);
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace Exomia.Framework.Windows.Win32
         ///     Null if it fails, else a void*.
         /// </returns>
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(ExternDll.Ntdll, EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        [DllImport(NTDLL, EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern void* Set(void* dest, int value, int count);
     }
 }

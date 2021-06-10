@@ -47,11 +47,6 @@
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <PackageId>$(MSBuildProjectName)</PackageId>
@@ -74,9 +69,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.171.3" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Exomia.Vulkan.Api.Windows" Version="0.2.175.10" />
   </ItemGroup>
+
 
   <ItemGroup>
     <Compile Update="Game\Desktop\RenderForm.cs"></Compile>
