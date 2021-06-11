@@ -48,7 +48,7 @@ namespace Exomia.Framework.Core.IOC
             {
                 return service;
             }
-            throw new KeyNotFoundException(nameof(serviceType));
+            throw new KeyNotFoundException(serviceType.ToString());
         }
 
         /// <inheritdoc/>
@@ -62,13 +62,15 @@ namespace Exomia.Framework.Core.IOC
         /// <inheritdoc/>
         public bool TryGet(Type serviceType, out object service)
         {
-            if (_entries.TryGetValue(serviceType, out IEntry? entry))
+            if (_entries.TryGetValue(serviceType, out IEntry? entry) || 
+                serviceType.IsGenericType && _entries.TryGetValue(serviceType.GetGenericTypeDefinition(), out entry))
             {
                 service = entry.ImplementationFactory(this);
                 return true;
             }
 
-            if (_factories.TryGetValue(serviceType.GetGenericTypeDefinition(), out Func<IServiceProvider, Type, object>? implementationFactory))
+            if (_factories.TryGetValue(serviceType, out Func<IServiceProvider, Type, object>? implementationFactory) ||
+                serviceType.IsGenericType && _factories.TryGetValue(serviceType.GetGenericTypeDefinition(), out implementationFactory))
             {
                 service = implementationFactory(this, serviceType);
                 return true;
@@ -163,6 +165,16 @@ namespace Exomia.Framework.Core.IOC
                     null)
                 ?? throw new NullReferenceException();
 
+            MethodInfo serviceProviderTryGetMethodInfo =
+                typeof(IServiceProvider).GetMethod(
+                    nameof(IServiceProvider.TryGet),
+                    BindingFlags.Instance | BindingFlags.Public,
+                    null,
+                    CallingConventions.HasThis,
+                    new[] {typeof(Type), typeof(object).MakeByRefType()},
+                    null)
+                ?? throw new NullReferenceException();
+
             Expression[] parameters = Array.ConvertAll(
                 ctor.GetParameters(),
                 p =>
@@ -196,11 +208,20 @@ namespace Exomia.Framework.Core.IOC
                                 p.ParameterType);
                         }
 
-                        return Expression.Convert(
-                            p.HasDefaultValue
-                                ? Expression.Constant(p.DefaultValue)
-                                : Expression.Default(p.ParameterType),
-                            p.ParameterType);
+                        return p.HasDefaultValue
+                            ? Expression.Constant(p.DefaultValue)
+                            : Expression.Convert(Expression.Default(p.ParameterType), p.ParameterType);
+                    }
+
+                    IoCOptionalAttribute? optionalAttribute = p.GetCustomAttribute<IoCOptionalAttribute>();
+                    if (optionalAttribute != null)
+                    {
+                        ParameterExpression outValueParameterExpression = Expression.Variable(typeof(object), "outValue");
+                        return Expression.Block(new[]{ outValueParameterExpression },
+                            Expression.Condition(
+                            Expression.Call(serviceProviderParameter, serviceProviderTryGetMethodInfo, Expression.Constant(p.ParameterType), outValueParameterExpression),
+                            Expression.Convert(outValueParameterExpression,                                                          p.ParameterType),
+                            Expression.Convert(Expression.Constant(System.Activator.CreateInstance(optionalAttribute.OptionalType)), p.ParameterType)));
                     }
 
                     return (Expression)Expression.Convert(
@@ -236,9 +257,10 @@ namespace Exomia.Framework.Core.IOC
 
         private sealed class SingletonEntry : IEntry
         {
-            private object?                        _instance = null;
+            private object? _instance = null;
+
             /// <inheritdoc/>
-            public  Func<IServiceProvider, object> ImplementationFactory { get; }
+            public Func<IServiceProvider, object> ImplementationFactory { get; }
 
             /// <summary> Initializes a new instance of the <see cref="SingletonEntry" /> class. </summary>
             /// <param name="implementationFactory"> The implementation factory. </param>

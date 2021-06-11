@@ -33,7 +33,7 @@ namespace Exomia.Framework.Core.IOC
                 throw new InvalidCastException("The service must be assignable from the implementation type");
             }
 
-            _typeEntries.Add(service, (implementation, serviceKind));
+            _typeEntries[service] = (implementation, serviceKind);
             return this;
         }
 
@@ -55,7 +55,7 @@ namespace Exomia.Framework.Core.IOC
         /// <inheritdoc/>
         public IServiceCollection Add(Type service, Func<IServiceProvider, object> implementationFactory, ServiceKind serviceKind = ServiceKind.Transient)
         {
-            _factoryEntries.Add(service, (implementationFactory, serviceKind));
+            _factoryEntries[service] = (implementationFactory, serviceKind);
             return this;
         }
 
@@ -69,7 +69,7 @@ namespace Exomia.Framework.Core.IOC
         /// <inheritdoc/>
         public IServiceCollection Add(Type service, Func<IServiceProvider, Type, object> implementationFactory)
         {
-            _factoryTypeEntries.Add(service, implementationFactory);
+            _factoryTypeEntries[service] = implementationFactory;
             return this;
         }
 
