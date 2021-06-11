@@ -20,16 +20,18 @@ namespace Exomia.Framework.Core.IOC
     /// <summary> A service provider. </summary>
     public class ServiceProvider : IServiceProvider
     {
-        private readonly IServiceProvider?        _parent;
-        private readonly Dictionary<Type, IEntry> _entries = new Dictionary<Type, IEntry>(16);
+        private readonly IServiceProvider?                                      _parent;
+        private readonly Dictionary<Type, IEntry>                               _entries   = new(16);
+        private readonly Dictionary<Type, Func<IServiceProvider, Type, object>> _factories = new(16);
 
-        /// <summary> Prevents a default instance of the <see cref="ServiceProvider"/> class from being created. </summary>
+        /// <summary> Initializes a new instance of the <see cref="ServiceProvider"/> class. </summary>
+        /// <param name="parent"> The parent. </param>
         private ServiceProvider(IServiceProvider? parent)
         {
             _parent = parent;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public TService Get<TService>()
         {
             if (TryGet(typeof(TService), out object service))
@@ -39,7 +41,7 @@ namespace Exomia.Framework.Core.IOC
             throw new KeyNotFoundException(nameof(TService));
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public object Get(Type serviceType)
         {
             if (TryGet(serviceType, out object service))
@@ -49,7 +51,7 @@ namespace Exomia.Framework.Core.IOC
             throw new KeyNotFoundException(nameof(serviceType));
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool TryGet<TService>(out TService service)
         {
             bool result = TryGet(typeof(TService), out object s);
@@ -57,12 +59,18 @@ namespace Exomia.Framework.Core.IOC
             return result;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public bool TryGet(Type serviceType, out object service)
         {
             if (_entries.TryGetValue(serviceType, out IEntry? entry))
             {
                 service = entry.ImplementationFactory(this);
+                return true;
+            }
+
+            if (_factories.TryGetValue(serviceType.GetGenericTypeDefinition(), out Func<IServiceProvider, Type, object>? implementationFactory))
+            {
+                service = implementationFactory(this, serviceType);
                 return true;
             }
 
@@ -75,52 +83,52 @@ namespace Exomia.Framework.Core.IOC
             return false;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public IServiceProvider CreateScope(IServiceCollection? serviceCollection = null)
         {
             return (serviceCollection ?? new ServiceCollection())
                 .Build(this);
         }
 
-        /// <summary> Creates a new <see cref="IServiceProvider"/>. </summary>
-        /// <param name="parent">         The parent. </param>
-        /// <param name="typeEntries">    The type entries. </param>
-        /// <param name="factoryEntries"> The factory entries. </param>
-        /// <returns> An <see cref="IServiceProvider"/>. </returns>
-        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         internal static IServiceProvider Create(
             IServiceProvider?                                                parent,
             IDictionary<Type, (Type, ServiceKind)>                           typeEntries,
-            IDictionary<Type, (Func<IServiceProvider, object>, ServiceKind)> factoryEntries)
+            IDictionary<Type, (Func<IServiceProvider, object>, ServiceKind)> factoryEntries,
+            IDictionary<Type, Func<IServiceProvider, Type, object>>          factories)
         {
-            ServiceProvider serviceProvider = new ServiceProvider(parent);
+            ServiceProvider serviceProvider = new(parent);
 
-            foreach ((Type key, (Type implementation, ServiceKind serviceKind)) in typeEntries)
+            foreach ((Type service, (Type implementation, ServiceKind serviceKind)) in typeEntries)
             {
                 switch (serviceKind)
                 {
                     case ServiceKind.Transient:
-                        serviceProvider._entries.Add(key, new Entry(CreateImplementationFactory(implementation)));
+                        serviceProvider._entries.Add(service, new Entry(CreateImplementationFactory(implementation)));
                         break;
                     case ServiceKind.Singleton:
-                        serviceProvider._entries.Add(key, new SingletonEntry(CreateImplementationFactory(implementation)));
+                        serviceProvider._entries.Add(service, new SingletonEntry(CreateImplementationFactory(implementation)));
                         break;
                     default: throw new IndexOutOfRangeException(nameof(serviceKind));
                 }
             }
 
-            foreach ((Type key, (Func<IServiceProvider, object> implementationFactory, ServiceKind serviceKind)) in factoryEntries)
+            foreach ((Type service, (Func<IServiceProvider, object> implementationFactory, ServiceKind serviceKind)) in factoryEntries)
             {
                 switch (serviceKind)
                 {
                     case ServiceKind.Transient:
-                        serviceProvider._entries.Add(key, new Entry(implementationFactory));
+                        serviceProvider._entries.Add(service, new Entry(implementationFactory));
                         break;
                     case ServiceKind.Singleton:
-                        serviceProvider._entries.Add(key, new SingletonEntry(implementationFactory));
+                        serviceProvider._entries.Add(service, new SingletonEntry(implementationFactory));
                         break;
                     default: throw new IndexOutOfRangeException(nameof(serviceKind));
                 }
+            }
+
+            foreach ((Type service, Func<IServiceProvider, Type, object> implementationFactory) in factories)
+            {
+                serviceProvider._factories.Add(service, implementationFactory);
             }
 
             // INFO:
@@ -168,7 +176,7 @@ namespace Exomia.Framework.Core.IOC
                                 BindingFlags.Instance | BindingFlags.Public)
                             ?? throw new NullReferenceException();
 
-                        return (Expression)Expression.Convert(
+                        return Expression.Convert(
                             Expression.Call(
                                 Expression.Call(
                                     serviceProviderParameter,
@@ -183,22 +191,21 @@ namespace Exomia.Framework.Core.IOC
                     {
                         if (useDefaultAttribute.DefaultValue != null)
                         {
-                            return (Expression)Expression.Convert(
+                            return Expression.Convert(
                                 Expression.Constant(useDefaultAttribute.DefaultValue),
                                 p.ParameterType);
                         }
 
-                        return (Expression)Expression.Convert(
-                            p.HasDefaultValue 
-                                ? Expression.Constant(p.DefaultValue) 
+                        return Expression.Convert(
+                            p.HasDefaultValue
+                                ? Expression.Constant(p.DefaultValue)
                                 : Expression.Default(p.ParameterType),
                             p.ParameterType);
-
                     }
 
                     return (Expression)Expression.Convert(
-                            Expression.Call(serviceProviderParameter, serviceProviderGetMethodInfo, Expression.Constant(p.ParameterType)),
-                            p.ParameterType);
+                        Expression.Call(serviceProviderParameter, serviceProviderGetMethodInfo, Expression.Constant(p.ParameterType)),
+                        p.ParameterType);
                 });
 
             return (Func<IServiceProvider, object>)Expression.Lambda(
@@ -215,6 +222,7 @@ namespace Exomia.Framework.Core.IOC
 
         private sealed class Entry : IEntry
         {
+            /// <inheritdoc/>
             public Func<IServiceProvider, object> ImplementationFactory { get; }
 
             /// <summary> Initializes a new instance of the <see cref="Entry" /> class. </summary>
@@ -229,6 +237,7 @@ namespace Exomia.Framework.Core.IOC
         private sealed class SingletonEntry : IEntry
         {
             private object?                        _instance = null;
+            /// <inheritdoc/>
             public  Func<IServiceProvider, object> ImplementationFactory { get; }
 
             /// <summary> Initializes a new instance of the <see cref="SingletonEntry" /> class. </summary>

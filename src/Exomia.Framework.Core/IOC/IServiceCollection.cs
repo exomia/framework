@@ -53,6 +53,19 @@ namespace Exomia.Framework.Core.IOC
         IServiceCollection Add<TService>(Func<IServiceProvider, TService> implementationFactory, ServiceKind serviceKind = ServiceKind.Transient)
             where TService : class;
 
+        /// <summary> Adds a service to the <see cref="IServiceCollection" /> via the <paramref name="implementationFactory" />. </summary>
+        /// <param name="service">               The service type. </param>
+        /// <param name="implementationFactory"> The implementation factory. </param>
+        /// <returns> An <see cref="IServiceCollection" />. </returns>
+        IServiceCollection Add(Type service, Func<IServiceProvider, Type, object> implementationFactory);
+
+        /// <summary> Adds a service to the <see cref="IServiceCollection" /> via the <paramref name="implementationFactory" />. </summary>
+        /// <typeparam name="TService"> Type of the service. </typeparam>
+        /// <param name="implementationFactory"> The implementation factory. </param>
+        /// <returns> An <see cref="IServiceCollection" />. </returns>
+        IServiceCollection Add<TService>(Func<IServiceProvider, Type, TService> implementationFactory)
+            where TService : class;
+
         /// <summary> Builds the <see cref="IServiceCollection" /> to provide a <see cref="IServiceProvider" /> to get services from. </summary>
         /// <param name="serviceProvider"> (Optional) The parented service provider. </param>
         /// <returns> An <see cref="IServiceProvider" />. </returns>
