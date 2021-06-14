@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -19,9 +19,7 @@ using Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 
 namespace Exomia.Framework.Core.Content
 {
-    /// <summary>
-    ///     Manager for contents. This class cannot be inherited.
-    /// </summary>
+    /// <summary> Manager for contents. This class cannot be inherited. </summary>
     public sealed class ContentManager : IContentManager
     {
         private const int INITIAL_QUEUE_SIZE = 16;
@@ -78,7 +76,7 @@ namespace Exomia.Framework.Core.Content
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
                 if (a.FullName!.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)) { continue; }
-                if (a.FullName!.StartsWith("ms", StringComparison.InvariantCultureIgnoreCase)) { continue; }
+                if (a.FullName!.StartsWith("ms",     StringComparison.InvariantCultureIgnoreCase)) { continue; }
 
                 foreach (Type t in a.GetTypes())
                 {
@@ -98,9 +96,9 @@ namespace Exomia.Framework.Core.Content
                             ContentResolverAttribute? contentResolverAttribute = t.GetCustomAttribute<ContentResolverAttribute>(false);
                             resolvers.Add(
                                 (contentResolverAttribute?.Order ?? 0,
-                                 System.Activator.CreateInstance(t)
-                                     as IContentResolver ?? throw new TypeLoadException(
-                                     $"Can't create an instance of {nameof(IContentResolver)} from type: {t.AssemblyQualifiedName}")));
+                                    System.Activator.CreateInstance(t)
+                                        as IContentResolver ?? throw new TypeLoadException(
+                                        $"Can't create an instance of {nameof(IContentResolver)} from type: {t.AssemblyQualifiedName}")));
                         }
 
                         if (typeof(IEmbeddedResourceResolver).IsAssignableFrom(t))
@@ -108,9 +106,9 @@ namespace Exomia.Framework.Core.Content
                             ContentResolverAttribute? contentResolverAttribute = t.GetCustomAttribute<ContentResolverAttribute>(false);
                             embeddedResourceResolvers.Add(
                                 (contentResolverAttribute?.Order ?? 0,
-                                 System.Activator.CreateInstance(t)
-                                     as IEmbeddedResourceResolver ?? throw new TypeLoadException(
-                                     $"Can't create an instance of {nameof(IEmbeddedResourceResolver)} from type: {t.AssemblyQualifiedName}")));
+                                    System.Activator.CreateInstance(t)
+                                        as IEmbeddedResourceResolver ?? throw new TypeLoadException(
+                                        $"Can't create an instance of {nameof(IEmbeddedResourceResolver)} from type: {t.AssemblyQualifiedName}")));
                         }
                     }
                 }
@@ -129,14 +127,6 @@ namespace Exomia.Framework.Core.Content
             }
 
             embeddedResourceResolvers.Clear();
-        }
-
-        /// <summary>
-        ///     destructor.
-        /// </summary>
-        ~ContentManager()
-        {
-            Dispose(false);
         }
 
         /// <inheritdoc />
@@ -326,18 +316,6 @@ namespace Exomia.Framework.Core.Content
             return Unload(typeof(T), assetName);
         }
 
-        /// <summary>
-        ///     Resolve stream.
-        /// </summary>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <returns>
-        ///     A Stream.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
-        /// <exception cref="AssetNotFoundException">
-        ///     Thrown when an Asset Not Found error condition
-        ///     occurs.
-        /// </exception>
         private Stream ResolveStream(string assetName)
         {
             List<IContentResolver> resolvers;
@@ -369,19 +347,6 @@ namespace Exomia.Framework.Core.Content
             throw new AssetNotFoundException(assetName, lastException);
         }
 
-        /// <summary>
-        ///     Resolve embedded resource stream.
-        /// </summary>
-        /// <param name="assetType"> Type of the asset. </param>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <returns>
-        ///     A Stream.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
-        /// <exception cref="AssetNotFoundException">
-        ///     Thrown when an Asset Not Found error condition
-        ///     occurs.
-        /// </exception>
         private Stream ResolveEmbeddedResourceStream(Type assetType, string assetName)
         {
             List<IEmbeddedResourceResolver> resolvers;
@@ -413,14 +378,6 @@ namespace Exomia.Framework.Core.Content
             throw new AssetNotFoundException(assetName, lastException);
         }
 
-        /// <summary>
-        ///     Gets asset locker.
-        /// </summary>
-        /// <param name="assetKey"> The asset key. </param>
-        /// <param name="create">   True to create. </param>
-        /// <returns>
-        ///     The asset locker.
-        /// </returns>
         private object? GetAssetLocker(AssetKey assetKey, bool create)
         {
             lock (_assetLockers)
@@ -434,16 +391,6 @@ namespace Exomia.Framework.Core.Content
             }
         }
 
-        /// <summary>
-        ///     Loads asset with dynamic content reader.
-        /// </summary>
-        /// <param name="assetType"> Type of the asset. </param>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <param name="stream">    The stream. </param>
-        /// <returns>
-        ///     The asset with dynamic content reader.
-        /// </returns>
-        /// <exception cref="NotSupportedException"> Thrown when the requested operation is not supported. </exception>
         private object LoadAssetWithDynamicContentReader(Type assetType, string assetName, Stream stream)
         {
             ContentReaderParameters parameters =
@@ -477,7 +424,7 @@ namespace Exomia.Framework.Core.Content
                 }
 
                 return contentReader.ReadContent(this, ref parameters)
-                    ?? throw new NotSupportedException(
+                       ?? throw new NotSupportedException(
                            $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
             }
             finally
@@ -491,9 +438,10 @@ namespace Exomia.Framework.Core.Content
 
         private readonly struct AssetKey : IEquatable<AssetKey>
         {
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="ContentManager" /> class.
-            /// </summary>
+            private readonly Type   _assetType;
+            private readonly string _assetName;
+
+            /// <summary> Initializes a new instance of the <see cref="ContentManager" /> class. </summary>
             /// <param name="assetType"> Type of the asset. </param>
             /// <param name="assetName"> Name of the asset. </param>
             public AssetKey(Type assetType, string assetName)
@@ -502,8 +450,11 @@ namespace Exomia.Framework.Core.Content
                 _assetName = assetName;
             }
 
-            private readonly Type   _assetType;
-            private readonly string _assetName;
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return (_assetType.GetHashCode() * 397) ^ _assetName.GetHashCode();
+            }
 
             /// <inheritdoc />
             public bool Equals(AssetKey other)
@@ -518,33 +469,19 @@ namespace Exomia.Framework.Core.Content
                 return obj is AssetKey key && Equals(key);
             }
 
-            /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return (_assetType.GetHashCode() * 397) ^ _assetName.GetHashCode();
-            }
-
-            /// <summary>
-            ///     Equality operator.
-            /// </summary>
+            /// <summary> Equality operator. </summary>
             /// <param name="left">  The left. </param>
             /// <param name="right"> The right. </param>
-            /// <returns>
-            ///     The result of the operation.
-            /// </returns>
+            /// <returns> The result of the operation. </returns>
             public static bool operator ==(AssetKey left, AssetKey right)
             {
                 return left.Equals(right);
             }
 
-            /// <summary>
-            ///     Inequality operator.
-            /// </summary>
+            /// <summary> Inequality operator. </summary>
             /// <param name="left">  The left. </param>
             /// <param name="right"> The right. </param>
-            /// <returns>
-            ///     The result of the operation.
-            /// </returns>
+            /// <returns> The result of the operation. </returns>
             public static bool operator !=(AssetKey left, AssetKey right)
             {
                 return !left.Equals(right);
@@ -553,19 +490,8 @@ namespace Exomia.Framework.Core.Content
 
         #region IDisposable Support
 
-        /// <summary>
-        ///     True if disposed.
-        /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
-        ///     unmanaged resources.
-        /// </summary>
-        /// <param name="disposing">
-        ///     True to release both managed and unmanaged resources; false to
-        ///     release only unmanaged resources.
-        /// </param>
         private void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -594,10 +520,13 @@ namespace Exomia.Framework.Core.Content
             }
         }
 
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting
-        ///     unmanaged resources.
-        /// </summary>
+        /// <summary> Finalizes an instance of the <see cref="ContentManager" /> class. </summary>
+        ~ContentManager()
+        {
+            Dispose(false);
+        }
+
+        /// <summary> Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
         public void Dispose()
         {
             Dispose(true);

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,11 +14,8 @@ using System.Reflection;
 
 namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
 {
-    /// <summary>
-    ///     An embedded resource stream resolver.
-    /// </summary>
     [ContentResolver(int.MaxValue)]
-    class EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+    internal class EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
         /// <inheritdoc />
         public bool Exists(Type assetType, string assetName, out Assembly assembly)
@@ -27,20 +24,11 @@ namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
         }
 
         /// <inheritdoc />
-        public Stream Resolve(Assembly assembly, string assetName)
+        public Stream? Resolve(Assembly assembly, string assetName)
         {
             return GetManifestResourceStreamInternal(assembly, assetName);
         }
 
-        /// <summary>
-        ///     Exists internal.
-        /// </summary>
-        /// <param name="assetType"> Type of the asset. </param>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <param name="assembly">  [out] The assembly. </param>
-        /// <returns>
-        ///     True if it succeeds, false if it fails.
-        /// </returns>
         internal static bool ExistsInternal(Type assetType, string assetName, out Assembly assembly)
         {
             assembly = assetType.Assembly;
@@ -67,27 +55,11 @@ namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
             return false;
         }
 
-        /// <summary>
-        ///     Gets manifest resource stream internal.
-        /// </summary>
-        /// <param name="assembly">  [out] The assembly. </param>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <returns>
-        ///     The manifest resource stream internal.
-        /// </returns>
-        internal static Stream GetManifestResourceStreamInternal(Assembly assembly, string assetName)
+        internal static Stream? GetManifestResourceStreamInternal(Assembly assembly, string assetName)
         {
             return assembly.GetManifestResourceStream(GetAssetName(assetName, assembly));
         }
 
-        /// <summary>
-        ///     Gets the asset name.
-        /// </summary>
-        /// <param name="assetName"> Name of the asset. </param>
-        /// <param name="assembly">  [out] The assembly. </param>
-        /// <returns>
-        ///     The asset name.
-        /// </returns>
         private static string GetAssetName(string assetName, Assembly assembly)
         {
             return $"{assembly.GetName().Name}.{assetName}";

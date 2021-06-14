@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,52 +14,29 @@ using System.Collections.Generic;
 
 namespace Exomia.Framework.Core.Collections
 {
-    /// <summary>
-    ///     List of linked. This class cannot be inherited.
-    /// </summary>
+    /// <summary> List of linked. This class cannot be inherited. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     public sealed class LinkedList<T> : IEnumerable<T>
     {
-        private LinkedListNode? _head;
-
-        /// <summary>
-        ///     Gets the number of.
-        /// </summary>
-        /// <value>
-        ///     The count.
-        /// </value>
+        /// <summary> Gets the number of. </summary>
+        /// <value> The count. </value>
         public uint Count { get; private set; }
 
-        /// <summary>
-        ///     Gets the first.
-        /// </summary>
-        /// <value>
-        ///     The first.
-        /// </value>
-        public LinkedListNode? First
-        {
-            get { return _head; }
-        }
+        /// <summary> Gets the first. </summary>
+        /// <value> The first. </value>
+        public LinkedListNode? First { get; private set; }
 
-        /// <summary>
-        ///     Gets the last.
-        /// </summary>
-        /// <value>
-        ///     The last.
-        /// </value>
+        /// <summary> Gets the last. </summary>
+        /// <value> The last. </value>
         public LinkedListNode? Last
         {
-            get { return _head?.Previous; }
+            get { return First?.Previous; }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the &lt;see cref="LinkedList&lt;T&gt;"/&gt; class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="LinkedList{T}" /> class. </summary>
         public LinkedList() { }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="LinkedList{T}" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="LinkedList{T}" /> class. </summary>
         /// <param name="collection"> The collection. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public LinkedList(IEnumerable<T> collection)
@@ -71,12 +48,6 @@ namespace Exomia.Framework.Core.Collections
             }
         }
 
-        /// <summary>
-        ///     Gets the enumerator.
-        /// </summary>
-        /// <returns>
-        ///     The enumerator.
-        /// </returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -88,230 +59,177 @@ namespace Exomia.Framework.Core.Collections
             return GetEnumerator();
         }
 
-        /// <summary>
-        ///     Adds a first.
-        /// </summary>
+        /// <summary> Adds a first. </summary>
         /// <param name="item"> The item. </param>
-        /// <returns>
-        ///     A list of.
-        /// </returns>
+        /// <returns> A list of. </returns>
         public LinkedListNode AddFirst(in T item)
         {
             LinkedListNode node = new LinkedListNode(item);
-            if (_head == null)
+            if (First == null)
             {
                 node.Next     = node;
                 node.Previous = node;
-                _head         = node;
+                First         = node;
             }
             else
             {
-                node.Next     = _head;
-                node.Previous = _head.Previous;
+                node.Next     = First;
+                node.Previous = First.Previous;
 
-                _head.Previous!.Next = node;
-                _head.Previous       = node;
+                First.Previous!.Next = node;
+                First.Previous       = node;
 
-                _head = node;
+                First = node;
             }
             Count++;
             return node;
         }
 
-        /// <summary>
-        ///     Adds a last.
-        /// </summary>
+        /// <summary> Adds a last. </summary>
         /// <param name="item"> The item. </param>
-        /// <returns>
-        ///     A list of.
-        /// </returns>
+        /// <returns> A list of. </returns>
         public LinkedListNode AddLast(in T item)
         {
             LinkedListNode node = new LinkedListNode(item);
-            if (_head == null)
+            if (First == null)
             {
                 node.Next     = node;
                 node.Previous = node;
-                _head         = node;
+                First         = node;
             }
             else
             {
-                node.Next     = _head;
-                node.Previous = _head.Previous;
+                node.Next     = First;
+                node.Previous = First.Previous;
 
-                _head.Previous!.Next = node;
-                _head.Previous       = node;
+                First.Previous!.Next = node;
+                First.Previous       = node;
             }
             Count++;
             return node;
         }
 
-        /// <summary>
-        ///     Clears this object to its blank/initial state.
-        /// </summary>
+        /// <summary> Clears this object to its blank/initial state. </summary>
         public void Clear()
         {
-            _head = null;
+            First = null;
             Count = 0;
         }
 
-        /// <summary>
-        ///     Enumerates as enumerable in this collection.
-        /// </summary>
-        /// <returns>
-        ///     An enumerator that allows foreach to be used to process as enumerable in this collection.
-        /// </returns>
+        /// <summary> Enumerates as enumerable in this collection. </summary>
+        /// <returns> An enumerator that allows foreach to be used to process as enumerable in this collection. </returns>
         public IEnumerable<LinkedListNode> AsEnumerable()
         {
-            if (_head != null)
+            if (First != null)
             {
-                LinkedListNode node = _head;
+                LinkedListNode node = First;
                 do
                 {
                     yield return node;
                     node = node.Next!;
-                } while (node != _head);
+                }
+                while (node != First);
             }
         }
 
-        /// <summary>
-        ///     Applies an operation to all items in this collection.
-        /// </summary>
+        /// <summary> Applies an operation to all items in this collection. </summary>
         /// <param name="action"> The action. </param>
         public void ForEach(Action<LinkedListNode> action)
         {
-            if (action != null && _head != null)
+            if (action != null && First != null)
             {
-                LinkedListNode node = _head;
+                LinkedListNode node = First;
                 do
                 {
                     action(node);
                     node = node.Next!;
-                } while (node != _head);
+                }
+                while (node != First);
             }
         }
 
-        /// <summary>
-        ///     Removes the given node.
-        /// </summary>
+        /// <summary> Removes the given node. </summary>
         /// <param name="node"> The node to remove. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public void Remove(LinkedListNode node)
         {
             if (node == null) { throw new ArgumentNullException(nameof(node)); }
-            if (node.Next == node) { _head = null; }
+            if (node.Next == node) { First = null; }
             else
             {
                 node.Previous!.Next = node.Next;
                 node.Next!.Previous = node.Previous;
-                if (_head == node) { _head = node.Next; }
+                if (First == node) { First = node.Next; }
             }
             node.Invalidate();
             Count--;
         }
 
-        /// <summary>
-        ///     Removes the first.
-        /// </summary>
+        /// <summary> Removes the first. </summary>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         public void RemoveFirst()
         {
-            if (_head == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(_head);
+            if (First == null) { throw new InvalidOperationException("the linked list is empty."); }
+            Remove(First);
         }
 
-        /// <summary>
-        ///     Removes the last.
-        /// </summary>
+        /// <summary> Removes the last. </summary>
         /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
         public void RemoveLast()
         {
-            if (_head == null) { throw new InvalidOperationException("the linked list is empty."); }
-            Remove(_head.Previous!);
+            if (First == null) { throw new InvalidOperationException("the linked list is empty."); }
+            Remove(First.Previous!);
         }
 
-        /// <summary>
-        ///     Gets the enumerator.
-        /// </summary>
-        /// <returns>
-        ///     The enumerator.
-        /// </returns>
+        /// <summary> Gets the enumerator. </summary>
+        /// <returns> The enumerator. </returns>
         public Enumerator GetEnumerator()
         {
             return new Enumerator(this);
         }
 
-        /// <summary>
-        ///     A linked list node. This class cannot be inherited.
-        /// </summary>
+        /// <summary> A linked list node. This class cannot be inherited. </summary>
         public sealed class LinkedListNode
         {
-            /// <summary>
-            ///     The item.
-            /// </summary>
+            /// <summary> The item. </summary>
             public T Item;
 
-            /// <summary>
-            ///     Gets the next.
-            /// </summary>
-            /// <value>
-            ///     The next.
-            /// </value>
+            /// <summary> Gets the next. </summary>
+            /// <value> The next. </value>
             public LinkedListNode? Next { get; internal set; }
 
-            /// <summary>
-            ///     Gets the previous.
-            /// </summary>
-            /// <value>
-            ///     The previous.
-            /// </value>
+            /// <summary> Gets the previous. </summary>
+            /// <value> The previous. </value>
             public LinkedListNode? Previous { get; internal set; }
 
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="LinkedListNode" /> class.
-            /// </summary>
-            /// <param name="value"> The value. </param>
             internal LinkedListNode(in T value)
             {
                 Item = value;
             }
 
-            /// <summary>
-            ///     Invalidates this object.
-            /// </summary>
+            /// <summary> Implicit cast that converts the given LinkedListNode to a T. </summary>
+            /// <param name="node"> The node. </param>
+            /// <returns> The result of the operation. </returns>
+            public static implicit operator T(LinkedListNode node)
+            {
+                return node.Item;
+            }
+
             internal void Invalidate()
             {
                 Next     = null;
                 Previous = null;
             }
-
-            /// <summary>
-            ///     Implicit cast that converts the given LinkedListNode to a T.
-            /// </summary>
-            /// <param name="node"> The node. </param>
-            /// <returns>
-            ///     The result of the operation.
-            /// </returns>
-            public static implicit operator T(LinkedListNode node)
-            {
-                return node.Item;
-            }
         }
 
-        /// <summary>
-        ///     An enumerator.
-        /// </summary>
+        /// <summary> An enumerator. </summary>
         public struct Enumerator : IEnumerator<T>
         {
             private readonly LinkedList<T>   _list;
             private          LinkedListNode? _node;
-            private          T               _current;
 
             /// <inheritdoc />
-            public T Current
-            {
-                get { return _current; }
-            }
+            public T Current { get; private set; }
 
             /// <inheritdoc />
             object IEnumerator.Current
@@ -319,15 +237,13 @@ namespace Exomia.Framework.Core.Collections
                 get { return Current!; }
             }
 
-            /// <summary>
-            ///     Initializes a new instance of the &lt;see cref="LinkedList&lt;T&gt;"/&gt; class.
-            /// </summary>
+            /// <summary> Initializes a new instance of the &lt;see cref="LinkedList&lt;T&gt;"/&gt; class. </summary>
             /// <param name="list"> The list. </param>
             public Enumerator(LinkedList<T> list)
             {
-                _list    = list;
-                _node    = list._head;
-                _current = default!;
+                _list   = list;
+                _node   = list.First;
+                Current = default!;
             }
 
             /// <inheritdoc />
@@ -337,9 +253,9 @@ namespace Exomia.Framework.Core.Collections
                 {
                     return false;
                 }
-                _current = _node.Item;
-                _node    = _node.Next;
-                if (_node == _list._head)
+                Current = _node.Item;
+                _node   = _node.Next;
+                if (_node == _list.First)
                 {
                     _node = null;
                 }
@@ -349,8 +265,8 @@ namespace Exomia.Framework.Core.Collections
             /// <inheritdoc />
             public void Reset()
             {
-                _current = default!;
-                _node    = _list._head;
+                Current = default!;
+                _node   = _list.First;
             }
 
             /// <inheritdoc />

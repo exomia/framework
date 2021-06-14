@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -22,94 +22,74 @@ using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
-    /// <summary>
-    ///     An object for persisting content data.
-    /// </summary>
+    /// <summary> An object for persisting content data. </summary>
     public static class ContentSerializer
     {
-        /// <summary>
-        ///     DEFAULT_EXTENSION.
-        /// </summary>
+        /// <summary> DEFAULT_EXTENSION. </summary>
         public const string DEFAULT_EXTENSION = ".e0";
 
-        /// <summary>
-        ///     The tabspace.
-        /// </summary>
         internal const string TABSPACE = "\t";
 
-        /// <summary>
-        ///     The assemblies.
-        /// </summary>
-        internal static Dictionary<string, Assembly> s_assemblies = new Dictionary<string, Assembly>();
+        internal static Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
+        internal static Dictionary<string, IType>    Types      = new Dictionary<string, IType>();
 
-        /// <summary>
-        ///     The types.
-        /// </summary>
-        internal static Dictionary<string, IType> s_types = new Dictionary<string, IType>();
+        private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders = new Dictionary<Type, IContentSerializationReader>();
+        private static readonly Dictionary<Type, IContentSerializationWriter> s_contentPipeLineWriters = new Dictionary<Type, IContentSerializationWriter>();
 
-        private static readonly Dictionary<Type, IContentSerializationReader> s_contentPipeLineReaders =
-            new Dictionary<Type, IContentSerializationReader>();
-
-        private static readonly Dictionary<Type, IContentSerializationWriter> s_contentPipeLineWriters =
-            new Dictionary<Type, IContentSerializationWriter>();
-
-        /// <summary>
-        ///     Initializes static members of the <see cref="ContentSerializer" /> class.
-        /// </summary>
         static ContentSerializer()
         {
             #region ADD TYPES
 
             IType pt = new PrimitiveType<bool>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<byte>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<sbyte>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<char>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<short>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<ushort>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<int>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<uint>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<long>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<ulong>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<float>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new PrimitiveType<double>();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new StringType();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new EnumType();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new ArrayType();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new ListType();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             pt = new DictionaryType();
-            s_types.Add(pt.TypeName, pt);
+            Types.Add(pt.TypeName, pt);
 
             #endregion
 
@@ -119,7 +99,6 @@ namespace Exomia.Framework.Core.ContentSerialization
             {
                 if (a.FullName == null ||
                     a.FullName.StartsWith("System") ||
-                    a.FullName.StartsWith("SharpDX") ||
                     a.FullName.StartsWith("ms")) { continue; }
 
                 foreach (Type t in a.GetTypes())
@@ -152,13 +131,11 @@ namespace Exomia.Framework.Core.ContentSerialization
             #endregion
         }
 
-        /// <summary>
-        ///     Adds a new <see cref="IContentSerializationReader" /> to the content pipeline.
-        /// </summary>
+        /// <summary> Adds a new <see cref="IContentSerializationReader" /> to the content pipeline. </summary>
         /// <param name="type">   The type the reader can read. </param>
         /// <param name="reader"> The <see cref="IContentSerializationReader" />. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// <exception cref="CSReaderException">     Thrown when a Create struct Reader error condition occurs. </exception>
+        /// <exception cref="CsReaderException">     Thrown when a Create struct Reader error condition occurs. </exception>
         public static void AddReader(Type type, IContentSerializationReader reader)
         {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
@@ -168,13 +145,11 @@ namespace Exomia.Framework.Core.ContentSerialization
                 AddAssembly(type.Assembly);
                 return;
             }
-            throw new CSReaderException(
+            throw new CsReaderException(
                 "The content pipeline has already registered a reader of the type: '" + type + "'");
         }
 
-        /// <summary>
-        ///     Adds a new content pipeline reader to the content pipeline.
-        /// </summary>
+        /// <summary> Adds a new content pipeline reader to the content pipeline. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="reader"> The <see cref="IContentSerializationReader" />. </param>
         public static void AddReader<T>(IContentSerializationReader reader)
@@ -182,13 +157,11 @@ namespace Exomia.Framework.Core.ContentSerialization
             AddReader(typeof(T), reader);
         }
 
-        /// <summary>
-        ///     Adds a new <see cref="IContentSerializationWriter" /> to the content pipeline.
-        /// </summary>
+        /// <summary> Adds a new <see cref="IContentSerializationWriter" /> to the content pipeline. </summary>
         /// <param name="type">   The type the writer can write. </param>
         /// <param name="writer"> The <see cref="IContentSerializationWriter" />. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// <exception cref="CSWriterException">     Thrown when a Create struct Writer error condition occurs. </exception>
+        /// <exception cref="CsWriterException">     Thrown when a Create struct Writer error condition occurs. </exception>
         public static void AddWriter(Type type, IContentSerializationWriter writer)
         {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
@@ -197,13 +170,11 @@ namespace Exomia.Framework.Core.ContentSerialization
                 s_contentPipeLineWriters.Add(type, writer);
                 return;
             }
-            throw new CSWriterException(
+            throw new CsWriterException(
                 "The content pipeline has already registered a writer of the type: '" + type + "'");
         }
 
-        /// <summary>
-        ///     Adds a new content pipeline writer to the content pipeline.
-        /// </summary>
+        /// <summary> Adds a new content pipeline writer to the content pipeline. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="writer"> The <see cref="IContentSerializationWriter" />. </param>
         public static void AddWriter<T>(IContentSerializationWriter writer)
@@ -214,17 +185,15 @@ namespace Exomia.Framework.Core.ContentSerialization
         private static void AddAssembly(Assembly assembly)
         {
             string? assemblyName = assembly.GetName().Name;
-            if (assemblyName != null && !s_assemblies.ContainsKey(assemblyName))
+            if (assemblyName != null && !Assemblies.ContainsKey(assemblyName))
             {
-                s_assemblies.Add(assemblyName, assembly);
+                Assemblies.Add(assemblyName, assembly);
             }
         }
 
         #region ContentWriter
 
-        /// <summary>
-        ///     Write a given object into the asset on the file system.
-        /// </summary>
+        /// <summary> Write a given object into the asset on the file system. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="assetName"> Name of the asset. </param>
         /// <param name="obj">       The object. </param>
@@ -258,24 +227,13 @@ namespace Exomia.Framework.Core.ContentSerialization
             }
         }
 
-        /// <summary>
-        ///     Write a given object into the asset on the file system.
-        /// </summary>
-        /// <param name="writeHandler"> The write handler. </param>
-        /// <param name="tabSpace">     The tab space. </param>
-        /// <param name="obj">          The Object. </param>
-        /// <param name="type">         The type the reader can read. </param>
-        /// <exception cref="CSWriterException">
-        ///     Thrown when a Create struct Writer error condition
-        ///     occurs.
-        /// </exception>
         internal static void Write(Action<string, string> writeHandler, string tabSpace, object? obj, Type type)
         {
             if (obj == null) { return; }
 
             if (!s_contentPipeLineWriters.TryGetValue(type, out IContentSerializationWriter? writer))
             {
-                throw new CSWriterException($"The content pipeline has not registered a writer of the type: '{type}'");
+                throw new CsWriterException($"The content pipeline has not registered a writer of the type: '{type}'");
             }
 
             ContentSerializationContext context = new ContentSerializationContext();
@@ -285,8 +243,8 @@ namespace Exomia.Framework.Core.ContentSerialization
             {
                 if (value.Object == null) { continue; }
 
-                if (s_types.TryGetValue(value.Type.Name.ToUpper(), out IType? it) ||
-                    s_types.TryGetValue(value.Type.BaseType!.Name.ToUpper(), out it))
+                if (Types.TryGetValue(value.Type.Name.ToUpper(),           out IType? it) ||
+                    Types.TryGetValue(value.Type.BaseType!.Name.ToUpper(), out it))
                 {
                     it.Write(writeHandler, tabSpace, key, value.Object);
                 }
@@ -303,25 +261,18 @@ namespace Exomia.Framework.Core.ContentSerialization
 
         #region ContentReader
 
-        /// <summary>
-        ///     Reads an object from the given stream.
-        /// </summary>
+        /// <summary> Reads an object from the given stream. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="stream">   The stream. </param>
         /// <param name="keepOpen"> (Optional) True to keep open. </param>
-        /// <returns>
-        ///     A T.
-        /// </returns>
+        /// <returns> A T. </returns>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// <exception cref="CSReaderException">
-        ///     Thrown when a Create struct Reader error condition
-        ///     occurs.
-        /// </exception>
+        /// <exception cref="CsReaderException">     Thrown when a Create struct Reader error condition occurs. </exception>
         public static T Read<T>(Stream stream, bool keepOpen = false) where T : class
         {
             if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
 
-            CSStreamReader sr = new CSStreamReader(stream);
+            CsStreamReader sr = new CsStreamReader(stream);
 
             Type type = typeof(T);
             try
@@ -331,7 +282,7 @@ namespace Exomia.Framework.Core.ContentSerialization
             }
             catch (Exception e)
             {
-                throw new CSReaderException($"error near line {sr.Line}", e);
+                throw new CsReaderException($"error near line {sr.Line}", e);
             }
             finally
             {
@@ -342,24 +293,11 @@ namespace Exomia.Framework.Core.ContentSerialization
             }
         }
 
-        /// <summary>
-        ///     Reads a object from the given stream.
-        /// </summary>
-        /// <param name="stream"> The stream. </param>
-        /// <param name="type">   The type the reader can read. </param>
-        /// <param name="objKey"> The object key. </param>
-        /// <returns>
-        ///     An object.
-        /// </returns>
-        /// <exception cref="CSReaderException">
-        ///     Thrown when a Create struct Reader error condition
-        ///     occurs.
-        /// </exception>
-        internal static object Read(CSStreamReader stream, Type type, string objKey)
+        internal static object Read(CsStreamReader stream, Type type, string objKey)
         {
             if (!s_contentPipeLineReaders.TryGetValue(type, out IContentSerializationReader? reader))
             {
-                throw new CSReaderException($"The content pipeline has no reader of the type '{type}' registered");
+                throw new CsReaderException($"The content pipeline has no reader of the type '{type}' registered");
             }
 
             ContentSerializationContext context = new ContentSerializationContext();
@@ -367,65 +305,55 @@ namespace Exomia.Framework.Core.ContentSerialization
             return reader.Read(context);
         }
 
-        /// <summary>
-        ///     Reads a object from the given stream.
-        /// </summary>
-        /// <param name="stream">  Stream. </param>
-        /// <param name="context"> [in,out] The context. </param>
-        /// <param name="objKey">  The object key. </param>
-        /// <exception cref="CSReaderException">
-        ///     Thrown when a Create struct Reader error condition
-        ///     occurs.
-        /// </exception>
-        private static void Read(CSStreamReader stream, ref ContentSerializationContext context, string objKey)
+        private static void Read(CsStreamReader stream, ref ContentSerializationContext context, string objKey)
         {
             while (stream.ReadChar(out char c))
             {
                 switch (c)
                 {
                     case '[':
+                    {
+                        if (stream.ReadStartTag(
+                            out string key, out string baseTypeInfo, out string genericTypeInfo,
+                            out string dimensionInfo))
                         {
-                            if (stream.ReadStartTag(
-                                out string key, out string baseTypeInfo, out string genericTypeInfo,
-                                out string dimensionInfo))
+                            if (Types.TryGetValue(baseTypeInfo, out IType? it))
                             {
-                                if (s_types.TryGetValue(baseTypeInfo, out IType? it))
+                                if (it.IsPrimitive)
                                 {
-                                    if (it.IsPrimitive)
-                                    {
-                                        context.Set(key, it.Read(stream, key, string.Empty, string.Empty), it.BaseType);
-                                    }
-                                    else
-                                    {
-                                        if (string.IsNullOrEmpty(genericTypeInfo))
-                                        {
-                                            throw new CSReaderException(
-                                                $"ERROR: No generic type info defined -> {baseTypeInfo}<GENERIC_TYPE_INFO>");
-                                        }
-                                        context.Set(
-                                            key, it.Read(stream, key, genericTypeInfo, dimensionInfo), it.BaseType);
-                                    }
+                                    context.Set(key, it.Read(stream, key, string.Empty, string.Empty), it.BaseType);
                                 }
                                 else
                                 {
-                                    Type   type = baseTypeInfo.CreateType();
-                                    object obj  = Read(stream, type, key);
-                                    context.Set(key, obj, type);
+                                    if (string.IsNullOrEmpty(genericTypeInfo))
+                                    {
+                                        throw new CsReaderException(
+                                            $"ERROR: No generic type info defined -> {baseTypeInfo}<GENERIC_TYPE_INFO>");
+                                    }
+                                    context.Set(
+                                        key, it.Read(stream, key, genericTypeInfo, dimensionInfo), it.BaseType);
                                 }
                             }
                             else
                             {
-                                if ($"/{objKey}" != key)
-                                {
-                                    throw new CSReaderException(
-                                        $"ERROR: Invalid end tag definition! -> {objKey} != {key}");
-                                }
-                                return;
+                                Type   type = baseTypeInfo.CreateType();
+                                object obj  = Read(stream, type, key);
+                                context.Set(key, obj, type);
                             }
                         }
+                        else
+                        {
+                            if ($"/{objKey}" != key)
+                            {
+                                throw new CsReaderException(
+                                    $"ERROR: Invalid end tag definition! -> {objKey} != {key}");
+                            }
+                            return;
+                        }
+                    }
                         break;
                     case '/':
-                        throw new CSReaderException(
+                        throw new CsReaderException(
                             $"ERROR: Invalid file content char '{c}' at ({stream.Line}:{stream.Index})!");
                     case '\n':
                     case '\r':

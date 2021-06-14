@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -13,11 +13,8 @@ using Exomia.Framework.Core.ContentSerialization.Compression;
 
 namespace Exomia.Framework.Core.Content.Resolver
 {
-    /// <summary>
-    ///     A 1 file stream content resolver. This class cannot be inherited.
-    /// </summary>
     [ContentResolver(int.MinValue)]
-    sealed class E1FileStreamContentResolver : IContentResolver
+    internal sealed class E1FileStreamContentResolver : IContentResolver
     {
         /// <inheritdoc />
         public bool Exists(string assetName)
@@ -30,7 +27,9 @@ namespace Exomia.Framework.Core.Content.Resolver
         public Stream? Resolve(string assetName)
         {
             using FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read);
-            return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
+            return ContentCompressor.DecompressStream(stream, out Stream stream2)
+                ? stream2
+                : null;
         }
     }
 }

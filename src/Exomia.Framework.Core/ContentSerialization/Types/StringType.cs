@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,10 +14,7 @@ using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization.Types
 {
-    /// <summary>
-    ///     StringType class.
-    /// </summary>
-    sealed class StringType : IType
+    internal sealed class StringType : IType
     {
         /// <inheritdoc />
         public Type BaseType { get; }
@@ -34,9 +31,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             get { return BaseType.Name.ToUpper(); }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="StringType" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="StringType" /> class. </summary>
         public StringType()
         {
             BaseType = typeof(string);
@@ -55,7 +50,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(128);
 
@@ -65,25 +60,25 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
                 {
                     //ESCAPE
                     case '\\':
+                    {
+                        if (!stream.ReadChar(out c))
                         {
-                            if (!stream.ReadChar(out c))
-                            {
-                                throw new CSReaderException($"ERROR: UNEXPECTED END OF FILE! - > {sb}");
-                            }
+                            throw new CsReaderException($"ERROR: UNEXPECTED END OF FILE! - > {sb}");
                         }
+                    }
                         break;
                     case '[':
-                        {
-                            stream.ReadEndTag(key);
-                            return sb.ToString();
-                        }
+                    {
+                        stream.ReadEndTag(key);
+                        return sb.ToString();
+                    }
                     case ']':
-                        throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");
+                        throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
                 }
 
                 sb.Append(c);
             }
-            throw new CSReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
+            throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
         }
 
         /// <inheritdoc />
@@ -96,7 +91,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             //[key:type]content[/key]
             writeHandler(
                 tabSpace,
-                $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content.ToString().Replace("\\", "\\\\").Replace("[", "\\[").Replace("]", "\\]")}[/{(useTypeInfo ? key : string.Empty)}]");
+                $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content.ToString()!.Replace("\\", "\\\\").Replace("[", "\\[").Replace("]", "\\]")}[/{(useTypeInfo ? key : string.Empty)}]");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,16 +10,12 @@
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
-    /// <summary>
-    ///     An interface to handle content reading
-    /// </summary>
+    /// <summary> An interface to handle content reading. </summary>
     public interface IContentSerializationReader
     {
-        /// <summary>
-        ///     Returns a new created object from the context
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <returns>new  object</returns>
+        /// <summary> Returns a new created object from the context. </summary>
+        /// <param name="context"> The context. </param>
+        /// <returns> The object. </returns>
         object Read(ContentSerializationContext context);
     }
 }

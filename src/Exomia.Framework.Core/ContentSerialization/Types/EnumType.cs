@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,10 +14,7 @@ using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization.Types
 {
-    /// <summary>
-    ///     An enum type. This class cannot be inherited.
-    /// </summary>
-    sealed class EnumType : IType
+    internal sealed class EnumType : IType
     {
         /// <inheritdoc />
         public Type BaseType { get; }
@@ -34,9 +31,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             get { return BaseType.Name.ToUpper(); }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="EnumType" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="EnumType" /> class. </summary>
         public EnumType()
         {
             BaseType = typeof(Enum);
@@ -56,7 +51,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(128);
 
@@ -65,30 +60,30 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
                 switch (c)
                 {
                     case '[':
+                    {
+                        stream.ReadEndTag(key);
+
+                        genericTypeInfo.GetInnerType(out string bti, out string gti);
+                        if (!string.IsNullOrEmpty(gti))
                         {
-                            stream.ReadEndTag(key);
-
-                            genericTypeInfo.GetInnerType(out string bti, out string gti);
-                            if (!string.IsNullOrEmpty(gti))
-                            {
-                                throw new CSReaderException(
-                                    $"ERROR: AN ENUM CAN't BE A GENERIC TYPE -> {genericTypeInfo}");
-                            }
-
-                            Type enumType = bti.CreateType();
-                            if (enumType.IsEnum)
-                            {
-                                return Enum.Parse(enumType, sb.ToString());
-                            }
-                            throw new CSReaderException($"ERROR: BASE TYPE ISN'T AN ENUM TYPE -> {bti}");
+                            throw new CsReaderException(
+                                $"ERROR: AN ENUM CAN't BE A GENERIC TYPE -> {genericTypeInfo}");
                         }
+
+                        Type enumType = bti.CreateType();
+                        if (enumType.IsEnum)
+                        {
+                            return Enum.Parse(enumType, sb.ToString());
+                        }
+                        throw new CsReaderException($"ERROR: BASE TYPE ISN'T AN ENUM TYPE -> {bti}");
+                    }
                     case ']':
-                        throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");
+                        throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
                 }
 
                 sb.Append(c);
             }
-            throw new CSReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
+            throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
         }
 
         /// <inheritdoc />

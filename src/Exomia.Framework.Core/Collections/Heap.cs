@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,74 +12,52 @@ using System;
 
 namespace Exomia.Framework.Core.Collections
 {
-    /// <summary>
-    ///     A heap. This class cannot be inherited.
-    /// </summary>
+    /// <summary> A heap. This class cannot be inherited. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     public sealed class Heap<T>
     {
-        /// <summary>
-        ///     Compares two in T objects to determine their relative ordering.
-        /// </summary>
+        /// <summary> Compares two in T objects to determine their relative ordering. </summary>
         /// <param name="i1"> In t to be compared. </param>
         /// <param name="i2"> In t to be compared. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         public delegate int Compare(in T i1, in T i2);
 
         private readonly Compare _compare;
         private          T[]     _items;
-        private          int     _size;
 
-        /// <summary>
-        ///     Gets the number of items in the heap.
-        /// </summary>
-        /// <value>
-        ///     The count.
-        /// </value>
-        public int Count
-        {
-            get { return _size; }
-        }
+        /// <summary> Gets the number of items in the heap. </summary>
+        /// <value> The count. </value>
+        public int Count { get; private set; }
 
-        /// <summary>
-        ///     Initializes a new instance of the &lt;see cref="Heap&lt;T&gt;"/&gt; class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the &lt;see cref="Heap&lt;T&gt;"/&gt; class. </summary>
         /// <param name="capacity"> The capacity. </param>
         /// <param name="compare">  The compare function. </param>
         public Heap(int capacity, Compare compare)
         {
             _compare = compare;
             _items   = new T[capacity];
-            _size    = 0;
+            Count    = 0;
         }
 
-        /// <summary>
-        ///     Adds an item to the heap.
-        /// </summary>
+        /// <summary> Adds an item to the heap. </summary>
         /// <param name="item"> The item to add. </param>
         public void Add(T item)
         {
-            if (_size >= _items.Length)
+            if (Count >= _items.Length)
             {
                 Array.Resize(ref _items, _items.Length * 2);
             }
-            _items[_size] = item;
-            SortUp(_size++);
+            _items[Count] = item;
+            SortUp(Count++);
         }
 
-        /// <summary>
-        ///     Removes the first item from the heap.
-        /// </summary>
-        /// <returns>
-        ///     A T.
-        /// </returns>
+        /// <summary> Removes the first item from the heap. </summary>
+        /// <returns> A T. </returns>
         public T RemoveFirst()
         {
             T item = _items[0];
-            _items[0]     = _items[--_size];
-            _items[_size] = default!;
+            _items[0]     = _items[--Count];
+            _items[Count] = default!;
             SortDown(0);
             return item;
         }
@@ -100,9 +78,9 @@ namespace Exomia.Framework.Core.Collections
             // ReSharper disable once TooWideLocalVariableScope
             int lIndex, rIndex;
 
-            while ((lIndex = (index * 2) + 1) < _size)
+            while ((lIndex = (index * 2) + 1) < Count)
             {
-                if ((rIndex = (index * 2) + 2) < _size &&
+                if ((rIndex = (index * 2) + 2) < Count &&
                     _compare(_items[lIndex], _items[rIndex]) > 0)
                 {
                     lIndex = rIndex;

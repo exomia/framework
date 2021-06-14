@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,20 +12,18 @@ using System;
 
 namespace Exomia.Framework.Core.ContentSerialization.Exceptions
 {
-    /// <summary>
-    ///     Thrown than a reader exception happen.
-    /// </summary>
-    public sealed class CSReaderException : Exception
+    /// <summary> Thrown than a reader exception happen. </summary>
+    public sealed class CsReaderException : Exception
     {
         /// <inheritdoc />
-        public CSReaderException() { }
+        public CsReaderException() { }
 
         /// <inheritdoc />
-        public CSReaderException(string message)
+        public CsReaderException(string message)
             : base(message) { }
 
         /// <inheritdoc />
-        public CSReaderException(string message, Exception innerException)
+        public CsReaderException(string message, Exception innerException)
             : base(message, innerException) { }
     }
 }

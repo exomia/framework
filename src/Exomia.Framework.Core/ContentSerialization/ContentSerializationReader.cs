@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,11 +10,8 @@
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
-    /// <summary>
-    ///     abstract implementation for an
-    ///     <see cref="T:Exomia.Framework.Core.ContentSerialization.IContentSerializationReader" />
-    /// </summary>
-    /// <typeparam name="T"> type to read. </typeparam>
+    /// <summary> Abstract implementation for an <see cref="IContentSerializationReader" /> </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
     public abstract class ContentSerializationReader<T> : IContentSerializationReader
     {
         /// <inheritdoc />
@@ -23,13 +20,9 @@ namespace Exomia.Framework.Core.ContentSerialization
             return ReadContext(context)!;
         }
 
-        /// <summary>
-        ///     Returns a new created object from the context of type T.
-        /// </summary>
-        /// <param name="context"> Context. </param>
-        /// <returns>
-        ///     new T.
-        /// </returns>
+        /// <summary> Returns a new created object from the context of type T. </summary>
+        /// <param name="context"> The context. </param>
+        /// <returns> The T. </returns>
         public abstract T ReadContext(ContentSerializationContext context);
     }
 }

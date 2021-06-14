@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,7 +12,7 @@ using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.ContentSerialization.Readers
 {
-    sealed class RectangleContentSerializationReader : ContentSerializationReader<Rectangle>
+    internal sealed class RectangleContentSerializationReader : ContentSerializationReader<Rectangle>
     {
         /// <inheritdoc />
         public override Rectangle ReadContext(ContentSerializationContext context)

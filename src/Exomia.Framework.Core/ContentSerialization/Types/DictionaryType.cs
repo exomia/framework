@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,10 +14,7 @@ using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization.Types
 {
-    /// <summary>
-    ///     A dictionary type. This class cannot be inherited.
-    /// </summary>
-    sealed class DictionaryType : IType
+    internal sealed class DictionaryType : IType
     {
         /// <inheritdoc />
         public Type BaseType { get; }
@@ -34,9 +31,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             get { return BaseType.Name.ToUpper(); }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="DictionaryType" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="DictionaryType" /> class. </summary>
         public DictionaryType()
         {
             BaseType = typeof(Dictionary<,>);
@@ -48,12 +43,12 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             genericTypeInfo.GetKeyValueInnerType(
                 out string keyBaseTypeInfo, out string valueBaseTypeInfo, out string valueGenericTypeInfo);
 
-            if (!ContentSerializer.s_types.TryGetValue(keyBaseTypeInfo, out IType? itk) || !itk.IsPrimitive)
+            if (!ContentSerializer.Types.TryGetValue(keyBaseTypeInfo, out IType? itk) || !itk.IsPrimitive)
             {
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
-            return ContentSerializer.s_types.TryGetValue(valueBaseTypeInfo, out IType? itv)
+            return ContentSerializer.Types.TryGetValue(valueBaseTypeInfo, out IType? itv)
                 ? BaseType.MakeGenericType(itk.CreateType(string.Empty), itv.CreateType(valueGenericTypeInfo))
                 : BaseType.MakeGenericType(itk.CreateType(string.Empty), valueBaseTypeInfo.CreateType());
         }
@@ -65,13 +60,13 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             if (gArgs.Length == 2)
             {
                 string genericTypeInfo1 =
-                    ContentSerializer.s_types.TryGetValue(gArgs[0].Name.ToUpper(), out IType? itk)
+                    ContentSerializer.Types.TryGetValue(gArgs[0].Name.ToUpper(), out IType? itk)
                         ? itk.CreateTypeInfo(gArgs[0])
                         : throw new NotSupportedException(
                             $"the type of '{gArgs[0]}' is not supported as dictionary key");
                 string genericTypeInfo2 =
-                    ContentSerializer.s_types.TryGetValue(gArgs[1].Name.ToUpper(), out IType? itv) ||
-                    ContentSerializer.s_types.TryGetValue(
+                    ContentSerializer.Types.TryGetValue(gArgs[1].Name.ToUpper(), out IType? itv) ||
+                    ContentSerializer.Types.TryGetValue(
                         (gArgs[1].BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
                         out itv)
                         ? itv.CreateTypeInfo(gArgs[1])
@@ -83,31 +78,31 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             if (string.IsNullOrEmpty(dimensionInfo))
             {
-                throw new CSReaderException(
+                throw new CsReaderException(
                     $"ERROR: NO DIMENSION INFO FOUND EXPECTED: DICTIONARY<GENERIC_TYPE_INFO1, GENERIC_TYPE_INFO2>(count) -> DICTIONARY{genericTypeInfo}{dimensionInfo}");
             }
             if (string.IsNullOrEmpty(genericTypeInfo))
             {
-                throw new CSReaderException(
+                throw new CsReaderException(
                     "ERROR: NO GENERIC TYPE INFO DEFINED -> DICTIONARY<GENERIC_TYPE_INFO1, GENERIC_TYPE_INFO2>");
             }
 
             // ReSharper disable IdentifierTypo
             genericTypeInfo.GetKeyValueInnerType(out string kbti, out string vbti, out string vgti);
             // ReSharper enable IdentifierTypo
-           
-            if (!ContentSerializer.s_types.TryGetValue(kbti, out IType? itk) || !itk.IsPrimitive)
+
+            if (!ContentSerializer.Types.TryGetValue(kbti, out IType? itk) || !itk.IsPrimitive)
             {
                 throw new NotSupportedException($"ERROR: INVALID KEY TYPE FOUND IN -> '{genericTypeInfo}'");
             }
 
             Type                                 valueType;
-            Func<CSStreamReader, string, object> readCallback;
-            if (ContentSerializer.s_types.TryGetValue(vbti, out IType? it))
+            Func<CsStreamReader, string, object> readCallback;
+            if (ContentSerializer.Types.TryGetValue(vbti, out IType? it))
             {
                 valueType    = it.CreateType(vgti);
                 readCallback = (s, d) => it.Read(stream, string.Empty, vgti, d);
@@ -138,21 +133,11 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             Write(writeHandler, tabSpace, key, (dynamic)content, useTypeInfo);
         }
 
-        /// <summary>
-        ///     <see cref="IType.Write(Action{string, string}, string, string, object, bool)" />
-        /// </summary>
-        /// <typeparam name="TKey">   Type of the key. </typeparam>
-        /// <typeparam name="TValue"> Type of the value. </typeparam>
-        /// <param name="writeHandler"> The write handler. </param>
-        /// <param name="tabSpace">     The tab space. </param>
-        /// <param name="key">          The key. </param>
-        /// <param name="content">      The content. </param>
-        /// <param name="useTypeInfo">  (Optional) True to use type information. </param>
-        private void Write<TKey, TValue>(Action<string, string>    writeHandler,
-                                         string                    tabSpace,
-                                         string                    key,
+        private void Write<TKey, TValue>(Action<string, string>   writeHandler,
+                                         string                   tabSpace,
+                                         string                   key,
                                          Dictionary<TKey, TValue> content,
-                                         bool                      useTypeInfo = true) 
+                                         bool                     useTypeInfo = true)
             where TKey : notnull
         {
             writeHandler(
@@ -164,25 +149,16 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
 
         #region WriteHelper
 
-        /// <summary>
-        ///     Foreach dictionary dimension.
-        /// </summary>
-        /// <typeparam name="TKey">   Type of the key. </typeparam>
-        /// <typeparam name="TValue"> Type of the value. </typeparam>
-        /// <param name="writeHandler"> The write handler. </param>
-        /// <param name="tabSpace">     The tab space. </param>
-        /// <param name="dic">          The dic. </param>
-        /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
         private static void ForeachDictionaryDimension<TKey, TValue>(Action<string, string>   writeHandler,
                                                                      string                   tabSpace,
-                                                                     Dictionary<TKey, TValue> dic) 
+                                                                     Dictionary<TKey, TValue> dic)
             where TKey : notnull
         {
             foreach ((TKey key, TValue value) in dic)
             {
                 Type elementType = value!.GetType();
-                if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType? it) ||
-                    ContentSerializer.s_types.TryGetValue(
+                if (ContentSerializer.Types.TryGetValue(elementType.Name.ToUpper(), out IType? it) ||
+                    ContentSerializer.Types.TryGetValue(
                         (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
                         out it))
                 {
@@ -202,14 +178,6 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
 
         #region ReaderHelper
 
-        /// <summary>
-        ///     Gets dictionary count.
-        /// </summary>
-        /// <param name="dictionaryTypeInfo"> Information describing the dictionary type. </param>
-        /// <returns>
-        ///     The dictionary count.
-        /// </returns>
-        /// <exception cref="CSTypeException"> Thrown when a Create struct Type error condition occurs. </exception>
         private static int GetDictionaryCount(string dictionaryTypeInfo)
         {
             const string START = "(";
@@ -218,38 +186,29 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             int sIndex = dictionaryTypeInfo.IndexOf(START, StringComparison.Ordinal);
             if (sIndex == -1)
             {
-                throw new CSTypeException("No dimension start definition found in '" + dictionaryTypeInfo + "'");
+                throw new CsTypeException($"No dimension start definition found in '{dictionaryTypeInfo}'");
             }
             sIndex += START.Length;
 
             int eIndex = dictionaryTypeInfo.LastIndexOf(END, StringComparison.Ordinal);
             if (eIndex == -1)
             {
-                throw new CSTypeException("No dimension end definition found in '" + dictionaryTypeInfo + "'");
+                throw new CsTypeException($"No dimension end definition found in '{dictionaryTypeInfo}'");
             }
 
             string dimensionInfo = dictionaryTypeInfo.Substring(sIndex, eIndex - sIndex).Trim();
 
             if (!int.TryParse(dimensionInfo, out int buffer))
             {
-                throw new CSTypeException("Invalid dimension format found in '" + dimensionInfo + "'");
+                throw new CsTypeException($"Invalid dimension format found in '{dimensionInfo}'");
             }
             return buffer;
         }
 
-        /// <summary>
-        ///     Adds a dictionary content.
-        /// </summary>
-        /// <typeparam name="TKey">   Type of the key. </typeparam>
-        /// <typeparam name="TValue"> Type of the value. </typeparam>
-        /// <param name="stream">       The stream. </param>
-        /// <param name="readCallback"> The read callback. </param>
-        /// <param name="dic">          The dic. </param>
-        /// <param name="count">        Number of. </param>
-        private static void AddDictionaryContent<TKey, TValue>(CSStreamReader                       stream,
-                                                               Func<CSStreamReader, string, object> readCallback,
+        private static void AddDictionaryContent<TKey, TValue>(CsStreamReader                       stream,
+                                                               Func<CsStreamReader, string, object> readCallback,
                                                                Dictionary<TKey, TValue>             dic,
-                                                               int                                  count) 
+                                                               int                                  count)
             where TKey : notnull
         {
             for (int i = 0; i < count; i++)

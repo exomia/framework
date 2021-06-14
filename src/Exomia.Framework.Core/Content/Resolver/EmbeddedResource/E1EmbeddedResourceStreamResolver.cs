@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -15,11 +15,8 @@ using Exomia.Framework.Core.ContentSerialization.Compression;
 
 namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
 {
-    /// <summary>
-    ///     A 1 embedded resource stream resolver.
-    /// </summary>
     [ContentResolver(int.MinValue)]
-    class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+    internal class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
         /// <inheritdoc />
         public bool Exists(Type assetType, string assetName, out Assembly assembly)
@@ -36,8 +33,17 @@ namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
         /// <inheritdoc />
         public Stream? Resolve(Assembly assembly, string assetName)
         {
-            using Stream stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
-            return ContentCompressor.DecompressStream(stream, out Stream stream2) ? stream2 : null;
+            Stream? stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
+            if (stream != null)
+            {
+                using (stream)
+                {
+                    return ContentCompressor.DecompressStream(stream, out Stream stream2)
+                        ? stream2
+                        : null;
+                }
+            }
+            return null;
         }
     }
 }

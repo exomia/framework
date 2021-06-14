@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -15,33 +15,21 @@ using System.Linq;
 
 namespace Exomia.Framework.Core.ContentSerialization.Compression
 {
-    /// <summary>
-    ///     A content compressor.
-    /// </summary>
+    /// <summary> A content compressor. </summary>
     public static class ContentCompressor
     {
-        /// <summary>
-        ///     The default compressed e1 extension.
-        /// </summary>
+        /// <summary> The default compressed e1 extension. </summary>
         public const string DEFAULT_COMPRESSED_EXTENSION = ".e1";
 
         private const           int    BUFFER_SIZE   = 2048;
-        private static readonly byte[] s_magicHeader = { 64, 101, 120, 49 };
+        private static readonly byte[] s_magicHeader = {64, 101, 120, 49};
 
-        /// <summary>
-        ///     Compress a given stream with the given compression mode.
-        /// </summary>
+        /// <summary> Compress a given stream with the given compression mode. </summary>
         /// <param name="stream">       the stream to compress. </param>
         /// <param name="streamOut">    [out] than finished the compressed out stream. </param>
         /// <param name="compressMode"> (Optional) the compression mode. </param>
-        /// <returns>
-        ///     <c>true</c> if successfully compressed the stream; <c>false</c> otherwise.
-        /// </returns>
-        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// <exception cref="ArgumentException">
-        ///     Thrown when one or more arguments have unsupported or
-        ///     illegal values.
-        /// </exception>
+        /// <returns> <c>true</c> if successfully compressed the stream; <c>false</c> otherwise. </returns>
+        /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public static bool CompressStream(Stream       stream,
                                           out Stream   streamOut,
                                           CompressMode compressMode = CompressMode.Gzip)
@@ -70,19 +58,11 @@ namespace Exomia.Framework.Core.ContentSerialization.Compression
             return true;
         }
 
-        /// <summary>
-        ///     Decompress a given stream with the given compression mode.
-        /// </summary>
+        /// <summary> Decompress a given stream with the given compression mode. </summary>
         /// <param name="stream">    the stream to compress. </param>
         /// <param name="streamOut"> [out] than finished the decompressed out stream. </param>
-        /// <returns>
-        ///     <c>true</c> if successfully decompressed the stream; <c>false</c> otherwise.
-        /// </returns>
-        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// <exception cref="ArgumentException">
-        ///     Thrown when one or more arguments have unsupported or
-        ///     illegal values.
-        /// </exception>
+        /// <returns> <c>true</c> if successfully decompressed the stream; <c>false</c> otherwise. </returns>
+        /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
         public static bool DecompressStream(Stream stream, out Stream streamOut)
         {
             try
@@ -91,7 +71,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Compression
 
                 byte[] buffer = new byte[s_magicHeader.Length];
                 if (stream.Read(buffer, 0, buffer.Length) != s_magicHeader.Length
-                 && !s_magicHeader.SequenceEqual(buffer))
+                    && !s_magicHeader.SequenceEqual(buffer))
                 {
                     streamOut = null!;
                     return false;

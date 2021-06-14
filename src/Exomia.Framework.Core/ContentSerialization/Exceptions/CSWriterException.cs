@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,20 +12,18 @@ using System;
 
 namespace Exomia.Framework.Core.ContentSerialization.Exceptions
 {
-    /// <summary>
-    ///     Thrown than a writer exception happen.
-    /// </summary>
-    public sealed class CSWriterException : Exception
+    /// <summary> Thrown than a writer exception happen. </summary>
+    public sealed class CsWriterException : Exception
     {
         /// <inheritdoc />
-        public CSWriterException() { }
+        public CsWriterException() { }
 
         /// <inheritdoc />
-        public CSWriterException(string message)
+        public CsWriterException(string message)
             : base(message) { }
 
         /// <inheritdoc />
-        public CSWriterException(string message, Exception innerException)
+        public CsWriterException(string message, Exception innerException)
             : base(message, innerException) { }
     }
 }

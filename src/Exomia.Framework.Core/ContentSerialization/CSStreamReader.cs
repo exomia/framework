@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -13,39 +13,26 @@ using System.IO;
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
-    /// <summary>
-    ///     A create struct stream reader. This class cannot be inherited.
-    /// </summary>
-    sealed class CSStreamReader : IDisposable
+    internal sealed class CsStreamReader : IDisposable
     {
         private readonly Stream _stream;
         private          int    _line = 1;
 
-        /// <summary>
-        ///     Gets the zero-based index of this object.
-        /// </summary>
-        /// <value>
-        ///     The index.
-        /// </value>
+        /// <summary> Gets the zero-based index of this object. </summary>
+        /// <value> The index. </value>
         public long Index { get; private set; }
 
-        /// <summary>
-        ///     Gets the line.
-        /// </summary>
-        /// <value>
-        ///     The line.
-        /// </value>
+        /// <summary> Gets the line. </summary>
+        /// <value> The line. </value>
         public long Line
         {
             get { return _line; }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="CSStreamReader" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="CsStreamReader" /> class. </summary>
         /// <param name="stream"> The stream. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        internal CSStreamReader(Stream stream)
+        internal CsStreamReader(Stream stream)
         {
             _stream = stream ?? throw new ArgumentNullException(nameof(stream));
         }
@@ -57,13 +44,6 @@ namespace Exomia.Framework.Core.ContentSerialization
             _stream.Dispose();
         }
 
-        /// <summary>
-        ///     Reads a character.
-        /// </summary>
-        /// <param name="c"> [out] The out char to process. </param>
-        /// <returns>
-        ///     True if it succeeds, false if it fails.
-        /// </returns>
         internal bool ReadChar(out char c)
         {
             int z;

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -13,10 +13,7 @@ using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization.Types
 {
-    /// <summary>
-    ///     ArrayType class.
-    /// </summary>
-    sealed class ArrayType : IType
+    internal sealed class ArrayType : IType
     {
         /// <inheritdoc />
         public Type BaseType { get; }
@@ -33,9 +30,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             get { return BaseType.Name.ToUpper(); }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ArrayType" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="ArrayType" /> class. </summary>
         public ArrayType()
         {
             BaseType = typeof(Array);
@@ -46,7 +41,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         {
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
-            return ContentSerializer.s_types.TryGetValue(bti, out IType it)
+            return ContentSerializer.Types.TryGetValue(bti, out IType? it)
                 ? it.CreateType(gti).MakeArrayType()
                 : bti.CreateType().MakeArrayType();
         }
@@ -56,8 +51,8 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         {
             Type elementType = type.GetElementType() ?? throw new NullReferenceException();
             string genericTypeInfo =
-                ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
-                ContentSerializer.s_types.TryGetValue(
+                ContentSerializer.Types.TryGetValue(elementType.Name.ToUpper(), out IType? it) ||
+                ContentSerializer.Types.TryGetValue(
                     (elementType.BaseType ?? throw new NullReferenceException()).Name.ToUpper(),
                     out it)
                     ? it.CreateTypeInfo(elementType)
@@ -66,37 +61,31 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             if (string.IsNullOrEmpty(dimensionInfo))
             {
-                throw new CSReaderException(
+                throw new CsReaderException(
                     $"ERROR: NO DIMENSION INFO FOUND EXPECTED: ARRAY<GENERIC_TYPE_INFO>(d1,d2,...,dx) -> ARRAY{genericTypeInfo}{dimensionInfo}");
             }
             if (string.IsNullOrEmpty(genericTypeInfo))
             {
-                throw new CSReaderException("ERROR: NO GENERIC TYPE INFO DEFINED -> ARRAY<GENERIC_TYPE_INFO>");
+                throw new CsReaderException("ERROR: NO GENERIC TYPE INFO DEFINED -> ARRAY<GENERIC_TYPE_INFO>");
             }
 
             genericTypeInfo.GetInnerType(out string bti, out string gti);
 
             Type                                 elementType;
-            Func<CSStreamReader, string, object> readCallback;
-            if (ContentSerializer.s_types.TryGetValue(bti, out IType it))
+            Func<CsStreamReader, string, object> readCallback;
+            if (ContentSerializer.Types.TryGetValue(bti, out IType? it))
             {
-                elementType = it.CreateType(gti);
-                readCallback = (s, d) =>
-                {
-                    return it.Read(stream, string.Empty, gti, d);
-                };
+                elementType  = it.CreateType(gti);
+                readCallback = (s, d) => it.Read(stream, string.Empty, gti, d);
             }
             else
             {
-                elementType = bti.CreateType();
-                readCallback = (s, d) =>
-                {
-                    return ContentSerializer.Read(stream, elementType, string.Empty);
-                };
+                elementType  = bti.CreateType();
+                readCallback = (s, d) => ContentSerializer.Read(stream, elementType, string.Empty);
             }
 
             int[] dimensions = GetArrayDimensionInfo(dimensionInfo);
@@ -123,7 +112,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
                     tabSpace,
                     $"[{key}:{(useTypeInfo ? CreateTypeInfo(type) : string.Empty)}({CreateArrayDimensionInfo(arr)})]");
                 ForArrayDimension(
-                    writeHandler, tabSpace + ContentSerializer.TABSPACE, arr, type.GetElementType(), 0,
+                    writeHandler, tabSpace + ContentSerializer.TABSPACE, arr, type.GetElementType()!, 0,
                     new int[arr.Rank]);
                 writeHandler(tabSpace, $"[/{(useTypeInfo ? key : string.Empty)}]");
             }
@@ -132,13 +121,6 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
 
         #region WriteHelper
 
-        /// <summary>
-        ///     Creates array dimension information.
-        /// </summary>
-        /// <param name="arr"> The array. </param>
-        /// <returns>
-        ///     The new array dimension information.
-        /// </returns>
         private static string CreateArrayDimensionInfo(Array arr)
         {
             string info = string.Empty;
@@ -149,16 +131,6 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             return info.TrimEnd(',');
         }
 
-        /// <summary>
-        ///     For array dimension.
-        /// </summary>
-        /// <param name="writeHandler"> The write handler. </param>
-        /// <param name="tabSpace">     The tab space. </param>
-        /// <param name="arr">          The array. </param>
-        /// <param name="elementType">  Type of the element. </param>
-        /// <param name="dimension">    The dimension. </param>
-        /// <param name="indices">      The indices. </param>
-        /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
         private static void ForArrayDimension(Action<string, string> writeHandler,
                                               string                 tabSpace,
                                               Array                  arr,
@@ -178,12 +150,12 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
                 }
                 else
                 {
-                    if (ContentSerializer.s_types.TryGetValue(elementType.Name.ToUpper(), out IType it) ||
-                        ContentSerializer.s_types.TryGetValue(
+                    if (ContentSerializer.Types.TryGetValue(elementType.Name.ToUpper(), out IType? it) ||
+                        ContentSerializer.Types.TryGetValue(
                             (elementType.BaseType ?? throw new NullReferenceException())
                             .Name.ToUpper(), out it))
                     {
-                        it.Write(writeHandler, tabSpace, string.Empty, arr.GetValue(indices), false);
+                        it.Write(writeHandler, tabSpace, string.Empty, arr.GetValue(indices)!, false);
                     }
                     else
                     {
@@ -201,14 +173,6 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
 
         #region ReaderHelper
 
-        /// <summary>
-        ///     Gets array dimension information.
-        /// </summary>
-        /// <param name="arrayTypeInfo"> Information describing the array type. </param>
-        /// <returns>
-        ///     An array of int.
-        /// </returns>
-        /// <exception cref="CSTypeException"> Thrown when a Create struct Type error condition occurs. </exception>
         private static int[] GetArrayDimensionInfo(string arrayTypeInfo)
         {
             const string START = "(";
@@ -217,42 +181,33 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             int sIndex = arrayTypeInfo.IndexOf(START, StringComparison.Ordinal);
             if (sIndex == -1)
             {
-                throw new CSTypeException("No dimension start definition found in '" + arrayTypeInfo + "'");
+                throw new CsTypeException($"No dimension start definition found in '{arrayTypeInfo}'");
             }
             sIndex += START.Length;
 
             int eIndex = arrayTypeInfo.LastIndexOf(END, StringComparison.Ordinal);
             if (eIndex == -1)
             {
-                throw new CSTypeException("No dimension end definition found in '" + arrayTypeInfo + "'");
+                throw new CsTypeException($"No dimension end definition found in '{arrayTypeInfo}'");
             }
 
             string dimensionInfo = arrayTypeInfo.Substring(sIndex, eIndex - sIndex).Trim();
 
-            string[] dimensions = dimensionInfo.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] dimensions = dimensionInfo.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
             int[] buffer = new int[dimensions.Length];
             for (int i = 0; i < dimensions.Length; i++)
             {
                 if (!int.TryParse(dimensions[i], out buffer[i]))
                 {
-                    throw new CSTypeException("Invalid dimension format found in '" + dimensionInfo + "'");
+                    throw new CsTypeException($"Invalid dimension format found in '{dimensionInfo}'");
                 }
             }
             return buffer;
         }
 
-        /// <summary>
-        ///     Adds an array content.
-        /// </summary>
-        /// <param name="stream">           The stream. </param>
-        /// <param name="readCallback">     The read callback. </param>
-        /// <param name="arr">              The array. </param>
-        /// <param name="dimensions">       The dimensions. </param>
-        /// <param name="indices">          The indices. </param>
-        /// <param name="currentDimension"> The current dimension. </param>
-        private static void AddArrayContent(CSStreamReader                       stream,
-                                            Func<CSStreamReader, string, object> readCallback,
+        private static void AddArrayContent(CsStreamReader                       stream,
+                                            Func<CsStreamReader, string, object> readCallback,
                                             Array                                arr,
                                             int[]                                dimensions,
                                             int[]                                indices,

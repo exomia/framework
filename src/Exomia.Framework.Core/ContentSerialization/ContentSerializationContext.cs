@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,20 +14,17 @@ using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
-    /// <summary>
-    ///     A content serialization context. This class cannot be inherited.
-    /// </summary>
+    /// <summary> A content serialization context. This class cannot be inherited. </summary>
     public sealed class ContentSerializationContext
     {
         internal Dictionary<string, ContentSerializationContextValue> Content { get; } =
             new Dictionary<string, ContentSerializationContextValue>();
 
-        /// <summary>
-        ///     Returns the key Value of the given key
-        /// </summary>
-        /// <typeparam name="T">typeof keyValue</typeparam>
-        /// <param name="key">Key</param>
-        /// <returns><c>T</c> KeyValue if key is found; <c>default(T)</c> otherwise</returns>
+        /// <summary> Returns the key Value of the given key. </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="key"> The key. </param>
+        /// <returns> <c>T</c> KeyValue if key is found; <c>default(T)</c> otherwise. </returns>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public T Get<T>(string key)
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
@@ -38,24 +35,15 @@ namespace Exomia.Framework.Core.ContentSerialization
             return default!;
         }
 
-        /// <summary>
-        ///     Sets the given object into the context under key
-        /// </summary>
-        /// <typeparam name="T">typeof Object</typeparam>
-        /// <param name="key">Key</param>
-        /// <param name="obj">Object</param>
+        /// <summary> Sets the given object into the context under the key. </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="key"> The key. </param>
+        /// <param name="obj"> The object. </param>
         public void Set<T>(string key, T obj)
         {
             Set(key, obj!, typeof(T));
         }
 
-        /// <summary>
-        ///     Sets the given object into the context under key
-        /// </summary>
-        /// <param name="key">Key</param>
-        /// <param name="obj">Object</param>
-        /// <param name="type">typeof Object</param>
-        /// <exception cref="CSContextKeyException">CPContextKeyException</exception>
         internal void Set(string key, object? obj, Type type)
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
@@ -66,22 +54,22 @@ namespace Exomia.Framework.Core.ContentSerialization
             }
             else
             {
-                throw new CSContextKeyException(
+                throw new CsContextKeyException(
                     $"The context already contains a key with name: '{key}'.", nameof(key));
             }
         }
     }
 
-    class ContentSerializationContextValue
+    internal class ContentSerializationContextValue
     {
-        public Type    Type   { get; set; }
+        /// <summary> Gets or sets the type. </summary>
+        /// <value> The type. </value>
+        public Type Type { get; set; }
+
+        /// <summary> Gets or sets the object. </summary>
+        /// <value> The object. </value>
         public object? Object { get; set; }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentSerializationContextValue" /> struct.
-        /// </summary>
-        /// <param name="type"> The type. </param>
-        /// <param name="obj">  The object. </param>
         public ContentSerializationContextValue(Type type, object? obj)
         {
             Type   = type;

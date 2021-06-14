@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,28 +12,26 @@ using System;
 
 namespace Exomia.Framework.Core.ContentSerialization.Exceptions
 {
-    /// <summary>
-    ///     Thrown than a context exception happen.
-    /// </summary>
-    public sealed class CSContextKeyException : ArgumentException
+    /// <summary> Thrown than a context exception happen. </summary>
+    public sealed class CsContextKeyException : ArgumentException
     {
         /// <inheritdoc />
-        public CSContextKeyException() { }
+        public CsContextKeyException() { }
 
         /// <inheritdoc />
-        public CSContextKeyException(string message)
+        public CsContextKeyException(string message)
             : base(message) { }
 
         /// <inheritdoc />
-        public CSContextKeyException(string message, string paramName)
+        public CsContextKeyException(string message, string paramName)
             : base(message, paramName) { }
 
         /// <inheritdoc />
-        public CSContextKeyException(string message, Exception innerException)
+        public CsContextKeyException(string message, Exception innerException)
             : base(message, innerException) { }
 
         /// <inheritdoc />
-        public CSContextKeyException(string message, string paramName, Exception innerException)
+        public CsContextKeyException(string message, string paramName, Exception innerException)
             : base(message, paramName, innerException) { }
     }
 }

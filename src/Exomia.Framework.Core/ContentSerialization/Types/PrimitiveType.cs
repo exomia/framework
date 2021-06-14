@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,11 +14,7 @@ using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization.Types
 {
-    /// <summary>
-    ///     PType{T} class.
-    /// </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    sealed class PrimitiveType<T> : IType where T : struct
+    internal sealed class PrimitiveType<T> : IType where T : struct
     {
         /// <inheritdoc />
         public Type BaseType { get; }
@@ -36,9 +32,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
             get { return BaseType.Name.ToUpper(); }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="PrimitiveType{T}" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="PrimitiveType{T}" /> class. </summary>
         /// <exception cref="NotSupportedException"> Thrown when the requested operation is not supported. </exception>
         public PrimitiveType()
         {
@@ -62,7 +56,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
         }
 
         /// <inheritdoc />
-        public object Read(CSStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
         {
             StringBuilder sb = new StringBuilder(32);
 
@@ -71,29 +65,29 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
                 switch (c)
                 {
                     case '[':
+                    {
+                        stream.ReadEndTag(key);
+                        string content = sb.ToString();
+                        try
                         {
-                            stream.ReadEndTag(key);
-                            string content = sb.ToString();
-                            try
-                            {
-                                return Convert.ChangeType(content, BaseType);
-                            }
-                            catch
-                            {
-                                throw new InvalidCastException(
-                                    $"content '{content}' can't be converted to '{BaseType.FullName}'!");
-                            }
+                            return Convert.ChangeType(content, BaseType);
                         }
+                        catch
+                        {
+                            throw new InvalidCastException(
+                                $"content '{content}' can't be converted to '{BaseType.FullName}'!");
+                        }
+                    }
                     case ']':
                     case '\r':
                     case '\n':
                     case '\t':
-                        throw new CSReaderException($"ERROR: INVALID CONTENT -> {sb}");
+                        throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
                 }
 
                 sb.Append(c);
             }
-            throw new CSReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
+            throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
         }
 
         /// <inheritdoc />

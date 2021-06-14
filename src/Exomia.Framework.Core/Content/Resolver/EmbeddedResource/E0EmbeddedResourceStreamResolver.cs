@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -15,11 +15,8 @@ using Exomia.Framework.Core.ContentSerialization;
 
 namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
 {
-    /// <summary>
-    ///     A 0 embedded resource stream resolver.
-    /// </summary>
     [ContentResolver(int.MinValue + 1)]
-    class E0EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+    internal class E0EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
     {
         /// <inheritdoc />
         public bool Exists(Type assetType, string assetName, out Assembly assembly)

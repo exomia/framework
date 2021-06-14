@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,39 +12,17 @@ using System;
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
-    /// <summary>
-    ///     Used to mark a content serializable class.
-    /// </summary>
+    /// <summary> Used to mark a content serializable class. </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class ContentSerializableAttribute : Attribute
     {
-        /// <summary>
-        ///     Gets the reader.
-        /// </summary>
-        /// <value>
-        ///     The reader.
-        /// </value>
         internal IContentSerializationReader Reader { get; }
 
-        /// <summary>
-        ///     Gets the writer.
-        /// </summary>
-        /// <value>
-        ///     The writer.
-        /// </value>
         internal IContentSerializationWriter Writer { get; }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ContentSerializableAttribute" /> class.
-        /// </summary>
-        /// <param name="reader">
-        ///     the content reader type
-        ///     <see cref="T:Exomia.Framework.Core.ContentSerialization.IContentSerializationReader" />
-        /// </param>
-        /// <param name="writer">
-        ///     the content writer type
-        ///     <see cref="T:Exomia.Framework.Core.ContentSerialization.IContentSerializationWriter" />
-        /// </param>
+        /// <summary> Initializes a new instance of the <see cref="ContentSerializableAttribute" /> class. </summary>
+        /// <param name="reader"> the content reader type <see cref="IContentSerializationReader" /> </param>
+        /// <param name="writer"> the content writer type <see cref="IContentSerializationWriter" /> </param>
         /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
         public ContentSerializableAttribute(Type reader, Type writer)
         {

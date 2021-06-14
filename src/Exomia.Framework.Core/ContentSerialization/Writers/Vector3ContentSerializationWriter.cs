@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,7 +12,7 @@ using System.Numerics;
 
 namespace Exomia.Framework.Core.ContentSerialization.Writers
 {
-    sealed class Vector3ContentSerializationWriter : ContentSerializationWriter<Vector3>
+    internal sealed class Vector3ContentSerializationWriter : ContentSerializationWriter<Vector3>
     {
         /// <inheritdoc />
         public override void WriteContext(ContentSerializationContext context, Vector3 obj)

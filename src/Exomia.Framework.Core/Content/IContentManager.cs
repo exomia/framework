@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -33,10 +33,7 @@ namespace Exomia.Framework.Core.Content
 
         /// <summary> add a new content reader factory to the list. </summary>
         /// <param name="factory"> the content reader factory to add. </param>
-        /// <returns>
-        ///     <c>true</c> if the specified content reader factory successfully added, <c>false</c>
-        ///     otherwise.
-        /// </returns>
+        /// <returns> <c>true</c> if the specified content reader factory successfully added, <c>false</c> otherwise. </returns>
         bool AddContentReaderFactory(IContentReaderFactory factory);
 
         /// <summary> add a new content resolver to the list. </summary>
@@ -57,33 +54,23 @@ namespace Exomia.Framework.Core.Content
         /// <summary> Loads an asset that has been processed by the content pipeline. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="assetName">            Asset path and name (with its extension) </param>
-        /// <param name="fromEmbeddedResource"> (Optional)
-        ///                                     <c>true</c> if the asset should be loaded from an
-        ///                                     embedded resource; <c>false</c>
-        ///                                     otherwise. </param>
+        /// <param name="fromEmbeddedResource"> (Optional) <c>true</c> if the asset should be loaded from an embedded resource; <c>false</c> otherwise. </param>
         /// <returns> A  asset of type <typeparamref name="T" />. </returns>
-        /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all
-        ///                                                      <see cref="IContentResolver" />. </exception>
+        /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all <see cref="IContentResolver" />. </exception>
         /// <exception cref="NotSupportedException">             If no content reader was suitable to decode the asset. </exception>
         T Load<T>(string assetName, bool fromEmbeddedResource = false);
 
         /// <summary> Loads an asset that has been processed by the Content Pipeline. </summary>
         /// <param name="assetType">            Asset Type. </param>
         /// <param name="assetName">            Full asset name (with its extension) </param>
-        /// <param name="fromEmbeddedResource"> (Optional)
-        ///                                     <c>true</c> if the asset should be loaded from an
-        ///                                     embedded resource; <c>false</c>
-        ///                                     otherwise. </param>
+        /// <param name="fromEmbeddedResource"> (Optional) <c>true</c> if the asset should be loaded from an embedded resource; <c>false</c> otherwise. </param>
         /// <returns> An asset of type <paramref name="assetType" />. </returns>
-        /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all
-        ///                                                      <see cref="IContentResolver" />. </exception>
+        /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all <see cref="IContentResolver" />. </exception>
         /// <exception cref="NotSupportedException">             If no content reader was suitable to decode the asset. </exception>
         object Load(Type assetType, string assetName, bool fromEmbeddedResource = false);
 
         /// <summary> Unloads all data that was loaded by this ContentManager. All data will be disposed. </summary>
-        /// <remarks>
-        ///     Unlike <see cref="IContentManager.Load(Type, string, bool)" /> method, this method is not thread safe and must be called by a single caller at a single time.
-        /// </remarks>
+        /// <remarks> Unlike <see cref="IContentManager.Load(Type, string, bool)" /> method, this method is not thread safe and must be called by a single caller at a single time. </remarks>
         void Unload();
 
         /// <summary> Unloads and disposes an asset. </summary>

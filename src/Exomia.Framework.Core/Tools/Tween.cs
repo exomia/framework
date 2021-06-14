@@ -93,10 +93,10 @@ namespace Exomia.Framework.Core.Tools
 
             foreach (PropertyInfo info in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                PropertyInfo info2 = targetType.GetProperty(info.Name);
+                PropertyInfo? info2 = targetType.GetProperty(info.Name);
                 if (info2 == null) { return; }
-                float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float));
-                float to   = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float));
+                float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float))!;
+                float to   = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float))!;
 
                 _items.Add(new TweenItem(from, to, info2));
             }

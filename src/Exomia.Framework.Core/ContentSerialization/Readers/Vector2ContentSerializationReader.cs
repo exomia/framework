@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,12 +12,16 @@ using System.Numerics;
 
 namespace Exomia.Framework.Core.ContentSerialization.Readers
 {
-    sealed class Vector2ContentSerializationReader : ContentSerializationReader<Vector2>
+    internal sealed class Vector2ContentSerializationReader : ContentSerializationReader<Vector2>
     {
         /// <inheritdoc />
         public override Vector2 ReadContext(ContentSerializationContext context)
         {
-            return new Vector2 { X = context.Get<float>(nameof(Vector2.X)), Y = context.Get<float>(nameof(Vector2.Y)) };
+            return new Vector2
+            {
+                X = context.Get<float>(nameof(Vector2.X)),
+                Y = context.Get<float>(nameof(Vector2.Y))
+            };
         }
     }
 }

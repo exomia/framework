@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2021, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -15,9 +15,7 @@ using System.Runtime.InteropServices;
 
 namespace Exomia.Framework.Core.Collections
 {
-    /// <summary>
-    ///     List class.
-    /// </summary>
+    /// <summary> List class. </summary>
     /// <typeparam name="T"> any. </typeparam>
     public sealed class List<T>
     {
@@ -27,13 +25,9 @@ namespace Exomia.Framework.Core.Collections
         private readonly        int _sizeOf;
         private                 T[] _items;
 
-        /// <summary>
-        ///     Sets the capacity.
-        /// </summary>
+        /// <summary> Sets the capacity. </summary>
         /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-        /// <value>
-        ///     The capacity.
-        /// </value>
+        /// <value> The capacity. </value>
         public int Capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,12 +51,8 @@ namespace Exomia.Framework.Core.Collections
             }
         }
 
-        /// <summary>
-        ///     Gets the number of items in the list.
-        /// </summary>
-        /// <value>
-        ///     The count.
-        /// </value>
+        /// <summary> Gets the number of items in the list. </summary>
+        /// <value> The count. </value>
         public int Count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -70,13 +60,9 @@ namespace Exomia.Framework.Core.Collections
             private set;
         }
 
-        /// <summary>
-        ///     Indexer to get items within this collection using array index syntax.
-        /// </summary>
+        /// <summary> Indexer to get items within this collection using array index syntax. </summary>
         /// <param name="index"> Zero-based index of the entry to access. </param>
-        /// <returns>
-        ///     The indexed item.
-        /// </returns>
+        /// <returns> The indexed item. </returns>
         public T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,13 +71,9 @@ namespace Exomia.Framework.Core.Collections
             set { _items[index] = value; }
         }
 
-        /// <summary>
-        ///     Indexer to get items within this collection using array index syntax.
-        /// </summary>
+        /// <summary> Indexer to get items within this collection using array index syntax. </summary>
         /// <param name="index"> Zero-based index of the entry to access. </param>
-        /// <returns>
-        ///     The indexed item.
-        /// </returns>
+        /// <returns> The indexed item. </returns>
         public T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,43 +82,36 @@ namespace Exomia.Framework.Core.Collections
             set { _items[index] = value; }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the &lt;see cref="List&lt;T&gt;"/&gt; class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the &lt;see cref="List&lt;T&gt;"/&gt; class. </summary>
         public List()
         {
             _items  = s_emptyArray;
             _sizeOf = Marshal.SizeOf<T>();
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="List{T}" /> class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the <see cref="List{T}" /> class. </summary>
         /// <param name="capacity"> The capacity. </param>
         public List(uint capacity)
         {
-            _items  = capacity == 0 ? s_emptyArray : new T[capacity];
+            _items = capacity == 0
+                ? s_emptyArray
+                : new T[capacity];
             _sizeOf = Marshal.SizeOf<T>();
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the &lt;see cref="List&lt;T&gt;"/&gt; class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the &lt;see cref="List&lt;T&gt;"/&gt; class. </summary>
         /// <param name="capacity"> The capacity. </param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     Thrown when one or more arguments are outside
-        ///     the required range.
-        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
         public List(int capacity)
         {
             if (capacity < 0) { throw new ArgumentOutOfRangeException(nameof(capacity)); }
-            _items  = capacity == 0 ? s_emptyArray : new T[capacity];
+            _items = capacity == 0
+                ? s_emptyArray
+                : new T[capacity];
             _sizeOf = Marshal.SizeOf<T>();
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the &lt;see cref="List&lt;T&gt;"/&gt; class.
-        /// </summary>
+        /// <summary> Initializes a new instance of the &lt;see cref="List&lt;T&gt;"/&gt; class. </summary>
         /// <param name="collection"> The collection. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public List(IEnumerable<T> collection)
@@ -167,9 +142,7 @@ namespace Exomia.Framework.Core.Collections
             }
         }
 
-        /// <summary>
-        ///     Adds the item to the end of the list.
-        /// </summary>
+        /// <summary> Adds the item to the end of the list. </summary>
         /// <param name="item"> The item to add to the end of the list. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(in T item)
@@ -177,9 +150,7 @@ namespace Exomia.Framework.Core.Collections
             Insert(Count, item);
         }
 
-        /// <summary>
-        ///     Adds a range of items to the end of the list.
-        /// </summary>
+        /// <summary> Adds a range of items to the end of the list. </summary>
         /// <param name="items"> The items to add to the end of the list. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(T[] items)
@@ -187,9 +158,7 @@ namespace Exomia.Framework.Core.Collections
             InsertRange(Count, items);
         }
 
-        /// <summary>
-        ///     Clears this object to its blank/initial state.
-        /// </summary>
+        /// <summary> Clears this object to its blank/initial state. </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
@@ -200,13 +169,9 @@ namespace Exomia.Framework.Core.Collections
             }
         }
 
-        /// <summary>
-        ///     Query if this object contains the given item.
-        /// </summary>
+        /// <summary> Query if this object contains the given item. </summary>
         /// <param name="item"> The item to look for. </param>
-        /// <returns>
-        ///     True if the object is in this collection, false if not.
-        /// </returns>
+        /// <returns> True if the object is in this collection, false if not. </returns>
         public bool Contains(in T item)
         {
             if (item == null)
@@ -224,40 +189,28 @@ namespace Exomia.Framework.Core.Collections
             return false;
         }
 
-        /// <summary>
-        ///     Gets a reference t using the given index.
-        /// </summary>
+        /// <summary> Gets a reference t using the given index. </summary>
         /// <param name="index"> Zero-based index of the item to get. </param>
-        /// <returns>
-        ///     A ref T.
-        /// </returns>
+        /// <returns> A ref T. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int index)
         {
             return ref _items[index];
         }
 
-        /// <summary>
-        ///     Gets a reference t using the given index.
-        /// </summary>
+        /// <summary> Gets a reference t using the given index. </summary>
         /// <param name="index"> Zero-based index of the item to get. </param>
-        /// <returns>
-        ///     A ref T.
-        /// </returns>
+        /// <returns> A ref T. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(uint index)
         {
             return ref _items[index];
         }
 
-        /// <summary>
-        ///     Finds the range of the given arguments.
-        /// </summary>
+        /// <summary> Finds the range of the given arguments. </summary>
         /// <param name="index"> Zero-based index to start copying from. </param>
         /// <param name="count"> Number of. </param>
-        /// <returns>
-        ///     The calculated range.
-        /// </returns>
+        /// <returns> The calculated range. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<T> GetRange(int index, int count)
         {
@@ -267,51 +220,37 @@ namespace Exomia.Framework.Core.Collections
             return list;
         }
 
-        /// <summary>
-        ///     Searches for the first match.
-        /// </summary>
+        /// <summary> Searches for the first match. </summary>
         /// <param name="item"> The item to find the index of. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(in T item)
         {
             return Array.IndexOf(_items, item, 0, Count);
         }
 
-        /// <summary>
-        ///     Searches for the first match.
-        /// </summary>
+        /// <summary> Searches for the first match. </summary>
         /// <param name="item">  The item to find the index of. </param>
         /// <param name="index"> Zero-based index to start searching from. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(in T item, int index)
         {
             return Array.IndexOf(_items, item, index, Count - index);
         }
 
-        /// <summary>
-        ///     Searches for the first match.
-        /// </summary>
+        /// <summary> Searches for the first match. </summary>
         /// <param name="item">  The item to find the index of. </param>
         /// <param name="index"> Zero-based index to start searching from. </param>
         /// <param name="count"> Number of the search range. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(in T item, int index, int count)
         {
             return Array.IndexOf(_items, item, index, count);
         }
 
-        /// <summary>
-        ///     Inserts the item into the list.
-        /// </summary>
+        /// <summary> Inserts the item into the list. </summary>
         /// <param name="index"> Zero-based index to insert the item. </param>
         /// <param name="item">  The item to insert at index. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -323,9 +262,7 @@ namespace Exomia.Framework.Core.Collections
             Count         += 1;
         }
 
-        /// <summary>
-        ///     Inserts the range of items into the list.
-        /// </summary>
+        /// <summary> Inserts the range of items into the list. </summary>
         /// <param name="index"> Zero-based index to start inserting at. </param>
         /// <param name="items"> The items to insert at index. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -337,55 +274,39 @@ namespace Exomia.Framework.Core.Collections
             Count += _items.Length;
         }
 
-        /// <summary>
-        ///     Searches for the last match.
-        /// </summary>
+        /// <summary> Searches for the last match. </summary>
         /// <param name="item"> The item to find the last index of. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LastIndexOf(in T item)
         {
             return Array.LastIndexOf(_items, item, 0, Count);
         }
 
-        /// <summary>
-        ///     Searches for the last match.
-        /// </summary>
+        /// <summary> Searches for the last match. </summary>
         /// <param name="item">  The item to find the last index of. </param>
         /// <param name="index"> Zero-based index to start searching from. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LastIndexOf(in T item, int index)
         {
             return Array.LastIndexOf(_items, item, index, Count - index);
         }
 
-        /// <summary>
-        ///     Searches for the last match.
-        /// </summary>
+        /// <summary> Searches for the last match. </summary>
         /// <param name="item">  The item to find the last index of. </param>
         /// <param name="index"> Zero-based index to start searching from. </param>
         /// <param name="count"> Number of the search range. </param>
-        /// <returns>
-        ///     An int.
-        /// </returns>
+        /// <returns> An int. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LastIndexOf(in T item, int index, int count)
         {
             return Array.LastIndexOf(_items, item, index, count);
         }
 
-        /// <summary>
-        ///     Removes the given item.
-        /// </summary>
+        /// <summary> Removes the given item. </summary>
         /// <param name="item"> The item to remove. </param>
-        /// <returns>
-        ///     True if it succeeds, false if it fails.
-        /// </returns>
+        /// <returns> True if it succeeds, false if it fails. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(in T item)
         {
@@ -398,9 +319,7 @@ namespace Exomia.Framework.Core.Collections
             return false;
         }
 
-        /// <summary>
-        ///     Removes at described by index.
-        /// </summary>
+        /// <summary> Removes at described by index. </summary>
         /// <param name="index"> Zero-based index of the item to remove. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
@@ -410,9 +329,7 @@ namespace Exomia.Framework.Core.Collections
             _items[Count] = default!;
         }
 
-        /// <summary>
-        ///     Removes the range.
-        /// </summary>
+        /// <summary> Removes the range. </summary>
         /// <param name="index"> Zero-based index of the items to remove. </param>
         /// <param name="count"> Number of items to remove. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -426,18 +343,14 @@ namespace Exomia.Framework.Core.Collections
             }
         }
 
-        /// <summary>
-        ///     Reverses.
-        /// </summary>
+        /// <summary> Reverses. </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reverse()
         {
             Array.Reverse(_items, 0, Count);
         }
 
-        /// <summary>
-        ///     Reverses.
-        /// </summary>
+        /// <summary> Reverses. </summary>
         /// <param name="index"> Zero-based index of the. </param>
         /// <param name="count"> Number of. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -446,18 +359,14 @@ namespace Exomia.Framework.Core.Collections
             Array.Reverse(_items, index, count);
         }
 
-        /// <summary>
-        ///     Sorts.
-        /// </summary>
+        /// <summary> Sorts. </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Sort()
         {
             Sort(0, Count, null!);
         }
 
-        /// <summary>
-        ///     Sorts.
-        /// </summary>
+        /// <summary> Sorts. </summary>
         /// <param name="comparer"> The comparer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Sort(IComparer<T> comparer)
@@ -465,9 +374,7 @@ namespace Exomia.Framework.Core.Collections
             Sort(0, Count, comparer);
         }
 
-        /// <summary>
-        ///     Sorts.
-        /// </summary>
+        /// <summary> Sorts. </summary>
         /// <param name="index">    Zero-based index of the. </param>
         /// <param name="count">    Number of. </param>
         /// <param name="comparer"> The comparer. </param>
@@ -477,12 +384,8 @@ namespace Exomia.Framework.Core.Collections
             Array.Sort(_items, index, count, comparer);
         }
 
-        /// <summary>
-        ///     Convert this object into an array representation.
-        /// </summary>
-        /// <returns>
-        ///     An array that represents the data in this object.
-        /// </returns>
+        /// <summary> Convert this object into an array representation. </summary>
+        /// <returns> An array that represents the data in this object. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
@@ -491,13 +394,9 @@ namespace Exomia.Framework.Core.Collections
             return array;
         }
 
-        /// <summary>
-        ///     Convert this object into an array representation.
-        /// </summary>
+        /// <summary> Convert this object into an array representation. </summary>
         /// <param name="index"> Zero-based index of the. </param>
-        /// <returns>
-        ///     An array that represents the data in this object.
-        /// </returns>
+        /// <returns> An array that represents the data in this object. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray(int index)
         {
@@ -506,14 +405,10 @@ namespace Exomia.Framework.Core.Collections
             return array;
         }
 
-        /// <summary>
-        ///     Convert this object into an array representation.
-        /// </summary>
+        /// <summary> Convert this object into an array representation. </summary>
         /// <param name="index"> Zero-based index of the. </param>
         /// <param name="count"> Number of. </param>
-        /// <returns>
-        ///     An array that represents the data in this object.
-        /// </returns>
+        /// <returns> An array that represents the data in this object. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray(int index, int count)
         {
@@ -522,16 +417,14 @@ namespace Exomia.Framework.Core.Collections
             return array;
         }
 
-        /// <summary>
-        ///     Ensures that capacity.
-        /// </summary>
-        /// <param name="min"> The minimum. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureCapacity(int min)
         {
             if (_items.Length < min)
             {
-                int newCapacity = _items.Length == 0 ? DEFAULT_CAPACITY : _items.Length * 2;
+                int newCapacity = _items.Length == 0
+                    ? DEFAULT_CAPACITY
+                    : _items.Length * 2;
                 if (newCapacity > MAX_CAPACITY) { newCapacity = MAX_CAPACITY; }
                 if (newCapacity < min) { newCapacity          = min; }
 
