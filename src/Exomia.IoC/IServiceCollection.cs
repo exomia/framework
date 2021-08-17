@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Exomia.Framework.Core.IOC
+namespace Exomia.IoC
 {
     /// <summary> Interface for a service collection. </summary>
     public interface IServiceCollection

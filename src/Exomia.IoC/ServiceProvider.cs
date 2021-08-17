@@ -13,12 +13,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Exomia.Framework.Core.IOC.Attributes;
+using Exomia.IoC.Attributes;
 
-namespace Exomia.Framework.Core.IOC
+namespace Exomia.IoC
 {
-    /// <summary> A service provider. </summary>
-    public class ServiceProvider : IServiceProvider
+    /// <summary> A service provider. This class cannot be inherited. </summary>
+    public sealed class ServiceProvider : IServiceProvider
     {
         private readonly IServiceProvider?                                      _parent;
         private readonly Dictionary<Type, IEntry>                               _entries   = new(16);

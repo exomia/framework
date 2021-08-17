@@ -14,7 +14,7 @@
   
   <PropertyGroup>
     <Company>exomia</Company>
-    <Authors>exomia; Daniel Bätz; Daniel Baumert</Authors>
+    <Authors>exomia; Daniel Bätz;</Authors>
     <Description>a framework for building 2D and 3D games and more inspired by the XNA/Mono framework</Description>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) exomia</Copyright>
   </PropertyGroup>
@@ -37,7 +37,7 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>Exomia.Framework.Linux.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Exomia.IoC.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -66,32 +66,12 @@
     <NoWarn>1701;1702;IDE0063;IDE0079</NoWarn>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <ApplicationIcon>logo_x192_Hcn_icon.ico</ApplicationIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Game\Desktop\RenderForm.cs"></Compile>
-    <Compile Update="Game\Desktop\RenderForm.*.cs">
-      <DependentUpon>RenderForm.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
   
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
     <None Include="..\..\icon.png" Pack="true" Visible="false" PackagePath="" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Game\Desktop\" />
   </ItemGroup>
 
   <!-- Source Link Support -->

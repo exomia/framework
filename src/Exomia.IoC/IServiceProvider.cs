@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Exomia.Framework.Core.IOC
+namespace Exomia.IoC
 {
     /// <summary> Interface for service provider. </summary>
     public interface IServiceProvider

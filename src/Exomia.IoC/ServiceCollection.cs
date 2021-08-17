@@ -11,7 +11,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Exomia.Framework.Core.IOC
+namespace Exomia.IoC
 {
     /// <summary> Collection of services. This class cannot be inherited. </summary>
     public sealed class ServiceCollection : IServiceCollection

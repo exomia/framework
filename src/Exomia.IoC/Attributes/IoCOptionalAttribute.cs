@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Exomia.Framework.Core.IOC.Attributes
+namespace Exomia.IoC.Attributes
 {
     /// <summary> Attribute for ioc optional. This class cannot be inherited. </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]

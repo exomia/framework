@@ -8,7 +8,7 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.IOC
+namespace Exomia.IoC
 {
     /// <summary> Values that represent the service kind. </summary>
     public enum ServiceKind
