@@ -177,16 +177,6 @@ namespace Exomia.Framework.Core.Resources
     public static class Shaders
     {
         /// <summary>
-        ///     The position color vertex shader resource path.
-        /// </summary>
-        public const string POSITION_COLOR_VERT = "Resources.shaders.position_color.vert.spv";
-
-        /// <summary>
-        ///     The position color fragment shader resource path.
-        /// </summary>
-        public const string POSITION_COLOR_FRAG = "Resources.shaders.position_color.frag.spv";
-
-        /// <summary>
         ///     The position color optimized vertex shader resource path.
         /// </summary>
         public const string POSITION_COLOR_VERT_OPT = "Resources.shaders.position_color.vert-opt.spv";
