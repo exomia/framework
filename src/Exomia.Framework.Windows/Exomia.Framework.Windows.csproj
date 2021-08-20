@@ -72,7 +72,6 @@
     <PackageReference Include="Exomia.Vulkan.Api.Windows" Version="0.2.175.10" />
   </ItemGroup>
 
-
   <ItemGroup>
     <Compile Update="Game\Desktop\RenderForm.cs"></Compile>
     <Compile Update="Game\Desktop\RenderForm.*.cs">

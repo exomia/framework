@@ -13,12 +13,12 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Exomia.Framework.Core;
+using Exomia.Framework.Core.Game;
 using Exomia.Framework.Core.Input;
-using Exomia.Framework.Windows.Input;
 using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
-using EventHandler = Exomia.Framework.Core.EventHandler;
 
 namespace Exomia.Framework.Windows.Game.Desktop
 {
@@ -33,18 +33,21 @@ namespace Exomia.Framework.Windows.Game.Desktop
         private const int  RID_INPUT_TYPE_OTHER    = 3;
 
         private const int MOUSE_LE_STATE = 1;
-
+        
         /// <summary> Occurs when the mouse leaves the client area. </summary>
-        public event Core.EventHandler<IntPtr>? MouseLeave;
+        public event EventHandler<IWin32RenderForm, IntPtr>? MouseLeave;
 
         /// <summary> Occurs when the mouse enters the client area. </summary>
-        public event Core.EventHandler<IntPtr>? MouseEnter;
+        public event EventHandler<IWin32RenderForm, IntPtr>? MouseEnter;
 
-        /// <summary> Occurs when the form is about to close. </summary>
-        public event RefEventHandler<bool>? FormClosing;
+        /// <summary> Occurs when the window is about to close. </summary>
+        public event RefEventHandler<bool>? Closing;
 
-        /// <summary> Occurs when the form is closed. </summary>
-        public event EventHandler? FormClosed;
+        /// <summary> Occurs when the window is closed. </summary>
+        public event Core.EventHandler? Closed;
+
+        /// <summary> Occurs when the window was resized. </summary>
+        public event Core.EventHandler<IRenderForm>? Resized;
 
         private unsafe IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
@@ -59,7 +62,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
                 case WM.INPUT:
                     int sizeOfRawInputData = 0;
                     User32.GetRawInputData(
-                        lParam, RID_INPUT, (byte*)0, ref sizeOfRawInputData, s_sizeOfRawInputHeader);
+                        lParam, RID_INPUT, null, ref sizeOfRawInputData, s_sizeOfRawInputHeader);
 
                     if (sizeOfRawInputData == 0) { return IntPtr.Zero; }
 
@@ -85,23 +88,34 @@ namespace Exomia.Framework.Windows.Game.Desktop
                     return IntPtr.Zero;
                 case WM.MOUSELEAVE:
                     _state &= ~MOUSE_LE_STATE;
-                    MouseLeave?.Invoke(_hWnd);
+
+                    if (!_isMouseVisible)
+                    {
+                        // ReSharper disable once EmptyEmbeddedStatement
+                        while(User32.ShowCursor(true) < 0);
+                    }
+
+                    MouseLeave?.Invoke(this, _hWnd);
                     return IntPtr.Zero;
                 case WM.SIZE:
-                    _size.X = LowWord(lParam);
-                    _size.Y = HighWord(lParam);
+                    Width  = LowWord(lParam);
+                    Height = HighWord(lParam);
+                    Resized?.Invoke(this);
                     return IntPtr.Zero;
                 case WM.CLOSE:
-                    bool cancel = false;
-                    FormClosing?.Invoke(ref cancel);
-                    if (!cancel)
+                    Task.Run(() =>
                     {
-                        FormClosed?.Invoke();
-                        User32.DestroyWindow(_hWnd);
-                    }
+                        bool cancel = false;
+                        Closing?.Invoke(ref cancel);
+                        if (!cancel)
+                        {
+                            Closed?.Invoke();
+                            User32.DestroyWindow(_hWnd);
+                        }
+                    }).ConfigureAwait(false);
                     return IntPtr.Zero;
                 case WM.DESTROY:
-                    MouseLeave?.Invoke(_hWnd);
+                    MouseLeave?.Invoke(this, _hWnd);
                     User32.PostQuitMessage(0);
                     return IntPtr.Zero;
                 case WM.KEYDOWN:
@@ -143,63 +157,79 @@ namespace Exomia.Framework.Windows.Game.Desktop
                             : MouseButtons.XButton2);
                     return IntPtr.Zero;
                 case WM.MOUSEMOVE:
+                {
+                    if ((_state & MOUSE_LE_STATE) != MOUSE_LE_STATE)
                     {
-                        if ((_state & MOUSE_LE_STATE) != MOUSE_LE_STATE)
-                        {
-                            _state |= MOUSE_LE_STATE;
-                            MouseEnter?.Invoke(_hWnd);
+                        _state |= MOUSE_LE_STATE;
 
-                            TRACKMOUSEEVENT trackMouseEvent = new TRACKMOUSEEVENT(TME.LEAVE, _hWnd, 0);
-                            if (!User32.TrackMouseEvent(ref trackMouseEvent))
+                        if (!_isMouseVisible)
+                        {
+                            // ReSharper disable once EmptyEmbeddedStatement
+                            while(User32.ShowCursor(false) >= 0);
+                        }
+                        if (_clipCursor)
+                        {
+                            RECT rect = new RECT(Width, Height);
+                            if (User32.ClientToScreen(hWnd, ref rect.LeftTop) &&
+                                User32.ClientToScreen(hWnd, ref rect.RightBottom))
                             {
-                                throw new Win32Exception(
-                                    Kernel32.GetLastError(), $"{nameof(User32.TrackMouseEvent)} failed!");
+                                User32.ClipCursor(ref rect);
                             }
                         }
 
-                        MouseEventArgs args = new MouseEventArgs(
-                            LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 0, 0);
-                        for (int i = 0; i < _mouseMovePipe.Count; i++)
-                        {
-                            if (_mouseMovePipe[i].Invoke(args) == EventAction.StopPropagation)
-                            {
-                                break;
-                            }
-                        }
+                        MouseEnter?.Invoke(this, _hWnd);
 
-                        return IntPtr.Zero;
+                        TRACKMOUSEEVENT trackMouseEvent = new TRACKMOUSEEVENT(TME.LEAVE, _hWnd, 0);
+                        if (!User32.TrackMouseEvent(ref trackMouseEvent))
+                        {
+                            throw new Win32Exception(
+                                Kernel32.GetLastError(), $"{nameof(User32.TrackMouseEvent)} failed!");
+                        }
                     }
+
+                    MouseEventArgs args = new MouseEventArgs(
+                        LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 0, 0);
+                    for (int i = 0; i < _mouseMovePipe.Count; i++)
+                    {
+                        if (_mouseMovePipe[i].Invoke(args) == EventAction.StopPropagation)
+                        {
+                            break;
+                        }
+                    }
+
+                    return IntPtr.Zero;
+                }
                 case WM.MOUSEWHEEL:
+                {
+                    MouseEventArgs args = new MouseEventArgs(
+                        LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 0,
+                        HighWord(m.wParam));
+                    for (int i = 0; i < _mouseWheelPipe.Count; i++)
                     {
-                        MouseEventArgs args = new MouseEventArgs(
-                            LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 0,
-                            HighWord(m.wParam));
-                        for (int i = 0; i < _mouseWheelPipe.Count; i++)
+                        if (_mouseWheelPipe[i].Invoke(args) == EventAction.StopPropagation)
                         {
-                            if (_mouseWheelPipe[i].Invoke(args) == EventAction.StopPropagation)
-                            {
-                                break;
-                            }
+                            break;
                         }
                     }
+                }
                     return IntPtr.Zero;
                 case WM.LBUTTONDBLCLK:
                 case WM.MBUTTONDBLCLK:
                 case WM.RBUTTONDBLCLK:
                 case WM.XBUTTONDBLCLK:
+                {
+                    _state |= 0xC000000;
+                    MouseEventArgs args = new MouseEventArgs(
+                        LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 2, 0);
+                    for (int i = 0; i < _mouseClickPipe.Count; i++)
                     {
-                        _state |= 0xC000000;
-                        MouseEventArgs args = new MouseEventArgs(
-                            LowWord(m.lParam), HighWord(m.lParam), (MouseButtons)LowWord(m.wParam), 2, 0);
-                        for (int i = 0; i < _mouseClickPipe.Count; i++)
+                        if (_mouseClickPipe[i].Invoke(args) == EventAction.StopPropagation)
                         {
-                            if (_mouseClickPipe[i].Invoke(args) == EventAction.StopPropagation)
-                            {
-                                break;
-                            }
+                            break;
                         }
-                        return IntPtr.Zero;
                     }
+                    return IntPtr.Zero;
+                }
             }
             return User32.DefWindowProc(hWnd, msg, wParam, lParam);
         }
@@ -301,7 +331,9 @@ namespace Exomia.Framework.Windows.Game.Desktop
             if ((_state & 0x8000000) == 0x8000000)
             {
                 MouseEventArgs argsClick = new MouseEventArgs(
-                    x, y, buttons, (_state & 0x4000000) == 0x4000000 ? 2 : 1, 0);
+                    x, y, buttons, (_state & 0x4000000) == 0x4000000
+                        ? 2
+                        : 1, 0);
                 for (int i = 0; i < _mouseClickPipe.Count; i++)
                 {
                     if (_mouseClickPipe[i].Invoke(argsClick) == EventAction.StopPropagation)

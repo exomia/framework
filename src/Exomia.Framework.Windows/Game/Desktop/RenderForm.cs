@@ -12,8 +12,8 @@ using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Exomia.Framework.Core.Game;
 using Exomia.Framework.Core.Input;
-using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Windows.Input;
 using Exomia.Framework.Windows.Input.Raw;
 using Exomia.Framework.Windows.Win32;
@@ -22,7 +22,7 @@ using Exomia.Framework.Windows.Win32.RawInput;
 namespace Exomia.Framework.Windows.Game.Desktop
 {
     /// <summary> The RenderForm. </summary>
-    public sealed partial class RenderForm : IDisposable
+    sealed partial class RenderForm : IWin32RenderForm
     {
         private const string LP_CLASS_NAME = "Exomia.Framework.RenderForm";
 
@@ -38,28 +38,19 @@ namespace Exomia.Framework.Windows.Game.Desktop
         private IntPtr      _hWnd;
 
         private string          _windowTitle;
-        private VectorI2        _size;
-        private FormWindowState _windowState = FormWindowState.Normal;
-        private FormBorderStyle _borderStyle = FormBorderStyle.Fixed;
+        private FormWindowState _windowState;
+        private FormBorderStyle _borderStyle;
+        private bool            _clipCursor;
+        private bool            _isMouseVisible;
 
-        /// <summary> Gets or sets the size. </summary>
-        /// <value> The size. </value>
-        public VectorI2 Size
-        {
-            get { return _size; }
-            set
-            {
-                if (_size != value)
-                {
-                    _size = value;
-                    Resize(value.X, value.Y);
-                }
-            }
-        }
+        /// <inheritdoc />
+        public int Width { get; private set; }
 
-        /// <summary> Gets or sets the window title. </summary>
-        /// <value> The title. </value>
-        public string WindowTitle
+        /// <inheritdoc />
+        public int Height { get; private set; }
+
+        /// <inheritdoc />
+        public string Title
         {
             get { return _windowTitle; }
             set
@@ -72,10 +63,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             }
         }
 
-        /// <summary> Gets or sets the state of the window. </summary>
-        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-        /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
-        /// <value> The window state. </value>
+        /// <inheritdoc />
         public FormWindowState WindowState
         {
             get { return _windowState; }
@@ -86,10 +74,10 @@ namespace Exomia.Framework.Windows.Game.Desktop
                 {
                     ShowWindowCommands showWindowCommands = _windowState switch
                     {
-                        FormWindowState.Normal => ShowWindowCommands.Normal,
+                        FormWindowState.Normal    => ShowWindowCommands.Normal,
                         FormWindowState.Minimized => ShowWindowCommands.Minimize,
                         FormWindowState.Maximized => ShowWindowCommands.Maximize,
-                        _ => throw new ArgumentOutOfRangeException()
+                        _                         => throw new ArgumentOutOfRangeException()
                     };
 
                     if (!User32.ShowWindow(_hWnd, (int)showWindowCommands))
@@ -100,10 +88,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             }
         }
 
-        /// <summary> Gets or sets the state of the window. </summary>
-        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-        /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
-        /// <value> The window state. </value>
+        /// <inheritdoc />
         public FormBorderStyle BorderStyle
         {
             get { return _borderStyle; }
@@ -124,10 +109,10 @@ namespace Exomia.Framework.Windows.Game.Desktop
 
                     windowStyles |= _windowState switch
                     {
-                        FormWindowState.Normal => 0,
+                        FormWindowState.Normal    => 0,
                         FormWindowState.Minimized => WS.MINIMIZE,
                         FormWindowState.Maximized => WS.MAXIMIZE,
-                        _ => throw new ArgumentOutOfRangeException()
+                        _                         => throw new ArgumentOutOfRangeException()
                     };
 
                     uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
@@ -136,7 +121,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         windowStylesEx &= ~WSEX.WINDOWEDGE;
                     }
 
-                    User32.SetWindowLongPtr(_hWnd, WLF.GWL_STYLE, (IntPtr)windowStyles);
+                    User32.SetWindowLongPtr(_hWnd, WLF.GWL_STYLE,   (IntPtr)windowStyles);
                     User32.SetWindowLongPtr(_hWnd, WLF.GWL_EXSTYLE, (IntPtr)windowStylesEx);
 
                     if (!User32.SetWindowPos(
@@ -154,11 +139,26 @@ namespace Exomia.Framework.Windows.Game.Desktop
         }
 
         /// <summary> Initializes a new instance of the <see cref="RenderForm" /> class. </summary>
-        /// <param name="windowTitle"> (Optional) The window title. </param>
-        /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
-        public RenderForm(string windowTitle = "RenderForm")
+        /// <param name="configuration"> The configuration. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// <exception cref="Win32Exception">        Thrown when a Window 32 error condition occurs. </exception>
+        public RenderForm(RenderFormConfiguration configuration)
         {
-            _windowTitle       = windowTitle;
+            if (configuration == null) { throw new ArgumentNullException(nameof(configuration)); }
+
+            _windowTitle = configuration.Title;
+            _windowState = configuration.DisplayType == DisplayType.FullscreenWindow
+                ? FormWindowState.Maximized
+                : FormWindowState.Normal;
+            _borderStyle = configuration.DisplayType == DisplayType.Window
+                ? FormBorderStyle.Fixed
+                : FormBorderStyle.None;
+            _clipCursor     = configuration.ClipCursor;
+            _isMouseVisible = configuration.IsMouseVisible;
+
+            Width  = (int)configuration.Width;
+            Height = (int)configuration.Height;
+
             _rawKeyPipe        = new Pipe<RawKeyEventHandler>();
             _keyUpPipe         = new Pipe<KeyEventHandler>();
             _keyDownPipe       = new Pipe<KeyEventHandler>();
@@ -210,6 +210,16 @@ namespace Exomia.Framework.Windows.Game.Desktop
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetForegroundWindow)} failed!");
             }
             User32.SetFocus(_hWnd);
+
+            if (_clipCursor)
+            {
+                RECT rect = new(Width, Height);
+                if (User32.ClientToScreen(_hWnd, ref rect.LeftTop) &&
+                    User32.ClientToScreen(_hWnd, ref rect.RightBottom))
+                {
+                    User32.ClipCursor(ref rect);
+                }
+            }
         }
 
         /// <summary> Resizes the window. </summary>
@@ -238,9 +248,9 @@ namespace Exomia.Framework.Windows.Game.Desktop
             // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
             windowStyles |= _windowState switch
             {
-                FormWindowState.Normal => 0,
+                FormWindowState.Normal    => 0,
                 FormWindowState.Maximized => WS.MAXIMIZE,
-                _ => throw new ArgumentOutOfRangeException()
+                _                         => throw new ArgumentOutOfRangeException()
             };
 
             uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
@@ -260,20 +270,25 @@ namespace Exomia.Framework.Windows.Game.Desktop
                 0, 0,
                 windowRect.RightBottom.X - windowRect.LeftTop.X,
                 windowRect.RightBottom.Y - windowRect.LeftTop.Y,
-                SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
-                SetWindowPosFlags.IgnoreZOrder))
+                SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
             }
         }
 
-        internal IntPtr CreateWindow(int w, int h)
+        /// <summary> Creates the window. </summary>
+        /// <returns> The new window. </returns>
+        /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+        /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
+        public (IntPtr, IntPtr) CreateWindow()
         {
+            if (_hWnd != IntPtr.Zero) { return (_wndClassEx.hInstance, _hWnd); }
+
             RECT windowRect;
             windowRect.LeftTop.X     = 0;
             windowRect.LeftTop.Y     = 0;
-            windowRect.RightBottom.X = w;
-            windowRect.RightBottom.Y = h;
+            windowRect.RightBottom.X = Width;
+            windowRect.RightBottom.Y = Height;
 
             uint windowStyles = _borderStyle switch
             {
@@ -288,28 +303,30 @@ namespace Exomia.Framework.Windows.Game.Desktop
             // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
             windowStyles |= _windowState switch
             {
-                FormWindowState.Normal => 0,
+                FormWindowState.Normal    => 0,
                 FormWindowState.Maximized => WS.MAXIMIZE,
-                _ => throw new ArgumentOutOfRangeException()
+                _                         => throw new ArgumentOutOfRangeException(nameof(_windowState))
             };
+
             uint windowStylesEx = WSEX.LEFT | WSEX.LTRREADING | WSEX.WINDOWEDGE | WSEX.APPWINDOW;
             if (_borderStyle == FormBorderStyle.None)
             {
                 windowStylesEx &= ~WSEX.WINDOWEDGE;
             }
 
+
             if (!User32.AdjustWindowRectEx(ref windowRect, windowStyles, false, windowStylesEx))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
             }
-            
+
             // ReSharper disable once InconsistentNaming
             const int CW_USEDEFAULT = unchecked((int)0x80000000);
             if ((_hWnd =
                 User32.CreateWindowEx(
                     windowStylesEx,
                     _wndClassEx.lpszClassName,
-                    WindowTitle,
+                    Title,
                     windowStyles,
                     CW_USEDEFAULT,
                     0,
@@ -338,9 +355,20 @@ namespace Exomia.Framework.Windows.Game.Desktop
                 }
             }
 
-            Device.RegisterDevice(HIDUsagePage.Generic, HIDUsage.Mouse, RawInputDeviceFlags.None, _hWnd);
+            //TODO: Fullscreen & FullscreenWindow
+            //if (_configuration.DisplayType == DisplayType.FullscreenWindow) { }
+            //if (_configuration.DisplayType == DisplayType.Fullscreen) { }
 
-            return _hWnd;
+            if (!User32.GetClientRect(_hWnd, out RECT rcRect))
+            {
+                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.GetClientRect)} failed!");
+            }
+
+            Width  = (rcRect.RightBottom.X - rcRect.LeftTop.X);
+            Height = (rcRect.RightBottom.Y - rcRect.LeftTop.Y);
+
+            Device.RegisterDevice(HIDUsagePage.Generic, HIDUsage.Mouse, RawInputDeviceFlags.None, _hWnd);
+            return (_wndClassEx.hInstance, _hWnd);
         }
 
         #region IDisposable Support
@@ -366,13 +394,13 @@ namespace Exomia.Framework.Windows.Game.Desktop
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~RenderForm()
         {
             Dispose(false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

@@ -10,45 +10,41 @@
 
 namespace Exomia.Framework.Windows.Game.Desktop
 {
-    /// <content> Form for viewing the render. This class cannot be inherited. </content>
-    public sealed partial class RenderForm
+    /// <summary> Values that represent FormWindowState. </summary>
+    public enum FormWindowState
     {
-        /// <summary> Values that represent FormWindowState. </summary>
-        public enum FormWindowState
-        {
-            /// <summary>
-            ///     An enum constant representing the normal option.
-            /// </summary>
-            Normal,
+        /// <summary>
+        ///     An enum constant representing the normal option.
+        /// </summary>
+        Normal,
 
-            /// <summary>
-            ///     An enum constant representing the minimized option.
-            /// </summary>
-            Minimized,
+        /// <summary>
+        ///     An enum constant representing the minimized option.
+        /// </summary>
+        Minimized,
 
-            /// <summary>
-            ///     An enum constant representing the maximized option.
-            /// </summary>
-            Maximized
-        }
+        /// <summary>
+        ///     An enum constant representing the maximized option.
+        /// </summary>
+        Maximized
+    }
 
-        /// <summary> Values that represent FormBorderStyle. </summary>
-        public enum FormBorderStyle
-        {
-            /// <summary>
-            ///     No frame.
-            /// </summary>
-            None,
+    /// <summary> Values that represent FormBorderStyle. </summary>
+    public enum FormBorderStyle
+    {
+        /// <summary>
+        ///     No frame.
+        /// </summary>
+        None,
 
-            /// <summary>
-            ///     A frame whose size can not be changed.
-            /// </summary>
-            Fixed,
+        /// <summary>
+        ///     A frame whose size can not be changed.
+        /// </summary>
+        Fixed,
 
-            /// <summary>
-            ///     A frame whose size can be changed.
-            /// </summary>
-            Sizable
-        }
+        /// <summary>
+        ///     A frame whose size can be changed.
+        /// </summary>
+        Sizable
     }
 }
