@@ -63,103 +63,29 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\arial_12px.e1" />
-    <None Remove="Resources\arial_14px.e1" />
-    <None Remove="Resources\arial_16px.e1" />
-    <None Remove="Resources\arial_18px.e1" />
-    <None Remove="Resources\arial_20px.e1" />
-    <None Remove="Resources\arial_22px.e1" />
-    <None Remove="Resources\arial_24px.e1" />
-    <None Remove="Resources\arial_26px.e1" />
-    <None Remove="Resources\arial_28px.e1" />
-    <None Remove="Resources\arial_30px.e1" />
-    <None Remove="Resources\arial_32px.e1" />
-    <None Remove="Resources\arial_34px.e1" />
-    <None Remove="Resources\arial_36px.e1" />
-    <None Remove="Resources\arial_38px.e1" />
-    <None Remove="Resources\arial_40px.e1" />
-    <None Remove="Resources\arial_42px.e1" />
-    <None Remove="Resources\arial_44px.e1" />
-    <None Remove="Resources\arial_46px.e1" />
-    <None Remove="Resources\arial_48px.e1" />
-    <None Remove="Resources\arial_50px.e1" />
-    <None Remove="Resources\arial_52px.e1" />
-    <None Remove="Resources\arial_54px.e1" />
-    <None Remove="Resources\arial_56px.e1" />
-    <None Remove="Resources\arial_58px.e1" />
-    <None Remove="Resources\arial_60px.e1" />
-    <None Remove="Resources\arial_62px.e1" />
-    <None Remove="Resources\arial_64px.e1" />
-    <None Remove="Resources\arial_66px.e1" />
-    <None Remove="Resources\arial_68px.e1" />
-    <None Remove="Resources\arial_70px.e1" />
-    <None Remove="Resources\arial_72px.e1" />
-    <None Remove="Resources\shaders\canvas.ehlsl" />
-    <None Remove="Resources\shaders\position_color.ehlsl" />
-    <None Remove="Resources\shaders\position_color_texture.ehlsl" />
-    <None Remove="Resources\shaders\position_normal_texture.ehlsl" />
-  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat</PreBuildEvent>
+  </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_12px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_12px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_14px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_14px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_16px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_16px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_18px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_18px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_20px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_20px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_22px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_22px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_24px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_24px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_26px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_26px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_28px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_28px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_30px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_30px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_32px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_32px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_34px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_34px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_36px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_36px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\fonts\arial\arial_38px.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.arial_38px.e1</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\shaders\canvas.ehlsl">
-      <LogicalName>$(AssemblyName).Resources.shaders.canvas.ehlsl</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\shaders\position_color.ehlsl">
-      <LogicalName>$(AssemblyName).Resources.shaders.position_color.ehlsl</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\shaders\position_color_texture.ehlsl">
-      <LogicalName>$(AssemblyName).Resources.shaders.position_color_texture.ehlsl</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\shaders\position_normal_texture.ehlsl">
-      <LogicalName>$(AssemblyName).Resources.shaders.position_normal_texture.ehlsl</LogicalName>
+    <EmbeddedResource Include="Resources\shaders\*.spv">
+      <LogicalName>$(AssemblyName).Resources.shaders.%(filename).spv</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.175.10" />
+    <EmbeddedResource Include="Resources\fonts\arial\*.e1">
+      <LogicalName>$(AssemblyName).Resources.fonts.arial.%(filename).e1</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Exomia.IoC\Exomia.IoC.csproj" />
+    <ProjectReference Include="..\Exomia.Logging\Exomia.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="0.2.181.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 

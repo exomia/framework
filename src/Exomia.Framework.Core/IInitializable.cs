@@ -8,8 +8,6 @@
 
 #endregion
 
-using Exomia.Framework.Core.IOC;
-
 namespace Exomia.Framework.Core
 {
     /// <summary> An interface to initialize a game component. </summary>

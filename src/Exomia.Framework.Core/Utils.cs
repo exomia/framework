@@ -17,11 +17,10 @@ namespace Exomia.Framework.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Resize<T>(ref T* src, ref int srcLength, int newLength) where T : unmanaged
         {
-            T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * newLength);
-            Unsafe.CopyBlock(ptr, src, (uint)(srcLength * sizeof(T)));
-            Marshal.FreeHGlobal(new IntPtr(src));
-
-            src       = ptr;
+            T* ptr = src;
+            Unsafe.CopyBlock(src = (T*)Marshal.AllocHGlobal(sizeof(T) * newLength), ptr, (uint)(srcLength * sizeof(T)));
+            Marshal.FreeHGlobal(new IntPtr(ptr));
+            
             srcLength = newLength;
         }
     }

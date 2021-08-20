@@ -83,7 +83,7 @@ namespace Exomia.Framework.Core.Allocators
 
         /// <summary> Allocates the given count of <typeparamref name="T"/>. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of bytes to allocate. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to allocate. </param>
         /// <returns> Null if it fails, else a <typeparamref name="T"/>*. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T* Allocate<T>(int count)
@@ -96,7 +96,7 @@ namespace Exomia.Framework.Core.Allocators
 
         /// <summary> Allocates the given count of <typeparamref name="T"/>. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count">   Number of <typeparamref name="T"/> to allocate. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to allocate. </param>
         /// <param name="default"> The default value to set. </param>
         /// <returns> Null if it fails, else a <typeparamref name="T"/>*. </returns>
         public static T* Allocate<T>(uint count, byte @default)
@@ -109,7 +109,7 @@ namespace Exomia.Framework.Core.Allocators
 
         /// <summary> Allocates the given count of <typeparamref name="T"/>. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count">   Number of bytes to allocate. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to allocate. </param>
         /// <param name="default"> The default. </param>
         /// <returns> Null if it fails, else a <typeparamref name="T"/>*. </returns>
         public static T* Allocate<T>(int count, byte @default)
@@ -122,7 +122,7 @@ namespace Exomia.Framework.Core.Allocators
 
         /// <summary> Allocates the given count of <typeparamref name="T"/>. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count">   Number of <typeparamref name="T"/> to allocate. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to allocate. </param>
         /// <param name="default"> The default value to set. </param>
         /// <returns> Null if it fails, else a <typeparamref name="T"/>*. </returns>
         public static T* Allocate<T>(uint count, T @default)
@@ -138,7 +138,7 @@ namespace Exomia.Framework.Core.Allocators
 
         /// <summary> Allocates the given count of <typeparamref name="T"/>. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count">   Number of bytes to allocate. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to allocate. </param>
         /// <param name="default"> The default. </param>
         /// <returns> Null if it fails, else a <typeparamref name="T"/>*. </returns>
         public static T* Allocate<T>(int count, T @default)
@@ -164,6 +164,17 @@ namespace Exomia.Framework.Core.Allocators
 
         /// <summary> Frees a given pointer. </summary>
         /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to free. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Free<T>(ref T* ptr, uint count) where T : unmanaged
+        {
+            Marshal.FreeHGlobal((IntPtr)ptr);
+            ptr = null;
+            GC.RemoveMemoryPressure(sizeof(T) * count);
+        }
+
+        /// <summary> Frees a given pointer. </summary>
+        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
         /// <param name="count"> Number of bytes to free. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Free(void* ptr, int count)
@@ -172,24 +183,15 @@ namespace Exomia.Framework.Core.Allocators
             GC.RemoveMemoryPressure(count);
         }
 
-        /// <summary> Frees a given byte pointer. </summary>
+        /// <summary> Frees a given pointer. </summary>
         /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of bytes to free. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to free. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free(byte* ptr, uint count)
+        public static void Free<T>(ref T* ptr, int count) where T : unmanaged
         {
             Marshal.FreeHGlobal((IntPtr)ptr);
-            GC.RemoveMemoryPressure(count);
-        }
-
-        /// <summary> Frees a given byte pointer. </summary>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of bytes to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free(byte* ptr, int count)
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            GC.RemoveMemoryPressure(count);
+            ptr = null;
+            GC.RemoveMemoryPressure(sizeof(T) * count);
         }
 
         /// <summary> Frees a given pointer of <typeparamref name="T"/>. </summary>
@@ -207,7 +209,7 @@ namespace Exomia.Framework.Core.Allocators
         /// <summary> Frees a given pointer. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of bytes to free. </param>
+        /// <param name="count"> Number of <typeparamref name="T"/> to free. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Free<T>(T* ptr, int count)
             where T : unmanaged
@@ -241,5 +243,39 @@ namespace Exomia.Framework.Core.Allocators
             Marshal.FreeHGlobal((IntPtr)(ptr - 4));
             GC.RemoveMemoryPressure(maxByteCount);
         }
+
+        /// <summary> Resizes a given pointer. </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="src">   [in,out] If non-null, the pointer. </param>
+        /// <param name="srcCount"> Number of <typeparamref name="T"/> elements. </param>
+        /// <param name="newCount"> Number of <typeparamref name="T"/> to allocate. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Resize<T>(ref T* src, ref int srcCount, int newCount)
+            where T : unmanaged
+        {
+            T* t = Allocate<T>(newCount);
+            Unsafe.CopyBlock(t, src, (uint)(sizeof(T) * srcCount));
+            Free<T>(src, srcCount);
+            src      = t;
+            srcCount = newCount;
+        }
+
+        /// <summary> Resizes a given pointer. </summary>
+        /// <typeparam name="T"> Generic type parameter. </typeparam>
+        /// <param name="src">   [in,out] If non-null, the pointer. </param>
+        /// <param name="srcCount"> Number of <typeparamref name="T"/> elements. </param>
+        /// <param name="newCount"> Number of <typeparamref name="T"/> to allocate. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Resize<T>(ref T* src, ref uint srcCount, uint newCount)
+            where T : unmanaged
+        {
+            T* t = Allocate<T>(newCount);
+            Unsafe.CopyBlock(t, src, (uint)(sizeof(T)) * srcCount);
+            Free<T>(src, srcCount);
+
+            src      = t;
+            srcCount = newCount;
+        }
+
     }
 }

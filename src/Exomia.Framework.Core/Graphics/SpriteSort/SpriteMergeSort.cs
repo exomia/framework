@@ -209,13 +209,13 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
             }
             if (left > middle)
             {
-                Utils.Cpy(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1) * sizeof(int));
+                Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + middle1, (uint)(((right - middle) + 1) * sizeof(int)));
             }
             else
             {
-                Utils.Cpy(tempArray + oldPosition + i, arr + left, ((middle - left) + 1) * sizeof(int));
+                Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + left, (uint)(((middle - left) + 1) * sizeof(int)));
             }
-            Utils.Cpy(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
+            Unsafe.CopyBlockUnaligned(arr + oldPosition, tempArray + oldPosition, (uint)(size * sizeof(int)));
         }
 
         /// <summary>

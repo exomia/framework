@@ -84,6 +84,91 @@ namespace Exomia.Framework.Core.Resources
         ///     The arial 38 px font resource path.
         /// </summary>
         public const string ARIAL_38_PX = "Resources.fonts.arial.arial_38px.e1";
+
+        /// <summary>
+        ///     The arial 40 px font resource path.
+        /// </summary>
+        public const string ARIAL_40_PX = "Resources.fonts.arial.arial_40px.e1";
+
+        /// <summary>
+        ///     The arial 42 px font resource path.
+        /// </summary>
+        public const string ARIAL_42_PX = "Resources.fonts.arial.arial_42px.e1";
+
+        /// <summary>
+        ///     The arial 44 px font resource path.
+        /// </summary>
+        public const string ARIAL_44_PX = "Resources.fonts.arial.arial_44px.e1";
+
+        /// <summary>
+        ///     The arial 46 px font resource path.
+        /// </summary>
+        public const string ARIAL_46_PX = "Resources.fonts.arial.arial_46px.e1";
+
+        /// <summary>
+        ///     The arial 48 px font resource path.
+        /// </summary>
+        public const string ARIAL_48_PX = "Resources.fonts.arial.arial_48px.e1";
+
+        /// <summary>
+        ///     The arial 50 px font resource path.
+        /// </summary>
+        public const string ARIAL_50_PX = "Resources.fonts.arial.arial_50px.e1";
+
+        /// <summary>
+        ///     The arial 52 px font resource path.
+        /// </summary>
+        public const string ARIAL_52_PX = "Resources.fonts.arial.arial_52px.e1";
+
+        /// <summary>
+        ///     The arial 54 px font resource path.
+        /// </summary>
+        public const string ARIAL_54_PX = "Resources.fonts.arial.arial_54px.e1";
+
+        /// <summary>
+        ///     The arial 56 px font resource path.
+        /// </summary>
+        public const string ARIAL_56_PX = "Resources.fonts.arial.arial_56px.e1";
+
+        /// <summary>
+        ///     The arial 58 px font resource path.
+        /// </summary>
+        public const string ARIAL_58_PX = "Resources.fonts.arial.arial_58px.e1";
+
+        /// <summary>
+        ///     The arial 60 px font resource path.
+        /// </summary>
+        public const string ARIAL_60_PX = "Resources.fonts.arial.arial_60px.e1";
+
+        /// <summary>
+        ///     The arial 62 px font resource path.
+        /// </summary>
+        public const string ARIAL_62_PX = "Resources.fonts.arial.arial_62px.e1";
+
+        /// <summary>
+        ///     The arial 64 px font resource path.
+        /// </summary>
+        public const string ARIAL_64_PX = "Resources.fonts.arial.arial_64px.e1";
+
+        /// <summary>
+        ///     The arial 66 px font resource path.
+        /// </summary>
+        public const string ARIAL_66_PX = "Resources.fonts.arial.arial_66px.e1";
+
+        /// <summary>
+        ///     The arial 68 px font resource path.
+        /// </summary>
+        public const string ARIAL_68_PX = "Resources.fonts.arial.arial_68px.e1";
+
+        /// <summary>
+        ///     The arial 70 px font resource path.
+        /// </summary>
+        public const string ARIAL_70_PX = "Resources.fonts.arial.arial_70px.e1";
+
+        /// <summary>
+        ///     The arial 72 px font resource path.
+        /// </summary>
+        public const string ARIAL_72_PX = "Resources.fonts.arial.arial_72px.e1";
     }
 
     /// <summary>
@@ -92,9 +177,14 @@ namespace Exomia.Framework.Core.Resources
     public static class Shaders
     {
         /// <summary>
-        ///     The position color shader resource path.
+        ///     The position color vertex shader resource path.
         /// </summary>
-        public const string POSITION_COLOR = "Resources.shaders.position_color.ehlsl";
+        public const string POSITION_COLOR_VERT = "Resources.shaders.position_color.vert.spv";
+
+        /// <summary>
+        ///     The position color fragment shader resource path.
+        /// </summary>
+        public const string POSITION_COLOR_FRAG = "Resources.shaders.position_color.frag.spv";
 
         /// <summary>
         ///     The position color texture shader resource path.

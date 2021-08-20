@@ -10,17 +10,6 @@
 
 namespace Exomia.Framework.Core.Graphics.SpriteSort
 {
-    /// <summary>
-    ///     SpriteSortAlgorithm
-    /// </summary>
-    public enum SpriteSortAlgorithm
-    {
-        /// <summary>
-        ///     MergeSort (default)
-        /// </summary>
-        MergeSort
-    }
-
     interface ISpriteSort
     {
         /// <summary>

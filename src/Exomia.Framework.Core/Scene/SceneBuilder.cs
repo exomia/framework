@@ -10,7 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using IServiceProvider = Exomia.Framework.Core.IOC.IServiceProvider;
+using IServiceProvider = Exomia.IoC.IServiceProvider;
 
 namespace Exomia.Framework.Core.Scene
 {
