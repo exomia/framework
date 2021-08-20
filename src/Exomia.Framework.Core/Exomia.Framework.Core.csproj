@@ -64,12 +64,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
     <PreBuildEvent>$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat</PreBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\shaders\*.spv">
-      <LogicalName>$(AssemblyName).Resources.shaders.%(filename).spv</LogicalName>
+    <EmbeddedResource Include="Resources\shaders\*-opt.spv">
+      <LogicalName>$(AssemblyName).Resources.shaders.%(filename)-opt.spv</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

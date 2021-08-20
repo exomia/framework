@@ -187,18 +187,13 @@ namespace Exomia.Framework.Core.Resources
         public const string POSITION_COLOR_FRAG = "Resources.shaders.position_color.frag.spv";
 
         /// <summary>
-        ///     The position color texture shader resource path.
+        ///     The position color optimized vertex shader resource path.
         /// </summary>
-        public const string POSITION_COLOR_TEXTURE = "Resources.shaders.position_color_texture.ehlsl";
+        public const string POSITION_COLOR_VERT_OPT = "Resources.shaders.position_color.vert-opt.spv";
 
         /// <summary>
-        ///     The position color texture2 shader resource path.
+        ///     The position color optimized fragment shader resource path.
         /// </summary>
-        public const string POSITION_NORMAL_TEXTURE = "Resources.shaders.position_normal_texture.ehlsl";
-
-        /// <summary>
-        ///     The canvas shader resource path.
-        /// </summary>
-        public const string CANVAS = "Resources.shaders.canvas.ehlsl";
+        public const string POSITION_COLOR_FRAG_OPT = "Resources.shaders.position_color.frag-opt.spv";
     }
 }
