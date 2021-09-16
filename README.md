@@ -1,6 +1,6 @@
 ## Information
 
-The exomia/framework is used for building 2D and 3D games and more inspired by the XNA/Mono framework
+The exomia/framework is used for building 2D and 3D games and more inspired by the XNA/Mono framework.
 
 ![](https://img.shields.io/github/issues-pr/exomia/framework.svg)
 ![](https://img.shields.io/github/issues/exomia/framework.svg)
@@ -10,6 +10,14 @@ The exomia/framework is used for building 2D and 3D games and more inspired by t
 ![](https://img.shields.io/github/languages/top/exomia/framework.svg)
 ![](https://img.shields.io/github/languages/count/exomia/framework.svg)
 ![](https://img.shields.io/github/license/exomia/framework.svg)
+
+## Ankündigungen
+
+16/09/2021:  
+&nbsp;&nbsp;&nbsp;&nbsp;exomia/framework will make the move to be a modern and cross platform framework in the future.  
+&nbsp;&nbsp;&nbsp;&nbsp;It will support windows and linux at the start (current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).  
+&nbsp;&nbsp;&nbsp;&nbsp;Therefore, we will change the graphics api and so we will move from DirectX to Vulkan.
+&nbsp;&nbsp;&nbsp;&nbsp;Stay tuned for more information in the future!
 
 ## Installing
 
