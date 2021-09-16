@@ -11,7 +11,7 @@ The exomia/framework is used for building 2D and 3D games and more inspired by t
 ![](https://img.shields.io/github/languages/count/exomia/framework.svg)
 ![](https://img.shields.io/github/license/exomia/framework.svg)
 
-## Ankündigungen
+## Announcements
 
 16/09/2021:  
 &nbsp;&nbsp;&nbsp;&nbsp;exomia/framework will make the move to be a modern and cross platform framework in the future.  
