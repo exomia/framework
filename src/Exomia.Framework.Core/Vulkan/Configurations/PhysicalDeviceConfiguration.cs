@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Vulkan.Api.Core;
+using static Exomia.Vulkan.Api.Core.VkPhysicalDeviceType;
 
 #pragma warning disable 1591
 namespace Exomia.Framework.Core.Vulkan.Configurations
@@ -17,6 +17,6 @@ namespace Exomia.Framework.Core.Vulkan.Configurations
     public sealed class PhysicalDeviceConfiguration
     {
         public VkVersion            RequiredMinimumVkApiVersion { get; set; } = VkVersion.VulkanApiVersion12;
-        public VkPhysicalDeviceType RequiredPhysicalDeviceType  { get; set; } = VkPhysicalDeviceType.DISCRETE_GPU;
+        public VkPhysicalDeviceType RequiredPhysicalDeviceType  { get; set; } = VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
     }
 }

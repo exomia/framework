@@ -1,14 +1,12 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
 #endregion
-
-using System;
 
 namespace Exomia.Framework.Core.Game
 {
@@ -40,7 +38,7 @@ namespace Exomia.Framework.Core.Game
         /// <param name="width">  The width. </param>
         /// <param name="height"> The height. </param>
         void Resize(int width, int height);
-        
+
         /// <summary> Shows the render form. </summary>
         void Show();
     }

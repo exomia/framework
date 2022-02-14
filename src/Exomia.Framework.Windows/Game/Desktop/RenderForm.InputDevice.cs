@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,146 +8,144 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Windows.Input;
 
 namespace Exomia.Framework.Windows.Game.Desktop
 {
-    sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
+    internal sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
     {
         private readonly Pipe<RawKeyEventHandler>   _rawKeyPipe;
         private readonly Pipe<KeyEventHandler>      _keyUpPipe, _keyDownPipe;
         private readonly Pipe<KeyPressEventHandler> _keyPressPipe;
 
         private readonly Pipe<MouseEventHandler> _mouseMovePipe,
-                                                 _mouseUpPipe,
-                                                 _mouseDownPipe,
-                                                 _mouseClickPipe,
-                                                 _mouseWheelPipe;
+            _mouseUpPipe,
+            _mouseDownPipe,
+            _mouseClickPipe,
+            _mouseWheelPipe;
 
         private readonly Pipe<MouseEventHandler> _mouseRawInputPipe;
 
-        /// <inheritdoc/>
-        void IWindowsInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
-        {
-            _rawKeyPipe.Register(handler, position);
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterKeyUp(KeyEventHandler handler, int position)
         {
             _keyUpPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterKeyPress(KeyPressEventHandler handler, int position)
         {
             _keyPressPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterKeyDown(KeyEventHandler handler, int position)
         {
             _keyDownPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterMouseDown(MouseEventHandler handler, int position)
         {
             _mouseDownPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterMouseUp(MouseEventHandler handler, int position)
         {
             _mouseUpPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterMouseClick(MouseEventHandler handler, int position)
         {
             _mouseClickPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterMouseMove(MouseEventHandler handler, int position)
         {
             _mouseMovePipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterRawMouseInput(MouseEventHandler handler, int position)
         {
             _mouseRawInputPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.RegisterMouseWheel(MouseEventHandler handler, int position)
         {
             _mouseWheelPipe.Register(handler, position);
         }
 
-        /// <inheritdoc/>
-        void IWindowsInputDevice.UnregisterRawKeyEvent(RawKeyEventHandler handler)
-        {
-            _rawKeyPipe.Unregister(handler);
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterKeyUp(KeyEventHandler handler)
         {
             _keyUpPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterKeyPress(KeyPressEventHandler handler)
         {
             _keyPressPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterKeyDown(KeyEventHandler handler)
         {
             _keyDownPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterRawMouseInput(MouseEventHandler handler)
         {
             _mouseRawInputPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterMouseDown(MouseEventHandler handler)
         {
             _mouseDownPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterMouseUp(MouseEventHandler handler)
         {
             _mouseUpPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterMouseClick(MouseEventHandler handler)
         {
             _mouseClickPipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterMouseMove(MouseEventHandler handler)
         {
             _mouseMovePipe.Unregister(handler);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInputDevice.UnregisterMouseWheel(MouseEventHandler handler)
         {
             _mouseWheelPipe.Unregister(handler);
+        }
+
+        /// <inheritdoc />
+        void IWindowsInputDevice.RegisterRawKeyEvent(RawKeyEventHandler handler, int position)
+        {
+            _rawKeyPipe.Register(handler, position);
+        }
+
+        /// <inheritdoc />
+        void IWindowsInputDevice.UnregisterRawKeyEvent(RawKeyEventHandler handler)
+        {
+            _rawKeyPipe.Unregister(handler);
         }
 
         private sealed class Pipe<TDelegate>
@@ -188,7 +186,12 @@ namespace Exomia.Framework.Windows.Game.Desktop
             public void Register(in TDelegate handler, int position = -1)
             {
                 if (position == -1) { _list.Add(handler); }
-                else { _list.Insert(position >= 0 ? position : _list.Count + position, handler); }
+                else
+                {
+                    _list.Insert(position >= 0
+                        ? position
+                        : _list.Count + position, handler);
+                }
             }
 
             /// <summary> Deregisters this object. </summary>

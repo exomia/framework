@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Exomia.Framework.Core.Game;
 
@@ -96,7 +94,7 @@ namespace Exomia.Framework.Core.Tools
                 PropertyInfo? info2 = targetType.GetProperty(info.Name);
                 if (info2 == null) { return; }
                 float from = (float)Convert.ChangeType(info2.GetValue(target, null), typeof(float))!;
-                float to   = (float)Convert.ChangeType(info.GetValue(values, null), typeof(float))!;
+                float to   = (float)Convert.ChangeType(info.GetValue(values, null),  typeof(float))!;
 
                 _items.Add(new TweenItem(from, to, info2));
             }

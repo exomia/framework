@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using IServiceProvider = Exomia.IoC.IServiceProvider;
 
 namespace Exomia.Framework.Core.Scene
@@ -20,7 +18,7 @@ namespace Exomia.Framework.Core.Scene
         private readonly IServiceProvider                        _serviceProvider;
         private readonly List<(bool initialize, Type sceneType)> _sceneCollection = new List<(bool, Type)>(8);
 
-        /// <summary> Initializes a new instance of the <see cref="SceneBuilder"/> class. </summary>
+        /// <summary> Initializes a new instance of the <see cref="SceneBuilder" /> class. </summary>
         /// <param name="serviceProvider"> The service provider. </param>
         /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         public SceneBuilder(IServiceProvider serviceProvider)
@@ -28,10 +26,10 @@ namespace Exomia.Framework.Core.Scene
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        /// <summary> Adds Scene to the <see cref="SceneBuilder"/>. </summary>
+        /// <summary> Adds Scene to the <see cref="SceneBuilder" />. </summary>
         /// <typeparam name="TScene"> Type of the scene. </typeparam>
         /// <param name="initialize"> (Optional) True to initialize the scene at startup. </param>
-        /// <returns> A <see cref="SceneBuilder"/>. </returns>
+        /// <returns> A <see cref="SceneBuilder" />. </returns>
         public SceneBuilder Add<TScene>(bool initialize = false) where TScene : SceneBase
         {
             _sceneCollection.Add((initialize, typeof(TScene)));

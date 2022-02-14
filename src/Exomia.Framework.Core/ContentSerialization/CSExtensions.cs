@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,7 @@
 
 #endregion
 
-using System;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Exomia.Framework.Core.ContentSerialization.Exceptions;
@@ -37,7 +37,7 @@ namespace Exomia.Framework.Core.ContentSerialization
             Type? t = Type.GetType(typeInfo);
             if (t != null) { return t; }
 
-            foreach (var (_, value) in ContentSerializer.Assemblies)
+            foreach ((var _, Assembly value) in ContentSerializer.Assemblies)
             {
                 t = Type.GetType(typeInfo + ", " + value.FullName);
                 if (t != null) { return t; }

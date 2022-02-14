@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,9 +8,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using System.Reflection;
 using Exomia.Framework.Core.ContentSerialization.Exceptions;
@@ -18,7 +15,6 @@ using Exomia.Framework.Core.ContentSerialization.Readers;
 using Exomia.Framework.Core.ContentSerialization.Types;
 using Exomia.Framework.Core.ContentSerialization.Writers;
 using Exomia.Framework.Core.Mathematics;
-using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Core.ContentSerialization
 {
@@ -239,7 +235,7 @@ namespace Exomia.Framework.Core.ContentSerialization
             ContentSerializationContext context = new ContentSerializationContext();
             writer.Write(context, obj);
 
-            foreach ((var key, ContentSerializationContextValue value) in context.Content)
+            foreach ((string key, ContentSerializationContextValue value) in context.Content)
             {
                 if (value.Object == null) { continue; }
 
@@ -314,8 +310,8 @@ namespace Exomia.Framework.Core.ContentSerialization
                     case '[':
                     {
                         if (stream.ReadStartTag(
-                            out string key, out string baseTypeInfo, out string genericTypeInfo,
-                            out string dimensionInfo))
+                                out string key, out string baseTypeInfo, out string genericTypeInfo,
+                                out string dimensionInfo))
                         {
                             if (Types.TryGetValue(baseTypeInfo, out IType? it))
                             {

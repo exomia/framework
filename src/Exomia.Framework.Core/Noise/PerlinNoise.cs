@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -61,7 +61,7 @@ namespace Exomia.Framework.Core.Noise
             }
 
             return Math2.Lerp(
-                GradCoord1D(seed, x0, xd0),
+                GradCoord1D(seed, x0,     xd0),
                 GradCoord1D(seed, x0 + 1, xd0 - 1.0),
                 xs);
         }

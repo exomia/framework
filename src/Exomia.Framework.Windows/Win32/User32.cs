@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using Exomia.Framework.Windows.Win32.RawInput;
@@ -18,7 +17,7 @@ using Exomia.Framework.Windows.Win32.RawInput;
 // ReSharper disable IdentifierTypo
 namespace Exomia.Framework.Windows.Win32
 {
-    static class User32
+    internal static class User32
     {
         private const string USER32 = "user32.dll";
 
@@ -169,10 +168,13 @@ namespace Exomia.Framework.Windows.Win32
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(USER32, EntryPoint = "RegisterRawInputDevices", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool RegisterRawInputDevices([MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)]
-                                                            RAWINPUTDEVICE[] pRawInputDevices,
-                                                            int uiNumDevices,
-                                                            int cbSize);
+        [return: MarshalAs(                                            UnmanagedType.Bool)]
+        internal static extern bool RegisterRawInputDevices([MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] RAWINPUTDEVICE[] pRawInputDevices,
+                                                            int                                                                     uiNumDevices,
+                                                            int                                                                     cbSize);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(USER32, EntryPoint = "MonitorFromWindow", SetLastError = true)]
+        internal static extern IntPtr MonitorFromWindow(IntPtr hwnd, MonitorFlags dwFlags);
     }
 }

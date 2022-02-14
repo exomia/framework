@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -75,7 +74,7 @@ namespace Exomia.Framework.Core.Mathematics
         }
 
         /// <inheritdoc />
-        public override readonly int GetHashCode()
+        public readonly override int GetHashCode()
         {
             unchecked
             {
@@ -101,13 +100,13 @@ namespace Exomia.Framework.Core.Mathematics
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override readonly bool Equals(object? value)
+        public readonly override bool Equals(object? value)
         {
             return value is VectorI3 other && Equals(in other);
         }
 
         /// <inheritdoc />
-        public override readonly string ToString()
+        public readonly override string ToString()
         {
             return string.Format(
                 CultureInfo.CurrentCulture,

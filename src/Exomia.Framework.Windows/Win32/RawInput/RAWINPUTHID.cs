@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 
 // ReSharper disable InconsistentNaming
@@ -17,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput
 {
     [StructLayout(LayoutKind.Sequential)]
-    struct RAWINPUTHID
+    internal struct RAWINPUTHID
     {
         /// <summary> Size of the HID data in bytes. </summary>
         public int Size;

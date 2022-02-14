@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -18,12 +17,12 @@ using System.Security;
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32
 {
-    static class Shell32
+    internal static class Shell32
     {
         private const string SHELL32 = "shell32.dll";
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(SHELL32, EntryPoint ="ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
+        [DllImport(SHELL32, EntryPoint = "ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
         internal static extern IntPtr ExtractIcon(IntPtr hInst, string exeFileName, int iconIndex);
     }
 }

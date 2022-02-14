@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,10 +8,8 @@
 
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 
 namespace Exomia.Framework.Core.Allocators
 {

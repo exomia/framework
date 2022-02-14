@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -140,7 +139,7 @@ namespace Exomia.Framework.Core.Mathematics
 
         /// <summary> Calculates the absolute value of x. </summary>
         /// <param name="x"> The value 32-bit signed integer. </param>
-        /// <returns> Return the absolute value of <paramref name="x"/>. </returns>
+        /// <returns> Return the absolute value of <paramref name="x" />. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Abs(int x)
         {

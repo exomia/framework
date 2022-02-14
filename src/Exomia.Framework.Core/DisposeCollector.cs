@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Core
@@ -82,7 +80,7 @@ namespace Exomia.Framework.Core
 
         private bool _disposed;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         /// <summary> Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources. </summary>
         public void Dispose()
         {

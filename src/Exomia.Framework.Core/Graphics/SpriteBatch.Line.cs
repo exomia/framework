@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,11 +8,9 @@
 
 #endregion
 
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Mathematics;
-using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Core.Graphics
 {
@@ -30,7 +28,7 @@ namespace Exomia.Framework.Core.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
-                             in VkColor   color,
+                             in VkColor color,
                              float      lineWidth,
                              float      opacity,
                              float      layerDepth)
@@ -47,11 +45,11 @@ namespace Exomia.Framework.Core.Graphics
         /// <param name="opacity">    The opacity. </param>
         /// <param name="layerDepth"> The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawLine(in Line2 line,
+        public void DrawLine(in Line2   line,
                              in VkColor color,
-                             float    lineWidth,
-                             float    opacity,
-                             float    layerDepth)
+                             float      lineWidth,
+                             float      opacity,
+                             float      layerDepth)
         {
             DrawLine(in line, color, lineWidth, opacity, 1.0f, layerDepth);
         }
@@ -69,7 +67,7 @@ namespace Exomia.Framework.Core.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(in Vector2 point1,
                              in Vector2 point2,
-                             in VkColor   color,
+                             in VkColor color,
                              float      lineWidth,
                              float      opacity,
                              float      lengthFactor,
@@ -88,20 +86,20 @@ namespace Exomia.Framework.Core.Graphics
         /// <param name="lengthFactor"> The length factor. </param>
         /// <param name="layerDepth">   The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DrawLine(in Line2 line,
+        public void DrawLine(in Line2   line,
                              in VkColor color,
-                             float    lineWidth,
-                             float    opacity,
-                             float    lengthFactor,
-                             float    layerDepth)
+                             float      lineWidth,
+                             float      opacity,
+                             float      lengthFactor,
+                             float      layerDepth)
         {
             float dx = line.X2 - line.X1;
             float dy = line.Y2 - line.Y1;
             DrawSprite(
-                _whiteTexture, new RectangleF(
+                _whiteTexture,                                                                      new RectangleF(
                     line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth), false,
-                s_nullRectangle, color, MathF.Atan2(dy, dx),
-                s_vector2Zero, opacity, TextureEffects.None, layerDepth);
+                s_nullRectangle,                                                                    color,   MathF.Atan2(dy, dx),
+                s_vector2Zero,                                                                      opacity, TextureEffects.None, layerDepth);
         }
     }
 }

@@ -1,4 +1,13 @@
-﻿using System;
+﻿#region License
+
+// Copyright (c) 2018-2022, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -20,7 +29,7 @@ namespace Exomia.Framework.Core
             T* ptr = src;
             Unsafe.CopyBlock(src = (T*)Marshal.AllocHGlobal(sizeof(T) * newLength), ptr, (uint)(srcLength * sizeof(T)));
             Marshal.FreeHGlobal(new IntPtr(ptr));
-            
+
             srcLength = newLength;
         }
     }

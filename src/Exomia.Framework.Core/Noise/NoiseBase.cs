@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -54,8 +53,8 @@ namespace Exomia.Framework.Core.Noise
         /// </summary>
         protected static readonly Vector2[] Grad_2D =
         {
-            new Vector2(-1.0f, -1.0f), new Vector2(1.0f, -1.0f), new Vector2(-1.0f, 1.0f), new Vector2(1.0f, 1.0f),
-            new Vector2(0.0f, -1.0f), new Vector2(-1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f)
+            new Vector2(-1.0f, -1.0f), new Vector2(1.0f,  -1.0f), new Vector2(-1.0f, 1.0f), new Vector2(1.0f, 1.0f),
+            new Vector2(0.0f,  -1.0f), new Vector2(-1.0f, 0.0f), new Vector2(0.0f,   1.0f), new Vector2(1.0f, 0.0f)
         };
 
         /// <summary>
@@ -63,12 +62,12 @@ namespace Exomia.Framework.Core.Noise
         /// </summary>
         protected static readonly Vector3[] Grad_3D =
         {
-            new Vector3(1.0f, 1.0f, 0.0f), new Vector3(-1.0f, 1.0f, 0.0f), new Vector3(1.0f, -1.0f, 0.0f),
-            new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(1.0f, 0.0f, 1.0f), new Vector3(-1.0f, 0.0f, 1.0f),
-            new Vector3(1.0f, 0.0f, -1.0f), new Vector3(-1.0f, 0.0f, -1.0f), new Vector3(0.0f, 1.0f, 1.0f),
-            new Vector3(0.0f, -1.0f, 1.0f), new Vector3(0.0f, 1.0f, -1.0f), new Vector3(0.0f, -1.0f, -1.0f),
-            new Vector3(1.0f, 1.0f, 0.0f), new Vector3(0.0f, -1.0f, 1.0f), new Vector3(-1.0f, 1.0f, 0.0f),
-            new Vector3(0.0f, -1.0f, -1.0f)
+            new Vector3(1.0f,  1.0f,  0.0f), new Vector3(-1.0f,  1.0f,  0.0f), new Vector3(1.0f,  -1.0f, 0.0f),
+            new Vector3(-1.0f, -1.0f, 0.0f), new Vector3(1.0f,   0.0f,  1.0f), new Vector3(-1.0f, 0.0f,  1.0f),
+            new Vector3(1.0f,  0.0f,  -1.0f), new Vector3(-1.0f, 0.0f,  -1.0f), new Vector3(0.0f, 1.0f,  1.0f),
+            new Vector3(0.0f,  -1.0f, 1.0f), new Vector3(0.0f,   1.0f,  -1.0f), new Vector3(0.0f, -1.0f, -1.0f),
+            new Vector3(1.0f,  1.0f,  0.0f), new Vector3(0.0f,   -1.0f, 1.0f), new Vector3(-1.0f, 1.0f,  0.0f),
+            new Vector3(0.0f,  -1.0f, -1.0f)
         };
 
         /// <summary>
@@ -506,7 +505,13 @@ namespace Exomia.Framework.Core.Noise
                     c = wd;
                     break;
             }
-            return (float)(((hash & 4) == 0 ? -a : a) + ((hash & 2) == 0 ? -b : b) + ((hash & 1) == 0 ? -c : c));
+            return (float)(((hash & 4) == 0
+                ? -a
+                : a) + ((hash & 2) == 0
+                ? -b
+                : b) + ((hash & 1) == 0
+                ? -c
+                : c));
         }
 
         #endregion

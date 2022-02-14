@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,7 @@
 
 #endregion
 
-using System;
+
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
@@ -17,7 +17,7 @@ using System;
 namespace Exomia.Framework.Windows.Win32
 {
     [Flags]
-    enum ClassStyles : uint
+    internal enum ClassStyles : uint
     {
         /// <summary>
         ///     Aligns the window's client area on a byte boundary (in the x direction). This style affects the width of the

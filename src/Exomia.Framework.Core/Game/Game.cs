@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,79 +8,39 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime;
-using System.Threading;
-using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Graphics;
-using Exomia.Framework.Core.Input;
-using Exomia.Framework.Core.Tools;
+using Exomia.Framework.Core.Mathematics;
+using Exomia.Framework.Core.Vulkan;
+using IServiceProvider = Exomia.IoC.IServiceProvider;
 
-// ReSharper disable HeapView.PossibleBoxingAllocation
 namespace Exomia.Framework.Core.Game
 {
-    /// <summary> A game. </summary>
-    public abstract class Game : IRunnable
+    public abstract unsafe class Game : IRunnable
     {
-        private const int                               INITIAL_QUEUE_SIZE        = 16;
-        private const double                            FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+        private const double                    FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+        private event EventHandler<Game, bool>? _IsRunningChanged;
 
-        private event EventHandler<Game, bool>?         _IsRunningChanged;
-        private readonly List<IContentable>             _contentableComponent;
-        private readonly List<IContentable>             _currentlyContentableComponent;
-        private readonly List<IDrawable>                _currentlyDrawableComponent;
-        private readonly List<IUpdateable>              _currentlyUpdateableComponent;
-        private readonly List<IDrawable>                _drawableComponent;
-        private readonly Dictionary<string, IComponent> _gameComponents;
-        private readonly List<IInitializable>           _pendingInitializables;
-        private readonly List<IUpdateable>              _updateableComponent;
-        private readonly IServiceRegistry               _serviceRegistry;
-        private readonly DisposeCollector               _collector;
-        private readonly IInputDevice                   _inputDevice;
-        private readonly IContentManager                _contentManager;
-        private readonly GamePlatform                   _platform;
-        private readonly GraphicsDevice                 _graphicsDevice;
-        private          bool                           _isRunning, _isInitialized, _isContentLoaded, _shutdown;
+        private readonly delegate*<void> _doEvents;
 
-        /// <summary> Gets the services. </summary>
-        /// <value> The services. </value>
-        public IServiceRegistry Services
-        {
-            get { return _serviceRegistry; }
-        }
+        private readonly IServiceProvider     _serviceProvider;
+        private readonly ManualResetEventSlim _isShutdownCompleted;
 
-        /// <summary> Gets the content. </summary>
-        /// <value> The content. </value>
-        public IContentManager Content
-        {
-            get { return _contentManager; }
-        }
+        private readonly Vulkan.Vulkan _vulkan;
 
-        /// <summary> Gets the game window. </summary>
-        /// <value> The game window. </value>
-        public IGameWindow GameWindow
-        {
-            get { return _platform.MainWindow; }
-        }
+        private bool _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
-        /// <summary> Gets the graphics device. </summary>
-        /// <value> The graphics device. </value>
-        public IGraphicsDevice GraphicsDevice
-        {
-            get { return _graphicsDevice; }
-        }
-
-        /// <summary> Gets options for controlling the game graphics. </summary>
-        /// <value> Options that control the game graphics. </value>
-        public GameGraphicsParameters GameGraphicsParameters { get; private set; }
+        private readonly SpriteBatch _spriteBatch;
 
         /// <summary> Gets or sets a value indicating whether this object is fixed time step. </summary>
         /// <value> True if this object is fixed time step, false if not. </value>
         public bool IsFixedTimeStep { get; set; } = false;
 
-        /// <inheritdoc/>
+        /// <summary> Gets or sets the target elapsed time in ms. </summary>
+        /// <value> The target elapsed time in ms. </value>
+        public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
+
+        /// <inheritdoc />
         public bool IsRunning
         {
             get { return _isRunning; }
@@ -94,218 +54,33 @@ namespace Exomia.Framework.Core.Game
             }
         }
 
-        /// <summary> Gets or sets the target elapsed time in ms. </summary>
-        /// <value> The target elapsed time in ms. </value>
-        public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
-
-        #region Game
-
         /// <summary> Initializes a new instance of the <see cref="Game" /> class. </summary>
-        /// <param name="title">         (Optional) title. </param>
-        /// <param name="gcLatencyMode"> (Optional) GCLatencyMode. </param>
-        protected Game(string        title         = "Exomia.Framework",
-                       GCLatencyMode gcLatencyMode = GCLatencyMode.SustainedLowLatency)
+        /// <param name="serviceProvider"> The service provider. </param>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        protected Game(IServiceProvider serviceProvider)
         {
-            GCSettings.LatencyMode = gcLatencyMode;
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
-            _gameComponents                = new Dictionary<string, IComponent>(INITIAL_QUEUE_SIZE);
-            _pendingInitializables         = new List<IInitializable>(INITIAL_QUEUE_SIZE);
-            _updateableComponent           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _drawableComponent             = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _contentableComponent          = new List<IContentable>(INITIAL_QUEUE_SIZE);
-            _currentlyUpdateableComponent  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
-            _currentlyDrawableComponent    = new List<IDrawable>(INITIAL_QUEUE_SIZE);
-            _currentlyContentableComponent = new List<IContentable>(INITIAL_QUEUE_SIZE);
+            _isShutdownCompleted = new ManualResetEventSlim(true);
 
-            _collector       = new DisposeCollector();
-            _serviceRegistry = new ServiceRegistry();
+            _doEvents = serviceProvider.Get<GameConfiguration>().DoEvents;
+            _vulkan   = serviceProvider.Get<Vulkan.Vulkan>();
 
-            _serviceRegistry.AddService<IGraphicsDevice>(_graphicsDevice = new GraphicsDevice());
-            _serviceRegistry.AddService(_contentManager                  = new ContentManager(_serviceRegistry));
+            _spriteBatch = new SpriteBatch(_vulkan);
 
-            _platform = GamePlatform.Create(this, title);
-            _serviceRegistry.AddService(_platform.MainWindow);
-
-            // NOTE: The input device should be registered during the platform creation!
-            _inputDevice = _serviceRegistry.GetService<IInputDevice>();
-        }
-        
-        /// <summary> Finalizes an instance of the <see cref="Game"/> class. </summary>
-        ~Game()
-        {
-            Dispose(false);
+            IRenderForm renderForm = serviceProvider.Get<IRenderForm>();
+            renderForm.Closing += (ref bool cancel) =>
+            {
+                if (!cancel)
+                {
+                    Shutdown();
+                    _isShutdownCompleted.Wait(5 * 1000);
+                }
+            };
+            renderForm.Show();
         }
 
-        /// <summary> Adds an item to the game. </summary>
-        /// <typeparam name="T"> T. </typeparam>
-        /// <param name="item"> item. </param>
-        /// <returns> The item. </returns>
-        public T Add<T>(T item)
-        {
-            if (item is IComponent component)
-            {
-                if (_gameComponents.ContainsKey(component.Name)) { return item; }
-                lock (_gameComponents)
-                {
-                    _gameComponents.Add(component.Name, component);
-                }
-            }
-
-            if (item is IInitializable initializable)
-            {
-                if (_isInitialized)
-                {
-                    initializable.Initialize(_serviceRegistry);
-                }
-                else
-                {
-                    lock (_pendingInitializables)
-                    {
-                        _pendingInitializables.Add(initializable);
-                    }
-                }
-            }
-
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (item is IContentable contentable && !_contentableComponent.Contains(contentable))
-            {
-                lock (_contentableComponent)
-                {
-                    _contentableComponent.Add(contentable);
-                }
-                if (_isInitialized && _isContentLoaded)
-                {
-                    contentable.LoadContent(_serviceRegistry);
-                }
-            }
-
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (item is IUpdateable updateable && !_updateableComponent.Contains(updateable))
-            {
-                lock (_updateableComponent)
-                {
-                    bool inserted = false;
-                    for (int i = 0; i < _updateableComponent.Count; i++)
-                    {
-                        IUpdateable compare = _updateableComponent[i];
-                        if (UpdateableComparer.Default.Compare(updateable, compare) <= 0)
-                        {
-                            _updateableComponent.Insert(i, updateable);
-                            inserted = true;
-                            break;
-                        }
-                    }
-                    if (!inserted) { _updateableComponent.Add(updateable); }
-                }
-                updateable.UpdateOrderChanged += UpdateableComponent_UpdateOrderChanged;
-            }
-
-            // ReSharper disable once InconsistentlySynchronizedField
-            // ReSharper disable once ConvertIfStatementToSwitchStatement
-            if (item is IDrawable drawable && !_drawableComponent.Contains(drawable))
-            {
-                lock (_drawableComponent)
-                {
-                    bool inserted = false;
-                    for (int i = 0; i < _drawableComponent.Count; i++)
-                    {
-                        IDrawable compare = _drawableComponent[i];
-                        if (DrawableComparer.Default.Compare(drawable, compare) <= 0)
-                        {
-                            _drawableComponent.Insert(i, drawable);
-                            inserted = true;
-                            break;
-                        }
-                    }
-                    if (!inserted) { _drawableComponent.Add(drawable); }
-                }
-                drawable.DrawOrderChanged += DrawableComponent_DrawOrderChanged;
-            }
-
-            if (item is IInputHandler inputHandler)
-            {
-                inputHandler.RegisterInput(_inputDevice);
-            }
-
-            if (item is IDisposable disposable)
-            {
-                ToDispose(disposable);
-            }
-
-            return item;
-        }
-
-        /// <summary> Remove an item from the game. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="item"> item. </param>
-        /// <returns> The item. </returns>
-        public T Remove<T>(T item)
-        {
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (item is IContentable contentable && _contentableComponent.Contains(contentable))
-            {
-                lock (_contentableComponent)
-                {
-                    _contentableComponent.Remove(contentable);
-                }
-                contentable.UnloadContent(_serviceRegistry);
-            }
-
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (item is IUpdateable updateable && _updateableComponent.Contains(updateable))
-            {
-                lock (_updateableComponent)
-                {
-                    _updateableComponent.Remove(updateable);
-                }
-                updateable.UpdateOrderChanged -= UpdateableComponent_UpdateOrderChanged;
-            }
-
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (item is IDrawable drawable && _drawableComponent.Contains(drawable))
-            {
-                lock (_drawableComponent)
-                {
-                    _drawableComponent.Remove(drawable);
-                }
-                drawable.DrawOrderChanged -= DrawableComponent_DrawOrderChanged;
-            }
-
-            if (item is IComponent component1 && _gameComponents.ContainsKey(component1.Name))
-            {
-                lock (_gameComponents)
-                {
-                    _gameComponents.Remove(component1.Name);
-                }
-            }
-
-            if (item is IInputHandler inputHandler)
-            {
-                inputHandler.UnregisterInput(_inputDevice);
-            }
-
-            if (item is IDisposable disposable)
-            {
-                _collector.RemoveAndDispose(disposable);
-            }
-
-            return item;
-        }
-
-        /// <summary> Get a game component by its name. </summary>
-        /// <param name="name">   the game system name. </param>
-        /// <param name="system"> [out] out found game system. </param>
-        /// <returns> <c>true</c> if found; <c>false</c> otherwise. </returns>
-        public bool GetComponent(string name, out IComponent? system)
-        {
-            return _gameComponents.TryGetValue(name, out system);
-        }
-
-        #endregion
-
-        #region Run
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Run()
         {
             if (_isRunning)
@@ -314,23 +89,30 @@ namespace Exomia.Framework.Core.Game
             }
 
             _isRunning = true;
+            //moep:
+            //    Thread.Sleep(500);
+            //    VkResult result = ((delegate*<VkDevice, VkSwapchainKHR, VkResult>)_vulkan.Context->Device
+            //        .GetDeviceProcAddr("vkAcquireFullScreenExclusiveModeEXT"))(_vulkan.Context->Device, _vulkan.Context->Swapchain);
+            //    Console.WriteLine(result);
+            //    if (result != VK_SUCCESS)
+            //    {
+            //        goto moep;
+            //    }
 
             if (!_isInitialized)
             {
-                Initialize();
-                LoadContent();
-
-                _platform.ShowMainWindow();
-
                 Renderloop();
-                UnloadContent();
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Shutdown()
         {
-            _shutdown = true;
+            if (!_shutdown)
+            {
+                _isShutdownCompleted.Reset();
+                _shutdown = true;
+            }
         }
 
         private void Renderloop()
@@ -346,11 +128,13 @@ namespace Exomia.Framework.Core.Game
 
             _IsRunningChanged += OnIsRunningChanged;
 
+            int   frames = 0;
+            float timer  = 0;
             while (!_shutdown)
             {
                 stopwatch.Restart();
 
-                _platform.DoEvents();
+                _doEvents();
 
                 if (!_isRunning)
                 {
@@ -358,12 +142,28 @@ namespace Exomia.Framework.Core.Game
                     continue;
                 }
 
-                Update(gameTime);
-
-                if (BeginFrame())
+                timer += gameTime.DeltaTimeS;
+                if (timer > 1.0f)
                 {
-                    Draw(gameTime);
-                    EndFrame();
+                    timer -= 1.0f;
+                    Console.WriteLine(frames);
+                    frames = 0;
+                }
+
+                // scene update
+
+                if (_vulkan.BeginFrame())
+                {
+                    _spriteBatch.Begin();
+
+                    //for(int i = 0; i < 8_000; i++)
+                    _spriteBatch.DrawFillRectangle(new RectangleF(50, 50, 100, 100), VkColors.White, 0.0f);
+                    _spriteBatch.DrawFillRectangle(new RectangleF(75, 75, 100, 100), VkColors.Red,   1f);
+
+                    _spriteBatch.End();
+
+                    _vulkan.EndFrame();
+                    frames++;
                 }
 
                 if (IsFixedTimeStep)
@@ -382,279 +182,11 @@ namespace Exomia.Framework.Core.Game
             }
 
             _IsRunningChanged -= OnIsRunningChanged;
+
+            _isShutdownCompleted.Set();
         }
-
-        #endregion
-
-        #region Initialization
-
-        /// <summary>
-        ///     Initialize <see cref="GameGraphicsParameters" />. Called once before
-        ///     <see cref="OnBeforeInitialize" /> to perform user-defined overrides of
-        ///     <see cref="GameGraphicsParameters" />.
-        /// </summary>
-        /// <param name="parameters"> [in,out] The <see cref="GameGraphicsParameters" />. </param>
-        protected virtual void OnInitializeGameGraphicsParameters(ref GameGraphicsParameters parameters) { }
-
-        /// <summary> Called once before <see cref="OnInitialize" /> to perform user-defined initialization. </summary>
-        protected virtual void OnBeforeInitialize() { }
-
-        /// <summary>
-        ///     Called once after the Game and <see cref="IGraphicsDevice" /> are created to perform user- defined initialization. Called before <see cref="OnAfterInitialize" />.
-        /// </summary>
-        protected virtual void OnInitialize() { }
-
-        /// <summary> Called once before <see cref="LoadContent" /> to perform user-defined initialization. </summary>
-        protected virtual void OnAfterInitialize() { }
-
-        private void InitializeGameGraphicsParameters()
-        {
-            GameGraphicsParameters parameters = GameGraphicsParameters.Create(IntPtr.Zero);
-
-            OnInitializeGameGraphicsParameters(ref parameters);
-
-            _platform.Initialize(ref parameters);
-            _graphicsDevice.Initialize(ref parameters);
-
-            GameGraphicsParameters = parameters;
-        }
-
-        private void InitializePendingInitializations()
-        {
-            while (_pendingInitializables.Count != 0)
-            {
-                _pendingInitializables[0].Initialize(_serviceRegistry);
-                _pendingInitializables.RemoveAt(0);
-            }
-        }
-
-        private void Initialize()
-        {
-            if (!_isInitialized)
-            {
-                InitializeGameGraphicsParameters();
-                OnBeforeInitialize();
-                OnInitialize();
-                InitializePendingInitializations();
-                _isInitialized = true;
-
-                OnAfterInitialize();
-            }
-        }
-
-        #endregion
-
-        #region Content
-
-        /// <summary> Called once to perform user-defined loading. </summary>
-        protected virtual void OnLoadContent() { }
-
-        /// <summary> Called once to perform user-defined unloading. </summary>
-        protected virtual void OnUnloadContent() { }
-
-        private void LoadContent()
-        {
-            if (!_isContentLoaded)
-            {
-                OnLoadContent();
-
-                lock (_contentableComponent)
-                {
-                    _currentlyContentableComponent.AddRange(_contentableComponent);
-                }
-
-                foreach (IContentable contentable in _currentlyContentableComponent)
-                {
-                    contentable.LoadContent(_serviceRegistry);
-                }
-
-                _currentlyContentableComponent.Clear();
-
-                _isContentLoaded = true;
-            }
-        }
-
-        private void UnloadContent()
-        {
-            if (_isContentLoaded)
-            {
-                lock (_contentableComponent)
-                {
-                    _currentlyContentableComponent.AddRange(_contentableComponent);
-                }
-
-                foreach (IContentable contentable in _currentlyContentableComponent)
-                {
-                    contentable.UnloadContent(_serviceRegistry);
-                }
-
-                _currentlyContentableComponent.Clear();
-
-                OnUnloadContent();
-
-                _isContentLoaded = false;
-            }
-        }
-
-        #endregion
-
-        #region Update
-
-        /// <summary> updates the game logic. </summary>
-        /// <param name="gameTime"> The game time. </param>
-        protected virtual void Update(GameTime gameTime)
-        {
-            lock (_updateableComponent)
-            {
-                _currentlyUpdateableComponent.AddRange(_updateableComponent);
-            }
-
-            for (int i = 0; i < _currentlyUpdateableComponent.Count; i++)
-            {
-                IUpdateable updateable = _currentlyUpdateableComponent[i];
-                if (updateable.Enabled)
-                {
-                    updateable.Update(gameTime);
-                }
-            }
-
-            _currentlyUpdateableComponent.Clear();
-        }
-
-        private void UpdateableComponent_UpdateOrderChanged()
-        {
-            lock (_updateableComponent)
-            {
-                _updateableComponent.Sort(UpdateableComparer.Default);
-            }
-        }
-
-        #endregion
-
-        #region Draw
-
-        /// <summary> Starts the drawing of a frame. This method is followed by calls to Draw and EndDraw. </summary>
-        /// <returns>
-        ///     <c>true</c> to continue drawing, false to not call <see cref="Draw" /> and
-        ///     <see cref="EndFrame" />
-        /// </returns>
-        protected virtual bool BeginFrame()
-        {
-            return _graphicsDevice.BeginFrame();
-        }
-
-        /// <summary> draws the current scene. </summary>
-        /// <param name="gameTime"> The game time. </param>
-        protected virtual void Draw(GameTime gameTime)
-        {
-            lock (_drawableComponent)
-            {
-                _currentlyDrawableComponent.AddRange(_drawableComponent);
-            }
-
-            for (int i = 0; i < _currentlyDrawableComponent.Count; i++)
-            {
-                IDrawable drawable = _currentlyDrawableComponent[i];
-                if (drawable.BeginDraw())
-                {
-                    drawable.Draw(gameTime);
-                    drawable.EndDraw();
-                }
-            }
-
-            _currentlyDrawableComponent.Clear();
-        }
-
-        /// <summary> Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw. </summary>
-        protected virtual void EndFrame()
-        {
-            _graphicsDevice.EndFrame();
-        }
-
-        private void DrawableComponent_DrawOrderChanged()
-        {
-            lock (_drawableComponent)
-            {
-                _drawableComponent.Sort(DrawableComparer.Default);
-            }
-        }
-
-        #endregion
-
-        #region Timer2
-
-        /// <summary> Adds a timer. </summary>
-        /// <param name="tick">                The tick. </param>
-        /// <param name="enabled">             True to enable, false to disable. </param>
-        /// <param name="maxIterations">       (Optional) The maximum iterations. </param>
-        /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
-        /// <returns> A Timer2. </returns>
-        public Timer2 AddTimer(float tick, bool enabled, uint maxIterations = 0, bool removeAfterFinished = false)
-        {
-            Timer2 timer = Add(new Timer2(tick, maxIterations) { Enabled = enabled });
-            if (removeAfterFinished)
-            {
-                timer.TimerFinished += sender => { Remove(sender); };
-            }
-            return timer;
-        }
-
-        /// <summary> Adds a timer. </summary>
-        /// <param name="tick">                The tick. </param>
-        /// <param name="enabled">             True to enable, false to disable. </param>
-        /// <param name="tickCallback">        The tick callback. </param>
-        /// <param name="maxIterations">       (Optional) The maximum iterations. </param>
-        /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
-        /// <returns> A Timer2. </returns>
-        public Timer2 AddTimer(float                tick,
-                               bool                 enabled,
-                               EventHandler<Timer2> tickCallback,
-                               uint                 maxIterations       = 0,
-                               bool                 removeAfterFinished = false)
-        {
-            Timer2 timer = Add(new Timer2(tick, tickCallback, maxIterations) { Enabled = enabled });
-            if (removeAfterFinished)
-            {
-                timer.TimerFinished += sender => { Remove(sender); };
-            }
-            return timer;
-        }
-
-        /// <summary> Adds a timer. </summary>
-        /// <param name="tick">                The tick. </param>
-        /// <param name="enabled">             True to enable, false to disable. </param>
-        /// <param name="tickCallback">        The tick callback. </param>
-        /// <param name="finishedCallback">    The finished callback. </param>
-        /// <param name="maxIterations">       The maximum iterations. </param>
-        /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
-        /// <returns> A Timer2. </returns>
-        public Timer2 AddTimer(float                tick,
-                               bool                 enabled,
-                               EventHandler<Timer2> tickCallback,
-                               EventHandler<Timer2> finishedCallback,
-                               uint                 maxIterations,
-                               bool                 removeAfterFinished = false)
-        {
-            Timer2 timer = Add(new Timer2(tick, tickCallback, finishedCallback, maxIterations) { Enabled = enabled });
-            if (removeAfterFinished)
-            {
-                timer.TimerFinished += sender => { Remove(sender); };
-            }
-            return timer;
-        }
-
-        #endregion
 
         #region IDisposable Support
-
-        /// <summary> Adds a <see cref="IDisposable" /> object to the dispose collector. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="obj"> The object. </param>
-        /// <returns> Obj as a T. </returns>
-        public T ToDispose<T>(T obj) where T : IDisposable
-        {
-            return _collector.Collect(obj);
-        }
 
         private bool _disposed;
 
@@ -672,31 +204,8 @@ namespace Exomia.Framework.Core.Game
                 OnDispose(disposing);
                 if (disposing)
                 {
-                    lock (_drawableComponent)
-                    {
-                        _drawableComponent.Clear();
-                        _currentlyDrawableComponent.Clear();
-                    }
-                    lock (_updateableComponent)
-                    {
-                        _updateableComponent.Clear();
-                        _currentlyUpdateableComponent.Clear();
-                    }
-                    lock (_contentableComponent)
-                    {
-                        _contentableComponent.Clear();
-                        _currentlyContentableComponent.Clear();
-                    }
-
-                    _gameComponents.Clear();
-                    _pendingInitializables.Clear();
-
-                    _platform.Dispose();
-
-                    _contentManager.Dispose();
-                    _graphicsDevice.Dispose();
+                    _spriteBatch.Dispose();
                 }
-                _collector.Dispose();
 
                 _disposed = true;
             }

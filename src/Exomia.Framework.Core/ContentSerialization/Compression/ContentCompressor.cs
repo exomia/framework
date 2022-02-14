@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,10 +8,7 @@
 
 #endregion
 
-using System;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
 
 namespace Exomia.Framework.Core.ContentSerialization.Compression
 {
@@ -22,7 +19,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Compression
         public const string DEFAULT_COMPRESSED_EXTENSION = ".e1";
 
         private const           int    BUFFER_SIZE   = 2048;
-        private static readonly byte[] s_magicHeader = {64, 101, 120, 49};
+        private static readonly byte[] s_magicHeader = { 64, 101, 120, 49 };
 
         /// <summary> Compress a given stream with the given compression mode. </summary>
         /// <param name="stream">       the stream to compress. </param>

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -13,7 +13,7 @@
 // ReSharper disable IdentifierTypo
 namespace Exomia.Framework.Windows.Win32.RawInput
 {
-    enum HIDUsage : ushort
+    internal enum HIDUsage : ushort
     {
         /// <summary></summary>
         Pointer = 0x01,

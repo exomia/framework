@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -20,7 +20,7 @@ namespace Exomia.IoC
         private readonly Dictionary<Type, (Func<IServiceProvider, object>, ServiceKind)> _factoryEntries     = new(16);
         private readonly Dictionary<Type, Func<IServiceProvider, Type, object>>          _factoryTypeEntries = new(16);
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add(Type service, Type implementation, ServiceKind serviceKind = ServiceKind.Transient)
         {
             if (!implementation.IsClass || implementation.IsAbstract)
@@ -37,14 +37,14 @@ namespace Exomia.IoC
             return this;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add<TImplementation>(ServiceKind serviceKind = ServiceKind.Transient)
             where TImplementation : class
         {
             return Add(typeof(TImplementation), typeof(TImplementation), serviceKind);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add<TService, TImplementation>(ServiceKind serviceKind = ServiceKind.Transient)
             where TService : class
             where TImplementation : class, TService
@@ -52,34 +52,34 @@ namespace Exomia.IoC
             return Add(typeof(TService), typeof(TImplementation), serviceKind);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add(Type service, Func<IServiceProvider, object> implementationFactory, ServiceKind serviceKind = ServiceKind.Transient)
         {
             _factoryEntries[service] = (implementationFactory, serviceKind);
             return this;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add<TService>(Func<IServiceProvider, TService> implementationFactory, ServiceKind serviceKind = ServiceKind.Transient)
             where TService : class
         {
             return Add(typeof(TService), implementationFactory, serviceKind);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add(Type service, Func<IServiceProvider, Type, object> implementationFactory)
         {
             _factoryTypeEntries[service] = implementationFactory;
             return this;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceCollection Add<TService>(Func<IServiceProvider, Type, TService> implementationFactory) where TService : class
         {
             return Add(typeof(TService), implementationFactory);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceProvider Build(IServiceProvider? serviceProvider = null)
         {
             try

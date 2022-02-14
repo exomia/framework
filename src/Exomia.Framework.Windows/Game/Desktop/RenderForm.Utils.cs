@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,12 +8,11 @@
 
 #endregion
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Windows.Game.Desktop
 {
-    sealed partial class RenderForm
+    internal sealed partial class RenderForm
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LowWord(IntPtr number)

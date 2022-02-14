@@ -1,6 +1,6 @@
 #region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -36,10 +36,10 @@ namespace Exomia.Framework.Tests.Collections
 
             Assert.AreEqual(10, heap.Count);
 
-            Assert.AreEqual(5, heap.RemoveFirst());
-            Assert.AreEqual(7, heap.RemoveFirst());
-            Assert.AreEqual(7, heap.RemoveFirst());
-            Assert.AreEqual(9, heap.RemoveFirst());
+            Assert.AreEqual(5,  heap.RemoveFirst());
+            Assert.AreEqual(7,  heap.RemoveFirst());
+            Assert.AreEqual(7,  heap.RemoveFirst());
+            Assert.AreEqual(9,  heap.RemoveFirst());
             Assert.AreEqual(10, heap.RemoveFirst());
 
             Assert.AreEqual(5, heap.Count);

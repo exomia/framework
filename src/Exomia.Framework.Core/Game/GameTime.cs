@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -100,6 +100,17 @@ namespace Exomia.Framework.Core.Game
         }
 
         /// <summary>
+        ///     Starts a new.
+        /// </summary>
+        /// <returns>
+        ///     A GameTime.
+        /// </returns>
+        public static GameTime StartNew()
+        {
+            return new GameTime();
+        }
+
+        /// <summary>
         ///     reset the game time.
         /// </summary>
         public void Reset()
@@ -160,17 +171,6 @@ namespace Exomia.Framework.Core.Game
             LimitedDeltaTimeS = LimitedDeltaTimeMs * 0.001f;
 
             _prevTime = _currTime;
-        }
-
-        /// <summary>
-        ///     Starts a new.
-        /// </summary>
-        /// <returns>
-        ///     A GameTime.
-        /// </returns>
-        public static GameTime StartNew()
-        {
-            return new GameTime();
         }
     }
 }

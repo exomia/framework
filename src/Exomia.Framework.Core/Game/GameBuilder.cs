@@ -1,8 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Exomia.IoC;
+﻿#region License
+
+// Copyright (c) 2018-2022, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
-using Exomia.Framework.Core.Vulkan.Extensions;
+using Exomia.IoC;
 using IServiceProvider = Exomia.IoC.IServiceProvider;
 
 namespace Exomia.Framework.Core.Game
@@ -10,11 +18,11 @@ namespace Exomia.Framework.Core.Game
     /// <summary> A game builder. This class cannot be inherited. </summary>
     public sealed class GameBuilder : IGameBuilder
     {
-        private          Action<IServiceCollection>?     _configureServices;
         private readonly IList<Action<IServiceProvider>> _configurables;
         private readonly DisposeCollector                _disposeCollector;
+        private          Action<IServiceCollection>?     _configureServices;
 
-        /// <summary> Prevents a default instance of the <see cref="GameBuilder"/> class from being created. </summary>
+        /// <summary> Prevents a default instance of the <see cref="GameBuilder" /> class from being created. </summary>
         private GameBuilder()
         {
             _configurables    = new List<Action<IServiceProvider>>(16);
@@ -23,7 +31,7 @@ namespace Exomia.Framework.Core.Game
 
         /// <summary> Configure services. </summary>
         /// <param name="configureDelegate"> The configure delegate. </param>
-        /// <returns> An <see cref="IGameBuilder"/>. </returns>
+        /// <returns> An <see cref="IGameBuilder" />. </returns>
         public IGameBuilder ConfigureServices(Action<IServiceCollection> configureDelegate)
         {
             _configureServices += configureDelegate;
@@ -32,7 +40,7 @@ namespace Exomia.Framework.Core.Game
 
         /// <summary> Configure vulkan. </summary>
         /// <param name="configureDelegate"> The configure delegate. </param>
-        /// <returns> An <see cref="IGameBuilder"/>. </returns>
+        /// <returns> An <see cref="IGameBuilder" />. </returns>
         public IGameBuilder Configure<TConfiguration>(Action<IServiceProvider, TConfiguration> configureDelegate)
             where TConfiguration : class
         {
@@ -43,7 +51,7 @@ namespace Exomia.Framework.Core.Game
         /// <summary> Registers the disposable to automatically be disposed on shutdown. </summary>
         /// <typeparam name="T"> Generic type parameter. </typeparam>
         /// <param name="disposable"> The disposable. </param>
-        /// <returns> An <see cref="IGameBuilder"/>. </returns>
+        /// <returns> An <see cref="IGameBuilder" />. </returns>
         public T RegisterDisposable<T>(T disposable)
             where T : IDisposable
         {
@@ -52,11 +60,24 @@ namespace Exomia.Framework.Core.Game
 
         /// <summary> Gets the build. </summary>
         /// <typeparam name="TGame"> Type of the game. </typeparam>
-        /// <returns> A <typeparamref name="TGame"/>. </returns>
+        /// <returns> A <typeparamref name="TGame" />. </returns>
         public TGame Build<TGame>() where TGame : Game
         {
             IServiceCollection appServiceCollection = new ServiceCollection()
-                .AddVulkan()
+                /* VULKAN */
+                .Add<ApplicationConfiguration>(ServiceKind.Singleton)
+                .Add<InstanceConfiguration>(ServiceKind.Singleton)
+                .Add<DebugUtilsMessengerConfiguration>(ServiceKind.Singleton)
+                .Add<SurfaceConfiguration>(ServiceKind.Singleton)
+                .Add<PhysicalDeviceConfiguration>(ServiceKind.Singleton)
+                .Add<DepthStencilConfiguration>(ServiceKind.Singleton)
+                .Add<DeviceConfiguration>(ServiceKind.Singleton)
+                .Add<QueueConfiguration>(ServiceKind.Singleton)
+                .Add<SwapchainConfiguration>(ServiceKind.Singleton)
+                .Add<RenderPassConfiguration>(ServiceKind.Singleton)
+                .Add<ApplicationConfiguration>(ServiceKind.Singleton)
+                .Add<Vulkan.Vulkan>(ServiceKind.Singleton)
+                /* Game */
                 .Add<GameConfiguration>(ServiceKind.Singleton)
                 .Add<RenderFormConfiguration>(ServiceKind.Singleton)
                 .Add<TGame>(ServiceKind.Singleton)
@@ -81,8 +102,8 @@ namespace Exomia.Framework.Core.Game
             return serviceProvider.Get<TGame>();
         }
 
-        /// <summary> Creates a new <see cref="IGameBuilder"/>. </summary>
-        /// <returns> An <see cref="IGameBuilder"/>. </returns>
+        /// <summary> Creates a new <see cref="IGameBuilder" />. </summary>
+        /// <returns> An <see cref="IGameBuilder" />. </returns>
         public static IGameBuilder Create()
         {
             return new GameBuilder();
@@ -118,7 +139,7 @@ namespace Exomia.Framework.Core.Game
             }
         }
 
-        /// <summary> Finalizes an instance of the <see cref="GameBuilder"/> class. </summary>
+        /// <summary> Finalizes an instance of the <see cref="GameBuilder" /> class. </summary>
         ~GameBuilder()
         {
             Dispose(false);

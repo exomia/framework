@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -24,7 +24,7 @@ namespace Exomia.Framework.Core
         private int  _drawOrder;
         private bool _visible;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int DrawOrder
         {
             get { return _drawOrder; }
@@ -38,7 +38,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Visible
         {
             get { return _visible; }
@@ -52,16 +52,16 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual bool BeginDraw()
         {
             return _visible;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Draw(GameTime gameTime) { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void EndDraw() { }
     }
 }

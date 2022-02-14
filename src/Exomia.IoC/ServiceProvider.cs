@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -24,14 +24,14 @@ namespace Exomia.IoC
         private readonly Dictionary<Type, IEntry>                               _entries   = new(16);
         private readonly Dictionary<Type, Func<IServiceProvider, Type, object>> _factories = new(16);
 
-        /// <summary> Initializes a new instance of the <see cref="ServiceProvider"/> class. </summary>
+        /// <summary> Initializes a new instance of the <see cref="ServiceProvider" /> class. </summary>
         /// <param name="parent"> The parent. </param>
         private ServiceProvider(IServiceProvider? parent)
         {
             _parent = parent;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public TService Get<TService>()
         {
             if (TryGet(typeof(TService), out object service))
@@ -41,7 +41,7 @@ namespace Exomia.IoC
             throw new KeyNotFoundException(nameof(TService));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public object Get(Type serviceType)
         {
             if (TryGet(serviceType, out object service))
@@ -51,7 +51,7 @@ namespace Exomia.IoC
             throw new KeyNotFoundException(serviceType.ToString());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool TryGet<TService>(out TService service)
         {
             bool result = TryGet(typeof(TService), out object s);
@@ -59,10 +59,10 @@ namespace Exomia.IoC
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool TryGet(Type serviceType, out object service)
         {
-            if (_entries.TryGetValue(serviceType, out IEntry? entry) || 
+            if (_entries.TryGetValue(serviceType, out IEntry? entry) ||
                 serviceType.IsGenericType && _entries.TryGetValue(serviceType.GetGenericTypeDefinition(), out entry))
             {
                 service = entry.ImplementationFactory(this);
@@ -85,7 +85,7 @@ namespace Exomia.IoC
             return false;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IServiceProvider CreateScope(IServiceCollection? serviceCollection = null)
         {
             return (serviceCollection ?? new ServiceCollection())
@@ -161,7 +161,7 @@ namespace Exomia.IoC
                     BindingFlags.Instance | BindingFlags.Public,
                     null,
                     CallingConventions.HasThis,
-                    new[] {typeof(Type)},
+                    new[] { typeof(Type) },
                     null)
                 ?? throw new NullReferenceException();
 
@@ -171,7 +171,7 @@ namespace Exomia.IoC
                     BindingFlags.Instance | BindingFlags.Public,
                     null,
                     CallingConventions.HasThis,
-                    new[] {typeof(Type), typeof(object).MakeByRefType()},
+                    new[] { typeof(Type), typeof(object).MakeByRefType() },
                     null)
                 ?? throw new NullReferenceException();
 
@@ -217,11 +217,11 @@ namespace Exomia.IoC
                     if (optionalAttribute != null)
                     {
                         ParameterExpression outValueParameterExpression = Expression.Variable(typeof(object), "outValue");
-                        return Expression.Block(new[]{ outValueParameterExpression },
+                        return Expression.Block(new[] { outValueParameterExpression },
                             Expression.Condition(
-                            Expression.Call(serviceProviderParameter, serviceProviderTryGetMethodInfo, Expression.Constant(p.ParameterType), outValueParameterExpression),
-                            Expression.Convert(outValueParameterExpression,                                                          p.ParameterType),
-                            Expression.Convert(Expression.Constant(System.Activator.CreateInstance(optionalAttribute.OptionalType)), p.ParameterType)));
+                                Expression.Call(serviceProviderParameter, serviceProviderTryGetMethodInfo, Expression.Constant(p.ParameterType), outValueParameterExpression),
+                                Expression.Convert(outValueParameterExpression,                                                   p.ParameterType),
+                                Expression.Convert(Expression.Constant(Activator.CreateInstance(optionalAttribute.OptionalType)), p.ParameterType)));
                     }
 
                     return (Expression)Expression.Convert(
@@ -243,7 +243,7 @@ namespace Exomia.IoC
 
         private sealed class Entry : IEntry
         {
-            /// <inheritdoc/>
+            /// <inheritdoc />
             public Func<IServiceProvider, object> ImplementationFactory { get; }
 
             /// <summary> Initializes a new instance of the <see cref="Entry" /> class. </summary>
@@ -259,7 +259,7 @@ namespace Exomia.IoC
         {
             private object? _instance = null;
 
-            /// <inheritdoc/>
+            /// <inheritdoc />
             public Func<IServiceProvider, object> ImplementationFactory { get; }
 
             /// <summary> Initializes a new instance of the <see cref="SingletonEntry" /> class. </summary>

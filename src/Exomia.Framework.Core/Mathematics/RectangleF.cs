@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -180,7 +179,7 @@ namespace Exomia.Framework.Core.Mathematics
         /// <summary> Returns a hash code for this instance. </summary>
         /// <returns> A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override readonly int GetHashCode()
+        public readonly override int GetHashCode()
         {
             unchecked
             {
@@ -199,7 +198,7 @@ namespace Exomia.Framework.Core.Mathematics
         /// <param name="value"> The <see cref="System.Object" /> to compare with this instance. </param>
         /// <returns> <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override readonly bool Equals(object? value)
+        public readonly override bool Equals(object? value)
         {
             return value is RectangleF other && Equals(in other);
         }

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,11 +8,9 @@
 
 #endregion
 
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Exomia.Vulkan.Api.Core;
-using RectangleF = Exomia.Framework.Core.Mathematics.RectangleF;
+using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics
 {
@@ -29,7 +27,7 @@ namespace Exomia.Framework.Core.Graphics
         /// <param name="layerDepth">           The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawRectangle(in RectangleF destinationRectangle,
-                                  in VkColor      color,
+                                  in VkColor    color,
                                   float         lineWidth,
                                   float         rotation,
                                   float         opacity,
@@ -49,7 +47,7 @@ namespace Exomia.Framework.Core.Graphics
         /// <param name="opacity">              The opacity. </param>
         /// <param name="layerDepth">           The depth of the layer. </param>
         public void DrawRectangle(in RectangleF destinationRectangle,
-                                  in VkColor      color,
+                                  in VkColor    color,
                                   float         lineWidth,
                                   float         rotation,
                                   in Vector2    origin,
@@ -112,8 +110,8 @@ namespace Exomia.Framework.Core.Graphics
         public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color, float layerDepth)
         {
             DrawSprite(
-                _whiteTexture, destinationRectangle, false, s_nullRectangle,
-                color, 0.0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
+                _whiteTexture, destinationRectangle, false,         s_nullRectangle,
+                color,         0.0f,                 s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -125,13 +123,13 @@ namespace Exomia.Framework.Core.Graphics
         /// <param name="layerDepth">           The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawFillRectangle(in RectangleF destinationRectangle,
-                                      in Color      color,
+                                      in VkColor    color,
                                       float         opacity,
                                       float         layerDepth)
         {
             DrawSprite(
-                _whiteTexture, destinationRectangle, false, s_nullRectangle,
-                color, 0.0f, s_vector2Zero, opacity, TextureEffects.None, layerDepth);
+                _whiteTexture, destinationRectangle, false,         s_nullRectangle,
+                color,         0.0f,                 s_vector2Zero, opacity, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -145,15 +143,15 @@ namespace Exomia.Framework.Core.Graphics
         /// <param name="layerDepth">           The depth of the layer. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawFillRectangle(in RectangleF destinationRectangle,
-                                      in Color      color,
+                                      in VkColor    color,
                                       float         rotation,
                                       in Vector2    origin,
                                       float         opacity,
                                       float         layerDepth)
         {
             DrawSprite(
-                _whiteTexture, destinationRectangle, false, s_nullRectangle,
-                color, rotation, origin, opacity, TextureEffects.None, layerDepth);
+                _whiteTexture, destinationRectangle, false,  s_nullRectangle,
+                color,         rotation,             origin, opacity, TextureEffects.None, layerDepth);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,10 +8,7 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using Exomia.Framework.Core.Game;
 using Exomia.Framework.Core.Input;
 
@@ -46,7 +43,7 @@ namespace Exomia.Framework.Core.Scene
         private          int                           _drawOrder;
         private          bool                          _visible;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Enabled
         {
             get { return _enabled; }
@@ -60,7 +57,7 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int UpdateOrder
         {
             get { return _updateOrder; }
@@ -74,7 +71,7 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int DrawOrder
         {
             get { return _drawOrder; }
@@ -88,7 +85,7 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Visible
         {
             get { return _visible; }
@@ -131,13 +128,13 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         bool IDrawable.BeginDraw()
         {
             return _visible;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IDrawable.Draw(GameTime gameTime)
         {
             lock (_currentScenes)
@@ -157,10 +154,10 @@ namespace Exomia.Framework.Core.Scene
             _currentDrawableScenes.Clear();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IDrawable.EndDraw() { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInitializable.Initialize()
         {
             if (!_isInitialized)
@@ -182,13 +179,13 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool GetScene(string key, [NotNullWhen(true)] out SceneBase? scene)
         {
             return _scenes.TryGetValue(key, out scene);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public SceneState GetSceneState(string key)
         {
             if (_scenes.TryGetValue(key, out SceneBase? scene))
@@ -198,7 +195,7 @@ namespace Exomia.Framework.Core.Scene
             throw new NullReferenceException($"no scene with key: '{key}' found.");
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool RemoveScene(string key)
         {
             if (!_scenes.TryGetValue(key, out SceneBase? scene))
@@ -215,7 +212,7 @@ namespace Exomia.Framework.Core.Scene
             return true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ShowSceneResult ShowScene(SceneBase scene, params object[] payload)
         {
             lock (this)
@@ -316,7 +313,7 @@ namespace Exomia.Framework.Core.Scene
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ShowSceneResult ShowScene(string key, out SceneBase? scene, params object[] payload)
         {
             ShowSceneResult result = !_scenes.TryGetValue(key, out scene)
@@ -325,13 +322,13 @@ namespace Exomia.Framework.Core.Scene
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool HideScene(string key)
         {
             return _scenes.TryGetValue(key, out SceneBase? intern) && HideScene(intern);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IUpdateable.Update(GameTime gameTime)
         {
             lock (_currentScenes)
@@ -378,7 +375,7 @@ namespace Exomia.Framework.Core.Scene
 
         private bool _disposed;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

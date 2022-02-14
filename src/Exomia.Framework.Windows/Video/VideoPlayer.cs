@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -165,7 +165,7 @@ namespace Exomia.Framework.Windows.Video
         public VideoPlayer(Device5 device, int width, int height)
             : base(nameof(VideoPlayer))
         {
-            _outputTexture   = TextureHelper.CreateTexture(device, width, height);
+            _outputTexture = TextureHelper.CreateTexture(device, width, height);
             _backgroundColor = Colors.Transparent;
         }
 
@@ -208,7 +208,7 @@ namespace Exomia.Framework.Windows.Video
             if (_isEndOfStream)
             {
                 PlaybackPosition = 0;
-                _isPlaying       = true;
+                _isPlaying = true;
             }
 
             else
@@ -278,7 +278,7 @@ namespace Exomia.Framework.Windows.Video
         protected override void OnInitialize(IServiceRegistry registry)
         {
             _graphicsDevice = registry.GetService<IGraphicsDevice>();
-            _spriteBatch    = ToDispose(new SpriteBatch(_graphicsDevice));
+            _spriteBatch = ToDispose(new SpriteBatch(_graphicsDevice));
             MediaManager.Startup();
             DeviceMultithread multithread = _graphicsDevice.Device.QueryInterface<DeviceMultithread>();
             multithread.SetMultithreadProtected(true);
@@ -343,7 +343,7 @@ namespace Exomia.Framework.Windows.Video
         private void Stop()
         {
             _isVideoStopped = true;
-            _isPlaying      = false;
+            _isPlaying = false;
         }
     }
 }

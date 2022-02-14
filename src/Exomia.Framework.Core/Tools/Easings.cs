@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Tools
@@ -222,7 +221,9 @@ namespace Exomia.Framework.Core.Tools
             /// </returns>
             public static float EaseIn(float t, float b, float c, float d)
             {
-                return t == 0 ? b : (c * MathF.Pow(2, 10 * ((t / d) - 1))) + b;
+                return t == 0
+                    ? b
+                    : (c * MathF.Pow(2, 10 * ((t / d) - 1))) + b;
             }
 
             /// <summary>
@@ -257,7 +258,9 @@ namespace Exomia.Framework.Core.Tools
             public static float EaseOut(float t, float b, float c, float d)
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                return t == d ? b + c : (c * (-MathF.Pow(2, (-10 * t) / d) + 1)) + b;
+                return t == d
+                    ? b + c
+                    : (c * (-MathF.Pow(2, (-10 * t) / d) + 1)) + b;
             }
         }
 

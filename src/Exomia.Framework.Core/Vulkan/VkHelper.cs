@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -11,7 +11,6 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using Exomia.Framework.Core.Vulkan.Exceptions;
-using Exomia.Vulkan.Api.Core;
 
 namespace Exomia.Framework.Core.Vulkan
 {
@@ -22,39 +21,39 @@ namespace Exomia.Framework.Core.Vulkan
                                           [CallerFilePath]   string   callingFilePath       = "",
                                           [CallerLineNumber] int      callingFileLineNumber = 0)
         {
-            if (result != VkResult.SUCCESS) { throw new VulkanException(result, callingMethod, callingFilePath, callingFileLineNumber); }
+            if (result != VK_SUCCESS) { throw new VulkanException(result, callingMethod, callingFilePath, callingFileLineNumber); }
         }
 
         public static void* GetInstanceProcAddr(this in VkInstance instance, string name)
         {
-            int    maxByteCount;
-            sbyte* pName = stackalloc sbyte[maxByteCount = Encoding.UTF8.GetMaxByteCount(name.Length) + 1];
+            int   maxByteCount;
+            byte* pName = stackalloc byte[maxByteCount = Encoding.UTF8.GetMaxByteCount(name.Length) + 1];
             name.ToNtStringUtf8(pName, maxByteCount);
-            return Vk.GetInstanceProcAddr(instance, pName);
+            return vkGetInstanceProcAddr(instance, pName);
         }
 
         public static void* GetDeviceProcAddr(this in VkDevice device, string name)
         {
-            int    maxByteCount;
-            sbyte* pName = stackalloc sbyte[maxByteCount = Encoding.UTF8.GetMaxByteCount(name.Length) + 1];
+            int   maxByteCount;
+            byte* pName = stackalloc byte[maxByteCount = Encoding.UTF8.GetMaxByteCount(name.Length) + 1];
             name.ToNtStringUtf8(pName, maxByteCount);
-            return Vk.GetDeviceProcAddr(device, pName);
+            return vkGetDeviceProcAddr(device, pName);
         }
 
-        public static void ToNtStringUtf8(this string? value, sbyte* dstPointer, int maxByteCount)
+        public static void ToNtStringUtf8(this string? value, byte* dstPointer, int maxByteCount)
         {
             if (value == null) { return; }
             fixed (char* srcPointer = value)
             {
-                dstPointer[Encoding.UTF8.GetBytes(srcPointer, value.Length, (byte*)dstPointer, maxByteCount)] = 0;
+                dstPointer[Encoding.UTF8.GetBytes(srcPointer, value.Length, dstPointer, maxByteCount)] = 0;
             }
         }
 
-        public static string ToString(sbyte* dstPointer)
+        public static string ToString(byte* dstPointer)
         {
             int i = -1;
             while (*(bool*)(dstPointer + (++i))) { }
-            return Encoding.UTF8.GetString((byte*)dstPointer, i);
+            return Encoding.UTF8.GetString(dstPointer, i);
         }
     }
 }

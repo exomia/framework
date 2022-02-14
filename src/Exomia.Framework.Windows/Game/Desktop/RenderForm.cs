@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -22,7 +21,7 @@ using Exomia.Framework.Windows.Win32.RawInput;
 namespace Exomia.Framework.Windows.Game.Desktop
 {
     /// <summary> The RenderForm. </summary>
-    sealed partial class RenderForm : IWin32RenderForm
+    internal sealed partial class RenderForm : IWin32RenderForm
     {
         private const string LP_CLASS_NAME = "Exomia.Framework.RenderForm";
 
@@ -32,16 +31,15 @@ namespace Exomia.Framework.Windows.Game.Desktop
         private static readonly int s_sizeOfRawInputHeader = Marshal.SizeOf<RAWINPUTHEADER>();
 
         private readonly WndClassEx _wndClassEx;
+        private readonly bool       _clipCursor;
+        private readonly bool       _isMouseVisible;
 
         private int         _state;
         private KeyModifier _keyModifier = 0;
-        private IntPtr      _hWnd;
 
         private string          _windowTitle;
         private FormWindowState _windowState;
         private FormBorderStyle _borderStyle;
-        private bool            _clipCursor;
-        private bool            _isMouseVisible;
 
         /// <inheritdoc />
         public int Width { get; private set; }
@@ -56,9 +54,9 @@ namespace Exomia.Framework.Windows.Game.Desktop
             set
             {
                 _windowTitle = value;
-                if (_hWnd != IntPtr.Zero)
+                if (HWnd != IntPtr.Zero)
                 {
-                    User32.SetWindowText(_hWnd, _windowTitle);
+                    User32.SetWindowText(HWnd, _windowTitle);
                 }
             }
         }
@@ -70,7 +68,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             set
             {
                 _windowState = value;
-                if (_hWnd != IntPtr.Zero)
+                if (HWnd != IntPtr.Zero)
                 {
                     ShowWindowCommands showWindowCommands = _windowState switch
                     {
@@ -80,7 +78,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         _                         => throw new ArgumentOutOfRangeException()
                     };
 
-                    if (!User32.ShowWindow(_hWnd, (int)showWindowCommands))
+                    if (!User32.ShowWindow(HWnd, (int)showWindowCommands))
                     {
                         throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.ShowWindow)} failed!");
                     }
@@ -95,7 +93,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             set
             {
                 _borderStyle = value;
-                if (_hWnd != IntPtr.Zero)
+                if (HWnd != IntPtr.Zero)
                 {
                     uint windowStyles = _borderStyle switch
                     {
@@ -121,22 +119,24 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         windowStylesEx &= ~WSEX.WINDOWEDGE;
                     }
 
-                    User32.SetWindowLongPtr(_hWnd, WLF.GWL_STYLE,   (IntPtr)windowStyles);
-                    User32.SetWindowLongPtr(_hWnd, WLF.GWL_EXSTYLE, (IntPtr)windowStylesEx);
+                    User32.SetWindowLongPtr(HWnd, WLF.GWL_STYLE,   (IntPtr)windowStyles);
+                    User32.SetWindowLongPtr(HWnd, WLF.GWL_EXSTYLE, (IntPtr)windowStylesEx);
 
                     if (!User32.SetWindowPos(
-                        _hWnd,
-                        IntPtr.Zero,
-                        0, 0, 0, 0,
-                        SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
-                        SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
-                        SetWindowPosFlags.FrameChanged))
+                            HWnd,
+                            IntPtr.Zero,
+                            0, 0, 0, 0,
+                            SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
+                            SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
+                            SetWindowPosFlags.FrameChanged))
                     {
                         throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
                     }
                 }
             }
         }
+
+        internal IntPtr HWnd { get; private set; }
 
         /// <summary> Initializes a new instance of the <see cref="RenderForm" /> class. </summary>
         /// <param name="configuration"> The configuration. </param>
@@ -199,23 +199,23 @@ namespace Exomia.Framework.Windows.Game.Desktop
         /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
         public void Show()
         {
-            User32.ShowWindow(_hWnd, (int)ShowWindowCommands.Normal);
+            User32.ShowWindow(HWnd, (int)ShowWindowCommands.Normal);
 
-            if (!User32.UpdateWindow(_hWnd))
+            if (!User32.UpdateWindow(HWnd))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.UpdateWindow)} failed!");
             }
-            if (!User32.SetForegroundWindow(_hWnd))
+            if (!User32.SetForegroundWindow(HWnd))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetForegroundWindow)} failed!");
             }
-            User32.SetFocus(_hWnd);
+            User32.SetFocus(HWnd);
 
             if (_clipCursor)
             {
                 RECT rect = new(Width, Height);
-                if (User32.ClientToScreen(_hWnd, ref rect.LeftTop) &&
-                    User32.ClientToScreen(_hWnd, ref rect.RightBottom))
+                if (User32.ClientToScreen(HWnd, ref rect.LeftTop) &&
+                    User32.ClientToScreen(HWnd, ref rect.RightBottom))
                 {
                     User32.ClipCursor(ref rect);
                 }
@@ -265,12 +265,12 @@ namespace Exomia.Framework.Windows.Game.Desktop
             }
 
             if (!User32.SetWindowPos(
-                _hWnd,
-                IntPtr.Zero,
-                0, 0,
-                windowRect.RightBottom.X - windowRect.LeftTop.X,
-                windowRect.RightBottom.Y - windowRect.LeftTop.Y,
-                SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder))
+                    HWnd,
+                    IntPtr.Zero,
+                    0, 0,
+                    windowRect.RightBottom.X - windowRect.LeftTop.X,
+                    windowRect.RightBottom.Y - windowRect.LeftTop.Y,
+                    SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
             }
@@ -282,7 +282,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
         /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
         public (IntPtr, IntPtr) CreateWindow()
         {
-            if (_hWnd != IntPtr.Zero) { return (_wndClassEx.hInstance, _hWnd); }
+            if (HWnd != IntPtr.Zero) { return (_wndClassEx.hInstance, HWnd); }
 
             RECT windowRect;
             windowRect.LeftTop.X     = 0;
@@ -314,7 +314,6 @@ namespace Exomia.Framework.Windows.Game.Desktop
                 windowStylesEx &= ~WSEX.WINDOWEDGE;
             }
 
-
             if (!User32.AdjustWindowRectEx(ref windowRect, windowStyles, false, windowStylesEx))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.AdjustWindowRectEx)} failed!");
@@ -322,34 +321,34 @@ namespace Exomia.Framework.Windows.Game.Desktop
 
             // ReSharper disable once InconsistentNaming
             const int CW_USEDEFAULT = unchecked((int)0x80000000);
-            if ((_hWnd =
-                User32.CreateWindowEx(
-                    windowStylesEx,
-                    _wndClassEx.lpszClassName,
-                    Title,
-                    windowStyles,
-                    CW_USEDEFAULT,
-                    0,
-                    windowRect.RightBottom.X - windowRect.LeftTop.X,
-                    windowRect.RightBottom.Y - windowRect.LeftTop.Y,
-                    IntPtr.Zero,
-                    IntPtr.Zero,
-                    _wndClassEx.hInstance,
-                    IntPtr.Zero)) == IntPtr.Zero)
+            if ((HWnd =
+                    User32.CreateWindowEx(
+                        windowStylesEx,
+                        _wndClassEx.lpszClassName,
+                        Title,
+                        windowStyles,
+                        CW_USEDEFAULT,
+                        0,
+                        windowRect.RightBottom.X - windowRect.LeftTop.X,
+                        windowRect.RightBottom.Y - windowRect.LeftTop.Y,
+                        IntPtr.Zero,
+                        IntPtr.Zero,
+                        _wndClassEx.hInstance,
+                        IntPtr.Zero)) == IntPtr.Zero)
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.CreateWindowEx)} failed!");
             }
 
             if (_borderStyle == FormBorderStyle.None)
             {
-                User32.SetWindowLongPtr(_hWnd, WLF.GWL_STYLE, (IntPtr)0);
+                User32.SetWindowLongPtr(HWnd, WLF.GWL_STYLE, (IntPtr)0);
                 if (!User32.SetWindowPos(
-                    _hWnd,
-                    IntPtr.Zero,
-                    0, 0, 0, 0,
-                    SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
-                    SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
-                    SetWindowPosFlags.FrameChanged))
+                        HWnd,
+                        IntPtr.Zero,
+                        0, 0, 0, 0,
+                        SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
+                        SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
+                        SetWindowPosFlags.FrameChanged))
                 {
                     throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
                 }
@@ -359,7 +358,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             //if (_configuration.DisplayType == DisplayType.FullscreenWindow) { }
             //if (_configuration.DisplayType == DisplayType.Fullscreen) { }
 
-            if (!User32.GetClientRect(_hWnd, out RECT rcRect))
+            if (!User32.GetClientRect(HWnd, out RECT rcRect))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.GetClientRect)} failed!");
             }
@@ -367,8 +366,8 @@ namespace Exomia.Framework.Windows.Game.Desktop
             Width  = (rcRect.RightBottom.X - rcRect.LeftTop.X);
             Height = (rcRect.RightBottom.Y - rcRect.LeftTop.Y);
 
-            Device.RegisterDevice(HIDUsagePage.Generic, HIDUsage.Mouse, RawInputDeviceFlags.None, _hWnd);
-            return (_wndClassEx.hInstance, _hWnd);
+            Device.RegisterDevice(HIDUsagePage.Generic, HIDUsage.Mouse, RawInputDeviceFlags.None, HWnd);
+            return (_wndClassEx.hInstance, HWnd);
         }
 
         #region IDisposable Support
@@ -383,9 +382,9 @@ namespace Exomia.Framework.Windows.Game.Desktop
         {
             if (!_disposed)
             {
-                if (_hWnd != IntPtr.Zero)
+                if (HWnd != IntPtr.Zero)
                 {
-                    User32.DestroyWindow(_hWnd);
+                    User32.DestroyWindow(HWnd);
                 }
 
                 User32.UnregisterClass(_wndClassEx.lpszClassName, _wndClassEx.hInstance);

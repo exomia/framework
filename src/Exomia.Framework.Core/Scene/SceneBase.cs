@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using Exomia.Framework.Core.Game;
 
 namespace Exomia.Framework.Core.Scene
@@ -21,9 +19,6 @@ namespace Exomia.Framework.Core.Scene
 
         /// <summary> Occurs when Scene State Changed. </summary>
         public event EventHandler<SceneBase, SceneState>? SceneStateChanged;
-
-        /// <summary> Manager for the scene. </summary>
-        protected ISceneManager? _sceneManager;
 
         private readonly List<IContentable>           _contentableComponent;
         private readonly List<IContentable>           _currentlyContentableComponent;
@@ -37,6 +32,9 @@ namespace Exomia.Framework.Core.Scene
         private readonly string                       _key;
         private          bool                         _isInitialized, _isContentLoaded;
         private          SceneState                   _state = SceneState.None;
+
+        /// <summary> Manager for the scene. </summary>
+        protected ISceneManager? _sceneManager;
 
         /// <summary> Gets the key. </summary>
         /// <value> The key. </value>
@@ -376,7 +374,7 @@ namespace Exomia.Framework.Core.Scene
             return item;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override string ToString()
         {
             return
@@ -432,14 +430,14 @@ namespace Exomia.Framework.Core.Scene
         /// </summary>
         private bool _disposed;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         ~SceneBase()
         {
             Dispose(false);

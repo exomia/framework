@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,19 +10,18 @@
 
 #nullable enable
 
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Exomia.Framework.Core;
 using Exomia.Framework.Core.Game;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
+using EventHandler = Exomia.Framework.Core.EventHandler;
 
 namespace Exomia.Framework.Windows.Game.Desktop
 {
-    sealed partial class RenderForm
+    internal sealed partial class RenderForm
     {
         private const uint RID_ERROR               = unchecked((uint)-1);
         private const int  RID_INPUT               = 0x10000003;
@@ -33,7 +32,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
         private const int  RID_INPUT_TYPE_OTHER    = 3;
 
         private const int MOUSE_LE_STATE = 1;
-        
+
         /// <summary> Occurs when the mouse leaves the client area. </summary>
         public event EventHandler<IWin32RenderForm, IntPtr>? MouseLeave;
 
@@ -44,7 +43,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
         public event RefEventHandler<bool>? Closing;
 
         /// <summary> Occurs when the window is closed. </summary>
-        public event Core.EventHandler? Closed;
+        public event EventHandler? Closed;
 
         /// <summary> Occurs when the window was resized. </summary>
         public event Core.EventHandler<IRenderForm>? Resized;
@@ -60,6 +59,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             switch (msg)
             {
                 case WM.INPUT:
+                {
                     int sizeOfRawInputData = 0;
                     User32.GetRawInputData(
                         lParam, RID_INPUT, null, ref sizeOfRawInputData, s_sizeOfRawInputHeader);
@@ -86,23 +86,29 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         }
                     }
                     return IntPtr.Zero;
+                }
                 case WM.MOUSELEAVE:
+                {
                     _state &= ~MOUSE_LE_STATE;
 
                     if (!_isMouseVisible)
                     {
                         // ReSharper disable once EmptyEmbeddedStatement
-                        while(User32.ShowCursor(true) < 0);
+                        while (User32.ShowCursor(true) < 0) ;
                     }
 
-                    MouseLeave?.Invoke(this, _hWnd);
+                    MouseLeave?.Invoke(this, HWnd);
                     return IntPtr.Zero;
+                }
                 case WM.SIZE:
+                {
                     Width  = LowWord(lParam);
                     Height = HighWord(lParam);
                     Resized?.Invoke(this);
                     return IntPtr.Zero;
+                }
                 case WM.CLOSE:
+                {
                     Task.Run(() =>
                     {
                         bool cancel = false;
@@ -110,52 +116,73 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         if (!cancel)
                         {
                             Closed?.Invoke();
-                            User32.DestroyWindow(_hWnd);
+                            User32.DestroyWindow(HWnd);
                         }
                     }).ConfigureAwait(false);
                     return IntPtr.Zero;
+                }
                 case WM.DESTROY:
-                    MouseLeave?.Invoke(this, _hWnd);
+                {
+                    MouseLeave?.Invoke(this, HWnd);
                     User32.PostQuitMessage(0);
                     return IntPtr.Zero;
+                }
                 case WM.KEYDOWN:
                 case WM.KEYUP:
                 case WM.CHAR:
                 case WM.UNICHAR:
                 case WM.SYSKEYDOWN:
                 case WM.SYSKEYUP:
+                {
                     RawKeyMessage(ref m);
                     return IntPtr.Zero;
+                }
                 case WM.LBUTTONDOWN:
+                {
                     RawMouseDown(ref m, MouseButtons.Left);
                     return IntPtr.Zero;
+                }
                 case WM.MBUTTONDOWN:
+                {
                     RawMouseDown(ref m, MouseButtons.Middle);
                     return IntPtr.Zero;
+                }
                 case WM.RBUTTONDOWN:
+                {
                     RawMouseDown(ref m, MouseButtons.Right);
                     return IntPtr.Zero;
+                }
                 case WM.XBUTTONDOWN:
+                {
                     RawMouseDown(
                         ref m, HighWord(m.wParam) == 1
                             ? MouseButtons.XButton1
                             : MouseButtons.XButton2);
                     return IntPtr.Zero;
+                }
                 case WM.LBUTTONUP:
+                {
                     RawMouseUp(ref m, MouseButtons.Left);
                     return IntPtr.Zero;
+                }
                 case WM.MBUTTONUP:
+                {
                     RawMouseUp(ref m, MouseButtons.Middle);
                     return IntPtr.Zero;
+                }
                 case WM.RBUTTONUP:
+                {
                     RawMouseUp(ref m, MouseButtons.Right);
                     return IntPtr.Zero;
+                }
                 case WM.XBUTTONUP:
+                {
                     RawMouseUp(
                         ref m, HighWord(m.wParam) == 1
                             ? MouseButtons.XButton1
                             : MouseButtons.XButton2);
                     return IntPtr.Zero;
+                }
                 case WM.MOUSEMOVE:
                 {
                     if ((_state & MOUSE_LE_STATE) != MOUSE_LE_STATE)
@@ -165,7 +192,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         if (!_isMouseVisible)
                         {
                             // ReSharper disable once EmptyEmbeddedStatement
-                            while(User32.ShowCursor(false) >= 0);
+                            while (User32.ShowCursor(false) >= 0) ;
                         }
                         if (_clipCursor)
                         {
@@ -177,9 +204,9 @@ namespace Exomia.Framework.Windows.Game.Desktop
                             }
                         }
 
-                        MouseEnter?.Invoke(this, _hWnd);
+                        MouseEnter?.Invoke(this, HWnd);
 
-                        TRACKMOUSEEVENT trackMouseEvent = new TRACKMOUSEEVENT(TME.LEAVE, _hWnd, 0);
+                        TRACKMOUSEEVENT trackMouseEvent = new TRACKMOUSEEVENT(TME.LEAVE, HWnd, 0);
                         if (!User32.TrackMouseEvent(ref trackMouseEvent))
                         {
                             throw new Win32Exception(
@@ -211,8 +238,8 @@ namespace Exomia.Framework.Windows.Game.Desktop
                             break;
                         }
                     }
-                }
                     return IntPtr.Zero;
+                }
                 case WM.LBUTTONDBLCLK:
                 case WM.MBUTTONDBLCLK:
                 case WM.RBUTTONDBLCLK:
@@ -251,6 +278,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
             {
                 case WM.SYSKEYDOWN:
                 case WM.KEYDOWN:
+                {
                     switch (vKey)
                     {
                         case Key.ShiftKey:
@@ -271,8 +299,10 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         }
                     }
                     break;
+                }
                 case WM.SYSKEYUP:
                 case WM.KEYUP:
+                {
                     switch (vKey)
                     {
                         case Key.ShiftKey:
@@ -293,8 +323,10 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         }
                     }
                     break;
+                }
                 case WM.UNICHAR:
                 case WM.CHAR:
+                {
                     for (int i = 0; i < _keyPressPipe.Count; i++)
                     {
                         if (_keyPressPipe[i].Invoke((char)vKey) == EventAction.StopPropagation)
@@ -303,6 +335,7 @@ namespace Exomia.Framework.Windows.Game.Desktop
                         }
                     }
                     break;
+                }
             }
         }
 

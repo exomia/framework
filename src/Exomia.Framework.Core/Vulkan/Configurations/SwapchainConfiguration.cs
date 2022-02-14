@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,12 @@
 
 #endregion
 
-using Exomia.Vulkan.Api.Core;
+using static Exomia.Vulkan.Api.Core.VkFormat;
+using static Exomia.Vulkan.Api.Core.VkImageUsageFlagBits;
+using static Exomia.Vulkan.Api.Core.VkSharingMode;
+using static Exomia.Vulkan.Api.Core.VkSurfaceTransformFlagBitsKHR;
+using static Exomia.Vulkan.Api.Core.VkPresentModeKHR;
+using static Exomia.Vulkan.Api.Core.VkCompositeAlphaFlagBitsKHR;
 
 #pragma warning disable 1591
 namespace Exomia.Framework.Core.Vulkan.Configurations
@@ -16,20 +21,20 @@ namespace Exomia.Framework.Core.Vulkan.Configurations
     /// <summary> A swapchain configuration. This class cannot be inherited. </summary>
     public sealed unsafe class SwapchainConfiguration
     {
-        public        void*                      Next                        { get; set; } = null;
-        public        uint                       MinImageCount               { get; set; } = 2;
-        public        VkFormat[]                 ImageFormats                { get; set; } = {VkFormat.B8G8R8A8_SRGB, VkFormat.B8G8R8A8_UNORM};
-        public        uint                       ImageArrayLayers            { get; set; } = 1;
-        public        VkImageUsageFlagBits       ImageUsage                  { get; set; } = VkImageUsageFlagBits.COLOR_ATTACHMENT_BIT;
-        public        VkSharingMode              ImageSharingMode            { get; set; } = VkSharingMode.EXCLUSIVE;
-        public        uint                       QueueFamilyIndexCount       { get; set; } = 0;
-        public unsafe uint*                      QueueFamilyIndices          { get; set; } = null;
-        public        VkSurfaceTransformFlagsKHR PreTransform                { get; set; } = VkSurfaceTransformFlagsKHR.IDENTITY_BIT_KHR;
-        public        VkPresentModeKHR[]         PresentModes                { get; set; } = {VkPresentModeKHR.MAILBOX_KHR, VkPresentModeKHR.FIFO_KHR};
-        public        VkCompositeAlphaFlagsKHR   CompositeAlpha              { get; set; } = VkCompositeAlphaFlagsKHR.OPAQUE_BIT_KHR;
-        public        VkBool32                   Clipped                     { get; set; } = VkBool32.True;
-        public        SetupContextHandler?       BeginSwapchainCreation      { get; set; } = null;
-        public        SetupContextHandler?       SwapchainCreationSuccessful { get; set; } = null;
-        public        VkSwapchainKHR             OldSwapChain                { get; set; } = VkSwapchainKHR.Null;
+        public void*                      Next                        { get; set; } = null;
+        public uint                       MinImageCount               { get; set; } = 2;
+        public VkFormat[]                 ImageFormats                { get; set; } = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_UNORM };
+        public uint                       ImageArrayLayers            { get; set; } = 1;
+        public VkImageUsageFlagBits       ImageUsage                  { get; set; } = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        public VkSharingMode              ImageSharingMode            { get; set; } = VK_SHARING_MODE_EXCLUSIVE;
+        public uint                       QueueFamilyIndexCount       { get; set; } = 0;
+        public uint*                      QueueFamilyIndices          { get; set; } = null;
+        public VkSurfaceTransformFlagsKHR PreTransform                { get; set; } = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+        public VkPresentModeKHR[]         PresentModes                { get; set; } = { VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_FIFO_KHR };
+        public VkCompositeAlphaFlagsKHR   CompositeAlpha              { get; set; } = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+        public VkBool32                   Clipped                     { get; set; } = VkBool32.True;
+        public SetupContextHandler?       BeginSwapchainCreation      { get; set; } = null;
+        public SetupContextHandler?       SwapchainCreationSuccessful { get; set; } = null;
+        public VkSwapchainKHR             OldSwapChain                { get; set; } = VkSwapchainKHR.Null;
     }
 }

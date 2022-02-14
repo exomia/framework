@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,13 +8,9 @@
 
 #endregion
 
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using Exomia.Vulkan.Api.Core;
-using Rectangle = Exomia.Framework.Core.Mathematics.Rectangle;
-using RectangleF = Exomia.Framework.Core.Mathematics.RectangleF;
+using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics
 {
@@ -30,8 +26,8 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture texture, in Vector2 position, in VkColor color)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, s_nullRectangle,
-                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
+                texture, new RectangleF(position.X, position.Y, 1f, 1f), true,          s_nullRectangle,
+                color,   0f,                                             s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -44,8 +40,8 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture texture, in RectangleF destinationRectangle, in VkColor color)
         {
             DrawSprite(
-                texture, destinationRectangle, false, s_nullRectangle,
-                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
+                texture, destinationRectangle, false,         s_nullRectangle,
+                color,   0f,                   s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -59,8 +55,8 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in VkColor color)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, sourceRectangle,
-                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
+                texture, new RectangleF(position.X, position.Y, 1f, 1f), true,          sourceRectangle,
+                color,   0f,                                             s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -74,11 +70,11 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture       texture,
                          in RectangleF destinationRectangle,
                          in Rectangle? sourceRectangle,
-                         in VkColor      color)
+                         in VkColor    color)
         {
             DrawSprite(
-                texture, destinationRectangle, false, sourceRectangle,
-                color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, 0f);
+                texture, destinationRectangle, false,         sourceRectangle,
+                color,   0f,                   s_vector2Zero, 1.0f, TextureEffects.None, 0f);
         }
 
         /// <summary>
@@ -93,14 +89,14 @@ namespace Exomia.Framework.Core.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture    texture,
                          in Vector2 position,
-                         in VkColor   color,
+                         in VkColor color,
                          float      rotation,
                          in Vector2 origin,
                          float      layerDepth = 0f)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, 1f, 1f), true, s_nullRectangle,
-                color, rotation, origin, 1.0f, TextureEffects.None, layerDepth);
+                texture, new RectangleF(position.X, position.Y, 1f, 1f), true,   s_nullRectangle,
+                color,   rotation,                                       origin, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -115,14 +111,14 @@ namespace Exomia.Framework.Core.Graphics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw(Texture       texture,
                          in RectangleF destinationRectangle,
-                         in VkColor      color,
+                         in VkColor    color,
                          float         rotation,
                          in Vector2    origin,
                          float         layerDepth = 0f)
         {
             DrawSprite(
-                texture, destinationRectangle, false, s_nullRectangle,
-                color, rotation, origin, 1.0f, TextureEffects.None, layerDepth);
+                texture, destinationRectangle, false,  s_nullRectangle,
+                color,   rotation,             origin, 1.0f, TextureEffects.None, layerDepth);
         }
 
         /// <summary>
@@ -141,7 +137,7 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture        texture,
                          in RectangleF  destinationRectangle,
                          in Rectangle?  sourceRectangle,
-                         in VkColor       color,
+                         in VkColor     color,
                          float          rotation,
                          in Vector2     origin,
                          float          opacity,
@@ -149,8 +145,8 @@ namespace Exomia.Framework.Core.Graphics
                          float          layerDepth)
         {
             DrawSprite(
-                texture, destinationRectangle, false, sourceRectangle,
-                color, rotation, origin, opacity, effects, layerDepth);
+                texture, destinationRectangle, false,  sourceRectangle,
+                color,   rotation,             origin, opacity, effects, layerDepth);
         }
 
         /// <summary>
@@ -170,7 +166,7 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture        texture,
                          in Vector2     position,
                          in Rectangle?  sourceRectangle,
-                         in VkColor       color,
+                         in VkColor     color,
                          float          rotation,
                          in Vector2     origin,
                          float          scale,
@@ -179,8 +175,8 @@ namespace Exomia.Framework.Core.Graphics
                          float          layerDepth)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale, scale), true, sourceRectangle,
-                color, rotation, origin, opacity, effects, layerDepth);
+                texture, new RectangleF(position.X, position.Y, scale, scale), true,   sourceRectangle,
+                color,   rotation,                                             origin, opacity, effects, layerDepth);
         }
 
         /// <summary>
@@ -200,7 +196,7 @@ namespace Exomia.Framework.Core.Graphics
         public void Draw(Texture        texture,
                          in Vector2     position,
                          in Rectangle?  sourceRectangle,
-                         in VkColor       color,
+                         in VkColor     color,
                          float          rotation,
                          in Vector2     origin,
                          in Vector2     scale,
@@ -209,15 +205,15 @@ namespace Exomia.Framework.Core.Graphics
                          float          layerDepth)
         {
             DrawSprite(
-                texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true, sourceRectangle,
-                color, rotation, origin, opacity, effects, layerDepth);
+                texture, new RectangleF(position.X, position.Y, scale.X, scale.Y), true,   sourceRectangle,
+                color,   rotation,                                                 origin, opacity, effects, layerDepth);
         }
 
         private unsafe void DrawSprite(Texture        texture,
                                        in RectangleF  destination,
                                        bool           scaleDestination,
                                        in Rectangle?  sourceRectangle,
-                                       in VkColor       color,
+                                       in VkColor     color,
                                        float          rotation,
                                        in Vector2     origin,
                                        float          opacity,
@@ -231,7 +227,7 @@ namespace Exomia.Framework.Core.Graphics
 
             if (texture.TexturePointer == IntPtr.Zero)
             {
-                throw new ArgumentNullException(nameof(texture));
+                //throw new ArgumentNullException(nameof(texture));
             }
 
             if (_spriteQueueCount >= _spriteQueue.Length)
@@ -244,7 +240,7 @@ namespace Exomia.Framework.Core.Graphics
                     int size = _spriteQueue.Length * 2;
                     _sortIndices   = new int[size];
                     _sortedSprites = new SpriteInfo[size];
-                    Array.Resize(ref _spriteQueue, size);
+                    Array.Resize(ref _spriteQueue,    size);
                     Array.Resize(ref _spriteTextures, size);
                 }
                 finally
@@ -264,7 +260,7 @@ namespace Exomia.Framework.Core.Graphics
                     _spinLock.Enter(ref lockTaken);
                     if (!_textureInfos.TryGetValue(texture.TexturePointer, out textureInfo))
                     {
-                        textureInfo = new TextureInfo(texture.TextureView, texture.Width, texture.Height);
+                        textureInfo = new TextureInfo( /*texture.TextureView, */texture.Width, texture.Height);
                         _textureInfos.Add(texture.TexturePointer, textureInfo);
                     }
                 }
@@ -277,7 +273,7 @@ namespace Exomia.Framework.Core.Graphics
                 }
             }
 
-            int spriteQueueCount = Interlocked.Increment(ref _spriteQueueCount) - 1;
+            uint spriteQueueCount = Interlocked.Increment(ref _spriteQueueCount) - 1u;
             fixed (SpriteInfo* spriteInfo = &_spriteQueue[spriteQueueCount])
             {
                 float width;

@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,13 +8,12 @@
 
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
 namespace Exomia.Framework.Windows.Win32
 {
-    static class Kernel32
+    internal static class Kernel32
     {
         private const string KERNEL32 = "kernel32.dll";
 

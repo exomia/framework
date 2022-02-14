@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,7 +10,7 @@
 
 namespace Exomia.Framework.Core.Graphics.SpriteSort
 {
-    interface ISpriteSort
+    internal interface ISpriteSort
     {
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.TextureInfo" /> into a given indirect index array
@@ -19,7 +19,7 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
         /// <param name="arr"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        void Sort(SpriteBatch.TextureInfo[] tInfo, int[] arr, int offset, int length);
+        void Sort(SpriteBatch.TextureInfo[] tInfo, int[] arr, uint offset, uint length);
 
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
@@ -28,7 +28,7 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
         /// <param name="arr"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        void SortBf(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
+        void SortBf(SpriteBatch.SpriteInfo[] sInfo, int[] arr, uint offset, uint length);
 
         /// <summary>
         ///     sort a given array of <see cref="SpriteBatch.SpriteInfo" /> into a given indirect index array
@@ -37,6 +37,6 @@ namespace Exomia.Framework.Core.Graphics.SpriteSort
         /// <param name="arr"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        void SortFb(SpriteBatch.SpriteInfo[] sInfo, int[] arr, int offset, int length);
+        void SortFb(SpriteBatch.SpriteInfo[] sInfo, int[] arr, uint offset, uint length);
     }
 }

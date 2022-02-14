@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -116,7 +116,7 @@ namespace Exomia.Framework.Core.Mathematics
         /// <summary> Returns a hash code for this instance. </summary>
         /// <returns> A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override readonly int GetHashCode()
+        public readonly override int GetHashCode()
         {
             unchecked
             {
@@ -151,13 +151,13 @@ namespace Exomia.Framework.Core.Mathematics
         /// <param name="value"> The object to compare with this instance. </param>
         /// <returns> <c>true</c> if the specified object is equal to this instance; otherwise, <c>false</c>. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override readonly bool Equals(object? value)
+        public readonly override bool Equals(object? value)
         {
             return value is ViewportF other && Equals(in other);
         }
 
         /// <inheritdoc />
-        public override readonly string ToString()
+        public readonly override string ToString()
         {
             return string.Format(
                 CultureInfo.CurrentCulture,

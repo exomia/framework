@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,9 +8,7 @@
 
 #endregion
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
@@ -61,7 +59,7 @@ namespace Exomia.Framework.Core.Linq
             LabelTarget         breakLabel = Expression.Label(typeof(T));
             return Expression.Lambda<Func<T[], T>>(
                     Expression.Block(
-                        new[] {rExpr, iExpr},
+                        new[] { rExpr, iExpr },
                         Expression.Loop(
                             Expression.IfThenElse(
                                 Expression.LessThan(iExpr, Expression.ArrayLength(arrayExpr)),
@@ -90,7 +88,7 @@ namespace Exomia.Framework.Core.Linq
             LabelTarget endLabel = Expression.Label(elementType, "endLabel");
             return Expression.Lambda<Func<IEnumerable<T>, T>>(
                     Expression.Block(
-                        new[] {enumeratorVar, rExpr},
+                        new[] { enumeratorVar, rExpr },
                         Expression.Assign(
                             enumeratorVar,
                             Expression.Call(

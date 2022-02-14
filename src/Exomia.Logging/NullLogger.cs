@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -15,10 +15,10 @@ namespace Exomia.Logging
     /// <summary> A null logger. This class cannot be inherited. </summary>
     public sealed class NullLogger : ILogger
     {
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Log(LogLevel logLevel, Exception exception) { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Log(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args) { }
     }
 
@@ -26,10 +26,10 @@ namespace Exomia.Logging
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     public sealed class NullLogger<T> : ILogger<T>
     {
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Log(LogLevel logLevel, Exception exception) { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Log(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args) { }
     }
 }

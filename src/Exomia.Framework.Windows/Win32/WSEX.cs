@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32
 {
-    static class WSEX
+    internal static class WSEX
     {
         /// <summary> Specifies a window that accepts drag-drop files. </summary>
         public const uint ACCEPTFILES = 0x00000010;
@@ -29,8 +29,8 @@ namespace Exomia.Framework.Windows.Win32
         ///     Specifies a window that paints all descendants in bottom-to-top painting order using double-buffering. This cannot be used if the window has a class style of either
         ///     CS_OWNDC or CS_CLASSDC. This style is not supported in Windows 2000.
         /// </summary>
-        ///
-        /// ### <remarks>
+        /// ###
+        /// <remarks>
         ///     With public const uint COMPOSITED set; all descendants of a window get bottom-to-top painting order using double-buffering. Bottom-to-top painting order allows a
         ///     descendent window to have translucency (alpha) and transparency (color-key)
         ///     effects;

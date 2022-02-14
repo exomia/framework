@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32
 {
-    static class SM
+    internal static class SM
     {
         /// <summary> The flags that specify how the system arranged minimized windows. For more information, see the Remarks section in this topic. </summary>
         public const int ARRANGE = 56;

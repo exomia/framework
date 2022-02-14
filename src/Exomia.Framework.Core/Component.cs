@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Core.Game;
 
 namespace Exomia.Framework.Core
@@ -22,17 +21,17 @@ namespace Exomia.Framework.Core
         /// <summary> Occurs when Update Order Changed. </summary>
         public event EventHandler? UpdateOrderChanged;
 
+        private readonly DisposeCollector _collector;
+        private          bool             _enabled;
+        private          int              _updateOrder;
+
         /// <summary> flag to identify if the component is already initialized. </summary>
         protected bool _isInitialized;
 
         /// <summary> flag to identify if the content is already loaded. </summary>
         protected bool _isContentLoaded;
 
-        private readonly DisposeCollector _collector;
-        private          bool             _enabled;
-        private          int              _updateOrder;
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Enabled
         {
             get { return _enabled; }
@@ -46,7 +45,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int UpdateOrder
         {
             get { return _updateOrder; }
@@ -61,14 +60,14 @@ namespace Exomia.Framework.Core
         }
 
         /// <summary> Initializes a new instance of the <see cref="Component" /> class. </summary>
-        ///
-        /// ### <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// ###
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
         protected Component()
         {
             _collector = new DisposeCollector();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IContentable.LoadContent()
         {
             if (_isInitialized && !_isContentLoaded)
@@ -78,7 +77,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IContentable.UnloadContent()
         {
             if (_isContentLoaded)
@@ -88,7 +87,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IInitializable.Initialize()
         {
             if (!_isInitialized)
@@ -98,7 +97,7 @@ namespace Exomia.Framework.Core
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract void Update(GameTime gameTime);
 
         /// <summary> called than the component is initialized (once) </summary>
@@ -125,7 +124,7 @@ namespace Exomia.Framework.Core
         /// <summary> flag to identify if the component is already disposed. </summary>
         protected bool _disposed;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         /// <summary> Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources. </summary>
         public void Dispose()
         {

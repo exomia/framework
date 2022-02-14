@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2021, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,7 +8,6 @@
 
 #endregion
 
-using System;
 using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
 namespace Exomia.Framework.Core.ContentSerialization.Types
@@ -193,7 +192,7 @@ namespace Exomia.Framework.Core.ContentSerialization.Types
 
             string dimensionInfo = arrayTypeInfo.Substring(sIndex, eIndex - sIndex).Trim();
 
-            string[] dimensions = dimensionInfo.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            string[] dimensions = dimensionInfo.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             int[] buffer = new int[dimensions.Length];
             for (int i = 0; i < dimensions.Length; i++)

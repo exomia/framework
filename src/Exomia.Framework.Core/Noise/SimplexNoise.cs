@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -53,7 +53,7 @@ namespace Exomia.Framework.Core.Noise
             double t0 = 1.0f - (xd0 * xd0);
             double t1 = 1.0f - (xd1 * xd1);
 
-            return (float)(0.395 * ((t0 * t0 * t0 * GradCoord1D(seed, x0, xd0)) +
+            return (float)(0.395 * ((t0 * t0 * t0 * GradCoord1D(seed, x0,     xd0)) +
                                     (t1 * t1 * t1 * GradCoord1D(seed, x0 + 1, xd1))));
         }
 
