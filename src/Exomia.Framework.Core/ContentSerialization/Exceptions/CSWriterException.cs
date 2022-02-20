@@ -8,20 +8,19 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Exceptions
+namespace Exomia.Framework.Core.ContentSerialization.Exceptions;
+
+/// <summary> Thrown than a writer exception happen. </summary>
+public sealed class CsWriterException : Exception
 {
-    /// <summary> Thrown than a writer exception happen. </summary>
-    public sealed class CsWriterException : Exception
-    {
-        /// <inheritdoc />
-        public CsWriterException() { }
+    /// <inheritdoc />
+    public CsWriterException() { }
 
-        /// <inheritdoc />
-        public CsWriterException(string message)
-            : base(message) { }
+    /// <inheritdoc />
+    public CsWriterException(string message)
+        : base(message) { }
 
-        /// <inheritdoc />
-        public CsWriterException(string message, Exception innerException)
-            : base(message, innerException) { }
-    }
+    /// <inheritdoc />
+    public CsWriterException(string message, Exception innerException)
+        : base(message, innerException) { }
 }

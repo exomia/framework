@@ -13,32 +13,31 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32.RawInput
+namespace Exomia.Framework.Windows.Win32.RawInput;
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct RAWINPUT
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct RAWINPUT
+    /// <summary> The header. </summary>
+    public RAWINPUTHEADER Header;
+
+    /// <summary> The data. </summary>
+    public Union Data;
+
+    /// <summary> An union. </summary>
+    [StructLayout(LayoutKind.Explicit)]
+    public struct Union
     {
-        /// <summary> The header. </summary>
-        public RAWINPUTHEADER Header;
+        /// <summary> Mouse raw input data. </summary>
+        [FieldOffset(0)]
+        public RAWINPUTMOUSE Mouse;
 
-        /// <summary> The data. </summary>
-        public Union Data;
+        /// <summary> Keyboard raw input data. </summary>
+        [FieldOffset(0)]
+        public RAWINPUTKEYBOARD Keyboard;
 
-        /// <summary> An union. </summary>
-        [StructLayout(LayoutKind.Explicit)]
-        public struct Union
-        {
-            /// <summary> Mouse raw input data. </summary>
-            [FieldOffset(0)]
-            public RAWINPUTMOUSE Mouse;
-
-            /// <summary> Keyboard raw input data. </summary>
-            [FieldOffset(0)]
-            public RAWINPUTKEYBOARD Keyboard;
-
-            /// <summary> HID raw input data. </summary>
-            [FieldOffset(0)]
-            public RAWINPUTHID HID;
-        }
+        /// <summary> HID raw input data. </summary>
+        [FieldOffset(0)]
+        public RAWINPUTHID HID;
     }
 }

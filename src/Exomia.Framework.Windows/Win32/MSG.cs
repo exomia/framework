@@ -14,16 +14,15 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct MSG
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct MSG
-    {
-        public IntPtr  hWnd;
-        public uint    msg;
-        public IntPtr  wParam;
-        public IntPtr  lParam;
-        public uint    time;
-        public Vector2 pt;
-    }
+    public IntPtr  hWnd;
+    public uint    msg;
+    public IntPtr  wParam;
+    public IntPtr  lParam;
+    public uint    time;
+    public Vector2 pt;
 }

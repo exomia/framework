@@ -11,95 +11,94 @@
 using System.Text;
 using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
-namespace Exomia.Framework.Core.ContentSerialization.Types
+namespace Exomia.Framework.Core.ContentSerialization.Types;
+
+internal sealed class PrimitiveType<T> : IType where T : struct
 {
-    internal sealed class PrimitiveType<T> : IType where T : struct
+    /// <inheritdoc />
+    public Type BaseType { get; }
+
+    /// <inheritdoc />
+    public bool IsPrimitive
     {
-        /// <inheritdoc />
-        public Type BaseType { get; }
+        get { return true; }
+    }
 
-        /// <inheritdoc />
-        public bool IsPrimitive
+    /// <inheritdoc />
+
+    public string TypeName
+    {
+        get { return BaseType.Name.ToUpper(); }
+    }
+
+    /// <summary> Initializes a new instance of the <see cref="PrimitiveType{T}" /> class. </summary>
+    /// <exception cref="NotSupportedException"> Thrown when the requested operation is not supported. </exception>
+    public PrimitiveType()
+    {
+        BaseType = typeof(T);
+        if (!BaseType.IsPrimitive)
         {
-            get { return true; }
+            throw new NotSupportedException("typeof(T) isn't a primitive type -> " + BaseType.FullName);
         }
+    }
 
-        /// <inheritdoc />
+    /// <inheritdoc />
+    public Type CreateType(string genericTypeInfo)
+    {
+        return BaseType;
+    }
 
-        public string TypeName
+    /// <inheritdoc />
+    public string CreateTypeInfo(Type type)
+    {
+        return TypeName;
+    }
+
+    /// <inheritdoc />
+    public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+    {
+        StringBuilder sb = new StringBuilder(32);
+
+        while (stream.ReadChar(out char c))
         {
-            get { return BaseType.Name.ToUpper(); }
-        }
-
-        /// <summary> Initializes a new instance of the <see cref="PrimitiveType{T}" /> class. </summary>
-        /// <exception cref="NotSupportedException"> Thrown when the requested operation is not supported. </exception>
-        public PrimitiveType()
-        {
-            BaseType = typeof(T);
-            if (!BaseType.IsPrimitive)
+            switch (c)
             {
-                throw new NotSupportedException("typeof(T) isn't a primitive type -> " + BaseType.FullName);
-            }
-        }
-
-        /// <inheritdoc />
-        public Type CreateType(string genericTypeInfo)
-        {
-            return BaseType;
-        }
-
-        /// <inheritdoc />
-        public string CreateTypeInfo(Type type)
-        {
-            return TypeName;
-        }
-
-        /// <inheritdoc />
-        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
-        {
-            StringBuilder sb = new StringBuilder(32);
-
-            while (stream.ReadChar(out char c))
-            {
-                switch (c)
+                case '[':
                 {
-                    case '[':
+                    stream.ReadEndTag(key);
+                    string content = sb.ToString();
+                    try
                     {
-                        stream.ReadEndTag(key);
-                        string content = sb.ToString();
-                        try
-                        {
-                            return Convert.ChangeType(content, BaseType);
-                        }
-                        catch
-                        {
-                            throw new InvalidCastException(
-                                $"content '{content}' can't be converted to '{BaseType.FullName}'!");
-                        }
+                        return Convert.ChangeType(content, BaseType);
                     }
-                    case ']':
-                    case '\r':
-                    case '\n':
-                    case '\t':
-                        throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
+                    catch
+                    {
+                        throw new InvalidCastException(
+                            $"content '{content}' can't be converted to '{BaseType.FullName}'!");
+                    }
                 }
-
-                sb.Append(c);
+                case ']':
+                case '\r':
+                case '\n':
+                case '\t':
+                    throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
             }
-            throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
-        }
 
-        /// <inheritdoc />
-        public void Write(Action<string, string> writeHandler,
-                          string                 tabSpace,
-                          string                 key,
-                          object                 content,
-                          bool                   useTypeInfo = true)
-        {
-            //[key:type]content[/key]
-            writeHandler(
-                tabSpace,
-                $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content}[/{(useTypeInfo ? key : string.Empty)}]");
+            sb.Append(c);
         }
+        throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
+    }
+
+    /// <inheritdoc />
+    public void Write(Action<string, string> writeHandler,
+                      string                 tabSpace,
+                      string                 key,
+                      object                 content,
+                      bool                   useTypeInfo = true)
+    {
+        //[key:type]content[/key]
+        writeHandler(
+            tabSpace,
+            $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content}[/{(useTypeInfo ? key : string.Empty)}]");
     }
 }

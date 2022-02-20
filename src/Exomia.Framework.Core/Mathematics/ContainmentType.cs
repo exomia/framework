@@ -8,24 +8,23 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Mathematics
+namespace Exomia.Framework.Core.Mathematics;
+
+/// <summary> Describes how one bounding volume contains another. </summary>
+public enum ContainmentType
 {
-    /// <summary> Describes how one bounding volume contains another. </summary>
-    public enum ContainmentType
-    {
-        /// <summary>
-        ///     The two bounding volumes don't intersect at all.
-        /// </summary>
-        Disjoint,
+    /// <summary>
+    ///     The two bounding volumes don't intersect at all.
+    /// </summary>
+    Disjoint,
 
-        /// <summary>
-        ///     One bounding volume completely contains another.
-        /// </summary>
-        Contains,
+    /// <summary>
+    ///     One bounding volume completely contains another.
+    /// </summary>
+    Contains,
 
-        /// <summary>
-        ///     The two bounding volumes overlap.
-        /// </summary>
-        Intersects
-    }
+    /// <summary>
+    ///     The two bounding volumes overlap.
+    /// </summary>
+    Intersects
 }

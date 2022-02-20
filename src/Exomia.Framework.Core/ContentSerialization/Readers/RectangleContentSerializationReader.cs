@@ -10,20 +10,19 @@
 
 using Exomia.Framework.Core.Mathematics;
 
-namespace Exomia.Framework.Core.ContentSerialization.Readers
+namespace Exomia.Framework.Core.ContentSerialization.Readers;
+
+internal sealed class RectangleContentSerializationReader : ContentSerializationReader<Rectangle>
 {
-    internal sealed class RectangleContentSerializationReader : ContentSerializationReader<Rectangle>
+    /// <inheritdoc />
+    public override Rectangle ReadContext(ContentSerializationContext context)
     {
-        /// <inheritdoc />
-        public override Rectangle ReadContext(ContentSerializationContext context)
+        return new Rectangle
         {
-            return new Rectangle
-            {
-                X      = context.Get<int>(nameof(Rectangle.X)),
-                Y      = context.Get<int>(nameof(Rectangle.Y)),
-                Width  = context.Get<int>(nameof(Rectangle.Width)),
-                Height = context.Get<int>(nameof(Rectangle.Height))
-            };
-        }
+            X      = context.Get<int>(nameof(Rectangle.X)),
+            Y      = context.Get<int>(nameof(Rectangle.Y)),
+            Width  = context.Get<int>(nameof(Rectangle.Width)),
+            Height = context.Get<int>(nameof(Rectangle.Height))
+        };
     }
 }

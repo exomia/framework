@@ -8,14 +8,13 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization
+namespace Exomia.Framework.Core.ContentSerialization;
+
+/// <summary> An interface to handle content writing. </summary>
+public interface IContentSerializationWriter
 {
-    /// <summary> An interface to handle content writing. </summary>
-    public interface IContentSerializationWriter
-    {
-        /// <summary> Write the object information into the context. </summary>
-        /// <param name="context"> The context. </param>
-        /// <param name="obj">     The object. </param>
-        void Write(ContentSerializationContext context, object obj);
-    }
+    /// <summary> Write the object information into the context. </summary>
+    /// <param name="context"> The context. </param>
+    /// <param name="obj">     The object. </param>
+    void Write(ContentSerializationContext context, object obj);
 }

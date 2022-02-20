@@ -15,14 +15,13 @@ using System.Security;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
-namespace Exomia.Framework.Windows.Win32
-{
-    internal static class Shell32
-    {
-        private const string SHELL32 = "shell32.dll";
+namespace Exomia.Framework.Windows.Win32;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(SHELL32, EntryPoint = "ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
-        internal static extern IntPtr ExtractIcon(IntPtr hInst, string exeFileName, int iconIndex);
-    }
+internal static class Shell32
+{
+    private const string SHELL32 = "shell32.dll";
+
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(SHELL32, EntryPoint = "ExtractIcon", CharSet = CharSet.Auto, BestFitMapping = false)]
+    internal static extern IntPtr ExtractIcon(IntPtr hInst, string exeFileName, int iconIndex);
 }

@@ -13,21 +13,20 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32.RawInput
+namespace Exomia.Framework.Windows.Win32.RawInput;
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct RAWINPUTDEVICE
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct RAWINPUTDEVICE
-    {
-        /// <summary> Top level collection Usage page for the raw input device. </summary>
-        public HIDUsagePage UsagePage;
+    /// <summary> Top level collection Usage page for the raw input device. </summary>
+    public HIDUsagePage UsagePage;
 
-        /// <summary> Top level collection Usage for the raw input device. </summary>
-        public HIDUsage Usage;
+    /// <summary> Top level collection Usage for the raw input device. </summary>
+    public HIDUsage Usage;
 
-        /// <summary> Mode flag that specifies how to interpret the information provided by UsagePage and Usage. </summary>
-        public RawInputDeviceFlags Flags;
+    /// <summary> Mode flag that specifies how to interpret the information provided by UsagePage and Usage. </summary>
+    public RawInputDeviceFlags Flags;
 
-        /// <summary> Handle to the target device. If NULL, it follows the keyboard focus. </summary>
-        public IntPtr WindowHandle;
-    }
+    /// <summary> Handle to the target device. If NULL, it follows the keyboard focus. </summary>
+    public IntPtr WindowHandle;
 }

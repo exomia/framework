@@ -8,58 +8,57 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Scene.Default
+namespace Exomia.Framework.Core.Scene.Default;
+
+/// <summary> A loading scene. </summary>
+public class LoadingScene : SceneBase
 {
-    /// <summary> A loading scene. </summary>
-    public class LoadingScene : SceneBase
+    private readonly SceneBase _sceneToLoad;
+
+    /// <summary> Initializes a new instance of the <see cref="LoadingScene" /> class. </summary>
+    /// <param name="key">         The key. </param>
+    /// <param name="sceneToLoad"> The scene to load. </param>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+    public LoadingScene(string key, SceneBase sceneToLoad)
+        : base(key)
     {
-        private readonly SceneBase _sceneToLoad;
+        _sceneToLoad = sceneToLoad ?? throw new ArgumentNullException(nameof(sceneToLoad));
+    }
 
-        /// <summary> Initializes a new instance of the <see cref="LoadingScene" /> class. </summary>
-        /// <param name="key">         The key. </param>
-        /// <param name="sceneToLoad"> The scene to load. </param>
-        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        public LoadingScene(string key, SceneBase sceneToLoad)
-            : base(key)
+    /// <inheritdoc />
+    protected override void OnShow(SceneBase? comingFrom, object[] payload)
+    {
+        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+        switch (_sceneToLoad.State)
         {
-            _sceneToLoad = sceneToLoad ?? throw new ArgumentNullException(nameof(sceneToLoad));
+            case SceneState.None:
+                _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
+                Task.Factory.StartNew(_sceneToLoad.Initialize);
+                break;
+            case SceneState.StandBy:
+                _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
+                Task.Factory.StartNew(_sceneToLoad.LoadContent);
+                break;
         }
+    }
 
-        /// <inheritdoc />
-        protected override void OnShow(SceneBase? comingFrom, object[] payload)
+    private void SceneToLoad_SceneStateChanged(SceneBase scene, SceneState current)
+    {
+        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+        switch (current)
         {
-            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-            switch (_sceneToLoad.State)
+            case SceneState.StandBy:
+                Task.Factory.StartNew(_sceneToLoad.LoadContent);
+                break;
+            case SceneState.Ready:
             {
-                case SceneState.None:
-                    _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
-                    Task.Factory.StartNew(_sceneToLoad.Initialize);
-                    break;
-                case SceneState.StandBy:
-                    _sceneToLoad.SceneStateChanged += SceneToLoad_SceneStateChanged;
-                    Task.Factory.StartNew(_sceneToLoad.LoadContent);
-                    break;
-            }
-        }
-
-        private void SceneToLoad_SceneStateChanged(SceneBase scene, SceneState current)
-        {
-            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-            switch (current)
-            {
-                case SceneState.StandBy:
-                    Task.Factory.StartNew(_sceneToLoad.LoadContent);
-                    break;
-                case SceneState.Ready:
+                _sceneToLoad.SceneStateChanged -= SceneToLoad_SceneStateChanged;
+                if (_sceneManager!.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
                 {
-                    _sceneToLoad.SceneStateChanged -= SceneToLoad_SceneStateChanged;
-                    if (_sceneManager!.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
-                    {
-                        throw new Exception(
-                            $"can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
-                    }
-                    break;
+                    throw new Exception(
+                        $"can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
                 }
+                break;
             }
         }
     }

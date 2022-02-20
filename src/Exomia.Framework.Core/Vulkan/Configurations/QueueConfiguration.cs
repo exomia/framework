@@ -9,11 +9,10 @@
 #endregion
 
 #pragma warning disable 1591
-namespace Exomia.Framework.Core.Vulkan.Configurations
+namespace Exomia.Framework.Core.Vulkan.Configurations;
+
+/// <summary> A queue configuration. </summary>
+public class QueueConfiguration
 {
-    /// <summary> A queue configuration. </summary>
-    public class QueueConfiguration
-    {
-        public VkDeviceQueueCreateFlagBits Flags { get; set; } = 0;
-    }
+    public VkDeviceQueueCreateFlagBits Flags { get; set; } = 0;
 }

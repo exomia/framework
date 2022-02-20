@@ -10,26 +10,25 @@
 
 using System;
 
-namespace Exomia.Logging
+namespace Exomia.Logging;
+
+/// <summary> A null logger. This class cannot be inherited. </summary>
+public sealed class NullLogger : ILogger
 {
-    /// <summary> A null logger. This class cannot be inherited. </summary>
-    public sealed class NullLogger : ILogger
-    {
-        /// <inheritdoc />
-        public void Log(LogLevel logLevel, Exception exception) { }
+    /// <inheritdoc />
+    public void Log(LogLevel logLevel, Exception exception) { }
 
-        /// <inheritdoc />
-        public void Log(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args) { }
-    }
+    /// <inheritdoc />
+    public void Log(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args) { }
+}
 
-    /// <summary> A null logger. This class cannot be inherited. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    public sealed class NullLogger<T> : ILogger<T>
-    {
-        /// <inheritdoc />
-        public void Log(LogLevel logLevel, Exception exception) { }
+/// <summary> A null logger. This class cannot be inherited. </summary>
+/// <typeparam name="T"> Generic type parameter. </typeparam>
+public sealed class NullLogger<T> : ILogger<T>
+{
+    /// <inheritdoc />
+    public void Log(LogLevel logLevel, Exception exception) { }
 
-        /// <inheritdoc />
-        public void Log(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args) { }
-    }
+    /// <inheritdoc />
+    public void Log(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args) { }
 }

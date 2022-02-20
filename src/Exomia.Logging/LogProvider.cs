@@ -8,12 +8,11 @@
 
 #endregion
 
-namespace Exomia.Logging
-{
-    internal class LogProvider { }
+namespace Exomia.Logging;
 
-    internal class LogConfiguration
-    {
-        public LogLevel BaseLogLevel { get; set; } = LogLevel.Debug;
-    }
+internal class LogProvider { }
+
+internal class LogConfiguration
+{
+    public LogLevel BaseLogLevel { get; set; } = LogLevel.Debug;
 }

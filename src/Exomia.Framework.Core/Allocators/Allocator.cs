@@ -13,267 +13,266 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 // ReSharper disable UnusedMember.Global
-namespace Exomia.Framework.Core.Allocators
+namespace Exomia.Framework.Core.Allocators;
+
+/// <summary> An allocator. </summary>
+/// <remarks> All allocations done with this class, should also be freed with the corresponding methods provided. </remarks>
+public static unsafe class Allocator
 {
-    /// <summary> An allocator. </summary>
-    /// <remarks> All allocations done with this class, should also be freed with the corresponding methods provided. </remarks>
-    public static unsafe class Allocator
+    /// <summary> Allocates the given count of bytes. </summary>
+    /// <param name="count"> Number of bytes to allocate. </param>
+    /// <returns> Null if it fails, else a byte*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte* Allocate(uint count)
     {
-        /// <summary> Allocates the given count of bytes. </summary>
-        /// <param name="count"> Number of bytes to allocate. </param>
-        /// <returns> Null if it fails, else a byte*. </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte* Allocate(uint count)
+        byte* ptr = (byte*)Marshal.AllocHGlobal((int)count);
+        GC.AddMemoryPressure(count);
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of bytes. </summary>
+    /// <param name="count"> Number of bytes to allocate. </param>
+    /// <returns> Null if it fails, else a byte*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte* Allocate(int count)
+    {
+        byte* ptr = (byte*)Marshal.AllocHGlobal(count);
+        GC.AddMemoryPressure(count);
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of bytes. </summary>
+    /// <param name="count">   Number of bytes to allocate. </param>
+    /// <param name="default"> The default. </param>
+    /// <returns> Null if it fails, else a byte*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte* Allocate(int count, byte @default)
+    {
+        byte* ptr = (byte*)Marshal.AllocHGlobal(count);
+        GC.AddMemoryPressure(count);
+        Unsafe.InitBlockUnaligned(ptr, @default, (uint)count);
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of bytes. </summary>
+    /// <param name="count">   Number of bytes to allocate. </param>
+    /// <param name="default"> The default. </param>
+    /// <returns> Null if it fails, else a byte*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte* Allocate(uint count, byte @default)
+    {
+        byte* ptr = (byte*)Marshal.AllocHGlobal((int)count);
+        GC.AddMemoryPressure(count);
+        Unsafe.InitBlockUnaligned(ptr, @default, count);
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T* Allocate<T>(uint count)
+        where T : unmanaged
+    {
+        T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * (int)count);
+        GC.AddMemoryPressure(sizeof(T) * count);
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T* Allocate<T>(int count)
+        where T : unmanaged
+    {
+        T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
+        GC.AddMemoryPressure(sizeof(T) * count);
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="default"> The default value to set. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    public static T* Allocate<T>(uint count, byte @default)
+        where T : unmanaged
+    {
+        T* ptr = Allocate<T>(count);
+        Unsafe.InitBlockUnaligned(ptr, @default, (uint)(sizeof(T) * count));
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="default"> The default. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    public static T* Allocate<T>(int count, byte @default)
+        where T : unmanaged
+    {
+        T* ptr = Allocate<T>(count);
+        Unsafe.InitBlockUnaligned(ptr, @default, (uint)(sizeof(T) * count));
+        return ptr;
+    }
+
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="default"> The default value to set. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    public static T* Allocate<T>(uint count, T @default)
+        where T : unmanaged
+    {
+        T* ptr = Allocate<T>(count);
+        for (uint i = 0; i < count; i++)
         {
-            byte* ptr = (byte*)Marshal.AllocHGlobal((int)count);
-            GC.AddMemoryPressure(count);
-            return ptr;
+            *(ptr + i) = @default;
         }
+        return ptr;
+    }
 
-        /// <summary> Allocates the given count of bytes. </summary>
-        /// <param name="count"> Number of bytes to allocate. </param>
-        /// <returns> Null if it fails, else a byte*. </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte* Allocate(int count)
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="default"> The default. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    public static T* Allocate<T>(int count, T @default)
+        where T : unmanaged
+    {
+        T* ptr = Allocate<T>(count);
+        for (uint i = 0; i < count; i++)
         {
-            byte* ptr = (byte*)Marshal.AllocHGlobal(count);
-            GC.AddMemoryPressure(count);
-            return ptr;
+            *(ptr + i) = @default;
         }
+        return ptr;
+    }
 
-        /// <summary> Allocates the given count of bytes. </summary>
-        /// <param name="count">   Number of bytes to allocate. </param>
-        /// <param name="default"> The default. </param>
-        /// <returns> Null if it fails, else a byte*. </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte* Allocate(int count, byte @default)
+    /// <summary> Frees a given pointer. </summary>
+    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="count"> Number of bytes to free. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free(void* ptr, uint count)
+    {
+        Marshal.FreeHGlobal((IntPtr)ptr);
+        GC.RemoveMemoryPressure(count);
+    }
+
+    /// <summary> Frees a given pointer. </summary>
+    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(ref T* ptr, uint count) where T : unmanaged
+    {
+        Marshal.FreeHGlobal((IntPtr)ptr);
+        ptr = null;
+        GC.RemoveMemoryPressure(sizeof(T) * count);
+    }
+
+    /// <summary> Frees a given pointer. </summary>
+    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="count"> Number of bytes to free. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free(void* ptr, int count)
+    {
+        Marshal.FreeHGlobal((IntPtr)ptr);
+        GC.RemoveMemoryPressure(count);
+    }
+
+    /// <summary> Frees a given pointer. </summary>
+    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(ref T* ptr, int count) where T : unmanaged
+    {
+        Marshal.FreeHGlobal((IntPtr)ptr);
+        ptr = null;
+        GC.RemoveMemoryPressure(sizeof(T) * count);
+    }
+
+    /// <summary> Frees a given pointer of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(T* ptr, uint count)
+        where T : unmanaged
+    {
+        Marshal.FreeHGlobal((IntPtr)ptr);
+        GC.RemoveMemoryPressure(sizeof(T) * count);
+    }
+
+    /// <summary> Frees a given pointer. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(T* ptr, int count)
+        where T : unmanaged
+    {
+        Marshal.FreeHGlobal((IntPtr)ptr);
+        GC.RemoveMemoryPressure(sizeof(T) * count);
+    }
+
+    /// <summary> Allocates space and writes the given string <paramref name="str" /> in with a null termination character at the end. </summary>
+    /// <param name="str"> The string. </param>
+    /// <returns> Null if it fails, else a sbyte*. </returns>
+    public static byte* AllocateNtString(string str)
+    {
+        int   maxByteCount = Encoding.UTF8.GetMaxByteCount(str.Length) + sizeof(int) + 1;
+        byte* ptr          = (byte*)(Marshal.AllocHGlobal(maxByteCount) + sizeof(int));
+        GC.AddMemoryPressure(*(int*)(ptr - sizeof(int)) = maxByteCount);
+
+        fixed (char* srcPointer = str)
         {
-            byte* ptr = (byte*)Marshal.AllocHGlobal(count);
-            GC.AddMemoryPressure(count);
-            Unsafe.InitBlockUnaligned(ptr, @default, (uint)count);
-            return ptr;
+            *(ptr + Encoding.UTF8.GetBytes(srcPointer, str.Length, ptr, maxByteCount)) = 0;
         }
+        return ptr;
+    }
 
-        /// <summary> Allocates the given count of bytes. </summary>
-        /// <param name="count">   Number of bytes to allocate. </param>
-        /// <param name="default"> The default. </param>
-        /// <returns> Null if it fails, else a byte*. </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte* Allocate(uint count, byte @default)
-        {
-            byte* ptr = (byte*)Marshal.AllocHGlobal((int)count);
-            GC.AddMemoryPressure(count);
-            Unsafe.InitBlockUnaligned(ptr, @default, count);
-            return ptr;
-        }
+    /// <summary> Frees the given null terminated string pointer. </summary>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void FreeNtString(byte* ptr)
+    {
+        int maxByteCount = *(int*)(ptr - 4);
+        Marshal.FreeHGlobal((IntPtr)(ptr - 4));
+        GC.RemoveMemoryPressure(maxByteCount);
+    }
 
-        /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
-        /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T* Allocate<T>(uint count)
-            where T : unmanaged
-        {
-            T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * (int)count);
-            GC.AddMemoryPressure(sizeof(T) * count);
-            return ptr;
-        }
+    /// <summary> Resizes a given pointer. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="src">   [in,out] If non-null, the pointer. </param>
+    /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
+    /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Resize<T>(ref T* src, ref int srcCount, int newCount)
+        where T : unmanaged
+    {
+        T* t = Allocate<T>(newCount);
+        Unsafe.CopyBlock(t, src, (uint)(sizeof(T) * srcCount));
+        Free(src, srcCount);
+        src      = t;
+        srcCount = newCount;
+    }
 
-        /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
-        /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T* Allocate<T>(int count)
-            where T : unmanaged
-        {
-            T* ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
-            GC.AddMemoryPressure(sizeof(T) * count);
-            return ptr;
-        }
+    /// <summary> Resizes a given pointer. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="src">   [in,out] If non-null, the pointer. </param>
+    /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
+    /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Resize<T>(ref T* src, ref uint srcCount, uint newCount)
+        where T : unmanaged
+    {
+        T* t = Allocate<T>(newCount);
+        Unsafe.CopyBlock(t, src, (uint)(sizeof(T)) * srcCount);
+        Free(src, srcCount);
 
-        /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
-        /// <param name="default"> The default value to set. </param>
-        /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
-        public static T* Allocate<T>(uint count, byte @default)
-            where T : unmanaged
-        {
-            T* ptr = Allocate<T>(count);
-            Unsafe.InitBlockUnaligned(ptr, @default, (uint)(sizeof(T) * count));
-            return ptr;
-        }
-
-        /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
-        /// <param name="default"> The default. </param>
-        /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
-        public static T* Allocate<T>(int count, byte @default)
-            where T : unmanaged
-        {
-            T* ptr = Allocate<T>(count);
-            Unsafe.InitBlockUnaligned(ptr, @default, (uint)(sizeof(T) * count));
-            return ptr;
-        }
-
-        /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
-        /// <param name="default"> The default value to set. </param>
-        /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
-        public static T* Allocate<T>(uint count, T @default)
-            where T : unmanaged
-        {
-            T* ptr = Allocate<T>(count);
-            for (uint i = 0; i < count; i++)
-            {
-                *(ptr + i) = @default;
-            }
-            return ptr;
-        }
-
-        /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
-        /// <param name="default"> The default. </param>
-        /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
-        public static T* Allocate<T>(int count, T @default)
-            where T : unmanaged
-        {
-            T* ptr = Allocate<T>(count);
-            for (uint i = 0; i < count; i++)
-            {
-                *(ptr + i) = @default;
-            }
-            return ptr;
-        }
-
-        /// <summary> Frees a given pointer. </summary>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of bytes to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free(void* ptr, uint count)
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            GC.RemoveMemoryPressure(count);
-        }
-
-        /// <summary> Frees a given pointer. </summary>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free<T>(ref T* ptr, uint count) where T : unmanaged
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            ptr = null;
-            GC.RemoveMemoryPressure(sizeof(T) * count);
-        }
-
-        /// <summary> Frees a given pointer. </summary>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of bytes to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free(void* ptr, int count)
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            GC.RemoveMemoryPressure(count);
-        }
-
-        /// <summary> Frees a given pointer. </summary>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free<T>(ref T* ptr, int count) where T : unmanaged
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            ptr = null;
-            GC.RemoveMemoryPressure(sizeof(T) * count);
-        }
-
-        /// <summary> Frees a given pointer of <typeparamref name="T" />. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free<T>(T* ptr, uint count)
-            where T : unmanaged
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            GC.RemoveMemoryPressure(sizeof(T) * count);
-        }
-
-        /// <summary> Frees a given pointer. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
-        /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free<T>(T* ptr, int count)
-            where T : unmanaged
-        {
-            Marshal.FreeHGlobal((IntPtr)ptr);
-            GC.RemoveMemoryPressure(sizeof(T) * count);
-        }
-
-        /// <summary> Allocates space and writes the given string <paramref name="str" /> in with a null termination character at the end. </summary>
-        /// <param name="str"> The string. </param>
-        /// <returns> Null if it fails, else a sbyte*. </returns>
-        public static byte* AllocateNtString(string str)
-        {
-            int   maxByteCount = Encoding.UTF8.GetMaxByteCount(str.Length) + sizeof(int) + 1;
-            byte* ptr          = (byte*)(Marshal.AllocHGlobal(maxByteCount) + sizeof(int));
-            GC.AddMemoryPressure(*(int*)(ptr - sizeof(int)) = maxByteCount);
-
-            fixed (char* srcPointer = str)
-            {
-                *(ptr + Encoding.UTF8.GetBytes(srcPointer, str.Length, ptr, maxByteCount)) = 0;
-            }
-            return ptr;
-        }
-
-        /// <summary> Frees the given null terminated string pointer. </summary>
-        /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void FreeNtString(byte* ptr)
-        {
-            int maxByteCount = *(int*)(ptr - 4);
-            Marshal.FreeHGlobal((IntPtr)(ptr - 4));
-            GC.RemoveMemoryPressure(maxByteCount);
-        }
-
-        /// <summary> Resizes a given pointer. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="src">   [in,out] If non-null, the pointer. </param>
-        /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
-        /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Resize<T>(ref T* src, ref int srcCount, int newCount)
-            where T : unmanaged
-        {
-            T* t = Allocate<T>(newCount);
-            Unsafe.CopyBlock(t, src, (uint)(sizeof(T) * srcCount));
-            Free(src, srcCount);
-            src      = t;
-            srcCount = newCount;
-        }
-
-        /// <summary> Resizes a given pointer. </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="src">   [in,out] If non-null, the pointer. </param>
-        /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
-        /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Resize<T>(ref T* src, ref uint srcCount, uint newCount)
-            where T : unmanaged
-        {
-            T* t = Allocate<T>(newCount);
-            Unsafe.CopyBlock(t, src, (uint)(sizeof(T)) * srcCount);
-            Free(src, srcCount);
-
-            src      = t;
-            srcCount = newCount;
-        }
+        src      = t;
+        srcCount = newCount;
     }
 }

@@ -8,54 +8,53 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization
+namespace Exomia.Framework.Core.ContentSerialization;
+
+internal sealed class CsStreamReader : IDisposable
 {
-    internal sealed class CsStreamReader : IDisposable
+    private readonly Stream _stream;
+    private          int    _line = 1;
+
+    /// <summary> Gets the zero-based index of this object. </summary>
+    /// <value> The index. </value>
+    public long Index { get; private set; }
+
+    /// <summary> Gets the line. </summary>
+    /// <value> The line. </value>
+    public long Line
     {
-        private readonly Stream _stream;
-        private          int    _line = 1;
+        get { return _line; }
+    }
 
-        /// <summary> Gets the zero-based index of this object. </summary>
-        /// <value> The index. </value>
-        public long Index { get; private set; }
+    /// <summary> Initializes a new instance of the <see cref="CsStreamReader" /> class. </summary>
+    /// <param name="stream"> The stream. </param>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+    internal CsStreamReader(Stream stream)
+    {
+        _stream = stream ?? throw new ArgumentNullException(nameof(stream));
+    }
 
-        /// <summary> Gets the line. </summary>
-        /// <value> The line. </value>
-        public long Line
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _stream.Close();
+        _stream.Dispose();
+    }
+
+    internal bool ReadChar(out char c)
+    {
+        int z;
+        if ((z = _stream.ReadByte()) != -1)
         {
-            get { return _line; }
-        }
-
-        /// <summary> Initializes a new instance of the <see cref="CsStreamReader" /> class. </summary>
-        /// <param name="stream"> The stream. </param>
-        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        internal CsStreamReader(Stream stream)
-        {
-            _stream = stream ?? throw new ArgumentNullException(nameof(stream));
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            _stream.Close();
-            _stream.Dispose();
-        }
-
-        internal bool ReadChar(out char c)
-        {
-            int z;
-            if ((z = _stream.ReadByte()) != -1)
+            Index++;
+            c = (char)z;
+            if (c == '\n')
             {
-                Index++;
-                c = (char)z;
-                if (c == '\n')
-                {
-                    _line++;
-                }
-                return true;
+                _line++;
             }
-            c = '\0';
-            return false;
+            return true;
         }
+        c = '\0';
+        return false;
     }
 }

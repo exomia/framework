@@ -8,26 +8,25 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Game
+namespace Exomia.Framework.Core.Game;
+
+/// <summary>
+///     Values that represent DisplayType.
+/// </summary>
+public enum DisplayType
 {
     /// <summary>
-    ///     Values that represent DisplayType.
+    ///     An enum constant representing the fullscreen option.
     /// </summary>
-    public enum DisplayType
-    {
-        /// <summary>
-        ///     An enum constant representing the fullscreen option.
-        /// </summary>
-        Fullscreen = 1 << 0,
+    Fullscreen = 1 << 0,
 
-        /// <summary>
-        ///     An enum constant representing the window option.
-        /// </summary>
-        Window = 1 << 1,
+    /// <summary>
+    ///     An enum constant representing the window option.
+    /// </summary>
+    Window = 1 << 1,
 
-        /// <summary>
-        ///     An enum constant representing the fullscreen window option.
-        /// </summary>
-        FullscreenWindow = 1 << 2
-    }
+    /// <summary>
+    ///     An enum constant representing the fullscreen window option.
+    /// </summary>
+    FullscreenWindow = 1 << 2
 }

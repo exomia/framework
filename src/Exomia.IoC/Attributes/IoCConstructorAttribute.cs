@@ -10,9 +10,8 @@
 
 using System;
 
-namespace Exomia.IoC.Attributes
-{
-    /// <summary> Attribute for ioc constructor. This class cannot be inherited. </summary>
-    [AttributeUsage(AttributeTargets.Constructor)]
-    public sealed class IoCConstructorAttribute : Attribute { }
-}
+namespace Exomia.IoC.Attributes;
+
+/// <summary> Attribute for ioc constructor. This class cannot be inherited. </summary>
+[AttributeUsage(AttributeTargets.Constructor)]
+public sealed class IoCConstructorAttribute : Attribute { }

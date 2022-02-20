@@ -13,25 +13,24 @@ using System.Runtime.InteropServices;
 using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
 
-namespace Exomia.Framework.Windows.Input.Raw
-{
-    internal static class Device
-    {
-        public static void RegisterDevice(HIDUsagePage        hidUsagePage,
-                                          HIDUsage            hidUsage,
-                                          RawInputDeviceFlags rawInputDeviceFlags,
-                                          IntPtr              hWndTarget)
-        {
-            RAWINPUTDEVICE[] rawInputDevices = new RAWINPUTDEVICE[1];
-            rawInputDevices[0].UsagePage    = hidUsagePage;
-            rawInputDevices[0].Usage        = hidUsage;
-            rawInputDevices[0].Flags        = rawInputDeviceFlags;
-            rawInputDevices[0].WindowHandle = hWndTarget;
+namespace Exomia.Framework.Windows.Input.Raw;
 
-            if (!User32.RegisterRawInputDevices(rawInputDevices, 1, Marshal.SizeOf<RAWINPUTDEVICE>()))
-            {
-                throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.RegisterRawInputDevices)} failed!");
-            }
+internal static class Device
+{
+    public static void RegisterDevice(HIDUsagePage        hidUsagePage,
+                                      HIDUsage            hidUsage,
+                                      RawInputDeviceFlags rawInputDeviceFlags,
+                                      IntPtr              hWndTarget)
+    {
+        RAWINPUTDEVICE[] rawInputDevices = new RAWINPUTDEVICE[1];
+        rawInputDevices[0].UsagePage    = hidUsagePage;
+        rawInputDevices[0].Usage        = hidUsage;
+        rawInputDevices[0].Flags        = rawInputDeviceFlags;
+        rawInputDevices[0].WindowHandle = hWndTarget;
+
+        if (!User32.RegisterRawInputDevices(rawInputDevices, 1, Marshal.SizeOf<RAWINPUTDEVICE>()))
+        {
+            throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.RegisterRawInputDevices)} failed!");
         }
     }
 }

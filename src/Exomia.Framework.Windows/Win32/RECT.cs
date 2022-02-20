@@ -13,19 +13,18 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32
-{
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct RECT
-    {
-        public POINT LeftTop;
-        public POINT RightBottom;
+namespace Exomia.Framework.Windows.Win32;
 
-        public RECT(int width, int height)
-        {
-            LeftTop.X     = LeftTop.Y = 0;
-            RightBottom.X = width;
-            RightBottom.Y = height;
-        }
+[StructLayout(LayoutKind.Sequential)]
+internal struct RECT
+{
+    public POINT LeftTop;
+    public POINT RightBottom;
+
+    public RECT(int width, int height)
+    {
+        LeftTop.X     = LeftTop.Y = 0;
+        RightBottom.X = width;
+        RightBottom.Y = height;
     }
 }

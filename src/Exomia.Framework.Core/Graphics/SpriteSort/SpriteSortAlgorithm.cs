@@ -8,14 +8,13 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Graphics.SpriteSort
+namespace Exomia.Framework.Core.Graphics.SpriteSort;
+
+/// <summary> Values that represent SpriteSortAlgorithm. </summary>
+public enum SpriteSortAlgorithm
 {
-    /// <summary> Values that represent SpriteSortAlgorithm. </summary>
-    public enum SpriteSortAlgorithm
-    {
-        /// <summary>
-        ///     MergeSort (default)
-        /// </summary>
-        MergeSort
-    }
+    /// <summary>
+    ///     MergeSort (default)
+    /// </summary>
+    MergeSort
 }

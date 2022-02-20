@@ -10,16 +10,15 @@
 
 using System.Numerics;
 
-namespace Exomia.Framework.Core.ContentSerialization.Writers
+namespace Exomia.Framework.Core.ContentSerialization.Writers;
+
+internal sealed class Vector3ContentSerializationWriter : ContentSerializationWriter<Vector3>
 {
-    internal sealed class Vector3ContentSerializationWriter : ContentSerializationWriter<Vector3>
+    /// <inheritdoc />
+    public override void WriteContext(ContentSerializationContext context, Vector3 obj)
     {
-        /// <inheritdoc />
-        public override void WriteContext(ContentSerializationContext context, Vector3 obj)
-        {
-            context.Set(nameof(Vector3.X), obj.X);
-            context.Set(nameof(Vector3.Y), obj.Y);
-            context.Set(nameof(Vector3.Z), obj.Z);
-        }
+        context.Set(nameof(Vector3.X), obj.X);
+        context.Set(nameof(Vector3.Y), obj.Y);
+        context.Set(nameof(Vector3.Z), obj.Z);
     }
 }

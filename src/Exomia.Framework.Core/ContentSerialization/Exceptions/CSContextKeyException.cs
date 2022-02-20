@@ -8,28 +8,27 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Exceptions
+namespace Exomia.Framework.Core.ContentSerialization.Exceptions;
+
+/// <summary> Thrown than a context exception happen. </summary>
+public sealed class CsContextKeyException : ArgumentException
 {
-    /// <summary> Thrown than a context exception happen. </summary>
-    public sealed class CsContextKeyException : ArgumentException
-    {
-        /// <inheritdoc />
-        public CsContextKeyException() { }
+    /// <inheritdoc />
+    public CsContextKeyException() { }
 
-        /// <inheritdoc />
-        public CsContextKeyException(string message)
-            : base(message) { }
+    /// <inheritdoc />
+    public CsContextKeyException(string message)
+        : base(message) { }
 
-        /// <inheritdoc />
-        public CsContextKeyException(string message, string paramName)
-            : base(message, paramName) { }
+    /// <inheritdoc />
+    public CsContextKeyException(string message, string paramName)
+        : base(message, paramName) { }
 
-        /// <inheritdoc />
-        public CsContextKeyException(string message, Exception innerException)
-            : base(message, innerException) { }
+    /// <inheritdoc />
+    public CsContextKeyException(string message, Exception innerException)
+        : base(message, innerException) { }
 
-        /// <inheritdoc />
-        public CsContextKeyException(string message, string paramName, Exception innerException)
-            : base(message, paramName, innerException) { }
-    }
+    /// <inheritdoc />
+    public CsContextKeyException(string message, string paramName, Exception innerException)
+        : base(message, paramName, innerException) { }
 }

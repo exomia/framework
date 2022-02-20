@@ -8,14 +8,13 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Game
-{
-    /// <summary> A game configuration. This class cannot be inherited. </summary>
-    public sealed unsafe class GameConfiguration
-    {
-        /// <summary> The do events callback. </summary>
-        internal delegate*<void> DoEvents = &_doEvents;
+namespace Exomia.Framework.Core.Game;
 
-        private static void _doEvents() { }
-    }
+/// <summary> A game configuration. This class cannot be inherited. </summary>
+public sealed unsafe class GameConfiguration
+{
+    /// <summary> The do events callback. </summary>
+    internal delegate*<void> DoEvents = &_doEvents;
+
+    private static void _doEvents() { }
 }

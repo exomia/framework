@@ -10,29 +10,28 @@
 
 using System.Numerics;
 
-namespace Exomia.Framework.Core.Graphics
+namespace Exomia.Framework.Core.Graphics;
+
+public sealed partial class SpriteBatch
 {
-    public sealed partial class SpriteBatch
+    /// <summary>
+    ///     Draw polygon.
+    /// </summary>
+    /// <param name="vertex">     The vertex. </param>
+    /// <param name="color">      The color. </param>
+    /// <param name="lineWidth">  The width of the line. </param>
+    /// <param name="opacity">    The opacity. </param>
+    /// <param name="layerDepth"> The depth of the layer. </param>
+    public void DrawPolygon(Vector2[] vertex, in VkColor color, float lineWidth, float opacity, float layerDepth)
     {
-        /// <summary>
-        ///     Draw polygon.
-        /// </summary>
-        /// <param name="vertex">     The vertex. </param>
-        /// <param name="color">      The color. </param>
-        /// <param name="lineWidth">  The width of the line. </param>
-        /// <param name="opacity">    The opacity. </param>
-        /// <param name="layerDepth"> The depth of the layer. </param>
-        public void DrawPolygon(Vector2[] vertex, in VkColor color, float lineWidth, float opacity, float layerDepth)
+        if (vertex.Length > 1)
         {
-            if (vertex.Length > 1)
+            int l = vertex.Length - 1;
+            for (int i = 0; i < l; i++)
             {
-                int l = vertex.Length - 1;
-                for (int i = 0; i < l; i++)
-                {
-                    DrawLine(vertex[i], vertex[i + 1], color, lineWidth, opacity, layerDepth);
-                }
-                DrawLine(vertex[l], vertex[0], color, lineWidth, opacity, layerDepth);
+                DrawLine(vertex[i], vertex[i + 1], color, lineWidth, opacity, layerDepth);
             }
+            DrawLine(vertex[l], vertex[0], color, lineWidth, opacity, layerDepth);
         }
     }
 }

@@ -8,31 +8,30 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Noise
+namespace Exomia.Framework.Core.Noise;
+
+/// <summary>
+///     Values that represent NoiseFractalType.
+/// </summary>
+public enum NoiseFractalType
 {
     /// <summary>
-    ///     Values that represent NoiseFractalType.
+    ///     An enum constant representing the none option.
     /// </summary>
-    public enum NoiseFractalType
-    {
-        /// <summary>
-        ///     An enum constant representing the none option.
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        ///     An enum constant representing the brownian motion option.
-        /// </summary>
-        BrownianMotion,
+    /// <summary>
+    ///     An enum constant representing the brownian motion option.
+    /// </summary>
+    BrownianMotion,
 
-        /// <summary>
-        ///     An enum constant representing the billow option.
-        /// </summary>
-        Billow,
+    /// <summary>
+    ///     An enum constant representing the billow option.
+    /// </summary>
+    Billow,
 
-        /// <summary>
-        ///     An enum constant representing the rigid multi option.
-        /// </summary>
-        RigidMulti
-    }
+    /// <summary>
+    ///     An enum constant representing the rigid multi option.
+    /// </summary>
+    RigidMulti
 }

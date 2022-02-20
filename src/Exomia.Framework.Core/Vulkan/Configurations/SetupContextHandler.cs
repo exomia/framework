@@ -8,14 +8,13 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Vulkan.Configurations
-{
-    /// <summary> Handler, called for various stages during the vulkan setup. </summary>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <returns> A bool indicating if the setup should progress. </returns>
-    public unsafe delegate bool SetupContextHandler(VkContext* context);
+namespace Exomia.Framework.Core.Vulkan.Configurations;
 
-    /// <summary> Handler, called for various actions. </summary>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    public unsafe delegate void ContextActionHandler(VkContext* context);
-}
+/// <summary> Handler, called for various stages during the vulkan setup. </summary>
+/// <param name="context"> [in,out] If non-null, the context. </param>
+/// <returns> A bool indicating if the setup should progress. </returns>
+public unsafe delegate bool SetupContextHandler(VkContext* context);
+
+/// <summary> Handler, called for various actions. </summary>
+/// <param name="context"> [in,out] If non-null, the context. </param>
+public unsafe delegate void ContextActionHandler(VkContext* context);

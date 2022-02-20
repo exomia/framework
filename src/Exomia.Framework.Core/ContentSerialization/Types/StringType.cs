@@ -11,86 +11,85 @@
 using System.Text;
 using Exomia.Framework.Core.ContentSerialization.Exceptions;
 
-namespace Exomia.Framework.Core.ContentSerialization.Types
+namespace Exomia.Framework.Core.ContentSerialization.Types;
+
+internal sealed class StringType : IType
 {
-    internal sealed class StringType : IType
+    /// <inheritdoc />
+    public Type BaseType { get; }
+
+    /// <inheritdoc />
+    public bool IsPrimitive
     {
-        /// <inheritdoc />
-        public Type BaseType { get; }
+        get { return true; }
+    }
 
-        /// <inheritdoc />
-        public bool IsPrimitive
+    /// <inheritdoc />
+    public string TypeName
+    {
+        get { return BaseType.Name.ToUpper(); }
+    }
+
+    /// <summary> Initializes a new instance of the <see cref="StringType" /> class. </summary>
+    public StringType()
+    {
+        BaseType = typeof(string);
+    }
+
+    /// <inheritdoc />
+    public Type CreateType(string genericTypeInfo)
+    {
+        return BaseType;
+    }
+
+    /// <inheritdoc />
+    public string CreateTypeInfo(Type type)
+    {
+        return TypeName;
+    }
+
+    /// <inheritdoc />
+    public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
+    {
+        StringBuilder sb = new StringBuilder(128);
+
+        while (stream.ReadChar(out char c))
         {
-            get { return true; }
-        }
-
-        /// <inheritdoc />
-        public string TypeName
-        {
-            get { return BaseType.Name.ToUpper(); }
-        }
-
-        /// <summary> Initializes a new instance of the <see cref="StringType" /> class. </summary>
-        public StringType()
-        {
-            BaseType = typeof(string);
-        }
-
-        /// <inheritdoc />
-        public Type CreateType(string genericTypeInfo)
-        {
-            return BaseType;
-        }
-
-        /// <inheritdoc />
-        public string CreateTypeInfo(Type type)
-        {
-            return TypeName;
-        }
-
-        /// <inheritdoc />
-        public object Read(CsStreamReader stream, string key, string genericTypeInfo, string dimensionInfo)
-        {
-            StringBuilder sb = new StringBuilder(128);
-
-            while (stream.ReadChar(out char c))
+            switch (c)
             {
-                switch (c)
+                //ESCAPE
+                case '\\':
                 {
-                    //ESCAPE
-                    case '\\':
+                    if (!stream.ReadChar(out c))
                     {
-                        if (!stream.ReadChar(out c))
-                        {
-                            throw new CsReaderException($"ERROR: UNEXPECTED END OF FILE! - > {sb}");
-                        }
+                        throw new CsReaderException($"ERROR: UNEXPECTED END OF FILE! - > {sb}");
                     }
-                        break;
-                    case '[':
-                    {
-                        stream.ReadEndTag(key);
-                        return sb.ToString();
-                    }
-                    case ']':
-                        throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
                 }
-
-                sb.Append(c);
+                    break;
+                case '[':
+                {
+                    stream.ReadEndTag(key);
+                    return sb.ToString();
+                }
+                case ']':
+                    throw new CsReaderException($"ERROR: INVALID CONTENT -> {sb}");
             }
-            throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
-        }
 
-        /// <inheritdoc />
-        public void Write(Action<string, string> writeHandler,
-                          string                 tabSpace,
-                          string                 key,
-                          object                 content,
-                          bool                   useTypeInfo = true)
-        {
-            //[key:type]content[/key]
-            writeHandler(
-                tabSpace,
-                $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content.ToString()!.Replace("\\", "\\\\").Replace("[", "\\[").Replace("]", "\\]")}[/{(useTypeInfo ? key : string.Empty)}]");
+            sb.Append(c);
         }
+        throw new CsReaderException($"ERROR: INVALID FILE CONTENT! - > {sb}");
+    }
+
+    /// <inheritdoc />
+    public void Write(Action<string, string> writeHandler,
+                      string                 tabSpace,
+                      string                 key,
+                      object                 content,
+                      bool                   useTypeInfo = true)
+    {
+        //[key:type]content[/key]
+        writeHandler(
+            tabSpace,
+            $"[{key}:{(useTypeInfo ? TypeName : string.Empty)}]{content.ToString()!.Replace("\\", "\\\\").Replace("[", "\\[").Replace("]", "\\]")}[/{(useTypeInfo ? key : string.Empty)}]");
     }
 }

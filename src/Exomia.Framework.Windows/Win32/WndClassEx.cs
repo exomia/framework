@@ -13,31 +13,30 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+internal struct WndClassEx
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    internal struct WndClassEx
-    {
-        [MarshalAs(UnmanagedType.U4)]
-        public int cbSize;
+    [MarshalAs(UnmanagedType.U4)]
+    public int cbSize;
 
-        [MarshalAs(UnmanagedType.U4)]
-        public ClassStyles style;
+    [MarshalAs(UnmanagedType.U4)]
+    public ClassStyles style;
 
-        public WndProc lpfnWndProc;
-        public int     cbClsExtra;
-        public int     cbWndExtra;
-        public IntPtr  hInstance;
-        public IntPtr  hIcon;
-        public IntPtr  hCursor;
-        public IntPtr  hbrBackground;
+    public WndProc lpfnWndProc;
+    public int     cbClsExtra;
+    public int     cbWndExtra;
+    public IntPtr  hInstance;
+    public IntPtr  hIcon;
+    public IntPtr  hCursor;
+    public IntPtr  hbrBackground;
 
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string lpszMenuName;
+    [MarshalAs(UnmanagedType.LPStr)]
+    public string lpszMenuName;
 
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string lpszClassName;
+    [MarshalAs(UnmanagedType.LPStr)]
+    public string lpszClassName;
 
-        public IntPtr hIconSm;
-    }
+    public IntPtr hIconSm;
 }

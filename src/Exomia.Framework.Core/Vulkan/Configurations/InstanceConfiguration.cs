@@ -9,19 +9,18 @@
 #endregion
 
 #pragma warning disable 1591
-namespace Exomia.Framework.Core.Vulkan.Configurations
-{
-    /// <summary> An instance configuration. This class cannot be inherited. </summary>
-    public sealed class InstanceConfiguration
-    {
-        public VkInstanceCreateFlags Flags             { get; set; } = 0;
-        public List<string>          EnabledLayerNames { get; set; } = new List<string> { "VK_LAYER_KHRONOS_validation" };
+namespace Exomia.Framework.Core.Vulkan.Configurations;
 
-        public List<string> EnabledExtensionNames { get; set; } = new List<string>
-        {
-            VK_KHR_SURFACE_EXTENSION_NAME,
-            VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME,
-            VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-        };
-    }
+/// <summary> An instance configuration. This class cannot be inherited. </summary>
+public sealed class InstanceConfiguration
+{
+    public VkInstanceCreateFlags Flags             { get; set; } = 0;
+    public List<string>          EnabledLayerNames { get; set; } = new List<string> { "VK_LAYER_KHRONOS_validation" };
+
+    public List<string> EnabledExtensionNames { get; set; } = new List<string>
+    {
+        VK_KHR_SURFACE_EXTENSION_NAME,
+        VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME,
+        VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+    };
 }

@@ -8,7 +8,6 @@
 
 #endregion
 
-namespace Exomia.Framework.Windows.Win32
-{
-    internal delegate IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
-}
+namespace Exomia.Framework.Windows.Win32;
+
+internal delegate IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);

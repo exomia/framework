@@ -13,21 +13,20 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32.RawInput
+namespace Exomia.Framework.Windows.Win32.RawInput;
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct RAWINPUTHEADER
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct RAWINPUTHEADER
-    {
-        /// <summary> Type of device the input is coming from. </summary>
-        public int Type;
+    /// <summary> Type of device the input is coming from. </summary>
+    public int Type;
 
-        /// <summary> Size of the packet of data. </summary>
-        public int Size;
+    /// <summary> Size of the packet of data. </summary>
+    public int Size;
 
-        /// <summary> Handle to the device sending the data. </summary>
-        public IntPtr Device;
+    /// <summary> Handle to the device sending the data. </summary>
+    public IntPtr Device;
 
-        /// <summary> wParam from the window message. </summary>
-        public IntPtr wParam;
-    }
+    /// <summary> wParam from the window message. </summary>
+    public IntPtr wParam;
 }

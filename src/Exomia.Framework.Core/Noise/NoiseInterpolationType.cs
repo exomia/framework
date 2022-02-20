@@ -8,26 +8,25 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Noise
+namespace Exomia.Framework.Core.Noise;
+
+/// <summary>
+///     Values that represent NoiseInterpolationType.
+/// </summary>
+public enum NoiseInterpolationType
 {
     /// <summary>
-    ///     Values that represent NoiseInterpolationType.
+    ///     An enum constant representing the linear option.
     /// </summary>
-    public enum NoiseInterpolationType
-    {
-        /// <summary>
-        ///     An enum constant representing the linear option.
-        /// </summary>
-        Linear,
+    Linear,
 
-        /// <summary>
-        ///     An enum constant representing the hermite option.
-        /// </summary>
-        Hermite,
+    /// <summary>
+    ///     An enum constant representing the hermite option.
+    /// </summary>
+    Hermite,
 
-        /// <summary>
-        ///     An enum constant representing the quintic option.
-        /// </summary>
-        Quintic
-    }
+    /// <summary>
+    ///     An enum constant representing the quintic option.
+    /// </summary>
+    Quintic
 }

@@ -11,27 +11,26 @@
 using System.Reflection;
 using Exomia.Framework.Core.ContentSerialization;
 
-namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
+namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
+
+[ContentResolver(int.MinValue + 1)]
+internal class E0EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
 {
-    [ContentResolver(int.MinValue + 1)]
-    internal class E0EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+    /// <inheritdoc />
+    public bool Exists(Type assetType, string assetName, out Assembly assembly)
     {
-        /// <inheritdoc />
-        public bool Exists(Type assetType, string assetName, out Assembly assembly)
+        if (Path.GetExtension(assetName) == ContentSerializer.DEFAULT_EXTENSION)
         {
-            if (Path.GetExtension(assetName) == ContentSerializer.DEFAULT_EXTENSION)
-            {
-                return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
-            }
-
-            assembly = null!;
-            return false;
+            return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
         }
 
-        /// <inheritdoc />
-        public Stream? Resolve(Assembly assembly, string assetName)
-        {
-            return EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
-        }
+        assembly = null!;
+        return false;
+    }
+
+    /// <inheritdoc />
+    public Stream? Resolve(Assembly assembly, string assetName)
+    {
+        return EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
     }
 }

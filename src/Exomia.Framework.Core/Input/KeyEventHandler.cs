@@ -8,16 +8,15 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Input
-{
-    /// <summary> Delegate for handling key events. </summary>
-    /// <param name="keyValue">  The key value. </param>
-    /// <param name="modifiers"> The modifiers. </param>
-    /// <returns> An <see cref="EventAction" />. </returns>
-    public delegate EventAction KeyEventHandler(int keyValue, KeyModifier modifiers);
+namespace Exomia.Framework.Core.Input;
 
-    /// <summary> Delegate for handling key press events. </summary>
-    /// <param name="key"> The key. </param>
-    /// <returns> An <see cref="EventAction" />. </returns>
-    public delegate EventAction KeyPressEventHandler(char key);
-}
+/// <summary> Delegate for handling key events. </summary>
+/// <param name="keyValue">  The key value. </param>
+/// <param name="modifiers"> The modifiers. </param>
+/// <returns> An <see cref="EventAction" />. </returns>
+public delegate EventAction KeyEventHandler(int keyValue, KeyModifier modifiers);
+
+/// <summary> Delegate for handling key press events. </summary>
+/// <param name="key"> The key. </param>
+/// <returns> An <see cref="EventAction" />. </returns>
+public delegate EventAction KeyPressEventHandler(char key);

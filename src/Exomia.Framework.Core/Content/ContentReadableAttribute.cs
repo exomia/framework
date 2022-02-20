@@ -8,24 +8,23 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Content
-{
-    /// <summary> Used to mark a content readable class. </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public sealed class ContentReadableAttribute : Attribute
-    {
-        /// <summary> Gets the reader. </summary>
-        /// <value> The reader. </value>
-        internal IContentReader Reader { get; }
+namespace Exomia.Framework.Core.Content;
 
-        /// <summary> Initializes a new instance of the <see cref="ContentReadableAttribute" /> class. </summary>
-        /// <param name="reader"> the content reader type <see cref="T:Exomia.Framework.Core.Content.IContentReader" /> </param>
-        /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
-        public ContentReadableAttribute(Type reader)
-        {
-            Reader = System.Activator.CreateInstance(reader) as IContentReader ??
-                     throw new TypeLoadException(
-                         $"can not create an instance of {nameof(IContentReader)} from type: {reader.AssemblyQualifiedName}");
-        }
+/// <summary> Used to mark a content readable class. </summary>
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public sealed class ContentReadableAttribute : Attribute
+{
+    /// <summary> Gets the reader. </summary>
+    /// <value> The reader. </value>
+    internal IContentReader Reader { get; }
+
+    /// <summary> Initializes a new instance of the <see cref="ContentReadableAttribute" /> class. </summary>
+    /// <param name="reader"> the content reader type <see cref="T:Exomia.Framework.Core.Content.IContentReader" /> </param>
+    /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
+    public ContentReadableAttribute(Type reader)
+    {
+        Reader = System.Activator.CreateInstance(reader) as IContentReader ??
+                 throw new TypeLoadException(
+                     $"can not create an instance of {nameof(IContentReader)} from type: {reader.AssemblyQualifiedName}");
     }
 }

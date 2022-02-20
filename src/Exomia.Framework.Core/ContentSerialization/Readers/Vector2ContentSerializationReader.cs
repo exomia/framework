@@ -10,18 +10,17 @@
 
 using System.Numerics;
 
-namespace Exomia.Framework.Core.ContentSerialization.Readers
+namespace Exomia.Framework.Core.ContentSerialization.Readers;
+
+internal sealed class Vector2ContentSerializationReader : ContentSerializationReader<Vector2>
 {
-    internal sealed class Vector2ContentSerializationReader : ContentSerializationReader<Vector2>
+    /// <inheritdoc />
+    public override Vector2 ReadContext(ContentSerializationContext context)
     {
-        /// <inheritdoc />
-        public override Vector2 ReadContext(ContentSerializationContext context)
+        return new Vector2
         {
-            return new Vector2
-            {
-                X = context.Get<float>(nameof(Vector2.X)),
-                Y = context.Get<float>(nameof(Vector2.Y))
-            };
-        }
+            X = context.Get<float>(nameof(Vector2.X)),
+            Y = context.Get<float>(nameof(Vector2.Y))
+        };
     }
 }

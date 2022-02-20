@@ -13,21 +13,20 @@
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32.RawInput
+namespace Exomia.Framework.Windows.Win32.RawInput;
+
+[Flags]
+internal enum RawMouseFlags : ushort
 {
-    [Flags]
-    internal enum RawMouseFlags : ushort
-    {
-        /// <summary>Relative to the last position.</summary>
-        MoveRelative = 0,
+    /// <summary>Relative to the last position.</summary>
+    MoveRelative = 0,
 
-        /// <summary>Absolute positioning.</summary>
-        MoveAbsolute = 1,
+    /// <summary>Absolute positioning.</summary>
+    MoveAbsolute = 1,
 
-        /// <summary>Coordinate data is mapped to a virtual desktop.</summary>
-        VirtualDesktop = 2,
+    /// <summary>Coordinate data is mapped to a virtual desktop.</summary>
+    VirtualDesktop = 2,
 
-        /// <summary>Attributes for the mouse have changed.</summary>
-        AttributesChanged = 4
-    }
+    /// <summary>Attributes for the mouse have changed.</summary>
+    AttributesChanged = 4
 }

@@ -11,12 +11,11 @@
 using static Exomia.Vulkan.Api.Core.VkPhysicalDeviceType;
 
 #pragma warning disable 1591
-namespace Exomia.Framework.Core.Vulkan.Configurations
+namespace Exomia.Framework.Core.Vulkan.Configurations;
+
+/// <summary> A physical device configuration. This class cannot be inherited. </summary>
+public sealed class PhysicalDeviceConfiguration
 {
-    /// <summary> A physical device configuration. This class cannot be inherited. </summary>
-    public sealed class PhysicalDeviceConfiguration
-    {
-        public VkVersion            RequiredMinimumVkApiVersion { get; set; } = VkVersion.VulkanApiVersion12;
-        public VkPhysicalDeviceType RequiredPhysicalDeviceType  { get; set; } = VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
-    }
+    public VkVersion            RequiredMinimumVkApiVersion { get; set; } = VkVersion.VulkanApiVersion12;
+    public VkPhysicalDeviceType RequiredPhysicalDeviceType  { get; set; } = VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 }

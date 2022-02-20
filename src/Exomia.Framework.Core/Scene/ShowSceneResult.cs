@@ -8,26 +8,25 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Scene
+namespace Exomia.Framework.Core.Scene;
+
+/// <summary>
+///     Values that represent ShowSceneResult.
+/// </summary>
+public enum ShowSceneResult
 {
     /// <summary>
-    ///     Values that represent ShowSceneResult.
+    ///     An enum constant representing the no scene option.
     /// </summary>
-    public enum ShowSceneResult
-    {
-        /// <summary>
-        ///     An enum constant representing the no scene option.
-        /// </summary>
-        NoScene,
+    NoScene,
 
-        /// <summary>
-        ///     An enum constant representing the not ready option.
-        /// </summary>
-        NotReady,
+    /// <summary>
+    ///     An enum constant representing the not ready option.
+    /// </summary>
+    NotReady,
 
-        /// <summary>
-        ///     An enum constant representing the success option.
-        /// </summary>
-        Success
-    }
+    /// <summary>
+    ///     An enum constant representing the success option.
+    /// </summary>
+    Success
 }

@@ -8,24 +8,23 @@
 
 #endregion
 
-namespace Exomia.Framework.Core
+namespace Exomia.Framework.Core;
+
+internal sealed class UpdateableComparer : IComparer<IUpdateable>
 {
-    internal sealed class UpdateableComparer : IComparer<IUpdateable>
+    /// <summary> The default. </summary>
+    public static readonly UpdateableComparer Default = new UpdateableComparer();
+
+    /// <inheritdoc />
+    public int Compare(IUpdateable? left, IUpdateable? right)
     {
-        /// <summary> The default. </summary>
-        public static readonly UpdateableComparer Default = new UpdateableComparer();
+        if (Equals(left, right)) { return 0; }
 
-        /// <inheritdoc />
-        public int Compare(IUpdateable? left, IUpdateable? right)
-        {
-            if (Equals(left, right)) { return 0; }
+        if (left is null) { return 1; }
+        if (right is null) { return -1; }
 
-            if (left is null) { return 1; }
-            if (right is null) { return -1; }
-
-            return left.UpdateOrder < right.UpdateOrder
-                ? 1
-                : -1;
-        }
+        return left.UpdateOrder < right.UpdateOrder
+            ? 1
+            : -1;
     }
 }

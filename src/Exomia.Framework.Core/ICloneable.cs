@@ -8,20 +8,19 @@
 
 #endregion
 
-namespace Exomia.Framework.Core
+namespace Exomia.Framework.Core;
+
+/// <summary>
+///     An interface to clone a object.
+/// </summary>
+/// <typeparam name="T"> Generic type parameter. </typeparam>
+public interface ICloneable<out T>
 {
     /// <summary>
-    ///     An interface to clone a object.
+    ///     returns a deep copy of the object.
     /// </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    public interface ICloneable<out T>
-    {
-        /// <summary>
-        ///     returns a deep copy of the object.
-        /// </summary>
-        /// <returns>
-        ///     a new deep copied object.
-        /// </returns>
-        T Clone();
-    }
+    /// <returns>
+    ///     a new deep copied object.
+    /// </returns>
+    T Clone();
 }

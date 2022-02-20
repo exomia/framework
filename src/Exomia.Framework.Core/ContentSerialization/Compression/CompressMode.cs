@@ -8,14 +8,13 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Compression
+namespace Exomia.Framework.Core.ContentSerialization.Compression;
+
+/// <summary> Values that represent CompressMode. </summary>
+public enum CompressMode : byte
 {
-    /// <summary> Values that represent CompressMode. </summary>
-    public enum CompressMode : byte
-    {
-        /// <summary>
-        ///     An enum constant representing the gzip option (default).
-        /// </summary>
-        Gzip = 1
-    }
+    /// <summary>
+    ///     An enum constant representing the gzip option (default).
+    /// </summary>
+    Gzip = 1
 }

@@ -8,23 +8,22 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Vulkan.Exceptions
+namespace Exomia.Framework.Core.Vulkan.Exceptions;
+
+internal class VulkanException : Exception
 {
-    internal class VulkanException : Exception
-    {
-        public VulkanException(string? message)
-            : base(message) { }
+    public VulkanException(string? message)
+        : base(message) { }
 
-        public VulkanException(VkResult result)
-            : this($"VkResult: {result}") { }
+    public VulkanException(VkResult result)
+        : this($"VkResult: {result}") { }
 
-        public VulkanException(VkResult result, string? message)
-            : this($"VkResult: {result} {message}") { }
+    public VulkanException(VkResult result, string? message)
+        : this($"VkResult: {result} {message}") { }
 
-        public VulkanException(VkResult result,
-                               string   callingMethod,
-                               string   callingFilePath,
-                               int      callingFileLineNumber)
-            : this($"VkResult: {result} {callingMethod} ({callingFilePath}:{callingFileLineNumber})") { }
-    }
+    public VulkanException(VkResult result,
+                           string   callingMethod,
+                           string   callingFilePath,
+                           int      callingFileLineNumber)
+        : this($"VkResult: {result} {callingMethod} ({callingFilePath}:{callingFileLineNumber})") { }
 }

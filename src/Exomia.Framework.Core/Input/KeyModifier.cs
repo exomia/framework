@@ -8,27 +8,26 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Input
+namespace Exomia.Framework.Core.Input;
+
+/// <summary>
+///     Values that represent KeyModifier.
+/// </summary>
+[Flags]
+public enum KeyModifier
 {
     /// <summary>
-    ///     Values that represent KeyModifier.
+    ///     An enum constant representing the shift option.
     /// </summary>
-    [Flags]
-    public enum KeyModifier
-    {
-        /// <summary>
-        ///     An enum constant representing the shift option.
-        /// </summary>
-        Shift = 1,
+    Shift = 1,
 
-        /// <summary>
-        ///     An enum constant representing the Alternate option.
-        /// </summary>
-        Alt = 2,
+    /// <summary>
+    ///     An enum constant representing the Alternate option.
+    /// </summary>
+    Alt = 2,
 
-        /// <summary>
-        ///     An enum constant representing the control option.
-        /// </summary>
-        Control = 4
-    }
+    /// <summary>
+    ///     An enum constant representing the control option.
+    /// </summary>
+    Control = 4
 }

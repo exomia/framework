@@ -11,37 +11,36 @@
 using System.Reflection;
 using Exomia.Framework.Core.ContentSerialization.Compression;
 
-namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource
+namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
+
+[ContentResolver(int.MinValue)]
+internal class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
 {
-    [ContentResolver(int.MinValue)]
-    internal class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+    /// <inheritdoc />
+    public bool Exists(Type assetType, string assetName, out Assembly assembly)
     {
-        /// <inheritdoc />
-        public bool Exists(Type assetType, string assetName, out Assembly assembly)
+        if (Path.GetExtension(assetName) == ContentCompressor.DEFAULT_COMPRESSED_EXTENSION)
         {
-            if (Path.GetExtension(assetName) == ContentCompressor.DEFAULT_COMPRESSED_EXTENSION)
-            {
-                return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
-            }
-
-            assembly = null!;
-            return false;
+            return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
         }
 
-        /// <inheritdoc />
-        public Stream? Resolve(Assembly assembly, string assetName)
+        assembly = null!;
+        return false;
+    }
+
+    /// <inheritdoc />
+    public Stream? Resolve(Assembly assembly, string assetName)
+    {
+        Stream? stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
+        if (stream != null)
         {
-            Stream? stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
-            if (stream != null)
+            using (stream)
             {
-                using (stream)
-                {
-                    return ContentCompressor.DecompressStream(stream, out Stream stream2)
-                        ? stream2
-                        : null;
-                }
+                return ContentCompressor.DecompressStream(stream, out Stream stream2)
+                    ? stream2
+                    : null;
             }
-            return null;
         }
+        return null;
     }
 }

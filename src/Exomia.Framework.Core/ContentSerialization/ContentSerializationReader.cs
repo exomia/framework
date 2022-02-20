@@ -8,21 +8,20 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization
-{
-    /// <summary> Abstract implementation for an <see cref="IContentSerializationReader" /> </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    public abstract class ContentSerializationReader<T> : IContentSerializationReader
-    {
-        /// <inheritdoc />
-        public object Read(ContentSerializationContext context)
-        {
-            return ReadContext(context)!;
-        }
+namespace Exomia.Framework.Core.ContentSerialization;
 
-        /// <summary> Returns a new created object from the context of type T. </summary>
-        /// <param name="context"> The context. </param>
-        /// <returns> The T. </returns>
-        public abstract T ReadContext(ContentSerializationContext context);
+/// <summary> Abstract implementation for an <see cref="IContentSerializationReader" /> </summary>
+/// <typeparam name="T"> Generic type parameter. </typeparam>
+public abstract class ContentSerializationReader<T> : IContentSerializationReader
+{
+    /// <inheritdoc />
+    public object Read(ContentSerializationContext context)
+    {
+        return ReadContext(context)!;
     }
+
+    /// <summary> Returns a new created object from the context of type T. </summary>
+    /// <param name="context"> The context. </param>
+    /// <returns> The T. </returns>
+    public abstract T ReadContext(ContentSerializationContext context);
 }

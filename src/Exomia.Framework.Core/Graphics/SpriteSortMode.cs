@@ -8,31 +8,30 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Graphics
+namespace Exomia.Framework.Core.Graphics;
+
+/// <summary>
+///     Values that represent SpriteSortMode.
+/// </summary>
+public enum SpriteSortMode
 {
     /// <summary>
-    ///     Values that represent SpriteSortMode.
+    ///     An enum constant representing the deferred option.
     /// </summary>
-    public enum SpriteSortMode
-    {
-        /// <summary>
-        ///     An enum constant representing the deferred option.
-        /// </summary>
-        Deferred,
+    Deferred,
 
-        /// <summary>
-        ///     An enum constant representing the texture option.
-        /// </summary>
-        Texture,
+    /// <summary>
+    ///     An enum constant representing the texture option.
+    /// </summary>
+    Texture,
 
-        /// <summary>
-        ///     An enum constant representing the back to front option.
-        /// </summary>
-        BackToFront,
+    /// <summary>
+    ///     An enum constant representing the back to front option.
+    /// </summary>
+    BackToFront,
 
-        /// <summary>
-        ///     An enum constant representing the front to back option.
-        /// </summary>
-        FrontToBack
-    }
+    /// <summary>
+    ///     An enum constant representing the front to back option.
+    /// </summary>
+    FrontToBack
 }

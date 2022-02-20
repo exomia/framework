@@ -13,32 +13,31 @@ using Exomia.Framework.Core.Input;
 using Exomia.Framework.Core.Scene;
 using Exomia.IoC;
 
-namespace Exomia.Framework.Core.Extensions
-{
-    /// <summary> The core extensions. </summary>
-    public static class CoreExtensions
-    {
-        /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default content management. </summary>
-        /// <param name="serviceCollection"> The serviceCollection to act on. </param>
-        /// <returns> An <see cref="IServiceCollection" />. </returns>
-        public static IServiceCollection AddDefaultContentManagement(this IServiceCollection serviceCollection)
-        {
-            return serviceCollection
-                .Add<IContentManager, ContentManager>(ServiceKind.Singleton);
-        }
+namespace Exomia.Framework.Core.Extensions;
 
-        /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default scene management. </summary>
-        /// <param name="serviceCollection"> The serviceCollection to act on. </param>
-        /// <param name="sceneBuilder">      The scene builder. </param>
-        /// <returns> An <see cref="IServiceCollection" />. </returns>
-        public static IServiceCollection AddDefaultSceneManagement(this IServiceCollection serviceCollection, Func<SceneBuilder, SceneBuilder> sceneBuilder)
-        {
-            return serviceCollection
-                .Add<ISceneManager>(
-                    p => new SceneManager(
-                        p.Get<IInputDevice>(),
-                        sceneBuilder(new SceneBuilder(p)).BuildAndClear()),
-                    ServiceKind.Singleton);
-        }
+/// <summary> The core extensions. </summary>
+public static class CoreExtensions
+{
+    /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default content management. </summary>
+    /// <param name="serviceCollection"> The serviceCollection to act on. </param>
+    /// <returns> An <see cref="IServiceCollection" />. </returns>
+    public static IServiceCollection AddDefaultContentManagement(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection
+            .Add<IContentManager, ContentManager>(ServiceKind.Singleton);
+    }
+
+    /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default scene management. </summary>
+    /// <param name="serviceCollection"> The serviceCollection to act on. </param>
+    /// <param name="sceneBuilder">      The scene builder. </param>
+    /// <returns> An <see cref="IServiceCollection" />. </returns>
+    public static IServiceCollection AddDefaultSceneManagement(this IServiceCollection serviceCollection, Func<SceneBuilder, SceneBuilder> sceneBuilder)
+    {
+        return serviceCollection
+            .Add<ISceneManager>(
+                p => new SceneManager(
+                    p.Get<IInputDevice>(),
+                    sceneBuilder(new SceneBuilder(p)).BuildAndClear()),
+                ServiceKind.Singleton);
     }
 }

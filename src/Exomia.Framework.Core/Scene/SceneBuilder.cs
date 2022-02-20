@@ -10,40 +10,39 @@
 
 using IServiceProvider = Exomia.IoC.IServiceProvider;
 
-namespace Exomia.Framework.Core.Scene
+namespace Exomia.Framework.Core.Scene;
+
+/// <summary> A scene builder. This class cannot be inherited. </summary>
+public sealed class SceneBuilder
 {
-    /// <summary> A scene builder. This class cannot be inherited. </summary>
-    public sealed class SceneBuilder
+    private readonly IServiceProvider                        _serviceProvider;
+    private readonly List<(bool initialize, Type sceneType)> _sceneCollection = new List<(bool, Type)>(8);
+
+    /// <summary> Initializes a new instance of the <see cref="SceneBuilder" /> class. </summary>
+    /// <param name="serviceProvider"> The service provider. </param>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+    public SceneBuilder(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider                        _serviceProvider;
-        private readonly List<(bool initialize, Type sceneType)> _sceneCollection = new List<(bool, Type)>(8);
+        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    }
 
-        /// <summary> Initializes a new instance of the <see cref="SceneBuilder" /> class. </summary>
-        /// <param name="serviceProvider"> The service provider. </param>
-        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        public SceneBuilder(IServiceProvider serviceProvider)
+    /// <summary> Adds Scene to the <see cref="SceneBuilder" />. </summary>
+    /// <typeparam name="TScene"> Type of the scene. </typeparam>
+    /// <param name="initialize"> (Optional) True to initialize the scene at startup. </param>
+    /// <returns> A <see cref="SceneBuilder" />. </returns>
+    public SceneBuilder Add<TScene>(bool initialize = false) where TScene : SceneBase
+    {
+        _sceneCollection.Add((initialize, typeof(TScene)));
+        return this;
+    }
+
+    internal IEnumerable<(bool, SceneBase)> BuildAndClear()
+    {
+        foreach ((bool initialize, Type? sceneType) in _sceneCollection)
         {
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            yield return (initialize, (SceneBase)_serviceProvider.Get(sceneType));
         }
 
-        /// <summary> Adds Scene to the <see cref="SceneBuilder" />. </summary>
-        /// <typeparam name="TScene"> Type of the scene. </typeparam>
-        /// <param name="initialize"> (Optional) True to initialize the scene at startup. </param>
-        /// <returns> A <see cref="SceneBuilder" />. </returns>
-        public SceneBuilder Add<TScene>(bool initialize = false) where TScene : SceneBase
-        {
-            _sceneCollection.Add((initialize, typeof(TScene)));
-            return this;
-        }
-
-        internal IEnumerable<(bool, SceneBase)> BuildAndClear()
-        {
-            foreach ((bool initialize, Type? sceneType) in _sceneCollection)
-            {
-                yield return (initialize, (SceneBase)_serviceProvider.Get(sceneType));
-            }
-
-            _sceneCollection.Clear();
-        }
+        _sceneCollection.Clear();
     }
 }

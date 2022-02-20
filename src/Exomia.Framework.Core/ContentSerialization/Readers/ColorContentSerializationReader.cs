@@ -8,20 +8,19 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Readers
+namespace Exomia.Framework.Core.ContentSerialization.Readers;
+
+internal sealed class ColorContentSerializationReader : ContentSerializationReader<VkColor>
 {
-    internal sealed class ColorContentSerializationReader : ContentSerializationReader<VkColor>
+    /// <inheritdoc />
+    public override VkColor ReadContext(ContentSerializationContext context)
     {
-        /// <inheritdoc />
-        public override VkColor ReadContext(ContentSerializationContext context)
+        return new VkColor
         {
-            return new VkColor
-            {
-                A = context.Get<byte>(nameof(VkColor.A)),
-                R = context.Get<byte>(nameof(VkColor.R)),
-                G = context.Get<byte>(nameof(VkColor.G)),
-                B = context.Get<byte>(nameof(VkColor.B))
-            };
-        }
+            A = context.Get<byte>(nameof(VkColor.A)),
+            R = context.Get<byte>(nameof(VkColor.R)),
+            G = context.Get<byte>(nameof(VkColor.G)),
+            B = context.Get<byte>(nameof(VkColor.B))
+        };
     }
 }

@@ -13,12 +13,11 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct POINT
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct POINT
-    {
-        public int X;
-        public int Y;
-    }
+    public int X;
+    public int Y;
 }

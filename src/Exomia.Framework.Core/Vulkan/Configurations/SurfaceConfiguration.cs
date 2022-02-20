@@ -8,12 +8,11 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Vulkan.Configurations
+namespace Exomia.Framework.Core.Vulkan.Configurations;
+
+/// <summary> A surface configuration. This class cannot be inherited. </summary>
+public sealed class SurfaceConfiguration
 {
-    /// <summary> A surface configuration. This class cannot be inherited. </summary>
-    public sealed class SurfaceConfiguration
-    {
-        // ReSharper disable once RedundantUnsafeContext
-        internal unsafe SetupContextHandler? CreateSurface { get; set; } = null;
-    }
+    // ReSharper disable once RedundantUnsafeContext
+    internal unsafe SetupContextHandler? CreateSurface { get; set; } = null;
 }

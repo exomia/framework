@@ -8,46 +8,45 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Scene
+namespace Exomia.Framework.Core.Scene;
+
+/// <summary>
+///     Values that represent SceneState.
+/// </summary>
+public enum SceneState
 {
     /// <summary>
-    ///     Values that represent SceneState.
+    ///     An enum constant representing the none option.
     /// </summary>
-    public enum SceneState
-    {
-        /// <summary>
-        ///     An enum constant representing the none option.
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        ///     An enum constant representing the initializing option.
-        /// </summary>
-        Initializing,
+    /// <summary>
+    ///     An enum constant representing the initializing option.
+    /// </summary>
+    Initializing,
 
-        /// <summary>
-        ///     An enum constant representing the stand by option.
-        /// </summary>
-        StandBy,
+    /// <summary>
+    ///     An enum constant representing the stand by option.
+    /// </summary>
+    StandBy,
 
-        /// <summary>
-        ///     An enum constant representing the content loading option.
-        /// </summary>
-        ContentLoading,
+    /// <summary>
+    ///     An enum constant representing the content loading option.
+    /// </summary>
+    ContentLoading,
 
-        /// <summary>
-        ///     An enum constant representing the ready option.
-        /// </summary>
-        Ready,
+    /// <summary>
+    ///     An enum constant representing the ready option.
+    /// </summary>
+    Ready,
 
-        /// <summary>
-        ///     An enum constant representing the content unloading option.
-        /// </summary>
-        ContentUnloading,
+    /// <summary>
+    ///     An enum constant representing the content unloading option.
+    /// </summary>
+    ContentUnloading,
 
-        /// <summary>
-        ///     An enum constant representing the disposing option.
-        /// </summary>
-        Disposing
-    }
+    /// <summary>
+    ///     An enum constant representing the disposing option.
+    /// </summary>
+    Disposing
 }

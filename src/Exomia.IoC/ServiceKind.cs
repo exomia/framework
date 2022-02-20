@@ -8,15 +8,14 @@
 
 #endregion
 
-namespace Exomia.IoC
-{
-    /// <summary> Values that represent the service kind. </summary>
-    public enum ServiceKind
-    {
-        /// <summary> An enum constant representing the transient option. </summary>
-        Transient,
+namespace Exomia.IoC;
 
-        /// <summary> An enum constant representing the singleton option. </summary>
-        Singleton
-    }
+/// <summary> Values that represent the service kind. </summary>
+public enum ServiceKind
+{
+    /// <summary> An enum constant representing the transient option. </summary>
+    Transient,
+
+    /// <summary> An enum constant representing the singleton option. </summary>
+    Singleton
 }

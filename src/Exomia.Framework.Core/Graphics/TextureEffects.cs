@@ -8,32 +8,31 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Graphics
+namespace Exomia.Framework.Core.Graphics;
+
+/// <summary>
+///     Bitfield of flags for specifying TextureEffects.
+/// </summary>
+[Flags]
+public enum TextureEffects
 {
     /// <summary>
-    ///     Bitfield of flags for specifying TextureEffects.
+    ///     A binary constant representing the none flag.
     /// </summary>
-    [Flags]
-    public enum TextureEffects
-    {
-        /// <summary>
-        ///     A binary constant representing the none flag.
-        /// </summary>
-        None = 0b00,
+    None = 0b00,
 
-        /// <summary>
-        ///     A binary constant representing the flip horizontally flag.
-        /// </summary>
-        FlipHorizontally = 0b01,
+    /// <summary>
+    ///     A binary constant representing the flip horizontally flag.
+    /// </summary>
+    FlipHorizontally = 0b01,
 
-        /// <summary>
-        ///     A binary constant representing the flip vertically flag.
-        /// </summary>
-        FlipVertically = 0b10,
+    /// <summary>
+    ///     A binary constant representing the flip vertically flag.
+    /// </summary>
+    FlipVertically = 0b10,
 
-        /// <summary>
-        ///     A binary constant representing the flip both flag.
-        /// </summary>
-        FlipBoth = FlipHorizontally | FlipVertically
-    }
+    /// <summary>
+    ///     A binary constant representing the flip both flag.
+    /// </summary>
+    FlipBoth = FlipHorizontally | FlipVertically
 }

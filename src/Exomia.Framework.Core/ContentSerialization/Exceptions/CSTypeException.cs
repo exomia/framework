@@ -8,20 +8,19 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Exceptions
+namespace Exomia.Framework.Core.ContentSerialization.Exceptions;
+
+/// <summary> Thrown than a type is not found. </summary>
+public sealed class CsTypeException : Exception
 {
-    /// <summary> Thrown than a type is not found. </summary>
-    public sealed class CsTypeException : Exception
-    {
-        /// <inheritdoc />
-        public CsTypeException() { }
+    /// <inheritdoc />
+    public CsTypeException() { }
 
-        /// <inheritdoc />
-        public CsTypeException(string message)
-            : base(message) { }
+    /// <inheritdoc />
+    public CsTypeException(string message)
+        : base(message) { }
 
-        /// <inheritdoc />
-        public CsTypeException(string message, Exception innerException)
-            : base(message, innerException) { }
-    }
+    /// <inheritdoc />
+    public CsTypeException(string message, Exception innerException)
+        : base(message, innerException) { }
 }

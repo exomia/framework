@@ -10,43 +10,42 @@
 
 using Exomia.Framework.Core.Allocators;
 
-namespace Exomia.Framework.Core.Vulkan
+namespace Exomia.Framework.Core.Vulkan;
+
+sealed unsafe partial class Vulkan
 {
-    sealed unsafe partial class Vulkan
+    private static bool CreateFrameBuffers(VkContext* context)
     {
-        private static bool CreateFrameBuffers(VkContext* context)
+        if (context->SwapchainImageCount == 0u ||
+            context->DepthStencilImageView == VkImageView.Null)
         {
-            if (context->SwapchainImageCount == 0u ||
-                context->DepthStencilImageView == VkImageView.Null)
-            {
-                return false;
-            }
-
-            context->Framebuffers = Allocator.Allocate<VkFramebuffer>(context->SwapchainImageCount);
-
-            VkImageView* pImageViews = stackalloc VkImageView[2];
-            *(pImageViews + 1) = context->DepthStencilImageView;
-
-            for (uint i = 0u; i < context->SwapchainImageCount; i++)
-            {
-                *pImageViews = *(context->SwapchainImageViews + i);
-
-                VkFramebufferCreateInfo framebufferCreateInfo;
-                framebufferCreateInfo.sType           = VkFramebufferCreateInfo.STYPE;
-                framebufferCreateInfo.pNext           = null;
-                framebufferCreateInfo.flags           = 0;
-                framebufferCreateInfo.renderPass      = context->RenderPass;
-                framebufferCreateInfo.attachmentCount = 2u;
-                framebufferCreateInfo.pAttachments    = pImageViews;
-                framebufferCreateInfo.width           = context->Width;
-                framebufferCreateInfo.height          = context->Height;
-                framebufferCreateInfo.layers          = 1u;
-
-                vkCreateFramebuffer(context->Device, &framebufferCreateInfo, null, context->Framebuffers + i)
-                    .AssertVkResult();
-            }
-
-            return true;
+            return false;
         }
+
+        context->Framebuffers = Allocator.Allocate<VkFramebuffer>(context->SwapchainImageCount);
+
+        VkImageView* pImageViews = stackalloc VkImageView[2];
+        *(pImageViews + 1) = context->DepthStencilImageView;
+
+        for (uint i = 0u; i < context->SwapchainImageCount; i++)
+        {
+            *pImageViews = *(context->SwapchainImageViews + i);
+
+            VkFramebufferCreateInfo framebufferCreateInfo;
+            framebufferCreateInfo.sType           = VkFramebufferCreateInfo.STYPE;
+            framebufferCreateInfo.pNext           = null;
+            framebufferCreateInfo.flags           = 0;
+            framebufferCreateInfo.renderPass      = context->RenderPass;
+            framebufferCreateInfo.attachmentCount = 2u;
+            framebufferCreateInfo.pAttachments    = pImageViews;
+            framebufferCreateInfo.width           = context->Width;
+            framebufferCreateInfo.height          = context->Height;
+            framebufferCreateInfo.layers          = 1u;
+
+            vkCreateFramebuffer(context->Device, &framebufferCreateInfo, null, context->Framebuffers + i)
+                .AssertVkResult();
+        }
+
+        return true;
     }
 }

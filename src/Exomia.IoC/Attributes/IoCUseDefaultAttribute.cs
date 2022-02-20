@@ -10,21 +10,20 @@
 
 using System;
 
-namespace Exomia.IoC.Attributes
-{
-    /// <summary> Attribute for ioc use default. This class cannot be inherited. </summary>
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class IoCUseDefaultAttribute : Attribute
-    {
-        /// <summary> Gets the default value. </summary>
-        /// <value> The default value or null. </value>
-        public object? DefaultValue { get; }
+namespace Exomia.IoC.Attributes;
 
-        /// <summary> Initializes a new instance of the <see cref="IoCUseDefaultAttribute" /> class. </summary>
-        /// <param name="defaultValue"> (Optional) The default value. </param>
-        public IoCUseDefaultAttribute(object? defaultValue = null)
-        {
-            DefaultValue = defaultValue;
-        }
+/// <summary> Attribute for ioc use default. This class cannot be inherited. </summary>
+[AttributeUsage(AttributeTargets.Parameter)]
+public sealed class IoCUseDefaultAttribute : Attribute
+{
+    /// <summary> Gets the default value. </summary>
+    /// <value> The default value or null. </value>
+    public object? DefaultValue { get; }
+
+    /// <summary> Initializes a new instance of the <see cref="IoCUseDefaultAttribute" /> class. </summary>
+    /// <param name="defaultValue"> (Optional) The default value. </param>
+    public IoCUseDefaultAttribute(object? defaultValue = null)
+    {
+        DefaultValue = defaultValue;
     }
 }

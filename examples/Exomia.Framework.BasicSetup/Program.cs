@@ -8,35 +8,37 @@
 
 #endregion
 
+using Exomia.Framework.Core.Extensions;
 using Exomia.Framework.Core.Game;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Windows.Game.Desktop;
 
-namespace Exomia.Framework.BasicSetup
+namespace Exomia.Framework.BasicSetup;
+
+internal sealed class Program
 {
-    internal sealed class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
+        using (IGameBuilder gameBuilder = GameBuilder.Create())
+        using (MyGame game = gameBuilder
+                   //.UseLogging()
+                   .Configure<DebugUtilsMessengerConfiguration>((_, configuration) =>
+                   {
+                       //configuration.MessageSeverity |= VkDebugUtilsMessageSeverityFlagsEXT.VERBOSE_BIT_EXT;
+                   })
+                   .Configure<RenderFormConfiguration>(((_, configuration) =>
+                   {
+                       configuration.Title       = "Exomia.Framework.BasicSetup";
+                       configuration.Width       = 1024;
+                       configuration.Height      = 768;
+                       configuration.DisplayType = DisplayType.Window;
+                   }))
+                   .UseWin32Platform() // should always be the last in the chain before calling build!
+                   .Build<MyGame>())
+
+            //TODO: add use startup possibility
         {
-            using (IGameBuilder gameBuilder = GameBuilder.Create())
-            using (MyGame game = gameBuilder
-                       //.UseLogging()
-                       .Configure<DebugUtilsMessengerConfiguration>((_, configuration) =>
-                       {
-                           //configuration.MessageSeverity |= VkDebugUtilsMessageSeverityFlagsEXT.VERBOSE_BIT_EXT;
-                       })
-                       .Configure<RenderFormConfiguration>(((_, configuration) =>
-                       {
-                           configuration.Title       = "Exomia.Framework.BasicSetup";
-                           configuration.Width       = 1024;
-                           configuration.Height      = 768;
-                           configuration.DisplayType = DisplayType.Window;
-                       }))
-                       .UseWin32Platform() // should always be the last in the chain before calling build!
-                       .Build<MyGame>())
-            {
-                game.Run();
-            }
+            game.Run();
         }
     }
 }

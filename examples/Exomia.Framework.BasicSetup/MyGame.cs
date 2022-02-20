@@ -13,29 +13,28 @@ using Exomia.IoC;
 using Exomia.IoC.Attributes;
 using Exomia.Logging;
 
-namespace Exomia.Framework.BasicSetup
-{
-    /// <summary>
-    ///     My game class. This class cannot be inherited.
-    /// </summary>
-    internal sealed class MyGame : Game
-    {
-        /// <summary> Initializes a new instance of the <see cref="MyGame" /> class. </summary>
-        /// <param name="serviceProvider"> The service provider. </param>
-        /// <param name="logger">          The logger. </param>
-        public MyGame(IServiceProvider                                                   serviceProvider,
-                      [IoCOptional(typeof(SimpleConsoleLogger<MyGame>))] ILogger<MyGame> logger)
-            : base(serviceProvider)
-        {
-            //IsFixedTimeStep   = true;
-            //TargetElapsedTime = 1000.0 / 144;
+namespace Exomia.Framework.BasicSetup;
 
-            logger.Log(LogLevel.Trace,       null, "ctor for 'MyGame' called...");
-            logger.Log(LogLevel.Debug,       null, "ctor for 'MyGame' called...");
-            logger.Log(LogLevel.Information, null, "ctor for 'MyGame' called...");
-            logger.Log(LogLevel.Warning,     null, "ctor for 'MyGame' called...");
-            logger.Log(LogLevel.Error,       null, "ctor for 'MyGame' called...");
-            logger.Log(LogLevel.Critical,    null, "ctor for 'MyGame' called...");
-        }
+/// <summary>
+///     My game class. This class cannot be inherited.
+/// </summary>
+internal sealed class MyGame : Game
+{
+    /// <summary> Initializes a new instance of the <see cref="MyGame" /> class. </summary>
+    /// <param name="serviceProvider"> The service provider. </param>
+    /// <param name="logger">          The logger. </param>
+    public MyGame(IServiceProvider                                                   serviceProvider,
+                  [IoCOptional(typeof(SimpleConsoleLogger<MyGame>))] ILogger<MyGame> logger)
+        : base(serviceProvider)
+    {
+        //IsFixedTimeStep   = true;
+        //TargetElapsedTime = 1000.0 / 1000;
+
+        logger.Log(LogLevel.Trace,       null, "ctor for 'MyGame' called...");
+        logger.Log(LogLevel.Debug,       null, "ctor for 'MyGame' called...");
+        logger.Log(LogLevel.Information, null, "ctor for 'MyGame' called...");
+        logger.Log(LogLevel.Warning,     null, "ctor for 'MyGame' called...");
+        logger.Log(LogLevel.Error,       null, "ctor for 'MyGame' called...");
+        logger.Log(LogLevel.Critical,    null, "ctor for 'MyGame' called...");
     }
 }

@@ -12,14 +12,13 @@ using Exomia.IoC;
 using IServiceProvider = Exomia.IoC.IServiceProvider;
 
 #pragma warning disable 1591
-namespace Exomia.Framework.Core.Game
+namespace Exomia.Framework.Core.Game;
+
+/// <summary> Interface for game builder. </summary>
+public interface IGameBuilder : IDisposable
 {
-    /// <summary> Interface for game builder. </summary>
-    public interface IGameBuilder : IDisposable
-    {
-        IGameBuilder ConfigureServices(Action<IServiceCollection>                       configureDelegate);
-        IGameBuilder Configure<TConfiguration>(Action<IServiceProvider, TConfiguration> configureDelegate) where TConfiguration : class;
-        T            RegisterDisposable<T>(T                                            disposable) where T : IDisposable;
-        TGame        Build<TGame>() where TGame : Game;
-    }
+    IGameBuilder ConfigureServices(Action<IServiceCollection>                       configureDelegate);
+    IGameBuilder Configure<TConfiguration>(Action<IServiceProvider, TConfiguration> configureDelegate) where TConfiguration : class;
+    T            RegisterDisposable<T>(T                                            disposable) where T : IDisposable;
+    TGame        Build<TGame>() where TGame : Game;
 }

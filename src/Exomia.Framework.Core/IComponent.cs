@@ -8,13 +8,12 @@
 
 #endregion
 
-namespace Exomia.Framework.Core
+namespace Exomia.Framework.Core;
+
+/// <summary> Interface for a component. </summary>
+public interface IComponent
 {
-    /// <summary> Interface for a component. </summary>
-    public interface IComponent
-    {
-        /// <summary> Gets a unique identifier. </summary>
-        /// <value> The identifier of the unique. </value>
-        Guid Guid { get; }
-    }
+    /// <summary> Gets a unique identifier. </summary>
+    /// <value> The identifier of the unique. </value>
+    Guid Guid { get; }
 }

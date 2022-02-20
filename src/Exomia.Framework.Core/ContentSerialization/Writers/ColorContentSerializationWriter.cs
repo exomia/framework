@@ -8,17 +8,16 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Writers
+namespace Exomia.Framework.Core.ContentSerialization.Writers;
+
+internal sealed class ColorContentSerializationWriter : ContentSerializationWriter<VkColor>
 {
-    internal sealed class ColorContentSerializationWriter : ContentSerializationWriter<VkColor>
+    /// <inheritdoc />
+    public override void WriteContext(ContentSerializationContext context, VkColor obj)
     {
-        /// <inheritdoc />
-        public override void WriteContext(ContentSerializationContext context, VkColor obj)
-        {
-            context.Set(nameof(VkColor.A), obj.A);
-            context.Set(nameof(VkColor.R), obj.R);
-            context.Set(nameof(VkColor.G), obj.G);
-            context.Set(nameof(VkColor.B), obj.B);
-        }
+        context.Set(nameof(VkColor.A), obj.A);
+        context.Set(nameof(VkColor.R), obj.R);
+        context.Set(nameof(VkColor.G), obj.G);
+        context.Set(nameof(VkColor.B), obj.B);
     }
 }

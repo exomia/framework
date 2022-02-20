@@ -8,40 +8,39 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Input
+namespace Exomia.Framework.Core.Input;
+
+/// <summary> MouseButtons enum. </summary>
+[Flags]
+public enum MouseButtons
 {
-    /// <summary> MouseButtons enum. </summary>
-    [Flags]
-    public enum MouseButtons
-    {
-        /// <summary>
-        ///     default
-        /// </summary>
-        None = 0,
+    /// <summary>
+    ///     default
+    /// </summary>
+    None = 0,
 
-        /// <summary>
-        ///     Left mouse button
-        /// </summary>
-        Left = 0x01,
+    /// <summary>
+    ///     Left mouse button
+    /// </summary>
+    Left = 0x01,
 
-        /// <summary>
-        ///     Middle mouse button
-        /// </summary>
-        Middle = 0x10,
+    /// <summary>
+    ///     Middle mouse button
+    /// </summary>
+    Middle = 0x10,
 
-        /// <summary>
-        ///     Right mouse button
-        /// </summary>
-        Right = 0x02,
+    /// <summary>
+    ///     Right mouse button
+    /// </summary>
+    Right = 0x02,
 
-        /// <summary>
-        ///     A binary constant representing the button 1 flag.
-        /// </summary>
-        XButton1 = 0x20,
+    /// <summary>
+    ///     A binary constant representing the button 1 flag.
+    /// </summary>
+    XButton1 = 0x20,
 
-        /// <summary>
-        ///     A binary constant representing the button 2 flag.
-        /// </summary>
-        XButton2 = 0x40
-    }
+    /// <summary>
+    ///     A binary constant representing the button 2 flag.
+    /// </summary>
+    XButton2 = 0x40
 }

@@ -8,24 +8,23 @@
 
 #endregion
 
-namespace Exomia.Framework.Core
+namespace Exomia.Framework.Core;
+
+internal sealed class DrawableComparer : IComparer<IDrawable>
 {
-    internal sealed class DrawableComparer : IComparer<IDrawable>
+    /// <summary> The default. </summary>
+    public static readonly DrawableComparer Default = new DrawableComparer();
+
+    /// <inheritdoc />
+    public int Compare(IDrawable? left, IDrawable? right)
     {
-        /// <summary> The default. </summary>
-        public static readonly DrawableComparer Default = new DrawableComparer();
+        if (Equals(left, right)) { return 0; }
 
-        /// <inheritdoc />
-        public int Compare(IDrawable? left, IDrawable? right)
-        {
-            if (Equals(left, right)) { return 0; }
+        if (left is null) { return 1; }
+        if (right is null) { return -1; }
 
-            if (left is null) { return 1; }
-            if (right is null) { return -1; }
-
-            return left.DrawOrder < right.DrawOrder
-                ? 1
-                : -1;
-        }
+        return left.DrawOrder < right.DrawOrder
+            ? 1
+            : -1;
     }
 }

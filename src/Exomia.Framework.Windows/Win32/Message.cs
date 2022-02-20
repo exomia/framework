@@ -13,22 +13,21 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+/// <summary> A message. </summary>
+[StructLayout(LayoutKind.Sequential)]
+public struct Message
 {
-    /// <summary> A message. </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Message
-    {
-        /// <summary> The window. </summary>
-        public IntPtr hWnd;
+    /// <summary> The window. </summary>
+    public IntPtr hWnd;
 
-        /// <summary> The message. </summary>
-        public uint msg;
+    /// <summary> The message. </summary>
+    public uint msg;
 
-        /// <summary> The w parameter. </summary>
-        public IntPtr wParam;
+    /// <summary> The w parameter. </summary>
+    public IntPtr wParam;
 
-        /// <summary> The l parameter. </summary>
-        public IntPtr lParam;
-    }
+    /// <summary> The l parameter. </summary>
+    public IntPtr lParam;
 }

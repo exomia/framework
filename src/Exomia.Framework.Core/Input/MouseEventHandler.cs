@@ -8,10 +8,9 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Input
-{
-    /// <summary> Delegate for handling mouse events. </summary>
-    /// <param name="mouseEventArgs"> In mouse event information. </param>
-    /// <returns> An <see cref="EventAction" />. </returns>
-    public delegate EventAction MouseEventHandler(in MouseEventArgs mouseEventArgs);
-}
+namespace Exomia.Framework.Core.Input;
+
+/// <summary> Delegate for handling mouse events. </summary>
+/// <param name="mouseEventArgs"> In mouse event information. </param>
+/// <returns> An <see cref="EventAction" />. </returns>
+public delegate EventAction MouseEventHandler(in MouseEventArgs mouseEventArgs);

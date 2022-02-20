@@ -13,27 +13,26 @@ using System.Runtime.InteropServices;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
-namespace Exomia.Framework.Windows.Win32.RawInput
+namespace Exomia.Framework.Windows.Win32.RawInput;
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct RAWINPUTKEYBOARD
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct RAWINPUTKEYBOARD
-    {
-        /// <summary> Scan code for key depression. </summary>
-        public ushort MakeCode;
+    /// <summary> Scan code for key depression. </summary>
+    public ushort MakeCode;
 
-        /// <summary> Scan code information. </summary>
-        public RawKeyboardFlags Flags;
+    /// <summary> Scan code information. </summary>
+    public RawKeyboardFlags Flags;
 
-        /// <summary> Reserved. </summary>
-        public ushort Reserved;
+    /// <summary> Reserved. </summary>
+    public ushort Reserved;
 
-        /// <summary> Virtual key code. </summary>
-        public ushort VKey;
+    /// <summary> Virtual key code. </summary>
+    public ushort VKey;
 
-        /// <summary> Corresponding window message. </summary>
-        public uint Message;
+    /// <summary> Corresponding window message. </summary>
+    public uint Message;
 
-        /// <summary> Extra information. </summary>
-        public uint ExtraInformation;
-    }
+    /// <summary> Extra information. </summary>
+    public uint ExtraInformation;
 }

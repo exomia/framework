@@ -10,21 +10,20 @@
 
 using Exomia.Framework.Core.ContentSerialization;
 
-namespace Exomia.Framework.Core.Content.Resolver
-{
-    [ContentResolver(int.MinValue + 1)]
-    internal sealed class E0FileStreamContentResolver : IContentResolver
-    {
-        /// <inheritdoc />
-        public bool Exists(string assetName)
-        {
-            return Path.GetExtension(assetName) == ContentSerializer.DEFAULT_EXTENSION && File.Exists(assetName);
-        }
+namespace Exomia.Framework.Core.Content.Resolver;
 
-        /// <inheritdoc />
-        public Stream Resolve(string assetName)
-        {
-            return new FileStream(assetName, FileMode.Open, FileAccess.Read);
-        }
+[ContentResolver(int.MinValue + 1)]
+internal sealed class E0FileStreamContentResolver : IContentResolver
+{
+    /// <inheritdoc />
+    public bool Exists(string assetName)
+    {
+        return Path.GetExtension(assetName) == ContentSerializer.DEFAULT_EXTENSION && File.Exists(assetName);
+    }
+
+    /// <inheritdoc />
+    public Stream Resolve(string assetName)
+    {
+        return new FileStream(assetName, FileMode.Open, FileAccess.Read);
     }
 }

@@ -8,30 +8,29 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Vulkan
+namespace Exomia.Framework.Core.Vulkan;
+
+sealed unsafe partial class Vulkan
 {
-    sealed unsafe partial class Vulkan
+    internal static void CreateShaderModule(VkDevice device, byte* code, nuint codeSize, out VkShaderModule shaderModule, VkShaderModuleCreateFlags flags = 0)
     {
-        internal static void CreateShaderModule(VkDevice device, byte* code, nuint codeSize, out VkShaderModule shaderModule, VkShaderModuleCreateFlags flags = 0)
-        {
-            VkShaderModuleCreateInfo shaderModuleCreateInfo;
-            shaderModuleCreateInfo.sType    = VkShaderModuleCreateInfo.STYPE;
-            shaderModuleCreateInfo.pNext    = null;
-            shaderModuleCreateInfo.flags    = flags;
-            shaderModuleCreateInfo.codeSize = codeSize;
-            shaderModuleCreateInfo.pCode    = (uint*)code;
+        VkShaderModuleCreateInfo shaderModuleCreateInfo;
+        shaderModuleCreateInfo.sType    = VkShaderModuleCreateInfo.STYPE;
+        shaderModuleCreateInfo.pNext    = null;
+        shaderModuleCreateInfo.flags    = flags;
+        shaderModuleCreateInfo.codeSize = codeSize;
+        shaderModuleCreateInfo.pCode    = (uint*)code;
 
-            VkShaderModule module;
-            vkCreateShaderModule(device, &shaderModuleCreateInfo, null, &module)
-                .AssertVkResult();
+        VkShaderModule module;
+        vkCreateShaderModule(device, &shaderModuleCreateInfo, null, &module)
+            .AssertVkResult();
 
-            shaderModule = module;
-        }
+        shaderModule = module;
+    }
 
-        internal static void DestroyShaderModule(VkDevice device, ref VkShaderModule shaderModule)
-        {
-            vkDestroyShaderModule(device, shaderModule, null);
-            shaderModule = VkShaderModule.Null;
-        }
+    internal static void DestroyShaderModule(VkDevice device, ref VkShaderModule shaderModule)
+    {
+        vkDestroyShaderModule(device, shaderModule, null);
+        shaderModule = VkShaderModule.Null;
     }
 }

@@ -8,21 +8,20 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization
-{
-    /// <summary> Abstract implementation for an <see cref="IContentSerializationWriter" /> </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    public abstract class ContentSerializationWriter<T> : IContentSerializationWriter
-    {
-        /// <inheritdoc />
-        public void Write(ContentSerializationContext context, object obj)
-        {
-            WriteContext(context, (T)obj);
-        }
+namespace Exomia.Framework.Core.ContentSerialization;
 
-        /// <summary> Write the object (of type T) information into the context. </summary>
-        /// <param name="context"> The context. </param>
-        /// <param name="obj">     The object. </param>
-        public abstract void WriteContext(ContentSerializationContext context, T obj);
+/// <summary> Abstract implementation for an <see cref="IContentSerializationWriter" /> </summary>
+/// <typeparam name="T"> Generic type parameter. </typeparam>
+public abstract class ContentSerializationWriter<T> : IContentSerializationWriter
+{
+    /// <inheritdoc />
+    public void Write(ContentSerializationContext context, object obj)
+    {
+        WriteContext(context, (T)obj);
     }
+
+    /// <summary> Write the object (of type T) information into the context. </summary>
+    /// <param name="context"> The context. </param>
+    /// <param name="obj">     The object. </param>
+    public abstract void WriteContext(ContentSerializationContext context, T obj);
 }

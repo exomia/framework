@@ -8,20 +8,19 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization.Exceptions
+namespace Exomia.Framework.Core.ContentSerialization.Exceptions;
+
+/// <summary> Thrown than a reader exception happen. </summary>
+public sealed class CsReaderException : Exception
 {
-    /// <summary> Thrown than a reader exception happen. </summary>
-    public sealed class CsReaderException : Exception
-    {
-        /// <inheritdoc />
-        public CsReaderException() { }
+    /// <inheritdoc />
+    public CsReaderException() { }
 
-        /// <inheritdoc />
-        public CsReaderException(string message)
-            : base(message) { }
+    /// <inheritdoc />
+    public CsReaderException(string message)
+        : base(message) { }
 
-        /// <inheritdoc />
-        public CsReaderException(string message, Exception innerException)
-            : base(message, innerException) { }
-    }
+    /// <inheritdoc />
+    public CsReaderException(string message, Exception innerException)
+        : base(message, innerException) { }
 }

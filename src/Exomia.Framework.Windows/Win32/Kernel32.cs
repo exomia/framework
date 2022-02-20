@@ -11,22 +11,21 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+internal static class Kernel32
 {
-    internal static class Kernel32
-    {
-        private const string KERNEL32 = "kernel32.dll";
+    private const string KERNEL32 = "kernel32.dll";
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(KERNEL32, EntryPoint = "SetEvent")]
-        internal static extern bool SetEvent(IntPtr hEvent);
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(KERNEL32, EntryPoint = "SetEvent")]
+    internal static extern bool SetEvent(IntPtr hEvent);
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(KERNEL32, EntryPoint = "GetLastError")]
-        internal static extern int GetLastError();
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(KERNEL32, EntryPoint = "GetLastError")]
+    internal static extern int GetLastError();
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(KERNEL32, EntryPoint = "GetModuleHandle", CharSet = CharSet.Auto)]
-        internal static extern IntPtr GetModuleHandle(string? lpModuleName);
-    }
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(KERNEL32, EntryPoint = "GetModuleHandle", CharSet = CharSet.Auto)]
+    internal static extern IntPtr GetModuleHandle(string? lpModuleName);
 }

@@ -12,12 +12,11 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+internal enum MonitorFlags : uint
 {
-    internal enum MonitorFlags : uint
-    {
-        DEFAULTTONULL    = 0u,
-        DEFAULTTOPRIMARY = 1u,
-        DEFAULTTONEAREST = 2u
-    }
+    DEFAULTTONULL    = 0u,
+    DEFAULTTOPRIMARY = 1u,
+    DEFAULTTONEAREST = 2u
 }

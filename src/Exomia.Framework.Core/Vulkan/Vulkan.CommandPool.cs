@@ -8,29 +8,28 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Vulkan
+namespace Exomia.Framework.Core.Vulkan;
+
+/// <content> A vulkan. This class cannot be inherited. </content>
+sealed unsafe partial class Vulkan
 {
-    /// <content> A vulkan. This class cannot be inherited. </content>
-    sealed unsafe partial class Vulkan
+    /// <summary> Creates command pool. </summary>
+    /// <param name="device">                    The device. </param>
+    /// <param name="queueFamilyIndex">          The configuration. </param>
+    /// <param name="commandPool">               [in,out] If non-null, the command pool. </param>
+    /// <param name="commandPoolCreateFlagBits"> (Optional) The command pool create flag bits. </param>
+    /// <returns> True if it succeeds, false if it fails. </returns>
+    public static bool CreateCommandPool(VkDevice device, uint queueFamilyIndex, VkCommandPool* commandPool, VkCommandPoolCreateFlagBits commandPoolCreateFlagBits = 0u)
     {
-        /// <summary> Creates command pool. </summary>
-        /// <param name="device">                    The device. </param>
-        /// <param name="queueFamilyIndex">          The configuration. </param>
-        /// <param name="commandPool">               [in,out] If non-null, the command pool. </param>
-        /// <param name="commandPoolCreateFlagBits"> (Optional) The command pool create flag bits. </param>
-        /// <returns> True if it succeeds, false if it fails. </returns>
-        public static bool CreateCommandPool(VkDevice device, uint queueFamilyIndex, VkCommandPool* commandPool, VkCommandPoolCreateFlagBits commandPoolCreateFlagBits = 0u)
-        {
-            VkCommandPoolCreateInfo commandPoolCreateInfo;
-            commandPoolCreateInfo.sType            = VkCommandPoolCreateInfo.STYPE;
-            commandPoolCreateInfo.pNext            = null;
-            commandPoolCreateInfo.flags            = commandPoolCreateFlagBits;
-            commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
+        VkCommandPoolCreateInfo commandPoolCreateInfo;
+        commandPoolCreateInfo.sType            = VkCommandPoolCreateInfo.STYPE;
+        commandPoolCreateInfo.pNext            = null;
+        commandPoolCreateInfo.flags            = commandPoolCreateFlagBits;
+        commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 
-            vkCreateCommandPool(device, &commandPoolCreateInfo, null, commandPool)
-                .AssertVkResult();
+        vkCreateCommandPool(device, &commandPoolCreateInfo, null, commandPool)
+            .AssertVkResult();
 
-            return true;
-        }
+        return true;
     }
 }

@@ -8,20 +8,19 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Content.Resolver
-{
-    /// <summary> Used to mark a content readable class. </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ContentResolverAttribute : Attribute
-    {
-        internal int Order { get; }
+namespace Exomia.Framework.Core.Content.Resolver;
 
-        /// <inheritdoc />
-        /// <summary> Initializes a new instance of the <see cref="T:Exomia.Framework.Core.Content.Resolver.ContentResolverAttribute" /> class. </summary>
-        /// <param name="order"> the order in which the resolvers should be gone through. </param>
-        public ContentResolverAttribute(int order)
-        {
-            Order = order;
-        }
+/// <summary> Used to mark a content readable class. </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class ContentResolverAttribute : Attribute
+{
+    internal int Order { get; }
+
+    /// <inheritdoc />
+    /// <summary> Initializes a new instance of the <see cref="T:Exomia.Framework.Core.Content.Resolver.ContentResolverAttribute" /> class. </summary>
+    /// <param name="order"> the order in which the resolvers should be gone through. </param>
+    public ContentResolverAttribute(int order)
+    {
+        Order = order;
     }
 }

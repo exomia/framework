@@ -11,10 +11,9 @@
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Windows.Win32;
 
-namespace Exomia.Framework.Windows.Input
-{
-    /// <summary> Delegate for handling raw key events. </summary>
-    /// <param name="message"> The message. </param>
-    /// <returns> An <see cref="EventAction" />. </returns>
-    public delegate EventAction RawKeyEventHandler(in Message message);
-}
+namespace Exomia.Framework.Windows.Input;
+
+/// <summary> Delegate for handling raw key events. </summary>
+/// <param name="message"> The message. </param>
+/// <returns> An <see cref="EventAction" />. </returns>
+public delegate EventAction RawKeyEventHandler(in Message message);

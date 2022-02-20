@@ -8,21 +8,20 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Content.Resolver
-{
-    [ContentResolver(int.MaxValue)]
-    internal sealed class FileStreamContentResolver : IContentResolver
-    {
-        /// <inheritdoc />
-        public bool Exists(string assetName)
-        {
-            return File.Exists(assetName);
-        }
+namespace Exomia.Framework.Core.Content.Resolver;
 
-        /// <inheritdoc />
-        public Stream Resolve(string assetName)
-        {
-            return new FileStream(assetName, FileMode.Open, FileAccess.Read);
-        }
+[ContentResolver(int.MaxValue)]
+internal sealed class FileStreamContentResolver : IContentResolver
+{
+    /// <inheritdoc />
+    public bool Exists(string assetName)
+    {
+        return File.Exists(assetName);
+    }
+
+    /// <inheritdoc />
+    public Stream Resolve(string assetName)
+    {
+        return new FileStream(assetName, FileMode.Open, FileAccess.Read);
     }
 }

@@ -8,22 +8,21 @@
 
 #endregion
 
-namespace Exomia.Framework.Core
+namespace Exomia.Framework.Core;
+
+/// <summary>
+///     An interface to run an object.
+/// </summary>
+public interface IRunnable : IDisposable
 {
     /// <summary>
-    ///     An interface to run an object.
+    ///     return true if the object is running
     /// </summary>
-    public interface IRunnable : IDisposable
-    {
-        /// <summary>
-        ///     return true if the object is running
-        /// </summary>
-        bool IsRunning { get; }
+    bool IsRunning { get; }
 
-        /// <summary> Runs this object. </summary>
-        void Run();
+    /// <summary> Runs this object. </summary>
+    void Run();
 
-        /// <summary> Shuts down this object and frees any resources it is using. </summary>
-        void Shutdown();
-    }
+    /// <summary> Shuts down this object and frees any resources it is using. </summary>
+    void Shutdown();
 }

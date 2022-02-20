@@ -10,58 +10,57 @@
 
 using Exomia.Framework.Core.Game;
 
-namespace Exomia.Framework.Core
+namespace Exomia.Framework.Core;
+
+/// <summary> A drawable game component. </summary>
+public abstract class DrawableComponent : Component, IDrawable
 {
-    /// <summary> A drawable game component. </summary>
-    public abstract class DrawableComponent : Component, IDrawable
+    /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
+    public event EventHandler? DrawOrderChanged;
+
+    /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
+    public event EventHandler? VisibleChanged;
+
+    private int  _drawOrder;
+    private bool _visible;
+
+    /// <inheritdoc />
+    public int DrawOrder
     {
-        /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
-        public event EventHandler? DrawOrderChanged;
-
-        /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
-        public event EventHandler? VisibleChanged;
-
-        private int  _drawOrder;
-        private bool _visible;
-
-        /// <inheritdoc />
-        public int DrawOrder
+        get { return _drawOrder; }
+        set
         {
-            get { return _drawOrder; }
-            set
+            if (_drawOrder != value)
             {
-                if (_drawOrder != value)
-                {
-                    _drawOrder = value;
-                    DrawOrderChanged?.Invoke();
-                }
+                _drawOrder = value;
+                DrawOrderChanged?.Invoke();
             }
         }
-
-        /// <inheritdoc />
-        public bool Visible
-        {
-            get { return _visible; }
-            set
-            {
-                if (_visible != value)
-                {
-                    _visible = value;
-                    VisibleChanged?.Invoke();
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public virtual bool BeginDraw()
-        {
-            return _visible;
-        }
-
-        /// <inheritdoc />
-        public abstract void Draw(GameTime gameTime);
-
-        /// <inheritdoc />
-        public virtual void EndDraw() { }
     }
+
+    /// <inheritdoc />
+    public bool Visible
+    {
+        get { return _visible; }
+        set
+        {
+            if (_visible != value)
+            {
+                _visible = value;
+                VisibleChanged?.Invoke();
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual bool BeginDraw()
+    {
+        return _visible;
+    }
+
+    /// <inheritdoc />
+    public abstract void Draw(GameTime gameTime);
+
+    /// <inheritdoc />
+    public virtual void EndDraw() { }
 }

@@ -10,21 +10,20 @@
 
 using Exomia.Framework.Core.Vulkan.Configurations;
 
-namespace Exomia.Framework.Core.Vulkan
-{
-    sealed unsafe partial class Vulkan
-    {
-        private static bool RetrieveDeviceQueue(VkContext* context, QueueConfiguration configuration)
-        {
-            VkDeviceQueueInfo2 vkDeviceQueueInfo2;
-            vkDeviceQueueInfo2.sType            = VkDeviceQueueInfo2.STYPE;
-            vkDeviceQueueInfo2.pNext            = null;
-            vkDeviceQueueInfo2.flags            = configuration.Flags;
-            vkDeviceQueueInfo2.queueFamilyIndex = context->QueueFamilyIndex;
-            vkDeviceQueueInfo2.queueIndex       = 0u;
-            vkGetDeviceQueue2(context->Device, &vkDeviceQueueInfo2, &context->Queue);
+namespace Exomia.Framework.Core.Vulkan;
 
-            return true;
-        }
+sealed unsafe partial class Vulkan
+{
+    private static bool RetrieveDeviceQueue(VkContext* context, QueueConfiguration configuration)
+    {
+        VkDeviceQueueInfo2 vkDeviceQueueInfo2;
+        vkDeviceQueueInfo2.sType            = VkDeviceQueueInfo2.STYPE;
+        vkDeviceQueueInfo2.pNext            = null;
+        vkDeviceQueueInfo2.flags            = configuration.Flags;
+        vkDeviceQueueInfo2.queueFamilyIndex = context->QueueFamilyIndex;
+        vkDeviceQueueInfo2.queueIndex       = 0u;
+        vkGetDeviceQueue2(context->Device, &vkDeviceQueueInfo2, &context->Queue);
+
+        return true;
     }
 }

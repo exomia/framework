@@ -8,14 +8,13 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.ContentSerialization
+namespace Exomia.Framework.Core.ContentSerialization;
+
+/// <summary> An interface to handle content reading. </summary>
+public interface IContentSerializationReader
 {
-    /// <summary> An interface to handle content reading. </summary>
-    public interface IContentSerializationReader
-    {
-        /// <summary> Returns a new created object from the context. </summary>
-        /// <param name="context"> The context. </param>
-        /// <returns> The object. </returns>
-        object Read(ContentSerializationContext context);
-    }
+    /// <summary> Returns a new created object from the context. </summary>
+    /// <param name="context"> The context. </param>
+    /// <returns> The object. </returns>
+    object Read(ContentSerializationContext context);
 }

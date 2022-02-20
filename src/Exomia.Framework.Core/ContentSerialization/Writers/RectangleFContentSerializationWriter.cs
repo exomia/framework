@@ -10,17 +10,16 @@
 
 using Exomia.Framework.Core.Mathematics;
 
-namespace Exomia.Framework.Core.ContentSerialization.Writers
+namespace Exomia.Framework.Core.ContentSerialization.Writers;
+
+internal sealed class RectangleFContentSerializationWriter : ContentSerializationWriter<RectangleF>
 {
-    internal sealed class RectangleFContentSerializationWriter : ContentSerializationWriter<RectangleF>
+    /// <inheritdoc />
+    public override void WriteContext(ContentSerializationContext context, RectangleF obj)
     {
-        /// <inheritdoc />
-        public override void WriteContext(ContentSerializationContext context, RectangleF obj)
-        {
-            context.Set(nameof(RectangleF.X),      obj.X);
-            context.Set(nameof(RectangleF.Y),      obj.Y);
-            context.Set(nameof(RectangleF.Width),  obj.Width);
-            context.Set(nameof(RectangleF.Height), obj.Height);
-        }
+        context.Set(nameof(RectangleF.X),      obj.X);
+        context.Set(nameof(RectangleF.Y),      obj.Y);
+        context.Set(nameof(RectangleF.Width),  obj.Width);
+        context.Set(nameof(RectangleF.Height), obj.Height);
     }
 }

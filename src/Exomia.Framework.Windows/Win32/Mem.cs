@@ -13,49 +13,48 @@ using System.Security;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
-namespace Exomia.Framework.Windows.Win32
+namespace Exomia.Framework.Windows.Win32;
+
+internal static unsafe class Mem
 {
-    internal static unsafe class Mem
-    {
-        private const string NTDLL = "ntdll.dll";
+    private const string NTDLL = "ntdll.dll";
 
-        /// <summary>
-        ///     memcpy call
-        ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
-        ///     destination.
-        /// </summary>
-        /// <param name="dest">destination ptr</param>
-        /// <param name="src">source ptr</param>
-        /// <param name="count">count of bytes to copy</param>
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(NTDLL, EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static extern void Cpy(void* dest, void* src, int count);
+    /// <summary>
+    ///     memcpy call
+    ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
+    ///     destination.
+    /// </summary>
+    /// <param name="dest">destination ptr</param>
+    /// <param name="src">source ptr</param>
+    /// <param name="count">count of bytes to copy</param>
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(NTDLL, EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+    public static extern void Cpy(void* dest, void* src, int count);
 
-        /// <summary>
-        ///     memcpy call
-        ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
-        ///     destination.
-        /// </summary>
-        /// <param name="dest">destination ptr</param>
-        /// <param name="src">source ptr</param>
-        /// <param name="count">count of bytes to copy</param>
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(NTDLL, EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static extern void Move(void* dest, void* src, int count);
+    /// <summary>
+    ///     memcpy call
+    ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
+    ///     destination.
+    /// </summary>
+    /// <param name="dest">destination ptr</param>
+    /// <param name="src">source ptr</param>
+    /// <param name="count">count of bytes to copy</param>
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(NTDLL, EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+    public static extern void Move(void* dest, void* src, int count);
 
-        /// <summary>
-        ///     memset call
-        ///     Sets the first num bytes of the block of memory pointed by ptr to the specified value
-        ///     (interpreted as an unsigned char).
-        /// </summary>
-        /// <param name="dest">  [in,out] destination addr. </param>
-        /// <param name="value"> value to be set. </param>
-        /// <param name="count"> count of bytes. </param>
-        /// <returns>
-        ///     Null if it fails, else a void*.
-        /// </returns>
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(NTDLL, EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static extern void* Set(void* dest, int value, int count);
-    }
+    /// <summary>
+    ///     memset call
+    ///     Sets the first num bytes of the block of memory pointed by ptr to the specified value
+    ///     (interpreted as an unsigned char).
+    /// </summary>
+    /// <param name="dest">  [in,out] destination addr. </param>
+    /// <param name="value"> value to be set. </param>
+    /// <param name="count"> count of bytes. </param>
+    /// <returns>
+    ///     Null if it fails, else a void*.
+    /// </returns>
+    [SuppressUnmanagedCodeSecurity]
+    [DllImport(NTDLL, EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+    public static extern void* Set(void* dest, int value, int count);
 }
