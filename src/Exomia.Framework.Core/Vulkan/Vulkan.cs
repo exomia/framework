@@ -11,12 +11,11 @@
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan.Configurations;
-using Exomia.Framework.Core.Vulkan.Exceptions;
-using Exomia.IoC.Attributes;
-using Exomia.Logging;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using static Exomia.Vulkan.Api.Core.VkFormatFeatureFlagBits;
-using static Exomia.Vulkan.Api.Core.VkPipelineStageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkFenceCreateFlagBits;
 using static Exomia.Vulkan.Api.Core.VkCommandPoolCreateFlagBits;
 
@@ -42,16 +41,10 @@ public sealed unsafe partial class Vulkan : IDisposable
     private readonly SwapchainConfiguration           _swapchainConfiguration;
     private readonly RenderPassConfiguration          _renderPassConfiguration;
 
-    private readonly object            _buffersLock = new object();
-    private          VkCommandBuffer** _subCommandBuffers;
-    private          uint              _subCommandBuffersCount       = 0u;
-    private          uint              _subCommandBuffersSlotCount   = 8u;
-    private          uint              _subCommandBuffersCurrentSlot = 0u;
-
-    private LogHandler _logHandler = null!;
-
-    /// <summary> The context. </summary>
     private VkContext* _context;
+
+    private uint _requestedWidth;
+    private uint _requestedHeight;
 
     /// <summary> Gets the context. </summary>
     /// <value> The context. </value>
@@ -64,52 +57,58 @@ public sealed unsafe partial class Vulkan : IDisposable
     /// <summary> Initializes a new instance of the <see cref="Vulkan" /> class. </summary>
     /// <param name="renderForm">                       The render form. </param>
     /// <param name="applicationConfiguration">         The application configuration. </param>
-    /// <param name="instanceConfiguration">            The instance configuration. </param>
     /// <param name="debugUtilsMessengerConfiguration"> The debug utilities messenger configuration. </param>
-    /// <param name="surfaceConfiguration">             The surface configuration. </param>
-    /// <param name="physicalDeviceConfiguration">      The physical device configuration. </param>
     /// <param name="depthStencilConfiguration">        The depth stencil configuration. </param>
     /// <param name="deviceConfiguration">              The device configuration. </param>
+    /// <param name="instanceConfiguration">            The instance configuration. </param>
+    /// <param name="physicalDeviceConfiguration">      The physical device configuration. </param>
     /// <param name="queueConfiguration">               The queue configuration. </param>
-    /// <param name="swapchainConfiguration">           The swapchain configuration. </param>
     /// <param name="renderPassConfiguration">          The render pass configuration. </param>
+    /// <param name="surfaceConfiguration">             The surface configuration. </param>
+    /// <param name="swapchainConfiguration">           The swapchain configuration. </param>
     /// <param name="logger">                           The logger. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    public Vulkan(IRenderForm                                                        renderForm,
-                  ApplicationConfiguration                                           applicationConfiguration,
-                  InstanceConfiguration                                              instanceConfiguration,
-                  DebugUtilsMessengerConfiguration                                   debugUtilsMessengerConfiguration,
-                  SurfaceConfiguration                                               surfaceConfiguration,
-                  PhysicalDeviceConfiguration                                        physicalDeviceConfiguration,
-                  DepthStencilConfiguration                                          depthStencilConfiguration,
-                  DeviceConfiguration                                                deviceConfiguration,
-                  QueueConfiguration                                                 queueConfiguration,
-                  SwapchainConfiguration                                             swapchainConfiguration,
-                  RenderPassConfiguration                                            renderPassConfiguration,
-                  [IoCOptional(typeof(SimpleConsoleLogger<Vulkan>))] ILogger<Vulkan> logger)
+    public Vulkan(IRenderForm                                renderForm,
+                  IOptions<ApplicationConfiguration>         applicationConfiguration,
+                  IOptions<DebugUtilsMessengerConfiguration> debugUtilsMessengerConfiguration,
+                  IOptions<DepthStencilConfiguration>        depthStencilConfiguration,
+                  IOptions<DeviceConfiguration>              deviceConfiguration,
+                  IOptions<InstanceConfiguration>            instanceConfiguration,
+                  IOptions<PhysicalDeviceConfiguration>      physicalDeviceConfiguration,
+                  IOptions<QueueConfiguration>               queueConfiguration,
+                  IOptions<RenderPassConfiguration>          renderPassConfiguration,
+                  IOptions<SurfaceConfiguration>             surfaceConfiguration,
+                  IOptions<SwapchainConfiguration>           swapchainConfiguration,
+                  ILogger<Vulkan>                            logger)
     {
-        _applicationConfiguration         = applicationConfiguration ?? throw new ArgumentNullException(nameof(applicationConfiguration));
-        _instanceConfiguration            = instanceConfiguration ?? throw new ArgumentNullException(nameof(instanceConfiguration));
-        _debugUtilsMessengerConfiguration = debugUtilsMessengerConfiguration ?? throw new ArgumentNullException(nameof(debugUtilsMessengerConfiguration));
-        _surfaceConfiguration             = surfaceConfiguration ?? throw new ArgumentNullException(nameof(surfaceConfiguration));
-        _physicalDeviceConfiguration      = physicalDeviceConfiguration ?? throw new ArgumentNullException(nameof(physicalDeviceConfiguration));
-        _depthStencilConfiguration        = depthStencilConfiguration ?? throw new ArgumentNullException(nameof(depthStencilConfiguration));
-        _deviceConfiguration              = deviceConfiguration ?? throw new ArgumentNullException(nameof(deviceConfiguration));
-        _queueConfiguration               = queueConfiguration ?? throw new ArgumentNullException(nameof(queueConfiguration));
-        _swapchainConfiguration           = swapchainConfiguration ?? throw new ArgumentNullException(nameof(swapchainConfiguration));
-        _renderPassConfiguration          = renderPassConfiguration ?? throw new ArgumentNullException(nameof(renderPassConfiguration));
+        _applicationConfiguration         = applicationConfiguration.Value ?? throw new ArgumentNullException(nameof(applicationConfiguration));
+        _debugUtilsMessengerConfiguration = debugUtilsMessengerConfiguration.Value ?? throw new ArgumentNullException(nameof(debugUtilsMessengerConfiguration));
+        _depthStencilConfiguration        = depthStencilConfiguration.Value ?? throw new ArgumentNullException(nameof(depthStencilConfiguration));
+        _deviceConfiguration              = deviceConfiguration.Value ?? throw new ArgumentNullException(nameof(deviceConfiguration));
+        _instanceConfiguration            = instanceConfiguration.Value ?? throw new ArgumentNullException(nameof(instanceConfiguration));
+        _physicalDeviceConfiguration      = physicalDeviceConfiguration.Value ?? throw new ArgumentNullException(nameof(physicalDeviceConfiguration));
+        _queueConfiguration               = queueConfiguration.Value ?? throw new ArgumentNullException(nameof(queueConfiguration));
+        _renderPassConfiguration          = renderPassConfiguration.Value ?? throw new ArgumentNullException(nameof(renderPassConfiguration));
+        _surfaceConfiguration             = surfaceConfiguration.Value ?? throw new ArgumentNullException(nameof(surfaceConfiguration));
+        _swapchainConfiguration           = swapchainConfiguration.Value ?? throw new ArgumentNullException(nameof(swapchainConfiguration));
         _logger                           = logger ?? throw new ArgumentNullException(nameof(logger));
 
         *(_context = Allocator.Allocate<VkContext>(1u)) = VkContext.Create();
+
         renderForm.Resized += form =>
         {
-            Context->Width              = (uint)form.Width;
-            Context->Height             = (uint)form.Height;
+            _requestedWidth             = (uint)form.Width;
+            _requestedHeight            = (uint)form.Height;
             Context->FramebufferResized = true;
         };
+
+        /* MODULE INITIALIZE */
+        _moduleFreeIndices = new Stack<uint>(8);
+        _modulesLookup     = new Dictionary<ushort, uint>(8);
+        _modules           = Allocator.Allocate<VkModule>(_modulesCount);
     }
 
-    private static bool CreateSyncObjects(VkContext* context)
+    private bool CreateSyncObjects(VkContext* context)
     {
         VkFenceCreateInfo fenceCreateInfo;
         fenceCreateInfo.sType = VkFenceCreateInfo.STYPE;
@@ -138,199 +137,95 @@ public sealed unsafe partial class Vulkan : IDisposable
         return true;
     }
 
-    internal bool BeginFrame()
-    {
-        vkWaitForFences(Context->Device, 1u, Context->InFlightFences + Context->FrameInFlight, VK_TRUE, ulong.MaxValue)
-            .AssertVkResult();
-
-        VkAcquireNextImageInfoKHR acquireNextImageInfoKhr;
-        acquireNextImageInfoKhr.sType      = VkAcquireNextImageInfoKHR.STYPE;
-        acquireNextImageInfoKhr.pNext      = null;
-        acquireNextImageInfoKhr.swapchain  = Context->Swapchain;
-        acquireNextImageInfoKhr.timeout    = ulong.MaxValue;
-        acquireNextImageInfoKhr.semaphore  = *(Context->SemaphoresImageAvailable + Context->FrameInFlight);
-        acquireNextImageInfoKhr.fence      = VkFence.Null;
-        acquireNextImageInfoKhr.deviceMask = 1u;
-
-        VkResult result = vkAcquireNextImage2KHR(Context->Device, &acquireNextImageInfoKhr, &Context->ImageIndex);
-        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-        switch (result)
-        {
-            case VK_SUCCESS:
-            case VK_SUBOPTIMAL_KHR:
-                break;
-            case VK_ERROR_OUT_OF_DATE_KHR:
-                vkWaitForFences(Context->Device, Context->MaxFramesInFlight, Context->InFlightFences, VK_TRUE, ulong.MaxValue)
-                    .AssertVkResult();
-                RecreateSwapChainInternal(Context, Context->Swapchain);
-                return false;
-            case VK_NOT_READY:
-            case VK_TIMEOUT:
-                return false;
-            default: throw new VulkanException(result, "Failed to acquire swap chain image!");
-        }
-
-        if (*(Context->ImagesInFlightFence + Context->ImageIndex) != VkFence.Null)
-        {
-            vkWaitForFences(Context->Device, 1u, Context->ImagesInFlightFence + Context->ImageIndex, VK_TRUE, ulong.MaxValue)
-                .AssertVkResult();
-        }
-        *(Context->ImagesInFlightFence + Context->ImageIndex) = *(Context->InFlightFences + Context->FrameInFlight);
-
-        return true;
-    }
-
-    internal void EndFrame()
-    {
-        vkResetFences(Context->Device, 1u, Context->InFlightFences + Context->FrameInFlight)
-            .AssertVkResult();
-
-        RecordDefaultCommandBuffer(Context);
-
-        VkPipelineStageFlagBits* pPipelineStageFlagBits = stackalloc VkPipelineStageFlagBits[1] { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-
-        VkSubmitInfo submitInfo;
-        submitInfo.sType                = VkSubmitInfo.STYPE;
-        submitInfo.pNext                = null;
-        submitInfo.waitSemaphoreCount   = 1u;
-        submitInfo.pWaitSemaphores      = Context->SemaphoresImageAvailable + Context->FrameInFlight;
-        submitInfo.pWaitDstStageMask    = pPipelineStageFlagBits;
-        submitInfo.commandBufferCount   = 1u;
-        submitInfo.pCommandBuffers      = Context->CommandBuffers + Context->ImageIndex;
-        submitInfo.signalSemaphoreCount = 1u;
-        submitInfo.pSignalSemaphores    = Context->SemaphoresRenderingDone + Context->FrameInFlight;
-
-        vkQueueSubmit(Context->Queue, 1u, &submitInfo, *(Context->InFlightFences + Context->FrameInFlight))
-            .AssertVkResult();
-
-        VkPresentInfoKHR presentInfoKhr;
-        presentInfoKhr.sType              = VkPresentInfoKHR.STYPE;
-        presentInfoKhr.pNext              = null;
-        presentInfoKhr.waitSemaphoreCount = 1u;
-        presentInfoKhr.pWaitSemaphores    = Context->SemaphoresRenderingDone + Context->FrameInFlight;
-        presentInfoKhr.swapchainCount     = 1u;
-        presentInfoKhr.pSwapchains        = &Context->Swapchain;
-        presentInfoKhr.pImageIndices      = &Context->ImageIndex;
-        presentInfoKhr.pResults           = null;
-
-        VkResult result = vkQueuePresentKHR(Context->Queue, &presentInfoKhr);
-        if (result == VK_SUBOPTIMAL_KHR ||
-            result == VK_ERROR_OUT_OF_DATE_KHR ||
-            Context->FramebufferResized)
-        {
-            Context->FramebufferResized = false;
-            vkWaitForFences(Context->Device, Context->MaxFramesInFlight, Context->InFlightFences, VK_TRUE, ulong.MaxValue)
-                .AssertVkResult();
-
-            RecreateSwapChainInternal(Context, Context->Swapchain);
-            return;
-        }
-
-        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-        switch (result)
-        {
-            case VK_SUCCESS:
-                break;
-            case VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT:
-                Console.WriteLine("fullscreen lost...");
-                moep:
-                VkResult result2 = ((delegate*<VkDevice, VkSwapchainKHR, VkResult>)Context->Device
-                    .GetDeviceProcAddr("vkAcquireFullScreenExclusiveModeEXT"))(Context->Device, Context->Swapchain);
-                Console.WriteLine(result2);
-                if (result2 != VK_SUCCESS)
-                {
-                    goto moep;
-                }
-                break;
-            default: throw new VulkanException(result, "Failed to present swap chain image!");
-        }
-
-        Context->FrameInFlight = (Context->FrameInFlight + 1u) % Context->MaxFramesInFlight;
-    }
-
     internal bool Initialize()
     {
-        if (!CreateInstance(Context, _applicationConfiguration, _instanceConfiguration))
+        using (_logger.BeginScope("Initializing..."))
         {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(CreateInstance)} failed!"));
-            return false;
-        }
+            if (!CreateInstance(Context, _applicationConfiguration, _instanceConfiguration))
+            {
+                _logger.LogCritical("{method} failed!", nameof(CreateInstance));
+                return false;
+            }
 
-        VkKhrGetSurfaceCapabilities2.Load(Context->Instance);
+            VkKhrGetSurfaceCapabilities2.Load(Context->Instance);
 
 #if DEBUG
-        if (!SetupDebugCallback(Context, _debugUtilsMessengerConfiguration))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(SetupDebugCallback)} failed!"));
-            return false;
-        }
+            if (!SetupDebugCallback(Context, _debugUtilsMessengerConfiguration))
+            {
+                _logger.LogCritical("{method} failed!", nameof(SetupDebugCallback));
+                return false;
+            }
 #endif
 
-        if (_surfaceConfiguration.CreateSurface != null && !_surfaceConfiguration.CreateSurface(Context))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(_surfaceConfiguration.CreateSurface)} failed!"));
-            return false;
+            if (_surfaceConfiguration.CreateSurface != null && !_surfaceConfiguration.CreateSurface(Context))
+            {
+                _logger.LogCritical("{method} failed!", nameof(_surfaceConfiguration.CreateSurface));
+                return false;
+            }
+
+            VkKhrSurface.Load(Context->Instance);
+
+            if (!PickBestPhysicalDevice(Context, _physicalDeviceConfiguration, _deviceConfiguration))
+            {
+                _logger.LogCritical("{method} failed!", nameof(PickBestPhysicalDevice));
+                return false;
+            }
+
+            if (!CreateDevice(Context, _deviceConfiguration))
+            {
+                _logger.LogCritical("{method} failed!", nameof(CreateDevice));
+                return false;
+            }
+
+            if (!RetrieveDeviceQueue(Context, _queueConfiguration))
+            {
+                _logger.LogCritical("{method} failed!", nameof(RetrieveDeviceQueue));
+                return false;
+            }
+
+            if (!GetSuitableDepthStencilFormat(
+                    Context,
+                    _depthStencilConfiguration.Formats,
+                    _depthStencilConfiguration.Tiling,
+                    VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                    out Context->DepthStencilFormat))
+            {
+                _logger.LogCritical("The system doesn't support one of the specified depth stencil formats ({formats})!", string.Join(',', _depthStencilConfiguration.Formats));
+                return false;
+            }
+
+            VkKhrSwapchain.Load(Context->Device);
+
+            if (!RecreateSwapChainInternal(Context, VkSwapchainKHR.Null))
+            {
+                _logger.LogCritical("{method} failed!", nameof(RecreateSwapChainInternal));
+                return false;
+            }
+
+            if (!CreateSyncObjects(Context))
+            {
+                _logger.LogCritical("{method} failed!", nameof(CreateSyncObjects));
+                return false;
+            }
+
+            _moduleCommandBuffers = Allocator.AllocatePtr<VkCommandBuffer>(_context->MaxFramesInFlight);
+            for (uint i = 0; i < _context->MaxFramesInFlight; i++)
+            {
+                *(_moduleCommandBuffers + i) = Allocator.Allocate<VkCommandBuffer>(_modulesCount);
+            }
+            _moduleCommandBuffersAreDirty = Math2.SetOnes(_context->MaxFramesInFlight);
+
+            _logger.LogInformation("Vulkan {method} successfully.", nameof(Initialize));
+            return true;
         }
-
-        VkKhrSurface.Load(Context->Instance);
-
-        if (!PickBestPhysicalDevice(Context, _physicalDeviceConfiguration, _deviceConfiguration))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(PickBestPhysicalDevice)} failed!"));
-            return false;
-        }
-
-        if (!CreateDevice(Context, _deviceConfiguration))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(CreateDevice)} failed!"));
-            return false;
-        }
-
-        if (!RetrieveDeviceQueue(Context, _queueConfiguration))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(RetrieveDeviceQueue)} failed!"));
-            return false;
-        }
-
-        if (!GetSuitableDepthStencilFormat(
-                Context,
-                _depthStencilConfiguration.Formats,
-                _depthStencilConfiguration.Tiling,
-                VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
-                out Context->DepthStencilFormat))
-        {
-            _logger.Log(
-                LogLevel.Critical,
-                new VulkanException($"The system doesn't support one of the specified depth stencil formats ({string.Join(',', _depthStencilConfiguration.Formats)})!"));
-            return false;
-        }
-            
-        VkKhrSwapchain.Load(Context->Device);
-
-        if (!RecreateSwapChainInternal(Context, VkSwapchainKHR.Null))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(RecreateSwapChainInternal)} failed!"));
-            return false;
-        }
-
-        Context->ImagesInFlightFence = Allocator.Allocate<VkFence>(Context->SwapchainImageCount, 0);
-
-        if (!CreateSyncObjects(Context))
-        {
-            _logger.Log(LogLevel.Critical, new VulkanException($"{nameof(CreateSyncObjects)} failed!"));
-            return false;
-        }
-
-        _logger.Log(LogLevel.Information, null, $"Vulkan {nameof(Initialize)} successfully.");
-        return true;
     }
 
     internal void Cleanup()
     {
         if (Context->Device != VkDevice.Null)
         {
-            _logger.Log(LogLevel.Information, null, "[Cleanup] Wait for device idle...");
-            _logger.Log(LogLevel.Information, null, "[Cleanup] device idle: {0:G}", vkDeviceWaitIdle(Context->Device));
+            _logger.LogInformation("[Cleanup] Wait for device idle...");
+            _logger.LogInformation("[Cleanup] device idle: {state}", vkDeviceWaitIdle(Context->Device));
 
             if (Context->InFlightFences != null)
             {
@@ -346,9 +241,6 @@ public sealed unsafe partial class Vulkan : IDisposable
 
                 Context->FrameInFlight = 0u;
             }
-
-            FreeSubCommandBuffers();
-            _subCommandBuffersCurrentSlot = 0;
 
             CleanupSwapChainInternal();
 
@@ -380,7 +272,7 @@ public sealed unsafe partial class Vulkan : IDisposable
             Context->Instance = VkInstance.Null;
         }
 
-        _logger.Log(LogLevel.Information, null, $"[Cleanup] {nameof(Cleanup)} done...");
+        _logger.LogInformation("[Cleanup] {method} done...", nameof(Cleanup));
     }
 
     private bool RecreateSwapChainInternal(VkContext* context, VkSwapchainKHR oldSwapchainKhr)
@@ -412,8 +304,6 @@ public sealed unsafe partial class Vulkan : IDisposable
         {
             return false;
         }
-
-        AllocateSubCommandBuffers(_context);
 
         if (!CreateRenderPass(context, _renderPassConfiguration))
         {
@@ -570,6 +460,11 @@ public sealed unsafe partial class Vulkan : IDisposable
             Cleanup();
 
             Allocator.Free(ref _context, 1u);
+
+            /* MODULE DISPOSE */
+            Allocator.Free<VkModule>(ref _modules, _modulesCount);
+            _modulesLookup.Clear();
+            _moduleFreeIndices.Clear();
 
             _disposed = true;
         }

@@ -15,8 +15,8 @@ using Exomia.Framework.Core.Resources;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Shader;
+using Microsoft.Extensions.Logging;
 using static Exomia.Vulkan.Api.Core.VkFormat;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
@@ -25,8 +25,6 @@ namespace Exomia.Framework.Core.Graphics;
 
 public sealed unsafe partial class SpriteBatch
 {
-    private uint _subCommandSlot = uint.MaxValue;
-
     private static bool CreatePipelineLayout(VkDevice device, VkSpriteBatchContext* context)
     {
         VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
@@ -58,14 +56,22 @@ public sealed unsafe partial class SpriteBatch
             throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_VERT_OPT}");
 
         byte* vert = stackalloc byte[(int)vertexShaderStream.Length]; // ~1.35 KB
-        vertexShaderStream.Read(new Span<byte>(vert, (int)vertexShaderStream.Length));
+        if (vertexShaderStream.Length != vertexShaderStream.Read(new Span<byte>(vert, (int)vertexShaderStream.Length)))
+        {
+            _logger.LogCritical("Invalid length of vertex shader was read!");
+            throw new Exception("Invalid length of vertex shader was read!");
+        }
 
         using Stream fragmentShaderStream =
             assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_FRAG_OPT}") ??
             throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_FRAG_OPT}");
 
         byte* frag = stackalloc byte[(int)fragmentShaderStream.Length]; // ~412 B
-        fragmentShaderStream.Read(new Span<byte>(frag, (int)fragmentShaderStream.Length));
+        if (fragmentShaderStream.Length != fragmentShaderStream.Read(new Span<byte>(frag, (int)fragmentShaderStream.Length)))
+        {
+            _logger.LogCritical("Invalid length of fragment shader was read!");
+            throw new Exception("Invalid length of fragment shader was read!");
+        }
 
         _shader = new Shader(context->Device, new[]
         {
@@ -108,22 +114,22 @@ public sealed unsafe partial class SpriteBatch
     {
         if (!CreateDescriptorPool(context))
         {
+            _logger.LogCritical($"{nameof(Setup)} {nameof(CreateDescriptorPool)} failed.");
             throw new Exception($"{nameof(Setup)} {nameof(CreateDescriptorPool)} failed.");
         }
 
         if (!CreateDescriptorSets(context))
         {
+            _logger.LogCritical($"{nameof(Setup)} {nameof(CreateDescriptorSets)} failed.");
             throw new Exception($"{nameof(Setup)} {nameof(CreateDescriptorSets)} failed.");
         }
 
-        _spriteBatchContext->CommandBuffers = Allocator.Allocate<VkCommandBuffer>(context->SwapchainImageCount);
-        if (!Vulkan.Vulkan.CreateCommandBuffers(context->Device, context->CommandPool, context->SwapchainImageCount, _spriteBatchContext->CommandBuffers, VK_COMMAND_BUFFER_LEVEL_SECONDARY))
-        {
-            throw new Exception($"{nameof(Setup)} {nameof(Vulkan.Vulkan.CreateCommandBuffers)} failed.");
-        }
+        _vkModule = _vulkan.CreateModule(_context, _id);
+
 
         if (!CreatePipelineLayout(context->Device, _spriteBatchContext))
         {
+            _logger.LogCritical($"{nameof(Setup)} {nameof(CreatePipelineLayout)} failed.");
             throw new Exception($"{nameof(Setup)} {nameof(CreatePipelineLayout)} failed.");
         }
 
@@ -168,9 +174,6 @@ public sealed unsafe partial class SpriteBatch
                 _shader!["DEFAULT_VS"],
                 _shader!["DEFAULT_FS"]
             }));
-
-
-        _subCommandSlot = _vulkan.AddSecondaryCommandBuffers(_vulkan.Context, _spriteBatchContext->CommandBuffers, _subCommandSlot);
     }
 
     private bool CreateDescriptorPool(VkContext* context)
@@ -259,33 +262,23 @@ public sealed unsafe partial class SpriteBatch
         _pipeline?.Dispose();
         _pipeline = null;
 
-        if (_spriteBatchContext->CommandBuffers != null)
-        {
-            try
-            {
-                vkFreeCommandBuffers(_context->Device, _context->CommandPool, _context->SwapchainImageCount, _spriteBatchContext->CommandBuffers);
-            }
-            finally
-            {
-                Allocator.Free(ref _spriteBatchContext->CommandBuffers, _context->SwapchainImageCount);
-            }
-        }
+        _vulkan.DestroyModule(_context, ref _vkModule);
 
         if (_spriteBatchContext->PipelineLayout != VkPipelineLayout.Null)
         {
-            vkDestroyPipelineLayout(_vulkan.Context->Device, _spriteBatchContext->PipelineLayout, null);
+            vkDestroyPipelineLayout(_context->Device, _spriteBatchContext->PipelineLayout, null);
             _spriteBatchContext->PipelineLayout = VkPipelineLayout.Null;
         }
 
         if (_spriteBatchContext->DescriptorSetLayout != VkDescriptorSetLayout.Null)
         {
-            vkDestroyDescriptorSetLayout(_vulkan.Context->Device, _spriteBatchContext->DescriptorSetLayout, null);
+            vkDestroyDescriptorSetLayout(_context->Device, _spriteBatchContext->DescriptorSetLayout, null);
             _spriteBatchContext->DescriptorSetLayout = VkDescriptorSetLayout.Null;
         }
 
         if (_spriteBatchContext->DescriptorPool != VkDescriptorPool.Null)
         {
-            vkDestroyDescriptorPool(_vulkan.Context->Device, _spriteBatchContext->DescriptorPool, null);
+            vkDestroyDescriptorPool(_context->Device, _spriteBatchContext->DescriptorPool, null);
             _spriteBatchContext->DescriptorPool = VkDescriptorPool.Null;
         }
     }

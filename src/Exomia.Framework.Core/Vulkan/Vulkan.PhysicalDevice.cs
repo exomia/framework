@@ -11,7 +11,7 @@
 using System.Text;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
-using Exomia.Logging;
+using Microsoft.Extensions.Logging;
 using static Exomia.Vulkan.Api.Core.VkQueueFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
@@ -83,6 +83,7 @@ sealed unsafe partial class Vulkan
             (pQueueFamilyProperties2 + a)->sType = VkQueueFamilyProperties2.STYPE;
             (pQueueFamilyProperties2 + a)->pNext = null;
         }
+
         vkGetPhysicalDeviceQueueFamilyProperties2(physicalDevice, &amountOfQueueFamilies, pQueueFamilyProperties2);
 
         for (uint i = 0u; i < amountOfQueueFamilies; i++)

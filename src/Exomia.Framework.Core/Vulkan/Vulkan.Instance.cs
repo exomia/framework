@@ -11,7 +11,7 @@
 using System.Text;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
-using Exomia.Logging;
+using Microsoft.Extensions.Logging;
 using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkImageTiling;
 

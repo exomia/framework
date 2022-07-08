@@ -49,7 +49,6 @@ public sealed unsafe partial class SpriteBatch
         public VkDescriptorPool      DescriptorPool;
         public VkDescriptorSetLayout DescriptorSetLayout;
         public VkDescriptorSet*      DescriptorSets;
-        public VkCommandBuffer*      CommandBuffers;
 
         public static VkSpriteBatchContext Create()
         {
@@ -58,7 +57,6 @@ public sealed unsafe partial class SpriteBatch
             context.DescriptorPool      = VkDescriptorPool.Null;
             context.DescriptorSetLayout = VkDescriptorSetLayout.Null;
             context.DescriptorSets      = null;
-            context.CommandBuffers      = null;
             return context;
         }
     }

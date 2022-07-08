@@ -425,6 +425,18 @@ public sealed unsafe class Buffer : IDisposable
     /// <summary> Gets the map. </summary>
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T* Map<T>()
+        where T : unmanaged
+    {
+        void* ptr;
+        vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
+            .AssertVkResult();
+        return (T*)ptr;
+    }
+
+    /// <summary> Gets the map. </summary>
+    /// <returns> Null if it fails, else a void*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void* Map(VkDeviceSize offset)
     {
         void* ptr;
@@ -436,12 +448,36 @@ public sealed unsafe class Buffer : IDisposable
     /// <summary> Gets the map. </summary>
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T* Map<T>(VkDeviceSize offset)
+        where T : unmanaged
+    {
+        void* ptr;
+        vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
+            .AssertVkResult();
+        return (T*)ptr;
+    }
+
+    /// <summary> Gets the map. </summary>
+    /// <returns> Null if it fails, else a void*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void* Map(VkDeviceSize offset, VkDeviceSize length)
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
             .AssertVkResult();
         return ptr;
+    }
+
+    /// <summary> Gets the map. </summary>
+    /// <returns> Null if it fails, else a void*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T* Map<T>(VkDeviceSize offset, VkDeviceSize length)
+        where T: unmanaged
+    {
+        void* ptr;
+        vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
+            .AssertVkResult();
+        return (T*)ptr;
     }
 
     /// <summary> Gets the map. </summary>
@@ -492,7 +528,7 @@ public sealed unsafe class Buffer : IDisposable
         }
 
         VkCommandBuffer commandBuffer;
-        Vulkan.CreateCommandBuffers(_device, commandPool, 1, &commandBuffer);
+        Vulkan.CreateCommandBuffers(_device, commandPool, 1u, &commandBuffer);
 
         VkCommandBufferBeginInfo commandBufferBeginInfo;
         commandBufferBeginInfo.sType            = VkCommandBufferBeginInfo.STYPE;
@@ -507,7 +543,7 @@ public sealed unsafe class Buffer : IDisposable
         bufferCopy.srcOffset = VkDeviceSize.Zero;
         bufferCopy.dstOffset = VkDeviceSize.Zero;
         bufferCopy.size      = Size;
-        vkCmdCopyBuffer(commandBuffer, *_buffer, *dst._buffer, 1, &bufferCopy);
+        vkCmdCopyBuffer(commandBuffer, *_buffer, *dst._buffer, 1u, &bufferCopy);
 
         vkEndCommandBuffer(commandBuffer)
             .AssertVkResult();
@@ -540,7 +576,7 @@ public sealed unsafe class Buffer : IDisposable
 
         vkDestroyFence(_device, fence, null);
 
-        vkFreeCommandBuffers(_device, commandPool, 1, &commandBuffer);
+        vkFreeCommandBuffers(_device, commandPool, 1u, &commandBuffer);
     }
 
     #region IDisposable Support

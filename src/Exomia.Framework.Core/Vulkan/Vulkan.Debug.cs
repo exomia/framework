@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Core.Vulkan.Configurations;
-using Exomia.Logging;
+using Microsoft.Extensions.Logging;
 using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageTypeFlagBitsEXT;
 using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageSeverityFlagBitsEXT;
 
@@ -20,6 +20,8 @@ namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
+    private LogHandler _logHandler = null!;
+
     /// <summary> Handler, called within the debug user callback to log to the logger of the vulkan instance. </summary>
     /// <param name="logLevel">      The log level. </param>
     /// <param name="exception">     The exception. </param>
@@ -59,15 +61,15 @@ sealed unsafe partial class Vulkan
 
         if ((messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
         {
-            logHandler(logLevel, null, "[{0}/GENERAL] {1}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
+            logHandler(logLevel, null, "[{id}/GENERAL] {message}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
         }
         else if ((messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
         {
-            logHandler(logLevel, null, "[{0}/VALIDATION] {1}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
+            logHandler(logLevel, null, "[{id}/VALIDATION] {message}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
         }
         else if ((messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
         {
-            logHandler(logLevel, null, "[{0}/PERFORMANCE] {1}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
+            logHandler(logLevel, null, "[{id}/PERFORMANCE] {message}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
         }
 
         return VkBool32.False;
@@ -98,10 +100,10 @@ sealed unsafe partial class Vulkan
         debugUtilsMessengerCreateInfoExt.pUserData = (void*)Marshal.GetFunctionPointerForDelegate(
             _logHandler = Expression.Lambda<LogHandler>(
                     Expression.Call(
-                        Expression.Constant(_logger),
-                        typeof(ILogger).GetMethod(
-                            nameof(ILogger.Log),
-                            BindingFlags.Public | BindingFlags.Instance,
+                        Expression.Constant(this),
+                        typeof(Vulkan).GetMethod(
+                            nameof(LogCallback),
+                            BindingFlags.NonPublic | BindingFlags.Instance,
                             null,
                             CallingConventions.HasThis,
                             new[] { typeof(LogLevel), typeof(Exception), typeof(string), typeof(object).MakeArrayType() },
@@ -112,7 +114,11 @@ sealed unsafe partial class Vulkan
 
         vkCreateDebugUtilsMessengerEXT(context->Instance, &debugUtilsMessengerCreateInfoExt, null, &context->DebugUtilsMessengerExt)
             .AssertVkResult();
-
         return true;
+    }
+
+    private void LogCallback(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args)
+    {
+        _logger.Log(logLevel, exception, messageFormat, args);
     }
 }

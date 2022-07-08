@@ -18,7 +18,7 @@ using Exomia.Framework.Core.Graphics.SpriteSort;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Shader;
-using Exomia.IoC.Attributes;
+using Microsoft.Extensions.Logging;
 using static Exomia.Vulkan.Api.Core.VkCommandBufferUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkPipelineBindPoint;
 using static Exomia.Vulkan.Api.Core.VkIndexType;
@@ -38,13 +38,17 @@ using TIndex = UInt16;
 /// </summary>
 public sealed unsafe partial class SpriteBatch : IDisposable
 {
-    private const int   MAX_BATCH_SIZE             = 1 << 13;
+#if USE_32BIT_INDEX
+    private const int MAX_BATCH_SIZE = 1 << 29;
+#else
+    private const int MAX_BATCH_SIZE = 1 << 13;
+#endif
     private const int   INITIAL_QUEUE_SIZE         = 1 << 7;
     private const uint  VERTICES_PER_SPRITE        = 4;
     private const uint  INDICES_PER_SPRITE         = 6;
     private const ulong MAX_VERTEX_COUNT           = MAX_BATCH_SIZE * VERTICES_PER_SPRITE;
     private const uint  MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
-    private const int   BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
+    private const int   BATCH_SEQUENTIAL_THRESHOLD = 1 << 12;
     private const int   VERTEX_STRIDE              = sizeof(float) * 10;
 
     private static readonly TIndex[]   s_indices;
@@ -54,13 +58,16 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     private readonly Dictionary<IntPtr, TextureInfo> _textureInfos = new Dictionary<IntPtr, TextureInfo>(INITIAL_QUEUE_SIZE);
     private readonly ISpriteSort                     _spriteSort;
+    private readonly ushort                          _id;
     private readonly Vulkan.Vulkan                   _vulkan;
+    private readonly ILogger<SpriteBatch>            _logger;
     private readonly VkContext*                      _context;
     private readonly bool                            _center;
     private readonly Texture                         _whiteTexture;
     private readonly VkDeviceSize                    _vertexBufferChunkLength;
 
     private VkSpriteBatchContext*   _spriteBatchContext;
+    private VkModule*               _vkModule;
     private Buffer                  _indexBuffer   = null!;
     private Buffer                  _vertexBuffer  = null!;
     private Buffer                  _uniformBuffer = null!;
@@ -108,23 +115,30 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     }
 
     /// <summary> Initializes a new instance of the <see cref="SpriteBatch" /> class. </summary>
+    /// <param name="id">            The identifier. </param>
     /// <param name="vulkan">        The graphics device. </param>
+    /// <param name="logger">        The logger. </param>
     /// <param name="center">        (Optional) True to center the coordinate system in the viewport. </param>
     /// <param name="sortAlgorithm"> (Optional) The sort algorithm. </param>
-    /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
-    public SpriteBatch(Vulkan.Vulkan                       vulkan,
-                       [IoCUseDefault] bool                center        = false,
-                       [IoCUseDefault] SpriteSortAlgorithm sortAlgorithm = SpriteSortAlgorithm.MergeSort)
+    /// <exception cref="ArgumentException">      Thrown when one or more arguments have unsupported or illegal values. </exception>
+    public SpriteBatch(
+        ushort               id,
+        Vulkan.Vulkan        vulkan,
+        ILogger<SpriteBatch> logger,
+        bool                 center        = false,
+        SpriteSortAlgorithm  sortAlgorithm = SpriteSortAlgorithm.MergeSort)
     {
+        _id      = id;
         _vulkan  = vulkan ?? throw new NullReferenceException(nameof(vulkan));
+        _logger  = logger;
         _context = vulkan.Context;
         _center  = center;
 
         _spriteSort = sortAlgorithm switch
         {
             SpriteSortAlgorithm.MergeSort => new SpriteMergeSort(),
-            _                             => throw new ArgumentException($"invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm))
+            _                             => throw new ArgumentException($"Invalid sort algorithm ({sortAlgorithm})", nameof(sortAlgorithm))
         };
 
         _vertexBufferChunkLength = MAX_VERTEX_COUNT * (ulong)sizeof(VertexPositionColorTexture);
@@ -141,19 +155,23 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         //graphicsDevice.ResizeFinished += GraphicsDeviceOnResizeFinished;
 
-        vulkan.CleanupSwapChain += v =>
-        {
-            CleanupVulkan();
-        };
-
-        vulkan.SwapChainRecreated += v =>
-        {
-            SetupVulkan(v.Context);
-            Resize(v.Context->Width, v.Context->Height);
-        };
+        vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
+        vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
 
         Resize(_context->Width, _context->Height);
     }
+
+    private void OnVulkanOnSwapChainRecreated(Vulkan.Vulkan v)
+    {
+        SetupVulkan(v.Context);
+        Resize(v.Context->Width, v.Context->Height);
+    }
+
+    private void OnVulkanOnCleanupSwapChain(Vulkan.Vulkan v)
+    {
+        CleanupVulkan();
+    }
+
 
     private static void UpdateVertexFromSpriteInfo(ref SpriteInfo              spriteInfo,
                                                    VertexPositionColorTexture* vpctPtr,
@@ -297,19 +315,28 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         commandBufferBeginInfo.flags            = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
         commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritanceInfo;
 
-        VkCommandBuffer commandBuffer = *(_spriteBatchContext->CommandBuffers + _context->ImageIndex);
+        VkCommandBuffer commandBuffer = *(_vkModule->CommandBuffers + _context->ImageIndex);
         vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
             .AssertVkResult();
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *_pipeline!.Pipelines);
+
 #if USE_32BIT_INDEX
-            vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, VkDeviceSize.Zero, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, VkDeviceSize.Zero, VK_INDEX_TYPE_UINT32);
 #else
         vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, VkDeviceSize.Zero, VK_INDEX_TYPE_UINT16);
 #endif
 
-        _uniformBuffer.Update(_projectionMatrix, (ulong)_context->ImageIndex);
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _spriteBatchContext->PipelineLayout, 0u, 1u, _spriteBatchContext->DescriptorSets + _context->ImageIndex, 0u, null);
+        _uniformBuffer.Update<Matrix4x4>(_projectionMatrix, (ulong)_context->ImageIndex);
+        vkCmdBindDescriptorSets(
+            commandBuffer,
+            VK_PIPELINE_BIND_POINT_GRAPHICS,
+            _spriteBatchContext->PipelineLayout,
+            0u,
+            1u,
+            _spriteBatchContext->DescriptorSets + _context->ImageIndex,
+            0u,
+            null);
 
 
         //VkRect2D scissorRect;
@@ -345,7 +372,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             throw new InvalidOperationException($"{nameof(Begin)} must be called before {nameof(End)}");
         }
 #endif
-        VkCommandBuffer commandBuffer = *(_spriteBatchContext->CommandBuffers + _context->ImageIndex);
+        VkCommandBuffer commandBuffer = *(_vkModule->CommandBuffers + _context->ImageIndex);
         VkDeviceSize    offset        = _vertexBufferChunkLength * (ulong)_context->ImageIndex;
         vkCmdBindVertexBuffers(commandBuffer, 0u, 1u, _vertexBuffer, &offset);
 
@@ -374,7 +401,9 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 batchSize = MAX_BATCH_SIZE;
             }
 
-            VertexPositionColorTexture* vpctPtr = (VertexPositionColorTexture*)_vertexBuffer.Map(_vertexBufferChunkLength * (ulong)_context->ImageIndex, _vertexBufferChunkLength);
+            VertexPositionColorTexture* vpctPtr = _vertexBuffer.Map<VertexPositionColorTexture>(
+                _vertexBufferChunkLength * (ulong)_context->ImageIndex, 
+                _vertexBufferChunkLength);
 
             if (batchSize > BATCH_SEQUENTIAL_THRESHOLD)
             {
@@ -396,7 +425,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
             _vertexBuffer.Unmap();
 
-            vkCmdDrawIndexed(*(_spriteBatchContext->CommandBuffers + _context->ImageIndex), INDICES_PER_SPRITE * batchSize, 1u, 0u, 0, 0u);
+            vkCmdDrawIndexed(*(_vkModule->CommandBuffers + _context->ImageIndex), INDICES_PER_SPRITE * batchSize, 1u, 0u, 0, 0u);
 
             offset += batchSize;
             count  -= batchSize;
@@ -482,6 +511,9 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         {
             if (disposing)
             {
+                _vulkan.SwapChainRecreated -= OnVulkanOnSwapChainRecreated;
+                _vulkan.CleanupSwapChain   -= OnVulkanOnCleanupSwapChain;
+
                 _textureInfos.Clear();
 
                 vkDeviceWaitIdle(_vulkan.Context->Device)
@@ -496,7 +528,6 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 _indexBuffer.Dispose();
 
                 Allocator.Free(_spriteBatchContext, 1u);
-
 
                 _disposed = true;
             }

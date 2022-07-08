@@ -223,6 +223,7 @@ sealed unsafe partial class Vulkan
                 (graphicsPipelineCreateInfos + c)->pDepthStencilState  = &pipelineDepthStencilStateCreateInfo;
                 (graphicsPipelineCreateInfos + c)->pColorBlendState    = &pipelineColorBlendStateCreateInfo;
                 (graphicsPipelineCreateInfos + c)->pDynamicState       = null;
+
                 if (configuration.DynamicState.States != null && configuration.DynamicState.States.Length > 0)
                 {
                     // ReSharper disable once StackAllocInsideLoop
@@ -241,6 +242,7 @@ sealed unsafe partial class Vulkan
 
                     (graphicsPipelineCreateInfos + c)->pDynamicState = &pipelineDynamicStateCreateInfo;
                 }
+
                 (graphicsPipelineCreateInfos + c)->layout             = pipelineLayout;
                 (graphicsPipelineCreateInfos + c)->renderPass         = context->RenderPass;
                 (graphicsPipelineCreateInfos + c)->subpass            = configuration.GraphicsPipeline.Subpass;
@@ -284,7 +286,7 @@ sealed unsafe partial class Vulkan
                     }
                     finally
                     {
-                        Allocator.Free(Pipelines, Count);
+                        Allocator.Free<VkPipeline>(Pipelines, Count);
                     }
                 }
             }
