@@ -102,9 +102,14 @@ internal sealed partial class RenderForm
             }
             case WM.SIZE:
             {
-                Width  = LowWord(lParam);
-                Height = HighWord(lParam);
-                Resized?.Invoke(this);
+                int width  = LowWord(lParam);
+                int height = HighWord(lParam);
+                if (width != Width || height != Height)
+                {
+                    Width = width;
+                    Height = height;
+                    Resized?.Invoke(this);
+                }
                 return IntPtr.Zero;
             }
             case WM.CLOSE:

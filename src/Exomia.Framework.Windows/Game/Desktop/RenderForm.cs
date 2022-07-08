@@ -17,6 +17,7 @@ using Exomia.Framework.Windows.Input;
 using Exomia.Framework.Windows.Input.Raw;
 using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
+using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.Windows.Game.Desktop;
 
@@ -142,22 +143,22 @@ internal sealed partial class RenderForm : IWin32RenderForm
     /// <param name="configuration"> The configuration. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     /// <exception cref="Win32Exception">        Thrown when a Window 32 error condition occurs. </exception>
-    public RenderForm(RenderFormConfiguration configuration)
+    public RenderForm(IOptions<RenderFormConfiguration> configuration)
     {
         if (configuration == null) { throw new ArgumentNullException(nameof(configuration)); }
 
-        _windowTitle = configuration.Title;
-        _windowState = configuration.DisplayType == DisplayType.FullscreenWindow
+        _windowTitle = configuration.Value.Title;
+        _windowState = configuration.Value.DisplayType == DisplayType.FullscreenWindow
             ? FormWindowState.Maximized
             : FormWindowState.Normal;
-        _borderStyle = configuration.DisplayType == DisplayType.Window
+        _borderStyle = configuration.Value.DisplayType == DisplayType.Window
             ? FormBorderStyle.Fixed
             : FormBorderStyle.None;
-        _clipCursor     = configuration.ClipCursor;
-        _isMouseVisible = configuration.IsMouseVisible;
+        _clipCursor     = configuration.Value.ClipCursor;
+        _isMouseVisible = configuration.Value.IsMouseVisible;
 
-        Width  = (int)configuration.Width;
-        Height = (int)configuration.Height;
+        Width  = (int)configuration.Value.Width;
+        Height = (int)configuration.Value.Height;
 
         _rawKeyPipe        = new Pipe<RawKeyEventHandler>();
         _keyUpPipe         = new Pipe<KeyEventHandler>();
@@ -199,7 +200,7 @@ internal sealed partial class RenderForm : IWin32RenderForm
     /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
     public void Show()
     {
-        User32.ShowWindow(HWnd, (int)ShowWindowCommands.Normal);
+        User32.ShowWindow(HWnd, (int)ShowWindowCommands.Show);
 
         if (!User32.UpdateWindow(HWnd))
         {

@@ -56,7 +56,7 @@ public class LoadingScene : SceneBase
                 if (_sceneManager!.ShowScene(_sceneToLoad) != ShowSceneResult.Success)
                 {
                     throw new Exception(
-                        $"can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
+                        $"Can't show scene: '{_sceneToLoad.Key}' | State: {_sceneToLoad.State}");
                 }
                 break;
             }

@@ -10,96 +10,101 @@
 
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
-using Exomia.IoC;
-using IServiceProvider = Exomia.IoC.IServiceProvider;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Exomia.Framework.Core.Game;
 
 /// <summary> A game builder. This class cannot be inherited. </summary>
 public sealed class GameBuilder : IGameBuilder
 {
-    private readonly IList<Action<IServiceProvider>> _configurables;
-    private readonly DisposeCollector                _disposeCollector;
-    private          Action<IServiceCollection>?     _configureServices;
+    private readonly IDictionary<Type, IList<Action<object, IServiceProvider>>> _configurables;
+    private readonly IList<Action<IServiceCollection>>                          _configurableServices;
+    private readonly DisposeCollector                                           _disposeCollector;
 
     /// <summary> Prevents a default instance of the <see cref="GameBuilder" /> class from being created. </summary>
     private GameBuilder()
     {
-        _configurables    = new List<Action<IServiceProvider>>(16);
-        _disposeCollector = new DisposeCollector();
+        _configurables        = new Dictionary<Type, IList<Action<object, IServiceProvider>>>(16);
+        _configurableServices = new List<Action<IServiceCollection>>(16);
+        _disposeCollector     = new DisposeCollector();
     }
 
-    /// <summary> Configure services. </summary>
-    /// <param name="configureDelegate"> The configure delegate. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    public IGameBuilder ConfigureServices(Action<IServiceCollection> configureDelegate)
-    {
-        _configureServices += configureDelegate;
-        return this;
-    }
-
-    /// <summary> Configure vulkan. </summary>
-    /// <param name="configureDelegate"> The configure delegate. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    public IGameBuilder Configure<TConfiguration>(Action<IServiceProvider, TConfiguration> configureDelegate)
+    /// <inheritdoc />
+    public IGameBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure)
         where TConfiguration : class
     {
-        _configurables.Add((provider => { configureDelegate.Invoke(provider, provider.Get<TConfiguration>()); }));
+        if (!_configurables.TryGetValue(typeof(TConfiguration), out IList<Action<object, IServiceProvider>>? list))
+        {
+            _configurables.Add(typeof(TConfiguration), list = new List<Action<object, IServiceProvider>>(4));
+        }
+        list.Add(((configuration, provider) => { configure.Invoke((TConfiguration)configuration, provider); }));
         return this;
     }
 
-    /// <summary> Registers the disposable to automatically be disposed on shutdown. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="disposable"> The disposable. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
+    /// <inheritdoc />
+    public IGameBuilder ConfigureServices(Action<IServiceCollection> configure)
+    {
+        _configurableServices.Add(configure);
+        return this;
+    }
+
+    /// <inheritdoc />
     public T RegisterDisposable<T>(T disposable)
         where T : IDisposable
     {
         return _disposeCollector.Collect(disposable);
     }
 
-    /// <summary> Gets the build. </summary>
-    /// <typeparam name="TGame"> Type of the game. </typeparam>
-    /// <returns> A <typeparamref name="TGame" />. </returns>
+    /// <inheritdoc />
     public TGame Build<TGame>() where TGame : Game
     {
         IServiceCollection appServiceCollection = new ServiceCollection()
-            /* VULKAN */
-            .Add<ApplicationConfiguration>(ServiceKind.Singleton)
-            .Add<InstanceConfiguration>(ServiceKind.Singleton)
-            .Add<DebugUtilsMessengerConfiguration>(ServiceKind.Singleton)
-            .Add<SurfaceConfiguration>(ServiceKind.Singleton)
-            .Add<PhysicalDeviceConfiguration>(ServiceKind.Singleton)
-            .Add<DepthStencilConfiguration>(ServiceKind.Singleton)
-            .Add<DeviceConfiguration>(ServiceKind.Singleton)
-            .Add<QueueConfiguration>(ServiceKind.Singleton)
-            .Add<SwapchainConfiguration>(ServiceKind.Singleton)
-            .Add<RenderPassConfiguration>(ServiceKind.Singleton)
-            .Add<ApplicationConfiguration>(ServiceKind.Singleton)
-            .Add<Vulkan.Vulkan>(ServiceKind.Singleton)
-            /* Game */
-            .Add<GameConfiguration>(ServiceKind.Singleton)
-            .Add<RenderFormConfiguration>(ServiceKind.Singleton)
-            .Add<TGame>(ServiceKind.Singleton)
-            .Add<Game>(p => p.Get<TGame>(), ServiceKind.Singleton);
+            /* vulkan */
+            .AddSingleton<Vulkan.Vulkan>()
+            /* game */
+            .AddSingleton<TGame>()
+            .AddSingleton<Game>(p => p.GetRequiredService<TGame>());
 
-        _configureServices?.Invoke(appServiceCollection);
+        /* vulkan options */
+        AddOptions<ApplicationConfiguration>(appServiceCollection);
+        AddOptions<DebugUtilsMessengerConfiguration>(appServiceCollection);
+        AddOptions<DepthStencilConfiguration>(appServiceCollection);
+        AddOptions<DeviceConfiguration>(appServiceCollection);
+        AddOptions<InstanceConfiguration>(appServiceCollection);
+        AddOptions<PhysicalDeviceConfiguration>(appServiceCollection);
+        AddOptions<QueueConfiguration>(appServiceCollection);
+        AddOptions<RenderPassConfiguration>(appServiceCollection);
+        AddOptions<SurfaceConfiguration>(appServiceCollection);
+        AddOptions<SwapchainConfiguration>(appServiceCollection);
 
-        IServiceProvider serviceProvider = appServiceCollection.Build();
+        /* game options */
+        AddOptions<GameConfiguration>(appServiceCollection);
+        AddOptions<RenderFormConfiguration>(appServiceCollection);
 
-        foreach (Action<IServiceProvider> configurable in _configurables)
+        /* custom user setup */
+        foreach (Action<IServiceCollection> callback in _configurableServices)
         {
-            configurable.Invoke(serviceProvider);
+            callback.Invoke(appServiceCollection);
         }
 
-        Vulkan.Vulkan vulkan = _disposeCollector.Collect(serviceProvider.Get<Vulkan.Vulkan>());
+        /* add null logging, if nothing else was provided! */
+        appServiceCollection.TryAddSingleton<ILoggerFactory, NullLoggerFactory>();
+        appServiceCollection.TryAddSingleton(typeof(ILogger),   typeof(NullLogger));
+        appServiceCollection.TryAddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
+
+        IServiceProvider serviceProvider = appServiceCollection.BuildServiceProvider();
+
+        Vulkan.Vulkan vulkan = _disposeCollector.Collect(serviceProvider.GetRequiredService<Vulkan.Vulkan>());
         if (!vulkan.Initialize())
         {
             _disposeCollector.RemoveAndDispose(ref vulkan);
             throw new VulkanException("Vulkan initialization failed!");
         }
 
-        return serviceProvider.Get<TGame>();
+        return serviceProvider.GetRequiredService<TGame>();
     }
 
     /// <summary> Creates a new <see cref="IGameBuilder" />. </summary>
@@ -107,6 +112,25 @@ public sealed class GameBuilder : IGameBuilder
     public static IGameBuilder Create()
     {
         return new GameBuilder();
+    }
+
+    private void AddOptions<TOption>(IServiceCollection serviceCollection) where TOption : class
+    {
+        if (_configurables.TryGetValue(typeof(TOption), out IList<Action<object, IServiceProvider>>? callbacks))
+        {
+            serviceCollection
+                .AddOptions<TOption>()
+                .Configure<IServiceProvider>(((configuration, provider) =>
+                {
+                    foreach (Action<object, IServiceProvider> callback in callbacks)
+                    {
+                        callback(configuration, provider);
+                    }
+                }));
+            return;
+        }
+        
+        serviceCollection.AddOptions<TOption>();
     }
 
     #region IDisposable Support

@@ -44,7 +44,7 @@ public static class ContentCompressor
                 case CompressMode.Gzip:
                     GzipCompress(stream, streamOut);
                     break;
-                default: throw new ArgumentException("no compression method found", nameof(compressMode));
+                default: throw new ArgumentException("No compression method found", nameof(compressMode));
             }
         }
         catch
@@ -79,7 +79,7 @@ public static class ContentCompressor
                 case CompressMode.Gzip:
                     GzipDecompress(stream, out streamOut);
                     break;
-                default: throw new ArgumentException("no compression method found", nameof(stream));
+                default: throw new ArgumentException("No compression method found", nameof(stream));
             }
         }
         catch

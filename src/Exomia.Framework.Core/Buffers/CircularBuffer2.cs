@@ -90,7 +90,7 @@ public class CircularBuffer2<T>
         {
             if (items.Length > capacity)
             {
-                throw new ArgumentException(@"Too many items to fit circular buffer", nameof(items));
+                throw new ArgumentException(@"Too many items to fit in circular buffer", nameof(items));
             }
             Array.Copy(items, _buffer, items.Length);
             _size = items.Length;
@@ -124,7 +124,7 @@ public class CircularBuffer2<T>
             _thisLock.Enter(ref lockTaken);
             if (_size == 0)
             {
-                throw new InvalidOperationException("empty circular buffer");
+                throw new InvalidOperationException("Empty circular buffer");
             }
 
             int index = _tail++ & _mask;
@@ -152,7 +152,7 @@ public class CircularBuffer2<T>
             _thisLock.Enter(ref lockTaken);
             if (_size == 0)
             {
-                throw new InvalidOperationException("empty circular buffer");
+                throw new InvalidOperationException("Empty circular buffer");
             }
 
             int   index = _tail++ & _mask;
@@ -180,7 +180,7 @@ public class CircularBuffer2<T>
             _thisLock.Enter(ref lockTaken);
             if (_size == 0)
             {
-                throw new InvalidOperationException("empty circular buffer");
+                throw new InvalidOperationException("Empty circular buffer");
             }
 
             return _buffer[_tail & _mask];
@@ -203,7 +203,7 @@ public class CircularBuffer2<T>
             _thisLock.Enter(ref lockTaken);
             if (_size == 0)
             {
-                throw new InvalidOperationException("empty circular buffer");
+                throw new InvalidOperationException("Empty circular buffer");
             }
 
             return ref _buffer[_tail & _mask];

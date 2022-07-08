@@ -192,7 +192,7 @@ internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable,
         {
             return scene!.State;
         }
-        throw new NullReferenceException($"no scene with key: '{key}' found.");
+        throw new NullReferenceException($"No scene with key: '{key}' found.");
     }
 
     /// <inheritdoc />

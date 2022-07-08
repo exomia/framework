@@ -8,7 +8,7 @@
 
 #endregion
 
-using IServiceProvider = Exomia.IoC.IServiceProvider;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Exomia.Framework.Core.Scene;
 
@@ -40,7 +40,7 @@ public sealed class SceneBuilder
     {
         foreach ((bool initialize, Type? sceneType) in _sceneCollection)
         {
-            yield return (initialize, (SceneBase)_serviceProvider.Get(sceneType));
+            yield return (initialize, (SceneBase)_serviceProvider.GetRequiredService(sceneType));
         }
 
         _sceneCollection.Clear();

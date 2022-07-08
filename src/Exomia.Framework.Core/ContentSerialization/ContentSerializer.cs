@@ -278,7 +278,7 @@ public static class ContentSerializer
         }
         catch (Exception e)
         {
-            throw new CsReaderException($"error near line {sr.Line}", e);
+            throw new CsReaderException($"Error near line {sr.Line}", e);
         }
         finally
         {

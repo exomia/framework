@@ -11,7 +11,7 @@
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Core.Scene;
-using Exomia.IoC;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Exomia.Framework.Core.Extensions;
 
@@ -24,7 +24,7 @@ public static class CoreExtensions
     public static IServiceCollection AddDefaultContentManagement(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .Add<IContentManager, ContentManager>(ServiceKind.Singleton);
+            .AddSingleton<IContentManager, ContentManager>();
     }
 
     /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default scene management. </summary>
@@ -34,10 +34,9 @@ public static class CoreExtensions
     public static IServiceCollection AddDefaultSceneManagement(this IServiceCollection serviceCollection, Func<SceneBuilder, SceneBuilder> sceneBuilder)
     {
         return serviceCollection
-            .Add<ISceneManager>(
+            .AddSingleton<ISceneManager>(
                 p => new SceneManager(
-                    p.Get<IInputDevice>(),
-                    sceneBuilder(new SceneBuilder(p)).BuildAndClear()),
-                ServiceKind.Singleton);
+                    p.GetRequiredService<IInputDevice>(),
+                    sceneBuilder(new SceneBuilder(p)).BuildAndClear()));
     }
 }

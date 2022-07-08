@@ -75,7 +75,7 @@ namespace Exomia.Framework.Windows.Video
             {
                 if (_mediaEngineEx == null)
                 {
-                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                    throw new NullReferenceException($"The {nameof(_mediaEngineEx)} is uninitialized!");
                 }
                 double duration = _mediaEngineEx.Duration;
                 if (double.IsNaN(duration)) { duration = 0.0; }
@@ -110,7 +110,7 @@ namespace Exomia.Framework.Windows.Video
             {
                 if (_mediaEngineEx == null)
                 {
-                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                    throw new NullReferenceException($"The {nameof(_mediaEngineEx)} is uninitialized!");
                 }
                 _mediaEngineEx.Muted = value;
             }
@@ -130,7 +130,7 @@ namespace Exomia.Framework.Windows.Video
             {
                 if (_mediaEngineEx == null)
                 {
-                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                    throw new NullReferenceException($"The {nameof(_mediaEngineEx)} is uninitialized!");
                 }
                 _mediaEngineEx.CurrentTime = value;
             }
@@ -150,7 +150,7 @@ namespace Exomia.Framework.Windows.Video
             {
                 if (_mediaEngineEx == null)
                 {
-                    throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                    throw new NullReferenceException($"The {nameof(_mediaEngineEx)} is uninitialized!");
                 }
                 _mediaEngineEx.Volume = value;
             }
@@ -198,7 +198,7 @@ namespace Exomia.Framework.Windows.Video
         {
             if (_mediaEngineEx == null)
             {
-                throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                throw new NullReferenceException($"The {nameof(_mediaEngineEx)} is uninitialized!");
             }
 
             if (_mediaEngineEx.HasVideo() && _isVideoStopped)
@@ -228,7 +228,7 @@ namespace Exomia.Framework.Windows.Video
             _byteStream = new ByteStream(stream);
             if (_mediaEngineEx == null)
             {
-                throw new NullReferenceException($"the {nameof(_mediaEngineEx)} is uninitialized!");
+                throw new NullReferenceException($"The {nameof(_mediaEngineEx)} is uninitialized!");
             }
 
             Uri url = new Uri(_assetName, UriKind.RelativeOrAbsolute);

@@ -38,8 +38,8 @@ public static class Activator
     /// <returns> A compiled lambda expression in the form of a delegate. </returns>
     public static Delegate GetCreator(Type dType)
     {
-        MethodInfo mi = dType.GetMethod("Invoke") ?? throw new NullReferenceException("get method Invoke");
-        if (mi.ReturnType == typeof(void)) { throw new NotSupportedException("invalid return type (void)"); }
+        MethodInfo mi = dType.GetMethod("Invoke") ?? throw new NullReferenceException("Get method Invoke");
+        if (mi.ReturnType == typeof(void)) { throw new NotSupportedException("Invalid return type (void)"); }
 
         Type[]                pTypes     = Array.ConvertAll(mi.GetParameters(), p => p.ParameterType);
         ParameterExpression[] parameters = Array.ConvertAll(pTypes,             Expression.Parameter);
@@ -52,7 +52,7 @@ public static class Activator
                         mi.ReturnType.GetConstructor(pTypes)
                         ?? throw new NullReferenceException(
                             // ReSharper disable once CoVariantArrayConversion (can be disabled cause we do no write operations at run-time)
-                            $"can not create a constructor for {dType}"), parameters),
+                            $"Can not create a constructor for {dType}"), parameters),
                     parameters)
                 .Compile();
     }

@@ -167,7 +167,7 @@ public sealed class LinkedList<T> : IEnumerable<T>
     /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
     public void RemoveFirst()
     {
-        if (First == null) { throw new InvalidOperationException("the linked list is empty."); }
+        if (First == null) { throw new InvalidOperationException("The linked list is empty."); }
         Remove(First);
     }
 
@@ -175,7 +175,7 @@ public sealed class LinkedList<T> : IEnumerable<T>
     /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
     public void RemoveLast()
     {
-        if (First == null) { throw new InvalidOperationException("the linked list is empty."); }
+        if (First == null) { throw new InvalidOperationException("The linked list is empty."); }
         Remove(First.Previous!);
     }
 

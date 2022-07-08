@@ -11,8 +11,9 @@
 using System.Diagnostics;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Mathematics;
-using Exomia.Framework.Core.Vulkan;
-using IServiceProvider = Exomia.IoC.IServiceProvider;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.Core.Game;
 
@@ -62,13 +63,13 @@ public abstract unsafe class Game : IRunnable
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
         _isShutdownCompleted = new ManualResetEventSlim(true);
+        
+        _doEvents = serviceProvider.GetRequiredService<IOptions<GameConfiguration>>().Value.DoEvents;
+        _vulkan   = serviceProvider.GetRequiredService<Vulkan.Vulkan>();
 
-        _doEvents = serviceProvider.Get<GameConfiguration>().DoEvents;
-        _vulkan   = serviceProvider.Get<Vulkan.Vulkan>();
+        _spriteBatch = new SpriteBatch(1, _vulkan, serviceProvider.GetRequiredService<ILogger<SpriteBatch>>());
 
-        _spriteBatch = new SpriteBatch(_vulkan);
-
-        IRenderForm renderForm = serviceProvider.Get<IRenderForm>();
+        IRenderForm renderForm = serviceProvider.GetRequiredService<IRenderForm>();
         renderForm.Closing += (ref bool cancel) =>
         {
             if (!cancel)
@@ -117,7 +118,6 @@ public abstract unsafe class Game : IRunnable
 
     private void Renderloop()
     {
-        //TODO: change to simple stopwatch reducing some unnecessary calls.
         Stopwatch stopwatch = new Stopwatch();
         GameTime  gameTime  = GameTime.StartNew();
 
@@ -143,6 +143,7 @@ public abstract unsafe class Game : IRunnable
                 continue;
             }
 
+            // TODO: DEBUG -> REMOVE LATER
             timer += gameTime.DeltaTimeS;
             if (timer > 1.0f)
             {
@@ -157,9 +158,21 @@ public abstract unsafe class Game : IRunnable
             {
                 _spriteBatch.Begin();
 
-                //for(int i = 0; i < 8_000; i++)
-                _spriteBatch.DrawFillRectangle(new RectangleF(50, 50, 100, 100), VkColors.White, 0.0f);
-                _spriteBatch.DrawFillRectangle(new RectangleF(75, 75, 100, 100), VkColors.Red,   1f);
+                Random2 rnd = new Random2(100);
+
+                for(int i = 0; i < 8_000; i++)
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(
+                            rnd.Next(0, 1024) + 50 * MathF.Sin(gameTime.TotalTimeS),
+                            rnd.Next(0, 768), 
+                            5,
+                            5), 
+                        new VkColor(
+                            rnd.NextSingle(), 
+                            rnd.NextSingle(),
+                            rnd.NextSingle(), 
+                            1f), 0.0f);
+                //_spriteBatch.DrawFillRectangle(new RectangleF(75, 75, 100, 100), VkColors.Red, 1f);
 
                 _spriteBatch.End();
 

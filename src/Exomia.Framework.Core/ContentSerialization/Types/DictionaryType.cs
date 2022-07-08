@@ -61,7 +61,7 @@ internal sealed class DictionaryType : IType
                 ContentSerializer.Types.TryGetValue(gArgs[0].Name.ToUpper(), out IType? itk)
                     ? itk.CreateTypeInfo(gArgs[0])
                     : throw new NotSupportedException(
-                        $"the type of '{gArgs[0]}' is not supported as dictionary key");
+                        $"The type of '{gArgs[0]}' is not supported as dictionary key");
             string genericTypeInfo2 =
                 ContentSerializer.Types.TryGetValue(gArgs[1].Name.ToUpper(), out IType? itv) ||
                 ContentSerializer.Types.TryGetValue(

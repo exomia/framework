@@ -361,7 +361,7 @@ public static partial class Math2
     {
         if (value > 0x80000000)
         {
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
 
         value--;
@@ -393,7 +393,7 @@ public static partial class Math2
     {
         if (value > 0x8000000000000000)
         {
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
 
         value--;
@@ -698,19 +698,19 @@ public static partial class Math2
         if (min > max)
         {
             throw new ArgumentException(
-                $"min {min} should be less than or equal to max {max}",
+                $"Min {min} should be less than or equal to max {max}",
                 nameof(min));
         }
 
         // Code from http://stackoverflow.com/a/707426/1356325
-        int range_size = max - min + 1;
+        int rangeSize = max - min + 1;
 
         if (value < min)
         {
-            value += range_size * ((min - value) / range_size + 1);
+            value += rangeSize * ((min - value) / rangeSize + 1);
         }
 
-        return min + (value - min) % range_size;
+        return min + (value - min) % rangeSize;
     }
 
     /// <summary> Wraps the specified value into a range [min, max[. </summary>
@@ -733,12 +733,12 @@ public static partial class Math2
         if (mind > maxd)
         {
             throw new ArgumentException(
-                $"min {min} should be less than or equal to max {max}",
+                $"Min {min} should be less than or equal to max {max}",
                 nameof(min));
         }
 
-        double range_size = maxd - mind;
-        return (float)(mind + (valued - mind) - (range_size * Math.Floor((valued - mind) / range_size)));
+        double rangeSize = maxd - mind;
+        return (float)(mind + (valued - mind) - (rangeSize * Math.Floor((valued - mind) / rangeSize)));
     }
 
     #endregion
@@ -751,7 +751,7 @@ public static partial class Math2
     /// <param name="u1"> Upper 1. </param>
     /// <param name="l2"> Lower 2. </param>
     /// <param name="u2"> Upper 2. </param>
-    /// <returns> maped value. </returns>
+    /// <returns> mapped value. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Map(float v, float l1, float u1, float l2, float u2)
     {
@@ -764,7 +764,7 @@ public static partial class Math2
     /// <param name="u1"> Upper 1. </param>
     /// <param name="l2"> Lower 2. </param>
     /// <param name="u2"> Upper 2. </param>
-    /// <returns> maped value. </returns>
+    /// <returns> mapped value. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Map(double v, double l1, double u1, double l2, double u2)
     {
@@ -839,6 +839,22 @@ public static partial class Math2
         x += x >> 8;
         x += x >> 16;
         return ((int)x + (int)(x >> 32)) & 0x0000007F;
+    }
+
+    /// <summary> Sets the first <paramref name="count"></paramref> bits to one. </summary>
+    /// <param name="count"> The number of bits who will be set to one </param>
+    /// <returns> An uint. </returns>
+    public static uint SetOnes(int count)
+    {
+        return (1u << count) - 1u;
+    }
+
+    /// <summary> Sets the first <paramref name="count"></paramref> bits to one. </summary>
+    /// <param name="count"> The number of bits who will be set to one </param>
+    /// <returns> An uint. </returns>
+    public static uint SetOnes(uint count)
+    {
+        return (1u << (int)count) - 1u;
     }
 
     #endregion

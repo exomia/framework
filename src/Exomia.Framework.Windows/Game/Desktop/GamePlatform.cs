@@ -17,9 +17,9 @@ using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
 using Exomia.Framework.Windows.Input;
 using Exomia.Framework.Windows.Win32;
-using Exomia.IoC;
 using Exomia.Vulkan.Api.Core;
 using Exomia.Vulkan.Api.Win32;
+using Microsoft.Extensions.DependencyInjection;
 using static Exomia.Vulkan.Api.Core.VkKhrGetSurfaceCapabilities2;
 using static Exomia.Vulkan.Api.Win32.VkKhrWin32Surface;
 using static Exomia.Vulkan.Api.Win32.VkExtFullScreenExclusive;
@@ -37,26 +37,30 @@ public static class GamePlatform
     /// <returns> An <see cref="IGameBuilder" />. </returns>
     public static unsafe IGameBuilder UseWin32Platform(this IGameBuilder builder)
     {
-        return builder.ConfigureServices(services =>
+        return builder.ConfigureServices(serviceCollection =>
             {
-                services
-                    .Add<RenderForm>(ServiceKind.Singleton)
-                    .Add<IRenderForm>(p => p.Get<RenderForm>(),         ServiceKind.Singleton)
-                    .Add<IWin32RenderForm>(p => p.Get<RenderForm>(),    ServiceKind.Singleton)
-                    .Add<IInputDevice>(p => p.Get<RenderForm>(),        ServiceKind.Singleton)
-                    .Add<IWindowsInputDevice>(p => p.Get<RenderForm>(), ServiceKind.Singleton);
+                serviceCollection
+                    .AddSingleton<RenderForm>()
+                    .AddSingleton<IRenderForm>(p => p.GetRequiredService<RenderForm>())
+                    .AddSingleton<IWin32RenderForm>(p => p.GetRequiredService<RenderForm>())
+                    .AddSingleton<IInputDevice>(p => p.GetRequiredService<RenderForm>())
+                    .AddSingleton<IWindowsInputDevice>(p => p.GetRequiredService<RenderForm>());
             })
-            .Configure<InstanceConfiguration>((_, configuration) =>
+            .Configure<InstanceConfiguration>((configuration, _) =>
             {
                 configuration.EnabledExtensionNames.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
             })
-            .Configure<DeviceConfiguration>((_, configuration) =>
+            .Configure<DeviceConfiguration>((configuration, _) =>
             {
                 configuration.EnabledExtensionNames.Add(VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME);
             })
-            .Configure<SurfaceConfiguration>((serviceProvider, configuration) =>
+            .Configure<GameConfiguration>((configuration, _) =>
             {
-                RenderForm renderForm = builder.RegisterDisposable(serviceProvider.Get<RenderForm>());
+                configuration.DoEvents = &DoEvents;
+            })
+            .Configure<SurfaceConfiguration>((configuration, serviceProvider) =>
+            {
+                RenderForm renderForm = builder.RegisterDisposable(serviceProvider.GetRequiredService<RenderForm>());
 
                 configuration.CreateSurface = context =>
                 {
@@ -79,10 +83,9 @@ public static class GamePlatform
 
                     return true;
                 };
-            })
-            .Configure<SwapchainConfiguration>((serviceProvider, configuration) =>
+            }).Configure<SwapchainConfiguration>((configuration, serviceProvider) =>
             {
-                RenderForm renderForm = serviceProvider.Get<RenderForm>();
+                RenderForm renderForm = serviceProvider.GetRequiredService<RenderForm>();
 
                 configuration.BeginSwapchainCreation = context =>
                 {
@@ -132,10 +135,6 @@ public static class GamePlatform
 
                     return true;
                 };
-            })
-            .Configure<GameConfiguration>((_, configuration) =>
-            {
-                configuration.DoEvents = &DoEvents;
             });
     }
 
