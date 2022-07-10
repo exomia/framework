@@ -13,6 +13,11 @@ The exomia/framework is used for building 2D and 3D games and more inspired by t
 
 ## Announcements
 
+11/07/2022:
+&nbsp;&nbsp;&nbsp;&nbsp;The setup, DI, logging and more has changed and introduced, we are working to get all the systems back and running.
+&nbsp;&nbsp;&nbsp;&nbsp;Vulkan boilerplate is done and needs to be refined and adjusted to our needs.
+&nbsp;&nbsp;&nbsp;&nbsp;(current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).  
+
 16/09/2021:  
 &nbsp;&nbsp;&nbsp;&nbsp;exomia/framework will make the move to be a modern and cross platform framework in the future.  
 &nbsp;&nbsp;&nbsp;&nbsp;It will support windows and linux at the start (current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).  
