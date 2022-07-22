@@ -8,6 +8,7 @@
 
 #endregion
 
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Vulkan.Exceptions;
 
 #pragma warning disable 1591
@@ -24,7 +25,11 @@ public sealed unsafe partial class Swapchain
             throw new Exception("Can't call begin frame while a frame is already in progress!");
         }
 #endif
-        vkWaitForFences(_vkContext->Device, 1u, _context->InFlightFences + _context->FrameInFlight, VkBool32.True, ulong.MaxValue)
+
+        vkWaitForFences(
+                _vkContext->Device,
+                1u,            _context->InFlightFences + _context->FrameInFlight,
+                VkBool32.True, ulong.MaxValue)
 #if DEBUG
             .AssertVkResult()
 #endif
@@ -63,7 +68,10 @@ public sealed unsafe partial class Swapchain
 
         if (*(_context->ImagesInFlightFence + _context->ImageIndex) != VkFence.Null)
         {
-            vkWaitForFences(_vkContext->Device, 1u, _context->ImagesInFlightFence + _context->ImageIndex, VkBool32.True, ulong.MaxValue)
+            vkWaitForFences(
+                    _vkContext->Device,
+                    1u,            _context->ImagesInFlightFence + _context->ImageIndex,
+                    VkBool32.True, ulong.MaxValue)
 #if DEBUG
                 .AssertVkResult()
 #endif
@@ -78,7 +86,9 @@ public sealed unsafe partial class Swapchain
         return true;
     }
 
-    public void BeginRenderPass(VkCommandBuffer commandBuffer, VkSubpassContents subpassContents = VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE)
+    public void BeginRenderPass(
+        VkCommandBuffer   commandBuffer,
+        VkSubpassContents subpassContents = VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE)
     {
         VkRenderPassBeginInfo renderPassBeginInfo;
         renderPassBeginInfo.sType                    = VkRenderPassBeginInfo.STYPE;
@@ -133,31 +143,44 @@ public sealed unsafe partial class Swapchain
         vkCmdEndRenderPass2(commandBuffer, &subpassEndInfo);
     }
 
-    public void WaitForFence(uint frameInFlight)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WaitForInFlightFence(uint frameInFlight)
     {
-        vkWaitForFences(_vkContext->Device, 1u, _context->InFlightFences + frameInFlight, VkBool32.True, ulong.MaxValue)
+        vkWaitForFences(
+                _vkContext->Device,
+                1u,            _context->InFlightFences + frameInFlight,
+                VkBool32.True, ulong.MaxValue)
 #if DEBUG
             .AssertVkResult()
 #endif
             ;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsFirstSubmitDone(uint frameInFlight)
     {
         return (_firstSubmitInFrame & (1u << (int)frameInFlight)) != 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Submit(VkCommandBuffer commandBuffer)
     {
         Submit(&commandBuffer, 0u, 1u);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Submit(VkCommandBuffer* commandBuffer, uint count)
     {
         Submit(commandBuffer, 0u, count);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Submit(VkCommandBuffer* commandBuffers, uint index, uint count)
+    {
+        Submit(commandBuffers, index, count, *(_context->InFlightFences + _context->FrameInFlight));
+    }
+
+    public void Submit(VkCommandBuffer* commandBuffers, uint index, uint count, VkFence fence)
     {
         VkPipelineStageFlagBits* pWaitDstStageMask = stackalloc VkPipelineStageFlagBits[]
         {
@@ -181,22 +204,23 @@ public sealed unsafe partial class Swapchain
         {
             submitInfo.pWaitSemaphores = _context->SemaphoresRenderingDone + _context->FrameInFlight;
         }
-        
+
         submitInfo.signalSemaphoreCount = 1u;
         submitInfo.pSignalSemaphores    = _context->SemaphoresRenderingDone + _context->FrameInFlight;
 
-
-        vkResetFences(_vkContext->Device, 1u, _context->InFlightFences + _context->FrameInFlight)
+        vkResetFences(_vkContext->Device, 1u, &fence)
 #if DEBUG
             .AssertVkResult()
 #endif
             ;
-        vkQueueSubmit(*(_vkContext->Queues - 1u), 1u, &submitInfo, *(_context->InFlightFences + _context->FrameInFlight))
+
+        vkQueueSubmit(*(_vkContext->Queues - 1u), 1u, &submitInfo, fence)
 #if DEBUG
             .AssertVkResult()
 #endif
             ;
     }
+
 
     public void EndFrame()
     {
@@ -228,7 +252,10 @@ public sealed unsafe partial class Swapchain
                 break;
             case VK_SUBOPTIMAL_KHR:
             case VK_ERROR_OUT_OF_DATE_KHR:
-                vkWaitForFences(_vkContext->Device, _context->MaxFramesInFlight, _context->InFlightFences, VkBool32.True, ulong.MaxValue)
+                vkWaitForFences(
+                        _vkContext->Device,
+                        _context->MaxFramesInFlight, _context->InFlightFences,
+                        VkBool32.True,               ulong.MaxValue)
 #if DEBUG
                     .AssertVkResult()
 #endif

@@ -81,7 +81,7 @@ public sealed class ApplicationBuilder : IApplicationBuilder
         AddOptions<SwapchainConfiguration>(appServiceCollection);
 
         /* application options */
-        AddOptions<ApplicationConfiguration>(appServiceCollection);
+        AddOptions<Configurations.ApplicationConfiguration>(appServiceCollection);
         AddOptions<RenderFormConfiguration>(appServiceCollection);
 
         /* custom user setup */

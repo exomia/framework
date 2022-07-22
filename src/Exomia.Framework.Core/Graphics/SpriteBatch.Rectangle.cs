@@ -61,8 +61,8 @@ public sealed partial class SpriteBatch
         {
             vertex = new[]
             {
-                destinationRectangle.TopLeft, destinationRectangle.TopRight, destinationRectangle.BottomRight,
-                destinationRectangle.BottomLeft
+                destinationRectangle.TopLeft, destinationRectangle.TopRight,
+                destinationRectangle.BottomRight, destinationRectangle.BottomLeft
             };
         }
         else

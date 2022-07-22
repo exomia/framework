@@ -96,9 +96,10 @@ public sealed partial class SpriteBatch
         float dx = line.X2 - line.X1;
         float dy = line.Y2 - line.Y1;
         DrawSprite(
-            _whiteTexture,                                                                      new RectangleF(
-                line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth), false,
-            s_nullRectangle,                                                                    color,   MathF.Atan2(dy, dx),
-            s_vector2Zero,                                                                      opacity, TextureEffects.None, layerDepth);
+            _whiteTexture,
+            new RectangleF(line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth),
+            false,
+            s_nullRectangle, color,   MathF.Atan2(dy, dx),
+            s_vector2Zero,   opacity, TextureEffects.None, layerDepth);
     }
 }

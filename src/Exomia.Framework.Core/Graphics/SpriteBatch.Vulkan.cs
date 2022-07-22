@@ -18,6 +18,7 @@ using Exomia.Framework.Core.Vulkan.Shader;
 using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
+using static Exomia.Vulkan.Api.Core.VkFenceCreateFlagBits;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
 
 namespace Exomia.Framework.Core.Graphics;
@@ -28,7 +29,7 @@ public sealed unsafe partial class SpriteBatch
     {
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
         _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
-        _vertexBuffer  = Buffer.CreateVertexBuffer<VertexPositionColorTexture>(_vkContext, MAX_VERTEX_COUNT * _swapchainContext->MaxFramesInFlight);
+        _vertexBuffer  = Buffer.CreateVertexBuffer<VertexPositionColorTexture>(_vkContext, MAX_VERTEX_COUNT * _swapchainContext->MaxFramesInFlight * COMMAND_BUFFER_COUNT);
 
         Assembly assembly = Assembly.GetExecutingAssembly();
         using Stream vertexShaderStream =
@@ -84,6 +85,22 @@ public sealed unsafe partial class SpriteBatch
             }
         );
 
+        _commandBufferFences = Allocator.AllocatePtr<VkFence>(_swapchainContext->MaxFramesInFlight);
+
+        VkFenceCreateInfo fenceCreateInfo;
+        fenceCreateInfo.sType = VkFenceCreateInfo.STYPE;
+        fenceCreateInfo.pNext = null;
+        fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
+        {
+            *(_commandBufferFences + i) = Allocator.Allocate<VkFence>(COMMAND_BUFFER_COUNT);
+            for (uint f = 0u; f < COMMAND_BUFFER_COUNT; f++)
+            {
+                vkCreateFence(_vkContext->Device, &fenceCreateInfo, null, *(_commandBufferFences + i) + f)
+                    .AssertVkResult();
+            }
+        }
+
         SetupVulkan();
     }
 
@@ -104,12 +121,16 @@ public sealed unsafe partial class SpriteBatch
             throw new Exception($"{nameof(Setup)} {nameof(CreatePipelineLayout)} failed.");
         }
 
-        _commandBuffers = Allocator.Allocate<VkCommandBuffer>(_swapchainContext->MaxFramesInFlight);
-        Vulkan.Vulkan.CreateCommandBuffers(
-            _vkContext->Device,
-            _vkContext->CommandPool,
-            _swapchainContext->MaxFramesInFlight,
-            _commandBuffers);
+        _commandBuffersIndex = Allocator.Allocate<uint>(_swapchainContext->MaxFramesInFlight, 0u);
+        _commandBuffers      = Allocator.AllocatePtr<VkCommandBuffer>(_swapchainContext->MaxFramesInFlight);
+        for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
+        {
+            Vulkan.Vulkan.CreateCommandBuffers(
+                _vkContext->Device,
+                _vkContext->CommandPool,
+                COMMAND_BUFFER_COUNT,
+                *(_commandBuffers + i) = Allocator.Allocate<VkCommandBuffer>(COMMAND_BUFFER_COUNT));
+        }
 
         static void CreateVertexInputAttributeDescriptions(VkContext*                         context,
                                                            uint*                              attributesCount,
@@ -259,8 +280,13 @@ public sealed unsafe partial class SpriteBatch
 
         if (_commandBuffers != null)
         {
-            vkFreeCommandBuffers(_vkContext->Device, _vkContext->CommandPool, _swapchainContext->MaxFramesInFlight, _commandBuffers);
-            Allocator.Free<VkCommandBuffer>(ref _commandBuffers, _swapchainContext->MaxFramesInFlight);
+            for (uint i = 0; i < _swapchainContext->MaxFramesInFlight; i++)
+            {
+                vkFreeCommandBuffers(_vkContext->Device, _vkContext->CommandPool, COMMAND_BUFFER_COUNT, *(_commandBuffers + i));
+
+                Allocator.Free<VkCommandBuffer>(ref *(_commandBuffers + i), COMMAND_BUFFER_COUNT);
+            }
+            Allocator.FreePtr<VkCommandBuffer>(ref _commandBuffers, _swapchainContext->MaxFramesInFlight);
         }
 
         if (_context->PipelineLayout != VkPipelineLayout.Null)

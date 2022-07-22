@@ -17,8 +17,7 @@ namespace Exomia.Framework.Core.Mathematics;
 
 /// <summary>
 ///     A RectangleF class. This structure is slightly different from System.Drawing.RectangleF as it is internally storing
-///     Left, Top, Right, Bottom instead of Left, Top, Width,
-///     Height.
+///     Left, Top, Right, Bottom instead of Left, Top, Width, Height.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public struct RectangleF
@@ -101,6 +100,14 @@ public struct RectangleF
         set { Bottom = Top + value; }
     }
 
+    /// <summary> Gets the width. </summary>
+    /// <value> The width. </value>
+    public readonly Vector2 Size
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get { return new Vector2(Right - Left, Bottom - Top); }
+    }
+
     /// <summary> Gets the location. </summary>
     /// <value> The location. </value>
     public Vector2 Location
@@ -174,6 +181,29 @@ public struct RectangleF
         Top    = y;
         Right  = x + width;
         Bottom = y + height;
+    }
+
+    /// <summary> Initializes a new instance of the <see cref="RectangleF" /> struct. </summary>
+    /// <param name="xy">     The xy. </param>
+    /// <param name="width">  The width. </param>
+    /// <param name="height"> The height. </param>
+    public RectangleF(in Vector2 xy, float width, float height)
+    {
+        Left   = xy.X;
+        Top    = xy.Y;
+        Right  = xy.X + width;
+        Bottom = xy.Y + height;
+    }
+
+    /// <summary> Initializes a new instance of the <see cref="RectangleF" /> struct. </summary>
+    /// <param name="xy"> The x and y. </param>
+    /// <param name="wh"> The width and height. </param>
+    public RectangleF(in Vector2 xy, in Vector2 wh)
+    {
+        Left   = xy.X;
+        Top    = xy.Y;
+        Right  = xy.X + wh.X;
+        Bottom = xy.Y + wh.Y;
     }
 
     /// <summary> Returns a hash code for this instance. </summary>

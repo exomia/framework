@@ -9,6 +9,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Mathematics;
@@ -85,20 +86,12 @@ internal sealed unsafe class MyApplication : Application
         //    _renderer.End(commandBuffers, frameInFlight);
         //}
         
-        timer += time.DeltaTimeS;
-        if (timer > 1.0f)
-        {
-            timer -= 1.0f;
-            Console.WriteLine(frames);
-            frames = 0;
-        }
-
-
         _spriteBatch.Begin();
 
         Random rnd = new Random(100);
 
-        const int iterations = 10_000;
+        //var       k          = Stopwatch.StartNew();
+        const int iterations = 100_000;
         for (int i = 0; i < iterations; i++)
         {
             if (i > iterations * 0.75)
@@ -130,9 +123,16 @@ internal sealed unsafe class MyApplication : Application
                     rnd.NextSingle());
             }
         }
-
+        //Console.WriteLine(k.Elapsed.TotalMilliseconds);
         _spriteBatch.End();
 
+        timer += time.DeltaTimeS;
+        if (timer > 1.0f)
+        {
+            timer -= 1.0f;
+            Console.WriteLine(frames);
+            frames = 0;
+        }
         frames++;
     }
 

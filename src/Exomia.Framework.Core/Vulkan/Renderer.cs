@@ -50,7 +50,7 @@ public sealed unsafe class Renderer : IDisposable
             throw new Exception($"Can't call {nameof(Begin)} while a frame is in progress!");
         }
 #endif
-        _swapchain.WaitForFence(frameInFlight = _swapchainContext->FrameInFlight);
+        _swapchain.WaitForInFlightFence(frameInFlight = _swapchainContext->FrameInFlight);
 
         VkCommandBufferBeginInfo commandBufferBeginInfo;
         commandBufferBeginInfo.sType            = VkCommandBufferBeginInfo.STYPE;

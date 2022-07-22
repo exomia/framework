@@ -13,9 +13,6 @@ using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static Exomia.Vulkan.Api.Core.VkImageLayout;
-using static Exomia.Vulkan.Api.Core.VkAccessFlagBits;
-using static Exomia.Vulkan.Api.Core.VkPipelineStageFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 

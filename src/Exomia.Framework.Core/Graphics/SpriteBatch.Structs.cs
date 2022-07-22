@@ -69,6 +69,7 @@ public sealed unsafe partial class SpriteBatch
 
         [FieldOffset(0)]  public float   X;
         [FieldOffset(4)]  public float   Y;
+        [FieldOffset(0)]  public Vector2 XY;
         [FieldOffset(8)]  public float   Z;
         [FieldOffset(12)] public float   W;
         [FieldOffset(16)] public float   R;
@@ -78,6 +79,7 @@ public sealed unsafe partial class SpriteBatch
         [FieldOffset(16)] public VkColor Color;
         [FieldOffset(32)] public float   U;
         [FieldOffset(36)] public float   V;
+        [FieldOffset(32)] public Vector2 UV;
 
         /// <inheritdoc />
         public override string ToString()
