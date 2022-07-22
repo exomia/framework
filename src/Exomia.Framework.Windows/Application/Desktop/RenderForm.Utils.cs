@@ -10,7 +10,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+namespace Exomia.Framework.Windows.Application.Desktop;
 
 internal sealed partial class RenderForm
 {

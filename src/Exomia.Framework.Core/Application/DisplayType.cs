@@ -8,7 +8,7 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Game;
+namespace Exomia.Framework.Core.Application;
 
 /// <summary>
 ///     Values that represent DisplayType.

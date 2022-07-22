@@ -9,8 +9,7 @@
 #endregion
 
 using System;
-using System.Diagnostics;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
@@ -23,19 +22,27 @@ using Microsoft.Extensions.Options;
 namespace Exomia.Framework.BasicSetup;
 
 /// <summary>
-///     My game class. This class cannot be inherited.
+///     My application class. This class cannot be inherited.
 /// </summary>
-internal sealed unsafe class MyGame : Game
+internal sealed unsafe class MyApplication : Application
 {
-    /// <summary> Initializes a new instance of the <see cref="MyGame" /> class. </summary>
+#pragma warning disable IDE0052 // Remove unread private members
+    // ReSharper disable once NotAccessedField.Local
+    private readonly ILogger<MyApplication> _logger;
+#pragma warning restore IDE0052 // Remove unread private members
+
+    private readonly Swapchain   _swapchain;
+    private readonly SpriteBatch _spriteBatch;
+
+    /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider">           The service provider. </param>
     /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The depth stencil configuration. </param>
     /// <param name="logger">                    The logger. </param>
-    public MyGame(IServiceProvider                    serviceProvider,
-                  IOptions<SwapchainConfiguration>    swapchainConfiguration,
-                  IOptions<DepthStencilConfiguration> depthStencilConfiguration,
-                  ILogger<MyGame>                     logger)
+    public MyApplication(IServiceProvider                    serviceProvider,
+                         IOptions<SwapchainConfiguration>    swapchainConfiguration,
+                         IOptions<DepthStencilConfiguration> depthStencilConfiguration,
+                         ILogger<MyApplication>              logger)
         : base(serviceProvider)
     {
         _logger = logger;
@@ -61,22 +68,32 @@ internal sealed unsafe class MyGame : Game
         _spriteBatch = new SpriteBatch(_swapchain);
     }
 
+    int   frames = 0;
+    float timer  = 0;
+
     protected override bool BeginFrame()
     {
         return _swapchain.BeginFrame();
     }
 
-    protected override void Render(GameTime gameTime)
+    protected override void Render(Time time)
     {
         //if (_renderer.Begin(out VkCommandBuffer* commandBuffers, out uint frameInFlight))
         //{
         //    _renderer.BeginRenderPass(*(commandBuffers + frameInFlight));
-
         //    _renderer.EndRenderPass(*(commandBuffers + frameInFlight));
-
         //    _renderer.End(commandBuffers, frameInFlight);
         //}
         
+        timer += time.DeltaTimeS;
+        if (timer > 1.0f)
+        {
+            timer -= 1.0f;
+            Console.WriteLine(frames);
+            frames = 0;
+        }
+
+
         _spriteBatch.Begin();
 
         Random rnd = new Random(100);
@@ -87,34 +104,36 @@ internal sealed unsafe class MyGame : Game
             if (i > iterations * 0.75)
             {
                 _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                     new VkColor(0f, 1f, 1f),
                     rnd.NextSingle());
             }
             else if (i > iterations * 0.50)
             {
                 _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                     new VkColor(0f, 0f, 1f),
                     rnd.NextSingle());
             }
             else if (i > iterations * 0.25)
             {
                 _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                     new VkColor(0f, 1f, 0f),
                     rnd.NextSingle());
             }
             else
             {
                 _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                     new VkColor(1f, 0f, 0f),
                     rnd.NextSingle());
             }
         }
-        
+
         _spriteBatch.End();
+
+        frames++;
     }
 
     protected override void EndFrame()
@@ -128,14 +147,4 @@ internal sealed unsafe class MyGame : Game
         _spriteBatch.Dispose();
         _swapchain.Dispose();
     }
-#pragma warning disable IDE0052 // Remove unread private members
-    // ReSharper disable once NotAccessedField.Local
-    private readonly ILogger<MyGame> _logger;
-
-    private readonly Swapchain _swapchain;
-
-    //private readonly Renderer _renderer;
-    private readonly SpriteBatch _spriteBatch;
-
-#pragma warning restore IDE0052 // Remove unread private members
 }

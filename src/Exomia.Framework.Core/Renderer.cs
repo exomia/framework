@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
@@ -59,7 +59,7 @@ public abstract class Renderer : IDrawable
     }
 
     /// <inheritdoc />
-    public virtual void Draw(GameTime gameTime) { }
+    public virtual void Draw(Time gameTime) { }
 
     /// <inheritdoc />
     public virtual void EndDraw() { }

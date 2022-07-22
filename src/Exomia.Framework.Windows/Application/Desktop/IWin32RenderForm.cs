@@ -10,9 +10,9 @@
 
 using System.ComponentModel;
 using Exomia.Framework.Core;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+namespace Exomia.Framework.Windows.Application.Desktop;
 
 /// <summary> Interface for win32 render form. </summary>
 public interface IWin32RenderForm : IRenderForm

@@ -11,21 +11,21 @@
 using Microsoft.Extensions.DependencyInjection;
 
 #pragma warning disable 1591
-namespace Exomia.Framework.Core.Game;
+namespace Exomia.Framework.Core.Application;
 
-/// <summary> Interface for game builder. </summary>
-public interface IGameBuilder : IDisposable
+/// <summary> Interface for application builder. </summary>
+public interface IApplicationBuilder : IDisposable
 {
     /// <summary> Configure options. </summary>
     /// <typeparam name="TConfiguration"> Type of the configuration. </typeparam>
     /// <param name="configure"> The configure delegate. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    IGameBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure) where TConfiguration : class;
+    /// <returns> An <see cref="IApplicationBuilder" />. </returns>
+    IApplicationBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure) where TConfiguration : class;
 
     /// <summary> Configure services. </summary>
     /// <param name="configure"> The configure delegate. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    IGameBuilder ConfigureServices(Action<IServiceCollection> configure);
+    /// <returns> An <see cref="IApplicationBuilder" />. </returns>
+    IApplicationBuilder ConfigureServices(Action<IServiceCollection> configure);
 
     /// <summary> Registers the disposable described by disposable. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
@@ -33,8 +33,8 @@ public interface IGameBuilder : IDisposable
     /// <returns> A T. </returns>
     T RegisterDisposable<T>(T disposable) where T : IDisposable;
 
-    /// <summary> Builds the <typeparamref name="TGame" /> with its dependencies. </summary>
-    /// <typeparam name="TGame"> Type of the game. </typeparam>
-    /// <returns> A <typeparamref name="TGame" />. </returns>
-    TGame Build<TGame>() where TGame : Game;
+    /// <summary> Builds the <typeparamref name="TApplication" /> with its dependencies. </summary>
+    /// <typeparam name="TApplication"> Type of the application. </typeparam>
+    /// <returns> A <typeparamref name="TApplication" />. </returns>
+    TApplication Build<TApplication>() where TApplication : Application;
 }

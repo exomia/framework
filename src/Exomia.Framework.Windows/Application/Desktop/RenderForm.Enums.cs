@@ -8,7 +8,7 @@
 
 #endregion
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+namespace Exomia.Framework.Windows.Application.Desktop;
 
 /// <summary> Values that represent FormWindowState. </summary>
 public enum FormWindowState

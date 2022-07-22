@@ -13,13 +13,13 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
 using EventHandler = Exomia.Framework.Core.EventHandler;
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+namespace Exomia.Framework.Windows.Application.Desktop;
 
 internal sealed partial class RenderForm
 {

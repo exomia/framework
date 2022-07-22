@@ -9,7 +9,7 @@
 #endregion
 
 using System.Reflection;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core.Tools;
 
@@ -101,7 +101,7 @@ public sealed class Tween : IUpdateable
     }
 
     /// <inheritdoc />
-    public void Update(GameTime gameTime)
+    public void Update(Time gameTime)
     {
         _delayTime = Math.Min(_delayTime + gameTime.DeltaTimeMs, _delay);
         if (_delayTime < _delay) { return; }

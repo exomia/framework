@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core.Scene;
 
@@ -258,7 +258,7 @@ public abstract class SceneBase : IDisposable
 
     /// <summary> This method is called when this game component is updated. </summary>
     /// <param name="gameTime"> The current timing. </param>
-    public virtual void Update(GameTime gameTime)
+    public virtual void Update(Time gameTime)
     {
         lock (_updateableComponent)
         {
@@ -286,7 +286,7 @@ public abstract class SceneBase : IDisposable
 
     /// <summary> Draws this instance. </summary>
     /// <param name="gameTime"> The current timing. </param>
-    public virtual void Draw(GameTime gameTime)
+    public virtual void Draw(Time gameTime)
     {
         lock (_drawableComponent)
         {

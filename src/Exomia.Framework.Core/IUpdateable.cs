@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
@@ -43,5 +43,5 @@ public interface IUpdateable
     ///     This method is called when this game component is updated.
     /// </summary>
     /// <param name="gameTime">The current timing.</param>
-    void Update(GameTime gameTime);
+    void Update(Time gameTime);
 }

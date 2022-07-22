@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core.Tools;
 
@@ -135,7 +135,7 @@ public sealed class Timer2 : IUpdateable
     }
 
     /// <inheritdoc />
-    public void Update(GameTime gameTime)
+    public void Update(Time gameTime)
     {
         if (!_enabled) { return; }
 

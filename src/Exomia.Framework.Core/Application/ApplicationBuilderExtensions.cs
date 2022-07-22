@@ -10,16 +10,16 @@
 
 using System.Runtime;
 
-namespace Exomia.Framework.Core.Game;
+namespace Exomia.Framework.Core.Application;
 
-/// <summary> A game builder extensions. </summary>
-public static class GameBuilderExtensions
+/// <summary> An application builder extensions class. </summary>
+public static class ApplicationBuilderExtensions
 {
-    /// <summary> An <see cref="IGameBuilder" /> extension method that use latency mode. </summary>
+    /// <summary> An <see cref="IApplicationBuilder" /> extension method that use latency mode. </summary>
     /// <param name="builder">       The builder to act on. </param>
     /// <param name="gcLatencyMode"> (Optional) The GC latency mode. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    public static IGameBuilder UseLatencyMode(this IGameBuilder builder, GCLatencyMode gcLatencyMode = GCLatencyMode.LowLatency)
+    /// <returns> An <see cref="IApplicationBuilder" />. </returns>
+    public static IApplicationBuilder UseLatencyMode(this IApplicationBuilder builder, GCLatencyMode gcLatencyMode = GCLatencyMode.LowLatency)
     {
         GCSettings.LatencyMode = gcLatencyMode;
         return builder;

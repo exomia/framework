@@ -8,9 +8,10 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
+using Exomia.Framework.Core.Application.Configurations;
 using Exomia.Framework.Core.Vulkan.Configurations;
-using Exomia.Framework.Windows.Game.Desktop;
+using Exomia.Framework.Windows.Application.Desktop;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -27,8 +28,8 @@ internal sealed class Program
                      .WriteTo.Console()
                      .CreateLogger();
 
-        using (IGameBuilder gameBuilder = GameBuilder.Create())
-        using (Game game = gameBuilder
+        using (IApplicationBuilder applicationBuilder = ApplicationBuilder.Create())
+        using (Application application = applicationBuilder
                            .ConfigureServices(serviceCollection =>
                            {
                                serviceCollection.AddLogging(builder =>
@@ -49,9 +50,9 @@ internal sealed class Program
                                configuration.DisplayType = DisplayType.Window;
                            })
                            .UseWin32Platform() // should always be the last in the chain before calling build!
-                           .Build<MyGame>())
+                           .Build<MyApplication>())
         {
-            game.Run();
+            application.Run();
         }
     }
 }

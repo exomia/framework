@@ -8,11 +8,11 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
-/// <summary> A drawable game component. </summary>
+/// <summary> A drawable component. </summary>
 public abstract class DrawableComponent : Component, IDrawable
 {
     /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
@@ -59,7 +59,7 @@ public abstract class DrawableComponent : Component, IDrawable
     }
 
     /// <inheritdoc />
-    public abstract void Draw(GameTime gameTime);
+    public abstract void Draw(Time time);
 
     /// <inheritdoc />
     public virtual void EndDraw() { }

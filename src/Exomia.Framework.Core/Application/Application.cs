@@ -9,16 +9,17 @@
 #endregion
 
 using System.Diagnostics;
+using Exomia.Framework.Core.Application.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Exomia.Framework.Core.Game;
+namespace Exomia.Framework.Core.Application;
 
-/// <summary> A game. </summary>
-public abstract unsafe class Game : IRunnable
+/// <summary> An application. </summary>
+public abstract unsafe class Application : IRunnable
 {
-    private const double                    FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
-    private event EventHandler<Game, bool>? _IsRunningChanged;
+    private const double                           FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+    private event EventHandler<Application, bool>? _IsRunningChanged;
 
     private readonly delegate*<void> _doEvents;
 
@@ -27,8 +28,8 @@ public abstract unsafe class Game : IRunnable
 
     private bool _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
-    /// <summary> Gets or sets a value indicating whether this object is fixed time step. </summary>
-    /// <value> True if this object is fixed time step, false if not. </value>
+    /// <summary> Gets or sets a value indicating whether this application is using a fixed time step. </summary>
+    /// <value> True if this application is using fixed time step, false if not. </value>
     public bool IsFixedTimeStep { get; set; } = false;
 
     /// <summary> Gets or sets the target elapsed time in ms. </summary>
@@ -49,16 +50,16 @@ public abstract unsafe class Game : IRunnable
         }
     }
 
-    /// <summary> Initializes a new instance of the <see cref="Game" /> class. </summary>
+    /// <summary> Initializes a new instance of the <see cref="Application" /> class. </summary>
     /// <param name="serviceProvider"> The service provider. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    protected Game(IServiceProvider serviceProvider)
+    protected Application(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
         _isShutdownCompleted = new ManualResetEventSlim(true);
 
-        _doEvents = serviceProvider.GetRequiredService<IOptions<GameConfiguration>>().Value.DoEvents;
+        _doEvents = serviceProvider.GetRequiredService<IOptions<ApplicationConfiguration>>().Value.DoEvents;
 
         IRenderForm renderForm = serviceProvider.GetRequiredService<IRenderForm>();
         renderForm.Closing += (ref bool cancel) =>
@@ -84,7 +85,7 @@ public abstract unsafe class Game : IRunnable
 
         if (!_isInitialized)
         {
-            Renderloop();
+            RenderloopVariableTime();
         }
     }
 
@@ -103,27 +104,25 @@ public abstract unsafe class Game : IRunnable
     protected abstract bool BeginFrame();
 
     /// <summary> Render to the scene. </summary>
-    /// <param name="gameTime"> The game time. </param>
-    protected abstract void Render(GameTime gameTime);
+    /// <param name="time"> The time. </param>
+    protected abstract void Render(Time time);
 
     /// <summary> Ends a frame. </summary>
     protected abstract void EndFrame();
 
-    private void Renderloop()
+    private void RenderloopVariableTime()
     {
         Stopwatch stopwatch = new Stopwatch();
-        GameTime  gameTime  = GameTime.StartNew();
+        Time      time      = Time.StartNew();
 
-        void OnIsRunningChanged(Game s, bool v)
+        void OnIsRunningChanged(Application s, bool v)
         {
-            if (v) { gameTime.Start(); }
-            else { gameTime.Stop(); }
+            if (v) { time.Start(); }
+            else { time.Stop(); }
         }
 
         _IsRunningChanged += OnIsRunningChanged;
 
-        int   frames = 0;
-        float timer  = 0;
         while (!_shutdown)
         {
             stopwatch.Restart();
@@ -136,22 +135,11 @@ public abstract unsafe class Game : IRunnable
                 continue;
             }
 
-            // TODO: DEBUG -> REMOVE LATER
-            timer += gameTime.DeltaTimeS;
-            if (timer > 1.0f)
-            {
-                timer -= 1.0f;
-                Console.WriteLine(frames);
-                frames = 0;
-            }
-
             if (BeginFrame())
             {
-                Render(gameTime);
+                Render(time);
                 EndFrame();
             }
-
-            frames++;
 
             if (IsFixedTimeStep)
             {
@@ -165,7 +153,7 @@ public abstract unsafe class Game : IRunnable
                 while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
             }
 
-            gameTime.Tick();
+            time.Tick();
         }
 
         _IsRunningChanged -= OnIsRunningChanged;

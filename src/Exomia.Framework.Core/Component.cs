@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
@@ -60,8 +60,6 @@ public abstract class Component : IInitializable, IContentable, IUpdateable, IDi
     }
 
     /// <summary> Initializes a new instance of the <see cref="Component" /> class. </summary>
-    /// ###
-    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     protected Component()
     {
         _collector = new DisposeCollector();
@@ -98,7 +96,7 @@ public abstract class Component : IInitializable, IContentable, IUpdateable, IDi
     }
 
     /// <inheritdoc />
-    public abstract void Update(GameTime gameTime);
+    public abstract void Update(Time time);
 
     /// <summary> called than the component is initialized (once) </summary>
     protected virtual void OnInitialize() { }

@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Windows.Input;
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+namespace Exomia.Framework.Windows.Application.Desktop;
 
 internal sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
 {

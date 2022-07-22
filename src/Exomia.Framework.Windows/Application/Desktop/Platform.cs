@@ -10,7 +10,7 @@
 
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Allocators;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
@@ -20,31 +20,34 @@ using Exomia.Framework.Windows.Win32;
 using Exomia.Vulkan.Api.Core;
 using Exomia.Vulkan.Api.Win32;
 using Microsoft.Extensions.DependencyInjection;
+
 using static Exomia.Vulkan.Api.Core.VkKhrGetSurfaceCapabilities2;
 using static Exomia.Vulkan.Api.Win32.VkKhrWin32Surface;
 using static Exomia.Vulkan.Api.Win32.VkExtFullScreenExclusive;
 using static Exomia.Vulkan.Api.Win32.VkFullScreenExclusiveEXT;
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+using ApplicationConfiguration = Exomia.Framework.Core.Application.Configurations.ApplicationConfiguration;
 
-/// <summary> The game platform. </summary>
-public static class GamePlatform
+namespace Exomia.Framework.Windows.Application.Desktop;
+
+/// <summary> The platform. </summary>
+public static class Platform
 {
     private const int PM_REMOVE = 0x0001;
 
-    /// <summary> An <see cref="IGameBuilder" /> extension method to use the win32 platform. </summary>
+    /// <summary> An <see cref="IApplicationBuilder" /> extension method to use the win32 platform. </summary>
     /// <param name="builder"> The builder to act on. </param>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    public static unsafe IGameBuilder UseWin32Platform(this IGameBuilder builder)
+    /// <returns> An <see cref="IApplicationBuilder" />. </returns>
+    public static unsafe IApplicationBuilder UseWin32Platform(this IApplicationBuilder builder)
     {
         return builder.ConfigureServices(serviceCollection =>
                       {
                           serviceCollection
                               .AddSingleton<RenderForm>()
-                              .AddSingleton<IRenderForm>(p => p.GetRequiredService<RenderForm>())
-                              .AddSingleton<IWin32RenderForm>(p => p.GetRequiredService<RenderForm>())
-                              .AddSingleton<IInputDevice>(p => p.GetRequiredService<RenderForm>())
-                              .AddSingleton<IWindowsInputDevice>(p => p.GetRequiredService<RenderForm>());
+                              .AddSingleton((Func<IServiceProvider, IRenderForm>)(p => p.GetRequiredService<RenderForm>()))
+                              .AddSingleton((Func<IServiceProvider, IWin32RenderForm>)(p => p.GetRequiredService<RenderForm>()))
+                              .AddSingleton((Func<IServiceProvider, IInputDevice>)(p => p.GetRequiredService<RenderForm>()))
+                              .AddSingleton((Func<IServiceProvider, IWindowsInputDevice>)(p => p.GetRequiredService<RenderForm>()));
                       })
                       .Configure<InstanceConfiguration>((configuration, _) =>
                       {
@@ -54,7 +57,7 @@ public static class GamePlatform
                       {
                           configuration.EnabledExtensionNames.Add(VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME);
                       })
-                      .Configure<GameConfiguration>((configuration, _) =>
+                      .Configure<ApplicationConfiguration>((configuration, _) =>
                       {
                           configuration.DoEvents = &DoEvents;
                       })

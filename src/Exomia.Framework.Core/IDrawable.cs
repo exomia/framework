@@ -8,7 +8,7 @@
 
 #endregion
 
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
@@ -57,7 +57,7 @@ public interface IDrawable
     ///     Draws this instance.
     /// </summary>
     /// <param name="gameTime"> The current timing. </param>
-    void Draw(GameTime gameTime);
+    void Draw(Time gameTime);
 
     /// <summary>
     ///     Ends the drawing of a frame. This method is preceded by calls to Draw and BeginDraw.

@@ -9,7 +9,7 @@
 #endregion
 
 using System.Diagnostics.CodeAnalysis;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Input;
 
 namespace Exomia.Framework.Core.Scene;
@@ -135,7 +135,7 @@ internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable,
     }
 
     /// <inheritdoc />
-    void IDrawable.Draw(GameTime gameTime)
+    void IDrawable.Draw(Time gameTime)
     {
         lock (_currentScenes)
         {
@@ -329,7 +329,7 @@ internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable,
     }
 
     /// <inheritdoc />
-    void IUpdateable.Update(GameTime gameTime)
+    void IUpdateable.Update(Time gameTime)
     {
         lock (_currentScenes)
         {

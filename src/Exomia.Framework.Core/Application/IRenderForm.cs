@@ -8,7 +8,7 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Game;
+namespace Exomia.Framework.Core.Application;
 
 /// <summary> Interface for a render form. </summary>
 public interface IRenderForm : IDisposable

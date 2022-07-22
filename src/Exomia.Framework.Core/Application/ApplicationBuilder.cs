@@ -8,6 +8,7 @@
 
 #endregion
 
+using Exomia.Framework.Core.Application.Configurations;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,17 +16,17 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Exomia.Framework.Core.Game;
+namespace Exomia.Framework.Core.Application;
 
-/// <summary> A game builder. This class cannot be inherited. </summary>
-public sealed class GameBuilder : IGameBuilder
+/// <summary> An application builder. This class cannot be inherited. </summary>
+public sealed class ApplicationBuilder : IApplicationBuilder
 {
     private readonly IDictionary<Type, IList<Action<object, IServiceProvider>>> _configurables;
     private readonly IList<Action<IServiceCollection>>                          _configurableServices;
     private readonly DisposeCollector                                           _disposeCollector;
 
-    /// <summary> Prevents a default instance of the <see cref="GameBuilder" /> class from being created. </summary>
-    private GameBuilder()
+    /// <summary> Prevents a default instance of the <see cref="ApplicationBuilder" /> class from being created. </summary>
+    private ApplicationBuilder()
     {
         _configurables        = new Dictionary<Type, IList<Action<object, IServiceProvider>>>(16);
         _configurableServices = new List<Action<IServiceCollection>>(16);
@@ -33,7 +34,7 @@ public sealed class GameBuilder : IGameBuilder
     }
 
     /// <inheritdoc />
-    public IGameBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure)
+    public IApplicationBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure)
         where TConfiguration : class
     {
         if (!_configurables.TryGetValue(typeof(TConfiguration), out IList<Action<object, IServiceProvider>>? list))
@@ -45,7 +46,7 @@ public sealed class GameBuilder : IGameBuilder
     }
 
     /// <inheritdoc />
-    public IGameBuilder ConfigureServices(Action<IServiceCollection> configure)
+    public IApplicationBuilder ConfigureServices(Action<IServiceCollection> configure)
     {
         _configurableServices.Add(configure);
         return this;
@@ -59,17 +60,17 @@ public sealed class GameBuilder : IGameBuilder
     }
 
     /// <inheritdoc />
-    public TGame Build<TGame>() where TGame : Game
+    public TApplication Build<TApplication>() where TApplication : Application
     {
         IServiceCollection appServiceCollection = new ServiceCollection()
                                                   /* vulkan */
                                                   .AddSingleton<Vulkan.Vulkan>()
-                                                  /* game */
-                                                  .AddSingleton<TGame>()
-                                                  .AddSingleton<Game>(p => p.GetRequiredService<TGame>());
+                                                  /* application */
+                                                  .AddSingleton<TApplication>()
+                                                  .AddSingleton<Application>(p => p.GetRequiredService<TApplication>());
 
         /* vulkan options */
-        AddOptions<ApplicationConfiguration>(appServiceCollection);
+        AddOptions<Vulkan.Configurations.ApplicationConfiguration>(appServiceCollection);
         AddOptions<DebugUtilsMessengerConfiguration>(appServiceCollection);
         AddOptions<DepthStencilConfiguration>(appServiceCollection);
         AddOptions<DeviceConfiguration>(appServiceCollection);
@@ -79,8 +80,8 @@ public sealed class GameBuilder : IGameBuilder
         AddOptions<SurfaceConfiguration>(appServiceCollection);
         AddOptions<SwapchainConfiguration>(appServiceCollection);
 
-        /* game options */
-        AddOptions<GameConfiguration>(appServiceCollection);
+        /* application options */
+        AddOptions<ApplicationConfiguration>(appServiceCollection);
         AddOptions<RenderFormConfiguration>(appServiceCollection);
 
         /* custom user setup */
@@ -103,14 +104,14 @@ public sealed class GameBuilder : IGameBuilder
             throw new VulkanException("Vulkan initialization failed!");
         }
 
-        return serviceProvider.GetRequiredService<TGame>();
+        return serviceProvider.GetRequiredService<TApplication>();
     }
 
-    /// <summary> Creates a new <see cref="IGameBuilder" />. </summary>
-    /// <returns> An <see cref="IGameBuilder" />. </returns>
-    public static IGameBuilder Create()
+    /// <summary> Creates a new <see cref="IApplicationBuilder" />. </summary>
+    /// <returns> An <see cref="IApplicationBuilder" />. </returns>
+    public static IApplicationBuilder Create()
     {
-        return new GameBuilder();
+        return new ApplicationBuilder();
     }
 
     private void AddOptions<TOption>(IServiceCollection serviceCollection) where TOption : class
@@ -162,8 +163,8 @@ public sealed class GameBuilder : IGameBuilder
         }
     }
 
-    /// <summary> Finalizes an instance of the <see cref="GameBuilder" /> class. </summary>
-    ~GameBuilder()
+    /// <summary> Finalizes an instance of the <see cref="ApplicationBuilder" /> class. </summary>
+    ~ApplicationBuilder()
     {
         Dispose(false);
     }

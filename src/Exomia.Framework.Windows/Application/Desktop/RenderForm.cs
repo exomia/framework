@@ -11,7 +11,8 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Exomia.Framework.Core.Game;
+using Exomia.Framework.Core.Application;
+using Exomia.Framework.Core.Application.Configurations;
 using Exomia.Framework.Core.Input;
 using Exomia.Framework.Windows.Input;
 using Exomia.Framework.Windows.Input.Raw;
@@ -19,7 +20,7 @@ using Exomia.Framework.Windows.Win32;
 using Exomia.Framework.Windows.Win32.RawInput;
 using Microsoft.Extensions.Options;
 
-namespace Exomia.Framework.Windows.Game.Desktop;
+namespace Exomia.Framework.Windows.Application.Desktop;
 
 /// <summary> The RenderForm. </summary>
 internal sealed partial class RenderForm : IWin32RenderForm

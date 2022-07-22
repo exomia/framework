@@ -8,7 +8,8 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Game;
+
+namespace Exomia.Framework.Core.Application.Configurations;
 
 /// <summary> A render form configuration. This class cannot be inherited. </summary>
 public sealed class RenderFormConfiguration
@@ -17,15 +18,15 @@ public sealed class RenderFormConfiguration
     /// <value> The title. </value>
     public string Title { get; set; } = "Exomia.Framework";
 
-    /// <summary> Define the width of the game window. </summary>
+    /// <summary> Define the width of the application window. </summary>
     /// <value> The width. </value>
     public uint Width { get; set; } = 1024;
 
-    /// <summary> Define the height of the game window. </summary>
+    /// <summary> Define the height of the application window. </summary>
     /// <value> The height. </value>
     public uint Height { get; set; } = 768;
 
-    /// <summary> Define if the game is in full screen whether windowed or not. </summary>
+    /// <summary> Define if the application is in full screen whether windowed or not. </summary>
     /// <value> The type of the display. </value>
     public DisplayType DisplayType { get; set; } = DisplayType.Window;
 
