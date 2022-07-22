@@ -34,11 +34,11 @@ public static class Easing
     /// </summary>
     public static class Bounce
     {
-        private const float B1 = 1.0f / 2.75f;
-        private const float B2 = 1.5f / 2.75f;
-        private const float B3 = 2.0f / 2.75f;
-        private const float B4 = 2.25f / 2.75f;
-        private const float B5 = 2.5f / 2.75f;
+        private const float B1 = 1.0f   / 2.75f;
+        private const float B2 = 1.5f   / 2.75f;
+        private const float B3 = 2.0f   / 2.75f;
+        private const float B4 = 2.25f  / 2.75f;
+        private const float B5 = 2.5f   / 2.75f;
         private const float B6 = 2.625f / 2.75f;
 
         /// <summary>
@@ -69,7 +69,7 @@ public static class Easing
         public static float EaseInOut(float t, float b, float c, float d)
         {
             if (t < d / 2) { return (EaseIn(t * 2, 0, c, d) * .5f) + b; }
-            return (EaseOut((t * 2) - d, 0, c, d) * .5f) + (c * .5f) + b;
+            return (EaseOut((t                * 2) - d, 0, c, d) * .5f) + (c * .5f) + b;
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ public static class Easing
         public static float EaseInOut(float t, float b, float c, float d)
         {
             if ((t /= d / 2) < 1) { return ((-c / 2) * (MathF.Sqrt(1 - (t * t)) - 1)) + b; }
-            return ((c / 2) * (MathF.Sqrt(1 - ((t -= 2) * t)) + 1)) + b;
+            return ((c                               / 2) * (MathF.Sqrt(1 - ((t -= 2) * t)) + 1)) + b;
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ public static class Easing
         public static float EaseInOut(float t, float b, float c, float d)
         {
             if ((t /= d / 2) < 1) { return ((c / 2) * t * t * t) + b; }
-            return ((c / 2) * (((t -= 2) * t * t) + 2)) + b;
+            return ((c                              / 2) * (((t -= 2) * t * t) + 2)) + b;
         }
 
         /// <summary>
@@ -240,9 +240,9 @@ public static class Easing
         {
             if (t == 0) { return b; }
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (t == d) { return b + c; }
+            if (t            == d) { return b                                     + c; }
             if ((t /= d / 2) < 1) { return ((c / 2) * MathF.Pow(2, 10 * (t - 1))) + b; }
-            return ((c / 2) * (-MathF.Pow(2, -10 * --t) + 2)) + b;
+            return ((c                              / 2) * (-MathF.Pow(2, -10 * --t) + 2)) + b;
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ public static class Easing
         {
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             return t == d
-                ? b + c
+                ? b                                        + c
                 : (c * (-MathF.Pow(2, (-10 * t) / d) + 1)) + b;
         }
     }
@@ -318,7 +318,7 @@ public static class Easing
         public static float EaseInOut(float t, float b, float c, float d)
         {
             if ((t /= d / 2) < 1) { return ((c / 2) * t * t) + b; }
-            return ((-c / 2) * ((--t * (t - 2)) - 1)) + b;
+            return ((-c                             / 2) * ((--t * (t - 2)) - 1)) + b;
         }
 
         /// <summary>
@@ -370,7 +370,7 @@ public static class Easing
         public static float EaseInOut(float t, float b, float c, float d)
         {
             if ((t /= d / 2) < 1) { return ((c / 2) * t * t * t * t) + b; }
-            return ((-c / 2) * (((t -= 2) * t * t * t) - 2)) + b;
+            return ((-c                             / 2) * (((t -= 2) * t * t * t) - 2)) + b;
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ public static class Easing
         public static float EaseInOut(float t, float b, float c, float d)
         {
             if ((t /= d / 2) < 1) { return ((c / 2) * t * t * t * t * t) + b; }
-            return ((c / 2) * (((t -= 2) * t * t * t * t) + 2)) + b;
+            return ((c                              / 2) * (((t -= 2) * t * t * t * t) + 2)) + b;
         }
 
         /// <summary>

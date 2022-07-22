@@ -16,10 +16,10 @@ namespace Exomia.Framework.Core.Collections;
 /// <typeparam name="T"> any. </typeparam>
 public sealed class ArrayPool<T>
 {
-    private readonly int _bufferLength;
-    private readonly T[]?[] _buffers;
-    private SpinLock _lock;
-    private int _index;
+    private readonly int      _bufferLength;
+    private readonly T[]?[]   _buffers;
+    private          SpinLock _lock;
+    private          int      _index;
 
     /// <summary> Initializes a new instance of the <see cref="ArrayPool{T}" /> class. </summary>
     /// <param name="bufferLength">    Length of the buffer. </param>
@@ -27,12 +27,12 @@ public sealed class ArrayPool<T>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public ArrayPool(int bufferLength, int numberOfBuffers = 10)
     {
-        if (bufferLength <= 0) { throw new ArgumentOutOfRangeException(nameof(bufferLength)); }
+        if (bufferLength    <= 0) { throw new ArgumentOutOfRangeException(nameof(bufferLength)); }
         if (numberOfBuffers <= 0) { throw new ArgumentOutOfRangeException(nameof(numberOfBuffers)); }
 
         _bufferLength = bufferLength;
-        _lock = new SpinLock(Debugger.IsAttached);
-        _buffers = new T[numberOfBuffers][];
+        _lock         = new SpinLock(Debugger.IsAttached);
+        _buffers      = new T[numberOfBuffers][];
     }
 
     /// <summary> Gets the rent. </summary>
@@ -48,7 +48,7 @@ public sealed class ArrayPool<T>
 
             if (_index < _buffers.Length)
             {
-                buffer = _buffers[_index];
+                buffer             = _buffers[_index];
                 _buffers[_index++] = null;
             }
         }

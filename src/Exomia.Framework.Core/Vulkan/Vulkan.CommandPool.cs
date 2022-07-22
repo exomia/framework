@@ -19,7 +19,11 @@ sealed unsafe partial class Vulkan
     /// <param name="commandPool">               [in,out] If non-null, the command pool. </param>
     /// <param name="commandPoolCreateFlagBits"> (Optional) The command pool create flag bits. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
-    public static bool CreateCommandPool(VkDevice device, uint queueFamilyIndex, VkCommandPool* commandPool, VkCommandPoolCreateFlagBits commandPoolCreateFlagBits = 0u)
+    public static void CreateCommandPool(
+        VkDevice                    device,
+        uint                        queueFamilyIndex,
+        VkCommandPool*              commandPool,
+        VkCommandPoolCreateFlagBits commandPoolCreateFlagBits = 0u)
     {
         VkCommandPoolCreateInfo commandPoolCreateInfo;
         commandPoolCreateInfo.sType            = VkCommandPoolCreateInfo.STYPE;
@@ -29,7 +33,14 @@ sealed unsafe partial class Vulkan
 
         vkCreateCommandPool(device, &commandPoolCreateInfo, null, commandPool)
             .AssertVkResult();
+    }
 
-        return true;
+    /// <summary> Destroys the command pool. </summary>
+    /// <param name="device">      The device. </param>
+    /// <param name="commandPool"> [in,out] [in,out] If non-null, the command pool. </param>
+    public static void DestroyCommandPool(VkDevice device, ref VkCommandPool commandPool)
+    {
+        vkDestroyCommandPool(device, commandPool, null);
+        commandPool = VkCommandPool.Null;
     }
 }

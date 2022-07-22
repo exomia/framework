@@ -78,7 +78,7 @@ public sealed class Heap<T>
 
         while ((lIndex = (index * 2) + 1) < Count)
         {
-            if ((rIndex = (index * 2) + 2) < Count &&
+            if ((rIndex = (index * 2) + 2)               < Count &&
                 _compare(_items[lIndex], _items[rIndex]) > 0)
             {
                 lIndex = rIndex;

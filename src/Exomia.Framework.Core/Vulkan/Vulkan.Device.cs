@@ -10,12 +10,13 @@
 
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
+using static Exomia.Vulkan.Api.Core.VkCommandPoolCreateFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
-    private static bool CreateDevice(VkContext* context, DeviceConfiguration configuration)
+    private static void CreateDevice(VkContext* context, DeviceConfiguration configuration, QueueConfiguration queueConfiguration)
     {
         uint additionalDeviceQueueCreateInfoCount = 0u;
 
@@ -24,19 +25,24 @@ sealed unsafe partial class Vulkan
             configuration.CreateAdditionalDeviceQueueCreateInfos(context, &additionalDeviceQueueCreateInfoCount, null);
         }
 
-        VkDeviceQueueCreateInfo* pDeviceQueueCreateInfos = stackalloc VkDeviceQueueCreateInfo[(int)(1u + additionalDeviceQueueCreateInfoCount)];
+        // we will add 1 to the requested queue count for internal usage;
+        // if the max queue count will be exceeded -> max queue count value will be used instead.
+        context->QueuesCount = Math.Min(queueConfiguration.Count + 1u, context->MaxQueueCount);
+        context->Queues      = Allocator.Allocate<VkQueue>(context->QueuesCount);
 
-        float* pQueuePriorities = stackalloc float[(int)context->MaxQueueCount];
-        for (uint i = 0; i < context->MaxQueueCount; i++)
+        float* pQueuePriorities = stackalloc float[(int)context->QueuesCount];
+        *pQueuePriorities = 1.0f; // internal usage queue priority
+        for (uint i = 1; i < context->QueuesCount; i++)
         {
-            *(pQueuePriorities + i) = 1.0f;
+            *(pQueuePriorities + i) = 0.5f;
         }
 
+        VkDeviceQueueCreateInfo* pDeviceQueueCreateInfos = stackalloc VkDeviceQueueCreateInfo[(int)(1u + additionalDeviceQueueCreateInfoCount)];
         pDeviceQueueCreateInfos->sType            = VkDeviceQueueCreateInfo.STYPE;
         pDeviceQueueCreateInfos->pNext            = null;
         pDeviceQueueCreateInfos->flags            = 0u;
         pDeviceQueueCreateInfos->queueFamilyIndex = context->QueueFamilyIndex;
-        pDeviceQueueCreateInfos->queueCount       = context->MaxQueueCount;
+        pDeviceQueueCreateInfos->queueCount       = context->QueuesCount;
         pDeviceQueueCreateInfos->pQueuePriorities = pQueuePriorities;
 
         if (configuration.CreateAdditionalDeviceQueueCreateInfos != null)
@@ -68,20 +74,55 @@ sealed unsafe partial class Vulkan
         deviceCreateInfo.ppEnabledExtensionNames = ppEnabledExtensionNames;
         deviceCreateInfo.pEnabledFeatures        = null;
 
-        VkResult result = vkCreateDevice(context->PhysicalDevice, &deviceCreateInfo, null, &context->Device);
-
-        for (int i = 0; i < configuration.EnabledExtensionNames.Count; i++)
+        try
         {
-            Allocator.FreeNtString(*(ppEnabledExtensionNames + i));
-        }
+            vkCreateDevice(context->PhysicalDevice, &deviceCreateInfo, null, &context->Device)
+                .AssertVkResult();
 
-        for (int i = 0; i < configuration.EnabledLayerNames.Count; i++)
+            RetrieveDeviceQueue(context, queueConfiguration);
+
+            CreateCommandPool(context->Device, context->QueueFamilyIndex, &context->CommandPool,           VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+            CreateCommandPool(context->Device, context->QueueFamilyIndex, &context->ShortLivedCommandPool, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
+
+            VkKhrSwapchain.Load(context->Device);
+        }
+        finally
         {
-            Allocator.FreeNtString(*(ppEnabledLayerNames + i));
+            for (int i = 0; i < configuration.EnabledExtensionNames.Count; i++)
+            {
+                Allocator.FreeNtString(*(ppEnabledExtensionNames + i));
+            }
+
+            for (int i = 0; i < configuration.EnabledLayerNames.Count; i++)
+            {
+                Allocator.FreeNtString(*(ppEnabledLayerNames + i));
+            }
         }
+    }
 
-        result.AssertVkResult();
+    private void DestroyDevice(VkContext* context)
+    {
+        if (context->Device != VkDevice.Null)
+        {
+            vkDeviceWaitIdle(context->Device)
+                .AssertVkResult();
 
-        return true;
+            if (context->ShortLivedCommandPool != VkCommandPool.Null)
+            {
+                vkDestroyCommandPool(context->Device, context->ShortLivedCommandPool, null);
+                context->ShortLivedCommandPool = VkCommandPool.Null;
+            }
+
+            if (context->CommandPool != VkCommandPool.Null)
+            {
+                vkDestroyCommandPool(context->Device, context->CommandPool, null);
+                Context->CommandPool = VkCommandPool.Null;
+            }
+
+            Allocator.Free<VkQueue>(context->Queues - 1u, context->QueuesCount + 1u);
+
+            vkDestroyDevice(context->Device, null);
+            context->Device = VkDevice.Null;
+        }
     }
 }

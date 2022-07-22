@@ -19,7 +19,7 @@ public sealed class GameTime
 {
     private const    float  MAX_FRAME_TIME = 1000.0f / 60.0f;
     private readonly double _countsPerMSec = 1000.0 / Stopwatch.Frequency;
-    private readonly double _countsPerSec  = 1.0 / Stopwatch.Frequency;
+    private readonly double _countsPerSec  = 1.0    / Stopwatch.Frequency;
     private          long   _baseTime, _currTime, _pausedTime, _prevTime, _stopTime;
     private          bool   _stopped;
 

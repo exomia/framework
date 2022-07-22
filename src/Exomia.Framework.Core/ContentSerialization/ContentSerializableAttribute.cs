@@ -25,12 +25,12 @@ public sealed class ContentSerializableAttribute : Attribute
     public ContentSerializableAttribute(Type reader, Type writer)
     {
         Reader = System.Activator.CreateInstance(reader) as IContentSerializationReader ??
-                 throw new TypeLoadException(
-                     "cannot create an instance of IContentSerializationReader from type: " +
-                     reader.AssemblyQualifiedName);
+            throw new TypeLoadException(
+                "cannot create an instance of IContentSerializationReader from type: " +
+                reader.AssemblyQualifiedName);
         Writer = System.Activator.CreateInstance(writer) as IContentSerializationWriter ??
-                 throw new TypeLoadException(
-                     "cannot create an instance of IContentSerializationWriter from type: " +
-                     writer.AssemblyQualifiedName);
+            throw new TypeLoadException(
+                "cannot create an instance of IContentSerializationWriter from type: " +
+                writer.AssemblyQualifiedName);
     }
 }

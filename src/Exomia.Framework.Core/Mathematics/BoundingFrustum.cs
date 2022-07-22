@@ -171,29 +171,29 @@ public unsafe struct BoundingFrustum
 
         Vector3 nearCenter     = cameraPos + look * zNear;
         Vector3 farCenter      = cameraPos + look * zFar;
-        float   nearHalfHeight = zNear * MathF.Tan(fov * 0.5f);
-        float   farHalfHeight  = zFar * MathF.Tan(fov * 0.5f);
+        float   nearHalfHeight = zNear          * MathF.Tan(fov * 0.5f);
+        float   farHalfHeight  = zFar           * MathF.Tan(fov * 0.5f);
         float   nearHalfWidth  = nearHalfHeight * aspect;
-        float   farHalfWidth   = farHalfHeight * aspect;
+        float   farHalfWidth   = farHalfHeight  * aspect;
 
         Vector3 rightDir = Vector3.Normalize(Vector3.Cross(up, look));
-        Vector3 near1    = nearCenter - nearHalfHeight * up + nearHalfWidth * rightDir;
-        Vector3 near2    = nearCenter + nearHalfHeight * up + nearHalfWidth * rightDir;
-        Vector3 near3    = nearCenter + nearHalfHeight * up - nearHalfWidth * rightDir;
-        Vector3 near4    = nearCenter - nearHalfHeight * up - nearHalfWidth * rightDir;
-        Vector3 far1     = farCenter - farHalfHeight * up + farHalfWidth * rightDir;
-        Vector3 far2     = farCenter + farHalfHeight * up + farHalfWidth * rightDir;
-        Vector3 far3     = farCenter + farHalfHeight * up - farHalfWidth * rightDir;
-        Vector3 far4     = farCenter - farHalfHeight * up - farHalfWidth * rightDir;
+        Vector3 near1    = nearCenter - nearHalfHeight * up + nearHalfWidth  * rightDir;
+        Vector3 near2    = nearCenter                       + nearHalfHeight * up + nearHalfWidth * rightDir;
+        Vector3 near3    = nearCenter + nearHalfHeight * up - nearHalfWidth  * rightDir;
+        Vector3 near4    = nearCenter                       - nearHalfHeight * up - nearHalfWidth * rightDir;
+        Vector3 far1     = farCenter - farHalfHeight * up   + farHalfWidth   * rightDir;
+        Vector3 far2     = farCenter                        + farHalfHeight  * up + farHalfWidth * rightDir;
+        Vector3 far3     = farCenter + farHalfHeight * up   - farHalfWidth   * rightDir;
+        Vector3 far4     = farCenter                        - farHalfHeight  * up - farHalfWidth * rightDir;
 
         static Plane CreateNormalizedPlane(Vector3 point1, Vector3 point2, Vector3 point3)
         {
-            float x1      = point2.X - point1.X;
-            float y1      = point2.Y - point1.Y;
-            float z1      = point2.Z - point1.Z;
-            float x2      = point3.X - point1.X;
-            float y2      = point3.Y - point1.Y;
-            float z2      = point3.Z - point1.Z;
+            float x1      = point2.X  - point1.X;
+            float y1      = point2.Y  - point1.Y;
+            float z1      = point2.Z  - point1.Z;
+            float x2      = point3.X  - point1.X;
+            float y2      = point3.Y  - point1.Y;
+            float z2      = point3.Z  - point1.Z;
             float yz      = (y1 * z2) - (z1 * y2);
             float xz      = (z1 * x2) - (x1 * z2);
             float xy      = (x1 * y2) - (y1 * x2);
@@ -295,9 +295,9 @@ public unsafe struct BoundingFrustum
         lookAt      = _pNear.Normal;
         up          = Vector3.Normalize(Vector3.Cross(_pRight.Normal, _pNear.Normal));
         fov         = (Math2.PI_OVER_TWO - MathF.Acos(Vector3.Dot(_pNear.Normal, _pTop.Normal))) * 2;
-        aspectRatio = (corners[6] - corners[5]).Length() / (corners[4] - corners[5]).Length();
+        aspectRatio = (corners[6] - corners[5]).Length()                                         / (corners[4] - corners[5]).Length();
         zNear       = (position + (_pNear.Normal * _pNear.D)).Length();
-        zFar        = (position + (_pFar.Normal * _pFar.D)).Length();
+        zFar        = (position + (_pFar.Normal  * _pFar.D)).Length();
     }
 
     /// <summary> Checks whether a point lay inside, intersects or lay outside the frustum. </summary>
@@ -700,9 +700,9 @@ public unsafe struct BoundingFrustum
     private static Vector3 Get3PlanesInterPoint(in Plane p1, in Plane p2, in Plane p3)
     {
         //P = -d1 * N2xN3 / N1.N2xN3 - d2 * N3xN1 / N2.N3xN1 - d3 * N1xN2 / N3.N1xN2 
-        return -p1.D * Vector3.Cross(p2.Normal,  p3.Normal) / Vector3.Dot(p1.Normal, Vector3.Cross(p2.Normal, p3.Normal))
-               - p2.D * Vector3.Cross(p3.Normal, p1.Normal) / Vector3.Dot(p2.Normal, Vector3.Cross(p3.Normal, p1.Normal))
-               - p3.D * Vector3.Cross(p1.Normal, p2.Normal) / Vector3.Dot(p3.Normal, Vector3.Cross(p1.Normal, p2.Normal));
+        return -p1.D * Vector3.Cross(p2.Normal, p3.Normal) / Vector3.Dot(p1.Normal, Vector3.Cross(p2.Normal, p3.Normal))
+            - p2.D   * Vector3.Cross(p3.Normal, p1.Normal) / Vector3.Dot(p2.Normal, Vector3.Cross(p3.Normal, p1.Normal))
+            - p3.D   * Vector3.Cross(p1.Normal, p2.Normal) / Vector3.Dot(p3.Normal, Vector3.Cross(p1.Normal, p2.Normal));
     }
 
     private readonly void GetBoxToPlanePVertexNVertex(in BoundingBox box, in Vector3 planeNormal, out Vector3 p, out Vector3 n)

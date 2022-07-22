@@ -19,6 +19,43 @@ namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
+    /// <summary> Gets suitable depth stencil format. </summary>
+    /// <param name="physicalDevice"> The physical device. </param>
+    /// <param name="formats">        The formats. </param>
+    /// <param name="tiling">         The tiling. </param>
+    /// <param name="features">       The features. </param>
+    /// <param name="format">         [out] Describes the format to use. </param>
+    /// <returns> True if it succeeds, false if it fails. </returns>
+    public static bool GetSuitableDepthStencilFormat(
+        VkPhysicalDevice        physicalDevice,
+        VkFormat[]              formats,
+        VkImageTiling           tiling,
+        VkFormatFeatureFlagBits features,
+        out VkFormat            format)
+    {
+        for (int i = 0; i < formats.Length; i++)
+        {
+            VkFormatProperties2 formatProperties2;
+            formatProperties2.sType = VkFormatProperties2.STYPE;
+            formatProperties2.pNext = null;
+
+            vkGetPhysicalDeviceFormatProperties2(physicalDevice, format = formats[i], &formatProperties2);
+
+            if (tiling == VK_IMAGE_TILING_LINEAR && (formatProperties2.formatProperties.linearTilingFeatures & features) == features)
+            {
+                return true;
+            }
+
+            if (tiling == VK_IMAGE_TILING_OPTIMAL && (formatProperties2.formatProperties.optimalTilingFeatures & features) == features)
+            {
+                return true;
+            }
+        }
+
+        format = VK_FORMAT_UNDEFINED;
+        return false;
+    }
+
     private static void GetInstanceExtensionNames(
         string              layerName,
         ICollection<string> availableExtensionNames)
@@ -47,57 +84,54 @@ sealed unsafe partial class Vulkan
         }
     }
 
-
-    private static bool GetSuitableDepthStencilFormat(VkContext* context, VkFormat[] formats, VkImageTiling tiling, VkFormatFeatureFlagBits features, out VkFormat format)
+    private static void CleanupInstance(VkContext* context)
     {
-        for (int i = 0; i < formats.Length; i++)
+        if (context->Instance != VkInstance.Null)
         {
-            VkFormatProperties2 formatProperties2;
-            formatProperties2.sType = VkFormatProperties2.STYPE;
-            formatProperties2.pNext = null;
-
-            vkGetPhysicalDeviceFormatProperties2(context->PhysicalDevice, format = formats[i], &formatProperties2);
-
-            if (tiling == VK_IMAGE_TILING_LINEAR && (formatProperties2.formatProperties.linearTilingFeatures & features) == features)
+            if (context->SurfaceKhr != VkSurfaceKHR.Null)
             {
-                return true;
+                vkDestroySurfaceKHR(context->Instance, context->SurfaceKhr, null);
+                context->SurfaceKhr = VkSurfaceKHR.Null;
             }
 
-            if (tiling == VK_IMAGE_TILING_OPTIMAL && (formatProperties2.formatProperties.optimalTilingFeatures & features) == features)
+#if DEBUG
+            if (context->DebugUtilsMessengerExt != VkDebugUtilsMessengerEXT.Null)
             {
-                return true;
+                vkDestroyDebugUtilsMessengerEXT(context->Instance, context->DebugUtilsMessengerExt, null);
+                context->DebugUtilsMessengerExt = VkDebugUtilsMessengerEXT.Null;
             }
+#endif
+
+            vkDestroyInstance(context->Instance, null);
+            context->Instance = VkInstance.Null;
         }
-
-        format = VK_FORMAT_UNDEFINED;
-        return false;
     }
 
     private bool CreateInstance(
-        VkContext*               context,
         ApplicationConfiguration applicationConfiguration,
         InstanceConfiguration    instanceConfiguration)
     {
         VkVersion instanceVersion;
         vkEnumerateInstanceVersion(&instanceVersion)
             .AssertVkResult();
-        _logger.Log(LogLevel.Information, null, "Vulkan instance version: {0}", instanceVersion.ToString());
+
+        _logger.LogInformation("Vulkan instance version: {0}", instanceVersion.ToString());
 
         if (instanceVersion < applicationConfiguration.ApiVersion)
         {
-            _logger.Log(LogLevel.Critical, null, "The system doesn't support the minimum required vulkan version: {0}", applicationConfiguration.ApiVersion.ToString());
+            _logger.LogCritical("The system doesn't support the minimum required vulkan version: {0}", applicationConfiguration.ApiVersion.ToString());
             return false;
         }
 
         if (!CheckInstanceLayerSupport(instanceConfiguration.EnabledLayerNames))
         {
-            _logger.Log(LogLevel.Critical, null, "The system doesn't support the requested instance layers: {0}", string.Join(',', instanceConfiguration.EnabledLayerNames));
+            _logger.LogCritical("The system doesn't support the requested instance layers: {0}", string.Join(',', instanceConfiguration.EnabledLayerNames));
             return false;
         }
 
         if (!CheckInstanceExtensionSupport(instanceConfiguration.EnabledExtensionNames, instanceConfiguration.EnabledLayerNames))
         {
-            _logger.Log(LogLevel.Critical, null, "The system doesn't support the requested instance extensions: {0}", string.Join(',', instanceConfiguration.EnabledExtensionNames));
+            _logger.LogCritical("The system doesn't support the requested instance extensions: {0}", string.Join(',', instanceConfiguration.EnabledExtensionNames));
             return false;
         }
 
@@ -132,22 +166,62 @@ sealed unsafe partial class Vulkan
         instanceCreateInfo.enabledExtensionCount   = (uint)instanceConfiguration.EnabledExtensionNames.Count;
         instanceCreateInfo.ppEnabledExtensionNames = ppEnabledExtensionNames;
 
-        VkResult result = vkCreateInstance(&instanceCreateInfo, null, &context->Instance);
-
-        for (int i = 0; i < instanceConfiguration.EnabledExtensionNames.Count; i++)
+        try
         {
-            Allocator.FreeNtString(*(ppEnabledExtensionNames + i));
+            vkCreateInstance(&instanceCreateInfo, null, &_context->Instance)
+                .AssertVkResult();
+
+            return true;
+        }
+        finally
+        {
+            for (int i = 0; i < instanceConfiguration.EnabledExtensionNames.Count; i++)
+            {
+                Allocator.FreeNtString(*(ppEnabledExtensionNames + i));
+            }
+
+            for (int i = 0; i < instanceConfiguration.EnabledLayerNames.Count; i++)
+            {
+                Allocator.FreeNtString(*(ppEnabledLayerNames + i));
+            }
+
+            Allocator.FreeNtString(applicationInfo.pEngineName);
+            Allocator.FreeNtString(applicationInfo.pApplicationName);
+        }
+    }
+
+    private bool InitializeInstance(
+        ApplicationConfiguration         applicationConfiguration,
+        InstanceConfiguration            instanceConfiguration,
+        DebugUtilsMessengerConfiguration debugUtilsMessengerConfiguration,
+        SurfaceConfiguration             surfaceConfiguration,
+        PhysicalDeviceConfiguration      physicalDeviceConfiguration,
+        DeviceConfiguration              deviceConfiguration)
+    {
+        if (!CreateInstance(applicationConfiguration, instanceConfiguration))
+        {
+            _logger.LogCritical("{method} failed!", nameof(CreateInstance));
+            return false;
         }
 
-        for (int i = 0; i < instanceConfiguration.EnabledLayerNames.Count; i++)
+#if DEBUG
+        SetupDebugCallback(debugUtilsMessengerConfiguration);
+#endif
+
+        VkKhrGetSurfaceCapabilities2.Load(_context->Instance);
+        VkKhrSurface.Load(_context->Instance);
+
+        if (surfaceConfiguration.CreateSurface != null && !surfaceConfiguration.CreateSurface(_context))
         {
-            Allocator.FreeNtString(*(ppEnabledLayerNames + i));
+            _logger.LogCritical("{method} failed!", nameof(surfaceConfiguration.CreateSurface));
+            return false;
         }
 
-        Allocator.FreeNtString(applicationInfo.pEngineName);
-        Allocator.FreeNtString(applicationInfo.pApplicationName);
-
-        result.AssertVkResult();
+        if (!PickBestPhysicalDevice(physicalDeviceConfiguration, deviceConfiguration))
+        {
+            _logger.LogCritical("{method} failed!", nameof(PickBestPhysicalDevice));
+            return false;
+        }
 
         return true;
     }
@@ -174,7 +248,7 @@ sealed unsafe partial class Vulkan
             bool found = availableLayerNames.Any(name => name == instanceLayer);
             if (!found)
             {
-                _logger.Log(LogLevel.Warning, null, "Instance layer '{0}' not found!", instanceLayer);
+                _logger.LogWarning("Instance layer '{0}' not found!", instanceLayer);
             }
             allFound &= found;
         }
@@ -199,7 +273,7 @@ sealed unsafe partial class Vulkan
             bool found = availableExtensionNames.Any(name => name == deviceExtension);
             if (!found)
             {
-                _logger.Log(LogLevel.Warning, null, "Instance extension '{0}' not found!", deviceExtension);
+                _logger.LogWarning("Instance extension '{0}' not found!", deviceExtension);
             }
             allFound &= found;
         }

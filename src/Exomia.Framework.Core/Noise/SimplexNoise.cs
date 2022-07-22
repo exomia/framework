@@ -47,14 +47,14 @@ public sealed class SimplexNoise : NoiseBase
     protected override float Single(int seed, double x)
     {
         int    x0  = Math2.Floor(x);
-        double xd0 = x - x0;
+        double xd0 = x  - x0;
         double xd1 = x0 - 1.0f;
 
         double t0 = 1.0f - (xd0 * xd0);
         double t1 = 1.0f - (xd1 * xd1);
 
         return (float)(0.395 * ((t0 * t0 * t0 * GradCoord1D(seed, x0,     xd0)) +
-                                (t1 * t1 * t1 * GradCoord1D(seed, x0 + 1, xd1))));
+            (t1                     * t1 * t1 * GradCoord1D(seed, x0 + 1, xd1))));
     }
 
     /// <inheritdoc />
@@ -78,8 +78,8 @@ public sealed class SimplexNoise : NoiseBase
 
         double x1 = (x0 - i1) + G2;
         double y1 = (y0 - j1) + G2;
-        double x2 = (x0 - 1) + F2;
-        double y2 = (y0 - 1) + F2;
+        double x2 = (x0 - 1)  + F2;
+        double y2 = (y0 - 1)  + F2;
 
         double n0, n1, n2;
 
@@ -118,7 +118,7 @@ public sealed class SimplexNoise : NoiseBase
         int    j = Math2.Floor(y + t);
         int    k = Math2.Floor(z + t);
 
-        t = (i + j + k) * G3;
+        t = (i        + j + k) * G3;
         double x0 = x - (i - t);
         double y0 = y - (j - t);
         double z0 = z - (k - t);
@@ -193,9 +193,9 @@ public sealed class SimplexNoise : NoiseBase
         double x2 = (x0 - i2) + F3;
         double y2 = (y0 - j2) + F3;
         double z2 = (z0 - k2) + F3;
-        double x3 = x0 + G33;
-        double y3 = y0 + G33;
-        double z3 = z0 + G33;
+        double x3 = x0        + G33;
+        double y3 = y0        + G33;
+        double z3 = z0        + G33;
 
         double n0, n1, n2, n3;
 

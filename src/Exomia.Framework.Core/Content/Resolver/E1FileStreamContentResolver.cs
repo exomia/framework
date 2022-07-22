@@ -19,7 +19,7 @@ internal sealed class E1FileStreamContentResolver : IContentResolver
     public bool Exists(string assetName)
     {
         return Path.GetExtension(assetName) == ContentCompressor.DEFAULT_COMPRESSED_EXTENSION &&
-               File.Exists(assetName);
+            File.Exists(assetName);
     }
 
     /// <inheritdoc />

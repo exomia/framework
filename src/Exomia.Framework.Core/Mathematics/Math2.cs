@@ -235,7 +235,7 @@ public static partial class Math2
     {
         x *= ONE_OVER_TWO_PI;
         x -= 0.25f + Floor(x + 0.25f);
-        x *= 16.0f * (Math.Abs(x) - 0.5f);
+        x *= 16.0f  * (Math.Abs(x)     - 0.5f);
         x += 0.225f * x * (Math.Abs(x) - 1.0f);
         return x;
     }
@@ -437,7 +437,7 @@ public static partial class Math2
 
         uint g     = 0;
         int  bshft = Log2Floor(value) >> 1;
-        uint b     = 1u << bshft;
+        uint b     = 1u               << bshft;
         do
         {
             ulong temp = (ulong)(g + g + b) << bshft;
@@ -482,7 +482,7 @@ public static partial class Math2
 
         uint g     = 0;
         int  bshft = Log2Floor(value) >> 1;
-        uint b     = 1u << bshft;
+        uint b     = 1u               << bshft;
         do
         {
             uint temp = (g + g + b) << bshft;
@@ -738,7 +738,7 @@ public static partial class Math2
         }
 
         double rangeSize = maxd - mind;
-        return (float)(mind + (valued - mind) - (rangeSize * Math.Floor((valued - mind) / rangeSize)));
+        return (float)(mind     + (valued - mind) - (rangeSize * Math.Floor((valued - mind) / rangeSize)));
     }
 
     #endregion

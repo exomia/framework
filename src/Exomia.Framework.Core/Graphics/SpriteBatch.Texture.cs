@@ -220,11 +220,12 @@ public sealed partial class SpriteBatch
                                    TextureEffects effects,
                                    float          depth)
     {
+#if DEBUG
         if (!_isBeginCalled)
         {
             throw new InvalidOperationException("Begin must be called before draw");
         }
-
+#endif
         if (texture.TexturePointer == IntPtr.Zero)
         {
             //throw new ArgumentNullException(nameof(texture));
@@ -302,7 +303,7 @@ public sealed partial class SpriteBatch
 
             if (scaleDestination)
             {
-                spriteInfo->Destination.Width  = destination.Width * width;
+                spriteInfo->Destination.Width  = destination.Width  * width;
                 spriteInfo->Destination.Height = destination.Height * height;
             }
             else

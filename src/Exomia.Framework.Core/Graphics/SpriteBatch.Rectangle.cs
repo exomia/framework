@@ -93,7 +93,7 @@ public sealed partial class SpriteBatch
 
                 vertex[j] = new Vector2(
                     (destinationRectangle.X + (posX * cos)) - (posY * sin),
-                    destinationRectangle.Y + (posX * sin) + (posY * cos));
+                    destinationRectangle.Y                  + (posX * sin) + (posY * cos));
             }
         }
 

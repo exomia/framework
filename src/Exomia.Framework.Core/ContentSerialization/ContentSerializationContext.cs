@@ -15,8 +15,7 @@ namespace Exomia.Framework.Core.ContentSerialization;
 /// <summary> A content serialization context. This class cannot be inherited. </summary>
 public sealed class ContentSerializationContext
 {
-    internal Dictionary<string, ContentSerializationContextValue> Content { get; } =
-        new Dictionary<string, ContentSerializationContextValue>();
+    internal Dictionary<string, Value> Content { get; } = new Dictionary<string, Value>();
 
     /// <summary> Returns the key Value of the given key. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
@@ -26,7 +25,8 @@ public sealed class ContentSerializationContext
     public T Get<T>(string key)
     {
         if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
-        if (Content.TryGetValue(key, out ContentSerializationContextValue? value))
+
+        if (Content.TryGetValue(key, out Value? value))
         {
             return (T)value.Object!;
         }
@@ -39,38 +39,31 @@ public sealed class ContentSerializationContext
     /// <param name="obj"> The object. </param>
     public void Set<T>(string key, T obj)
     {
-        Set(key, obj!, typeof(T));
+        Set(key, obj, typeof(T));
     }
 
     internal void Set(string key, object? obj, Type type)
     {
         if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException(nameof(key)); }
 
-        if (!Content.ContainsKey(key))
-        {
-            Content.Add(key, new ContentSerializationContextValue(type, obj));
-        }
-        else
+        if (Content.ContainsKey(key))
         {
             throw new CsContextKeyException(
                 $"The context already contains a key with name: '{key}'.", nameof(key));
         }
+
+        Content.Add(key, new Value(type, obj));
     }
-}
 
-internal class ContentSerializationContextValue
-{
-    /// <summary> Gets or sets the type. </summary>
-    /// <value> The type. </value>
-    public Type Type { get; set; }
-
-    /// <summary> Gets or sets the object. </summary>
-    /// <value> The object. </value>
-    public object? Object { get; set; }
-
-    public ContentSerializationContextValue(Type type, object? obj)
+    internal class Value
     {
-        Type   = type;
-        Object = obj;
+        public Type    Type   { get; }
+        public object? Object { get; }
+
+        public Value(Type type, object? obj)
+        {
+            Type   = type;
+            Object = obj;
+        }
     }
 }

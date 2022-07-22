@@ -93,7 +93,7 @@ public static class ContentSerializer
 
         foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         {
-            if (a.FullName == null ||
+            if (a.FullName == null              ||
                 a.FullName.StartsWith("System") ||
                 a.FullName.StartsWith("ms")) { continue; }
 
@@ -235,7 +235,7 @@ public static class ContentSerializer
         ContentSerializationContext context = new ContentSerializationContext();
         writer.Write(context, obj);
 
-        foreach ((string key, ContentSerializationContextValue value) in context.Content)
+        foreach ((string key, ContentSerializationContext.Value value) in context.Content)
         {
             if (value.Object == null) { continue; }
 

@@ -139,12 +139,12 @@ public struct ViewportF
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in ViewportF other)
     {
-        return Math2.NearEqual(X,        other.X) &&
-               Math2.NearEqual(Y,        other.Y) &&
-               Math2.NearEqual(Width,    other.Width) &&
-               Math2.NearEqual(Height,   other.Height) &&
-               Math2.NearEqual(MinDepth, other.MinDepth) &&
-               Math2.NearEqual(MaxDepth, other.MaxDepth);
+        return Math2.NearEqual(X,     other.X)        &&
+            Math2.NearEqual(Y,        other.Y)        &&
+            Math2.NearEqual(Width,    other.Width)    &&
+            Math2.NearEqual(Height,   other.Height)   &&
+            Math2.NearEqual(MinDepth, other.MinDepth) &&
+            Math2.NearEqual(MaxDepth, other.MaxDepth);
     }
 
     /// <summary> Determines whether the specified object is equal to this instance. </summary>
@@ -201,9 +201,9 @@ public struct ViewportF
             vector /= a;
         }
 
-        vector.X = (vector.X + 1f) * 0.5f * Width + X;
-        vector.Y = (-vector.Y + 1f) * 0.5f * Height + Y;
-        vector.Z = vector.Z * (MaxDepth - MinDepth) + MinDepth;
+        vector.X = (vector.X  + 1f) * 0.5f * Width          + X;
+        vector.Y = (-vector.Y + 1f) * 0.5f * Height         + Y;
+        vector.Z = vector.Z         * (MaxDepth - MinDepth) + MinDepth;
     }
 
     /// <summary> Converts a screen space point into a corresponding point in world space. </summary>
@@ -232,7 +232,7 @@ public struct ViewportF
     {
         vector.X = (source.X - X) / Width * 2f - 1f;
         vector.Y = -((source.Y - Y) / Height * 2f - 1f);
-        vector.Z = (source.Z - MinDepth) / (MaxDepth - MinDepth);
+        vector.Z = (source.Z                      - MinDepth) / (MaxDepth - MinDepth);
 
         float a = vector.X * matrix.M14 + vector.Y * matrix.M24 + vector.Z * matrix.M34 + matrix.M44;
         vector = Vector3.Transform(vector, matrix);

@@ -76,7 +76,7 @@ public sealed class ContentManager : IContentManager
 
             foreach (Type t in a.GetTypes())
             {
-                if (t.IsClass && !t.IsInterface || t.IsValueType && !t.IsEnum)
+                if ((t.IsClass && !t.IsInterface) || (t.IsValueType && !t.IsEnum))
                 {
                     ContentReadableAttribute? contentReadableAttribute = t.GetCustomAttribute<ContentReadableAttribute>(false);
                     if (contentReadableAttribute != null)
@@ -420,8 +420,8 @@ public sealed class ContentManager : IContentManager
             }
 
             return contentReader.ReadContent(this, ref parameters)
-                   ?? throw new NotSupportedException(
-                       $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
+                ?? throw new NotSupportedException(
+                    $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
         }
         finally
         {
@@ -456,7 +456,7 @@ public sealed class ContentManager : IContentManager
         public bool Equals(AssetKey other)
         {
             return _assetType == other._assetType &&
-                   string.Equals(_assetName, other._assetName, StringComparison.OrdinalIgnoreCase);
+                string.Equals(_assetName, other._assetName, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <inheritdoc />

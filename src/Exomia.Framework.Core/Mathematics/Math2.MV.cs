@@ -28,9 +28,9 @@ public static partial class Math2
                                                 out Matrix4x4 transform)
     {
         transform = Matrix4x4.CreateTranslation(-origin.X, -origin.Y, 0) *
-                    Matrix4x4.CreateRotationZ(rotation) *
-                    Matrix4x4.CreateScale(scale.X, scale.Y, 0.0f) *
-                    Matrix4x4.CreateTranslation(position.X, position.Y, 0);
+            Matrix4x4.CreateRotationZ(rotation)                          *
+            Matrix4x4.CreateScale(scale.X, scale.Y, 0.0f)                *
+            Matrix4x4.CreateTranslation(position.X, position.Y, 0);
     }
 
     /// <summary> calculates a transform matrix. </summary>
@@ -45,9 +45,9 @@ public static partial class Math2
                                                      float      rotation)
     {
         return Matrix4x4.CreateTranslation(-origin.X, -origin.Y, 0) *
-               Matrix4x4.CreateRotationZ(rotation) *
-               Matrix4x4.CreateScale(scale.X, scale.Y, 0.0f) *
-               Matrix4x4.CreateTranslation(position.X, position.Y, 0);
+            Matrix4x4.CreateRotationZ(rotation)                     *
+            Matrix4x4.CreateScale(scale.X, scale.Y, 0.0f)           *
+            Matrix4x4.CreateTranslation(position.X, position.Y, 0);
     }
 
     /// <summary> creates an axis aligned bounding box. </summary>

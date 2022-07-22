@@ -194,10 +194,10 @@ public struct Rectangle
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in Rectangle other)
     {
-        return Math2.NearEqual(other.Left,   Left) &&
-               Math2.NearEqual(other.Right,  Right) &&
-               Math2.NearEqual(other.Top,    Top) &&
-               Math2.NearEqual(other.Bottom, Bottom);
+        return Math2.NearEqual(other.Left, Left)  &&
+            Math2.NearEqual(other.Right,   Right) &&
+            Math2.NearEqual(other.Top,     Top)   &&
+            Math2.NearEqual(other.Bottom,  Bottom);
     }
 
     /// <inheritdoc />
@@ -247,7 +247,7 @@ public struct Rectangle
         X      -= horizontalAmount;
         Y      -= verticalAmount;
         Width  += horizontalAmount << 1;
-        Height += verticalAmount << 1;
+        Height += verticalAmount   << 1;
     }
 
     /// <summary> Checks, if specified <see cref="VectorI2" /> is inside <see cref="Rectangle" />. </summary>

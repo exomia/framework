@@ -40,9 +40,9 @@ public static partial class Math2
         TransformCoordinate(in vector, in worldViewProjection, out Vector3 v);
 
         result = new Vector3(
-            ((1.0f + v.X) * 0.5f * width) + x,
+            ((1.0f + v.X) * 0.5f * width)  + x,
             ((1.0f - v.Y) * 0.5f * height) + y,
-            (v.Z * (maxZ - minZ)) + minZ);
+            (v.Z          * (maxZ - minZ)) + minZ);
     }
 
     /// <summary> Projects a 3D vector from object space into screen space. </summary>
@@ -93,9 +93,9 @@ public static partial class Math2
         Matrix4x4.Invert(worldViewProjection, out Matrix4x4 matrix);
 
         Vector3 v;
-        v.X = (((vector.X - x) / width) * 2.0f) - 1.0f;
+        v.X = (((vector.X - x)             / width) * 2.0f) - 1.0f;
         v.Y = -((((vector.Y - y) / height) * 2.0f) - 1.0f);
-        v.Z = (vector.Z - minZ) / (maxZ - minZ);
+        v.Z = (vector.Z                            - minZ) / (maxZ - minZ);
 
         TransformCoordinate(in v, in matrix, out result);
     }
@@ -139,14 +139,14 @@ public static partial class Math2
     public static void TransformCoordinate(in Vector3 coordinate, in Matrix4x4 transform, out Vector3 result)
     {
         float w = 1f / ((coordinate.X * transform.M14) + (coordinate.Y * transform.M24) +
-                        (coordinate.Z * transform.M34) + transform.M44);
+            (coordinate.Z             * transform.M34) + transform.M44);
 
         result.X = ((coordinate.X * transform.M11) + (coordinate.Y * transform.M21) +
-                    (coordinate.Z * transform.M31) + transform.M41) * w;
+            (coordinate.Z         * transform.M31) + transform.M41) * w;
         result.Y = ((coordinate.X * transform.M12) + (coordinate.Y * transform.M22) +
-                    (coordinate.Z * transform.M32) + transform.M42) * w;
+            (coordinate.Z         * transform.M32) + transform.M42) * w;
         result.Z = ((coordinate.X * transform.M13) + (coordinate.Y * transform.M23) +
-                    (coordinate.Z * transform.M33) + transform.M43) * w;
+            (coordinate.Z         * transform.M33) + transform.M43) * w;
     }
 
     /// <summary> Performs a coordinate transformation using the given <see cref="Matrix4x4" />. </summary>

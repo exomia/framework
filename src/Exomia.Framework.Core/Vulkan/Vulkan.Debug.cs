@@ -20,8 +20,6 @@ namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
-    private LogHandler _logHandler = null!;
-
     /// <summary> Handler, called within the debug user callback to log to the logger of the vulkan instance. </summary>
     /// <param name="logLevel">      The log level. </param>
     /// <param name="exception">     The exception. </param>
@@ -35,48 +33,42 @@ sealed unsafe partial class Vulkan
         VkDebugUtilsMessengerCallbackDataEXT*  pCallbackData,
         void*                                  pUserData)
     {
-        LogLevel logLevel;
-        if ((severityFlags & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
-        {
-            logLevel = LogLevel.Trace;
-        }
-        else if ((severityFlags & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-        {
-            logLevel = LogLevel.Information;
-        }
-        else if ((severityFlags & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-        {
-            logLevel = LogLevel.Warning;
-        }
-        else if ((severityFlags & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-        {
-            logLevel = LogLevel.Error;
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(severityFlags), severityFlags, null);
-        }
-
-        LogHandler logHandler = Marshal.GetDelegateForFunctionPointer<LogHandler>(new IntPtr(pUserData));
-
-        if ((messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
-        {
-            logHandler(logLevel, null, "[{id}/GENERAL] {message}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
-        }
-        else if ((messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
-        {
-            logHandler(logLevel, null, "[{id}/VALIDATION] {message}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
-        }
-        else if ((messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
-        {
-            logHandler(logLevel, null, "[{id}/PERFORMANCE] {message}", VkHelper.ToString(pCallbackData->pMessageIdName), VkHelper.ToString(pCallbackData->pMessage));
-        }
+        Marshal.GetDelegateForFunctionPointer<LogHandler>(new IntPtr(pUserData))(
+            severityFlags switch
+            {
+                VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT => LogLevel.Trace,
+                VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT    => LogLevel.Information,
+                VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT => LogLevel.Warning,
+                VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT   => LogLevel.Error,
+                _                                               => throw new ArgumentOutOfRangeException(nameof(severityFlags), severityFlags, null)
+            },
+            null,
+            "[{id}/{kind}] {message}",
+            VkHelper.ToString(pCallbackData->pMessageIdName),
+            messageType switch
+            {
+                VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT     => "GENERAL",
+                VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT  => "VALIDATION",
+                VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT => "PERFORMANCE",
+                _                                               => throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null)
+            },
+            VkHelper.ToString(pCallbackData->pMessage));
 
         return VkBool32.False;
     }
 
-    private bool SetupDebugCallback(VkContext* context, DebugUtilsMessengerConfiguration debugUtilsMessengerConfiguration)
+    private static void LogCallback(ILogger logger, LogLevel logLevel, Exception? exception, string? message, params object?[] args)
     {
+#pragma warning disable CA2254 // Template should be a static expression
+        logger.Log(logLevel, exception, message, args);
+#pragma warning restore CA2254 // Template should be a static expression
+    }
+
+    private void SetupDebugCallback(
+        DebugUtilsMessengerConfiguration debugUtilsMessengerConfiguration)
+    {
+        VkExtDebugUtils.Load(_context->Instance);
+
         VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoExt;
         debugUtilsMessengerCreateInfoExt.sType           = VkDebugUtilsMessengerCreateInfoEXT.STYPE;
         debugUtilsMessengerCreateInfoExt.pNext           = null;
@@ -87,38 +79,34 @@ sealed unsafe partial class Vulkan
             ? debugUtilsMessengerConfiguration.UserCallback
             : &UserCallbackDefault;
 
-        ParameterExpression[] parameters =
+        Expression[] parameters =
         {
+            Expression.Constant(_logger),
             Expression.Parameter(typeof(LogLevel),  "logLevel"),
             Expression.Parameter(typeof(Exception), "exception"),
-            Expression.Parameter(typeof(string),    "messageFormat"),
+            Expression.Parameter(typeof(string),    "message"),
             Expression.Parameter(typeof(object[]),  "args")
         };
 
-        VkExtDebugUtils.Load(context->Instance);
+        debugUtilsMessengerCreateInfoExt.pUserData = debugUtilsMessengerConfiguration.PUserData != null
+            ? debugUtilsMessengerConfiguration.PUserData
+            : (void*)Marshal.GetFunctionPointerForDelegate(
+                debugUtilsMessengerConfiguration.LogHandler =
+                    Expression.Lambda<LogHandler>(
+                                  Expression.Call(
+                                      null,
+                                      typeof(Vulkan).GetMethod(
+                                          nameof(LogCallback),
+                                          BindingFlags.NonPublic | BindingFlags.Static,
+                                          null,
+                                          CallingConventions.Standard,
+                                          parameters.Select(p => p.Type).ToArray(),
+                                          null) ?? throw new NullReferenceException(),
+                                      parameters.Cast<Expression>()),
+                                  parameters.OfType<ParameterExpression>())
+                              .Compile());
 
-        debugUtilsMessengerCreateInfoExt.pUserData = (void*)Marshal.GetFunctionPointerForDelegate(
-            _logHandler = Expression.Lambda<LogHandler>(
-                    Expression.Call(
-                        Expression.Constant(this),
-                        typeof(Vulkan).GetMethod(
-                            nameof(LogCallback),
-                            BindingFlags.NonPublic | BindingFlags.Instance,
-                            null,
-                            CallingConventions.HasThis,
-                            new[] { typeof(LogLevel), typeof(Exception), typeof(string), typeof(object).MakeArrayType() },
-                            null) ?? throw new NullReferenceException(),
-                        parameters.Cast<Expression>()),
-                    parameters)
-                .Compile());
-
-        vkCreateDebugUtilsMessengerEXT(context->Instance, &debugUtilsMessengerCreateInfoExt, null, &context->DebugUtilsMessengerExt)
+        vkCreateDebugUtilsMessengerEXT(_context->Instance, &debugUtilsMessengerCreateInfoExt, null, &_context->DebugUtilsMessengerExt)
             .AssertVkResult();
-        return true;
-    }
-
-    private void LogCallback(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args)
-    {
-        _logger.Log(logLevel, exception, messageFormat, args);
     }
 }

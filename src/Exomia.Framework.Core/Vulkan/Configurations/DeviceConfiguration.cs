@@ -19,7 +19,7 @@ public sealed unsafe class DeviceConfiguration
     public List<string>        EnabledLayerNames     { get; set; } = new List<string>();
     public List<string>        EnabledExtensionNames { get; set; } = new List<string> { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
-    public unsafe delegate*<
+    public delegate*<
         VkContext*,               /* context */
         uint*,                    /* deviceQueueCreateInfoCount */
         VkDeviceQueueCreateInfo*, /* deviceQueueCreateInfos */

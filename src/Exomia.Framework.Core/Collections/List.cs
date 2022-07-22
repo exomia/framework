@@ -254,7 +254,7 @@ public sealed class List<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Insert(int index, in T item)
     {
-        if (index >= _items.Length) { EnsureCapacity(Count + 1); }
+        if (index >= _items.Length) { EnsureCapacity(Count           + 1); }
         if (index < Count) { Array.Copy(_items, index, _items, index + 1, Count - index); }
         _items[index] =  item;
         Count         += 1;
@@ -266,8 +266,8 @@ public sealed class List<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void InsertRange(int index, T[] items)
     {
-        if (index + items.Length >= _items.Length) { EnsureCapacity(Count + items.Length); }
-        if (index < Count) { Array.Copy(_items, index, _items, index + _items.Length, Count - index); }
+        if (index + items.Length >= _items.Length) { EnsureCapacity(Count           + items.Length); }
+        if (index                < Count) { Array.Copy(_items, index, _items, index + _items.Length, Count - index); }
         Buffer.BlockCopy(items, 0, _items, index, items.Length * _sizeOf);
         Count += _items.Length;
     }

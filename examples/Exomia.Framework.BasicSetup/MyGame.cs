@@ -8,33 +8,134 @@
 
 #endregion
 
+using System;
+using System.Diagnostics;
 using Exomia.Framework.Core.Game;
-using Exomia.IoC;
-using Exomia.IoC.Attributes;
-using Exomia.Logging;
+using Exomia.Framework.Core.Graphics;
+using Exomia.Framework.Core.Mathematics;
+using Exomia.Framework.Core.Vulkan;
+using Exomia.Framework.Core.Vulkan.Configurations;
+using Exomia.Vulkan.Api.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.BasicSetup;
 
 /// <summary>
 ///     My game class. This class cannot be inherited.
 /// </summary>
-internal sealed class MyGame : Game
+internal sealed unsafe class MyGame : Game
 {
     /// <summary> Initializes a new instance of the <see cref="MyGame" /> class. </summary>
-    /// <param name="serviceProvider"> The service provider. </param>
-    /// <param name="logger">          The logger. </param>
-    public MyGame(IServiceProvider                                                   serviceProvider,
-                  [IoCOptional(typeof(SimpleConsoleLogger<MyGame>))] ILogger<MyGame> logger)
+    /// <param name="serviceProvider">           The service provider. </param>
+    /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
+    /// <param name="depthStencilConfiguration"> The depth stencil configuration. </param>
+    /// <param name="logger">                    The logger. </param>
+    public MyGame(IServiceProvider                    serviceProvider,
+                  IOptions<SwapchainConfiguration>    swapchainConfiguration,
+                  IOptions<DepthStencilConfiguration> depthStencilConfiguration,
+                  ILogger<MyGame>                     logger)
         : base(serviceProvider)
     {
+        _logger = logger;
+
         //IsFixedTimeStep   = true;
         //TargetElapsedTime = 1000.0 / 1000;
 
-        logger.Log(LogLevel.Trace,       null, "ctor for 'MyGame' called...");
-        logger.Log(LogLevel.Debug,       null, "ctor for 'MyGame' called...");
-        logger.Log(LogLevel.Information, null, "ctor for 'MyGame' called...");
-        logger.Log(LogLevel.Warning,     null, "ctor for 'MyGame' called...");
-        logger.Log(LogLevel.Error,       null, "ctor for 'MyGame' called...");
-        logger.Log(LogLevel.Critical,    null, "ctor for 'MyGame' called...");
+        Core.Vulkan.Vulkan vulkan = serviceProvider.GetRequiredService<Core.Vulkan.Vulkan>();
+
+        RenderPassConfiguration renderPassConfiguration = new();
+        renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.LoadOp     = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.StoreOp    = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+        renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.LoadOp  = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.StoreOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+
+        _swapchain = new Swapchain(
+            vulkan.Context,
+            swapchainConfiguration.Value,
+            depthStencilConfiguration.Value,
+            renderPassConfiguration);
+
+        //_renderer = new Renderer(vulkan.Context, _swapchain);
+        _spriteBatch = new SpriteBatch(_swapchain);
     }
+
+    protected override bool BeginFrame()
+    {
+        return _swapchain.BeginFrame();
+    }
+
+    protected override void Render(GameTime gameTime)
+    {
+        //if (_renderer.Begin(out VkCommandBuffer* commandBuffers, out uint frameInFlight))
+        //{
+        //    _renderer.BeginRenderPass(*(commandBuffers + frameInFlight));
+
+        //    _renderer.EndRenderPass(*(commandBuffers + frameInFlight));
+
+        //    _renderer.End(commandBuffers, frameInFlight);
+        //}
+        
+        _spriteBatch.Begin();
+
+        Random rnd = new Random(100);
+
+        const int iterations = 10_000;
+        for (int i = 0; i < iterations; i++)
+        {
+            if (i > iterations * 0.75)
+            {
+                _spriteBatch.DrawFillRectangle(
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new VkColor(0f, 1f, 1f),
+                    rnd.NextSingle());
+            }
+            else if (i > iterations * 0.50)
+            {
+                _spriteBatch.DrawFillRectangle(
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new VkColor(0f, 0f, 1f),
+                    rnd.NextSingle());
+            }
+            else if (i > iterations * 0.25)
+            {
+                _spriteBatch.DrawFillRectangle(
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new VkColor(0f, 1f, 0f),
+                    rnd.NextSingle());
+            }
+            else
+            {
+                _spriteBatch.DrawFillRectangle(
+                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(gameTime.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                    new VkColor(1f, 0f, 0f),
+                    rnd.NextSingle());
+            }
+        }
+        
+        _spriteBatch.End();
+    }
+
+    protected override void EndFrame()
+    {
+        _swapchain.EndFrame();
+    }
+
+    protected override void OnDispose(bool disposing)
+    {
+        //_renderer.Dispose();
+        _spriteBatch.Dispose();
+        _swapchain.Dispose();
+    }
+#pragma warning disable IDE0052 // Remove unread private members
+    // ReSharper disable once NotAccessedField.Local
+    private readonly ILogger<MyGame> _logger;
+
+    private readonly Swapchain _swapchain;
+
+    //private readonly Renderer _renderer;
+    private readonly SpriteBatch _spriteBatch;
+
+#pragma warning restore IDE0052 // Remove unread private members
 }

@@ -40,6 +40,25 @@ internal static unsafe class VkHelper
         return vkGetDeviceProcAddr(device, pName);
     }
 
+    public static string ToNtStringUtf8(this string value)
+    {
+        StringBuilder valueAsUtf8InUtf16 = new StringBuilder((value.Length * 2) + 1);
+
+        for (int i = 0, n = value.Length - 1; i < n; i += 2)
+        {
+            byte low  = (byte)value[i];     // is okay, because only ascii is supported
+            byte high = (byte)value[i + 1]; // is okay, because only ascii is supported
+            valueAsUtf8InUtf16.Append($"\\u{high:x2}{low:x2}");
+        }
+
+        return valueAsUtf8InUtf16
+               .Append(
+                   value.Length % 2 == 0
+                       ? "\\u0000"
+                       : $"\\u00{(byte)value[value.Length - 1]:x2}")
+               .ToString();
+    }
+
     public static void ToNtStringUtf8(this string? value, byte* dstPointer, int maxByteCount)
     {
         if (value == null) { return; }

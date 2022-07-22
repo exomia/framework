@@ -24,7 +24,7 @@ public sealed class ContentReadableAttribute : Attribute
     public ContentReadableAttribute(Type reader)
     {
         Reader = System.Activator.CreateInstance(reader) as IContentReader ??
-                 throw new TypeLoadException(
-                     $"Can not create an instance of {nameof(IContentReader)} from type: {reader.AssemblyQualifiedName}");
+            throw new TypeLoadException(
+                $"Can not create an instance of {nameof(IContentReader)} from type: {reader.AssemblyQualifiedName}");
     }
 }

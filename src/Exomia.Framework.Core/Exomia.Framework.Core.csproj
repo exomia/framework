@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<!--EXTERNAL_PROPERTIES: GITHUB_ACTIONS-->
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
@@ -86,29 +87,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\shaders\src\position_color.frag" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\shaders\src\position_color.vert" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Exomia.IoC\Exomia.IoC.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
-    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="1.3.219" />
+    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="1.3.221" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
-    <PackageReference Include="Exomia.Vulkan.Api.Core.x64" Version="1.3.219" />
+    <PackageReference Include="Exomia.Vulkan.Api.Core.x64" Version="1.3.221" />
   </ItemGroup>
 
   <ItemGroup>
@@ -147,9 +136,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Vulkan\Vulkan - Copy.Queue.cs">
-      <DependentUpon>Vulkan.cs</DependentUpon>
+    <Compile Update="Vulkan\Swapchain.cs"></Compile>
+    <Compile Update="Vulkan\Swapchain.*.cs">
+      <DependentUpon>Swapchain.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Vulkan\Vulkan.cs"></Compile>
     <Compile Update="Vulkan\Vulkan.*.cs">
       <DependentUpon>Vulkan.cs</DependentUpon>

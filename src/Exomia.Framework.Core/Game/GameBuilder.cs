@@ -62,11 +62,11 @@ public sealed class GameBuilder : IGameBuilder
     public TGame Build<TGame>() where TGame : Game
     {
         IServiceCollection appServiceCollection = new ServiceCollection()
-            /* vulkan */
-            .AddSingleton<Vulkan.Vulkan>()
-            /* game */
-            .AddSingleton<TGame>()
-            .AddSingleton<Game>(p => p.GetRequiredService<TGame>());
+                                                  /* vulkan */
+                                                  .AddSingleton<Vulkan.Vulkan>()
+                                                  /* game */
+                                                  .AddSingleton<TGame>()
+                                                  .AddSingleton<Game>(p => p.GetRequiredService<TGame>());
 
         /* vulkan options */
         AddOptions<ApplicationConfiguration>(appServiceCollection);
@@ -76,7 +76,6 @@ public sealed class GameBuilder : IGameBuilder
         AddOptions<InstanceConfiguration>(appServiceCollection);
         AddOptions<PhysicalDeviceConfiguration>(appServiceCollection);
         AddOptions<QueueConfiguration>(appServiceCollection);
-        AddOptions<RenderPassConfiguration>(appServiceCollection);
         AddOptions<SurfaceConfiguration>(appServiceCollection);
         AddOptions<SwapchainConfiguration>(appServiceCollection);
 
@@ -129,7 +128,7 @@ public sealed class GameBuilder : IGameBuilder
                 }));
             return;
         }
-        
+
         serviceCollection.AddOptions<TOption>();
     }
 

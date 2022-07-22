@@ -8,8 +8,6 @@
 
 #endregion
 
-
-
 // ReSharper disable UnusedMember.Global
 // ReSharper disable CommentTypo
 // ReSharper disable IdentifierTypo
@@ -455,8 +453,8 @@ public static class VkColors
         VkColor color;
         color.A = (((argb >> 24) & 0xFF) / 255.0f);
         color.R = (((argb >> 16) & 0xFF) / 255.0f);
-        color.G = (((argb >> 8) & 0xFF) / 255.0f);
-        color.B = (((argb >> 0) & 0xFF) / 255.0f);
+        color.G = (((argb >> 8)  & 0xFF) / 255.0f);
+        color.B = (((argb >> 0)  & 0xFF) / 255.0f);
         return color;
     }
 }

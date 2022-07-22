@@ -82,7 +82,7 @@ public readonly struct Arc2
     public override int GetHashCode()
     {
         return (((((((X.GetHashCode() * 307) ^ Y.GetHashCode()) * 521) ^ Radius.GetHashCode()) * 853) ^
-                 Start.GetHashCode()) * 443) ^ End.GetHashCode();
+            Start.GetHashCode()) * 443) ^ End.GetHashCode();
     }
 
     /// <summary> Determines whether the specified <see cref="Arc2" /> is equal to this instance. </summary>
@@ -93,11 +93,11 @@ public readonly struct Arc2
     {
         // ReSharper disable CompareOfFloatsByEqualityOperator
         return
-            X == other.X &&
-            Y == other.Y &&
+            X      == other.X      &&
+            Y      == other.Y      &&
             Radius == other.Radius &&
-            Start == other.Start &&
-            End == other.End;
+            Start  == other.Start  &&
+            End    == other.End;
 
         // ReSharper restore CompareOfFloatsByEqualityOperator
     }

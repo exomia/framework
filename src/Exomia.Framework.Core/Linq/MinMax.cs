@@ -32,7 +32,7 @@ public static partial class LinqExt
                                           Func<TSource, T>          predicate,
                                           IComparer<T>?             comparer = null)
     {
-        if (source == null) { throw new ArgumentNullException(nameof(source)); }
+        if (source    == null) { throw new ArgumentNullException(nameof(source)); }
         if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
 
         IComparer<T> c = comparer ?? Comparer<T>.Default;
@@ -73,7 +73,7 @@ public static partial class LinqExt
                                           Func<TSource, T>          predicate,
                                           IComparer<T>?             comparer = null)
     {
-        if (source == null) { throw new ArgumentNullException(nameof(source)); }
+        if (source    == null) { throw new ArgumentNullException(nameof(source)); }
         if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
 
         IComparer<T> c = comparer ?? Comparer<T>.Default;

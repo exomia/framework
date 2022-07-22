@@ -33,7 +33,7 @@ public static class Collision
         //Check if P in vertex region outside A
         Vector3 ab = vertex2 - vertex1;
         Vector3 ac = vertex3 - vertex1;
-        Vector3 ap = point - vertex1;
+        Vector3 ap = point   - vertex1;
 
         float d1 = Vector3.Dot(ab, ap);
         float d2 = Vector3.Dot(ac, ap);
@@ -92,8 +92,8 @@ public static class Collision
 
         //P inside face region. Compute Q through its Barycentric coordinates (u,v,w)
         float denom = 1.0f / (va + vb + vc);
-        float v2    = vb * denom;
-        float w2    = vc * denom;
+        float v2    = vb   * denom;
+        float w2    = vc   * denom;
         result = vertex1 + ab * v2 + ac * w2; //= u*vertex1 + v*vertex2 + w*vertex3, u = va * denom = 1.0f - v - w
     }
 
@@ -356,11 +356,11 @@ public static class Collision
         //t values of the point of intersection.
         float s = dets / denominator;
         float t = (m11 * m22 * m33 +
-                   m12 * m23 * m31 +
-                   m13 * m21 * m32 -
-                   m11 * m23 * m32 -
-                   m12 * m21 * m33 -
-                   m13 * m22 * m31) / denominator;
+            m12        * m23 * m31 +
+            m13        * m21 * m32 -
+            m11 * m23 * m32        -
+            m12 * m21 * m33        -
+            m13 * m22 * m31) / denominator;
 
         //The points of intersection.
         point = ray1.Position + (s * ray1.Direction);
@@ -565,7 +565,7 @@ public static class Collision
         }
         else
         {
-            float inverse = 1.0f / ray.Direction.X;
+            float inverse = 1.0f                             / ray.Direction.X;
             float t1      = (box.Minimum.X - ray.Position.X) * inverse;
             float t2      = (box.Maximum.X - ray.Position.X) * inverse;
 
@@ -595,7 +595,7 @@ public static class Collision
         }
         else
         {
-            float inverse = 1.0f / ray.Direction.Y;
+            float inverse = 1.0f                             / ray.Direction.Y;
             float t1      = (box.Minimum.Y - ray.Position.Y) * inverse;
             float t2      = (box.Maximum.Y - ray.Position.Y) * inverse;
 
@@ -626,7 +626,7 @@ public static class Collision
         }
         else
         {
-            float inverse = 1.0f / ray.Direction.Z;
+            float inverse = 1.0f                             / ray.Direction.Z;
             float t1      = (box.Minimum.Z - ray.Position.Z) * inverse;
             float t2      = (box.Maximum.Z - ray.Position.Z) * inverse;
 
@@ -1017,8 +1017,8 @@ public static class Collision
     public static bool BoxContainsPoint(in BoundingBox box, in Vector3 point)
     {
         return box.Minimum.X <= point.X && box.Maximum.X >= point.X &&
-               box.Minimum.Y <= point.Y && box.Maximum.Y >= point.Y &&
-               box.Minimum.Z <= point.Z && box.Maximum.Z >= point.Z;
+            box.Minimum.Y    <= point.Y && box.Maximum.Y >= point.Y &&
+            box.Minimum.Z    <= point.Z && box.Maximum.Z >= point.Z;
     }
 
     /// <summary> Determines whether a <see cin="BoundingBox" /> contains a <see cin="BoundingBox" />. </summary>
@@ -1062,14 +1062,14 @@ public static class Collision
         }
 
         if ((((box.Minimum.X + sphere.Radius <= sphere.Center.X) &&
-              (sphere.Center.X <= box.Maximum.X - sphere.Radius)) &&
-             ((box.Maximum.X - box.Minimum.X > sphere.Radius) &&
-              (box.Minimum.Y + sphere.Radius <= sphere.Center.Y))) &&
+                    (sphere.Center.X         <= box.Maximum.X - sphere.Radius)) &&
+                ((box.Maximum.X    - box.Minimum.X > sphere.Radius) &&
+                    (box.Minimum.Y + sphere.Radius <= sphere.Center.Y))) &&
             (((sphere.Center.Y <= box.Maximum.Y - sphere.Radius) &&
-              (box.Maximum.Y - box.Minimum.Y > sphere.Radius)) &&
-             (((box.Minimum.Z + sphere.Radius <= sphere.Center.Z) &&
-               (sphere.Center.Z <= box.Maximum.Z - sphere.Radius)) &&
-              (box.Maximum.Z - box.Minimum.Z > sphere.Radius))))
+                    (box.Maximum.Y              - box.Minimum.Y > sphere.Radius)) &&
+                (((box.Minimum.Z + sphere.Radius <= sphere.Center.Z) &&
+                        (sphere.Center.Z         <= box.Maximum.Z - sphere.Radius)) &&
+                    (box.Maximum.Z - box.Minimum.Z > sphere.Radius))))
         {
             return ContainmentType.Contains;
         }

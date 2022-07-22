@@ -100,9 +100,9 @@ internal sealed partial class RenderForm : IWin32RenderForm
                 {
                     FormBorderStyle.None => WS.OVERLAPPED,
                     FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                             WS.MAXIMIZEBOX,
+                        WS.MAXIMIZEBOX,
                     FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                               WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                        WS.MAXIMIZEBOX                    | WS.SIZEFRAME,
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
@@ -127,8 +127,8 @@ internal sealed partial class RenderForm : IWin32RenderForm
                         HWnd,
                         IntPtr.Zero,
                         0, 0, 0, 0,
-                        SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
-                        SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
+                        SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove   |
+                        SetWindowPosFlags.IgnoreZOrder  | SetWindowPosFlags.IgnoreResize |
                         SetWindowPosFlags.FrameChanged))
                 {
                     throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");
@@ -175,7 +175,7 @@ internal sealed partial class RenderForm : IWin32RenderForm
         {
             cbSize = Marshal.SizeOf(typeof(WndClassEx)),
             style = ClassStyles.HorizontalRedraw | ClassStyles.VerticalRedraw |
-                    ClassStyles.DoubleClicks | ClassStyles.OwnDC,
+                ClassStyles.DoubleClicks         | ClassStyles.OwnDC,
             hbrBackground = (IntPtr)COLOR_WINDOW + 1, //null,
             cbClsExtra    = 0,
             cbWndExtra    = 0,
@@ -240,9 +240,9 @@ internal sealed partial class RenderForm : IWin32RenderForm
         {
             FormBorderStyle.None => 0,
             FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                     WS.MAXIMIZEBOX,
+                WS.MAXIMIZEBOX,
             FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                       WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                WS.MAXIMIZEBOX                    | WS.SIZEFRAME,
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -295,9 +295,9 @@ internal sealed partial class RenderForm : IWin32RenderForm
         {
             FormBorderStyle.None => WS.POPUP,
             FormBorderStyle.Fixed => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                     WS.MAXIMIZEBOX,
+                WS.MAXIMIZEBOX,
             FormBorderStyle.Sizable => WS.CAPTION | WS.SYSMENU | WS.OVERLAPPED | WS.MINIMIZEBOX |
-                                       WS.MAXIMIZEBOX | WS.SIZEFRAME,
+                WS.MAXIMIZEBOX                    | WS.SIZEFRAME,
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -347,8 +347,8 @@ internal sealed partial class RenderForm : IWin32RenderForm
                     HWnd,
                     IntPtr.Zero,
                     0, 0, 0, 0,
-                    SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove |
-                    SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.IgnoreResize |
+                    SetWindowPosFlags.DoNotActivate | SetWindowPosFlags.IgnoreMove   |
+                    SetWindowPosFlags.IgnoreZOrder  | SetWindowPosFlags.IgnoreResize |
                     SetWindowPosFlags.FrameChanged))
             {
                 throw new Win32Exception(Kernel32.GetLastError(), $"{nameof(User32.SetWindowPos)} failed!");

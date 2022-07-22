@@ -80,7 +80,7 @@ public struct VectorI3
         {
             // ReSharper disable NonReadonlyMemberInGetHashCode
             return (((X.GetHashCode() * 307) ^
-                     Y.GetHashCode()) * 521) ^ Z.GetHashCode();
+                Y.GetHashCode()) * 521) ^ Z.GetHashCode();
 
             // ReSharper restore NonReadonlyMemberInGetHashCode
         }

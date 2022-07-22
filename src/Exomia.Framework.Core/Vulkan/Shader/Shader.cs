@@ -45,8 +45,8 @@ public sealed unsafe class Shader : IDisposable
 
     private readonly Dictionary<string, Module> _modules;
 
-    /// <summary> Indexer to get a stage within this shader using the <paramref name="name" />. </summary>
-    /// <param name="name"> The name. </param>
+    /// <summary> Indexer to get a <see cref="Module" /> within this shader using the <paramref name="name" />. </summary>
+    /// <param name="name"> The module name. </param>
     /// <returns> The <see cref="Module" />. </returns>
     public Module this[string name]
     {
@@ -54,7 +54,7 @@ public sealed unsafe class Shader : IDisposable
         get { return GetModule(name); }
     }
 
-    internal Shader(VkDevice device, Module.Configuration[] moduleConfigurations)
+    internal Shader(VkDevice device, params Module.Configuration[] moduleConfigurations)
     {
         _modules = new Dictionary<string, Module>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -64,7 +64,7 @@ public sealed unsafe class Shader : IDisposable
         }
     }
 
-    /// <summary> Gets all module names from this shader instance. </summary>
+    /// <summary> Gets all <see cref="Module" /> names from this shader instance. </summary>
     /// <returns> An array of module names. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string[] GetModuleNames()
@@ -145,31 +145,26 @@ public sealed unsafe class Shader : IDisposable
 
         private bool _disposed;
 
-        private void Dispose(bool disposing)
+        /// <inheritdoc />
+        ~Module()
+        {
+            Dispose();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
         {
             if (!_disposed)
             {
+                _disposed = true;
+
                 for (int i = 0; i < Stages.Length; i++)
                 {
                     Allocator.FreeNtString(Stages[i].Name);
                 }
 
                 Vulkan.DestroyShaderModule(_device, ref ShaderModule);
-
-                _disposed = true;
             }
-        }
-
-        /// <inheritdoc />
-        ~Module()
-        {
-            Dispose(false);
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -180,29 +175,25 @@ public sealed unsafe class Shader : IDisposable
 
     private bool _disposed;
 
-    private void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            foreach (Module module in _modules.Values)
-            {
-                module.Dispose();
-            }
-            _modules.Clear();
-            _disposed = true;
-        }
-    }
-
     /// <inheritdoc />
     ~Shader()
     {
-        Dispose(false);
+        Dispose();
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-        Dispose(true);
+        if (!_disposed)
+        {
+            _disposed = true;
+
+            foreach (Module module in _modules.Values)
+            {
+                module.Dispose();
+            }
+            _modules.Clear();
+        }
         GC.SuppressFinalize(this);
     }
 

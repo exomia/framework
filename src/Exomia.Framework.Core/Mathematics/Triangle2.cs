@@ -96,7 +96,7 @@ public readonly struct Triangle2
     public override int GetHashCode()
     {
         return (((((((((X1.GetHashCode() * 307) ^ Y1.GetHashCode()) * 521) ^ X2.GetHashCode()) * 853) ^
-                   Y2.GetHashCode()) * 443) ^ X3.GetHashCode()) * 937) ^ Y3.GetHashCode();
+            Y2.GetHashCode()) * 443) ^ X3.GetHashCode()) * 937) ^ Y3.GetHashCode();
     }
 
     /// <summary> Determines whether the specified <see cref="Triangle2" /> is equal to this instance. </summary>

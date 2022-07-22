@@ -73,7 +73,8 @@ public sealed unsafe class Buffer : IDisposable
     public static Buffer CreateVertexBuffer<T>(
         VkContext*               context,
         VkDeviceSize             count,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -93,7 +94,8 @@ public sealed unsafe class Buffer : IDisposable
     public static Buffer CreateVertexBuffer<T>(
         VkContext*               context,
         ulong                    count,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -113,7 +115,8 @@ public sealed unsafe class Buffer : IDisposable
     public static Buffer CreateVertexBuffer<T>(
         VkContext*               context,
         long                     count,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -135,7 +138,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         VkDeviceSize             count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -157,7 +161,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         ulong                    count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -179,7 +184,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         long                     count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -197,7 +203,8 @@ public sealed unsafe class Buffer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Buffer CreateIndexBuffer<T>(
         VkContext* context,
-        T[]        items) where T : unmanaged
+        T[]        items)
+        where T : unmanaged
     {
         Buffer indexBuffer = CreateIndexBuffer<T>(
             context,
@@ -212,7 +219,7 @@ public sealed unsafe class Buffer : IDisposable
                 Unsafe.CopyBlock(stagingIndexBuffer.Map(), src, stagingIndexBuffer.Size);
             }
             stagingIndexBuffer.Unmap();
-            stagingIndexBuffer.CopyTo(indexBuffer, context->ShortLivedCommandPool, context->Queue);
+            stagingIndexBuffer.CopyTo(indexBuffer, context->ShortLivedCommandPool, *(context->Queues - 1u));
             return indexBuffer;
         }
     }
@@ -229,7 +236,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         VkDeviceSize             count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -251,7 +259,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         ulong                    count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -273,7 +282,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         long                     count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -295,7 +305,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         VkDeviceSize             count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -317,7 +328,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         ulong                    count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -339,7 +351,8 @@ public sealed unsafe class Buffer : IDisposable
         VkContext*               context,
         long                     count,
         VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) where T : unmanaged
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        where T : unmanaged
     {
         return Create(
             context,
@@ -418,7 +431,10 @@ public sealed unsafe class Buffer : IDisposable
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         return ptr;
     }
 
@@ -430,7 +446,10 @@ public sealed unsafe class Buffer : IDisposable
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         return (T*)ptr;
     }
 
@@ -441,7 +460,10 @@ public sealed unsafe class Buffer : IDisposable
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         return ptr;
     }
 
@@ -453,7 +475,10 @@ public sealed unsafe class Buffer : IDisposable
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         return (T*)ptr;
     }
 
@@ -464,7 +489,10 @@ public sealed unsafe class Buffer : IDisposable
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         return ptr;
     }
 
@@ -472,22 +500,29 @@ public sealed unsafe class Buffer : IDisposable
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T* Map<T>(VkDeviceSize offset, VkDeviceSize length)
-        where T: unmanaged
+        where T : unmanaged
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         return (T*)ptr;
     }
 
     /// <summary> Gets the map. </summary>
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Update<T>(in T value) where T : unmanaged
+    public void Update<T>(in T value)
+        where T : unmanaged
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         *(T*)ptr = value;
         vkUnmapMemory(_device, _deviceMemory);
     }
@@ -496,14 +531,17 @@ public sealed unsafe class Buffer : IDisposable
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="offset"> The offset. </param>
     /// <param name="value">  The value. </param>
-    /// ###
-    /// <returns> Null if it fails, else a void*. </returns>
+    /// <returns> Null if it fails, else a T*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Update<T>(in T value, VkDeviceSize offset) where T : unmanaged
+    public void Update<T>(in T value, VkDeviceSize offset)
+        where T : unmanaged
     {
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)sizeof(T), 0, &ptr)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
         *(T*)ptr = value;
         vkUnmapMemory(_device, _deviceMemory);
     }
@@ -537,7 +575,10 @@ public sealed unsafe class Buffer : IDisposable
         commandBufferBeginInfo.pInheritanceInfo = null;
 
         vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
 
         VkBufferCopy bufferCopy;
         bufferCopy.srcOffset = VkDeviceSize.Zero;
@@ -546,7 +587,10 @@ public sealed unsafe class Buffer : IDisposable
         vkCmdCopyBuffer(commandBuffer, *_buffer, *dst._buffer, 1u, &bufferCopy);
 
         vkEndCommandBuffer(commandBuffer)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
 
         VkSubmitInfo submitInfo;
         submitInfo.sType                = VkSubmitInfo.STYPE;
@@ -566,13 +610,22 @@ public sealed unsafe class Buffer : IDisposable
 
         VkFence fence;
         vkCreateFence(_device, &fenceCreateInfo, null, &fence)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
 
         vkQueueSubmit(queue, 1u, &submitInfo, fence)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
 
         vkWaitForFences(_device, 1u, &fence, VK_TRUE, ulong.MaxValue)
-            .AssertVkResult();
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
 
         vkDestroyFence(_device, fence, null);
 

@@ -164,7 +164,6 @@ public sealed class DepthStencilStateConfiguration
     public float MaxDepthBounds { get; set; } = 1.0f;
 }
 
-
 /// <summary> A color blend attachment configuration. This class cannot be inherited. </summary>
 public sealed class ColorBlendAttachmentConfiguration
 {

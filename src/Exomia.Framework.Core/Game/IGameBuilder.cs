@@ -33,8 +33,8 @@ public interface IGameBuilder : IDisposable
     /// <returns> A T. </returns>
     T RegisterDisposable<T>(T disposable) where T : IDisposable;
 
-    /// <summary> Builds the <typeparamref name="TGame"/> with its dependencies. </summary>
+    /// <summary> Builds the <typeparamref name="TGame" /> with its dependencies. </summary>
     /// <typeparam name="TGame"> Type of the game. </typeparam>
-    /// <returns> A <typeparamref name="TGame"/>. </returns>
+    /// <returns> A <typeparamref name="TGame" />. </returns>
     TGame Build<TGame>() where TGame : Game;
 }

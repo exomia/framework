@@ -10,7 +10,6 @@
 
 using System.Runtime.InteropServices;
 using Exomia.Framework.Core.Allocators;
-
 using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 
 namespace Exomia.Framework.Core.Vulkan;
@@ -25,36 +24,44 @@ public unsafe struct VkModule
     /// <summary> The command buffers. </summary>
     public VkCommandBuffer* CommandBuffers;
 
+    /// <summary> Convert this object into a string representation. </summary>
+    /// <returns> A string that represents this object. </returns>
     public override string ToString()
     {
-        return $"[id: {Id}]";
+        return $"{Id} [alive: {CommandBuffers != null}]";
     }
 
-    internal static VkModule Create(VkContext* context, ushort id)
+    internal static VkModule Create(VkContext* vkContext, SwapchainContext* swapchainContext, ushort id)
     {
         VkModule module;
-        *(ushort*)&module              = id;
+        *(ushort*)&module = id;
 
-        module.CommandBuffers = Allocator.Allocate<VkCommandBuffer>(context->SwapchainImageCount);
-        if (!Vulkan.CreateCommandBuffers(context->Device, context->CommandPool, context->SwapchainImageCount, module.CommandBuffers, VK_COMMAND_BUFFER_LEVEL_SECONDARY))
-        {
-            throw new Exception($"{nameof(VkModule)}.{nameof(Create)}->{nameof(Vulkan)}.{nameof(Vulkan.CreateCommandBuffers)} failed.");
-        }
+        module.CommandBuffers = Allocator.Allocate<VkCommandBuffer>(swapchainContext->MaxFramesInFlight);
+        Vulkan.CreateCommandBuffers(
+            vkContext->Device,
+            vkContext->CommandPool,
+            swapchainContext->MaxFramesInFlight,
+            module.CommandBuffers,
+            VK_COMMAND_BUFFER_LEVEL_SECONDARY);
 
         return module;
     }
 
-    internal static void Destroy(VkContext* context, ref VkModule* module)
+    internal static void Destroy(VkContext* context, SwapchainContext* swapchainContext, ref VkModule* module)
     {
         if (context->CommandPool != VkCommandPool.Null && module->CommandBuffers != null)
         {
             try
             {
-                vkFreeCommandBuffers(context->Device, context->CommandPool, context->SwapchainImageCount, module->CommandBuffers);
+                vkFreeCommandBuffers(
+                    context->Device,
+                    context->CommandPool,
+                    swapchainContext->MaxFramesInFlight,
+                    module->CommandBuffers);
             }
             finally
             {
-                Allocator.Free(ref module->CommandBuffers, context->SwapchainImageCount);
+                Allocator.Free(ref module->CommandBuffers, swapchainContext->MaxFramesInFlight);
             }
         }
 

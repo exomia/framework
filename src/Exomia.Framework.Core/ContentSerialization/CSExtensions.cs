@@ -37,7 +37,7 @@ internal static class CsExtensions
         Type? t = Type.GetType(typeInfo);
         if (t != null) { return t; }
 
-        foreach ((var _, Assembly value) in ContentSerializer.Assemblies)
+        foreach ((string _, Assembly value) in ContentSerializer.Assemblies)
         {
             t = Type.GetType(typeInfo + ", " + value.FullName);
             if (t != null) { return t; }

@@ -99,13 +99,13 @@ public static class Activator
         }
 
         return (Creator<TRes>)Expression.Lambda(
-                typeof(Creator<TRes>),
-                Expression.New(
-                    typeof(TRes).GetConstructor(constructorParameters)
-                    ?? throw new ArgumentException(
-                        "This type does not have a constructor that takes the passed in set of parameters.",
-                        nameof(constructorParameters)), argsExpressions), param)
-            .Compile();
+                                            typeof(Creator<TRes>),
+                                            Expression.New(
+                                                typeof(TRes).GetConstructor(constructorParameters)
+                                                ?? throw new ArgumentException(
+                                                    "This type does not have a constructor that takes the passed in set of parameters.",
+                                                    nameof(constructorParameters)), argsExpressions), param)
+                                        .Compile();
     }
 
     /// <summary>

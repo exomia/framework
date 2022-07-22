@@ -16,9 +16,9 @@ namespace Exomia.Framework.Core.Mathematics;
 public sealed class Random2
 {
     private const float  SINGLE_UNIT_INT = 1.0f / int.MaxValue;
-    private const double REAL_UNIT_INT   = 1.0 / int.MaxValue;
-    private const double REAL_UNIT_INT1  = 1.0 / (int.MaxValue + 1.0);
-    private const double REAL_UNIT_UINT1 = 1.0 / (uint.MaxValue + 1.0);
+    private const double REAL_UNIT_INT   = 1.0  / int.MaxValue;
+    private const double REAL_UNIT_INT1  = 1.0  / (int.MaxValue  + 1.0);
+    private const double REAL_UNIT_UINT1 = 1.0  / (uint.MaxValue + 1.0);
     private const uint   Y               = 842502087, Z = 3579807591, W = 273326509;
 
     /// <summary> Default Random2. </summary>
@@ -127,7 +127,7 @@ public sealed class Random2
         _y = _z;
         _z = _w;
         return (byte)(min + (REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) *
-                             (max - min)));
+            (max - min)));
     }
 
     /// <summary> Fills a byte array with random values. </summary>

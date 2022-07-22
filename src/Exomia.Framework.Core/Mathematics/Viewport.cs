@@ -140,12 +140,12 @@ public struct Viewport
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in Viewport other)
     {
-        return X == other.X &&
-               Y == other.Y &&
-               Width == other.Width &&
-               Height == other.Height &&
-               Math2.NearEqual(MinDepth, other.MinDepth) &&
-               Math2.NearEqual(MaxDepth, other.MaxDepth);
+        return X   == other.X                         &&
+            Y      == other.Y                         &&
+            Width  == other.Width                     &&
+            Height == other.Height                    &&
+            Math2.NearEqual(MinDepth, other.MinDepth) &&
+            Math2.NearEqual(MaxDepth, other.MaxDepth);
     }
 
 
@@ -203,9 +203,9 @@ public struct Viewport
             vector /= a;
         }
 
-        vector.X = (vector.X + 1f) * 0.5f * Width + X;
-        vector.Y = (-vector.Y + 1f) * 0.5f * Height + Y;
-        vector.Z = vector.Z * (MaxDepth - MinDepth) + MinDepth;
+        vector.X = (vector.X  + 1f) * 0.5f * Width          + X;
+        vector.Y = (-vector.Y + 1f) * 0.5f * Height         + Y;
+        vector.Z = vector.Z         * (MaxDepth - MinDepth) + MinDepth;
     }
 
     /// <summary> Converts a screen space point into a corresponding point in world space. </summary>
@@ -234,7 +234,7 @@ public struct Viewport
     {
         vector.X = (source.X - X) / Width * 2f - 1f;
         vector.Y = -((source.Y - Y) / Height * 2f - 1f);
-        vector.Z = (source.Z - MinDepth) / (MaxDepth - MinDepth);
+        vector.Z = (source.Z                      - MinDepth) / (MaxDepth - MinDepth);
 
         float a = vector.X * matrix.M14 + vector.Y * matrix.M24 + vector.Z * matrix.M34 + matrix.M44;
         vector = Vector3.Transform(vector, matrix);

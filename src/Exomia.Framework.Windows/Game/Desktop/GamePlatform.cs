@@ -38,104 +38,109 @@ public static class GamePlatform
     public static unsafe IGameBuilder UseWin32Platform(this IGameBuilder builder)
     {
         return builder.ConfigureServices(serviceCollection =>
-            {
-                serviceCollection
-                    .AddSingleton<RenderForm>()
-                    .AddSingleton<IRenderForm>(p => p.GetRequiredService<RenderForm>())
-                    .AddSingleton<IWin32RenderForm>(p => p.GetRequiredService<RenderForm>())
-                    .AddSingleton<IInputDevice>(p => p.GetRequiredService<RenderForm>())
-                    .AddSingleton<IWindowsInputDevice>(p => p.GetRequiredService<RenderForm>());
-            })
-            .Configure<InstanceConfiguration>((configuration, _) =>
-            {
-                configuration.EnabledExtensionNames.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-            })
-            .Configure<DeviceConfiguration>((configuration, _) =>
-            {
-                configuration.EnabledExtensionNames.Add(VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME);
-            })
-            .Configure<GameConfiguration>((configuration, _) =>
-            {
-                configuration.DoEvents = &DoEvents;
-            })
-            .Configure<SurfaceConfiguration>((configuration, serviceProvider) =>
-            {
-                RenderForm renderForm = builder.RegisterDisposable(serviceProvider.GetRequiredService<RenderForm>());
+                      {
+                          serviceCollection
+                              .AddSingleton<RenderForm>()
+                              .AddSingleton<IRenderForm>(p => p.GetRequiredService<RenderForm>())
+                              .AddSingleton<IWin32RenderForm>(p => p.GetRequiredService<RenderForm>())
+                              .AddSingleton<IInputDevice>(p => p.GetRequiredService<RenderForm>())
+                              .AddSingleton<IWindowsInputDevice>(p => p.GetRequiredService<RenderForm>());
+                      })
+                      .Configure<InstanceConfiguration>((configuration, _) =>
+                      {
+                          configuration.EnabledExtensionNames.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+                      })
+                      .Configure<DeviceConfiguration>((configuration, _) =>
+                      {
+                          configuration.EnabledExtensionNames.Add(VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME);
+                      })
+                      .Configure<GameConfiguration>((configuration, _) =>
+                      {
+                          configuration.DoEvents = &DoEvents;
+                      })
+                      .Configure<SurfaceConfiguration>((configuration, serviceProvider) =>
+                      {
+                          RenderForm renderForm = builder.RegisterDisposable(serviceProvider.GetRequiredService<RenderForm>());
 
-                configuration.CreateSurface = context =>
-                {
-                    VkKhrWin32Surface.Load(context->Instance);
+                          configuration.CreateSurface = context =>
+                          {
+                              VkKhrWin32Surface.Load(context->Instance);
 
-                    (IntPtr hInstance, IntPtr hWnd) = renderForm.CreateWindow();
+                              (IntPtr hInstance, IntPtr hWnd) = renderForm.CreateWindow();
 
-                    context->Width  = (uint)renderForm.Width;
-                    context->Height = (uint)renderForm.Height;
+                              context->InitialWidth  = (uint)renderForm.Width;
+                              context->InitialHeight = (uint)renderForm.Height;
 
-                    VkWin32SurfaceCreateInfoKHR win32SurfaceCreateInfoKhr;
-                    win32SurfaceCreateInfoKhr.sType     = VkWin32SurfaceCreateInfoKHR.STYPE;
-                    win32SurfaceCreateInfoKhr.pNext     = null;
-                    win32SurfaceCreateInfoKhr.flags     = 0;
-                    win32SurfaceCreateInfoKhr.hinstance = hInstance;
-                    win32SurfaceCreateInfoKhr.hwnd      = hWnd;
+                              VkWin32SurfaceCreateInfoKHR win32SurfaceCreateInfoKhr;
+                              win32SurfaceCreateInfoKhr.sType     = VkWin32SurfaceCreateInfoKHR.STYPE;
+                              win32SurfaceCreateInfoKhr.pNext     = null;
+                              win32SurfaceCreateInfoKhr.flags     = 0;
+                              win32SurfaceCreateInfoKhr.hinstance = hInstance;
+                              win32SurfaceCreateInfoKhr.hwnd      = hWnd;
 
-                    vkCreateWin32SurfaceKHR(context->Instance, &win32SurfaceCreateInfoKhr, null, &context->SurfaceKhr)
-                        .AssertVkResult();
+                              vkCreateWin32SurfaceKHR(context->Instance, &win32SurfaceCreateInfoKhr, null, &context->SurfaceKhr)
+                                  .AssertVkResult();
 
-                    return true;
-                };
-            }).Configure<SwapchainConfiguration>((configuration, serviceProvider) =>
-            {
-                RenderForm renderForm = serviceProvider.GetRequiredService<RenderForm>();
+                              return true;
+                          };
+                      }).Configure<SwapchainConfiguration>((configuration, serviceProvider) =>
+                      {
+                          RenderForm renderForm = serviceProvider.GetRequiredService<RenderForm>();
 
-                configuration.BeginSwapchainCreation = context =>
-                {
-                    if (context->PhysicalDevice == VkPhysicalDevice.Null) { return false; }
+                          //renderForm.Resized += form =>
+                          //{
+                          //    configuration.Resize?.Invoke(form.Width, form.Height);
+                          //};
 
-                    VkSurfaceCapabilitiesFullScreenExclusiveEXT surfaceCapabilitiesFullScreenExclusiveExt;
-                    surfaceCapabilitiesFullScreenExclusiveExt.sType = VkSurfaceCapabilitiesFullScreenExclusiveEXT.STYPE;
-                    surfaceCapabilitiesFullScreenExclusiveExt.pNext = null;
+                          configuration.BeforeSwapchainCreation = context =>
+                          {
+                              if (context->PhysicalDevice == VkPhysicalDevice.Null) { return false; }
 
-                    VkSurfaceCapabilities2KHR surfaceCapabilities2Khr;
-                    surfaceCapabilities2Khr.sType = VkSurfaceCapabilities2KHR.STYPE;
-                    surfaceCapabilities2Khr.pNext = &surfaceCapabilitiesFullScreenExclusiveExt;
+                              VkSurfaceCapabilitiesFullScreenExclusiveEXT surfaceCapabilitiesFullScreenExclusiveExt;
+                              surfaceCapabilitiesFullScreenExclusiveExt.sType = VkSurfaceCapabilitiesFullScreenExclusiveEXT.STYPE;
+                              surfaceCapabilitiesFullScreenExclusiveExt.pNext = null;
 
-                    VkSurfaceFullScreenExclusiveWin32InfoEXT* pSurfaceFullScreenExclusiveWin32InfoExt = Allocator.Allocate<VkSurfaceFullScreenExclusiveWin32InfoEXT>(1u);
-                    pSurfaceFullScreenExclusiveWin32InfoExt->sType    = VkSurfaceFullScreenExclusiveWin32InfoEXT.STYPE;
-                    pSurfaceFullScreenExclusiveWin32InfoExt->pNext    = null;
-                    pSurfaceFullScreenExclusiveWin32InfoExt->hmonitor = User32.MonitorFromWindow(renderForm.HWnd, MonitorFlags.DEFAULTTONEAREST);
+                              VkSurfaceCapabilities2KHR surfaceCapabilities2Khr;
+                              surfaceCapabilities2Khr.sType = VkSurfaceCapabilities2KHR.STYPE;
+                              surfaceCapabilities2Khr.pNext = &surfaceCapabilitiesFullScreenExclusiveExt;
 
-                    VkSurfaceFullScreenExclusiveInfoEXT* pSurfaceFullScreenExclusiveInfoExt = Allocator.Allocate<VkSurfaceFullScreenExclusiveInfoEXT>(1u);
-                    pSurfaceFullScreenExclusiveInfoExt->sType               = VkSurfaceFullScreenExclusiveInfoEXT.STYPE;
-                    pSurfaceFullScreenExclusiveInfoExt->pNext               = pSurfaceFullScreenExclusiveWin32InfoExt;
-                    pSurfaceFullScreenExclusiveInfoExt->fullScreenExclusive = VK_FULL_SCREEN_EXCLUSIVE_APPLICATION_CONTROLLED_EXT;
+                              VkSurfaceFullScreenExclusiveWin32InfoEXT* pSurfaceFullScreenExclusiveWin32InfoExt = Allocator.Allocate<VkSurfaceFullScreenExclusiveWin32InfoEXT>(1u);
+                              pSurfaceFullScreenExclusiveWin32InfoExt->sType    = VkSurfaceFullScreenExclusiveWin32InfoEXT.STYPE;
+                              pSurfaceFullScreenExclusiveWin32InfoExt->pNext    = null;
+                              pSurfaceFullScreenExclusiveWin32InfoExt->hmonitor = User32.MonitorFromWindow(renderForm.HWnd, MonitorFlags.DEFAULTTONEAREST);
 
-                    VkPhysicalDeviceSurfaceInfo2KHR physicalDeviceSurfaceInfo2Khr;
-                    physicalDeviceSurfaceInfo2Khr.sType   = VkPhysicalDeviceSurfaceInfo2KHR.STYPE;
-                    physicalDeviceSurfaceInfo2Khr.pNext   = pSurfaceFullScreenExclusiveInfoExt;
-                    physicalDeviceSurfaceInfo2Khr.surface = context->SurfaceKhr;
+                              VkSurfaceFullScreenExclusiveInfoEXT* pSurfaceFullScreenExclusiveInfoExt = Allocator.Allocate<VkSurfaceFullScreenExclusiveInfoEXT>(1u);
+                              pSurfaceFullScreenExclusiveInfoExt->sType               = VkSurfaceFullScreenExclusiveInfoEXT.STYPE;
+                              pSurfaceFullScreenExclusiveInfoExt->pNext               = pSurfaceFullScreenExclusiveWin32InfoExt;
+                              pSurfaceFullScreenExclusiveInfoExt->fullScreenExclusive = VK_FULL_SCREEN_EXCLUSIVE_APPLICATION_CONTROLLED_EXT;
 
-                    vkGetPhysicalDeviceSurfaceCapabilities2KHR(context->PhysicalDevice, &physicalDeviceSurfaceInfo2Khr, &surfaceCapabilities2Khr)
-                        .AssertVkResult();
+                              VkPhysicalDeviceSurfaceInfo2KHR physicalDeviceSurfaceInfo2Khr;
+                              physicalDeviceSurfaceInfo2Khr.sType   = VkPhysicalDeviceSurfaceInfo2KHR.STYPE;
+                              physicalDeviceSurfaceInfo2Khr.pNext   = pSurfaceFullScreenExclusiveInfoExt;
+                              physicalDeviceSurfaceInfo2Khr.surface = context->SurfaceKhr;
 
-                    if (!surfaceCapabilitiesFullScreenExclusiveExt.fullScreenExclusiveSupported)
-                    {
-                        Allocator.Free(pSurfaceFullScreenExclusiveInfoExt,      1u);
-                        Allocator.Free(pSurfaceFullScreenExclusiveWin32InfoExt, 1u);
-                        throw new VulkanException("The system doesn't support required surface capabilities (full screen exclusive)!");
-                    }
+                              vkGetPhysicalDeviceSurfaceCapabilities2KHR(context->PhysicalDevice, &physicalDeviceSurfaceInfo2Khr, &surfaceCapabilities2Khr)
+                                  .AssertVkResult();
 
-                    configuration.Next = pSurfaceFullScreenExclusiveInfoExt;
+                              if (!surfaceCapabilitiesFullScreenExclusiveExt.fullScreenExclusiveSupported)
+                              {
+                                  Allocator.Free(pSurfaceFullScreenExclusiveInfoExt,      1u);
+                                  Allocator.Free(pSurfaceFullScreenExclusiveWin32InfoExt, 1u);
+                                  throw new VulkanException("The system doesn't support required surface capabilities (full screen exclusive)!");
+                              }
 
-                    configuration.SwapchainCreationSuccessful = ctx =>
-                    {
-                        Allocator.Free(pSurfaceFullScreenExclusiveInfoExt,      1u);
-                        Allocator.Free(pSurfaceFullScreenExclusiveWin32InfoExt, 1u);
-                        return true;
-                    };
+                              configuration.Next = pSurfaceFullScreenExclusiveInfoExt;
 
-                    return true;
-                };
-            });
+                              configuration.AfterSwapchainCreation = ctx =>
+                              {
+                                  Allocator.Free(pSurfaceFullScreenExclusiveInfoExt,      1u);
+                                  Allocator.Free(pSurfaceFullScreenExclusiveWin32InfoExt, 1u);
+                                  return true;
+                              };
+
+                              return true;
+                          };
+                      });
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

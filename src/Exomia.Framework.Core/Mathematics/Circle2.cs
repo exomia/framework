@@ -66,8 +66,8 @@ public readonly struct Circle2
     {
         // ReSharper disable CompareOfFloatsByEqualityOperator
         return
-            X == other.X &&
-            Y == other.Y &&
+            X      == other.X &&
+            Y      == other.Y &&
             Radius == other.Radius;
 
         // ReSharper restore CompareOfFloatsByEqualityOperator

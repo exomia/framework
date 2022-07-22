@@ -9,14 +9,12 @@
 #endregion
 
 using System.Diagnostics;
-using Exomia.Framework.Core.Graphics;
-using Exomia.Framework.Core.Mathematics;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.Core.Game;
 
+/// <summary> A game. </summary>
 public abstract unsafe class Game : IRunnable
 {
     private const double                    FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
@@ -27,11 +25,7 @@ public abstract unsafe class Game : IRunnable
     private readonly IServiceProvider     _serviceProvider;
     private readonly ManualResetEventSlim _isShutdownCompleted;
 
-    private readonly Vulkan.Vulkan _vulkan;
-
     private bool _isRunning, _isInitialized, _isContentLoaded, _shutdown;
-
-    private readonly SpriteBatch _spriteBatch;
 
     /// <summary> Gets or sets a value indicating whether this object is fixed time step. </summary>
     /// <value> True if this object is fixed time step, false if not. </value>
@@ -63,11 +57,8 @@ public abstract unsafe class Game : IRunnable
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
         _isShutdownCompleted = new ManualResetEventSlim(true);
-        
-        _doEvents = serviceProvider.GetRequiredService<IOptions<GameConfiguration>>().Value.DoEvents;
-        _vulkan   = serviceProvider.GetRequiredService<Vulkan.Vulkan>();
 
-        _spriteBatch = new SpriteBatch(1, _vulkan, serviceProvider.GetRequiredService<ILogger<SpriteBatch>>());
+        _doEvents = serviceProvider.GetRequiredService<IOptions<GameConfiguration>>().Value.DoEvents;
 
         IRenderForm renderForm = serviceProvider.GetRequiredService<IRenderForm>();
         renderForm.Closing += (ref bool cancel) =>
@@ -90,15 +81,6 @@ public abstract unsafe class Game : IRunnable
         }
 
         _isRunning = true;
-        //moep:
-        //    Thread.Sleep(500);
-        //    VkResult result = ((delegate*<VkDevice, VkSwapchainKHR, VkResult>)_vulkan.Context->Device
-        //        .GetDeviceProcAddr("vkAcquireFullScreenExclusiveModeEXT"))(_vulkan.Context->Device, _vulkan.Context->Swapchain);
-        //    Console.WriteLine(result);
-        //    if (result != VK_SUCCESS)
-        //    {
-        //        goto moep;
-        //    }
 
         if (!_isInitialized)
         {
@@ -115,6 +97,17 @@ public abstract unsafe class Game : IRunnable
             _shutdown = true;
         }
     }
+
+    /// <summary> Begins a frame. </summary>
+    /// <returns> True if it succeeds, false if it fails. </returns>
+    protected abstract bool BeginFrame();
+
+    /// <summary> Render to the scene. </summary>
+    /// <param name="gameTime"> The game time. </param>
+    protected abstract void Render(GameTime gameTime);
+
+    /// <summary> Ends a frame. </summary>
+    protected abstract void EndFrame();
 
     private void Renderloop()
     {
@@ -152,33 +145,13 @@ public abstract unsafe class Game : IRunnable
                 frames = 0;
             }
 
-            // scene update
-
-            if (_vulkan.BeginFrame())
+            if (BeginFrame())
             {
-                _spriteBatch.Begin();
-
-                Random2 rnd = new Random2(100);
-
-                for(int i = 0; i < 8_000; i++)
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(
-                            rnd.Next(0, 1024) + 50 * MathF.Sin(gameTime.TotalTimeS),
-                            rnd.Next(0, 768), 
-                            5,
-                            5), 
-                        new VkColor(
-                            rnd.NextSingle(), 
-                            rnd.NextSingle(),
-                            rnd.NextSingle(), 
-                            1f), 0.0f);
-                //_spriteBatch.DrawFillRectangle(new RectangleF(75, 75, 100, 100), VkColors.Red, 1f);
-
-                _spriteBatch.End();
-
-                _vulkan.EndFrame();
-                frames++;
+                Render(gameTime);
+                EndFrame();
             }
+
+            frames++;
 
             if (IsFixedTimeStep)
             {
@@ -218,7 +191,7 @@ public abstract unsafe class Game : IRunnable
             OnDispose(disposing);
             if (disposing)
             {
-                _spriteBatch.Dispose();
+                //_spriteBatch.Dispose();
             }
 
             _disposed = true;

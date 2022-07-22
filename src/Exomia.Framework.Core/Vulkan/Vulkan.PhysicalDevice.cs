@@ -24,7 +24,10 @@ sealed unsafe partial class Vulkan
     /// <param name="properties">     The properties. </param>
     /// <returns> The found memory type index. </returns>
     /// <exception cref="VulkanException"> Thrown when a Vulkan error condition occurs. </exception>
-    public static uint FindMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint typeFilter, VkMemoryPropertyFlagBits properties)
+    public static uint FindMemoryTypeIndex(
+        VkPhysicalDevice         physicalDevice,
+        uint                     typeFilter,
+        VkMemoryPropertyFlagBits properties)
     {
         VkPhysicalDeviceMemoryProperties2 physicalDeviceMemoryProperties2;
         physicalDeviceMemoryProperties2.sType = VkPhysicalDeviceMemoryProperties2.STYPE;
@@ -33,7 +36,7 @@ sealed unsafe partial class Vulkan
 
         for (int i = 0; i < physicalDeviceMemoryProperties2.memoryProperties.memoryTypeCount; i++)
         {
-            if ((typeFilter & (1 << i)) != 0 &&
+            if ((typeFilter                                                                    & (1 << i))   != 0 &&
                 (physicalDeviceMemoryProperties2.memoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
             {
                 return (uint)i;
@@ -41,6 +44,40 @@ sealed unsafe partial class Vulkan
         }
 
         throw new VulkanException("Failed to find suitable memory type!");
+    }
+
+    /// <summary> Gets suitable present mode. </summary>
+    /// <param name="context">          [in,out] If non-null, the context. </param>
+    /// <param name="presentModes">     The present modes. </param>
+    /// <param name="vkPresentModeKhr"> [out] The vk present mode khr. </param>
+    /// <returns> True if it succeeds, false if it fails. </returns>
+    public static bool GetSuitablePresentMode(
+        VkContext*           context,
+        VkPresentModeKHR[]   presentModes,
+        out VkPresentModeKHR vkPresentModeKhr)
+    {
+        uint presentModeCount = 0u;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(context->PhysicalDevice, context->SurfaceKhr, &presentModeCount, null)
+            .AssertVkResult();
+
+        VkPresentModeKHR* pPresentModeKhr = stackalloc VkPresentModeKHR[(int)presentModeCount];
+        vkGetPhysicalDeviceSurfacePresentModesKHR(context->PhysicalDevice, context->SurfaceKhr, &presentModeCount, pPresentModeKhr)
+            .AssertVkResult();
+
+        for (int i = 0; i < presentModes.Length; i++)
+        {
+            for (uint s = 0; s < presentModeCount; s++)
+            {
+                vkPresentModeKhr = *(pPresentModeKhr + s);
+                if (presentModes[i] == vkPresentModeKhr)
+                {
+                    return true;
+                }
+            }
+        }
+
+        vkPresentModeKhr = default;
+        return false;
     }
 
     private static void GetDeviceExtensionNames(
@@ -73,7 +110,10 @@ sealed unsafe partial class Vulkan
         }
     }
 
-    private static bool PickBestQueueFamily(VkPhysicalDevice physicalDevice, out uint queueFamilyIndex, out uint maxQueueCount)
+    private static bool PickBestQueueFamily(
+        VkPhysicalDevice physicalDevice,
+        out uint         queueFamilyIndex,
+        out uint         maxQueueCount)
     {
         uint amountOfQueueFamilies = 0u;
         vkGetPhysicalDeviceQueueFamilyProperties2(physicalDevice, &amountOfQueueFamilies, null);
@@ -88,7 +128,7 @@ sealed unsafe partial class Vulkan
 
         for (uint i = 0u; i < amountOfQueueFamilies; i++)
         {
-            if ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueCount > 0
+            if ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueCount                              > 0
                 && ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
             {
                 queueFamilyIndex = i;
@@ -102,14 +142,16 @@ sealed unsafe partial class Vulkan
         return false;
     }
 
-    private bool PickBestPhysicalDevice(VkContext* context, PhysicalDeviceConfiguration physicalDeviceConfiguration, DeviceConfiguration deviceConfiguration)
+    private bool PickBestPhysicalDevice(
+        PhysicalDeviceConfiguration physicalDeviceConfiguration,
+        DeviceConfiguration         deviceConfiguration)
     {
         uint physicalDeviceCount;
-        vkEnumeratePhysicalDevices(context->Instance, &physicalDeviceCount, null)
+        vkEnumeratePhysicalDevices(_context->Instance, &physicalDeviceCount, null)
             .AssertVkResult();
 
         VkPhysicalDevice* pPhysicalDevices = stackalloc VkPhysicalDevice[(int)physicalDeviceCount];
-        vkEnumeratePhysicalDevices(context->Instance, &physicalDeviceCount, pPhysicalDevices)
+        vkEnumeratePhysicalDevices(_context->Instance, &physicalDeviceCount, pPhysicalDevices)
             .AssertVkResult();
 
         for (uint i = 0; i < physicalDeviceCount; i++)
@@ -122,20 +164,28 @@ sealed unsafe partial class Vulkan
             if (physicalDeviceProperties2.properties.apiVersion < physicalDeviceConfiguration.RequiredMinimumVkApiVersion) { continue; }
             if (physicalDeviceProperties2.properties.deviceType != physicalDeviceConfiguration.RequiredPhysicalDeviceType) { continue; }
 
-            context->SupportedSampleCountFlags = physicalDeviceProperties2.properties.limits.framebufferColorSampleCounts;
+            _context->SupportedSampleCountFlags = physicalDeviceProperties2.properties.limits.framebufferColorSampleCounts;
 
-            if (CheckDeviceLayerSupport(*(pPhysicalDevices + i), deviceConfiguration.EnabledLayerNames) &&
-                CheckDeviceExtensionSupport(*(pPhysicalDevices + i), deviceConfiguration.EnabledExtensionNames, deviceConfiguration.EnabledLayerNames) &&
-                PickBestQueueFamily(*(pPhysicalDevices + i), out uint queueFamilyIndex, out uint maxQueueCount))
+            if (CheckDeviceLayerSupport(
+                    *(pPhysicalDevices + i),
+                    deviceConfiguration.EnabledLayerNames) &&
+                CheckDeviceExtensionSupport(
+                    *(pPhysicalDevices + i),
+                    deviceConfiguration.EnabledExtensionNames,
+                    deviceConfiguration.EnabledLayerNames) &&
+                Vulkan.PickBestQueueFamily(
+                    *(pPhysicalDevices + i),
+                    out uint queueFamilyIndex,
+                    out uint maxQueueCount))
             {
                 VkBool32 supported = VkBool32.False;
-                vkGetPhysicalDeviceSurfaceSupportKHR(*(pPhysicalDevices + i), queueFamilyIndex, context->SurfaceKhr, &supported)
+                vkGetPhysicalDeviceSurfaceSupportKHR(*(pPhysicalDevices + i), queueFamilyIndex, _context->SurfaceKhr, &supported)
                     .AssertVkResult();
                 if (supported)
                 {
-                    context->PhysicalDevice   = *(pPhysicalDevices + i);
-                    context->QueueFamilyIndex = queueFamilyIndex;
-                    context->MaxQueueCount    = maxQueueCount;
+                    _context->PhysicalDevice   = *(pPhysicalDevices + i);
+                    _context->QueueFamilyIndex = queueFamilyIndex;
+                    _context->MaxQueueCount    = maxQueueCount;
                     return true;
                 }
             }
@@ -144,7 +194,9 @@ sealed unsafe partial class Vulkan
         return false;
     }
 
-    private bool CheckDeviceLayerSupport(in VkPhysicalDevice physicalDevice, IEnumerable<string> requiredDeviceLayers)
+    private bool CheckDeviceLayerSupport(
+        VkPhysicalDevice    physicalDevice,
+        IEnumerable<string> requiredDeviceLayers)
     {
         uint layerCount = 0;
         vkEnumerateDeviceLayerProperties(physicalDevice, &layerCount, null)
@@ -175,7 +227,7 @@ sealed unsafe partial class Vulkan
     }
 
     private bool CheckDeviceExtensionSupport(
-        in VkPhysicalDevice physicalDevice,
+        VkPhysicalDevice    physicalDevice,
         IEnumerable<string> requiredDeviceExtensions,
         IEnumerable<string> usedDeviceLayers)
     {

@@ -70,7 +70,7 @@ public static partial class LinqExt
     public static void ForEach<T>(this IEnumerable<T> source, Func<T, int, bool> func)
     {
         if (source == null) { throw new ArgumentNullException(nameof(source)); }
-        if (func == null) { throw new ArgumentNullException(nameof(func)); }
+        if (func   == null) { throw new ArgumentNullException(nameof(func)); }
 
         int index = 0;
         foreach (T element in source)

@@ -21,10 +21,10 @@ internal sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
     private readonly Pipe<KeyPressEventHandler> _keyPressPipe;
 
     private readonly Pipe<MouseEventHandler> _mouseMovePipe,
-        _mouseUpPipe,
-        _mouseDownPipe,
-        _mouseClickPipe,
-        _mouseWheelPipe;
+                                             _mouseUpPipe,
+                                             _mouseDownPipe,
+                                             _mouseClickPipe,
+                                             _mouseWheelPipe;
 
     private readonly Pipe<MouseEventHandler> _mouseRawInputPipe;
 

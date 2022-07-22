@@ -78,7 +78,7 @@ public readonly struct Line2
     public override int GetHashCode()
     {
         return (((((X1.GetHashCode() * 307) ^ Y1.GetHashCode()) * 521) ^ X2.GetHashCode()) * 853) ^
-               Y2.GetHashCode();
+            Y2.GetHashCode();
     }
 
     /// <summary> Determines whether the specified <see cref="Line2" /> is equal to this instance. </summary>
@@ -169,12 +169,12 @@ public readonly struct Line2
     /// <returns> True if it succeeds, false if it fails. </returns>
     public bool IntersectWith(in Line2 other, out Vector2 intersectionPoint)
     {
-        float a1 = Y2 - Y1;
-        float b1 = X1 - X2;
+        float a1 = Y2        - Y1;
+        float b1 = X1        - X2;
         float c1 = (a1 * X1) + (b1 * Y1);
 
-        float a2 = other.Y2 - other.Y1;
-        float b2 = other.X1 - other.X2;
+        float a2 = other.Y2        - other.Y1;
+        float b2 = other.X1        - other.X2;
         float c2 = (a2 * other.X1) + (b2 * other.Y1);
 
         float det = (a1 * b2) - (a2 * b1);

@@ -106,7 +106,7 @@ internal sealed partial class RenderForm
                 int height = HighWord(lParam);
                 if (width != Width || height != Height)
                 {
-                    Width = width;
+                    Width  = width;
                     Height = height;
                     Resized?.Invoke(this);
                 }
