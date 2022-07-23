@@ -260,6 +260,7 @@ public sealed unsafe partial class Swapchain
                     .AssertVkResult()
 #endif
                     ;
+
                 Recreate();
                 break;
             case VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT:

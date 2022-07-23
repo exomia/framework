@@ -98,28 +98,28 @@ internal sealed unsafe class MyApplication : Application
             {
                 _spriteBatch.DrawFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(0f, 1f, 1f),
+                    new VkColor(0f, 1f, 1f, 1f),
                     rnd.NextSingle());
             }
             else if (i > iterations * 0.50)
             {
                 _spriteBatch.DrawFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(0f, 0f, 1f),
+                    new VkColor(0f, 0f, 1f, 1f),
                     rnd.NextSingle());
             }
             else if (i > iterations * 0.25)
             {
                 _spriteBatch.DrawFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(0f, 1f, 0f),
+                    new VkColor(0f, 1f, 0f, 1f),
                     rnd.NextSingle());
             }
             else
             {
                 _spriteBatch.DrawFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(1f, 0f, 0f),
+                    new VkColor(1f, 0f, 0f, 1f),
                     rnd.NextSingle());
             }
         }

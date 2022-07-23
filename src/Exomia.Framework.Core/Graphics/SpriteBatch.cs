@@ -555,7 +555,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         }
 
         DrawBatchPerTexture(ref previousTexture, spriteQueueForBatch, offset, _spriteQueueCount - offset);
-
+            
         //Array.Clear(_spriteTextures, 0, (int)_spriteQueueCount);
         _spriteQueueCount = 0;
     }
