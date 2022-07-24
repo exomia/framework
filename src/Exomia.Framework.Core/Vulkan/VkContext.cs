@@ -16,6 +16,7 @@ namespace Exomia.Framework.Core.Vulkan;
 /// <summary> A vk context. </summary>
 public unsafe struct VkContext
 {
+    public   VkVersion                Version;
     public   VkInstance               Instance;
     public   VkDebugUtilsMessengerEXT DebugUtilsMessengerExt;
     public   VkSurfaceKHR             SurfaceKhr;
@@ -34,6 +35,7 @@ public unsafe struct VkContext
     internal static VkContext Create()
     {
         VkContext context;
+        context.Version                   = new VkVersion(0, 0, 0, 0);
         context.Instance                  = VkInstance.Null;
         context.DebugUtilsMessengerExt    = VkDebugUtilsMessengerEXT.Null;
         context.SurfaceKhr                = VkSurfaceKHR.Null;

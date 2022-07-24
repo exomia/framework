@@ -171,6 +171,8 @@ sealed unsafe partial class Vulkan
             vkCreateInstance(&instanceCreateInfo, null, &_context->Instance)
                 .AssertVkResult();
 
+            _context->Version = applicationConfiguration.ApiVersion;
+
             return true;
         }
         finally

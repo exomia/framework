@@ -16,7 +16,10 @@ namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
-    private static void CreateDevice(VkContext* context, DeviceConfiguration configuration, QueueConfiguration queueConfiguration)
+    private static void CreateDevice(
+        VkContext* context,
+        DeviceConfiguration configuration, 
+        QueueConfiguration queueConfiguration)
     {
         uint additionalDeviceQueueCreateInfoCount = 0u;
 
@@ -62,9 +65,39 @@ sealed unsafe partial class Vulkan
             *(ppEnabledExtensionNames + i) = Allocator.AllocateNtString(configuration.EnabledExtensionNames[i]);
         }
 
+        void* pNext = configuration.Next;
+        if (context->Version >= VkVersion.VulkanApiVersion13)
+        {
+            VkPhysicalDeviceVulkan13Features physicalDeviceVulkan13Features = new();
+            physicalDeviceVulkan13Features.sType = VkPhysicalDeviceVulkan13Features.STYPE;
+            physicalDeviceVulkan13Features.pNext = pNext;
+            if (configuration.SetPhysicalDeviceVulkan13Features != null)
+                configuration.SetPhysicalDeviceVulkan13Features(&physicalDeviceVulkan13Features);
+            pNext = &physicalDeviceVulkan13Features;
+        }
+        if (context->Version >= VkVersion.VulkanApiVersion12)
+        {
+            VkPhysicalDeviceVulkan12Features physicalDeviceVulkan12Features;
+            physicalDeviceVulkan12Features.sType             = VkPhysicalDeviceVulkan12Features.STYPE;
+            physicalDeviceVulkan12Features.pNext             = pNext;
+            physicalDeviceVulkan12Features.timelineSemaphore = VkBool32.True;
+            if (configuration.SetPhysicalDeviceVulkan12Features != null)
+                configuration.SetPhysicalDeviceVulkan12Features(&physicalDeviceVulkan12Features);
+            pNext = &physicalDeviceVulkan12Features;
+        }
+        if (context->Version >= VkVersion.VulkanApiVersion11)
+        {
+            VkPhysicalDeviceVulkan11Features physicalDeviceVulkan11Features;
+            physicalDeviceVulkan11Features.sType = VkPhysicalDeviceVulkan11Features.STYPE;
+            physicalDeviceVulkan11Features.pNext = pNext;
+            if (configuration.SetPhysicalDeviceVulkan11Features != null)
+                configuration.SetPhysicalDeviceVulkan11Features(&physicalDeviceVulkan11Features); 
+            pNext = &physicalDeviceVulkan11Features;
+        }
+
         VkDeviceCreateInfo deviceCreateInfo;
         deviceCreateInfo.sType                   = VkDeviceCreateInfo.STYPE;
-        deviceCreateInfo.pNext                   = configuration.Next;
+        deviceCreateInfo.pNext                   = pNext;
         deviceCreateInfo.flags                   = configuration.Flags;
         deviceCreateInfo.queueCreateInfoCount    = 1u + additionalDeviceQueueCreateInfoCount;
         deviceCreateInfo.pQueueCreateInfos       = pDeviceQueueCreateInfos;

@@ -91,7 +91,7 @@ internal sealed unsafe class MyApplication : Application
         Random rnd = new Random(100);
 
         //var       k          = Stopwatch.StartNew();
-        const int iterations = 100_000;
+        const int iterations = 10_000;
         for (int i = 0; i < iterations; i++)
         {
             if (i > iterations * 0.75)
