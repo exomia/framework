@@ -71,6 +71,7 @@ sealed unsafe partial class Vulkan
             VkPhysicalDeviceVulkan13Features physicalDeviceVulkan13Features = new();
             physicalDeviceVulkan13Features.sType = VkPhysicalDeviceVulkan13Features.STYPE;
             physicalDeviceVulkan13Features.pNext = pNext;
+
             if (configuration.SetPhysicalDeviceVulkan13Features != null)
                 configuration.SetPhysicalDeviceVulkan13Features(&physicalDeviceVulkan13Features);
             pNext = &physicalDeviceVulkan13Features;
@@ -80,7 +81,10 @@ sealed unsafe partial class Vulkan
             VkPhysicalDeviceVulkan12Features physicalDeviceVulkan12Features;
             physicalDeviceVulkan12Features.sType             = VkPhysicalDeviceVulkan12Features.STYPE;
             physicalDeviceVulkan12Features.pNext             = pNext;
+            // setting defaults 
+            // TODO: add extension in case VulkanApiVersion12 is not supported!?
             physicalDeviceVulkan12Features.timelineSemaphore = VkBool32.True;
+
             if (configuration.SetPhysicalDeviceVulkan12Features != null)
                 configuration.SetPhysicalDeviceVulkan12Features(&physicalDeviceVulkan12Features);
             pNext = &physicalDeviceVulkan12Features;
@@ -90,6 +94,7 @@ sealed unsafe partial class Vulkan
             VkPhysicalDeviceVulkan11Features physicalDeviceVulkan11Features;
             physicalDeviceVulkan11Features.sType = VkPhysicalDeviceVulkan11Features.STYPE;
             physicalDeviceVulkan11Features.pNext = pNext;
+
             if (configuration.SetPhysicalDeviceVulkan11Features != null)
                 configuration.SetPhysicalDeviceVulkan11Features(&physicalDeviceVulkan11Features); 
             pNext = &physicalDeviceVulkan11Features;
