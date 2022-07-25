@@ -82,7 +82,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private          SpriteSortMode                  _spriteSortMode;
     private          int*                            _sortIndices;
     private          SpriteInfo*                     _spriteQueue,      _sortedSprites;
-    private          uint                            _spriteQueueCount, _spriteQueueLenght;
+    private          uint                            _spriteQueueCount, _spriteQueueLength;
     private          TextureInfo*                    _spriteTextures;
     private          Matrix4x4                       _projectionMatrix;
 
@@ -154,7 +154,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         _spriteTextures = Allocator.Allocate<TextureInfo>(MAX_BATCH_SIZE);
         _sortIndices    = Allocator.Allocate<int>(MAX_BATCH_SIZE);
         _sortedSprites  = Allocator.Allocate<SpriteInfo>(MAX_BATCH_SIZE);
-        _spriteQueue    = Allocator.Allocate<SpriteInfo>(_spriteQueueLenght = MAX_BATCH_SIZE);
+        _spriteQueue    = Allocator.Allocate<SpriteInfo>(_spriteQueueLength = MAX_BATCH_SIZE);
 
         //vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
         //vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
@@ -603,10 +603,10 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 _indexBuffer.Dispose();
             }
 
-            Allocator.Free(ref _spriteQueue,    _spriteQueueLenght);
-            Allocator.Free(ref _sortedSprites,  _spriteQueueLenght);
-            Allocator.Free(ref _sortIndices,    _spriteQueueLenght);
-            Allocator.Free(ref _spriteTextures, _spriteQueueLenght);
+            Allocator.Free(ref _spriteQueue,    _spriteQueueLength);
+            Allocator.Free(ref _sortedSprites,  _spriteQueueLength);
+            Allocator.Free(ref _sortIndices,    _spriteQueueLength);
+            Allocator.Free(ref _spriteTextures, _spriteQueueLength);
 
             Allocator.Free(ref _context, 1u);
         }

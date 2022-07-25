@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Diagnostics;
 using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Mathematics;

@@ -232,19 +232,19 @@ public sealed partial class SpriteBatch
             //throw new ArgumentNullException(nameof(texture));
         }
 
-        if (_spriteQueueCount >= _spriteQueueLenght)
+        if (_spriteQueueCount >= _spriteQueueLength)
         {
             bool lockTaken = false;
             try
             {
                 _spinLock.Enter(ref lockTaken);
-                if (_spriteQueueCount >= _spriteQueueLenght)
+                if (_spriteQueueCount >= _spriteQueueLength)
                 {
-                    uint size = _spriteQueueLenght * 2;
-                    Allocator.Resize(ref _spriteTextures, _spriteQueueLenght,     size);
-                    Allocator.Resize(ref _sortIndices,    _spriteQueueLenght,     size);
-                    Allocator.Resize(ref _sortedSprites,  _spriteQueueLenght,     size);
-                    Allocator.Resize(ref _spriteQueue,    ref _spriteQueueLenght, size);
+                    uint size = _spriteQueueLength * 2;
+                    Allocator.Resize(ref _spriteTextures, _spriteQueueLength,     size);
+                    Allocator.Resize(ref _sortIndices,    _spriteQueueLength,     size);
+                    Allocator.Resize(ref _sortedSprites,  _spriteQueueLength,     size);
+                    Allocator.Resize(ref _spriteQueue,    ref _spriteQueueLength, size);
                 }
             }
             finally
