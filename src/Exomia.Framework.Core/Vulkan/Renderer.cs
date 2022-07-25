@@ -38,11 +38,10 @@ public sealed unsafe class Renderer : IDisposable
     }
 
     /// <summary> Begins the rendering. </summary>
-    /// <param name="commandBuffers"> [in,out] If non-null, [out] The command buffers. </param>
-    /// <param name="frameInFlight">  [out] The frame in flight. </param>
+    /// <param name="commandBuffer"> [in,out] If non-null, [out] The command buffer. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
-    public bool Begin(out VkCommandBuffer* commandBuffers, out uint frameInFlight)
+    public bool Begin(out VkCommandBuffer commandBuffer)
     {
 #if DEBUG
         if (!_swapchain.IsFrameStarted)
@@ -50,7 +49,6 @@ public sealed unsafe class Renderer : IDisposable
             throw new Exception($"Can't call {nameof(Begin)} while a frame is in progress!");
         }
 #endif
-        _swapchain.WaitForInFlightFence(frameInFlight = _swapchainContext->FrameInFlight);
 
         VkCommandBufferBeginInfo commandBufferBeginInfo;
         commandBufferBeginInfo.sType            = VkCommandBufferBeginInfo.STYPE;
@@ -59,14 +57,12 @@ public sealed unsafe class Renderer : IDisposable
         commandBufferBeginInfo.pInheritanceInfo = null;
 
         vkBeginCommandBuffer(
-                *(_commandBuffers + _swapchainContext->FrameInFlight),
+                commandBuffer = *(_commandBuffers + _swapchainContext->FrameInFlight),
                 &commandBufferBeginInfo)
 #if DEBUG
             .AssertVkResult()
 #endif 
             ;
-
-        commandBuffers = _commandBuffers;
 
         return true;
     }
@@ -76,7 +72,7 @@ public sealed unsafe class Renderer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void BeginRenderPass(VkCommandBuffer commandBuffer)
     {
-        _swapchain.BeginRenderPass(commandBuffer);
+        _swapchain.BeginRenderPass(commandBuffer, VkSubpassContents.VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
     }
 
     /// <summary> Ends the render pass. </summary>
@@ -88,10 +84,9 @@ public sealed unsafe class Renderer : IDisposable
     }
 
     /// <summary> Ends the rendering. </summary>
-    /// <param name="commandBuffers"> [in,out] If non-null, the command buffers. </param>
-    /// <param name="frameInFlight">  The frame in flight. </param>
+    /// <param name="commandBuffer"> If non-null, the command buffers. </param>
     /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
-    public void End(VkCommandBuffer* commandBuffers, uint frameInFlight)
+    public void End(VkCommandBuffer commandBuffer)
     {
 #if DEBUG
         if (!_swapchain.IsFrameStarted)
@@ -105,7 +100,7 @@ public sealed unsafe class Renderer : IDisposable
 #endif 
             ;
 
-        _swapchain.Submit(commandBuffers, frameInFlight);
+        _swapchain.Submit(commandBuffer);
     }
 
     #region IDisposable Support

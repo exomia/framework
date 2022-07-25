@@ -103,7 +103,6 @@ public sealed unsafe partial class Swapchain : IDisposable
             Height            = (_requestedHeight = _vkContext->InitialHeight)
         };
 
-
         InitializeModules();
 
         CreateSwapChain(oldSwapchain);

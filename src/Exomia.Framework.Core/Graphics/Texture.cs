@@ -29,18 +29,7 @@ public sealed class Texture : IDisposable
     /// <value>
     ///     The height.
     /// </value>
-    public int Height { get; }
-
-    /// <summary>
-    ///     TextureView1.NativePointer.
-    /// </summary>
-    /// <value>
-    ///     The texture pointer.
-    /// </value>
-    public IntPtr TexturePointer
-    {
-        get { return IntPtr.Zero; }
-    }
+    public readonly int Height;
 
     /// <summary>
     ///     Width.
@@ -48,7 +37,15 @@ public sealed class Texture : IDisposable
     /// <value>
     ///     The width.
     /// </value>
-    public int Width { get; }
+    public readonly int Width;
+
+    /// <summary>
+    ///     TextureView1.NativePointer.
+    /// </summary>
+    /// <value>
+    ///     The texture pointer.
+    /// </value>
+    public readonly IntPtr TexturePointer;
 
     /// <summary>
     ///     Texture constructor.
@@ -57,8 +54,9 @@ public sealed class Texture : IDisposable
     /// <param name="height">      height. </param>
     public Texture(int width, int height)
     {
-        Width  = width;
-        Height = height;
+        Width          = width;
+        Height         = height;
+        TexturePointer = IntPtr.Zero;
     }
 
     #region IDisposable Support

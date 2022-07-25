@@ -31,6 +31,7 @@ internal sealed unsafe class MyApplication : Application
 #pragma warning restore IDE0052 // Remove unread private members
 
     private readonly Swapchain   _swapchain;
+    private readonly Renderer    _renderer;
     private readonly SpriteBatch _spriteBatch;
 
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
@@ -52,10 +53,10 @@ internal sealed unsafe class MyApplication : Application
         Core.Vulkan.Vulkan vulkan = serviceProvider.GetRequiredService<Core.Vulkan.Vulkan>();
 
         RenderPassConfiguration renderPassConfiguration = new();
-        renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.LoadOp     = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.StoreOp    = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
-        renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.LoadOp  = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.StoreOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+        //renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.LoadOp     = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        //renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.StoreOp    = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+        //renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.LoadOp  = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        //renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.StoreOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
 
         _swapchain = new Swapchain(
             vulkan.Context,
@@ -63,7 +64,7 @@ internal sealed unsafe class MyApplication : Application
             depthStencilConfiguration.Value,
             renderPassConfiguration);
 
-        //_renderer = new Renderer(vulkan.Context, _swapchain);
+        _renderer = new Renderer(_swapchain);
         _spriteBatch = new SpriteBatch(_swapchain);
     }
 
@@ -77,52 +78,49 @@ internal sealed unsafe class MyApplication : Application
 
     protected override void Render(Time time)
     {
-        //if (_renderer.Begin(out VkCommandBuffer* commandBuffers, out uint frameInFlight))
-        //{
-        //    _renderer.BeginRenderPass(*(commandBuffers + frameInFlight));
-        //    _renderer.EndRenderPass(*(commandBuffers + frameInFlight));
-        //    _renderer.End(commandBuffers, frameInFlight);
-        //}
-        
-        _spriteBatch.Begin();
-
         Random rnd = new Random(100);
 
-        //var       k          = Stopwatch.StartNew();
-        const int iterations = 10_000;
-        for (int i = 0; i < iterations; i++)
+        if (_renderer.Begin(out VkCommandBuffer commandBuffers))
         {
-            if (i > iterations * 0.75)
+            _renderer.BeginRenderPass(commandBuffers);
+            _spriteBatch.Begin();
+            const int iterations = 10_000;
+            for (int i = 0; i < iterations; i++)
             {
-                _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(0f, 1f, 1f, 1f),
-                    rnd.NextSingle());
+                if (i > iterations * 0.75)
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(0f, 1f, 1f, 1f),
+                        rnd.NextSingle());
+                }
+                else if (i > iterations * 0.50)
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(0f, 0f, 1f, 1f),
+                        rnd.NextSingle());
+                }
+                else if (i > iterations * 0.25)
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(0f, 1f, 0f, 1f),
+                        rnd.NextSingle());
+                }
+                else
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(1f, 0f, 0f, 1f),
+                        rnd.NextSingle());
+                }
             }
-            else if (i > iterations * 0.50)
-            {
-                _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(0f, 0f, 1f, 1f),
-                    rnd.NextSingle());
-            }
-            else if (i > iterations * 0.25)
-            {
-                _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(0f, 1f, 0f, 1f),
-                    rnd.NextSingle());
-            }
-            else
-            {
-                _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                    new VkColor(1f, 0f, 0f, 1f),
-                    rnd.NextSingle());
-            }
+            _spriteBatch.End(commandBuffers);
+
+            _renderer.EndRenderPass(commandBuffers);
+            _renderer.End(commandBuffers);
         }
-        //Console.WriteLine(k.Elapsed.TotalMilliseconds);
-        _spriteBatch.End();
 
         timer += time.DeltaTimeS;
         if (timer > 1.0f)
@@ -141,8 +139,8 @@ internal sealed unsafe class MyApplication : Application
 
     protected override void OnDispose(bool disposing)
     {
-        //_renderer.Dispose();
         _spriteBatch.Dispose();
+        _renderer.Dispose();
         _swapchain.Dispose();
     }
 }

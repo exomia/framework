@@ -67,19 +67,21 @@ public sealed unsafe class Buffer : IDisposable
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="context">                [in,out] If non-null, the context. </param>
     /// <param name="count">                  Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new vertex buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Buffer CreateVertexBuffer<T>(
         VkContext*               context,
         VkDeviceSize             count,
+        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
         where T : unmanaged
     {
         return Create(
             context,
             count * sizeof(T),
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
     }
@@ -88,19 +90,21 @@ public sealed unsafe class Buffer : IDisposable
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="context">                [in,out] If non-null, the context. </param>
     /// <param name="count">                  Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new vertex buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Buffer CreateVertexBuffer<T>(
         VkContext*               context,
         ulong                    count,
+        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
         where T : unmanaged
     {
         return Create(
             context,
             count * (ulong)sizeof(T),
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
     }
@@ -109,19 +113,21 @@ public sealed unsafe class Buffer : IDisposable
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="context">                [in,out] If non-null, the context. </param>
     /// <param name="count">                  Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new vertex buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Buffer CreateVertexBuffer<T>(
         VkContext*               context,
         long                     count,
+        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
         where T : unmanaged
     {
         return Create(
             context,
             (VkDeviceSize)(count * sizeof(T)),
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
     }

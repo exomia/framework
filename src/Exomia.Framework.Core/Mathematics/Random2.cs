@@ -48,7 +48,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
+        return (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8)));
     }
 
     /// <summary> Gets the next random int value which is greater than zero and less than the specified maximum value. </summary>
@@ -60,7 +60,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return (int)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max);
+        return (int)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * max);
     }
 
     /// <summary> Gets the next random int value between the specified minimum and maximum values. </summary>
@@ -77,10 +77,10 @@ public sealed class Random2
         int range = max - min;
         if (range < 0)
         {
-            return min + (int)(REAL_UNIT_UINT1 * (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)) * (max - (long)min));
+            return min + (int)(REAL_UNIT_UINT1 * (_w ^= (_w >> 19) ^ t ^ (t >> 8)) * (max - (long)min));
         }
 
-        return min + (int)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * range);
+        return min + (int)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * range);
     }
 
     /// <summary> Gets the next random angle value. </summary>
@@ -98,7 +98,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return (byte)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * byte.MaxValue);
+        return (byte)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * byte.MaxValue);
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return (byte)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max);
+        return (byte)(REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * max);
     }
 
     /// <summary> Gets the next random byte value between the specified minimum and maximum values. </summary>
@@ -126,7 +126,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return (byte)(min + (REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) *
+        return (byte)(min + (REAL_UNIT_INT1 * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) *
             (max - min)));
     }
 
@@ -203,13 +203,13 @@ public sealed class Random2
                 x         = y;
                 y         = z;
                 z         = w;
-                pDWord[i] = w = w ^ (w >> 19) ^ t ^ (t >> 8);
+                pDWord[i] = w ^= (w >> 19) ^ t ^ (t >> 8);
 
                 t             = x ^ (x << 11);
                 x             = y;
                 y             = z;
                 z             = w;
-                pDWord[i + 1] = w = w ^ (w >> 19) ^ t ^ (t >> 8);
+                pDWord[i + 1] = w ^= (w >> 19) ^ t ^ (t >> 8);
             }
         }
 
@@ -227,7 +227,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
+        return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8)));
     }
 
     /// <summary>
@@ -242,7 +242,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
+        return REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * max;
     }
 
     /// <summary> Gets the next random double value between the specified minimum and maximum values. </summary>
@@ -255,7 +255,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return min + (REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
+        return min + (REAL_UNIT_INT * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
     }
 
     /// <summary> Gets the next random single value. </summary>
@@ -266,7 +266,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8)));
+        return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8)));
     }
 
     /// <summary>
@@ -281,7 +281,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * max;
+        return SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * max;
     }
 
     /// <summary> Gets the next random single value between the specified minimum and maximum values. </summary>
@@ -294,7 +294,7 @@ public sealed class Random2
         _x = _y;
         _y = _z;
         _z = _w;
-        return min + (SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w = _w ^ (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
+        return min + (SINGLE_UNIT_INT * (int)(0x7FFFFFFF & (_w ^= (_w >> 19) ^ t ^ (t >> 8))) * (max - min));
     }
 
     /// <summary> Gets the next random unit vector. </summary>

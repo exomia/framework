@@ -278,54 +278,47 @@ public sealed partial class SpriteBatch
         }
 
         uint spriteQueueCount = Interlocked.Increment(ref _spriteQueueCount) - 1u;
-
+        
         SpriteInfo* spriteInfo = _spriteQueue + spriteQueueCount;
-
-        float width;
-        float height;
+        
         if (sourceRectangle.HasValue)
         {
             Rectangle rectangle = sourceRectangle.Value;
-            spriteInfo->Source.X = rectangle.X;
-            spriteInfo->Source.Y = rectangle.Y;
-            width                = rectangle.Width;
-            height               = rectangle.Height;
+            spriteInfo->Sw = rectangle.Right  - (spriteInfo->Sx = rectangle.Top);
+            spriteInfo->Sh = rectangle.Bottom - (spriteInfo->Sy = rectangle.Left);
         }
         else
         {
-            spriteInfo->Source.X = 0;
-            spriteInfo->Source.Y = 0;
-            width                = texture.Width;
-            height               = texture.Height;
+            spriteInfo->Sx = 0;
+            spriteInfo->Sy = 0;
+            spriteInfo->Sw = texture.Width;
+            spriteInfo->Sh = texture.Height;
         }
 
-        spriteInfo->Source.Width  = width;
-        spriteInfo->Source.Height = height;
-
-        spriteInfo->Destination.X = destination.X;
-        spriteInfo->Destination.Y = destination.Y;
+        spriteInfo->Dx = destination.Left;
+        spriteInfo->Dy = destination.Top;
 
         if (scaleDestination)
         {
-            spriteInfo->Destination.Width  = destination.Width  * width;
-            spriteInfo->Destination.Height = destination.Height * height;
+            spriteInfo->Dw = destination.Width  * spriteInfo->Sw;
+            spriteInfo->Dh = destination.Height * spriteInfo->Sh;
         }
         else
         {
-            spriteInfo->Destination.Width  = destination.Width;
-            spriteInfo->Destination.Height = destination.Height;
+            spriteInfo->Dw = (destination.Right  - destination.Left);
+            spriteInfo->Dh = (destination.Bottom - destination.Top);
         }
 
-        if (spriteInfo->Destination.Width < 0)
+        if (spriteInfo->Dw < 0.0f)
         {
-            spriteInfo->Destination.X     += spriteInfo->Destination.Width;
-            spriteInfo->Destination.Width =  -spriteInfo->Destination.Width;
+            spriteInfo->Dx += spriteInfo->Dw;
+            spriteInfo->Dw =  -spriteInfo->Dw;
         }
 
-        if (spriteInfo->Destination.Height < 0)
+        if (spriteInfo->Dh < 0.0f)
         {
-            spriteInfo->Destination.Y      += spriteInfo->Destination.Height;
-            spriteInfo->Destination.Height =  -spriteInfo->Destination.Height;
+            spriteInfo->Dy += spriteInfo->Dh;
+            spriteInfo->Dh =  -spriteInfo->Dh;
         }
 
         spriteInfo->Origin        = origin;

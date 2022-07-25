@@ -10,7 +10,6 @@
 
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -18,8 +17,14 @@ public sealed unsafe partial class SpriteBatch
 {
     internal struct SpriteInfo
     {
-        public RectangleF     Source;
-        public RectangleF     Destination;
+        public float          Sx;
+        public float          Sy;
+        public float          Sw;
+        public float          Sh;
+        public float          Dx;
+        public float          Dy;
+        public float          Dw;
+        public float          Dh;
         public Vector2        Origin;
         public float          Rotation;
         public float          Depth;

@@ -100,24 +100,13 @@ public sealed unsafe partial class Swapchain
         renderPassBeginInfo.renderArea.extent.width  = _context->Width;
         renderPassBeginInfo.renderArea.extent.height = _context->Height;
 
-        //if ((_firstSubmitInFrame & (1u << (int)_context->FrameInFlight)) == 0)
-        //{
-        //    VkClearValue* pClearValues = stackalloc VkClearValue[2];
-        //    (pClearValues + 0)->color                = VkColors.Aqua;
-        //    (pClearValues + 1)->depthStencil.depth   = 1.0f;
-        //    (pClearValues + 1)->depthStencil.stencil = 0u;
+        VkClearValue* pClearValues = stackalloc VkClearValue[2];
+        (pClearValues + 0)->color                = VkColors.Beige;
+        (pClearValues + 1)->depthStencil.depth   = 1.0f;
+        (pClearValues + 1)->depthStencil.stencil = 0u;
 
-        //    renderPassBeginInfo.clearValueCount = 2u;
-        //    renderPassBeginInfo.pClearValues    = pClearValues;
-        //}
-        //else
-        //{
-        //    renderPassBeginInfo.clearValueCount = 0u;
-        //    renderPassBeginInfo.pClearValues    = null;
-        //}
-
-        renderPassBeginInfo.clearValueCount = 0u;
-        renderPassBeginInfo.pClearValues    = null;
+        renderPassBeginInfo.clearValueCount = 2u;
+        renderPassBeginInfo.pClearValues    = pClearValues;
 
         VkSubpassBeginInfo subpassBeginInfo;
         subpassBeginInfo.sType    = VkSubpassBeginInfo.STYPE;
@@ -141,25 +130,6 @@ public sealed unsafe partial class Swapchain
         subpassEndInfo.sType = VkSubpassEndInfo.STYPE;
         subpassEndInfo.pNext = null;
         vkCmdEndRenderPass2(commandBuffer, &subpassEndInfo);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WaitForInFlightFence(uint frameInFlight)
-    {
-        vkWaitForFences(
-                _vkContext->Device,
-                1u,            _context->InFlightFences + frameInFlight,
-                VkBool32.True, ulong.MaxValue)
-#if DEBUG
-            .AssertVkResult()
-#endif
-            ;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsFirstSubmitDone(uint frameInFlight)
-    {
-        return (_firstSubmitInFrame & (1u << (int)frameInFlight)) != 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -231,6 +201,7 @@ public sealed unsafe partial class Swapchain
         }
         _isFrameStarted = false;
 #endif
+
         _firstSubmitInFrame &= ~(1u << (int)_context->FrameInFlight); // clear bit
 
         VkSwapchainKHR   swapchainKhr = _swapchain;

@@ -60,7 +60,7 @@ public sealed unsafe partial class Vulkan
     /// <summary> Gets image aspect mask. </summary>
     /// <param name="format"> Describes the format to use. </param>
     /// <returns> The image aspect mask. </returns>
-    public static VkImageAspectFlags GetImageAspectMask(VkFormat format)
+    public static VkImageAspectFlagBits GetImageAspectMask(VkFormat format)
     {
         return format switch
         {

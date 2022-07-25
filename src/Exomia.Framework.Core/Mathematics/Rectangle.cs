@@ -43,7 +43,7 @@ public struct Rectangle
     public int X
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get { return Left; }
+        get { return Left; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
@@ -57,7 +57,7 @@ public struct Rectangle
     public int Y
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get { return Top; }
+        get { return Top; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
@@ -71,7 +71,7 @@ public struct Rectangle
     public int Width
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get { return Right - Left; }
+        get { return Right - Left; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set { Right = Left + value; }
     }
@@ -81,7 +81,7 @@ public struct Rectangle
     public int Height
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get { return Bottom - Top; }
+        get { return Bottom - Top; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set { Bottom = Top + value; }
     }
@@ -91,7 +91,7 @@ public struct Rectangle
     public Vector2 Location
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get { return new(X, Y); }
+        get { return new(X, Y); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
@@ -102,7 +102,7 @@ public struct Rectangle
 
     /// <summary> Gets the Point that specifies the center of the rectangle. </summary>
     /// <value> The center. </value>
-    public readonly Vector2 Center
+    public Vector2 Center
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return new(X + (Width >> 1), Y + (Height >> 1)); }
@@ -110,7 +110,7 @@ public struct Rectangle
 
     /// <summary> Gets a value that indicates whether the rectangle is empty. </summary>
     /// <value> <c>true</c> if [is empty]; otherwise, <c>false</c>. </value>
-    public readonly bool IsEmpty
+    public bool IsEmpty
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return Width == 0 && Height == 0 && X == 0 && Y == 0; }
@@ -118,7 +118,7 @@ public struct Rectangle
 
     /// <summary> Gets the position of the top-left corner of the rectangle. </summary>
     /// <value> The top-left corner of the rectangle. </value>
-    public readonly Vector2 TopLeft
+    public Vector2 TopLeft
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return new(Left, Top); }
@@ -126,7 +126,7 @@ public struct Rectangle
 
     /// <summary> Gets the position of the top-right corner of the rectangle. </summary>
     /// <value> The top-right corner of the rectangle. </value>
-    public readonly Vector2 TopRight
+    public Vector2 TopRight
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return new(Right, Top); }
@@ -134,7 +134,7 @@ public struct Rectangle
 
     /// <summary> Gets the position of the bottom-left corner of the rectangle. </summary>
     /// <value> The bottom-left corner of the rectangle. </value>
-    public readonly Vector2 BottomLeft
+    public Vector2 BottomLeft
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return new(Left, Bottom); }
@@ -142,7 +142,7 @@ public struct Rectangle
 
     /// <summary> Gets the position of the bottom-right corner of the rectangle. </summary>
     /// <value> The bottom-right corner of the rectangle. </value>
-    public readonly Vector2 BottomRight
+    public Vector2 BottomRight
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return new(Right, Bottom); }
@@ -254,7 +254,7 @@ public struct Rectangle
     /// <param name="value"> The <see cref="VectorI2" />. </param>
     /// <returns> <c>true</c> if <see cref="VectorI2" /> is inside <see cref="Rectangle" />, otherwise <c>false</c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Contains(in VectorI2 value)
+    public bool Contains(in VectorI2 value)
     {
         return value.X >= Left && value.X <= Right && value.Y >= Top && value.Y <= Bottom;
     }
@@ -266,7 +266,7 @@ public struct Rectangle
     ///     otherwise.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Contains(in VectorI2 value, out bool result)
+    public void Contains(in VectorI2 value, out bool result)
     {
         result = value.X >= Left && value.X <= Right && value.Y >= Top && value.Y <= Bottom;
     }
@@ -275,7 +275,7 @@ public struct Rectangle
     /// <param name="value"> The <see cref="Vector2" />. </param>
     /// <returns> <c>true</c> if <see cref="Vector2" /> is inside <see cref="Rectangle" />, otherwise <c>false</c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Contains(in Vector2 value)
+    public bool Contains(in Vector2 value)
     {
         return value.X >= Left && value.X <= Right && value.Y >= Top && value.Y <= Bottom;
     }
@@ -287,7 +287,7 @@ public struct Rectangle
     ///     otherwise.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Contains(in Vector2 value, out bool result)
+    public void Contains(in Vector2 value, out bool result)
     {
         result = value.X >= Left && value.X <= Right && value.Y >= Top && value.Y <= Bottom;
     }
@@ -296,7 +296,7 @@ public struct Rectangle
     /// <param name="value"> The <see cref="Rectangle" />. </param>
     /// <returns> <c>true</c> if <see cref="VectorI2" /> is inside <see cref="Rectangle" />, otherwise <c>false</c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Contains(in Rectangle value)
+    public bool Contains(in Rectangle value)
     {
         return X <= value.X && value.Right <= Right && Y <= value.Y && value.Bottom <= Bottom;
     }
@@ -308,7 +308,7 @@ public struct Rectangle
     ///     false otherwise.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Contains(in Rectangle value, out bool result)
+    public void Contains(in Rectangle value, out bool result)
     {
         result = X <= value.X && value.Right <= Right && Y <= value.Y && value.Bottom <= Bottom;
     }
@@ -317,7 +317,7 @@ public struct Rectangle
     /// <param name="value"> The <see cref="RectangleF" />. </param>
     /// <returns> <c>true</c> if <see cref="VectorI2" /> is inside <see cref="Rectangle" />, otherwise <c>false</c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Contains(in RectangleF value)
+    public bool Contains(in RectangleF value)
     {
         return X <= value.X && value.Right <= Right && Y <= value.Y && value.Bottom <= Bottom;
     }
@@ -329,7 +329,7 @@ public struct Rectangle
     ///     false otherwise.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Contains(in RectangleF value, out bool result)
+    public void Contains(in RectangleF value, out bool result)
     {
         result = X <= value.X && value.Right <= Right && Y <= value.Y && value.Bottom <= Bottom;
     }
@@ -339,7 +339,7 @@ public struct Rectangle
     /// <param name="y"> The y value. </param>
     /// <returns> <c>true</c> if point is inside <see cref="Rectangle" />, otherwise <c>false</c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Contains(int x, int y)
+    public bool Contains(int x, int y)
     {
         return x >= Left && x <= Right && y >= Top && y <= Bottom;
     }
@@ -352,7 +352,7 @@ public struct Rectangle
     ///     otherwise.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Contains(int x, int y, out bool result)
+    public void Contains(int x, int y, out bool result)
     {
         result = x >= Left && x <= Right && y >= Top && y <= Bottom;
     }
@@ -362,7 +362,7 @@ public struct Rectangle
     /// <param name="y"> The y value. </param>
     /// <returns> <c>true</c> if point is inside <see cref="Rectangle" />, otherwise <c>false</c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Contains(float x, float y)
+    public bool Contains(float x, float y)
     {
         return x >= Left && x <= Right && y >= Top && y <= Bottom;
     }
@@ -375,7 +375,7 @@ public struct Rectangle
     ///     otherwise.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Contains(float x, float y, out bool result)
+    public void Contains(float x, float y, out bool result)
     {
         result = x >= Left && x <= Right && y >= Top && y <= Bottom;
     }
@@ -384,7 +384,7 @@ public struct Rectangle
     /// <param name="value"> The rectangle to evaluate. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Intersects(in Rectangle value)
+    public bool Intersects(in Rectangle value)
     {
         return value.X < Right && X < value.Right && value.Y < Bottom && Y < value.Bottom;
     }
@@ -393,7 +393,7 @@ public struct Rectangle
     /// <param name="value">  The rectangle to evaluate. </param>
     /// <param name="result"> [OutAttribute] true if the specified rectangle intersects with this one; false otherwise. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Intersects(in Rectangle value, out bool result)
+    public void Intersects(in Rectangle value, out bool result)
     {
         result = value.X < Right && X < value.Right && value.Y < Bottom && Y < value.Bottom;
     }
@@ -402,7 +402,7 @@ public struct Rectangle
     /// <param name="value"> The rectangle to evaluate. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Intersects(in RectangleF value)
+    public bool Intersects(in RectangleF value)
     {
         return value.X < Right && X < value.Right && value.Y < Bottom && Y < value.Bottom;
     }
