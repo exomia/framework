@@ -53,10 +53,6 @@ internal sealed unsafe class MyApplication : Application
         Core.Vulkan.Vulkan vulkan = serviceProvider.GetRequiredService<Core.Vulkan.Vulkan>();
 
         RenderPassConfiguration renderPassConfiguration = new();
-        //renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.LoadOp     = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        //renderPassConfiguration.ColorAttachments[0].attachmentConfiguration.StoreOp    = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
-        //renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.LoadOp  = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        //renderPassConfiguration.DepthStencilAttachment.attachmentConfiguration.StoreOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
 
         _swapchain = new Swapchain(
             vulkan.Context,
@@ -64,7 +60,7 @@ internal sealed unsafe class MyApplication : Application
             depthStencilConfiguration.Value,
             renderPassConfiguration);
 
-        _renderer = new Renderer(_swapchain);
+        _renderer    = new Renderer(_swapchain);
         _spriteBatch = new SpriteBatch(_swapchain);
     }
 
@@ -80,13 +76,13 @@ internal sealed unsafe class MyApplication : Application
     {
         Random rnd = new Random(100);
 
-        if (_renderer.Begin(out VkCommandBuffer commandBuffers))
+        if (_renderer.Begin(out VkCommandBuffer commandBuffer))
         {
-            _renderer.BeginRenderPass(commandBuffers);
+            _renderer.BeginRenderPass(commandBuffer);
 
             const int iterations = 10_000;
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Texture);
             for (int i = 0; i < iterations; i++)
             {
                 if (i > iterations * 0.75)
@@ -118,46 +114,46 @@ internal sealed unsafe class MyApplication : Application
                         rnd.NextSingle());
                 }
             }
-            _spriteBatch.End(commandBuffers);
+            _spriteBatch.End(commandBuffer);
 
-            _spriteBatch.Begin();
-            for (int i = iterations; i < iterations * 2; i++)
-            {
-                if (i > iterations * 0.75)
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 0f, 0f, 1f),
-                        rnd.NextSingle());
-                }
-                else if (i > iterations * 0.50)
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 0f, 1f, 1f),
-                        rnd.NextSingle());
-                }
-                else if (i > iterations * 0.25)
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 1f, 0f, 1f),
-                        rnd.NextSingle());
-                }
-                else
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(1f, 0f, 0f, 1f),
-                        rnd.NextSingle());
-                }
-            }
-            _spriteBatch.End(commandBuffers);
+            //_spriteBatch.Begin();
+            //for (int i = iterations; i < iterations * 2; i++)
+            //{
+            //    if (i > iterations * 0.75)
+            //    {
+            //        _spriteBatch.DrawFillRectangle(
+            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+            //            new VkColor(0f, 0f, 0f, 1f),
+            //            rnd.NextSingle());
+            //    }
+            //    else if (i > iterations * 0.50)
+            //    {
+            //        _spriteBatch.DrawFillRectangle(
+            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+            //            new VkColor(0f, 0f, 1f, 1f),
+            //            rnd.NextSingle());
+            //    }
+            //    else if (i > iterations * 0.25)
+            //    {
+            //        _spriteBatch.DrawFillRectangle(
+            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+            //            new VkColor(0f, 1f, 0f, 1f),
+            //            rnd.NextSingle());
+            //    }
+            //    else
+            //    {
+            //        _spriteBatch.DrawFillRectangle(
+            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+            //            new VkColor(1f, 0f, 0f, 1f),
+            //            rnd.NextSingle());
+            //    }
+            //}
+            //_spriteBatch.End(commandBuffer);
 
             _spriteBatch.EndFrame();
 
-            _renderer.EndRenderPass(commandBuffers);
-            _renderer.End(commandBuffers);
+            _renderer.EndRenderPass(commandBuffer);
+            _renderer.End(commandBuffer);
         }
 
         timer += time.DeltaTimeS;
@@ -165,7 +161,7 @@ internal sealed unsafe class MyApplication : Application
         {
             timer -= 1.0f;
             Console.WriteLine(frames);
-            frames          = 0;
+            frames = 0;
         }
         frames++;
     }

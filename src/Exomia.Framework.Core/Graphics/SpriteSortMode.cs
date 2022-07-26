@@ -18,20 +18,10 @@ public enum SpriteSortMode
     /// <summary>
     ///     An enum constant representing the deferred option.
     /// </summary>
-    Deferred,
+    Deferred = 0,
 
     /// <summary>
     ///     An enum constant representing the texture option.
     /// </summary>
-    Texture,
-
-    /// <summary>
-    ///     An enum constant representing the back to front option.
-    /// </summary>
-    BackToFront,
-
-    /// <summary>
-    ///     An enum constant representing the front to back option.
-    /// </summary>
-    FrontToBack
+    Texture = 1,
 }

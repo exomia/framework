@@ -13,13 +13,11 @@ using System.Reflection;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Resources;
 using Exomia.Framework.Core.Vulkan;
-using Exomia.Framework.Core.Vulkan.Buffers;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Shader;
 using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -80,9 +78,6 @@ public sealed unsafe partial class SpriteBatch
                 }
             }
         );
-
-        _commandBufferPool =
-            new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
 
         SetupVulkan();
     }

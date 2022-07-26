@@ -10,6 +10,7 @@
 
 using System.ComponentModel;
 using System.Numerics;
+using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
@@ -25,9 +26,9 @@ public sealed unsafe partial class SpriteBatch
         float                       deltaY)
     {
         float sx, sy, sw, sh;
-        if (spriteInfo->SourceRectangle.HasValue)
+        if (spriteInfo->Source.HasValue)
         {
-            Rectangle rectangle = spriteInfo->SourceRectangle!.Value;
+            Rectangle rectangle = spriteInfo->Source!.Value;
             sw = rectangle.Right  - (sx = rectangle.Top);
             sh = rectangle.Bottom - (sy = rectangle.Left);
         }
@@ -248,31 +249,27 @@ public sealed unsafe partial class SpriteBatch
     {
         SpriteInfo* spriteQueueForBatch;
 
-        if (_spriteSortMode != SpriteSortMode.Deferred)
+        if (_spriteSortMode == SpriteSortMode.Deferred)
         {
+            spriteQueueForBatch = _spriteQueue;
+        }
+        else
+        {
+            if (_spriteQueueCount >= _sortedQueueLength)
+            {
+                Allocator.Resize(ref _sortIndices,   _sortedQueueLength,     _spriteQueueLength);
+                Allocator.Resize(ref _sortedSprites, ref _sortedQueueLength, _spriteQueueLength);
+            }
+
             for (int i = 0; i < _spriteQueueCount; ++i)
             {
                 *(_sortIndices + i) = i;
             }
 
-            // TODO
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            switch (_spriteSortMode)
-            {
-                //case SpriteSortMode.Texture:
-                //    _spriteSort.Sort(_spriteTextures, _sortIndices, 0u, _spriteQueueCount);
-                //    break;
-                //case SpriteSortMode.BackToFront:
-                //    _spriteSort.SortBf(_spriteQueue, _sortIndices, 0u, _spriteQueueCount);
-                //    break;
-                //case SpriteSortMode.FrontToBack:
-                //    _spriteSort.SortFb(_spriteQueue, _sortIndices, 0u, _spriteQueueCount);
-                //    break;
-                default: throw new InvalidEnumArgumentException(nameof(SpriteSortMode));
-            }
+            Sort(_spriteQueue, _sortIndices, 0u, _spriteQueueCount);
+
             spriteQueueForBatch = _sortedSprites;
         }
-        spriteQueueForBatch = _spriteQueue;
 
         Buffer                      vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _spriteQueueCount);
         VertexPositionColorTexture* pVpct        = vertexBuffer.Map<VertexPositionColorTexture>();
@@ -282,17 +279,13 @@ public sealed unsafe partial class SpriteBatch
 
         for (uint i = 0u; i < _spriteQueueCount; i++)
         {
-            TextureInfo texture;
-            if (_spriteSortMode != SpriteSortMode.Deferred)
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            TextureInfo texture = _spriteSortMode switch
             {
-                texture = (
-                    *(spriteQueueForBatch + i) = *(_spriteQueue + *(_sortIndices + i))
-                ).TextureInfo;
-            }
-            else
-            {
-                texture = spriteQueueForBatch->TextureInfo;
-            }
+                SpriteSortMode.Deferred => (spriteQueueForBatch + i)->TextureInfo,
+                SpriteSortMode.Texture  => (*(spriteQueueForBatch + i) = *(_spriteQueue + *(_sortIndices + i))).TextureInfo,
+                _                       => throw new ArgumentOutOfRangeException(nameof(_spriteSortMode))
+            };
 
             if (texture.Ptr64 != previousTexture.Ptr64)
             {

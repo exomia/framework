@@ -99,7 +99,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth);
         spriteInfo.ScaleDestination = false;
-        spriteInfo.SourceRectangle  = s_nullRectangle;
+        spriteInfo.Source  = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = MathF.Atan2(dy, dx);
         spriteInfo.Origin           = s_vector2Zero;

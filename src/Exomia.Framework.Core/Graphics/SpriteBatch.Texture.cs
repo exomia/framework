@@ -29,7 +29,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, 1f, 1f);
         spriteInfo.ScaleDestination = true;
-        spriteInfo.SourceRectangle  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = 0.0f;
         spriteInfo.Origin           = s_vector2Zero;
@@ -52,7 +52,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.SourceRectangle  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = 0.0f;
         spriteInfo.Origin           = s_vector2Zero;
@@ -76,7 +76,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, 1f, 1f);
         spriteInfo.ScaleDestination = true;
-        spriteInfo.SourceRectangle  = sourceRectangle;
+        spriteInfo.Source           = sourceRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = 0.0f;
         spriteInfo.Origin           = s_vector2Zero;
@@ -103,7 +103,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.SourceRectangle  = sourceRectangle;
+        spriteInfo.Source           = sourceRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = 0.0f;
         spriteInfo.Origin           = s_vector2Zero;
@@ -134,7 +134,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, 1f, 1f);
         spriteInfo.ScaleDestination = true;
-        spriteInfo.SourceRectangle  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = rotation;
         spriteInfo.Origin           = origin;
@@ -165,7 +165,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.SourceRectangle  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = rotation;
         spriteInfo.Origin           = origin;
@@ -202,7 +202,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.SourceRectangle  = sourceRectangle;
+        spriteInfo.Source           = sourceRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = rotation;
         spriteInfo.Origin           = origin;
@@ -241,7 +241,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, scale, scale);
         spriteInfo.ScaleDestination = true;
-        spriteInfo.SourceRectangle  = sourceRectangle;
+        spriteInfo.Source           = sourceRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = rotation;
         spriteInfo.Origin           = origin;
@@ -280,7 +280,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, scale);
         spriteInfo.ScaleDestination = true;
-        spriteInfo.SourceRectangle  = sourceRectangle;
+        spriteInfo.Source           = sourceRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = rotation;
         spriteInfo.Origin           = origin;
@@ -309,9 +309,7 @@ public sealed partial class SpriteBatch
                 if (_spriteQueueCount >= _spriteQueueLength)
                 {
                     uint size = _spriteQueueLength << 1;
-                    Allocator.Resize(ref _sortIndices,    _spriteQueueLength,     size);
-                    Allocator.Resize(ref _sortedSprites,  _spriteQueueLength,     size);
-                    Allocator.Resize(ref _spriteQueue,    ref _spriteQueueLength, size);
+                    Allocator.Resize(ref _spriteQueue,   ref _spriteQueueLength, size);
                 }
             }
             finally

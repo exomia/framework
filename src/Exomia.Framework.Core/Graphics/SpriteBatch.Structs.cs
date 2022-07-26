@@ -20,7 +20,7 @@ public sealed unsafe partial class SpriteBatch
     {
         public RectangleF     Destination;
         public bool           ScaleDestination;
-        public Rectangle?     SourceRectangle;
+        public Rectangle?     Source;
         public VkColor        Color;
         public float          Rotation;
         public Vector2        Origin;

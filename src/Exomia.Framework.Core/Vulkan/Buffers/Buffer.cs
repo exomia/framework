@@ -430,7 +430,7 @@ public sealed unsafe class Buffer : IDisposable
         return new Buffer(context->Device, buffer, deviceMemory, bufferCreateInfo.size);
     }
 
-    /// <summary> Gets the map. </summary>
+    /// <summary> Gets a pointer into the mapped memory. </summary>
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void* Map()
@@ -444,8 +444,8 @@ public sealed unsafe class Buffer : IDisposable
         return ptr;
     }
 
-    /// <summary> Gets the map. </summary>
-    /// <returns> Null if it fails, else a void*. </returns>
+    /// <summary> Gets a pointer into the mapped memory. </summary>
+    /// <returns> Null if it fails, else a T*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T* Map<T>()
         where T : unmanaged
@@ -459,7 +459,7 @@ public sealed unsafe class Buffer : IDisposable
         return (T*)ptr;
     }
 
-    /// <summary> Gets the map. </summary>
+    /// <summary> Gets a pointer into the mapped memory. </summary>
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void* Map(VkDeviceSize offset)
@@ -473,8 +473,8 @@ public sealed unsafe class Buffer : IDisposable
         return ptr;
     }
 
-    /// <summary> Gets the map. </summary>
-    /// <returns> Null if it fails, else a void*. </returns>
+    /// <summary> Gets a pointer into the mapped memory. </summary>
+    /// <returns> Null if it fails, else a T*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T* Map<T>(VkDeviceSize offset)
         where T : unmanaged
@@ -488,7 +488,7 @@ public sealed unsafe class Buffer : IDisposable
         return (T*)ptr;
     }
 
-    /// <summary> Gets the map. </summary>
+    /// <summary> Gets a pointer into the mapped memory. </summary>
     /// <returns> Null if it fails, else a void*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void* Map(VkDeviceSize offset, VkDeviceSize length)
@@ -502,8 +502,8 @@ public sealed unsafe class Buffer : IDisposable
         return ptr;
     }
 
-    /// <summary> Gets the map. </summary>
-    /// <returns> Null if it fails, else a void*. </returns>
+    /// <summary> Gets a pointer into the mapped memory. </summary>
+    /// <returns> Null if it fails, else a T*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T* Map<T>(VkDeviceSize offset, VkDeviceSize length)
         where T : unmanaged
@@ -516,9 +516,10 @@ public sealed unsafe class Buffer : IDisposable
             ;
         return (T*)ptr;
     }
-
-    /// <summary> Gets the map. </summary>
-    /// <returns> Null if it fails, else a void*. </returns>
+    
+    /// <summary> Updates the buffer with the given value. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="value"> The value. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(in T value)
         where T : unmanaged
@@ -533,11 +534,28 @@ public sealed unsafe class Buffer : IDisposable
         vkUnmapMemory(_device, _deviceMemory);
     }
 
-    /// <summary> Gets the map. </summary>
+    /// <summary> Updates the buffer with the given values. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="offset"> The offset. </param>
+    /// <param name="src">    [in,out] If non-null, the source to copy from. </param>
+    /// <param name="count">  Number of elements in <paramref name="src"/>. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Update<T>(T* src, int count)
+        where T : unmanaged
+    {
+        void* ptr;
+        vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
+        Unsafe.CopyBlock(ptr, src, (uint)(sizeof(T) * count));
+        vkUnmapMemory(_device, _deviceMemory);
+    }
+
+    /// <summary> Updates the buffer with the given value. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="value">  The value. </param>
-    /// <returns> Null if it fails, else a T*. </returns>
+    /// <param name="offset"> The offset. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(in T value, VkDeviceSize offset)
         where T : unmanaged
@@ -549,6 +567,27 @@ public sealed unsafe class Buffer : IDisposable
 #endif 
             ;
         *(T*)ptr = value;
+        vkUnmapMemory(_device, _deviceMemory);
+    }
+
+    /// <summary> Updates the buffer with the given values. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="src">    [in,out] If non-null, the source to copy from. </param>
+    /// <param name="count">  Number of elements in <paramref name="src"/>. </param>
+    /// <param name="offset"> The offset. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Update<T>(T* src, int count, VkDeviceSize offset)
+        where T : unmanaged
+    {
+        void* ptr;
+        vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
+#if DEBUG
+            .AssertVkResult()
+#endif 
+            ;
+
+        Unsafe.CopyBlock(ptr, src, (uint)(sizeof(T) * count));
+
         vkUnmapMemory(_device, _deviceMemory);
     }
 
@@ -645,14 +684,6 @@ public sealed unsafe class Buffer : IDisposable
     /// <summary> Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources. </summary>
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary> Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources. </summary>
-    /// <param name="disposing"> true if user code; false called by finalizer. </param>
-    private void Dispose(bool disposing)
-    {
         if (!_disposed)
         {
             _disposed = true;
@@ -667,12 +698,13 @@ public sealed unsafe class Buffer : IDisposable
                 Allocator.Free(_buffer, 1u);
             }
         }
+        GC.SuppressFinalize(this);
     }
 
     /// <summary> Finalizes an instance of the <see cref="Buffer" /> class. </summary>
     ~Buffer()
     {
-        Dispose(false);
+        Dispose();
     }
 
     #endregion

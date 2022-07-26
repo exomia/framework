@@ -1,5 +1,4 @@
 #version 450 core
-#extension GL_KHR_vulkan_glsl : enable
 
 layout(binding = 0) uniform UniformBufferObject {
     mat4 g_worldViewProjection;

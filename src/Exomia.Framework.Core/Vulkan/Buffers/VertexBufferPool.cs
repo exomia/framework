@@ -67,12 +67,16 @@ sealed unsafe class VertexBufferPool<T> : IDisposable
         }
 
         Buffer? buffer = _buffers[frameInFlight][next];
-        if (buffer == null || buffer.Size < (ulong)(count * _verticesPerSprite * sizeof(T)))
+        if (buffer != null)
         {
-            buffer = _buffers[frameInFlight][next] = Buffer.CreateVertexBuffer<T>(_vkContext, (ulong)(count * _verticesPerSprite));
+            if (buffer.Size >= (ulong)(count * _verticesPerSprite * sizeof(T)))
+            {
+                return buffer;
+            }
+            buffer.Dispose();
         }
 
-        return buffer;
+        return _buffers[frameInFlight][next] = Buffer.CreateVertexBuffer<T>(_vkContext, (ulong)(count * _verticesPerSprite));
     }
 
     public void Reset(uint frameInFlight)
