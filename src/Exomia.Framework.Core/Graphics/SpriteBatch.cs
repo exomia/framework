@@ -18,6 +18,7 @@ using Exomia.Framework.Core.Vulkan.Shader;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
+using Exomia.Framework.Core.Vulkan.Buffers;
 using static Exomia.Vulkan.Api.Core.VkCommandBufferUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkIndexType;
 using static Exomia.Vulkan.Api.Core.VkPipelineBindPoint;
@@ -54,17 +55,15 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
     private static readonly Rectangle? s_nullRectangle = null;
 
-    private readonly Swapchain         _swapchain;
-    private readonly VkContext*        _vkContext;
-    private readonly SwapchainContext* _swapchainContext;
-    private readonly ulong[]           _currentVertexBufferQuadCount;
-    private readonly VkDeviceSize[]    _vertexBufferChunkLength;
-    private readonly Buffer            _indexBuffer;
-    private readonly Buffer            _uniformBuffer;
-    private readonly Buffer[]          _vertexBuffer;
-    private          Shader?           _shader   = null!;
-    private          Pipeline?         _pipeline = null;
-    private          VkCommandBuffer*  _commandBuffers;
+    private readonly Swapchain                                    _swapchain;
+    private readonly VkContext*                                   _vkContext;
+    private readonly SwapchainContext*                            _swapchainContext;
+    private readonly Buffer                                       _indexBuffer;
+    private readonly Buffer                                       _uniformBuffer;
+    private readonly VertexBufferPool<VertexPositionColorTexture> _vertexBufferPool;
+    private          Shader                                       _shader            = null!;
+    private          Pipeline?                                    _pipeline          = null;
+    private          CommandBufferPool                            _commandBufferPool = null!;
 
     private VkSpriteBatchContext* _context;
 
@@ -148,19 +147,10 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         //vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
         //vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
 
-        _indexBuffer                  = Buffer.CreateIndexBuffer(_vkContext, s_indices);
-        _uniformBuffer                = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
-        _vertexBuffer                 = new Buffer[_swapchainContext->MaxFramesInFlight];
-        _currentVertexBufferQuadCount = new ulong[_swapchainContext->MaxFramesInFlight];
-        _vertexBufferChunkLength      = new VkDeviceSize[_swapchainContext->MaxFramesInFlight];
-
-        for (int i = 0; i < _swapchainContext->MaxFramesInFlight; i++)
-        {
-            _vertexBufferChunkLength[i] =
-                (_currentVertexBufferQuadCount[i] = MAX_BATCH_SIZE) * VERTICES_PER_SPRITE * (ulong)sizeof(VertexPositionColorTexture);
-
-            _vertexBuffer[i] = Buffer.CreateVertexBuffer<VertexPositionColorTexture>(_vkContext, _vertexBufferChunkLength[i]);
-        }
+        _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
+        _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
+        _vertexBufferPool =
+            new VertexBufferPool<VertexPositionColorTexture>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_SPRITE, MAX_BATCH_SIZE);
 
         Setup();
         Resize(_vkContext->InitialWidth, _vkContext->InitialHeight);
@@ -364,26 +354,22 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         BeginRendering(out VkCommandBuffer subCommandBuffer);
 
-        if (_spriteQueueCount > _currentVertexBufferQuadCount[_swapchainContext->FrameInFlight])
-        {
-            _vertexBuffer[_swapchainContext->FrameInFlight].Dispose();
-
-            _vertexBuffer[_swapchainContext->FrameInFlight] =
-                Buffer.CreateVertexBuffer<VertexPositionColorTexture>(_vkContext,
-                    _vertexBufferChunkLength[_swapchainContext->FrameInFlight]
-                        = (_currentVertexBufferQuadCount[_swapchainContext->FrameInFlight] = _spriteQueueCount)
-                        * VERTICES_PER_SPRITE * (ulong)sizeof(VertexPositionColorTexture));
-        }
-
         FlushBatch(subCommandBuffer);
 
         EndRendering(subCommandBuffer);
 
-        vkCmdExecuteCommands(commandBuffer, 1u, _commandBuffers + _swapchainContext->FrameInFlight);
+        vkCmdExecuteCommands(commandBuffer, 1u, &subCommandBuffer);
 
 #if DEBUG
         _isBeginCalled = false;
 #endif
+    }
+
+    /// <summary> Ends a frame. </summary>
+    public void EndFrame()
+    {
+        _commandBufferPool.Reset(_swapchainContext->FrameInFlight);
+        _vertexBufferPool.Reset(_swapchainContext->FrameInFlight);
     }
 
     private void BeginRendering(out VkCommandBuffer commandBuffer)
@@ -403,7 +389,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         commandBufferBeginInfo.flags            = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
         commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritance;
 
-        commandBuffer = *(_commandBuffers + _swapchainContext->FrameInFlight);
+        commandBuffer = _commandBufferPool.Next(_swapchainContext->FrameInFlight);
         vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
 #if DEBUG
             .AssertVkResult()
@@ -455,6 +441,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     private void DrawBatchPerTexture(
         VkCommandBuffer             commandBuffer,
+        Buffer                      vertexBuffer,
         in TextureInfo              texture,
         VertexPositionColorTexture* pVpct,
         SpriteInfo*                 sprites,
@@ -492,7 +479,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             }
 
             VkDeviceSize vertexBufferOffset = (ulong)(offset * VERTICES_PER_SPRITE * sizeof(VertexPositionColorTexture));
-            vkCmdBindVertexBuffers(commandBuffer, 0u, 1u, _vertexBuffer[_swapchainContext->FrameInFlight], &vertexBufferOffset);
+            vkCmdBindVertexBuffers(commandBuffer, 0u, 1u, vertexBuffer, &vertexBufferOffset);
             vkCmdDrawIndexed(
                 commandBuffer,
                 INDICES_PER_SPRITE * batchSize,
@@ -539,10 +526,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             spriteQueueForBatch = _spriteQueue;
         }
 
-        Buffer vertexBuffer = _vertexBuffer[_swapchainContext->FrameInFlight];
-        VertexPositionColorTexture* pVpct = vertexBuffer.Map<VertexPositionColorTexture>(
-            VkDeviceSize.Zero,
-            _vertexBufferChunkLength[_swapchainContext->FrameInFlight]);
+        Buffer                      vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _spriteQueueCount);
+        VertexPositionColorTexture* pVpct        = vertexBuffer.Map<VertexPositionColorTexture>();
 
         uint        offset          = 0u;
         TextureInfo previousTexture = default;
@@ -565,7 +550,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             {
                 if (i > offset)
                 {
-                    DrawBatchPerTexture(commandBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, i - offset);
+                    DrawBatchPerTexture(commandBuffer, vertexBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, i - offset);
                 }
 
                 offset          = i;
@@ -573,7 +558,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             }
         }
 
-        DrawBatchPerTexture(commandBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, _spriteQueueCount - offset);
+        DrawBatchPerTexture(commandBuffer, vertexBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, _spriteQueueCount - offset);
 
         vertexBuffer.Unmap();
 
@@ -602,14 +587,12 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 vkDeviceWaitIdle(_vkContext->Device)
                     .AssertVkResult();
 
-                _shader?.Dispose();
+                _commandBufferPool.Dispose();
+                _shader.Dispose();
 
                 CleanupVulkan();
-                for (int i = 0; i < _swapchainContext->MaxFramesInFlight; i++)
-                {
-                    _vertexBuffer[i].Dispose();
-                }
 
+                _vertexBufferPool.Dispose();
                 _uniformBuffer.Dispose();
                 _indexBuffer.Dispose();
             }

@@ -30,7 +30,7 @@ public abstract unsafe class Application : IRunnable
 
     /// <summary> Gets or sets a value indicating whether this application is using a fixed time step. </summary>
     /// <value> True if this application is using fixed time step, false if not. </value>
-    public bool IsFixedTimeStep { get; set; } = false;
+    public bool IsFixedTimeStep { get; init; } = false;
 
     /// <summary> Gets or sets the target elapsed time in ms. </summary>
     /// <value> The target elapsed time in ms. </value>
@@ -85,7 +85,25 @@ public abstract unsafe class Application : IRunnable
 
         if (!_isInitialized)
         {
-            RenderloopVariableTime();
+            Time time = Time.StartNew();
+            void OnIsRunningChanged(Application s, bool v)
+            {
+                if (v) { time.Start(); }
+                else { time.Stop(); }
+            }
+
+            _IsRunningChanged += OnIsRunningChanged;
+
+            if (IsFixedTimeStep)
+            {
+                RenderloopFixedTime(time);
+            }
+            else
+            {
+                RenderloopVariableTime(time);
+            }
+
+            _IsRunningChanged -= OnIsRunningChanged;
         }
     }
 
@@ -110,18 +128,33 @@ public abstract unsafe class Application : IRunnable
     /// <summary> Ends a frame. </summary>
     protected abstract void EndFrame();
 
-    private void RenderloopVariableTime()
+    private void RenderloopVariableTime(Time time)
     {
-        Stopwatch stopwatch = new Stopwatch();
-        Time      time      = Time.StartNew();
-
-        void OnIsRunningChanged(Application s, bool v)
+        while (!_shutdown)
         {
-            if (v) { time.Start(); }
-            else { time.Stop(); }
+            _doEvents();
+
+            if (!_isRunning)
+            {
+                Thread.Sleep(16);
+                continue;
+            }
+
+            if (BeginFrame())
+            {
+                Render(time);
+                EndFrame();
+            }
+
+            time.Tick();
         }
 
-        _IsRunningChanged += OnIsRunningChanged;
+        _isShutdownCompleted.Set();
+    }
+
+    private void RenderloopFixedTime(Time time)
+    {
+        Stopwatch stopwatch = new Stopwatch();
 
         while (!_shutdown)
         {
@@ -141,22 +174,17 @@ public abstract unsafe class Application : IRunnable
                 EndFrame();
             }
 
-            if (IsFixedTimeStep)
+            //SLEEP
+            while (TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds)
             {
-                //SLEEP
-                while (TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds)
-                {
-                    Thread.Yield();
-                }
-
-                //IDLE
-                while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
+                Thread.Yield();
             }
+
+            //IDLE
+            while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
 
             time.Tick();
         }
-
-        _IsRunningChanged -= OnIsRunningChanged;
 
         _isShutdownCompleted.Set();
     }

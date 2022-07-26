@@ -48,7 +48,7 @@ internal sealed unsafe class MyApplication : Application
         _logger = logger;
 
         //IsFixedTimeStep   = true;
-        //TargetElapsedTime = 1000.0 / 1000;
+        //TargetElapsedTime = 1000.0 / 144;
 
         Core.Vulkan.Vulkan vulkan = serviceProvider.GetRequiredService<Core.Vulkan.Vulkan>();
 
@@ -83,8 +83,10 @@ internal sealed unsafe class MyApplication : Application
         if (_renderer.Begin(out VkCommandBuffer commandBuffers))
         {
             _renderer.BeginRenderPass(commandBuffers);
-            _spriteBatch.Begin();
+
             const int iterations = 10_000;
+
+            _spriteBatch.Begin();
             for (int i = 0; i < iterations; i++)
             {
                 if (i > iterations * 0.75)
@@ -118,6 +120,42 @@ internal sealed unsafe class MyApplication : Application
             }
             _spriteBatch.End(commandBuffers);
 
+            _spriteBatch.Begin();
+            for (int i = iterations; i < iterations * 2; i++)
+            {
+                if (i > iterations * 0.75)
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(0f, 0f, 0f, 1f),
+                        rnd.NextSingle());
+                }
+                else if (i > iterations * 0.50)
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(0f, 0f, 1f, 1f),
+                        rnd.NextSingle());
+                }
+                else if (i > iterations * 0.25)
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(0f, 1f, 0f, 1f),
+                        rnd.NextSingle());
+                }
+                else
+                {
+                    _spriteBatch.DrawFillRectangle(
+                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
+                        new VkColor(1f, 0f, 0f, 1f),
+                        rnd.NextSingle());
+                }
+            }
+            _spriteBatch.End(commandBuffers);
+
+            _spriteBatch.EndFrame();
+
             _renderer.EndRenderPass(commandBuffers);
             _renderer.End(commandBuffers);
         }
@@ -127,7 +165,7 @@ internal sealed unsafe class MyApplication : Application
         {
             timer -= 1.0f;
             Console.WriteLine(frames);
-            frames = 0;
+            frames          = 0;
         }
         frames++;
     }
