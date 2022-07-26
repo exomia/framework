@@ -21,10 +21,10 @@ public sealed partial class SpriteBatch
     /// </summary>
     /// <param name="point1">     The first point. </param>
     /// <param name="point2">     The second point. </param>
-    /// <param name="color">      The color. </param>
+    /// <param name="color">      The Color. </param>
     /// <param name="lineWidth">  The width of the line. </param>
-    /// <param name="opacity">    The opacity. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="opacity">    The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Vector2 point1,
                          in Vector2 point2,
@@ -40,10 +40,10 @@ public sealed partial class SpriteBatch
     ///     Draw line.
     /// </summary>
     /// <param name="line">       The line. </param>
-    /// <param name="color">      The color. </param>
+    /// <param name="color">      The Color. </param>
     /// <param name="lineWidth">  The width of the line. </param>
-    /// <param name="opacity">    The opacity. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="opacity">    The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Line2   line,
                          in VkColor color,
@@ -59,11 +59,11 @@ public sealed partial class SpriteBatch
     /// </summary>
     /// <param name="point1">       The first point. </param>
     /// <param name="point2">       The second point. </param>
-    /// <param name="color">        The color. </param>
+    /// <param name="color">        The Color. </param>
     /// <param name="lineWidth">    The width of the line. </param>
-    /// <param name="opacity">      The opacity. </param>
+    /// <param name="opacity">      The Opacity. </param>
     /// <param name="lengthFactor"> The length factor. </param>
-    /// <param name="layerDepth">   The depth of the layer. </param>
+    /// <param name="layerDepth">   The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Vector2 point1,
                          in Vector2 point2,
@@ -80,11 +80,11 @@ public sealed partial class SpriteBatch
     ///     Draw line.
     /// </summary>
     /// <param name="line">         The line. </param>
-    /// <param name="color">        The color. </param>
+    /// <param name="color">        The Color. </param>
     /// <param name="lineWidth">    The width of the line. </param>
-    /// <param name="opacity">      The opacity. </param>
+    /// <param name="opacity">      The Opacity. </param>
     /// <param name="lengthFactor"> The length factor. </param>
-    /// <param name="layerDepth">   The depth of the layer. </param>
+    /// <param name="layerDepth">   The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Line2   line,
                          in VkColor color,
@@ -95,11 +95,18 @@ public sealed partial class SpriteBatch
     {
         float dx = line.X2 - line.X1;
         float dy = line.Y2 - line.Y1;
-        DrawSprite(
-            _whiteTexture,
-            new RectangleF(line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth),
-            false,
-            s_nullRectangle, color,   MathF.Atan2(dy, dx),
-            s_vector2Zero,   opacity, TextureEffects.None, layerDepth);
+
+        SpriteInfo spriteInfo;
+        spriteInfo.Destination      = new RectangleF(line.X1, line.Y1, MathF.Sqrt((dx * dx) + (dy * dy)) * lengthFactor, lineWidth);
+        spriteInfo.ScaleDestination = false;
+        spriteInfo.SourceRectangle  = s_nullRectangle;
+        spriteInfo.Color            = color;
+        spriteInfo.Rotation         = MathF.Atan2(dy, dx);
+        spriteInfo.Origin           = s_vector2Zero;
+        spriteInfo.Opacity          = opacity;
+        spriteInfo.Effects          = TextureEffects.None;
+        spriteInfo.Depth            = layerDepth;
+        spriteInfo.TextureInfo      = new TextureInfo(_whiteTexture.Width, _whiteTexture.Height);
+        DrawSprite(_whiteTexture, spriteInfo);
     }
 }

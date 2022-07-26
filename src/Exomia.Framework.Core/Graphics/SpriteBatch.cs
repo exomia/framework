@@ -68,16 +68,14 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     private VkSpriteBatchContext* _context;
 
-    private readonly ISpriteSort                     _spriteSort;
-    private readonly Dictionary<IntPtr, TextureInfo> _textureInfos = new Dictionary<IntPtr, TextureInfo>(INITIAL_QUEUE_SIZE);
-    private readonly bool                            _center;
-    private readonly Texture                         _whiteTexture;
-    private          SpriteSortMode                  _spriteSortMode;
-    private          int*                            _sortIndices;
-    private          SpriteInfo*                     _spriteQueue,      _sortedSprites;
-    private          uint                            _spriteQueueCount, _spriteQueueLength;
-    private          TextureInfo*                    _spriteTextures;
-    private          Matrix4x4                       _projectionMatrix;
+    private readonly ISpriteSort    _spriteSort;
+    private readonly bool           _center;
+    private readonly Texture        _whiteTexture;
+    private          SpriteSortMode _spriteSortMode;
+    private          int*           _sortIndices;
+    private          SpriteInfo*    _spriteQueue,      _sortedSprites;
+    private          uint           _spriteQueueCount, _spriteQueueLength;
+    private          Matrix4x4      _projectionMatrix;
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
@@ -142,10 +140,9 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _whiteTexture = new Texture(1, 1);
 
-        _spriteTextures = Allocator.Allocate<TextureInfo>(MAX_BATCH_SIZE);
-        _sortIndices    = Allocator.Allocate<int>(MAX_BATCH_SIZE);
-        _sortedSprites  = Allocator.Allocate<SpriteInfo>(MAX_BATCH_SIZE);
-        _spriteQueue    = Allocator.Allocate<SpriteInfo>(_spriteQueueLength = MAX_BATCH_SIZE);
+        _sortIndices   = Allocator.Allocate<int>(MAX_BATCH_SIZE);
+        _sortedSprites = Allocator.Allocate<SpriteInfo>(MAX_BATCH_SIZE);
+        _spriteQueue   = Allocator.Allocate<SpriteInfo>(_spriteQueueLength = MAX_BATCH_SIZE);
 
         //vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
         //vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
@@ -185,18 +182,60 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         float                       deltaX,
         float                       deltaY)
     {
+        float sx, sy, sw, sh;
+        if (spriteInfo->SourceRectangle.HasValue)
+        {
+            Rectangle rectangle = spriteInfo->SourceRectangle!.Value;
+            sw = rectangle.Right  - (sx = rectangle.Top);
+            sh = rectangle.Bottom - (sy = rectangle.Left);
+        }
+        else
+        {
+            sx = 0;
+            sy = 0;
+            sw = spriteInfo->TextureInfo.Width;
+            sh = spriteInfo->TextureInfo.Height;
+        }
+
+        float dx = spriteInfo->Destination.Left;
+        float dy = spriteInfo->Destination.Top;
+
+        float dw, dh;
+        if (spriteInfo->ScaleDestination)
+        {
+            dw = spriteInfo->Destination.Width  * sw;
+            dh = spriteInfo->Destination.Height * sh;
+        }
+        else
+        {
+            dw = (spriteInfo->Destination.Right  - spriteInfo->Destination.Left);
+            dh = (spriteInfo->Destination.Bottom - spriteInfo->Destination.Top);
+        }
+
+        if (dw < 0.0f)
+        {
+            dx += dw;
+            dw =  -dw;
+        }
+
+        if (dh < 0.0f)
+        {
+            dy += dh;
+            dh =  -dh;
+        }
+
         Vector2 origin = spriteInfo->Origin;
 
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        if (spriteInfo->Sw != 0f)
+        if (sw != 0f)
         {
-            origin.X /= spriteInfo->Sw;
+            origin.X /= sw;
         }
 
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        if (spriteInfo->Sh != 0f)
+        if (sh != 0f)
         {
-            origin.Y /= spriteInfo->Sh;
+            origin.Y /= sh;
         }
 
         // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -208,16 +247,16 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
                 Vector2 corner = s_cornerOffsets[j];
 
-                vertex->X = spriteInfo->Dx + ((corner.X - origin.X) * spriteInfo->Dw);
-                vertex->Y = spriteInfo->Dy + ((corner.Y - origin.Y) * spriteInfo->Dh);
+                vertex->X = dx + ((corner.X - origin.X) * dw);
+                vertex->Y = dy + ((corner.Y - origin.Y) * dh);
 
                 vertex->Z     = spriteInfo->Depth;
                 vertex->W     = spriteInfo->Opacity;
                 vertex->Color = spriteInfo->Color;
 
-                corner    = s_cornerOffsets[j ^ (int)spriteInfo->SpriteEffects];
-                vertex->U = (spriteInfo->Sx + (corner.X * spriteInfo->Sw)) * deltaX;
-                vertex->V = (spriteInfo->Sy + (corner.Y * spriteInfo->Sh)) * deltaY;
+                corner    = s_cornerOffsets[j ^ (int)spriteInfo->Effects];
+                vertex->U = (sx + (corner.X * sw)) * deltaX;
+                vertex->V = (sy + (corner.Y * sh)) * deltaY;
             }
         }
         else
@@ -229,18 +268,18 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 VertexPositionColorTexture* vertex = pVpct + j;
 
                 Vector2 corner = s_cornerOffsets[j];
-                float   posX   = (corner.X - origin.X) * spriteInfo->Dw;
-                float   posY   = (corner.Y - origin.Y) * spriteInfo->Dh;
+                float   posX   = (corner.X - origin.X) * dw;
+                float   posY   = (corner.Y - origin.Y) * dh;
 
-                vertex->X     = (spriteInfo->Dx + (posX * cos)) - (posY * sin);
-                vertex->Y     = (spriteInfo->Dy + (posX * sin)) + (posY * cos);
+                vertex->X     = (dx + (posX * cos)) - (posY * sin);
+                vertex->Y     = (dy + (posX * sin)) + (posY * cos);
                 vertex->Z     = spriteInfo->Depth;
                 vertex->W     = spriteInfo->Opacity;
                 vertex->Color = spriteInfo->Color;
 
-                corner    = s_cornerOffsets[j ^ (int)spriteInfo->SpriteEffects];
-                vertex->U = (spriteInfo->Sx + (corner.X * spriteInfo->Sw)) * deltaX;
-                vertex->V = (spriteInfo->Sy + (corner.Y * spriteInfo->Sh)) * deltaY;
+                corner    = s_cornerOffsets[j ^ (int)spriteInfo->Effects];
+                vertex->U = (sx + (corner.X * sw)) * deltaX;
+                vertex->V = (sy + (corner.Y * sh)) * deltaY;
             }
         }
     }
@@ -340,8 +379,6 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         EndRendering(subCommandBuffer);
 
         vkCmdExecuteCommands(commandBuffer, 1u, _commandBuffers + _swapchainContext->FrameInFlight);
-
-        _textureInfos.Clear();
 
 #if DEBUG
         _isBeginCalled = false;
@@ -514,13 +551,13 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             TextureInfo texture;
             if (_spriteSortMode != SpriteSortMode.Deferred)
             {
-                int index = *(_sortIndices + i);
-                *(spriteQueueForBatch + i) = *(_spriteQueue    + index);
-                texture                    = *(_spriteTextures + index);
+                texture = (
+                    *(spriteQueueForBatch + i) = *(_spriteQueue + *(_sortIndices + i))
+                ).TextureInfo;
             }
             else
             {
-                texture = *(_spriteTextures + i);
+                texture = spriteQueueForBatch->TextureInfo;
             }
 
             if (texture.Ptr64 != previousTexture.Ptr64)
@@ -538,7 +575,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         DrawBatchPerTexture(commandBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, _spriteQueueCount - offset);
 
         vertexBuffer.Unmap();
-        
+
         _spriteQueueCount = 0;
     }
 
@@ -556,7 +593,6 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             {
                 //_vulkan.SwapChainRecreated -= OnVulkanOnSwapChainRecreated;
                 //_vulkan.CleanupSwapChain   -= OnVulkanOnCleanupSwapChain;
-                _textureInfos.Clear();
                 _disposed = true;
             }
 
@@ -577,10 +613,9 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 _indexBuffer.Dispose();
             }
 
-            Allocator.Free(ref _spriteQueue,    _spriteQueueLength);
-            Allocator.Free(ref _sortedSprites,  _spriteQueueLength);
-            Allocator.Free(ref _sortIndices,    _spriteQueueLength);
-            Allocator.Free(ref _spriteTextures, _spriteQueueLength);
+            Allocator.Free(ref _spriteQueue,   _spriteQueueLength);
+            Allocator.Free(ref _sortedSprites, _spriteQueueLength);
+            Allocator.Free(ref _sortIndices,   _spriteQueueLength);
 
             Allocator.Free(ref _context, 1u);
         }

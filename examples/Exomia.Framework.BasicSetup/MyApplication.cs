@@ -37,7 +37,7 @@ internal sealed unsafe class MyApplication : Application
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider">           The service provider. </param>
     /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
-    /// <param name="depthStencilConfiguration"> The depth stencil configuration. </param>
+    /// <param name="depthStencilConfiguration"> The Depth stencil configuration. </param>
     /// <param name="logger">                    The logger. </param>
     public MyApplication(IServiceProvider                    serviceProvider,
                          IOptions<SwapchainConfiguration>    swapchainConfiguration,

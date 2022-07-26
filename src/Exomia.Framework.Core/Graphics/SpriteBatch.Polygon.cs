@@ -18,10 +18,10 @@ public sealed partial class SpriteBatch
     ///     Draw polygon.
     /// </summary>
     /// <param name="vertex">     The vertex. </param>
-    /// <param name="color">      The color. </param>
+    /// <param name="color">      The Color. </param>
     /// <param name="lineWidth">  The width of the line. </param>
-    /// <param name="opacity">    The opacity. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="opacity">    The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     public void DrawPolygon(Vector2[] vertex, in VkColor color, float lineWidth, float opacity, float layerDepth)
     {
         if (vertex.Length > 1)
