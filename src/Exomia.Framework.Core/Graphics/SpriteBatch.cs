@@ -70,7 +70,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     private readonly ISpriteSort    _spriteSort;
     private readonly bool           _center;
-    private readonly Texture        _whiteTexture;
+    private readonly TextureInfo    _whiteTextureInfo;
     private          SpriteSortMode _spriteSortMode;
     private          int*           _sortIndices;
     private          SpriteInfo*    _spriteQueue,      _sortedSprites;
@@ -138,7 +138,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _context = Allocator.Allocate(1u, VkSpriteBatchContext.Create());
 
-        _whiteTexture = new Texture(1, 1);
+        Texture whiteTexture = new Texture(1, 1);
+        _whiteTextureInfo = new TextureInfo(whiteTexture.Width, whiteTexture.Height);
 
         _sortIndices   = Allocator.Allocate<int>(MAX_BATCH_SIZE);
         _sortedSprites = Allocator.Allocate<SpriteInfo>(MAX_BATCH_SIZE);

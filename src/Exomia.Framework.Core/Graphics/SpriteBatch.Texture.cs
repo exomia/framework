@@ -37,7 +37,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = 0.0f;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = 0.0f;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = 0.0f;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = 0.0f;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -173,7 +173,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -210,7 +210,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = effects;
         spriteInfo.Depth            = layerDepth;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -249,7 +249,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = effects;
         spriteInfo.Depth            = layerDepth;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
     /// <summary>
@@ -288,10 +288,10 @@ public sealed partial class SpriteBatch
         spriteInfo.Effects          = effects;
         spriteInfo.Depth            = layerDepth;
         spriteInfo.TextureInfo      = new TextureInfo(texture.Width, texture.Height);
-        DrawSprite(texture, spriteInfo);
+        DrawSprite(spriteInfo);
     }
 
-    private unsafe void DrawSprite(Texture texture, in SpriteInfo spriteInfo)
+    private unsafe void DrawSprite(in SpriteInfo spriteInfo)
     {
 #if DEBUG
         if (!_isBeginCalled)
@@ -299,10 +299,6 @@ public sealed partial class SpriteBatch
             throw new InvalidOperationException("Begin must be called before draw");
         }
 #endif
-        if (texture.TexturePointer == IntPtr.Zero)
-        {
-            //throw new ArgumentNullException(nameof(texture));
-        }
 
         if (_spriteQueueCount >= _spriteQueueLength)
         {
@@ -312,7 +308,7 @@ public sealed partial class SpriteBatch
                 _spinLock.Enter(ref lockTaken);
                 if (_spriteQueueCount >= _spriteQueueLength)
                 {
-                    uint size = _spriteQueueLength * 2;
+                    uint size = _spriteQueueLength << 1;
                     Allocator.Resize(ref _sortIndices,    _spriteQueueLength,     size);
                     Allocator.Resize(ref _sortedSprites,  _spriteQueueLength,     size);
                     Allocator.Resize(ref _spriteQueue,    ref _spriteQueueLength, size);
@@ -327,32 +323,6 @@ public sealed partial class SpriteBatch
             }
         }
 
-        //if (!_textureInfos.TryGetValue(texture.TexturePointer, out TextureInfo textureInfo))
-        //{
-        //    bool lockTaken = false;
-        //    try
-        //    {
-        //        _spinLock.Enter(ref lockTaken);
-        //        if (!_textureInfos.TryGetValue(texture.TexturePointer, out textureInfo))
-        //        {
-        //            textureInfo = new TextureInfo( /*texture.TextureView, */texture.Width, texture.Height);
-        //            _textureInfos.Add(texture.TexturePointer, textureInfo);
-        //        }
-        //    }
-        //    finally
-        //    {
-        //        if (lockTaken)
-        //        {
-        //            _spinLock.Exit(false);
-        //        }
-        //    }
-        //}
-
-        uint spriteQueueCount = Interlocked.Increment(ref _spriteQueueCount) - 1u;
-
-        *(_spriteQueue + spriteQueueCount) = spriteInfo;
-
-
-        //*(_spriteTextures + spriteQueueCount) = textureInfo;
+        *(_spriteQueue + (Interlocked.Increment(ref _spriteQueueCount) - 1u)) = spriteInfo;
     }
 }
