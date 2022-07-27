@@ -20,10 +20,7 @@ using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.BasicSetup;
 
-/// <summary>
-///     My application class. This class cannot be inherited.
-/// </summary>
-internal sealed unsafe class MyApplication : Application
+sealed unsafe class MyApplication : Application
 {
 #pragma warning disable IDE0052 // Remove unread private members
     // ReSharper disable once NotAccessedField.Local
@@ -80,7 +77,7 @@ internal sealed unsafe class MyApplication : Application
         {
             _renderer.BeginRenderPass(commandBuffer);
 
-            const int iterations = 8_000;
+            const int iterations = 10_000;
 
             _spriteBatch.Begin(SpriteSortMode.Deferred);
             for (int i = 0; i < iterations; i++)

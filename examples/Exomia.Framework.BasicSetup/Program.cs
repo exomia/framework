@@ -53,8 +53,10 @@ internal sealed class Program
                  })
                  .Configure<InstanceConfiguration>((configuration, _) =>
                  {
+#if DEBUG
                      configuration.ValidationFeatureEnable.Add(
                          VkValidationFeatureEnableEXT.VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT);
+#endif
                  })
                  .UseWin32Platform() // should always be the last in the chain before calling build!
                  .Build<MyApplication>())
