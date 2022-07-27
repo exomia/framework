@@ -10,10 +10,11 @@
 
 using System.Text;
 using Exomia.Framework.Core.Allocators;
-using Exomia.Framework.Core.Vulkan.Configurations;
 using Microsoft.Extensions.Logging;
 using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkImageTiling;
+using static Exomia.Vulkan.Api.Core.VkExtDebugUtils;
+using static Exomia.Vulkan.Api.Core.VkExtValidationFeatures;
 
 namespace Exomia.Framework.Core.Vulkan;
 
@@ -84,32 +85,28 @@ sealed unsafe partial class Vulkan
         }
     }
 
-    private static void CleanupInstance(VkContext* context)
+    private void CleanupInstance()
     {
-        if (context->Instance != VkInstance.Null)
+        if (_context->Instance != VkInstance.Null)
         {
-            if (context->SurfaceKhr != VkSurfaceKHR.Null)
+            if (_context->SurfaceKhr != VkSurfaceKHR.Null)
             {
-                vkDestroySurfaceKHR(context->Instance, context->SurfaceKhr, null);
-                context->SurfaceKhr = VkSurfaceKHR.Null;
+                vkDestroySurfaceKHR(_context->Instance, _context->SurfaceKhr, null);
+                _context->SurfaceKhr = VkSurfaceKHR.Null;
             }
 
-#if DEBUG
-            if (context->DebugUtilsMessengerExt != VkDebugUtilsMessengerEXT.Null)
+            if (_debugUtilsMessengerConfiguration.IsEnabled && _context->DebugUtilsMessengerExt != VkDebugUtilsMessengerEXT.Null)
             {
-                vkDestroyDebugUtilsMessengerEXT(context->Instance, context->DebugUtilsMessengerExt, null);
-                context->DebugUtilsMessengerExt = VkDebugUtilsMessengerEXT.Null;
+                vkDestroyDebugUtilsMessengerEXT(_context->Instance, _context->DebugUtilsMessengerExt, null);
+                _context->DebugUtilsMessengerExt = VkDebugUtilsMessengerEXT.Null;
             }
-#endif
 
-            vkDestroyInstance(context->Instance, null);
-            context->Instance = VkInstance.Null;
+            vkDestroyInstance(_context->Instance, null);
+            _context->Instance = VkInstance.Null;
         }
     }
 
-    private bool CreateInstance(
-        ApplicationConfiguration applicationConfiguration,
-        InstanceConfiguration    instanceConfiguration)
+    private bool CreateInstance()
     {
         VkVersion instanceVersion;
         vkEnumerateInstanceVersion(&instanceVersion)
@@ -117,53 +114,93 @@ sealed unsafe partial class Vulkan
 
         _logger.LogInformation("Vulkan instance version: {0}", instanceVersion.ToString());
 
-        if (instanceVersion < applicationConfiguration.ApiVersion)
+        if (instanceVersion < _applicationConfiguration.ApiVersion)
         {
-            _logger.LogCritical("The system doesn't support the minimum required vulkan version: {0}", applicationConfiguration.ApiVersion.ToString());
+            _logger.LogCritical("The system doesn't support the minimum required vulkan version: {0}", _applicationConfiguration.ApiVersion.ToString());
             return false;
         }
 
-        if (!CheckInstanceLayerSupport(instanceConfiguration.EnabledLayerNames))
+        if (!CheckInstanceLayerSupport(_instanceConfiguration.EnabledLayerNames))
         {
-            _logger.LogCritical("The system doesn't support the requested instance layers: {0}", string.Join(',', instanceConfiguration.EnabledLayerNames));
+            _logger.LogCritical("The system doesn't support the requested instance layers: {0}", string.Join(',', _instanceConfiguration.EnabledLayerNames));
             return false;
         }
 
-        if (!CheckInstanceExtensionSupport(instanceConfiguration.EnabledExtensionNames, instanceConfiguration.EnabledLayerNames))
+        if (!CheckInstanceExtensionSupport(_instanceConfiguration.EnabledExtensionNames, _instanceConfiguration.EnabledLayerNames))
         {
-            _logger.LogCritical("The system doesn't support the requested instance extensions: {0}", string.Join(',', instanceConfiguration.EnabledExtensionNames));
+            _logger.LogCritical("The system doesn't support the requested instance extensions: {0}", string.Join(',', _instanceConfiguration.EnabledExtensionNames));
             return false;
+        }
+
+        if (_debugUtilsMessengerConfiguration.IsEnabled && 
+            !_instanceConfiguration.EnabledExtensionNames.Contains(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+        {
+            _instanceConfiguration.EnabledExtensionNames.Add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        }
+
+        void* pNext = _instanceConfiguration.Next;
+
+        if ((_instanceConfiguration.ValidationFeatureEnable.Count > 0 || _instanceConfiguration.ValidationFeatureDisable.Count > 0) &&
+            !_instanceConfiguration.EnabledExtensionNames.Contains(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME))
+        {
+            _instanceConfiguration.EnabledExtensionNames.Add(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+
+            VkValidationFeatureEnableEXT* pValidationFeatureEnableExt = 
+                stackalloc VkValidationFeatureEnableEXT[_instanceConfiguration.ValidationFeatureEnable.Count];
+
+            for (int i = 0; i < _instanceConfiguration.ValidationFeatureEnable.Count; i++)
+            {
+                *(pValidationFeatureEnableExt + i) = _instanceConfiguration.ValidationFeatureEnable[i];
+            }
+
+            VkValidationFeatureDisableEXT* pValidationFeatureDisableExt =
+                stackalloc VkValidationFeatureDisableEXT[_instanceConfiguration.ValidationFeatureDisable.Count];
+
+            for (int i = 0; i < _instanceConfiguration.ValidationFeatureDisable.Count; i++)
+            {
+                *(pValidationFeatureDisableExt + i) = _instanceConfiguration.ValidationFeatureDisable[i];
+            }
+
+            VkValidationFeaturesEXT validationFeatures;
+            validationFeatures.sType                          = VkValidationFeaturesEXT.STYPE;
+            validationFeatures.pNext                          = pNext;
+            validationFeatures.enabledValidationFeatureCount  = (uint)_instanceConfiguration.ValidationFeatureEnable.Count;
+            validationFeatures.pEnabledValidationFeatures     = pValidationFeatureEnableExt;
+            validationFeatures.disabledValidationFeatureCount = (uint)_instanceConfiguration.ValidationFeatureDisable.Count;
+            validationFeatures.pDisabledValidationFeatures    = pValidationFeatureDisableExt;
+
+            pNext = &validationFeatures;
         }
 
         VkApplicationInfo applicationInfo;
         applicationInfo.sType              = VkApplicationInfo.STYPE;
         applicationInfo.pNext              = null;
-        applicationInfo.pApplicationName   = Allocator.AllocateNtString(applicationConfiguration.AppName);
-        applicationInfo.applicationVersion = applicationConfiguration.ApplicationVersion;
-        applicationInfo.pEngineName        = Allocator.AllocateNtString(applicationConfiguration.EngineName);
-        applicationInfo.engineVersion      = applicationConfiguration.EngineVersion;
-        applicationInfo.apiVersion         = applicationConfiguration.ApiVersion;
+        applicationInfo.pApplicationName   = Allocator.AllocateNtString(_applicationConfiguration.AppName);
+        applicationInfo.applicationVersion = _applicationConfiguration.ApplicationVersion;
+        applicationInfo.pEngineName        = Allocator.AllocateNtString(_applicationConfiguration.EngineName);
+        applicationInfo.engineVersion      = _applicationConfiguration.EngineVersion;
+        applicationInfo.apiVersion         = _applicationConfiguration.ApiVersion;
 
-        byte** ppEnabledLayerNames = stackalloc byte*[instanceConfiguration.EnabledLayerNames.Count];
-        for (int i = 0; i < instanceConfiguration.EnabledLayerNames.Count; i++)
+        byte** ppEnabledLayerNames = stackalloc byte*[_instanceConfiguration.EnabledLayerNames.Count];
+        for (int i = 0; i < _instanceConfiguration.EnabledLayerNames.Count; i++)
         {
-            *(ppEnabledLayerNames + i) = Allocator.AllocateNtString(instanceConfiguration.EnabledLayerNames[i]);
+            *(ppEnabledLayerNames + i) = Allocator.AllocateNtString(_instanceConfiguration.EnabledLayerNames[i]);
         }
 
-        byte** ppEnabledExtensionNames = stackalloc byte*[instanceConfiguration.EnabledExtensionNames.Count];
-        for (int i = 0; i < instanceConfiguration.EnabledExtensionNames.Count; i++)
+        byte** ppEnabledExtensionNames = stackalloc byte*[_instanceConfiguration.EnabledExtensionNames.Count];
+        for (int i = 0; i < _instanceConfiguration.EnabledExtensionNames.Count; i++)
         {
-            *(ppEnabledExtensionNames + i) = Allocator.AllocateNtString(instanceConfiguration.EnabledExtensionNames[i]);
+            *(ppEnabledExtensionNames + i) = Allocator.AllocateNtString(_instanceConfiguration.EnabledExtensionNames[i]);
         }
 
         VkInstanceCreateInfo instanceCreateInfo;
         instanceCreateInfo.sType                   = VkInstanceCreateInfo.STYPE;
-        instanceCreateInfo.pNext                   = null;
-        instanceCreateInfo.flags                   = instanceConfiguration.Flags;
+        instanceCreateInfo.pNext                   = pNext;
+        instanceCreateInfo.flags                   = _instanceConfiguration.Flags;
         instanceCreateInfo.pApplicationInfo        = &applicationInfo;
-        instanceCreateInfo.enabledLayerCount       = (uint)instanceConfiguration.EnabledLayerNames.Count;
+        instanceCreateInfo.enabledLayerCount       = (uint)_instanceConfiguration.EnabledLayerNames.Count;
         instanceCreateInfo.ppEnabledLayerNames     = ppEnabledLayerNames;
-        instanceCreateInfo.enabledExtensionCount   = (uint)instanceConfiguration.EnabledExtensionNames.Count;
+        instanceCreateInfo.enabledExtensionCount   = (uint)_instanceConfiguration.EnabledExtensionNames.Count;
         instanceCreateInfo.ppEnabledExtensionNames = ppEnabledExtensionNames;
 
         try
@@ -171,18 +208,18 @@ sealed unsafe partial class Vulkan
             vkCreateInstance(&instanceCreateInfo, null, &_context->Instance)
                 .AssertVkResult();
 
-            _context->Version = applicationConfiguration.ApiVersion;
+            _context->Version = _applicationConfiguration.ApiVersion;
 
             return true;
         }
         finally
         {
-            for (int i = 0; i < instanceConfiguration.EnabledExtensionNames.Count; i++)
+            for (int i = 0; i < _instanceConfiguration.EnabledExtensionNames.Count; i++)
             {
                 Allocator.FreeNtString(*(ppEnabledExtensionNames + i));
             }
 
-            for (int i = 0; i < instanceConfiguration.EnabledLayerNames.Count; i++)
+            for (int i = 0; i < _instanceConfiguration.EnabledLayerNames.Count; i++)
             {
                 Allocator.FreeNtString(*(ppEnabledLayerNames + i));
             }
@@ -192,34 +229,30 @@ sealed unsafe partial class Vulkan
         }
     }
 
-    private bool InitializeInstance(
-        ApplicationConfiguration         applicationConfiguration,
-        InstanceConfiguration            instanceConfiguration,
-        DebugUtilsMessengerConfiguration debugUtilsMessengerConfiguration,
-        SurfaceConfiguration             surfaceConfiguration,
-        PhysicalDeviceConfiguration      physicalDeviceConfiguration,
-        DeviceConfiguration              deviceConfiguration)
+    private bool InitializeInstance()
     {
-        if (!CreateInstance(applicationConfiguration, instanceConfiguration))
+        if (!CreateInstance())
         {
             _logger.LogCritical("{method} failed!", nameof(CreateInstance));
             return false;
         }
 
-#if DEBUG
-        SetupDebugCallback(debugUtilsMessengerConfiguration);
-#endif
+        if (_debugUtilsMessengerConfiguration.IsEnabled)
+        {
+            VkExtDebugUtils.Load(_context->Instance);
+            SetupDebugCallback(_debugUtilsMessengerConfiguration);
+        }
 
         VkKhrGetSurfaceCapabilities2.Load(_context->Instance);
         VkKhrSurface.Load(_context->Instance);
 
-        if (surfaceConfiguration.CreateSurface != null && !surfaceConfiguration.CreateSurface(_context))
+        if (_surfaceConfiguration.CreateSurface != null && !_surfaceConfiguration.CreateSurface(_context))
         {
-            _logger.LogCritical("{method} failed!", nameof(surfaceConfiguration.CreateSurface));
+            _logger.LogCritical("{method} failed!", nameof(_surfaceConfiguration.CreateSurface));
             return false;
         }
 
-        if (!PickBestPhysicalDevice(physicalDeviceConfiguration, deviceConfiguration))
+        if (!PickBestPhysicalDevice())
         {
             _logger.LogCritical("{method} failed!", nameof(PickBestPhysicalDevice));
             return false;

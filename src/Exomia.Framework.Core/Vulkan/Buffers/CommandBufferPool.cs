@@ -1,9 +1,19 @@
-﻿using System.Diagnostics;
+﻿#region License
+
+// Copyright (c) 2018-2022, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System.Diagnostics;
 using Exomia.Framework.Core.Allocators;
 
 namespace Exomia.Framework.Core.Vulkan.Buffers;
 
-sealed unsafe class CommandBufferPool : IDisposable
+internal sealed unsafe class CommandBufferPool : IDisposable
 {
     private readonly VkContext*           _vkContext;
     private readonly uint                 _maxFramesInFlight;
@@ -20,8 +30,8 @@ sealed unsafe class CommandBufferPool : IDisposable
         _commandBufferLevel = commandBufferLevel;
         _lock               = new SpinLock(Debugger.IsAttached);
 
-        _numberOfBuffers = Allocator.Allocate<uint>(maxFramesInFlight, numberOfBuffers);
-        _indices         = Allocator.Allocate<uint>(maxFramesInFlight, 0u);
+        _numberOfBuffers = Allocator.Allocate(maxFramesInFlight, numberOfBuffers);
+        _indices         = Allocator.Allocate(maxFramesInFlight, 0u);
         _buffers         = Allocator.AllocatePtr<VkCommandBuffer>(maxFramesInFlight);
 
         for (int i = 0; i < maxFramesInFlight; i++)
@@ -88,12 +98,12 @@ sealed unsafe class CommandBufferPool : IDisposable
             {
                 vkFreeCommandBuffers(_vkContext->Device, _vkContext->CommandPool, *(_numberOfBuffers + i), *(_buffers + i));
 
-                Allocator.Free<VkCommandBuffer>(ref *(_buffers + i), *(_numberOfBuffers + i));
+                Allocator.Free(ref *(_buffers + i), *(_numberOfBuffers + i));
             }
 
-            Allocator.FreePtr<VkCommandBuffer>(ref _buffers, _maxFramesInFlight);
-            Allocator.Free<uint>(ref _indices,         _maxFramesInFlight);
-            Allocator.Free<uint>(ref _numberOfBuffers, _maxFramesInFlight);
+            Allocator.FreePtr(ref _buffers, _maxFramesInFlight);
+            Allocator.Free(ref _indices,         _maxFramesInFlight);
+            Allocator.Free(ref _numberOfBuffers, _maxFramesInFlight);
         }
         GC.SuppressFinalize(this);
     }

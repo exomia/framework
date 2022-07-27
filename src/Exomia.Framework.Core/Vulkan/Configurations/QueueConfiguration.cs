@@ -12,7 +12,7 @@
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> A queue configuration. </summary>
-public sealed unsafe class QueueConfiguration
+public sealed unsafe class QueueConfiguration : IConfigurableConfiguration
 {
     public void*                       Next  { get; set; } = null;
     public VkDeviceQueueCreateFlagBits Flags { get; set; } = 0;

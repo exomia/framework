@@ -19,7 +19,7 @@ using static Exomia.Vulkan.Api.Core.VkCompositeAlphaFlagBitsKHR;
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> A swapchain configuration. This class cannot be inherited. </summary>
-public sealed unsafe class SwapchainConfiguration
+public sealed unsafe class SwapchainConfiguration : IConfigurableConfiguration
 {
     public void*                      Next                    { get; set; } = null;
     public uint                       MinImageCount           { get; set; } = 3;

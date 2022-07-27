@@ -18,7 +18,7 @@ public unsafe struct VkContext
 {
     public   VkVersion                Version;
     public   VkInstance               Instance;
-    public   VkDebugUtilsMessengerEXT DebugUtilsMessengerExt;
+    internal VkDebugUtilsMessengerEXT DebugUtilsMessengerExt;
     public   VkSurfaceKHR             SurfaceKhr;
     internal uint                     InitialWidth;
     internal uint                     InitialHeight;

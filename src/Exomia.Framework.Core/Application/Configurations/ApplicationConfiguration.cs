@@ -8,11 +8,12 @@
 
 #endregion
 
+using Exomia.Framework.Core.Vulkan.Configurations;
 
 namespace Exomia.Framework.Core.Application.Configurations;
 
 /// <summary> An application configuration. This class cannot be inherited. </summary>
-public sealed unsafe class ApplicationConfiguration
+public sealed unsafe class ApplicationConfiguration : IConfigurableConfiguration
 {
     /// <summary> The do events callback. </summary>
     internal delegate*<void> DoEvents = &_doEvents;

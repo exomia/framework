@@ -13,7 +13,7 @@ using Exomia.Framework.Core.Allocators;
 
 namespace Exomia.Framework.Core.Vulkan.Buffers;
 
-sealed unsafe class VertexBufferPool<T> : IDisposable
+internal sealed unsafe class VertexBufferPool<T> : IDisposable
     where T : unmanaged
 {
     private readonly VkContext*  _vkContext;
@@ -30,7 +30,7 @@ sealed unsafe class VertexBufferPool<T> : IDisposable
         _verticesPerSprite = verticesPerSprite;
         _lock              = new SpinLock(Debugger.IsAttached);
 
-        _indices = Allocator.Allocate<uint>(maxFramesInFlight, 0u);
+        _indices = Allocator.Allocate(maxFramesInFlight, 0u);
         _buffers = new Buffer[maxFramesInFlight][];
         for (int i = 0; i < maxFramesInFlight; i++)
         {
@@ -103,7 +103,7 @@ sealed unsafe class VertexBufferPool<T> : IDisposable
                 }
             }
 
-            Allocator.Free<uint>(ref _indices, _maxFramesInFlight);
+            Allocator.Free(ref _indices, _maxFramesInFlight);
         }
         GC.SuppressFinalize(this);
     }

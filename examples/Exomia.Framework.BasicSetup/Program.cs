@@ -12,6 +12,7 @@ using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Application.Configurations;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Windows.Application.Desktop;
+using Exomia.Vulkan.Api.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -29,28 +30,34 @@ internal sealed class Program
                      .CreateLogger();
 
         using (IApplicationBuilder applicationBuilder = ApplicationBuilder.Create())
-        using (Application application = applicationBuilder
-                           .ConfigureServices(serviceCollection =>
-                           {
-                               serviceCollection.AddLogging(builder =>
-                               {
-                                   builder.ClearProviders();
-                                   builder.AddSerilog(Log.Logger);
-                               });
-                           })
-                           .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>
-                           {
-                               configuration.MessageSeverity |= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
-                           })
-                           .Configure<RenderFormConfiguration>((configuration, _) =>
-                           {
-                               configuration.Title       = "Exomia.Framework.BasicSetup";
-                               configuration.Width       = 1024;
-                               configuration.Height      = 768;
-                               configuration.DisplayType = DisplayType.Window;
-                           })
-                           .UseWin32Platform() // should always be the last in the chain before calling build!
-                           .Build<MyApplication>())
+        using (Application application
+               = applicationBuilder
+                 .ConfigureServices(serviceCollection =>
+                 {
+                     serviceCollection.AddLogging(builder =>
+                     {
+                         builder.ClearProviders();
+                         builder.AddSerilog(Log.Logger);
+                     });
+                 })
+                 .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>
+                 {
+                     configuration.MessageSeverity |= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
+                 })
+                 .Configure<RenderFormConfiguration>((configuration, _) =>
+                 {
+                     configuration.Title       = "Exomia.Framework.BasicSetup";
+                     configuration.Width       = 1024;
+                     configuration.Height      = 768;
+                     configuration.DisplayType = DisplayType.Window;
+                 })
+                 .Configure<InstanceConfiguration>((configuration, _) =>
+                 {
+                     configuration.ValidationFeatureEnable.Add(
+                         VkValidationFeatureEnableEXT.VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT);
+                 })
+                 .UseWin32Platform() // should always be the last in the chain before calling build!
+                 .Build<MyApplication>())
         {
             application.Run();
         }

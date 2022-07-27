@@ -11,7 +11,7 @@
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> A surface configuration. This class cannot be inherited. </summary>
-public sealed class SurfaceConfiguration
+public sealed class SurfaceConfiguration : IConfigurableConfiguration
 {
     // ReSharper disable once RedundantUnsafeContext
     internal unsafe SetupContextHandler? CreateSurface { get; set; } = null;

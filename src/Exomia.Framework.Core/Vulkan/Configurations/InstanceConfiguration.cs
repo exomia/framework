@@ -8,14 +8,17 @@
 
 #endregion
 
+
 #pragma warning disable 1591
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> An instance configuration. This class cannot be inherited. </summary>
-public sealed class InstanceConfiguration
+public sealed unsafe class InstanceConfiguration : IConfigurableConfiguration
 {
-    public VkInstanceCreateFlags Flags             { get; set; } = 0;
-    public List<string>          EnabledLayerNames { get; set; } = new List<string>
+    public void*                 Next  { get; set; } = null;
+    public VkInstanceCreateFlags Flags { get; set; } = 0;
+
+    public List<string> EnabledLayerNames { get; set; } = new List<string>
     {
 #if DEBUG
         "VK_LAYER_KHRONOS_validation"
@@ -26,8 +29,8 @@ public sealed class InstanceConfiguration
     {
         VK_KHR_SURFACE_EXTENSION_NAME,
         VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME,
-#if DEBUG
-        VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-#endif
     };
+
+    public List<VkValidationFeatureEnableEXT>  ValidationFeatureEnable  { get; set; } = new List<VkValidationFeatureEnableEXT>();
+    public List<VkValidationFeatureDisableEXT> ValidationFeatureDisable { get; set; } = new List<VkValidationFeatureDisableEXT>();
 }

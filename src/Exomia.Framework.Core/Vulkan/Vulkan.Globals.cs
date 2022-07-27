@@ -13,5 +13,4 @@ global using static Exomia.Vulkan.Api.Core.Vk;
 global using static Exomia.Vulkan.Api.Core.VkKhrSwapchain;
 global using static Exomia.Vulkan.Api.Core.VkKhrSurface;
 global using static Exomia.Vulkan.Api.Core.VkKhrGetSurfaceCapabilities2;
-global using static Exomia.Vulkan.Api.Core.VkExtDebugUtils;
 global using static Exomia.Vulkan.Api.Core.VkResult;

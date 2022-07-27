@@ -24,45 +24,6 @@ public sealed unsafe partial class Swapchain
     private          VkCommandBuffer**         _moduleCommandBuffers;
     private          uint                      _moduleCommandBuffersAreDirty;
 
-    private void InitializeModules()
-    {
-        _modules = Allocator.Allocate<VkModule>(_modulesCount);
-    }
-
-    private void CleanupModules()
-    {
-        Allocator.Free(ref _modules, _modulesCount);
-        _modulesLookup.Clear();
-        _moduleFreeIndices.Clear();
-    }
-
-    private void CmdExecuteCommandsFromModules(VkCommandBuffer commandBuffer)
-    {
-        if ((_moduleCommandBuffersAreDirty & (1u << (int)_context->FrameInFlight)) != 0)
-        {
-            // swap dirty flag
-            _moduleCommandBuffersAreDirty &= ~(1u << (int)_context->FrameInFlight);
-
-            uint index = 0u;
-            uint modulesDirtyCount = _modulesCurrentCount;
-            while (modulesDirtyCount > 0u)
-            {
-                VkModule* module = (_modules + index);
-                if (module->CommandBuffers != null)
-                {
-                    *(*(_moduleCommandBuffers + _context->FrameInFlight) + index) = *(module->CommandBuffers + _context->FrameInFlight);
-                    modulesDirtyCount--;
-                }
-                index++;
-            }
-        }
-
-        if (_modulesCurrentCount > 0)
-        {
-            vkCmdExecuteCommands(commandBuffer, _modulesCurrentCount, *(_moduleCommandBuffers + _context->FrameInFlight));
-        }
-    }
-
     /// <summary> Creates a <see cref="VkModule" />. </summary>
     /// <param name="id"> The identifier. </param>
     /// <returns> The new <see cref="VkModule" />. </returns>
@@ -143,5 +104,44 @@ public sealed unsafe partial class Swapchain
 
         module = null;
         return false;
+    }
+
+    private void InitializeModules()
+    {
+        _modules = Allocator.Allocate<VkModule>(_modulesCount);
+    }
+
+    private void CleanupModules()
+    {
+        Allocator.Free(ref _modules, _modulesCount);
+        _modulesLookup.Clear();
+        _moduleFreeIndices.Clear();
+    }
+
+    private void CmdExecuteCommandsFromModules(VkCommandBuffer commandBuffer)
+    {
+        if ((_moduleCommandBuffersAreDirty & (1u << (int)_context->FrameInFlight)) != 0)
+        {
+            // swap dirty flag
+            _moduleCommandBuffersAreDirty &= ~(1u << (int)_context->FrameInFlight);
+
+            uint index             = 0u;
+            uint modulesDirtyCount = _modulesCurrentCount;
+            while (modulesDirtyCount > 0u)
+            {
+                VkModule* module = (_modules + index);
+                if (module->CommandBuffers != null)
+                {
+                    *(*(_moduleCommandBuffers + _context->FrameInFlight) + index) = *(module->CommandBuffers + _context->FrameInFlight);
+                    modulesDirtyCount--;
+                }
+                index++;
+            }
+        }
+
+        if (_modulesCurrentCount > 0)
+        {
+            vkCmdExecuteCommands(commandBuffer, _modulesCurrentCount, *(_moduleCommandBuffers + _context->FrameInFlight));
+        }
     }
 }

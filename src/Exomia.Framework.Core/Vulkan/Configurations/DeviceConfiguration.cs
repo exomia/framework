@@ -12,12 +12,13 @@
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> A device configuration. This class cannot be inherited. </summary>
-public sealed unsafe class DeviceConfiguration
+public sealed unsafe class DeviceConfiguration : IConfigurableConfiguration
 {
-    public void*               Next                  { get; set; } = null;
-    public VkDeviceCreateFlags Flags                 { get; set; } = 0;
-    public List<string>        EnabledLayerNames     { get; set; } = new List<string>();
-    public List<string>        EnabledExtensionNames { get; set; } = new List<string>
+    public void*               Next              { get; set; } = null;
+    public VkDeviceCreateFlags Flags             { get; set; } = 0;
+    public List<string>        EnabledLayerNames { get; set; } = new List<string>();
+
+    public List<string> EnabledExtensionNames { get; set; } = new List<string>
     {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
@@ -31,9 +32,11 @@ public sealed unsafe class DeviceConfiguration
     /// <summary> Gets or sets the set physical device vulkan 11 features callback. </summary>
     /// <value> The set physical device vulkan 11 features callback. </value>
     public delegate*<VkPhysicalDeviceVulkan11Features*, void> SetPhysicalDeviceVulkan11Features { get; set; } = null;
+
     /// <summary> Gets or sets the set physical device vulkan 12 features callback. </summary>
     /// <value> The set physical device vulkan 12 features callback. </value>
     public delegate*<VkPhysicalDeviceVulkan12Features*, void> SetPhysicalDeviceVulkan12Features { get; set; } = null;
+
     /// <summary> Gets or sets the set physical device vulkan 13 features callback. </summary>
     /// <value> The set physical device vulkan 13 features callback. </value>
     public delegate*<VkPhysicalDeviceVulkan13Features*, void> SetPhysicalDeviceVulkan13Features { get; set; } = null;

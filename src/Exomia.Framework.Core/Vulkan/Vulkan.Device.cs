@@ -9,33 +9,29 @@
 #endregion
 
 using Exomia.Framework.Core.Allocators;
-using Exomia.Framework.Core.Vulkan.Configurations;
 using static Exomia.Vulkan.Api.Core.VkCommandPoolCreateFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
-    private static void CreateDevice(
-        VkContext* context,
-        DeviceConfiguration configuration, 
-        QueueConfiguration queueConfiguration)
+    private void CreateDevice()
     {
         uint additionalDeviceQueueCreateInfoCount = 0u;
 
-        if (configuration.CreateAdditionalDeviceQueueCreateInfos != null)
+        if (_deviceConfiguration.CreateAdditionalDeviceQueueCreateInfos != null)
         {
-            configuration.CreateAdditionalDeviceQueueCreateInfos(context, &additionalDeviceQueueCreateInfoCount, null);
+            _deviceConfiguration.CreateAdditionalDeviceQueueCreateInfos(_context, &additionalDeviceQueueCreateInfoCount, null);
         }
 
         // we will add 1 to the requested queue count for internal usage;
         // if the max queue count will be exceeded -> max queue count value will be used instead.
-        context->QueuesCount = Math.Min(queueConfiguration.Count + 1u, context->MaxQueueCount);
-        context->Queues      = Allocator.Allocate<VkQueue>(context->QueuesCount);
+        _context->QueuesCount = Math.Min(_queueConfiguration.Count + 1u, _context->MaxQueueCount);
+        _context->Queues      = Allocator.Allocate<VkQueue>(_context->QueuesCount);
 
-        float* pQueuePriorities = stackalloc float[(int)context->QueuesCount];
+        float* pQueuePriorities = stackalloc float[(int)_context->QueuesCount];
         *pQueuePriorities = 1.0f; // internal usage queue priority
-        for (uint i = 1; i < context->QueuesCount; i++)
+        for (uint i = 1; i < _context->QueuesCount; i++)
         {
             *(pQueuePriorities + i) = 0.5f;
         }
@@ -44,123 +40,123 @@ sealed unsafe partial class Vulkan
         pDeviceQueueCreateInfos->sType            = VkDeviceQueueCreateInfo.STYPE;
         pDeviceQueueCreateInfos->pNext            = null;
         pDeviceQueueCreateInfos->flags            = 0u;
-        pDeviceQueueCreateInfos->queueFamilyIndex = context->QueueFamilyIndex;
-        pDeviceQueueCreateInfos->queueCount       = context->QueuesCount;
+        pDeviceQueueCreateInfos->queueFamilyIndex = _context->QueueFamilyIndex;
+        pDeviceQueueCreateInfos->queueCount       = _context->QueuesCount;
         pDeviceQueueCreateInfos->pQueuePriorities = pQueuePriorities;
 
-        if (configuration.CreateAdditionalDeviceQueueCreateInfos != null)
+        if (_deviceConfiguration.CreateAdditionalDeviceQueueCreateInfos != null)
         {
-            configuration.CreateAdditionalDeviceQueueCreateInfos(context, &additionalDeviceQueueCreateInfoCount, pDeviceQueueCreateInfos + 1);
+            _deviceConfiguration.CreateAdditionalDeviceQueueCreateInfos(_context, &additionalDeviceQueueCreateInfoCount, pDeviceQueueCreateInfos + 1);
         }
 
-        byte** ppEnabledLayerNames = stackalloc byte*[configuration.EnabledLayerNames.Count];
-        for (int i = 0; i < configuration.EnabledLayerNames.Count; i++)
+        byte** ppEnabledLayerNames = stackalloc byte*[_deviceConfiguration.EnabledLayerNames.Count];
+        for (int i = 0; i < _deviceConfiguration.EnabledLayerNames.Count; i++)
         {
-            *(ppEnabledLayerNames + i) = Allocator.AllocateNtString(configuration.EnabledLayerNames[i]);
+            *(ppEnabledLayerNames + i) = Allocator.AllocateNtString(_deviceConfiguration.EnabledLayerNames[i]);
         }
 
-        byte** ppEnabledExtensionNames = stackalloc byte*[configuration.EnabledExtensionNames.Count];
-        for (int i = 0; i < configuration.EnabledExtensionNames.Count; i++)
+        byte** ppEnabledExtensionNames = stackalloc byte*[_deviceConfiguration.EnabledExtensionNames.Count];
+        for (int i = 0; i < _deviceConfiguration.EnabledExtensionNames.Count; i++)
         {
-            *(ppEnabledExtensionNames + i) = Allocator.AllocateNtString(configuration.EnabledExtensionNames[i]);
+            *(ppEnabledExtensionNames + i) = Allocator.AllocateNtString(_deviceConfiguration.EnabledExtensionNames[i]);
         }
 
-        void* pNext = configuration.Next;
-        if (context->Version >= VkVersion.VulkanApiVersion13)
+        void* pNext = _deviceConfiguration.Next;
+        if (_context->Version >= VkVersion.VulkanApiVersion13)
         {
-            VkPhysicalDeviceVulkan13Features physicalDeviceVulkan13Features = new();
-            physicalDeviceVulkan13Features.sType = VkPhysicalDeviceVulkan13Features.STYPE;
-            physicalDeviceVulkan13Features.pNext = pNext;
-
-            if (configuration.SetPhysicalDeviceVulkan13Features != null)
-                configuration.SetPhysicalDeviceVulkan13Features(&physicalDeviceVulkan13Features);
-            pNext = &physicalDeviceVulkan13Features;
+            if (_deviceConfiguration.SetPhysicalDeviceVulkan13Features != null)
+            {
+                VkPhysicalDeviceVulkan13Features physicalDeviceVulkan13Features = new();
+                physicalDeviceVulkan13Features.sType = VkPhysicalDeviceVulkan13Features.STYPE;
+                physicalDeviceVulkan13Features.pNext = pNext;
+                _deviceConfiguration.SetPhysicalDeviceVulkan13Features(&physicalDeviceVulkan13Features);
+                pNext = &physicalDeviceVulkan13Features;
+            }
         }
-        if (context->Version >= VkVersion.VulkanApiVersion12)
+        if (_context->Version >= VkVersion.VulkanApiVersion12)
         {
-            VkPhysicalDeviceVulkan12Features physicalDeviceVulkan12Features;
-            physicalDeviceVulkan12Features.sType             = VkPhysicalDeviceVulkan12Features.STYPE;
-            physicalDeviceVulkan12Features.pNext             = pNext;
-            // setting defaults 
-            // TODO: add extension in case VulkanApiVersion12 is not supported!?
-            physicalDeviceVulkan12Features.timelineSemaphore = VkBool32.True;
-
-            if (configuration.SetPhysicalDeviceVulkan12Features != null)
-                configuration.SetPhysicalDeviceVulkan12Features(&physicalDeviceVulkan12Features);
-            pNext = &physicalDeviceVulkan12Features;
+            if (_deviceConfiguration.SetPhysicalDeviceVulkan12Features != null)
+            {
+                VkPhysicalDeviceVulkan12Features physicalDeviceVulkan12Features;
+                physicalDeviceVulkan12Features.sType = VkPhysicalDeviceVulkan12Features.STYPE;
+                physicalDeviceVulkan12Features.pNext = pNext;
+                _deviceConfiguration.SetPhysicalDeviceVulkan12Features(&physicalDeviceVulkan12Features);
+                pNext = &physicalDeviceVulkan12Features;
+            }
         }
-        if (context->Version >= VkVersion.VulkanApiVersion11)
+        if (_context->Version >= VkVersion.VulkanApiVersion11)
         {
-            VkPhysicalDeviceVulkan11Features physicalDeviceVulkan11Features;
-            physicalDeviceVulkan11Features.sType = VkPhysicalDeviceVulkan11Features.STYPE;
-            physicalDeviceVulkan11Features.pNext = pNext;
-
-            if (configuration.SetPhysicalDeviceVulkan11Features != null)
-                configuration.SetPhysicalDeviceVulkan11Features(&physicalDeviceVulkan11Features); 
-            pNext = &physicalDeviceVulkan11Features;
+            if (_deviceConfiguration.SetPhysicalDeviceVulkan11Features != null)
+            {
+                VkPhysicalDeviceVulkan11Features physicalDeviceVulkan11Features;
+                physicalDeviceVulkan11Features.sType = VkPhysicalDeviceVulkan11Features.STYPE;
+                physicalDeviceVulkan11Features.pNext = pNext;
+                _deviceConfiguration.SetPhysicalDeviceVulkan11Features(&physicalDeviceVulkan11Features);
+                pNext = &physicalDeviceVulkan11Features;
+            }
         }
 
         VkDeviceCreateInfo deviceCreateInfo;
         deviceCreateInfo.sType                   = VkDeviceCreateInfo.STYPE;
         deviceCreateInfo.pNext                   = pNext;
-        deviceCreateInfo.flags                   = configuration.Flags;
+        deviceCreateInfo.flags                   = _deviceConfiguration.Flags;
         deviceCreateInfo.queueCreateInfoCount    = 1u + additionalDeviceQueueCreateInfoCount;
         deviceCreateInfo.pQueueCreateInfos       = pDeviceQueueCreateInfos;
-        deviceCreateInfo.enabledLayerCount       = (uint)configuration.EnabledLayerNames.Count;
+        deviceCreateInfo.enabledLayerCount       = (uint)_deviceConfiguration.EnabledLayerNames.Count;
         deviceCreateInfo.ppEnabledLayerNames     = ppEnabledLayerNames;
-        deviceCreateInfo.enabledExtensionCount   = (uint)configuration.EnabledExtensionNames.Count;
+        deviceCreateInfo.enabledExtensionCount   = (uint)_deviceConfiguration.EnabledExtensionNames.Count;
         deviceCreateInfo.ppEnabledExtensionNames = ppEnabledExtensionNames;
         deviceCreateInfo.pEnabledFeatures        = null;
 
         try
         {
-            vkCreateDevice(context->PhysicalDevice, &deviceCreateInfo, null, &context->Device)
+            vkCreateDevice(_context->PhysicalDevice, &deviceCreateInfo, null, &_context->Device)
                 .AssertVkResult();
 
-            RetrieveDeviceQueue(context, queueConfiguration);
+            RetrieveDeviceQueue();
 
-            CreateCommandPool(context->Device, context->QueueFamilyIndex, &context->CommandPool,           VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
-            CreateCommandPool(context->Device, context->QueueFamilyIndex, &context->ShortLivedCommandPool, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
+            CreateCommandPool(_context->Device, _context->QueueFamilyIndex, &_context->CommandPool,           VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+            CreateCommandPool(_context->Device, _context->QueueFamilyIndex, &_context->ShortLivedCommandPool, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
 
-            VkKhrSwapchain.Load(context->Device);
+            Load(_context->Device);
         }
         finally
         {
-            for (int i = 0; i < configuration.EnabledExtensionNames.Count; i++)
+            for (int i = 0; i < _deviceConfiguration.EnabledExtensionNames.Count; i++)
             {
                 Allocator.FreeNtString(*(ppEnabledExtensionNames + i));
             }
 
-            for (int i = 0; i < configuration.EnabledLayerNames.Count; i++)
+            for (int i = 0; i < _deviceConfiguration.EnabledLayerNames.Count; i++)
             {
                 Allocator.FreeNtString(*(ppEnabledLayerNames + i));
             }
         }
     }
 
-    private void DestroyDevice(VkContext* context)
+    private void DestroyDevice()
     {
-        if (context->Device != VkDevice.Null)
+        if (_context->Device != VkDevice.Null)
         {
-            vkDeviceWaitIdle(context->Device)
+            vkDeviceWaitIdle(_context->Device)
                 .AssertVkResult();
 
-            if (context->ShortLivedCommandPool != VkCommandPool.Null)
+            if (_context->ShortLivedCommandPool != VkCommandPool.Null)
             {
-                vkDestroyCommandPool(context->Device, context->ShortLivedCommandPool, null);
-                context->ShortLivedCommandPool = VkCommandPool.Null;
+                vkDestroyCommandPool(_context->Device, _context->ShortLivedCommandPool, null);
+                _context->ShortLivedCommandPool = VkCommandPool.Null;
             }
 
-            if (context->CommandPool != VkCommandPool.Null)
+            if (_context->CommandPool != VkCommandPool.Null)
             {
-                vkDestroyCommandPool(context->Device, context->CommandPool, null);
+                vkDestroyCommandPool(_context->Device, _context->CommandPool, null);
                 Context->CommandPool = VkCommandPool.Null;
             }
 
-            Allocator.Free<VkQueue>(context->Queues - 1u, context->QueuesCount + 1u);
+            Allocator.Free(_context->Queues - 1u, _context->QueuesCount + 1u);
 
-            vkDestroyDevice(context->Device, null);
-            context->Device = VkDevice.Null;
+            vkDestroyDevice(_context->Device, null);
+            _context->Device = VkDevice.Null;
         }
     }
 }

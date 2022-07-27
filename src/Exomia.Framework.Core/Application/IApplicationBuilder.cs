@@ -8,6 +8,7 @@
 
 #endregion
 
+using Exomia.Framework.Core.Vulkan.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 
 #pragma warning disable 1591
@@ -20,7 +21,8 @@ public interface IApplicationBuilder : IDisposable
     /// <typeparam name="TConfiguration"> Type of the configuration. </typeparam>
     /// <param name="configure"> The configure delegate. </param>
     /// <returns> An <see cref="IApplicationBuilder" />. </returns>
-    IApplicationBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure) where TConfiguration : class;
+    IApplicationBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure) 
+        where TConfiguration : IConfigurableConfiguration;
 
     /// <summary> Configure services. </summary>
     /// <param name="configure"> The configure delegate. </param>

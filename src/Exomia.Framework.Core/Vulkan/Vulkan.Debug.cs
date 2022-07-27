@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Microsoft.Extensions.Logging;
+using static Exomia.Vulkan.Api.Core.VkExtDebugUtils;
 using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageTypeFlagBitsEXT;
 using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageSeverityFlagBitsEXT;
 
@@ -64,11 +65,12 @@ sealed unsafe partial class Vulkan
 #pragma warning restore CA2254 // Template should be a static expression
     }
 
-    private void SetupDebugCallback(
+    /// <summary> Sets up the debug callback. </summary>
+    /// <param name="debugUtilsMessengerConfiguration"> The debug utilities messenger configuration. </param>
+    /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
+    public void SetupDebugCallback(
         DebugUtilsMessengerConfiguration debugUtilsMessengerConfiguration)
     {
-        VkExtDebugUtils.Load(_context->Instance);
-
         VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoExt;
         debugUtilsMessengerCreateInfoExt.sType           = VkDebugUtilsMessengerCreateInfoEXT.STYPE;
         debugUtilsMessengerCreateInfoExt.pNext           = null;

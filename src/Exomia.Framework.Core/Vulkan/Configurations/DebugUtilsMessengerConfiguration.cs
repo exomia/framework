@@ -14,8 +14,15 @@ using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageTypeFlagBitsEXT;
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> A debug utilities messenger configuration. This class cannot be inherited. </summary>
-public sealed unsafe class DebugUtilsMessengerConfiguration
+public sealed unsafe class DebugUtilsMessengerConfiguration : IConfigurableConfiguration
 {
+    /// <summary> Gets or sets a value indicating whether the debugging layer is enabled or not. </summary>
+    /// <value> True if the debugging layer is enabled, false if not. </value>
+    public bool IsEnabled { get; set; }
+#if DEBUG
+        = true;
+#endif 
+
     /// <summary> Gets or sets the message severity. </summary>
     /// <value> The message severity. </value>
     public VkDebugUtilsMessageSeverityFlagsEXT MessageSeverity { get; set; } =

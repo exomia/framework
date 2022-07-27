@@ -8,30 +8,28 @@
 
 #endregion
 
-using Exomia.Framework.Core.Vulkan.Configurations;
-
 namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
-    private static void RetrieveDeviceQueue(VkContext* context, QueueConfiguration configuration)
+    private void RetrieveDeviceQueue()
     {
-        for (uint i = 0u; i < context->QueuesCount; i++)
+        for (uint i = 0u; i < _context->QueuesCount; i++)
         {
             VkDeviceQueueInfo2 vkDeviceQueueInfo2;
             vkDeviceQueueInfo2.sType            = VkDeviceQueueInfo2.STYPE;
-            vkDeviceQueueInfo2.pNext            = configuration.Next;
-            vkDeviceQueueInfo2.flags            = configuration.Flags;
-            vkDeviceQueueInfo2.queueFamilyIndex = context->QueueFamilyIndex;
+            vkDeviceQueueInfo2.pNext            = _queueConfiguration.Next;
+            vkDeviceQueueInfo2.flags            = _queueConfiguration.Flags;
+            vkDeviceQueueInfo2.queueFamilyIndex = _context->QueueFamilyIndex;
             vkDeviceQueueInfo2.queueIndex       = 0u;
 
-            vkGetDeviceQueue2(context->Device, &vkDeviceQueueInfo2, context->Queues + i);
+            vkGetDeviceQueue2(_context->Device, &vkDeviceQueueInfo2, _context->Queues + i);
         }
 
         // context->Queues[0] will be used for presentation and other internal usages
         // context->Queues[1..queueConfiguration.Count] can be used by users and render systems
         // we adjust the pointer and count for easier handling by the user
-        context->Queues++;
-        context->QueuesCount--;
+        _context->Queues++;
+        _context->QueuesCount--;
     }
 }

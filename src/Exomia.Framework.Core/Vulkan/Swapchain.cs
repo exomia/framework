@@ -46,14 +46,6 @@ public sealed unsafe partial class Swapchain : IDisposable
     private uint _requestedWidth;
     private uint _requestedHeight;
 
-#if DEBUG
-    private bool _isFrameStarted = false;
-    public bool IsFrameStarted
-    {
-        get { return _isFrameStarted; }
-    }
-#endif
-
     /// <summary> Gets the vk context. </summary>
     /// <value> The vk context. </value>
     public VkContext* VkContext
@@ -574,6 +566,14 @@ public sealed unsafe partial class Swapchain : IDisposable
             }
         }
     }
+
+#if DEBUG
+    private bool _isFrameStarted = false;
+    public bool IsFrameStarted
+    {
+        get { return _isFrameStarted; }
+    }
+#endif
 
     #region IDisposable Support
 

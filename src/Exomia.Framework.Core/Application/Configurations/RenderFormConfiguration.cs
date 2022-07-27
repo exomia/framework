@@ -9,10 +9,12 @@
 #endregion
 
 
+using Exomia.Framework.Core.Vulkan.Configurations;
+
 namespace Exomia.Framework.Core.Application.Configurations;
 
 /// <summary> A render form configuration. This class cannot be inherited. </summary>
-public sealed class RenderFormConfiguration
+public sealed class RenderFormConfiguration : IConfigurableConfiguration
 {
     /// <summary> Gets or sets the title. </summary>
     /// <value> The title. </value>

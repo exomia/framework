@@ -439,7 +439,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         return ptr;
     }
@@ -454,7 +454,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         return (T*)ptr;
     }
@@ -468,7 +468,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         return ptr;
     }
@@ -483,7 +483,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         return (T*)ptr;
     }
@@ -497,7 +497,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         return ptr;
     }
@@ -512,11 +512,11 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         return (T*)ptr;
     }
-    
+
     /// <summary> Updates the buffer with the given value. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="value"> The value. </param>
@@ -528,7 +528,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         *(T*)ptr = value;
         vkUnmapMemory(_device, _deviceMemory);
@@ -537,7 +537,7 @@ public sealed unsafe class Buffer : IDisposable
     /// <summary> Updates the buffer with the given values. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="src">    [in,out] If non-null, the source to copy from. </param>
-    /// <param name="count">  Number of elements in <paramref name="src"/>. </param>
+    /// <param name="count">  Number of elements in <paramref name="src" />. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(T* src, int count)
         where T : unmanaged
@@ -546,7 +546,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         Unsafe.CopyBlock(ptr, src, (uint)(sizeof(T) * count));
         vkUnmapMemory(_device, _deviceMemory);
@@ -564,7 +564,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)sizeof(T), 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
         *(T*)ptr = value;
         vkUnmapMemory(_device, _deviceMemory);
@@ -573,7 +573,7 @@ public sealed unsafe class Buffer : IDisposable
     /// <summary> Updates the buffer with the given values. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="src">    [in,out] If non-null, the source to copy from. </param>
-    /// <param name="count">  Number of elements in <paramref name="src"/>. </param>
+    /// <param name="count">  Number of elements in <paramref name="src" />. </param>
     /// <param name="offset"> The offset. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(T* src, int count, VkDeviceSize offset)
@@ -583,7 +583,7 @@ public sealed unsafe class Buffer : IDisposable
         vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         Unsafe.CopyBlock(ptr, src, (uint)(sizeof(T) * count));
@@ -622,7 +622,7 @@ public sealed unsafe class Buffer : IDisposable
         vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         VkBufferCopy bufferCopy;
@@ -634,7 +634,7 @@ public sealed unsafe class Buffer : IDisposable
         vkEndCommandBuffer(commandBuffer)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         VkSubmitInfo submitInfo;
@@ -657,19 +657,19 @@ public sealed unsafe class Buffer : IDisposable
         vkCreateFence(_device, &fenceCreateInfo, null, &fence)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         vkQueueSubmit(queue, 1u, &submitInfo, fence)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         vkWaitForFences(_device, 1u, &fence, VK_TRUE, ulong.MaxValue)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         vkDestroyFence(_device, fence, null);

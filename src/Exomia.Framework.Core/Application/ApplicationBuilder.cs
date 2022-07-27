@@ -35,7 +35,7 @@ public sealed class ApplicationBuilder : IApplicationBuilder
 
     /// <inheritdoc />
     public IApplicationBuilder Configure<TConfiguration>(Action<TConfiguration, IServiceProvider> configure)
-        where TConfiguration : class
+        where TConfiguration : IConfigurableConfiguration
     {
         if (!_configurables.TryGetValue(typeof(TConfiguration), out IList<Action<object, IServiceProvider>>? list))
         {

@@ -142,9 +142,7 @@ sealed unsafe partial class Vulkan
         return false;
     }
 
-    private bool PickBestPhysicalDevice(
-        PhysicalDeviceConfiguration physicalDeviceConfiguration,
-        DeviceConfiguration         deviceConfiguration)
+    private bool PickBestPhysicalDevice()
     {
         uint physicalDeviceCount;
         vkEnumeratePhysicalDevices(_context->Instance, &physicalDeviceCount, null)
@@ -161,19 +159,19 @@ sealed unsafe partial class Vulkan
             physicalDeviceProperties2.pNext = null;
             vkGetPhysicalDeviceProperties2(*(pPhysicalDevices + i), &physicalDeviceProperties2);
 
-            if (physicalDeviceProperties2.properties.apiVersion < physicalDeviceConfiguration.RequiredMinimumVkApiVersion) { continue; }
-            if (physicalDeviceProperties2.properties.deviceType != physicalDeviceConfiguration.RequiredPhysicalDeviceType) { continue; }
+            if (physicalDeviceProperties2.properties.apiVersion < _physicalDeviceConfiguration.RequiredMinimumVkApiVersion) { continue; }
+            if (physicalDeviceProperties2.properties.deviceType != _physicalDeviceConfiguration.RequiredPhysicalDeviceType) { continue; }
 
             _context->SupportedSampleCountFlags = physicalDeviceProperties2.properties.limits.framebufferColorSampleCounts;
 
             if (CheckDeviceLayerSupport(
                     *(pPhysicalDevices + i),
-                    deviceConfiguration.EnabledLayerNames) &&
+                    _deviceConfiguration.EnabledLayerNames) &&
                 CheckDeviceExtensionSupport(
                     *(pPhysicalDevices + i),
-                    deviceConfiguration.EnabledExtensionNames,
-                    deviceConfiguration.EnabledLayerNames) &&
-                Vulkan.PickBestQueueFamily(
+                    _deviceConfiguration.EnabledExtensionNames,
+                    _deviceConfiguration.EnabledLayerNames) &&
+                PickBestQueueFamily(
                     *(pPhysicalDevices + i),
                     out uint queueFamilyIndex,
                     out uint maxQueueCount))

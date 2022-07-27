@@ -61,7 +61,7 @@ public sealed unsafe class Renderer : IDisposable
                 &commandBufferBeginInfo)
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         return true;
@@ -97,7 +97,7 @@ public sealed unsafe class Renderer : IDisposable
         vkEndCommandBuffer(*(_commandBuffers + _swapchainContext->FrameInFlight))
 #if DEBUG
             .AssertVkResult()
-#endif 
+#endif
             ;
 
         _swapchain.Submit(commandBuffer);

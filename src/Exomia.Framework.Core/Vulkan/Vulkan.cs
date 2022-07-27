@@ -72,19 +72,13 @@ public sealed unsafe partial class Vulkan : IDisposable
     {
         using (_logger.BeginScope("[{method}] started...", nameof(Initialize)))
         {
-            if (!InitializeInstance(
-                    _applicationConfiguration,
-                    _instanceConfiguration,
-                    _debugUtilsMessengerConfiguration,
-                    _surfaceConfiguration,
-                    _physicalDeviceConfiguration,
-                    _deviceConfiguration))
+            if (!InitializeInstance())
             {
                 _logger.LogCritical("{method} failed!", nameof(Initialize));
                 return false;
             }
 
-            CreateDevice(Context, _deviceConfiguration, _queueConfiguration);
+            CreateDevice();
 
             _logger.LogInformation("[{method}] done!", nameof(Initialize));
             return true;
@@ -95,8 +89,8 @@ public sealed unsafe partial class Vulkan : IDisposable
     {
         using (_logger.BeginScope("[{method}] started...", nameof(Cleanup)))
         {
-            DestroyDevice(Context);
-            CleanupInstance(Context);
+            DestroyDevice();
+            CleanupInstance();
 
             _logger.LogInformation("[{method}] done!", nameof(Cleanup));
         }
