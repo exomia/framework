@@ -80,9 +80,9 @@ internal sealed unsafe class MyApplication : Application
         {
             _renderer.BeginRenderPass(commandBuffer);
 
-            const int iterations = 10_000;
+            const int iterations = 8_000;
 
-            _spriteBatch.Begin(SpriteSortMode.Texture);
+            _spriteBatch.Begin(SpriteSortMode.Deferred);
             for (int i = 0; i < iterations; i++)
             {
                 if (i > iterations * 0.75)
