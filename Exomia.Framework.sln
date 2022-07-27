@@ -6,13 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1E7C4F0A-7153-45B0-9839-D2555568FFD2}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{C900162B-CB2F-4112-98D2-2DA9D947B7C5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9D20989E-7C37-42F4-AE05-19CED958EA7A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65A2B0A0-B984-4A33-AFA5-A5E70862A10A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.Core", "src\Exomia.Framework.Core\Exomia.Framework.Core.csproj", "{2311CF3A-095C-49B0-BBEA-FC3892E9134E}"
 EndProject
@@ -33,6 +28,26 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.BasicSetup", "examples\Exomia.Framework.BasicSetup\Exomia.Framework.BasicSetup.csproj", "{8329DE95-55FA-4176-91BF-BBC793B9EBE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exomia.Framework.Example.Canvas", "examples\Exomia.Framework.Example.Canvas\Exomia.Framework.Example.Canvas.csproj", "{BEB473A8-DF7F-4402-97C2-0344308EE17F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C45FC57A-B0C7-4E27-A50F-D42860B8ECD6}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{C900162B-CB2F-4112-98D2-2DA9D947B7C5}"
+	ProjectSection(SolutionItems) = preProject
+		tools\Directory.Build.props = tools\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9D20989E-7C37-42F4-AE05-19CED958EA7A}"
+	ProjectSection(SolutionItems) = preProject
+		examples\Directory.Build.props = examples\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65A2B0A0-B984-4A33-AFA5-A5E70862A10A}"
+	ProjectSection(SolutionItems) = preProject
+		tests\L0\Directory.Build.props = tests\L0\Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,8 +184,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{2311CF3A-095C-49B0-BBEA-FC3892E9134E} = {C45FC57A-B0C7-4E27-A50F-D42860B8ECD6}
 		{E86DC9EB-8FC0-4C5D-95F2-206C67A069C2} = {65A2B0A0-B984-4A33-AFA5-A5E70862A10A}
+		{861493D1-4917-41D8-91AA-B5E8BE0742D9} = {C45FC57A-B0C7-4E27-A50F-D42860B8ECD6}
 		{4B7D7F35-9C0A-4F17-931A-98FDB2CAA9AA} = {65A2B0A0-B984-4A33-AFA5-A5E70862A10A}
+		{062A08DC-6630-4143-A233-470FDF08E826} = {C45FC57A-B0C7-4E27-A50F-D42860B8ECD6}
 		{9BF11F4F-FA84-4F16-BCCC-7B1C77F8B79A} = {65A2B0A0-B984-4A33-AFA5-A5E70862A10A}
 		{C673179F-457C-4AE9-B61E-0481343E8A35} = {9D20989E-7C37-42F4-AE05-19CED958EA7A}
 		{245257B7-CD93-40BA-8E10-DF23DBB32FB8} = {C900162B-CB2F-4112-98D2-2DA9D947B7C5}
