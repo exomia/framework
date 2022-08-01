@@ -13,7 +13,6 @@
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
-using Exomia.Framework.Core.Vulkan.Shader;
 using System.Diagnostics;
 using System.Numerics;
 using Exomia.Framework.Core.Vulkan.Buffers;
@@ -61,14 +60,16 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private          Pipeline?                                    _pipeline = null;
 
     private VkSpriteBatchContext* _context;
-    
+
     private readonly bool           _center;
+    private readonly Texture        _whiteTexture;
     private readonly TextureInfo    _whiteTextureInfo;
     private          SpriteSortMode _spriteSortMode;
     private          int*           _sortIndices;
     private          SpriteInfo*    _spriteQueue,      _sortedSprites;
     private          uint           _spriteQueueCount, _spriteQueueLength, _sortedQueueLength;
     private          Matrix4x4      _projectionMatrix;
+    private          VkRect2D       _scissorRectangle;
 
     private uint _tempSortBufferLength;
     private int* _tmpSortBuffer;
@@ -117,8 +118,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
     /// <exception cref="ArgumentException">      Thrown when one or more arguments have unsupported or illegal values. </exception>
     public SpriteBatch(
-        Swapchain           swapchain,
-        bool                center        = false)
+        Swapchain swapchain,
+        bool      center = false)
     {
         _swapchain        = swapchain;
         _swapchainContext = swapchain.Context;
@@ -127,8 +128,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _context = Allocator.Allocate(1u, VkSpriteBatchContext.Create());
 
-        Texture whiteTexture = new Texture(1, 1);
-        _whiteTextureInfo = new TextureInfo(whiteTexture.Width, whiteTexture.Height);
+        _whiteTexture     = Texture.Create(_vkContext, 1, 1, new byte[] { 0, 0, 0, 0 });
+        _whiteTextureInfo = new TextureInfo(_whiteTexture.Width, _whiteTexture.Height);
 
         _sortIndices   = Allocator.Allocate<int>(MAX_BATCH_SIZE);
         _sortedSprites = Allocator.Allocate<SpriteInfo>(_sortedQueueLength = MAX_BATCH_SIZE);
@@ -230,6 +231,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 _vertexBufferPool.Dispose();
                 _commandBufferPool.Dispose();
                 _shader.Dispose();
+
+                _whiteTexture.Dispose();
 
                 CleanupVulkan();
             }

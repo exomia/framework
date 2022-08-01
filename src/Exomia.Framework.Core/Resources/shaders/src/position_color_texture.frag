@@ -1,4 +1,7 @@
 #version 450 core
+#extension GL_KHR_vulkan_glsl : enable
+
+layout (constant_id = 0) const int MAX_TEXTURES_COUNT = 4;
 
 layout (location = 0) in vec4 inColor;
 layout (location = 1) in vec2 inUV;

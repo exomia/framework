@@ -9,6 +9,7 @@
 #endregion
 
 using Exomia.Framework.Core.Application;
+using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
@@ -30,16 +31,20 @@ sealed unsafe class MyApplication : Application
     private readonly Swapchain   _swapchain;
     private readonly Renderer    _renderer;
     private readonly SpriteBatch _spriteBatch;
+    private readonly Texture     _texture;
 
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider">           The service provider. </param>
     /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The Depth stencil configuration. </param>
     /// <param name="logger">                    The logger. </param>
-    public MyApplication(IServiceProvider                    serviceProvider,
-                         IOptions<SwapchainConfiguration>    swapchainConfiguration,
-                         IOptions<DepthStencilConfiguration> depthStencilConfiguration,
-                         ILogger<MyApplication>              logger)
+    /// <param name="contentManager">            Manager for content. </param>
+    public MyApplication(
+        IServiceProvider                    serviceProvider,
+        IOptions<SwapchainConfiguration>    swapchainConfiguration,
+        IOptions<DepthStencilConfiguration> depthStencilConfiguration,
+        ILogger<MyApplication>              logger,
+        IContentManager                     contentManager)
         : base(serviceProvider)
     {
         _logger = logger;
@@ -59,6 +64,8 @@ sealed unsafe class MyApplication : Application
 
         _renderer    = new Renderer(_swapchain);
         _spriteBatch = new SpriteBatch(_swapchain);
+
+        _texture = contentManager.Load<Texture>("icon.e1");
     }
 
     int   frames = 0;
@@ -77,75 +84,13 @@ sealed unsafe class MyApplication : Application
         {
             _renderer.BeginRenderPass(commandBuffer);
 
-            const int iterations = 10_000;
-
             _spriteBatch.Begin(SpriteSortMode.Deferred);
-            for (int i = 0; i < iterations; i++)
-            {
-                if (i > iterations * 0.75)
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 0f, 0f, 1f),
-                        rnd.NextSingle());
-                }
-                else if (i > iterations * 0.50)
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 0f, 1f, 1f),
-                        rnd.NextSingle());
-                }
-                else if (i > iterations * 0.25)
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 1f, 0f, 1f),
-                        rnd.NextSingle());
-                }
-                else
-                {
-                    _spriteBatch.DrawFillRectangle(
-                        new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(1f, 0f, 0f, 1f),
-                        rnd.NextSingle());
-                }
-            }
-            _spriteBatch.End(commandBuffer);
 
-            //_spriteBatch.Begin();
-            //for (int i = iterations; i < iterations * 2; i++)
-            //{
-            //    if (i > iterations * 0.75)
-            //    {
-            //        _spriteBatch.DrawFillRectangle(
-            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-            //            new VkColor(0f, 0f, 0f, 1f),
-            //            rnd.NextSingle());
-            //    }
-            //    else if (i > iterations * 0.50)
-            //    {
-            //        _spriteBatch.DrawFillRectangle(
-            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-            //            new VkColor(0f, 0f, 1f, 1f),
-            //            rnd.NextSingle());
-            //    }
-            //    else if (i > iterations * 0.25)
-            //    {
-            //        _spriteBatch.DrawFillRectangle(
-            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-            //            new VkColor(0f, 1f, 0f, 1f),
-            //            rnd.NextSingle());
-            //    }
-            //    else
-            //    {
-            //        _spriteBatch.DrawFillRectangle(
-            //            new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-            //            new VkColor(1f, 0f, 0f, 1f),
-            //            rnd.NextSingle());
-            //    }
-            //}
-            //_spriteBatch.End(commandBuffer);
+            _spriteBatch.DrawFillRectangle(new RectangleF(50, 50, 400, 400), VkColors.Blue);
+
+            _spriteBatch.Draw(_texture, new RectangleF(250, 250, 400, 400), VkColors.Blue);
+
+            _spriteBatch.End(commandBuffer);
 
             _spriteBatch.EndFrame();
 
@@ -173,5 +118,6 @@ sealed unsafe class MyApplication : Application
         _spriteBatch.Dispose();
         _renderer.Dispose();
         _swapchain.Dispose();
+        _texture.Dispose();
     }
 }

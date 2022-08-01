@@ -8,27 +8,25 @@
 
 #endregion
 
-using System.IO;
 using System.Xml.Serialization;
 
 #pragma warning disable 1591
 
-namespace Exomia.Framework.ContentManager.Fonts.BMFont
-{
-    public class FontLoader
-    {
-        public static FontFile Load(string filename)
-        {
-            XmlSerializer    deserializer = new XmlSerializer(typeof(FontFile));
-            using FileStream stream       = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            return (FontFile)deserializer.Deserialize(stream);
-        }
+namespace Exomia.Framework.ContentManager.Fonts.BMFont;
 
-        public static void Save(string filename, FontFile file)
-        {
-            XmlSerializer    serializer = new XmlSerializer(typeof(FontFile));
-            using FileStream stream     = new FileStream(filename, FileMode.Create, FileAccess.Write);
-            serializer.Serialize(stream, file);
-        }
+public class FontLoader
+{
+    public static FontFile Load(string filename)
+    {
+        XmlSerializer    deserializer = new XmlSerializer(typeof(FontFile));
+        using FileStream stream       = new FileStream(filename, FileMode.Open, FileAccess.Read);
+        return (FontFile)deserializer.Deserialize(stream)!;
+    }
+
+    public static void Save(string filename, FontFile file)
+    {
+        XmlSerializer    serializer = new XmlSerializer(typeof(FontFile));
+        using FileStream stream     = new FileStream(filename, FileMode.Create, FileAccess.Write);
+        serializer.Serialize(stream, file);
     }
 }

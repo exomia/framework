@@ -10,26 +10,25 @@
 
 using System;
 
-namespace Exomia.Framework.ContentManager.Attributes
+namespace Exomia.Framework.ContentManager.Attributes;
+
+/// <summary>
+///     Attribute for choices. This class cannot be inherited.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public sealed class ChoicesAttribute : Attribute
 {
     /// <summary>
-    ///     Attribute for choices. This class cannot be inherited.
+    ///     Gets the entries.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class ChoicesAttribute : Attribute
-    {
-        /// <summary>
-        ///     Gets the entries.
-        /// </summary>
-        /// <value>
-        ///     The entries.
-        /// </value>
-        public object[] Entries { get; }
+    /// <value>
+    ///     The entries.
+    /// </value>
+    public object[] Entries { get; }
 
-        /// <inheritdoc />
-        public ChoicesAttribute(params object[] entries)
-        {
-            Entries = entries;
-        }
+    /// <inheritdoc />
+    public ChoicesAttribute(params object[] entries)
+    {
+        Entries = entries;
     }
 }

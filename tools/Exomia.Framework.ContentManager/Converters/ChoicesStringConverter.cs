@@ -13,36 +13,35 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Exomia.Framework.ContentManager.Attributes;
 
-namespace Exomia.Framework.ContentManager.Converters
+namespace Exomia.Framework.ContentManager.Converters;
+
+/// <summary>
+///     The choices string converter.
+/// </summary>
+public sealed class ChoicesStringConverter : StringConverter
 {
-    /// <summary>
-    ///     The choices string converter.
-    /// </summary>
-    public sealed class ChoicesStringConverter : StringConverter
+    /// <inheritdoc />
+    public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
     {
-        /// <inheritdoc />
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
+        return true;
+    }
 
-        /// <inheritdoc />
-        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
-        {
-            return true;
-        }
+    /// <inheritdoc />
+    public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+    {
+        return true;
+    }
 
-        /// <inheritdoc />
-        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+    /// <inheritdoc />
+    public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+    {
+        foreach (Attribute propertyDescriptorAttribute in context.PropertyDescriptor.Attributes)
         {
-            foreach (Attribute propertyDescriptorAttribute in context.PropertyDescriptor.Attributes)
+            if (propertyDescriptorAttribute is ChoicesAttribute choices)
             {
-                if (propertyDescriptorAttribute is ChoicesAttribute choices)
-                {
-                    return new StandardValuesCollection(new List<object>(choices.Entries));
-                }
+                return new StandardValuesCollection(new List<object>(choices.Entries));
             }
-            throw new ArgumentNullException(nameof(ChoicesAttribute));
         }
+        throw new ArgumentNullException(nameof(ChoicesAttribute));
     }
 }

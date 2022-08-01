@@ -10,10 +10,11 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Exomia.Framework.Core.Allocators;
 using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
 
-namespace Exomia.Framework.Core.Vulkan.Shader;
+namespace Exomia.Framework.Core.Vulkan;
 
 /// <summary> A shader. This class cannot be inherited. </summary>
 //[ContentReadable(typeof(ShaderContentReader))]
@@ -104,25 +105,55 @@ public sealed unsafe class Shader : IDisposable
 
             Vulkan.CreateShaderModule(device, configuration.Code, configuration.CodeSize, out ShaderModule);
 
-            Stages = new Stage[configuration.Stages!.Length];
+            Stages = new Stage[configuration.Stages.Length];
             for (int i = 0; i < Stages.Length; i++)
             {
                 Stage.Configuration stageConfiguration = configuration.Stages[i];
                 Stages[i] = new Stage
                 {
-                    Name        = Allocator.AllocateNtString(stageConfiguration.Name!),
-                    ShaderStage = (VkShaderStageFlagBits)stageConfiguration.Type,
-                    Flags       = stageConfiguration.Flags
+                    Name               = Allocator.AllocateNtString(stageConfiguration.Name!),
+                    ShaderStage        = (VkShaderStageFlagBits)stageConfiguration.Type,
+                    Flags              = stageConfiguration.Flags,
+                    SpecializationInfo = null
                 };
+
+                if (stageConfiguration.Specializations.Length > 0)
+                {
+                    int   dataSize = stageConfiguration.Specializations.Sum(s => s.Value.ByteCount);
+                    byte* pData    = Allocator.Allocate(dataSize);
+
+                    VkSpecializationMapEntry* pSpecializationMapEntry = Allocator.Allocate<VkSpecializationMapEntry>(stageConfiguration.Specializations.Length);
+                    uint                      offset                  = 0u;
+                    for (int s = 0; s < stageConfiguration.Specializations.Length; s++)
+                    {
+                        Stage.Specialization.Configuration                     stageSpecializationConfiguration = stageConfiguration.Specializations[s];
+                        Stage.Specialization.Configuration.SpecializationValue value                            = stageSpecializationConfiguration.Value;
+
+                        (pSpecializationMapEntry + s)->constantID = stageSpecializationConfiguration.ConstantID;
+                        (pSpecializationMapEntry + s)->offset     = offset;
+                        (pSpecializationMapEntry + s)->size       = (uint)value.ByteCount;
+
+                        Unsafe.CopyBlock(pData + offset, &value, (uint)value.ByteCount);
+                        offset += (uint)value.ByteCount;
+                    }
+
+                    VkSpecializationInfo* pSpecializationInfo = Allocator.Allocate<VkSpecializationInfo>(1u);
+                    pSpecializationInfo->mapEntryCount = (uint)stageConfiguration.Specializations.Length;
+                    pSpecializationInfo->pMapEntries   = pSpecializationMapEntry;
+                    pSpecializationInfo->dataSize      = offset;
+                    pSpecializationInfo->pData         = pData;
+
+                    Stages[i].SpecializationInfo = pSpecializationInfo;
+                }
             }
         }
 
         internal class Configuration
         {
-            public string?                Name     { get; set; }
-            public byte*                  Code     { get; set; }
-            public nuint                  CodeSize { get; set; }
-            public Stage.Configuration[]? Stages   { get; set; }
+            public string?               Name     { get; set; }
+            public byte*                 Code     { get; set; }
+            public nuint                 CodeSize { get; set; }
+            public Stage.Configuration[] Stages   { get; set; } = Array.Empty<Stage.Configuration>();
         }
 
         /// <summary> A shader module stage. </summary>
@@ -131,13 +162,67 @@ public sealed unsafe class Shader : IDisposable
             public byte*                               Name;
             public VkShaderStageFlagBits               ShaderStage;
             public VkPipelineShaderStageCreateFlagBits Flags;
+            public VkSpecializationInfo*               SpecializationInfo;
 
             // ReSharper disable once MemberHidesStaticFromOuterClass
             internal class Configuration
             {
-                public string?                             Name  { get; set; }
-                public StageType                           Type  { get; set; }
-                public VkPipelineShaderStageCreateFlagBits Flags { get; set; }
+                public string?                             Name            { get; set; }
+                public StageType                           Type            { get; set; }
+                public VkPipelineShaderStageCreateFlagBits Flags           { get; set; }
+                public Specialization.Configuration[]      Specializations { get; set; } = Array.Empty<Specialization.Configuration>();
+            }
+
+            internal class Specialization
+            {
+                // ReSharper disable once MemberHidesStaticFromOuterClass
+                internal class Configuration
+                {
+                    public uint                ConstantID { get; init; }
+                    public SpecializationValue Value      { get; init; }
+
+                    [StructLayout(LayoutKind.Explicit, Size = 96)]
+                    internal struct SpecializationValue
+                    {
+                        [FieldOffset(0)]
+                        public int Value;
+
+                        [FieldOffset(32)]
+                        public int ByteCount;
+
+                        public static implicit operator SpecializationValue(bool value)
+                        {
+                            SpecializationValue s;
+                            *(&s.Value) = *(int*)&value;
+                            s.ByteCount = sizeof(bool);
+                            return s;
+                        }
+
+                        public static implicit operator SpecializationValue(int value)
+                        {
+                            SpecializationValue s;
+                            *(&s.Value) = value;
+                            s.ByteCount = sizeof(int);
+                            return s;
+                        }
+
+                        public static implicit operator SpecializationValue(uint value)
+                        {
+                            SpecializationValue s;
+                            *(&s.Value) = (int)value;
+                            s.ByteCount = sizeof(int);
+                            return s;
+                        }
+
+                        public static implicit operator SpecializationValue(float value)
+                        {
+                            SpecializationValue s;
+                            *((float*)&s.Value) = value;
+                            s.ByteCount         = sizeof(float);
+                            return s;
+                        }
+                    }
+                }
             }
         }
 
@@ -160,7 +245,14 @@ public sealed unsafe class Shader : IDisposable
 
                 for (int i = 0; i < Stages.Length; i++)
                 {
-                    Allocator.FreeNtString(Stages[i].Name);
+                    Stage stage = Stages[i];
+                    Allocator.FreeNtString(stage.Name);
+
+                    if (stage.SpecializationInfo != null)
+                    {
+                        Allocator.Free(stage.SpecializationInfo->pMapEntries, stage.SpecializationInfo->mapEntryCount);
+                        Allocator.Free(ref stage.SpecializationInfo,          1u);
+                    }
                 }
 
                 Vulkan.DestroyShaderModule(_device, ref ShaderModule);

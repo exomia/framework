@@ -8,7 +8,6 @@
 
 #endregion
 
-using System.ComponentModel;
 using System.Numerics;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
@@ -142,7 +141,21 @@ public sealed unsafe partial class SpriteBatch
             throw new InvalidOperationException($"{nameof(End)} must be called before {nameof(Begin)}");
         }
 #endif
-        _spriteSortMode = sortMode;
+        _spriteSortMode   = sortMode;
+        if (!scissorRectangle.HasValue)
+        {
+            _scissorRectangle.offset.x      = 0;
+            _scissorRectangle.offset.y      = 0;
+            _scissorRectangle.extent.width  = _swapchainContext->Width;
+            _scissorRectangle.extent.height = _swapchainContext->Height;
+        }
+        else
+        {
+            _scissorRectangle.offset.x      = scissorRectangle.Value.Left;
+            _scissorRectangle.offset.y      = scissorRectangle.Value.Top;
+            _scissorRectangle.extent.width  = (uint)scissorRectangle.Value.Right;
+            _scissorRectangle.extent.height = (uint)scissorRectangle.Value.Bottom;
+        }
 
         _uniformBuffer.Update(_projectionMatrix, (ulong)_swapchainContext->FrameInFlight);
 
@@ -227,22 +240,8 @@ public sealed unsafe partial class SpriteBatch
             1u, _context->DescriptorSets + _swapchainContext->FrameInFlight,
             0u, null);
 
-        //VkRect2D scissorRect;
-        //if (!scissorRectangle.HasValue)
-        //{
-        //    scissorRect.offset.x = 0;
-        //    scissorRect.offset.y = 0;
-        //    scissorRect.extent.width = _context->Width;
-        //    scissorRect.extent.height = _context->Height;
-        //}
-        //else
-        //{
-        //    scissorRect.offset.x = scissorRectangle.Value.Left;
-        //    scissorRect.offset.y = scissorRectangle.Value.Top;
-        //    scissorRect.extent.width = (uint)scissorRectangle.Value.Right;
-        //    scissorRect.extent.height = (uint)scissorRectangle.Value.Bottom;
-        //}
-        //vkCmdSetScissor(commandBuffer, 0u, 1u, &scissorRect);
+        VkRect2D scissorRectangle = _scissorRectangle;
+        vkCmdSetScissor(commandBuffer, 0u, 1u, &scissorRectangle);
     }
 
     private void FlushBatch(VkCommandBuffer commandBuffer)

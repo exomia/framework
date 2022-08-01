@@ -179,10 +179,10 @@ public static class Shaders
     /// <summary>
     ///     The position color optimized vertex shader resource path.
     /// </summary>
-    public const string POSITION_COLOR_VERT_OPT = "Resources.shaders.position_color.vert-opt.spv";
+    public const string POSITION_COLOR_TEXTURE_VERT_OPT = "Resources.shaders.position_color_texture.vert-opt.spv";
 
     /// <summary>
     ///     The position color optimized fragment shader resource path.
     /// </summary>
-    public const string POSITION_COLOR_FRAG_OPT = "Resources.shaders.position_color.frag-opt.spv";
+    public const string POSITION_COLOR_TEXTURE_FRAG_OPT = "Resources.shaders.position_color_texture.frag-opt.spv";
 }

@@ -378,25 +378,12 @@ public sealed unsafe partial class Swapchain : IDisposable
         vkBindImageMemory2(_vkContext->Device, 1u, &bindImageMemoryInfo)
             .AssertVkResult();
 
-        VkImageViewCreateInfo imageViewCreateInfo;
-        imageViewCreateInfo.sType                           = VkImageViewCreateInfo.STYPE;
-        imageViewCreateInfo.pNext                           = null;
-        imageViewCreateInfo.flags                           = 0u;
-        imageViewCreateInfo.image                           = _context->DepthStencilImage;
-        imageViewCreateInfo.viewType                        = VK_IMAGE_VIEW_TYPE_2D;
-        imageViewCreateInfo.format                          = _context->DepthStencilFormat;
-        imageViewCreateInfo.components.r                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-        imageViewCreateInfo.components.g                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-        imageViewCreateInfo.components.b                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-        imageViewCreateInfo.components.a                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-        imageViewCreateInfo.subresourceRange.aspectMask     = Vulkan.GetImageAspectMask(_context->DepthStencilFormat);
-        imageViewCreateInfo.subresourceRange.baseMipLevel   = 0u;
-        imageViewCreateInfo.subresourceRange.levelCount     = 1u;
-        imageViewCreateInfo.subresourceRange.baseArrayLayer = 0u;
-        imageViewCreateInfo.subresourceRange.layerCount     = 1u;
-
-        vkCreateImageView(_vkContext->Device, &imageViewCreateInfo, null, &_context->DepthStencilImageView)
-            .AssertVkResult();
+        Vulkan.CreateImageView(
+            _vkContext->Device, 
+            _context->DepthStencilImage, 
+            &_context->DepthStencilImageView,
+            _context->DepthStencilFormat, 
+            Vulkan.GetImageAspectMask(_context->DepthStencilFormat));
     }
 
     private void CreateRenderPass()

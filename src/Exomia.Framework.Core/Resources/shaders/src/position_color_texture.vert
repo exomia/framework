@@ -1,5 +1,5 @@
 #version 450 core
-#extension GL_EXT_debug_printf : enable
+//#extension GL_EXT_debug_printf : enable
 
 layout(binding = 0) uniform UniformBufferObject {
     mat4 g_worldViewProjection;

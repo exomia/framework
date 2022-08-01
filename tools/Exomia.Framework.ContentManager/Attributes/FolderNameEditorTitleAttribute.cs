@@ -10,26 +10,25 @@
 
 using System;
 
-namespace Exomia.Framework.ContentManager.Attributes
+namespace Exomia.Framework.ContentManager.Attributes;
+
+/// <summary>
+///     Attribute for folder name editor title.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public class FolderNameEditorTitleAttribute : Attribute
 {
     /// <summary>
-    ///     Attribute for folder name editor title.
+    ///     Gets the title.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class FolderNameEditorTitleAttribute : Attribute
-    {
-        /// <summary>
-        ///     Gets the title.
-        /// </summary>
-        /// <value>
-        ///     The title.
-        /// </value>
-        public string Title { get; }
+    /// <value>
+    ///     The title.
+    /// </value>
+    public string Title { get; }
 
-        /// <inheritdoc />
-        public FolderNameEditorTitleAttribute(string title)
-        {
-            Title = title;
-        }
+    /// <inheritdoc />
+    public FolderNameEditorTitleAttribute(string title)
+    {
+        Title = title;
     }
 }

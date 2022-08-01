@@ -8,8 +8,6 @@
 
 #endregion
 
-using Exomia.Framework.Core.ContentSerialization.Compression;
-
 namespace Exomia.Framework.Core.Content.Resolver;
 
 [ContentResolver(int.MinValue)]
@@ -18,16 +16,23 @@ internal sealed class E1FileStreamContentResolver : IContentResolver
     /// <inheritdoc />
     public bool Exists(string assetName)
     {
-        return Path.GetExtension(assetName) == ContentCompressor.DEFAULT_COMPRESSED_EXTENSION &&
+        return Path.GetExtension(assetName) == E1.EXTENSION_NAME &&
             File.Exists(assetName);
     }
 
     /// <inheritdoc />
     public Stream? Resolve(string assetName)
     {
-        using FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read);
-        return ContentCompressor.DecompressStream(stream, out Stream stream2)
-            ? stream2
-            : null;
+        FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read);
+
+        byte[] buffer = new byte[E1.MagicHeader.Length];
+        if (stream.Read(buffer, 0, buffer.Length) != E1.MagicHeader.Length
+            || !E1.MagicHeader.SequenceEqual(buffer))
+        {
+            stream.Dispose();
+            return null;
+        }
+
+        return stream;
     }
 }

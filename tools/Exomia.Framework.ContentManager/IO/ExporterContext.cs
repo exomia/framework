@@ -10,35 +10,34 @@
 
 using System.Collections.Generic;
 
-namespace Exomia.Framework.ContentManager.IO
+namespace Exomia.Framework.ContentManager.IO;
+
+sealed class ExporterContext
 {
-    sealed class ExporterContext
+    private readonly List<(string, object?[])> _messages;
+
+    public string ItemName { get; }
+
+    public string VirtualPath { get; }
+
+    public string OutputFolder { get; }
+
+    internal IReadOnlyList<(string text, object?[] args)> Messages
     {
-        private readonly List<(string, object?[])> _messages;
+        get { return _messages; }
+    }
 
-        public string ItemName { get; }
+    public ExporterContext(string itemName, string virtualPath, string outputFolder)
+    {
+        ItemName     = itemName;
+        VirtualPath  = virtualPath;
+        OutputFolder = outputFolder;
 
-        public string VirtualPath { get; }
+        _messages = new List<(string, object?[])>();
+    }
 
-        public string OutputFolder { get; }
-
-        internal IReadOnlyList<(string text, object?[] args)> Messages
-        {
-            get { return _messages; }
-        }
-
-        public ExporterContext(string itemName, string virtualPath, string outputFolder)
-        {
-            ItemName     = itemName;
-            VirtualPath  = virtualPath;
-            OutputFolder = outputFolder;
-
-            _messages = new List<(string, object?[])>();
-        }
-
-        public void AddMessage(string text, params object?[] args)
-        {
-            _messages.Add((text, args));
-        }
+    public void AddMessage(string text, params object?[] args)
+    {
+        _messages.Add((text, args));
     }
 }

@@ -13,39 +13,36 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Linq;
 using Exomia.Framework.ContentManager.Attributes;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace Exomia.Framework.ContentManager.PropertyGridItems.Editor
+namespace Exomia.Framework.ContentManager.PropertyGridItems.Editor;
+
+/// <summary>
+///     Editor for folder name.
+/// </summary>
+public class FolderNameEditor : UITypeEditor
 {
-    /// <summary>
-    ///     Editor for folder name.
-    /// </summary>
-    public class FolderNameEditor : UITypeEditor
+    /// <inheritdoc />
+    public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
     {
-        /// <inheritdoc />
-        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-        {
-            return UITypeEditorEditStyle.Modal;
-        }
+        return UITypeEditorEditStyle.Modal;
+    }
 
-        /// <inheritdoc />
-        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+    /// <inheritdoc />
+    public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+    {
+        using (OpenFileDialog dialog = new OpenFileDialog
+               {
+                   Title = context.PropertyDescriptor.Attributes.OfType<FolderNameEditorTitleAttribute>()
+                                  ?.FirstOrDefault()
+                                  ?.Title ?? "Select a folder.",
+                   RestoreDirectory = true
+               })
         {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Title = context.PropertyDescriptor.Attributes.OfType<FolderNameEditorTitleAttribute>()
-                               ?.FirstOrDefault()
-                               ?.Title ?? "Select a folder.",
-                RestoreDirectory = true,
-                IsFolderPicker   = true
-            })
-            {
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    return dialog.FileName;
-                }
+                return dialog.FileName;
             }
-            return value;
         }
+        return value;
     }
 }

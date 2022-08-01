@@ -13,18 +13,17 @@ using System.Xml.Serialization;
 
 #pragma warning disable 1591
 
-namespace Exomia.Framework.ContentManager.Fonts.BMFont
+namespace Exomia.Framework.ContentManager.Fonts.BMFont;
+
+[Serializable]
+public class FontKerning
 {
-    [Serializable]
-    public class FontKerning
-    {
-        [XmlAttribute("first")]
-        public int First { get; set; }
+    [XmlAttribute("first")]
+    public int First { get; set; }
 
-        [XmlAttribute("second")]
-        public int Second { get; set; }
+    [XmlAttribute("second")]
+    public int Second { get; set; }
 
-        [XmlAttribute("amount")]
-        public int Amount { get; set; }
-    }
+    [XmlAttribute("amount")]
+    public int Amount { get; set; }
 }

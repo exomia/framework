@@ -55,7 +55,7 @@ public sealed unsafe class Pipeline : IDisposable
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
     public static Pipeline Create(
         Swapchain                                                                                                       swapchain,
-        params (PipelineConfiguration configuration, VkPipelineLayout pipelineLayout, Shader.Shader.Module[] modules)[] createInfos)
+        params (PipelineConfiguration configuration, VkPipelineLayout pipelineLayout, Shader.Module[] modules)[] createInfos)
     {
         VkContext*        vkContext        = swapchain.VkContext;
         SwapchainContext* swapchainContext = swapchain.Context;
@@ -63,7 +63,7 @@ public sealed unsafe class Pipeline : IDisposable
         VkGraphicsPipelineCreateInfo* graphicsPipelineCreateInfos = stackalloc VkGraphicsPipelineCreateInfo[createInfos.Length];
         for (int c = 0; c < createInfos.Length; c++)
         {
-            (PipelineConfiguration configuration, VkPipelineLayout pipelineLayout, Shader.Shader.Module[] modules) = createInfos[c];
+            (PipelineConfiguration configuration, VkPipelineLayout pipelineLayout, Shader.Module[] modules) = createInfos[c];
 
             int stages = modules.Sum(s => s.Stages.Length);
 
@@ -74,17 +74,17 @@ public sealed unsafe class Pipeline : IDisposable
 
             for (int currentStage = 0, i = 0; i < modules.Length; i++)
             {
-                Shader.Shader.Module module = modules[i];
+                Shader.Module module = modules[i];
                 for (int s = 0; s < module.Stages.Length; s++, currentStage++)
                 {
-                    Shader.Shader.Module.Stage stage = module.Stages[s];
+                    Shader.Module.Stage stage = module.Stages[s];
                     (pPipelineShaderStageCreateInfo + currentStage)->sType               = VkPipelineShaderStageCreateInfo.STYPE;
                     (pPipelineShaderStageCreateInfo + currentStage)->pNext               = null;
                     (pPipelineShaderStageCreateInfo + currentStage)->flags               = stage.Flags;
                     (pPipelineShaderStageCreateInfo + currentStage)->stage               = stage.ShaderStage;
                     (pPipelineShaderStageCreateInfo + currentStage)->module              = module.ShaderModule;
                     (pPipelineShaderStageCreateInfo + currentStage)->pName               = stage.Name;
-                    (pPipelineShaderStageCreateInfo + currentStage)->pSpecializationInfo = null;
+                    (pPipelineShaderStageCreateInfo + currentStage)->pSpecializationInfo = stage.SpecializationInfo;
                 }
             }
 
@@ -210,10 +210,10 @@ public sealed unsafe class Pipeline : IDisposable
             pipelineColorBlendStateCreateInfo.logicOp           = configuration.ColorBlend.LogicOp;
             pipelineColorBlendStateCreateInfo.attachmentCount   = 1u;
             pipelineColorBlendStateCreateInfo.pAttachments      = &pipelineColorBlendAttachmentState;
-            pipelineColorBlendStateCreateInfo.blendConstants[0] = 0.0f;
-            pipelineColorBlendStateCreateInfo.blendConstants[1] = 0.0f;
-            pipelineColorBlendStateCreateInfo.blendConstants[2] = 0.0f;
-            pipelineColorBlendStateCreateInfo.blendConstants[3] = 0.0f;
+            pipelineColorBlendStateCreateInfo.blendConstants[0] = configuration.ColorBlend.BlendConstants[0];
+            pipelineColorBlendStateCreateInfo.blendConstants[1] = configuration.ColorBlend.BlendConstants[1];
+            pipelineColorBlendStateCreateInfo.blendConstants[2] = configuration.ColorBlend.BlendConstants[2];
+            pipelineColorBlendStateCreateInfo.blendConstants[3] = configuration.ColorBlend.BlendConstants[3];
 
             (graphicsPipelineCreateInfos + c)->sType               = VkGraphicsPipelineCreateInfo.STYPE;
             (graphicsPipelineCreateInfos + c)->pNext               = null;

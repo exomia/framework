@@ -10,26 +10,25 @@
 
 using System;
 
-namespace Exomia.Framework.ContentManager.IO
+namespace Exomia.Framework.ContentManager.IO;
+
+/// <summary>
+///     Attribute for exporter. This class cannot be inherited.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class ExporterAttribute : Attribute
 {
     /// <summary>
-    ///     Attribute for exporter. This class cannot be inherited.
+    ///     Gets the name.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ExporterAttribute : Attribute
-    {
-        /// <summary>
-        ///     Gets the name.
-        /// </summary>
-        /// <value>
-        ///     The name.
-        /// </value>
-        public string Name { get; }
+    /// <value>
+    ///     The name.
+    /// </value>
+    public string Name { get; }
 
-        /// <inheritdoc />
-        public ExporterAttribute(string name)
-        {
-            Name = name;
-        }
+    /// <inheritdoc />
+    public ExporterAttribute(string name)
+    {
+        Name = name;
     }
 }

@@ -10,22 +10,21 @@
 
 using System.ComponentModel;
 
-namespace Exomia.Framework.ContentManager.PropertyGridItems
+namespace Exomia.Framework.ContentManager.PropertyGridItems;
+
+/// <summary>
+///     A folder property grid item.
+/// </summary>
+class FolderPropertyGridItem : PropertyGridItem
 {
     /// <summary>
-    ///     A folder property grid item.
+    ///     The total item count of this project.
     /// </summary>
-    class FolderPropertyGridItem : PropertyGridItem
-    {
-        /// <summary>
-        ///     The total item count of this project.
-        /// </summary>
-        /// <value>
-        ///     The total number of items.
-        /// </value>
-        [Category("Statistics")]
-        [Description("The total item count of this project.")]
-        [ReadOnly(true)]
-        public int TotalItems { get; set; }
-    }
+    /// <value>
+    ///     The total number of items.
+    /// </value>
+    [Category("Statistics")]
+    [Description("The total item count of this project.")]
+    [ReadOnly(true)]
+    public int TotalItems { get; set; }
 }

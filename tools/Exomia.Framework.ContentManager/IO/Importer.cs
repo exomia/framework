@@ -13,26 +13,25 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Exomia.Framework.ContentManager.IO
+namespace Exomia.Framework.ContentManager.IO;
+
+abstract class Importer<T> : IImporter
+    where T : class
 {
-    abstract class Importer<T> : IImporter
-        where T : class
+    /// <inheritdoc />
+    public Type OutType
     {
-        /// <inheritdoc />
-        public Type OutType
-        {
-            get { return typeof(T); }
-        }
-
-        async Task<object?> IImporter.ImportAsync(Stream            stream,
-                                                  ImporterContext   context,
-                                                  CancellationToken cancellationToken)
-        {
-            return await ImportAsync(stream, context, cancellationToken);
-        }
-
-        public abstract Task<T?> ImportAsync(Stream            stream,
-                                             ImporterContext   context,
-                                             CancellationToken cancellationToken);
+        get { return typeof(T); }
     }
+
+    async Task<object?> IImporter.ImportAsync(Stream            stream,
+                                              ImporterContext   context,
+                                              CancellationToken cancellationToken)
+    {
+        return await ImportAsync(stream, context, cancellationToken);
+    }
+
+    public abstract Task<T?> ImportAsync(Stream            stream,
+                                         ImporterContext   context,
+                                         CancellationToken cancellationToken);
 }

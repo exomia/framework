@@ -8,21 +8,20 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentManager
+namespace Exomia.Framework.ContentManager;
+
+/// <summary>
+///     Values that represent BuildAction.
+/// </summary>
+public enum BuildAction
 {
     /// <summary>
-    ///     Values that represent BuildAction.
+    ///     An enum constant representing the build option.
     /// </summary>
-    public enum BuildAction
-    {
-        /// <summary>
-        ///     An enum constant representing the build option.
-        /// </summary>
-        Build,
+    Build,
 
-        /// <summary>
-        ///     An enum constant representing the ignore option.
-        /// </summary>
-        Ignore
-    }
+    /// <summary>
+    ///     An enum constant representing the ignore option.
+    /// </summary>
+    Ignore
 }

@@ -182,9 +182,10 @@ public sealed class ColorBlendAttachmentConfiguration
 /// <summary> A color blend configuration. This class cannot be inherited. </summary>
 public sealed class ColorBlendConfiguration
 {
-    public VkPipelineColorBlendStateCreateFlagBits Flags         { get; set; } = 0;
-    public VkBool32                                LogicOpEnable { get; set; } = VkBool32.False;
-    public VkLogicOp                               LogicOp       { get; set; } = VK_LOGIC_OP_NO_OP;
+    public VkPipelineColorBlendStateCreateFlagBits Flags          { get; set; } = 0;
+    public VkBool32                                LogicOpEnable  { get; set; } = VkBool32.False;
+    public VkLogicOp                               LogicOp        { get; set; } = VK_LOGIC_OP_NO_OP;
+    public VkColor                                 BlendConstants { get; set; } = VkColors.Zero;
 }
 
 /// <summary> A dynamic state configuration. This class cannot be inherited. </summary>

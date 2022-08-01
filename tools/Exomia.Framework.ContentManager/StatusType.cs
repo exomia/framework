@@ -8,26 +8,25 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentManager
+namespace Exomia.Framework.ContentManager;
+
+/// <summary>
+///     Values that represent StatusType.
+/// </summary>
+public enum StatusType
 {
     /// <summary>
-    ///     Values that represent StatusType.
+    ///     An enum constant representing the warning option.
     /// </summary>
-    public enum StatusType
-    {
-        /// <summary>
-        ///     An enum constant representing the warning option.
-        /// </summary>
-        Warning,
+    Warning,
 
-        /// <summary>
-        ///     An enum constant representing the error option.
-        /// </summary>
-        Error,
+    /// <summary>
+    ///     An enum constant representing the error option.
+    /// </summary>
+    Error,
 
-        /// <summary>
-        ///     An enum constant representing the Information option.
-        /// </summary>
-        Info
-    }
+    /// <summary>
+    ///     An enum constant representing the Information option.
+    /// </summary>
+    Info
 }

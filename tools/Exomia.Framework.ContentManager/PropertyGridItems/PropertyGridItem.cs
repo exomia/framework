@@ -10,34 +10,33 @@
 
 using System.ComponentModel;
 
-namespace Exomia.Framework.ContentManager.PropertyGridItems
+namespace Exomia.Framework.ContentManager.PropertyGridItems;
+
+/// <summary>
+///     A property grid item.
+/// </summary>
+[DefaultProperty("Name")]
+class PropertyGridItem
 {
     /// <summary>
-    ///     A property grid item.
+    ///     The name of this project.
     /// </summary>
-    [DefaultProperty("Name")]
-    class PropertyGridItem
-    {
-        /// <summary>
-        ///     The name of this project.
-        /// </summary>
-        /// <value>
-        ///     The name.
-        /// </value>
-        [Category("Common")]
-        [Description("The name of this project.")]
-        [ReadOnly(true)]
-        public string? Name { get; set; }
+    /// <value>
+    ///     The name.
+    /// </value>
+    [Category("Common")]
+    [Description("The name of this project.")]
+    [ReadOnly(true)]
+    public string? Name { get; set; }
 
-        /// <summary>
-        ///     The virtual path to this item.
-        /// </summary>
-        /// <value>
-        ///     The full pathname of the virtual file.
-        /// </value>
-        [Category("Common")]
-        [Description("The virtual path to this item.")]
-        [ReadOnly(true)]
-        public string? VirtualPath { get; set; }
-    }
+    /// <summary>
+    ///     The virtual path to this item.
+    /// </summary>
+    /// <value>
+    ///     The full pathname of the virtual file.
+    /// </value>
+    [Category("Common")]
+    [Description("The virtual path to this item.")]
+    [ReadOnly(true)]
+    public string? VirtualPath { get; set; }
 }

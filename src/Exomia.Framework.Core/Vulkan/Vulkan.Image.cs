@@ -9,7 +9,13 @@
 #endregion
 
 using static Exomia.Vulkan.Api.Core.VkFormat;
+using static Exomia.Vulkan.Api.Core.VkImageLayout;
 using static Exomia.Vulkan.Api.Core.VkImageAspectFlagBits;
+using static Exomia.Vulkan.Api.Core.VkAccessFlagBits;
+using static Exomia.Vulkan.Api.Core.VkPipelineStageFlagBits;
+using static Exomia.Vulkan.Api.Core.VkImageViewType;
+using static Exomia.Vulkan.Api.Core.VkComponentSwizzle;
+
 
 namespace Exomia.Framework.Core.Vulkan;
 
@@ -75,60 +81,102 @@ public sealed unsafe partial class Vulkan
         };
     }
 
-    ///// <summary> Transition image layout. </summary>
-    ///// <param name="commandBuffer"> Buffer for command data. </param>
-    ///// <param name="image">         The image. </param>
-    ///// <param name="aspects">       The aspects. </param>
-    ///// <param name="oldLayout">     The old layout. </param>
-    ///// <param name="newLayout">     The new layout. </param>
-    ///// <param name="mipLevels">     (Optional) The mip levels. </param>
-    //public static void TransitionImageLayout(
-    //    VkCommandBuffer    commandBuffer,
-    //    VkImage            image,
-    //    VkImageAspectFlags aspects,
-    //    VkImageLayout      oldLayout,
-    //    VkImageLayout      newLayout,
-    //    uint               mipLevels = 0u)
-    //{
-    //    VkPipelineStageFlags sourceStage      = VkPipelineStageFlagBits.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    //    VkPipelineStageFlags destinationStage = VkPipelineStageFlagBits.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    /// <summary> Transition image layout. </summary>
+    /// <param name="commandBuffer"> Buffer for command data. </param>
+    /// <param name="image">         The image. </param>
+    /// <param name="aspects">       The aspects. </param>
+    /// <param name="oldLayout">     The old layout. </param>
+    /// <param name="newLayout">     The new layout. </param>
+    /// <param name="mipLevels">     (Optional) The mip levels. </param>
+    public static void TransitionImageLayout(
+        VkCommandBuffer    commandBuffer,
+        VkImage            image,
+        VkImageAspectFlags aspects,
+        VkImageLayout      oldLayout,
+        VkImageLayout      newLayout,
+        uint               mipLevels = 0u)
+    {
+        VkImageMemoryBarrier imageMemoryBarrier;
+        imageMemoryBarrier.sType                           = VkImageMemoryBarrier.STYPE;
+        imageMemoryBarrier.pNext                           = null;
+        imageMemoryBarrier.oldLayout                       = oldLayout;
+        imageMemoryBarrier.newLayout                       = newLayout;
+        imageMemoryBarrier.srcQueueFamilyIndex             = VK_QUEUE_FAMILY_IGNORED;
+        imageMemoryBarrier.dstQueueFamilyIndex             = VK_QUEUE_FAMILY_IGNORED;
+        imageMemoryBarrier.image                           = image;
+        imageMemoryBarrier.subresourceRange.aspectMask     = aspects;
+        imageMemoryBarrier.subresourceRange.baseMipLevel   = 0u;
+        imageMemoryBarrier.subresourceRange.levelCount     = mipLevels;
+        imageMemoryBarrier.subresourceRange.baseArrayLayer = 0u;
+        imageMemoryBarrier.subresourceRange.layerCount     = 1u;
 
-    //    VkImageMemoryBarrier imageMemoryBarrier;
-    //    imageMemoryBarrier.sType                           = VkImageMemoryBarrier.STYPE;
-    //    imageMemoryBarrier.pNext                           = null;
-    //    imageMemoryBarrier.oldLayout                       = oldLayout;
-    //    imageMemoryBarrier.newLayout                       = newLayout;
-    //    imageMemoryBarrier.srcQueueFamilyIndex             = VK_QUEUE_FAMILY_IGNORED;
-    //    imageMemoryBarrier.dstQueueFamilyIndex             = VK_QUEUE_FAMILY_IGNORED;
-    //    imageMemoryBarrier.image                           = image;
-    //    imageMemoryBarrier.subresourceRange.aspectMask     = aspects;
-    //    imageMemoryBarrier.subresourceRange.baseMipLevel   = 0u;
-    //    imageMemoryBarrier.subresourceRange.levelCount     = mipLevels;
-    //    imageMemoryBarrier.subresourceRange.baseArrayLayer = 0u;
-    //    imageMemoryBarrier.subresourceRange.layerCount     = 1u;
+        (VkPipelineStageFlags sourceStage, VkPipelineStageFlags destinationStage, imageMemoryBarrier.srcAccessMask, imageMemoryBarrier.dstAccessMask)
+            = ((oldLayout, newLayout)) switch
+            {
+                // undefined -> color attachment
+                (VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL) =>
+                    (VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                        VK_ACCESS_NONE, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT),
+                // undefined -> depth / stencil attachment
+                (VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) =>
+                (VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                        VK_ACCESS_NONE, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT),
+                // undefined -> transfer dst
+                (VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) =>
+                    (VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        VK_ACCESS_NONE, VK_ACCESS_TRANSFER_WRITE_BIT),
+                // transfer dst -> shader read only
+                (VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) =>
+                    (VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                        VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT),
+                _ => throw new NotSupportedException($"No mapping for oldLayout {oldLayout} and newLayout {newLayout} supported!")
+            };
 
-    //    if (oldLayout == VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
-    //    {
-    //        imageMemoryBarrier.srcAccessMask = 0;
-    //        imageMemoryBarrier.dstAccessMask = VkAccessFlagBits.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VkAccessFlagBits.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            sourceStage,
+            destinationStage,
+            0,
+            0u, null,
+            0u, null,
+            1u, &imageMemoryBarrier);
+    }
 
-    //        destinationStage = VkPipelineStageFlagBits.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-    //    }
-    //    else if (oldLayout == VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
-    //    {
-    //        imageMemoryBarrier.srcAccessMask = 0;
-    //        imageMemoryBarrier.dstAccessMask = VkAccessFlagBits.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VkAccessFlagBits.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+    /// <summary> Creates image view. </summary>
+    /// <param name="device">        The device. </param>
+    /// <param name="image">         The image. </param>
+    /// <param name="imageView">     [in,out] If non-null, the image view. </param>
+    /// <param name="format">        Describes the format to use. </param>
+    /// <param name="aspectMask">    The aspect mask. </param>
+    /// <param name="imageViewType"> Type of the image view. </param>
+    public static void CreateImageView(
+        VkDevice device, 
+        VkImage image,
+        VkImageView* imageView, 
+        VkFormat format,
+        VkImageAspectFlagBits aspectMask,
+        VkImageViewType imageViewType = VK_IMAGE_VIEW_TYPE_2D)
+    {
+        VkImageViewCreateInfo imageViewCreateInfo;
+        imageViewCreateInfo.sType                           = VkImageViewCreateInfo.STYPE;
+        imageViewCreateInfo.pNext                           = null;
+        imageViewCreateInfo.flags                           = 0u;
+        imageViewCreateInfo.image                           = image;
+        imageViewCreateInfo.viewType                        = imageViewType;
+        imageViewCreateInfo.format                          = format;
+        imageViewCreateInfo.components.r                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+        imageViewCreateInfo.components.g                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+        imageViewCreateInfo.components.b                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+        imageViewCreateInfo.components.a                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+        imageViewCreateInfo.subresourceRange.aspectMask     = aspectMask;
+        imageViewCreateInfo.subresourceRange.baseMipLevel   = 0u;
+        imageViewCreateInfo.subresourceRange.levelCount     = 1u;
+        imageViewCreateInfo.subresourceRange.baseArrayLayer = 0u;
+        imageViewCreateInfo.subresourceRange.layerCount     = 1u;
 
-    //        destinationStage = VkPipelineStageFlagBits.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-    //    }
+        vkCreateImageView(device, &imageViewCreateInfo, null, imageView)
+            .AssertVkResult();
 
-    //    vkCmdPipelineBarrier(
-    //        commandBuffer,
-    //        sourceStage,
-    //        destinationStage,
-    //        0,
-    //        0u, null,
-    //        0u, null,
-    //        1u, &imageMemoryBarrier);
-    //}
+
+    }
 }

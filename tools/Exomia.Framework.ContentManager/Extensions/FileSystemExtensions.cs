@@ -10,24 +10,23 @@
 
 using System.IO;
 
-namespace Exomia.Framework.ContentManager.Extensions
-{
-    static class FileSystemExtensions
-    {
-        public static void DeleteIfExists(this FileInfo info)
-        {
-            if (info.Exists)
-            {
-                info.Delete();
-            }
-        }
+namespace Exomia.Framework.ContentManager.Extensions;
 
-        public static void DeleteIfExists(this DirectoryInfo info)
+static class FileSystemExtensions
+{
+    public static void DeleteIfExists(this FileInfo info)
+    {
+        if (info.Exists)
         {
-            if (info.Exists)
-            {
-                info.Delete(true);
-            }
+            info.Delete();
+        }
+    }
+
+    public static void DeleteIfExists(this DirectoryInfo info)
+    {
+        if (info.Exists)
+        {
+            info.Delete(true);
         }
     }
 }

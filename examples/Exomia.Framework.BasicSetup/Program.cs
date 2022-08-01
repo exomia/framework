@@ -10,6 +10,7 @@
 
 using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Application.Configurations;
+using Exomia.Framework.Core.Extensions;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Windows.Application.Desktop;
 using Exomia.Vulkan.Api.Core;
@@ -34,11 +35,13 @@ internal sealed class Program
                = applicationBuilder
                  .ConfigureServices(serviceCollection =>
                  {
-                     serviceCollection.AddLogging(builder =>
-                     {
-                         builder.ClearProviders();
-                         builder.AddSerilog(Log.Logger);
-                     });
+                     serviceCollection
+                         .AddLogging(builder =>
+                         {
+                             builder.ClearProviders();
+                             builder.AddSerilog(Log.Logger);
+                         })
+                         .AddDefaultContentManagement();
                  })
                  .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>
                  {

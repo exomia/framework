@@ -107,6 +107,29 @@ public sealed partial class SpriteBatch
     /// <param name="color">                The Color. </param>
     /// <param name="layerDepth">           The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color)
+    {
+        SpriteInfo spriteInfo;
+        spriteInfo.Destination      = destinationRectangle;
+        spriteInfo.ScaleDestination = false;
+        spriteInfo.Source           = s_nullRectangle;
+        spriteInfo.Color            = color;
+        spriteInfo.Rotation         = 0.0f;
+        spriteInfo.Origin           = s_vector2Zero;
+        spriteInfo.Opacity          = 1.0f;
+        spriteInfo.Effects          = TextureEffects.None;
+        spriteInfo.Depth            = 0.0f;
+        spriteInfo.TextureInfo      = _whiteTextureInfo;
+        DrawSprite(spriteInfo);
+    }
+
+    /// <summary>
+    ///     Draw fill rectangle.
+    /// </summary>
+    /// <param name="destinationRectangle"> The Destination rectangle. </param>
+    /// <param name="color">                The Color. </param>
+    /// <param name="layerDepth">           The Depth of the layer. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color, float layerDepth)
     {
         SpriteInfo spriteInfo;

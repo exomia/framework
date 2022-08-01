@@ -33,11 +33,11 @@ public sealed unsafe partial class SpriteBatch
     internal readonly struct TextureInfo
     {
         //public readonly ShaderResourceView View;
-        public readonly int  Width;
-        public readonly int  Height;
+        public readonly uint  Width;
+        public readonly uint  Height;
         public readonly long Ptr64;
 
-        public TextureInfo(int width, int height)
+        public TextureInfo(uint width, uint height)
         {
             Width  = width;
             Height = height;

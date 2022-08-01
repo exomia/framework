@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net6.0-windows</TargetFrameworks>
+    <Platforms>AnyCPU;x64</Platforms>    
     <Description>A content manager for the exomia framework.</Description>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWindowsForms>true</UseWindowsForms> 
   </PropertyGroup>
 
+
   <ItemGroup>
-    <PackageReference Include="FCTB" Version="2.16.24" />
-    <PackageReference Include="Microsoft.WindowsAPICodePack-Shell" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

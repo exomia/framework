@@ -13,15 +13,14 @@ using System.Xml.Serialization;
 
 #pragma warning disable 1591
 
-namespace Exomia.Framework.ContentManager.Fonts.BMFont
-{
-    [Serializable]
-    public class FontPage
-    {
-        [XmlAttribute("id")]
-        public int ID { get; set; }
+namespace Exomia.Framework.ContentManager.Fonts.BMFont;
 
-        [XmlAttribute("file")]
-        public string? File { get; set; }
-    }
+[Serializable]
+public class FontPage
+{
+    [XmlAttribute("id")]
+    public int ID { get; set; }
+
+    [XmlAttribute("file")]
+    public string? File { get; set; }
 }

@@ -13,79 +13,78 @@ using System.IO;
 using Exomia.Framework.ContentManager.PropertyGridItems;
 using Newtonsoft.Json;
 
-namespace Exomia.Framework.ContentManager
+namespace Exomia.Framework.ContentManager;
+
+/// <summary>
+///     A project file. This class cannot be inherited.
+/// </summary>
+sealed class ProjectFile
 {
     /// <summary>
-    ///     A project file. This class cannot be inherited.
+    ///     Gets the project name.
     /// </summary>
-    sealed class ProjectFile
+    /// <value>
+    ///     The project name.
+    /// </value>
+    public string Name { get; }
+
+    /// <summary>
+    ///     Gets the project location.
+    /// </summary>
+    /// <value>
+    ///     The project location.
+    /// </value>
+    public string Location { get; }
+
+    /// <summary>
+    ///     Gets the project file path.
+    /// </summary>
+    /// <value>
+    ///     The project file path.
+    /// </value>
+    public string FilePath { get; }
+
+    /// <summary>
+    ///     Gets or sets the content.
+    /// </summary>
+    /// <value>
+    ///     The content.
+    /// </value>
+    public ContentPropertyGridItem? Content { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the resources.
+    /// </summary>
+    /// <value>
+    ///     The resources.
+    /// </value>
+    public IList<PropertyGridItem> Resources { get; set; } = new List<PropertyGridItem>();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ProjectFile" /> class.
+    /// </summary>
+    /// <param name="projectName">     The project name. </param>
+    /// <param name="projectLocation"> The project location. </param>
+    [JsonConstructor]
+    public ProjectFile([JsonProperty("Name")]     string projectName,
+                       [JsonProperty("Location")] string projectLocation)
     {
-        /// <summary>
-        ///     Gets the project name.
-        /// </summary>
-        /// <value>
-        ///     The project name.
-        /// </value>
-        public string Name { get; }
+        Name     = projectName;
+        Location = projectLocation;
+        FilePath = Path.Combine(Location, $"{Name}.ecp");
+    }
 
-        /// <summary>
-        ///     Gets the project location.
-        /// </summary>
-        /// <value>
-        ///     The project location.
-        /// </value>
-        public string Location { get; }
-
-        /// <summary>
-        ///     Gets the project file path.
-        /// </summary>
-        /// <value>
-        ///     The project file path.
-        /// </value>
-        public string FilePath { get; }
-
-        /// <summary>
-        ///     Gets or sets the content.
-        /// </summary>
-        /// <value>
-        ///     The content.
-        /// </value>
-        public ContentPropertyGridItem? Content { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the resources.
-        /// </summary>
-        /// <value>
-        ///     The resources.
-        /// </value>
-        public IList<PropertyGridItem> Resources { get; set; } = new List<PropertyGridItem>();
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ProjectFile" /> class.
-        /// </summary>
-        /// <param name="projectName">     The project name. </param>
-        /// <param name="projectLocation"> The project location. </param>
-        [JsonConstructor]
-        public ProjectFile([JsonProperty("Name")]     string projectName,
-                           [JsonProperty("Location")] string projectLocation)
-        {
-            Name     = projectName;
-            Location = projectLocation;
-            FilePath = Path.Combine(Location, $"{Name}.ecp");
-        }
-
-        /// <summary>
-        ///     Adds a resource.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="resource"> The resource. </param>
-        /// <returns>
-        ///     A T.
-        /// </returns>
-        public T AddResource<T>(T resource) where T : PropertyGridItem
-        {
-            Resources.Add(resource);
-            return resource;
-        }
+    /// <summary>
+    ///     Adds a resource.
+    /// </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="resource"> The resource. </param>
+    /// <returns>
+    ///     A T.
+    /// </returns>
+    public T AddResource<T>(T resource) where T : PropertyGridItem
+    {
+        Resources.Add(resource);
+        return resource;
     }
 }

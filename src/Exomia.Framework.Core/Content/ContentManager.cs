@@ -362,7 +362,7 @@ public sealed class ContentManager : IContentManager
         {
             try
             {
-                if (contentResolver.Exists(assetType, assetName, out Assembly assembly))
+                if (contentResolver.Exists(assetType, assetName, out Assembly? assembly))
                 {
                     Stream? stream = contentResolver.Resolve(assembly, assetName);
                     if (stream != null) { return stream; }

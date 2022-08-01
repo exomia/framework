@@ -225,7 +225,7 @@ public sealed unsafe class Buffer : IDisposable
                 Unsafe.CopyBlock(stagingIndexBuffer.Map(), src, stagingIndexBuffer.Size);
             }
             stagingIndexBuffer.Unmap();
-            stagingIndexBuffer.CopyTo(indexBuffer, context->ShortLivedCommandPool, *(context->Queues - 1u));
+            stagingIndexBuffer.CopyTo(indexBuffer, *(context->Queues - 1u), context->ShortLivedCommandPool);
             return indexBuffer;
         }
     }
@@ -598,83 +598,49 @@ public sealed unsafe class Buffer : IDisposable
         vkUnmapMemory(_device, _deviceMemory);
     }
 
-    /// <summary> Copies to described by dst. </summary>
+    /// <summary> Copies the contents of the current buffer to the <paramref name="dst"/> buffer. </summary>
     /// <param name="dst">         Destination for the copy operation. </param>
-    /// <param name="commandPool"> The command pool. </param>
     /// <param name="queue">       The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-    public void CopyTo(Buffer dst, VkCommandPool commandPool, VkQueue queue)
+    public void CopyTo(Buffer dst, VkQueue queue, VkCommandPool commandPool)
     {
         if (Size > dst.Size)
         {
             throw new ArgumentOutOfRangeException(nameof(dst), Size, $"{Size} > {dst.Size}");
         }
 
-        VkCommandBuffer commandBuffer;
-        Vulkan.CreateCommandBuffers(_device, commandPool, 1u, &commandBuffer);
+        Vulkan.ImmediateSubmit(_device, queue, commandPool, cb =>
+        {
+            VkBufferCopy bufferCopy;
+            bufferCopy.srcOffset = VkDeviceSize.Zero;
+            bufferCopy.dstOffset = VkDeviceSize.Zero;
+            bufferCopy.size      = Size;
+            vkCmdCopyBuffer(cb, *_buffer, *dst._buffer, 1u, &bufferCopy);
+        });
+    }
+    
+    /// <summary> Copies the contents of the current buffer to the <paramref name="dst"/> buffer. </summary>
+    /// <param name="dst">         Destination for the copy operation. </param>
+    /// <param name="dstOffset">   Destination offset. </param>
+    /// <param name="queue">       The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
+    /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
+    public void CopyTo(Buffer dst, VkDeviceSize dstOffset, VkQueue queue, VkCommandPool commandPool)
+    {
+        if (Size > dst.Size - dstOffset)
+        {
+            throw new ArgumentOutOfRangeException(nameof(dst), Size, $"{Size} > {dst.Size} - {dstOffset}");
+        }
 
-        VkCommandBufferBeginInfo commandBufferBeginInfo;
-        commandBufferBeginInfo.sType            = VkCommandBufferBeginInfo.STYPE;
-        commandBufferBeginInfo.pNext            = null;
-        commandBufferBeginInfo.flags            = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-        commandBufferBeginInfo.pInheritanceInfo = null;
-
-        vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
-#if DEBUG
-            .AssertVkResult()
-#endif
-            ;
-
-        VkBufferCopy bufferCopy;
-        bufferCopy.srcOffset = VkDeviceSize.Zero;
-        bufferCopy.dstOffset = VkDeviceSize.Zero;
-        bufferCopy.size      = Size;
-        vkCmdCopyBuffer(commandBuffer, *_buffer, *dst._buffer, 1u, &bufferCopy);
-
-        vkEndCommandBuffer(commandBuffer)
-#if DEBUG
-            .AssertVkResult()
-#endif
-            ;
-
-        VkSubmitInfo submitInfo;
-        submitInfo.sType                = VkSubmitInfo.STYPE;
-        submitInfo.pNext                = null;
-        submitInfo.waitSemaphoreCount   = 0u;
-        submitInfo.pWaitSemaphores      = null;
-        submitInfo.pWaitDstStageMask    = null;
-        submitInfo.commandBufferCount   = 1u;
-        submitInfo.pCommandBuffers      = &commandBuffer;
-        submitInfo.signalSemaphoreCount = 0u;
-        submitInfo.pSignalSemaphores    = null;
-
-        VkFenceCreateInfo fenceCreateInfo;
-        fenceCreateInfo.sType = VkFenceCreateInfo.STYPE;
-        fenceCreateInfo.pNext = null;
-        fenceCreateInfo.flags = 0u;
-
-        VkFence fence;
-        vkCreateFence(_device, &fenceCreateInfo, null, &fence)
-#if DEBUG
-            .AssertVkResult()
-#endif
-            ;
-
-        vkQueueSubmit(queue, 1u, &submitInfo, fence)
-#if DEBUG
-            .AssertVkResult()
-#endif
-            ;
-
-        vkWaitForFences(_device, 1u, &fence, VK_TRUE, ulong.MaxValue)
-#if DEBUG
-            .AssertVkResult()
-#endif
-            ;
-
-        vkDestroyFence(_device, fence, null);
-
-        vkFreeCommandBuffers(_device, commandPool, 1u, &commandBuffer);
+        Vulkan.ImmediateSubmit(_device, queue, commandPool, cb =>
+        {
+            VkBufferCopy bufferCopy;
+            bufferCopy.srcOffset = VkDeviceSize.Zero;
+            bufferCopy.dstOffset = dstOffset;
+            bufferCopy.size      = Size;
+            vkCmdCopyBuffer(cb, *_buffer, *dst._buffer, 1u, &bufferCopy);
+        });
     }
 
     #region IDisposable Support

@@ -13,12 +13,11 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Exomia.Framework.ContentManager.IO
-{
-    interface IImporter
-    {
-        Type OutType { get; }
+namespace Exomia.Framework.ContentManager.IO;
 
-        Task<object?> ImportAsync(Stream stream, ImporterContext context, CancellationToken cancellationToken);
-    }
+interface IImporter
+{
+    Type OutType { get; }
+
+    Task<object?> ImportAsync(Stream stream, ImporterContext context, CancellationToken cancellationToken);
 }

@@ -10,12 +10,11 @@
 
 using System;
 
-namespace Exomia.Framework.ContentManager.IO
-{
-    interface IExporter
-    {
-        Type ImportType { get; }
+namespace Exomia.Framework.ContentManager.IO;
 
-        bool Export(object obj, ExporterContext context);
-    }
+interface IExporter
+{
+    Type ImportType { get; }
+
+    bool Export(object obj, ExporterContext context);
 }

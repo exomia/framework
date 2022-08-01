@@ -8,8 +8,9 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Exomia.Framework.Core.ContentSerialization.Compression;
+using Exomia.Framework.Core.Content.Compression;
 
 namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 
@@ -17,30 +18,59 @@ namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 internal class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
 {
     /// <inheritdoc />
-    public bool Exists(Type assetType, string assetName, out Assembly assembly)
+    public bool Exists(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
     {
-        if (Path.GetExtension(assetName) == ContentCompressor.DEFAULT_COMPRESSED_EXTENSION)
+        if (Path.GetExtension(assetName) == E1.EXTENSION_NAME)
         {
-            return EmbeddedResourceStreamResolver.ExistsInternal(assetType, assetName, out assembly);
+            return ExistsInternal(assetType, assetName, out assembly);
         }
 
-        assembly = null!;
+        assembly = null;
         return false;
     }
 
     /// <inheritdoc />
     public Stream? Resolve(Assembly assembly, string assetName)
     {
-        Stream? stream = EmbeddedResourceStreamResolver.GetManifestResourceStreamInternal(assembly, assetName);
-        if (stream != null)
+        Stream? stream = assembly.GetManifestResourceStream(GetAssetName(assetName, assembly));
+        if (stream == null)
         {
-            using (stream)
-            {
-                return ContentCompressor.DecompressStream(stream, out Stream stream2)
-                    ? stream2
-                    : null;
-            }
+            return null;
         }
-        return null;
+
+        byte[] buffer = new byte[E1.MagicHeader.Length];
+        if (stream.Read(buffer, 0, buffer.Length) != E1.MagicHeader.Length
+            || !E1.MagicHeader.SequenceEqual(buffer))
+        {
+            stream.Dispose();
+            return null;
+        }
+
+        return stream;
+    }
+
+    private static bool ExistsInternal(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
+    {
+        assembly = assetType.Assembly;
+        string name = GetAssetName(assetName, assembly);
+        if (assembly.GetManifestResourceNames().Any(resourceName => resourceName.Equals(name)))
+        {
+            return true;
+        }
+
+        assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
+        name     = GetAssetName(assetName, assembly);
+        if (assembly.GetManifestResourceNames().Any(resourceName => resourceName.Equals(name)))
+        {
+            return true;
+        }
+
+        assembly = null;
+        return false;
+    }
+
+    private static string GetAssetName(string assetName, Assembly assembly)
+    {
+        return $"{assembly.GetName().Name}.{assetName}";
     }
 }

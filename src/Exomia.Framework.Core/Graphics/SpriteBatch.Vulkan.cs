@@ -14,7 +14,6 @@ using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Resources;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
-using Exomia.Framework.Core.Vulkan.Shader;
 using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
@@ -27,8 +26,8 @@ public sealed unsafe partial class SpriteBatch
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
         using Stream vertexShaderStream =
-            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_VERT_OPT}") ??
-            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_VERT_OPT}");
+            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_VERT_OPT}") ??
+            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_VERT_OPT}");
 
         byte* vert = stackalloc byte[(int)vertexShaderStream.Length]; // ~1.35 KB
         if (vertexShaderStream.Length != vertexShaderStream.Read(new Span<byte>(vert, (int)vertexShaderStream.Length)))
@@ -37,8 +36,8 @@ public sealed unsafe partial class SpriteBatch
         }
 
         using Stream fragmentShaderStream =
-            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_FRAG_OPT}") ??
-            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_FRAG_OPT}");
+            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_FRAG_OPT}") ??
+            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_FRAG_OPT}");
 
         byte* frag = stackalloc byte[(int)fragmentShaderStream.Length]; // ~412 B
         if (fragmentShaderStream.Length != fragmentShaderStream.Read(new Span<byte>(frag, (int)fragmentShaderStream.Length)))
@@ -73,7 +72,15 @@ public sealed unsafe partial class SpriteBatch
                     {
                         Type  = Shader.StageType.FragmentShaderStage,
                         Name  = "main",
-                        Flags = 0
+                        Flags = 0,
+                        Specializations = new[]
+                        {
+                            new Shader.Module.Stage.Specialization.Configuration
+                            {
+                                ConstantID = 0,
+                                Value      = 12
+                            }
+                        }
                     }
                 }
             }
@@ -134,11 +141,11 @@ public sealed unsafe partial class SpriteBatch
                     CreateVertexInputAttributeDescriptions = &CreateVertexInputAttributeDescriptions
                 })
             {
-                //DynamicState = { States = new[] { VkDynamicState.SCISSOR } },
+                DynamicState = { States = new[] { VkDynamicState.VK_DYNAMIC_STATE_SCISSOR } },
             }, _context->PipelineLayout, new[]
             {
-                _shader!["DEFAULT_VS"],
-                _shader!["DEFAULT_FS"]
+                _shader["DEFAULT_VS"],
+                _shader["DEFAULT_FS"]
             }));
     }
 

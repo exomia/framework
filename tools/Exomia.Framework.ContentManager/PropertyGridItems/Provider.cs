@@ -8,33 +8,32 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentManager.PropertyGridItems
+namespace Exomia.Framework.ContentManager.PropertyGridItems;
+
+/// <summary>
+///     A provider.
+/// </summary>
+public static class Provider
 {
     /// <summary>
-    ///     A provider.
+    ///     Gets the value.
     /// </summary>
-    public static class Provider
-    {
-        /// <summary>
-        ///     Gets the value.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <returns>
-        ///     A T.
-        /// </returns>
-        public delegate T Value<out T>();
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <returns>
+    ///     A T.
+    /// </returns>
+    public delegate T Value<out T>();
 
-        /// <summary>
-        ///     Static access to the given item.
-        /// </summary>
-        /// <typeparam name="T"> Generic type parameter. </typeparam>
-        /// <param name="item"> The item. </param>
-        /// <returns>
-        ///     A Value&lt;T&gt;
-        /// </returns>
-        public static Value<T> Static<T>(T item)
-        {
-            return () => item;
-        }
+    /// <summary>
+    ///     Static access to the given item.
+    /// </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="item"> The item. </param>
+    /// <returns>
+    ///     A Value&lt;T&gt;
+    /// </returns>
+    public static Value<T> Static<T>(T item)
+    {
+        return () => item;
     }
 }

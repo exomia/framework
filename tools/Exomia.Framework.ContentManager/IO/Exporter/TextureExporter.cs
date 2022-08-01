@@ -1,0 +1,55 @@
+﻿using System.Data;
+using Exomia.Framework.Core.Content.Compression;
+using Exomia.Framework.Core.Content.Resolver;
+
+namespace Exomia.Framework.ContentManager.IO.Exporter;
+
+[Exporter("Texture Exporter")]
+sealed class TextureExporter : Exporter<Texture.Texture>
+{
+    public override bool Export(Texture.Texture obj, ExporterContext context)
+    {
+        string outputFile = Path.Combine(
+            context.OutputFolder, context.VirtualPath,
+            Path.GetFileNameWithoutExtension(context.ItemName));
+
+        string assetName = outputFile + E1.EXTENSION_NAME;
+
+        if (!Directory.Exists(Path.GetDirectoryName(assetName)))
+        {
+            Directory.CreateDirectory(
+                Path.GetDirectoryName(assetName) ?? throw new NoNullAllowedException());
+        }
+
+
+        using (Stream staging = new MemoryStream())
+        using (BinaryWriter bw = new BinaryWriter(staging))
+        {
+            bw.Write(obj.Width);
+            bw.Write(obj.Height);
+            if (obj.Data != null)
+            {
+                // Convert from ARGB to RGBA
+                for (int i = 0; i < obj.Data.Length; i+= 4)
+                {
+                    bw.Write(obj.Data[i + 1]); // R
+                    bw.Write(obj.Data[i + 2]); // G
+                    bw.Write(obj.Data[i + 3]); // B
+                    bw.Write(obj.Data[i + 0]); // A
+                }
+            }
+            staging.Seek(0, SeekOrigin.Begin);
+
+            using (FileStream fs = new FileStream(assetName, FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(E1.MagicHeader,        0, E1.MagicHeader.Length);
+                fs.Write(E1.TextureMagicHeader, 0, E1.TextureMagicHeader.Length);
+                ContentCompressor.CompressStream(staging, fs);
+            }
+        }
+
+        context.AddMessage("{0:green} {1}", "successful created", assetName);
+
+        return true;
+    }
+}

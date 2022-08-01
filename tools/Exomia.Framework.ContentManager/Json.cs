@@ -12,49 +12,48 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Exomia.Framework.ContentManager
+namespace Exomia.Framework.ContentManager;
+
+static class Json
 {
-    static class Json
+    private static readonly JsonSerializer s_jsonSerializer = new JsonSerializer
     {
-        private static readonly JsonSerializer s_jsonSerializer = new JsonSerializer
-        {
-            Formatting       = Formatting.Indented,
-            TypeNameHandling = TypeNameHandling.All,
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
+        Formatting       = Formatting.Indented,
+        TypeNameHandling = TypeNameHandling.All,
+        ContractResolver = new CamelCasePropertyNamesContractResolver()
+    };
 
-        public static void Serialize(Stream s, object value)
+    public static void Serialize(Stream s, object value)
+    {
+        using (StreamWriter sw = new StreamWriter(s))
+        using (JsonWriter jw = new JsonTextWriter(sw))
         {
-            using (StreamWriter sw = new StreamWriter(s))
-            using (JsonWriter jw = new JsonTextWriter(sw))
-            {
-                s_jsonSerializer.Serialize(jw, value);
-            }
+            s_jsonSerializer.Serialize(jw, value);
         }
+    }
 
-        public static void Serialize(string filePath, object value)
+    public static void Serialize(string filePath, object value)
+    {
+        using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                Serialize(fs, value);
-            }
+            Serialize(fs, value);
         }
+    }
 
-        public static T? Deserialize<T>(Stream s) where T : class
+    public static T? Deserialize<T>(Stream s) where T : class
+    {
+        using (StreamReader? sr = new StreamReader(s))
+        using (JsonTextReader? jr = new JsonTextReader(sr))
         {
-            using (StreamReader? sr = new StreamReader(s))
-            using (JsonTextReader? jr = new JsonTextReader(sr))
-            {
-                return s_jsonSerializer.Deserialize<T>(jr);
-            }
+            return s_jsonSerializer.Deserialize<T>(jr);
         }
+    }
 
-        public static T? Deserialize<T>(string filePath) where T : class
+    public static T? Deserialize<T>(string filePath) where T : class
+    {
+        using (FileStream? sr = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
         {
-            using (FileStream? sr = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
-            {
-                return Deserialize<T>(sr);
-            }
+            return Deserialize<T>(sr);
         }
     }
 }

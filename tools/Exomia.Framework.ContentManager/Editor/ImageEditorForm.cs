@@ -10,19 +10,18 @@
 
 using System.Windows.Forms;
 
-namespace Exomia.Framework.ContentManager.Editor
+namespace Exomia.Framework.ContentManager.Editor;
+
+/// <summary>
+///     Form for editing the image.
+/// </summary>
+public partial class ImageEditorForm : Form
 {
     /// <summary>
-    ///     Form for editing the image.
+    ///     Initializes a new instance of the <see cref="ImageEditorForm" /> class.
     /// </summary>
-    public partial class ImageEditorForm : Form
+    public ImageEditorForm()
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ImageEditorForm" /> class.
-        /// </summary>
-        public ImageEditorForm()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

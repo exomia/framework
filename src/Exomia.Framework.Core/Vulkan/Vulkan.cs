@@ -13,6 +13,7 @@ using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using static Exomia.Vulkan.Api.Core.VkCommandBufferUsageFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 
@@ -94,6 +95,135 @@ public sealed unsafe partial class Vulkan : IDisposable
 
             _logger.LogInformation("[{method}] done!", nameof(Cleanup));
         }
+    }
+
+    /// <summary> Begins immediate submit. </summary>
+    /// <param name="device">      The device. </param>
+    /// <param name="queue">       The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
+    /// <returns> A VkCommandBuffer. </returns>
+    public static VkCommandBuffer BeginImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool)
+    {
+        VkCommandBuffer commandBuffer;
+        CreateCommandBuffers(device, commandPool, 1u, &commandBuffer);
+
+        VkCommandBufferBeginInfo commandBufferBeginInfo;
+        commandBufferBeginInfo.sType            = VkCommandBufferBeginInfo.STYPE;
+        commandBufferBeginInfo.pNext            = null;
+        commandBufferBeginInfo.flags            = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        commandBufferBeginInfo.pInheritanceInfo = null;
+
+        vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
+#if DEBUG
+            .AssertVkResult()
+#endif
+            ;
+
+        return commandBuffer;
+    }
+
+    /// <summary> Ends immediate submit. </summary>
+    /// <param name="device">        The device. </param>
+    /// <param name="queue">         The queue. </param>
+    /// <param name="commandPool">   The command pool. </param>
+    /// <param name="commandBuffer"> Buffer for command data. </param>
+    /// <param name="fence">         The fence. </param>
+    public static void EndImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, VkCommandBuffer commandBuffer)
+    {
+        VkFenceCreateInfo fenceCreateInfo;
+        fenceCreateInfo.sType = VkFenceCreateInfo.STYPE;
+        fenceCreateInfo.pNext = null;
+        fenceCreateInfo.flags = 0u;
+
+        VkFence fence;
+        vkCreateFence(device, &fenceCreateInfo, null, &fence)
+#if DEBUG
+            .AssertVkResult()
+#endif
+            ;
+
+        EndImmediateSubmit(device, queue, commandPool, commandBuffer, fence);
+
+        vkDestroyFence(device, fence, null);
+    }
+
+    /// <summary> Ends immediate submit. </summary>
+        /// <param name="device">        The device. </param>
+        /// <param name="queue">         The queue. </param>
+        /// <param name="commandPool">   The command pool. </param>
+        /// <param name="commandBuffer"> Buffer for command data. </param>
+        /// <param name="fence">         The fence. </param>
+        public static void EndImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, VkCommandBuffer commandBuffer, VkFence fence)
+    {
+        vkEndCommandBuffer(commandBuffer)
+#if DEBUG
+            .AssertVkResult()
+#endif
+            ;
+
+        VkSubmitInfo submitInfo;
+        submitInfo.sType                = VkSubmitInfo.STYPE;
+        submitInfo.pNext                = null;
+        submitInfo.waitSemaphoreCount   = 0u;
+        submitInfo.pWaitSemaphores      = null;
+        submitInfo.pWaitDstStageMask    = null;
+        submitInfo.commandBufferCount   = 1u;
+        submitInfo.pCommandBuffers      = &commandBuffer;
+        submitInfo.signalSemaphoreCount = 0u;
+        submitInfo.pSignalSemaphores    = null;
+
+        vkQueueSubmit(queue, 1u, &submitInfo, fence)
+#if DEBUG
+            .AssertVkResult()
+#endif
+            ;
+
+        vkWaitForFences(device, 1u, &fence, VK_TRUE, ulong.MaxValue)
+#if DEBUG
+            .AssertVkResult()
+#endif
+            ;
+
+        vkFreeCommandBuffers(device, commandPool, 1u, &commandBuffer);
+    }
+
+    /// <summary> Immediate submit. </summary>
+        /// <param name="device">      The device. </param>
+        /// <param name="queue">       The queue. </param>
+        /// <param name="commandPool"> The command pool. </param>
+        /// <param name="cb">          The cb. </param>
+        public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb)
+    {
+        VkFenceCreateInfo fenceCreateInfo;
+        fenceCreateInfo.sType = VkFenceCreateInfo.STYPE;
+        fenceCreateInfo.pNext = null;
+        fenceCreateInfo.flags = 0u;
+
+        VkFence fence;
+        vkCreateFence(device, &fenceCreateInfo, null, &fence)
+#if DEBUG
+            .AssertVkResult()
+#endif
+            ;
+
+        ImmediateSubmit(device, queue, commandPool, cb, fence);
+
+        vkDestroyFence(device, fence, null);
+    }
+
+    /// <summary> Immediate submit. </summary>
+    /// <param name="device">      The device. </param>
+    /// <param name="queue">       The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
+    /// <param name="cb">          The cb. </param>
+    /// <param name="fence">       The fence. </param>
+    public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb, VkFence fence)
+    {
+        VkCommandBuffer commandBuffer = BeginImmediateSubmit(device, queue, commandPool);
+        
+        cb(commandBuffer);
+
+        EndImmediateSubmit(device, queue, commandPool, commandBuffer, fence);
     }
 
     #region IDisposable Support

@@ -13,39 +13,38 @@ using System.Xml.Serialization;
 
 #pragma warning disable 1591
 
-namespace Exomia.Framework.ContentManager.Fonts.BMFont
+namespace Exomia.Framework.ContentManager.Fonts.BMFont;
+
+[Serializable]
+public class FontCommon
 {
-    [Serializable]
-    public class FontCommon
-    {
-        [XmlAttribute("lineHeight")]
-        public int LineHeight { get; set; }
+    [XmlAttribute("lineHeight")]
+    public int LineHeight { get; set; }
 
-        [XmlAttribute("base")]
-        public int Base { get; set; }
+    [XmlAttribute("base")]
+    public int Base { get; set; }
 
-        [XmlAttribute("scaleW")]
-        public int ScaleW { get; set; }
+    [XmlAttribute("scaleW")]
+    public int ScaleW { get; set; }
 
-        [XmlAttribute("scaleH")]
-        public int ScaleH { get; set; }
+    [XmlAttribute("scaleH")]
+    public int ScaleH { get; set; }
 
-        [XmlAttribute("pages")]
-        public int Pages { get; set; }
+    [XmlAttribute("pages")]
+    public int Pages { get; set; }
 
-        [XmlAttribute("packed")]
-        public int Packed { get; set; }
+    [XmlAttribute("packed")]
+    public int Packed { get; set; }
 
-        [XmlAttribute("alphaChnl")]
-        public int AlphaChannel { get; set; }
+    [XmlAttribute("alphaChnl")]
+    public int AlphaChannel { get; set; }
 
-        [XmlAttribute("redChnl")]
-        public int RedChannel { get; set; }
+    [XmlAttribute("redChnl")]
+    public int RedChannel { get; set; }
 
-        [XmlAttribute("greenChnl")]
-        public int GreenChannel { get; set; }
+    [XmlAttribute("greenChnl")]
+    public int GreenChannel { get; set; }
 
-        [XmlAttribute("blueChnl")]
-        public int BlueChannel { get; set; }
-    }
+    [XmlAttribute("blueChnl")]
+    public int BlueChannel { get; set; }
 }
