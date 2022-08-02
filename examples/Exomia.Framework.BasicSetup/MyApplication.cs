@@ -32,7 +32,6 @@ sealed unsafe class MyApplication : Application
     private readonly Renderer    _renderer;
     private readonly SpriteBatch _spriteBatch;
     private readonly Texture     _texture1;
-    private readonly Texture     _texture2;
 
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider">           The service provider. </param>
@@ -50,6 +49,8 @@ sealed unsafe class MyApplication : Application
     {
         _logger = logger;
 
+        contentManager.RootDirectory = "Content";
+
         //IsFixedTimeStep   = true;
         //TargetElapsedTime = 1000.0 / 144;
 
@@ -65,9 +66,9 @@ sealed unsafe class MyApplication : Application
 
         _renderer    = new Renderer(_swapchain);
         _spriteBatch = new SpriteBatch(_swapchain);
+        
 
         _texture1 = contentManager.Load<Texture>("icon.e1");
-        _texture2 = contentManager.Load<Texture>("skizze_eg.e1");
     }
 
     int   frames = 0;
@@ -91,7 +92,10 @@ sealed unsafe class MyApplication : Application
             {
                 _spriteBatch.Draw(_texture1, new RectangleF(rnd.Next(0, 900), rnd.Next(0, 700), 40, 40), VkColors.White);
 
-                _spriteBatch.Draw(_texture2, new RectangleF(rnd.Next(0, 900), rnd.Next(0, 700), 40, 40), VkColors.White);
+                _spriteBatch.DrawFillRectangle(
+                    new RectangleF(50 + rnd.Next(0, 900), 50 + rnd.Next(0, 600), 40, 40),
+                    new VkColor(0.3f, 0.4f, 0.9f, 1f),
+                    rnd.NextSingle());
             }
             _spriteBatch.End(commandBuffer);
 
@@ -156,6 +160,5 @@ sealed unsafe class MyApplication : Application
         _renderer.Dispose();
         _swapchain.Dispose();
         _texture1.Dispose();
-        _texture2.Dispose();
     }
 }
