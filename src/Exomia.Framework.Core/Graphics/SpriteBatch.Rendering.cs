@@ -9,6 +9,7 @@
 #endregion
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
@@ -20,6 +21,7 @@ public sealed unsafe partial class SpriteBatch
 {
     private static void UpdateVertexFromSpriteInfo(
         SpriteInfo*                 spriteInfo,
+        TextureInfo*                textureInfo,
         VertexPositionColorTexture* pVpct,
         float                       deltaX,
         float                       deltaY)
@@ -35,8 +37,8 @@ public sealed unsafe partial class SpriteBatch
         {
             sx = 0;
             sy = 0;
-            sw = spriteInfo->TextureInfo.Width;
-            sh = spriteInfo->TextureInfo.Height;
+            sw = textureInfo->Width;
+            sh = textureInfo->Height;
         }
 
         float dx = spriteInfo->Destination.Left;
@@ -141,7 +143,7 @@ public sealed unsafe partial class SpriteBatch
             throw new InvalidOperationException($"{nameof(End)} must be called before {nameof(Begin)}");
         }
 #endif
-        _spriteSortMode   = sortMode;
+        _spriteSortMode = sortMode;
         if (!scissorRectangle.HasValue)
         {
             _scissorRectangle.offset.x      = 0;
@@ -175,6 +177,11 @@ public sealed unsafe partial class SpriteBatch
             throw new InvalidOperationException($"{nameof(Begin)} must be called before {nameof(End)}");
         }
 #endif
+
+        if (_spriteQueueCount <= 0)
+        {
+            return;
+        }
 
         BeginRendering(out VkCommandBuffer subCommandBuffer);
 
@@ -232,17 +239,11 @@ public sealed unsafe partial class SpriteBatch
         vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, VkDeviceSize.Zero, VkIndexType.VK_INDEX_TYPE_UINT16);
 #endif
 
-        vkCmdBindDescriptorSets(
-            commandBuffer,
-            VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS,
-            _context->PipelineLayout,
-            0u,
-            1u, _context->DescriptorSets + _swapchainContext->FrameInFlight,
-            0u, null);
-
         VkRect2D scissorRectangle = _scissorRectangle;
         vkCmdSetScissor(commandBuffer, 0u, 1u, &scissorRectangle);
     }
+
+    private int* test = Allocator.Allocate<int>(200_000);
 
     private void FlushBatch(VkCommandBuffer commandBuffer)
     {
@@ -256,49 +257,62 @@ public sealed unsafe partial class SpriteBatch
         {
             if (_spriteQueueCount >= _sortedQueueLength)
             {
-                Allocator.Resize(ref _sortIndices,   _sortedQueueLength,     _spriteQueueLength);
-                Allocator.Resize(ref _sortedSprites, ref _sortedQueueLength, _spriteQueueLength);
+                Allocator.ReAllocate(ref _sortIndices,   _sortedQueueLength, _spriteQueueLength);
+                Allocator.ReAllocate(ref _tmpSortBuffer, _sortedQueueLength, _spriteQueueLength);
+                Allocator.ReAllocate(ref _sortedSprites, _sortedQueueLength, _spriteQueueLength);
+                _sortedQueueLength = _spriteQueueLength;
             }
 
-            for (int i = 0; i < _spriteQueueCount; ++i)
+            for (int i = 0; i < _spriteQueueCount; i++)
             {
                 *(_sortIndices + i) = i;
             }
 
-            Sort(_spriteQueue, _sortIndices, 0u, _spriteQueueCount);
+            Sort(_textureQueue, _sortIndices, 0, (int)_spriteQueueCount);
 
             spriteQueueForBatch = _sortedSprites;
+        }
+
+        TextureInfo previousTexture;
+        if (_spriteSortMode == SpriteSortMode.Deferred)
+        {
+            previousTexture = *_textureQueue;
+        }
+        else
+        {
+            int sortIndex = *(_sortIndices + 0);
+            *(spriteQueueForBatch + 0) = *(_spriteQueue  + sortIndex);
+            previousTexture            = *(_textureQueue + sortIndex);
         }
 
         Buffer                      vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _spriteQueueCount);
         VertexPositionColorTexture* pVpct        = vertexBuffer.Map<VertexPositionColorTexture>();
 
-        uint        offset          = 0u;
-        TextureInfo previousTexture = default;
-
-        for (uint i = 0u; i < _spriteQueueCount; i++)
+        uint offset = 0u;
+        for (uint i = 1u; i < _spriteQueueCount; i++)
         {
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            TextureInfo texture = _spriteSortMode switch
+            TextureInfo texture;
+            if (_spriteSortMode == SpriteSortMode.Deferred)
             {
-                SpriteSortMode.Deferred => (spriteQueueForBatch + i)->TextureInfo,
-                SpriteSortMode.Texture  => (*(spriteQueueForBatch + i) = *(_spriteQueue + *(_sortIndices + i))).TextureInfo,
-                _                       => throw new ArgumentOutOfRangeException(nameof(_spriteSortMode))
-            };
+                texture = *(_textureQueue + i);
+            }
+            else
+            {
+                int sortIndex = *(_sortIndices + i);
+                *(spriteQueueForBatch + i) = *(_spriteQueue  + sortIndex);
+                texture                    = *(_textureQueue + sortIndex);
+            }
 
-            if (texture.Ptr64 != previousTexture.Ptr64)
+            if (texture.ID != previousTexture.ID)
             {
-                if (i > offset)
-                {
-                    DrawBatchPerTexture(commandBuffer, vertexBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, i - offset);
-                }
+                DrawBatchPerTexture(commandBuffer, vertexBuffer, &previousTexture, pVpct, spriteQueueForBatch, offset, i - offset);
 
                 offset          = i;
                 previousTexture = texture;
             }
         }
 
-        DrawBatchPerTexture(commandBuffer, vertexBuffer, in previousTexture, pVpct, spriteQueueForBatch, offset, _spriteQueueCount - offset);
+        DrawBatchPerTexture(commandBuffer, vertexBuffer, &previousTexture, pVpct, spriteQueueForBatch, offset, _spriteQueueCount - offset);
 
         vertexBuffer.Unmap();
 
@@ -308,16 +322,28 @@ public sealed unsafe partial class SpriteBatch
     private void DrawBatchPerTexture(
         VkCommandBuffer             commandBuffer,
         Buffer                      vertexBuffer,
-        in TextureInfo              texture,
+        TextureInfo*                texture,
         VertexPositionColorTexture* pVpct,
         SpriteInfo*                 sprites,
         uint                        offset,
         uint                        count)
     {
-        //_context.PixelShader.SetShaderResource(0, texture.View);
+        VkDescriptorSet* pDescriptorSets = stackalloc VkDescriptorSet[2]
+        {
+            *(_context->UboDescriptorSets + _swapchainContext->FrameInFlight),
+            *(texture->DescriptorSets     + _swapchainContext->FrameInFlight),
+        };
 
-        float deltaX = 1.0f / texture.Width;
-        float deltaY = 1.0f / texture.Height;
+        vkCmdBindDescriptorSets(
+            commandBuffer,
+            VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS,
+            _context->PipelineLayout,
+            0u,
+            2u, pDescriptorSets,
+            0u, null);
+
+        float deltaX = 1.0f / texture->Width;
+        float deltaY = 1.0f / texture->Height;
         while (count > 0)
         {
             uint batchSize = count;
@@ -330,7 +356,9 @@ public sealed unsafe partial class SpriteBatch
             {
                 void VertexUpdate(long index)
                 {
-                    UpdateVertexFromSpriteInfo(sprites + offset + index, pVpct + offset + (index << 2), deltaX, deltaY);
+                    long slot = offset + index;
+                    UpdateVertexFromSpriteInfo(
+                        sprites + slot, texture, pVpct + (slot << 2), deltaX, deltaY);
                 }
 
                 Parallel.For(0, batchSize, VertexUpdate);
@@ -339,8 +367,9 @@ public sealed unsafe partial class SpriteBatch
             {
                 for (int i = 0; i < batchSize; i++)
                 {
+                    long slot = offset + i;
                     UpdateVertexFromSpriteInfo(
-                        sprites + offset + i, pVpct + offset + (i << 2), deltaX, deltaY);
+                        sprites + slot, texture, pVpct + (slot << 2), deltaX, deltaY);
                 }
             }
 

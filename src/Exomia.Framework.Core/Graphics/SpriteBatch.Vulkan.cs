@@ -17,6 +17,12 @@ using Exomia.Framework.Core.Vulkan.Configurations;
 using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
+using static Exomia.Vulkan.Api.Core.VkFilter;
+using static Exomia.Vulkan.Api.Core.VkSamplerAddressMode;
+using static Exomia.Vulkan.Api.Core.VkBorderColor;
+using static Exomia.Vulkan.Api.Core.VkCompareOp;
+using static Exomia.Vulkan.Api.Core.VkSamplerMipmapMode;
+
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -72,15 +78,7 @@ public sealed unsafe partial class SpriteBatch
                     {
                         Type  = Shader.StageType.FragmentShaderStage,
                         Name  = "main",
-                        Flags = 0,
-                        Specializations = new[]
-                        {
-                            new Shader.Module.Stage.Specialization.Configuration
-                            {
-                                ConstantID = 0,
-                                Value      = 12
-                            }
-                        }
+                        Flags = 0
                     }
                 }
             }
@@ -91,6 +89,11 @@ public sealed unsafe partial class SpriteBatch
 
     private void SetupVulkan()
     {
+        if (!CreateTextureSampler())
+        {
+            throw new Exception($"{nameof(Setup)} {nameof(CreateTextureSampler)} failed.");
+        }
+
         if (!CreateDescriptorPool())
         {
             throw new Exception($"{nameof(Setup)} {nameof(CreateDescriptorPool)} failed.");
@@ -149,21 +152,72 @@ public sealed unsafe partial class SpriteBatch
             }));
     }
 
+    private bool CreateTextureSampler()
+    {
+        VkSamplerCreateInfo samplerCreateInfo;
+        samplerCreateInfo.sType        = VkSamplerCreateInfo.STYPE;
+        samplerCreateInfo.magFilter    = VK_FILTER_LINEAR;
+        samplerCreateInfo.minFilter    = VK_FILTER_LINEAR;
+        samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        if (_configuration.AnisotropyEnable && _vkContext->PhysicalDeviceFeatures.samplerAnisotropy)
+        {
+            samplerCreateInfo.anisotropyEnable = VkBool32.True;
+            samplerCreateInfo.maxAnisotropy = Math.Min(
+                _configuration.MaxAnisotropy,
+                _vkContext->PhysicalDeviceProperties2.properties.limits.maxSamplerAnisotropy);
+        }
+        else
+        {
+            samplerCreateInfo.anisotropyEnable = VkBool32.False;
+            samplerCreateInfo.maxAnisotropy    = 1.0f;
+        }
+        samplerCreateInfo.borderColor             = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+        samplerCreateInfo.unnormalizedCoordinates = VkBool32.False;
+        samplerCreateInfo.compareEnable           = VkBool32.False;
+        samplerCreateInfo.compareOp               = VK_COMPARE_OP_ALWAYS;
+        samplerCreateInfo.mipmapMode              = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+        samplerCreateInfo.mipLodBias              = 0.0f;
+        samplerCreateInfo.minLod                  = 0.0f;
+        samplerCreateInfo.maxLod                  = 0.0f;
+
+        vkCreateSampler(_vkContext->Device, &samplerCreateInfo, null, &_context->TextureSampler)
+            .AssertVkResult();
+
+        return true;
+    }
+
     private bool CreateDescriptorPool()
     {
-        VkDescriptorPoolSize descriptorPoolSize;
-        descriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
+        VkDescriptorPoolSize uboDescriptorPoolSize;
+        uboDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uboDescriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
 
-        VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
-        descriptorPoolCreateInfo.sType         = VkDescriptorPoolCreateInfo.STYPE;
-        descriptorPoolCreateInfo.pNext         = null;
-        descriptorPoolCreateInfo.flags         = 0u;
-        descriptorPoolCreateInfo.maxSets       = _swapchainContext->MaxFramesInFlight;
-        descriptorPoolCreateInfo.poolSizeCount = 1u;
-        descriptorPoolCreateInfo.pPoolSizes    = &descriptorPoolSize;
+        VkDescriptorPoolCreateInfo uboDescriptorPoolCreateInfo;
+        uboDescriptorPoolCreateInfo.sType         = VkDescriptorPoolCreateInfo.STYPE;
+        uboDescriptorPoolCreateInfo.pNext         = null;
+        uboDescriptorPoolCreateInfo.flags         = 0u;
+        uboDescriptorPoolCreateInfo.maxSets       = _swapchainContext->MaxFramesInFlight;
+        uboDescriptorPoolCreateInfo.poolSizeCount = 1u;
+        uboDescriptorPoolCreateInfo.pPoolSizes    = &uboDescriptorPoolSize;
 
-        vkCreateDescriptorPool(_vkContext->Device, &descriptorPoolCreateInfo, null, &_context->DescriptorPool)
+        vkCreateDescriptorPool(_vkContext->Device, &uboDescriptorPoolCreateInfo, null, &_context->UboDescriptorPool)
+            .AssertVkResult();
+
+        VkDescriptorPoolSize textureDescriptorPoolSize;
+        textureDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        textureDescriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
+
+        VkDescriptorPoolCreateInfo textureDescriptorPoolCreateInfo;
+        textureDescriptorPoolCreateInfo.sType         = VkDescriptorPoolCreateInfo.STYPE;
+        textureDescriptorPoolCreateInfo.pNext         = null;
+        textureDescriptorPoolCreateInfo.flags         = 0u;
+        textureDescriptorPoolCreateInfo.maxSets       = _swapchainContext->MaxFramesInFlight * _configuration.DescriptorPoolMaxSets;
+        textureDescriptorPoolCreateInfo.poolSizeCount = 1u;
+        textureDescriptorPoolCreateInfo.pPoolSizes    = &textureDescriptorPoolSize;
+
+        vkCreateDescriptorPool(_vkContext->Device, &textureDescriptorPoolCreateInfo, null, &_context->TextureDescriptorPool)
             .AssertVkResult();
 
         return true;
@@ -171,38 +225,55 @@ public sealed unsafe partial class SpriteBatch
 
     private bool CreateDescriptorSets()
     {
-        VkDescriptorSetLayoutBinding descriptorSetLayoutBinding;
-        descriptorSetLayoutBinding.binding            = 0u;
-        descriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptorSetLayoutBinding.descriptorCount    = 1u;
-        descriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_VERTEX_BIT;
-        descriptorSetLayoutBinding.pImmutableSamplers = null;
+        VkDescriptorSetLayoutBinding uboDescriptorSetLayoutBinding;
+        uboDescriptorSetLayoutBinding.binding            = 0u;
+        uboDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uboDescriptorSetLayoutBinding.descriptorCount    = 1u;
+        uboDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_VERTEX_BIT;
+        uboDescriptorSetLayoutBinding.pImmutableSamplers = null;
 
-        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
-        descriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
-        descriptorSetLayoutCreateInfo.pNext        = null;
-        descriptorSetLayoutCreateInfo.flags        = 0u;
-        descriptorSetLayoutCreateInfo.bindingCount = 1u;
-        descriptorSetLayoutCreateInfo.pBindings    = &descriptorSetLayoutBinding;
+        VkDescriptorSetLayoutCreateInfo uboDescriptorSetLayoutCreateInfo;
+        uboDescriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
+        uboDescriptorSetLayoutCreateInfo.pNext        = null;
+        uboDescriptorSetLayoutCreateInfo.flags        = 0u;
+        uboDescriptorSetLayoutCreateInfo.bindingCount = 1u;
+        uboDescriptorSetLayoutCreateInfo.pBindings    = &uboDescriptorSetLayoutBinding;
 
-        vkCreateDescriptorSetLayout(_vkContext->Device, &descriptorSetLayoutCreateInfo, null, &_context->DescriptorSetLayout)
+        vkCreateDescriptorSetLayout(_vkContext->Device, &uboDescriptorSetLayoutCreateInfo, null, &_context->UboDescriptorSetLayout)
             .AssertVkResult();
 
-        VkDescriptorSetLayout* layouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
+        VkDescriptorSetLayoutBinding textureDescriptorSetLayoutBinding;
+        textureDescriptorSetLayoutBinding.binding            = 0u;
+        textureDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        textureDescriptorSetLayoutBinding.descriptorCount    = 1u;
+        textureDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_FRAGMENT_BIT;
+        textureDescriptorSetLayoutBinding.pImmutableSamplers = null;
+
+        VkDescriptorSetLayoutCreateInfo textureDescriptorSetLayoutCreateInfo;
+        textureDescriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
+        textureDescriptorSetLayoutCreateInfo.pNext        = null;
+        textureDescriptorSetLayoutCreateInfo.flags        = 0u;
+        textureDescriptorSetLayoutCreateInfo.bindingCount = 1u;
+        textureDescriptorSetLayoutCreateInfo.pBindings    = &textureDescriptorSetLayoutBinding;
+
+        vkCreateDescriptorSetLayout(_vkContext->Device, &textureDescriptorSetLayoutCreateInfo, null, &_context->TextureDescriptorSetLayout)
+            .AssertVkResult();
+
+        VkDescriptorSetLayout* uboLayouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
         for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
         {
-            *(layouts + i) = _context->DescriptorSetLayout;
+            *(uboLayouts + i) = _context->UboDescriptorSetLayout;
         }
 
-        VkDescriptorSetAllocateInfo descriptorSetAllocateInfo;
-        descriptorSetAllocateInfo.sType              = VkDescriptorSetAllocateInfo.STYPE;
-        descriptorSetAllocateInfo.pNext              = null;
-        descriptorSetAllocateInfo.descriptorPool     = _context->DescriptorPool;
-        descriptorSetAllocateInfo.descriptorSetCount = _swapchainContext->MaxFramesInFlight;
-        descriptorSetAllocateInfo.pSetLayouts        = layouts;
+        VkDescriptorSetAllocateInfo uboDescriptorSetAllocateInfo;
+        uboDescriptorSetAllocateInfo.sType              = VkDescriptorSetAllocateInfo.STYPE;
+        uboDescriptorSetAllocateInfo.pNext              = null;
+        uboDescriptorSetAllocateInfo.descriptorPool     = _context->UboDescriptorPool;
+        uboDescriptorSetAllocateInfo.descriptorSetCount = _swapchainContext->MaxFramesInFlight;
+        uboDescriptorSetAllocateInfo.pSetLayouts        = uboLayouts;
 
-        _context->DescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
-        vkAllocateDescriptorSets(_vkContext->Device, &descriptorSetAllocateInfo, _context->DescriptorSets)
+        _context->UboDescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
+        vkAllocateDescriptorSets(_vkContext->Device, &uboDescriptorSetAllocateInfo, _context->UboDescriptorSets)
             .AssertVkResult();
 
         for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
@@ -215,7 +286,7 @@ public sealed unsafe partial class SpriteBatch
             VkWriteDescriptorSet writeDescriptorSet;
             writeDescriptorSet.sType            = VkWriteDescriptorSet.STYPE;
             writeDescriptorSet.pNext            = null;
-            writeDescriptorSet.dstSet           = *(_context->DescriptorSets + i);
+            writeDescriptorSet.dstSet           = *(_context->UboDescriptorSets + i);
             writeDescriptorSet.dstBinding       = 0u;
             writeDescriptorSet.dstArrayElement  = 0u;
             writeDescriptorSet.descriptorCount  = 1u;
@@ -232,12 +303,18 @@ public sealed unsafe partial class SpriteBatch
 
     private bool CreatePipelineLayout()
     {
+        VkDescriptorSetLayout* pDescriptorSetLayouts = stackalloc VkDescriptorSetLayout[2]
+        {
+            _context->UboDescriptorSetLayout,
+            _context->TextureDescriptorSetLayout
+        };
+
         VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
         pipelineLayoutCreateInfo.sType                  = VkPipelineLayoutCreateInfo.STYPE;
         pipelineLayoutCreateInfo.pNext                  = null;
         pipelineLayoutCreateInfo.flags                  = 0;
-        pipelineLayoutCreateInfo.setLayoutCount         = 1u;
-        pipelineLayoutCreateInfo.pSetLayouts            = &_context->DescriptorSetLayout;
+        pipelineLayoutCreateInfo.setLayoutCount         = 2u;
+        pipelineLayoutCreateInfo.pSetLayouts            = pDescriptorSetLayouts;
         pipelineLayoutCreateInfo.pushConstantRangeCount = 0u;
         pipelineLayoutCreateInfo.pPushConstantRanges    = null;
 
@@ -258,16 +335,34 @@ public sealed unsafe partial class SpriteBatch
             _context->PipelineLayout = VkPipelineLayout.Null;
         }
 
-        if (_context->DescriptorSetLayout != VkDescriptorSetLayout.Null)
+        if (_context->UboDescriptorSetLayout != VkDescriptorSetLayout.Null)
         {
-            vkDestroyDescriptorSetLayout(_vkContext->Device, _context->DescriptorSetLayout, null);
-            _context->DescriptorSetLayout = VkDescriptorSetLayout.Null;
+            vkDestroyDescriptorSetLayout(_vkContext->Device, _context->UboDescriptorSetLayout, null);
+            _context->UboDescriptorSetLayout = VkDescriptorSetLayout.Null;
         }
 
-        if (_context->DescriptorPool != VkDescriptorPool.Null)
+        if (_context->TextureDescriptorSetLayout != VkDescriptorSetLayout.Null)
         {
-            vkDestroyDescriptorPool(_vkContext->Device, _context->DescriptorPool, null);
-            _context->DescriptorPool = VkDescriptorPool.Null;
+            vkDestroyDescriptorSetLayout(_vkContext->Device, _context->TextureDescriptorSetLayout, null);
+            _context->TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
+        }
+
+        if (_context->UboDescriptorPool != VkDescriptorPool.Null)
+        {
+            vkDestroyDescriptorPool(_vkContext->Device, _context->UboDescriptorPool, null);
+            _context->UboDescriptorPool = VkDescriptorPool.Null;
+        }
+
+        if (_context->TextureDescriptorPool != VkDescriptorPool.Null)
+        {
+            vkDestroyDescriptorPool(_vkContext->Device, _context->TextureDescriptorPool, null);
+            _context->TextureDescriptorPool = VkDescriptorPool.Null;
+        }
+
+        if (_context->TextureSampler != VkSampler.Null)
+        {
+            vkDestroySampler(_vkContext->Device, _context->TextureSampler, null);
+            _context->TextureSampler = VkSampler.Null;
         }
     }
 }

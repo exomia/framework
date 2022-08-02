@@ -34,26 +34,18 @@ public sealed unsafe class Texture : IDisposable
     private readonly VkDeviceMemory _imageMemory;
     private readonly VkImageView    _imageView;
 
-    /// <summary>
-    ///     Height.
-    /// </summary>
-    /// <value>
-    ///     The height.
-    /// </value>
-    public readonly uint Height;
-
-    /// <summary>
-    ///     Width.
-    /// </summary>
-    /// <value>
-    ///     The width.
-    /// </value>
+    /// <summary> The identifier. </summary>
+    public readonly ulong ID;
+    /// <summary> The width. </summary>
     public readonly uint Width;
+    /// <summary> The height. </summary>
+    public readonly uint Height;
 
     /// <summary> Texture constructor. </summary>
     /// <param name="device">      The device. </param>
     /// <param name="image">       The image. </param>
     /// <param name="imageMemory"> The image memory. </param>
+    /// <param name="imageView">   The image view. </param>
     /// <param name="width">       width. </param>
     /// <param name="height">      height. </param>
     public Texture(VkDevice device, VkImage image, VkDeviceMemory imageMemory, VkImageView imageView, uint width, uint height)
@@ -62,9 +54,29 @@ public sealed unsafe class Texture : IDisposable
         _image       = image;
         _imageMemory = imageMemory;
         _imageView   = imageView;
+        ID           = (ulong)(void*)_image;
         Width        = width;
         Height       = height;
     }
+
+    /// <summary> Implicit cast that converts the given Texture to a <see cref="VkImage"/>. </summary>
+    /// <param name="texture"> The texture. </param>
+    /// <returns> The result of the operation. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator VkImage(Texture texture)
+    {
+        return texture._image;
+    }
+
+    /// <summary> Implicit cast that converts the given Texture to a <see cref="VkImageView"/>. </summary>
+    /// <param name="texture"> The texture. </param>
+    /// <returns> The result of the operation. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator VkImageView(Texture texture)
+    {
+        return texture._imageView;
+    }
+
 
     /// <summary> Creates a new Texture. </summary>
     /// <param name="vkContext">           [in,out] If non-null, context for the vk. </param>
@@ -130,7 +142,7 @@ public sealed unsafe class Texture : IDisposable
                 .AssertVkResult();
 
             VkCommandBuffer commandBuffer = Vulkan.Vulkan.BeginImmediateSubmit(
-                vkContext->Device, *(vkContext->Queues - 1), vkContext->ShortLivedCommandPool);
+                vkContext->Device, vkContext->ShortLivedCommandPool);
 
             Vulkan.Vulkan.TransitionImageLayout(commandBuffer, image,
                 VK_IMAGE_ASPECT_COLOR_BIT,

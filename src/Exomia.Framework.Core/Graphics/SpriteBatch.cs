@@ -61,24 +61,23 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     private VkSpriteBatchContext* _context;
 
-    private readonly bool           _center;
+    private readonly Configuration  _configuration;
     private readonly Texture        _whiteTexture;
-    private readonly TextureInfo    _whiteTextureInfo;
     private          SpriteSortMode _spriteSortMode;
-    private          int*           _sortIndices;
-    private          SpriteInfo*    _spriteQueue,      _sortedSprites;
+    private          int*           _sortIndices, _tmpSortBuffer;
+    private          SpriteInfo*    _spriteQueue, _sortedSprites;
+    private          TextureInfo*   _textureQueue;
     private          uint           _spriteQueueCount, _spriteQueueLength, _sortedQueueLength;
     private          Matrix4x4      _projectionMatrix;
     private          VkRect2D       _scissorRectangle;
-
-    private uint _tempSortBufferLength;
-    private int* _tmpSortBuffer;
+    
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
 #endif
 
-    private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
+    private readonly Dictionary<ulong, TextureInfo> _textureInfos = new Dictionary<ulong, TextureInfo>(8);
+    private          SpinLock                       _spinLock     = new SpinLock(Debugger.IsAttached);
 
     /// <summary>
     ///     Initializes static members of the <see cref="SpriteBatch" /> class.
@@ -113,27 +112,29 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     /// <summary> Initializes a new instance of the <see cref="SpriteBatch" /> class. </summary>
     /// <param name="swapchain">     The swapchain. </param>
-    /// <param name="center">        (Optional) True to center the coordinate system in the viewport. </param>
-    /// <param name="sortAlgorithm"> (Optional) The sort algorithm. </param>
-    /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
-    /// <exception cref="ArgumentException">      Thrown when one or more arguments have unsupported or illegal values. </exception>
+    /// <param name="configuration"> (Optional) The configuration. </param>
     public SpriteBatch(
-        Swapchain swapchain,
-        bool      center = false)
+        Swapchain      swapchain,
+        Configuration? configuration = null)
     {
         _swapchain        = swapchain;
+        _configuration    = configuration ?? new Configuration();
         _swapchainContext = swapchain.Context;
         _vkContext        = swapchain.VkContext;
-        _center           = center;
 
         _context = Allocator.Allocate(1u, VkSpriteBatchContext.Create());
 
-        _whiteTexture     = Texture.Create(_vkContext, 1, 1, new byte[] { 0, 0, 0, 0 });
-        _whiteTextureInfo = new TextureInfo(_whiteTexture.Width, _whiteTexture.Height);
+        _whiteTexture = Texture.Create(_vkContext, 1, 1, new byte[] { 255, 255, 255, 255 });
 
-        _sortIndices   = Allocator.Allocate<int>(MAX_BATCH_SIZE);
-        _sortedSprites = Allocator.Allocate<SpriteInfo>(_sortedQueueLength = MAX_BATCH_SIZE);
-        _spriteQueue   = Allocator.Allocate<SpriteInfo>(_spriteQueueLength = MAX_BATCH_SIZE);
+        _spriteQueueCount  = 0;
+        _spriteQueueLength = MAX_BATCH_SIZE;
+        _sortedQueueLength = MAX_BATCH_SIZE;
+
+        _tmpSortBuffer = Allocator.Allocate<int>(_sortedQueueLength);
+        _sortIndices   = Allocator.Allocate<int>(_sortedQueueLength);
+        _sortedSprites = Allocator.Allocate<SpriteInfo>(_sortedQueueLength);
+        _spriteQueue   = Allocator.Allocate<SpriteInfo>(_spriteQueueLength);
+        _textureQueue  = Allocator.Allocate<TextureInfo>(_spriteQueueLength);
 
         //vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
         //vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
@@ -145,8 +146,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-
-        _tmpSortBuffer = Allocator.Allocate<int>(_tempSortBufferLength = SEQUENTIAL_THRESHOLD);
+        
 
         Setup();
         Resize(_vkContext->InitialWidth, _vkContext->InitialHeight);
@@ -195,10 +195,10 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             M22 = yRatio * 2f,
             M33 = 1f,
             M44 = 1f,
-            M41 = _center
+            M41 = _configuration.Center
                 ? 0f
                 : -1f,
-            M42 = _center
+            M42 = _configuration.Center
                 ? 0f
                 : -1f
         };
@@ -237,11 +237,11 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 CleanupVulkan();
             }
 
-            Allocator.Free<int>(_tmpSortBuffer, _tempSortBufferLength);
-
-            Allocator.Free(ref _spriteQueue,   _sortedQueueLength);
-            Allocator.Free(ref _sortedSprites, _sortedQueueLength);
-            Allocator.Free(ref _sortIndices,   _spriteQueueLength);
+            Allocator.Free<int>(_tmpSortBuffer,   _sortedQueueLength);
+            Allocator.Free<int>(ref _sortIndices, _sortedQueueLength);
+            Allocator.Free<SpriteInfo>(ref _sortedSprites, _sortedQueueLength);
+            Allocator.Free<SpriteInfo>(ref _spriteQueue,   _spriteQueueLength);
+            Allocator.Free<TextureInfo>(ref _textureQueue, _spriteQueueLength);
 
             Allocator.Free(ref _context, 1u);
         }

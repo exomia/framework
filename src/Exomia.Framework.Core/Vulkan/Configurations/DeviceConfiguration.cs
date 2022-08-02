@@ -29,6 +29,11 @@ public sealed unsafe class DeviceConfiguration : IConfigurableConfiguration
         VkDeviceQueueCreateInfo*, /* deviceQueueCreateInfos */
         void> CreateAdditionalDeviceQueueCreateInfos { get; set; } = null;
 
+
+    /// <summary> Gets or sets the set vk physical device features callback. </summary>
+    /// <value> The set vk physical device features callback. </value>
+    public delegate*<VkPhysicalDeviceFeatures2*, void> SetVkPhysicalDeviceFeatures { get; set; } = null;
+
     /// <summary> Gets or sets the set physical device vulkan 11 features callback. </summary>
     /// <value> The set physical device vulkan 11 features callback. </value>
     public delegate*<VkPhysicalDeviceVulkan11Features*, void> SetPhysicalDeviceVulkan11Features { get; set; } = null;

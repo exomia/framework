@@ -9,63 +9,66 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
 
 namespace Exomia.Framework.Core.Graphics;
 
+// ReSharper disable ArrangeRedundantParentheses
 public sealed unsafe partial class SpriteBatch
 {
-    private const uint SEQUENTIAL_THRESHOLD = 2048u;
+    private const int INSERTION_SORT_BLOCK_SIZE = 64;
+    private const int SEQUENTIAL_THRESHOLD      = 2048;
 
-    private void Sort(SpriteInfo* sInfo, int* arr, uint offset, uint length)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void Sort(TextureInfo* tInfo, int* arr, int offset, int length)
     {
-        if (_tempSortBufferLength < length)
-        {
-            Allocator.Resize(ref _tmpSortBuffer, ref _tempSortBufferLength, length);
-        }
-
-        MergeSortTextureInfo(sInfo, arr, offset, length - 1u, _tmpSortBuffer);
+        MergeSort(tInfo, arr, offset, length - 1, _tmpSortBuffer);
     }
 
-    private static void MergeSortTextureInfo(SpriteInfo* sInfo,
-                                             int*        arr,
-                                             uint        left,
-                                             uint        right,
-                                             int*        tempArray)
+    private static void MergeSort(
+        TextureInfo* tInfo,
+        int*         arr,
+        int          left,
+        int          right,
+        int*         tempArray)
     {
-        if (left < right)
+        if (right - left > INSERTION_SORT_BLOCK_SIZE)
         {
-            uint middle = (left + right) >> 1;
+            InsertionSort(tInfo, arr, left, right);
+        }
+        else
+        {
+            int middle = (right + left) >> 1;
             if (right - left > SEQUENTIAL_THRESHOLD)
             {
                 Parallel.Invoke(
-                    () => MergeSortTextureInfo(sInfo, arr, left,        middle, tempArray),
-                    () => MergeSortTextureInfo(sInfo, arr, middle + 1u, right,  tempArray));
+                    () => MergeSort(tInfo, arr, left,       middle, tempArray),
+                    () => MergeSort(tInfo, arr, middle + 1, right,  tempArray));
             }
             else
             {
-                MergeSortTextureInfo(sInfo, arr, left,        middle, tempArray);
-                MergeSortTextureInfo(sInfo, arr, middle + 1u, right,  tempArray);
+                MergeSort(tInfo, arr, left,       middle, tempArray);
+                MergeSort(tInfo, arr, middle + 1, right,  tempArray);
             }
-            MergeTextureInfo(sInfo, arr, left, middle, middle + 1u, right, tempArray);
+            MergeBlock(tInfo, arr, left, middle, middle + 1, right, tempArray);
         }
     }
 
-    private static void MergeTextureInfo(SpriteInfo* sInfo,
-                                         int*        arr,
-                                         uint        left,
-                                         uint        middle,
-                                         uint        middle1,
-                                         uint        right,
-                                         int*        tempArray)
+    private static void MergeBlock(
+        TextureInfo* tInfo,
+        int*         arr,
+        int          left,
+        int          middle,
+        int          middle1,
+        int          right,
+        int*         tempArray)
     {
-        uint oldPosition = left;
-        uint size        = (right - left) + 1u;
+        int oldPosition = left;
+        int size        = (right - left) + 1;
 
         uint i = 0u;
         while (left <= middle && middle1 <= right)
         {
-            if (sInfo[*(arr + left)].TextureInfo.Ptr64 >= sInfo[*(arr + middle1)].TextureInfo.Ptr64)
+            if (tInfo[*(arr + left)].ID < tInfo[*(arr + middle1)].ID)
             {
                 *(tempArray + oldPosition + i++) = *(arr + left++);
             }
@@ -74,14 +77,67 @@ public sealed unsafe partial class SpriteBatch
                 *(tempArray + oldPosition + i++) = *(arr + middle1++);
             }
         }
+
         if (left > middle)
         {
-            Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + middle1, ((right - middle) + 1u) * sizeof(int));
+            Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + middle1, (uint)((right - middle + 1u) * sizeof(int)));
         }
         else
         {
-            Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + left, ((middle - left) + 1u) * sizeof(int));
+            Unsafe.CopyBlockUnaligned(tempArray + oldPosition + i, arr + left, (uint)((middle - left + 1u) * sizeof(int)));
         }
-        Unsafe.CopyBlockUnaligned(arr + oldPosition, tempArray + oldPosition, size * sizeof(int));
+
+        Unsafe.CopyBlockUnaligned(arr + oldPosition, tempArray + oldPosition, (uint)(size * sizeof(int)));
+    }
+
+    private static void InsertionSort(
+        TextureInfo* tInfo,
+        int*         arr,
+        int          left,
+        int          right)
+    {
+        for (int l = left; l < right; l++)
+        {
+            int elementToInsert = *(arr + l + 1);
+
+            int insertPos = InsertionSortBinarySearch(tInfo, arr, left, l, elementToInsert);
+            if (insertPos <= l)
+            {
+                Unsafe.CopyBlockUnaligned(
+                    arr + insertPos + 1,
+                    arr + insertPos,
+                    (uint)((l - insertPos + 1) * sizeof(int)));
+
+                *(arr + insertPos) = elementToInsert;
+            }
+        }
+    }
+
+    private static int InsertionSortBinarySearch(
+        TextureInfo* tInfo,
+        int*         arr,
+        int          left,
+        int          right,
+        int          elementToInsert)
+    {
+        while (left <= right)
+        {
+            int middle = (right + left) >> 1;
+            if (tInfo[elementToInsert].ID < tInfo[*(arr + middle)].ID)
+            {
+                right = middle - 1;
+            }
+            else if (tInfo[elementToInsert].ID > tInfo[*(arr + middle)].ID)
+            {
+                left = middle + 1;
+            }
+            else
+            {
+                left = middle + 1;
+                while ((left < right) && tInfo[elementToInsert].ID == tInfo[*(arr + left)].ID) { left++; }
+            }
+        }
+
+        return left;
     }
 }

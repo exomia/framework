@@ -15,8 +15,8 @@ namespace Exomia.Framework.Core.Vulkan.Configurations;
 /// <summary> An instance configuration. This class cannot be inherited. </summary>
 public sealed unsafe class InstanceConfiguration : IConfigurableConfiguration
 {
-    public void*                 Next  { get; set; } = null;
-    public VkInstanceCreateFlags Flags { get; set; } = 0;
+    public void*                    Next  { get; set; } = null;
+    public VkInstanceCreateFlagBits Flags { get; set; } = 0;
 
     public List<string> EnabledLayerNames { get; set; } = new List<string>
     {

@@ -29,14 +29,7 @@ sealed class TextureExporter : Exporter<Texture.Texture>
             bw.Write(obj.Height);
             if (obj.Data != null)
             {
-                // Convert from ARGB to RGBA
-                for (int i = 0; i < obj.Data.Length; i+= 4)
-                {
-                    bw.Write(obj.Data[i + 1]); // R
-                    bw.Write(obj.Data[i + 2]); // G
-                    bw.Write(obj.Data[i + 3]); // B
-                    bw.Write(obj.Data[i + 0]); // A
-                }
+                bw.Write(obj.Data);
             }
             staging.Seek(0, SeekOrigin.Begin);
 

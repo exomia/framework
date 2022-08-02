@@ -16,7 +16,8 @@ void main() {
 //#ifdef GL_EXT_debug_printf
 //    debugPrintfEXT("gl_VertexIndex = %i", gl_VertexIndex);
 //#endif
+
     outColor = inColor * inPosition.w;
-    outUV = inUV;
+    outUV = inUV;  
     gl_Position = g_worldViewProjection * vec4(inPosition.xy, clamp(inPosition.z, 0.0f, 1.0f), 1.0f);
 }

@@ -119,8 +119,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = 0.0f;
-        spriteInfo.TextureInfo      = _whiteTextureInfo;
-        DrawSprite(spriteInfo);
+        DrawSprite(spriteInfo, _whiteTexture);
     }
 
     /// <summary>
@@ -142,8 +141,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        spriteInfo.TextureInfo      = _whiteTextureInfo;
-        DrawSprite(spriteInfo);
+        DrawSprite(spriteInfo, _whiteTexture);
     }
 
     /// <summary>
@@ -169,8 +167,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = opacity;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        spriteInfo.TextureInfo      = _whiteTextureInfo;
-        DrawSprite(spriteInfo);
+        DrawSprite(spriteInfo, _whiteTexture);
     }
 
     /// <summary>
@@ -200,7 +197,6 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = opacity;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        spriteInfo.TextureInfo      = _whiteTextureInfo;
-        DrawSprite(spriteInfo);
+        DrawSprite(spriteInfo, _whiteTexture);
     }
 }

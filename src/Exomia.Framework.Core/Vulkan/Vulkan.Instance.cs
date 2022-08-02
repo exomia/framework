@@ -119,13 +119,13 @@ sealed unsafe partial class Vulkan
             _logger.LogCritical("The system doesn't support the minimum required vulkan version: {0}", _applicationConfiguration.ApiVersion.ToString());
             return false;
         }
-
+        
         if (!CheckInstanceLayerSupport(_instanceConfiguration.EnabledLayerNames))
         {
             _logger.LogCritical("The system doesn't support the requested instance layers: {0}", string.Join(',', _instanceConfiguration.EnabledLayerNames));
             return false;
         }
-
+        
         if (!CheckInstanceExtensionSupport(_instanceConfiguration.EnabledExtensionNames, _instanceConfiguration.EnabledLayerNames))
         {
             _logger.LogCritical("The system doesn't support the requested instance extensions: {0}", string.Join(',', _instanceConfiguration.EnabledExtensionNames));
@@ -140,10 +140,18 @@ sealed unsafe partial class Vulkan
 
         void* pNext = _instanceConfiguration.Next;
 
-        if ((_instanceConfiguration.ValidationFeatureEnable.Count > 0 || _instanceConfiguration.ValidationFeatureDisable.Count > 0) &&
-            !_instanceConfiguration.EnabledExtensionNames.Contains(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME))
+        if (_instanceConfiguration.ValidationFeatureEnable.Count > 0 || _instanceConfiguration.ValidationFeatureDisable.Count > 0)
         {
-            _instanceConfiguration.EnabledExtensionNames.Add(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+            // TODO: needed VK_LAYER_KHRONOS_validation!?
+            if (!_instanceConfiguration.EnabledLayerNames.Contains("VK_LAYER_KHRONOS_validation"))
+            {
+                _instanceConfiguration.EnabledLayerNames.Add("VK_LAYER_KHRONOS_validation");
+            }
+
+            if (!_instanceConfiguration.EnabledExtensionNames.Contains(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME))
+            {
+                _instanceConfiguration.EnabledExtensionNames.Add(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+            }
 
             VkValidationFeatureEnableEXT* pValidationFeatureEnableExt = 
                 stackalloc VkValidationFeatureEnableEXT[_instanceConfiguration.ValidationFeatureEnable.Count];
@@ -207,7 +215,7 @@ sealed unsafe partial class Vulkan
         {
             vkCreateInstance(&instanceCreateInfo, null, &_context->Instance)
                 .AssertVkResult();
-
+            
             _context->Version = _applicationConfiguration.ApiVersion;
 
             return true;

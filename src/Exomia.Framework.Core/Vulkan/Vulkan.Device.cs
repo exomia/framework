@@ -96,6 +96,16 @@ sealed unsafe partial class Vulkan
             }
         }
 
+        VkPhysicalDeviceFeatures2 physicalDeviceFeatures2;
+        physicalDeviceFeatures2.sType = VkPhysicalDeviceFeatures2.STYPE;
+        physicalDeviceFeatures2.pNext = pNext; 
+        physicalDeviceFeatures2.features.samplerAnisotropy = VkBool32.True;
+        if (_deviceConfiguration.SetVkPhysicalDeviceFeatures != null)
+        {
+            _deviceConfiguration.SetVkPhysicalDeviceFeatures(&physicalDeviceFeatures2);
+        }
+        pNext = &physicalDeviceFeatures2;
+
         VkDeviceCreateInfo deviceCreateInfo;
         deviceCreateInfo.sType                   = VkDeviceCreateInfo.STYPE;
         deviceCreateInfo.pNext                   = pNext;

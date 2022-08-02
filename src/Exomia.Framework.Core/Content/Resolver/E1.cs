@@ -10,6 +10,6 @@ public class E1
     public static readonly byte[] MagicHeader = { 64, 101, 120, 49 };
 
     /// <summary> The texture magic header. </summary>
-    public static readonly byte[] TextureMagicHeader = { 64, 116, 120, 116 };
+    public static readonly byte[] TextureMagicHeader = { 64, 116, 101, 120 };
 
 }

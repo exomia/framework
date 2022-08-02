@@ -154,15 +154,14 @@ sealed unsafe partial class Vulkan
 
         for (uint i = 0; i < physicalDeviceCount; i++)
         {
-            VkPhysicalDeviceProperties2 physicalDeviceProperties2;
-            physicalDeviceProperties2.sType = VkPhysicalDeviceProperties2.STYPE;
-            physicalDeviceProperties2.pNext = null;
-            vkGetPhysicalDeviceProperties2(*(pPhysicalDevices + i), &physicalDeviceProperties2);
+            _context->PhysicalDeviceProperties2.sType = VkPhysicalDeviceProperties2.STYPE;
+            _context->PhysicalDeviceProperties2.pNext = null;
+            vkGetPhysicalDeviceProperties2(*(pPhysicalDevices + i), &_context->PhysicalDeviceProperties2);
 
-            if (physicalDeviceProperties2.properties.apiVersion < _physicalDeviceConfiguration.RequiredMinimumVkApiVersion) { continue; }
-            if (physicalDeviceProperties2.properties.deviceType != _physicalDeviceConfiguration.RequiredPhysicalDeviceType) { continue; }
+            if (_context->PhysicalDeviceProperties2.properties.apiVersion < _physicalDeviceConfiguration.RequiredMinimumVkApiVersion) { continue; }
+            if (_context->PhysicalDeviceProperties2.properties.deviceType != _physicalDeviceConfiguration.RequiredPhysicalDeviceType) { continue; }
 
-            _context->SupportedSampleCountFlags = physicalDeviceProperties2.properties.limits.framebufferColorSampleCounts;
+            _context->SupportedSampleCountFlags = _context->PhysicalDeviceProperties2.properties.limits.framebufferColorSampleCounts;
 
             if (CheckDeviceLayerSupport(
                     *(pPhysicalDevices + i),
@@ -181,7 +180,9 @@ sealed unsafe partial class Vulkan
                     .AssertVkResult();
                 if (supported)
                 {
-                    _context->PhysicalDevice   = *(pPhysicalDevices + i);
+                    _context->PhysicalDevice = *(pPhysicalDevices + i);
+                    vkGetPhysicalDeviceFeatures(_context->PhysicalDevice, &_context->PhysicalDeviceFeatures);
+
                     _context->QueueFamilyIndex = queueFamilyIndex;
                     _context->MaxQueueCount    = maxQueueCount;
                     return true;

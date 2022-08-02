@@ -27,38 +27,44 @@ public sealed unsafe partial class SpriteBatch
         public float          Opacity;
         public TextureEffects Effects;
         public float          Depth;
-        public TextureInfo    TextureInfo;
     }
 
-    internal readonly struct TextureInfo
+    internal struct TextureInfo
     {
-        //public readonly ShaderResourceView View;
-        public readonly uint  Width;
-        public readonly uint  Height;
-        public readonly long Ptr64;
+        public readonly ulong            ID;
+        public readonly uint             Width;
+        public readonly uint             Height;
+        public          VkDescriptorSet* DescriptorSets;
 
-        public TextureInfo(uint width, uint height)
+        public TextureInfo(ulong id, uint width, uint height)
         {
-            Width  = width;
-            Height = height;
-            Ptr64  = 0L;
+            ID             = id;
+            Width          = width;
+            Height         = height;
+            DescriptorSets = null;
         }
     }
 
     private struct VkSpriteBatchContext
     {
+        public VkSampler             TextureSampler;
         public VkPipelineLayout      PipelineLayout;
-        public VkDescriptorPool      DescriptorPool;
-        public VkDescriptorSetLayout DescriptorSetLayout;
-        public VkDescriptorSet*      DescriptorSets;
+        public VkDescriptorPool      UboDescriptorPool;
+        public VkDescriptorPool      TextureDescriptorPool;
+        public VkDescriptorSetLayout UboDescriptorSetLayout;
+        public VkDescriptorSetLayout TextureDescriptorSetLayout;
+        public VkDescriptorSet*      UboDescriptorSets;
 
         public static VkSpriteBatchContext Create()
         {
             VkSpriteBatchContext context;
-            context.PipelineLayout      = VkPipelineLayout.Null;
-            context.DescriptorPool      = VkDescriptorPool.Null;
-            context.DescriptorSetLayout = VkDescriptorSetLayout.Null;
-            context.DescriptorSets      = null;
+            context.TextureSampler             = VkSampler.Null;
+            context.PipelineLayout             = VkPipelineLayout.Null;
+            context.UboDescriptorPool          = VkDescriptorPool.Null;
+            context.TextureDescriptorPool      = VkDescriptorPool.Null;
+            context.UboDescriptorSetLayout     = VkDescriptorSetLayout.Null;
+            context.UboDescriptorSets          = null;
+            context.TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
             return context;
         }
     }

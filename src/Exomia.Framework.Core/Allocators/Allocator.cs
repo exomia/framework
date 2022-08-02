@@ -380,4 +380,17 @@ public static unsafe class Allocator
         Free(src, srcCount);
         src = t;
     }
+
+    /// <summary> Free and allocate. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="src">      [in,out] If non-null, the pointer. </param>
+    /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
+    /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ReAllocate<T>(ref T* src, uint srcCount, uint newCount)
+        where T : unmanaged
+    {
+        Free<T>(src, srcCount);
+        src = Allocate<T>(newCount);
+    }
 }

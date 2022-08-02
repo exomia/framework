@@ -25,12 +25,12 @@ public sealed unsafe class DebugUtilsMessengerConfiguration : IConfigurableConfi
 
     /// <summary> Gets or sets the message severity. </summary>
     /// <value> The message severity. </value>
-    public VkDebugUtilsMessageSeverityFlagsEXT MessageSeverity { get; set; } =
+    public VkDebugUtilsMessageSeverityFlagBitsEXT MessageSeverity { get; set; } =
         VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
 
     /// <summary> Gets or sets the type of the message. </summary>
     /// <value> The type of the message. </value>
-    public VkDebugUtilsMessageTypeFlagsEXT MessageType { get; set; } =
+    public VkDebugUtilsMessageTypeFlagBitsEXT MessageType { get; set; } =
         VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
 
     /// <summary> Gets or sets the user callback. </summary>

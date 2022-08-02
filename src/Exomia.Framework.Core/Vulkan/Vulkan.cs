@@ -99,10 +99,9 @@ public sealed unsafe partial class Vulkan : IDisposable
 
     /// <summary> Begins immediate submit. </summary>
     /// <param name="device">      The device. </param>
-    /// <param name="queue">       The queue. </param>
     /// <param name="commandPool"> The command pool. </param>
     /// <returns> A VkCommandBuffer. </returns>
-    public static VkCommandBuffer BeginImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool)
+    public static VkCommandBuffer BeginImmediateSubmit(VkDevice device, VkCommandPool commandPool)
     {
         VkCommandBuffer commandBuffer;
         CreateCommandBuffers(device, commandPool, 1u, &commandBuffer);
@@ -219,7 +218,7 @@ public sealed unsafe partial class Vulkan : IDisposable
     /// <param name="fence">       The fence. </param>
     public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb, VkFence fence)
     {
-        VkCommandBuffer commandBuffer = BeginImmediateSubmit(device, queue, commandPool);
+        VkCommandBuffer commandBuffer = BeginImmediateSubmit(device, commandPool);
         
         cb(commandBuffer);
 

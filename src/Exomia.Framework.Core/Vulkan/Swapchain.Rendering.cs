@@ -101,7 +101,7 @@ public sealed unsafe partial class Swapchain
         renderPassBeginInfo.renderArea.extent.height = _context->Height;
 
         VkClearValue* pClearValues = stackalloc VkClearValue[2];
-        (pClearValues + 0)->color                = VkColors.Beige;
+        (pClearValues + 0)->color                = VkColors.DimGray;
         (pClearValues + 1)->depthStencil.depth   = 1.0f;
         (pClearValues + 1)->depthStencil.stencil = 0u;
 
