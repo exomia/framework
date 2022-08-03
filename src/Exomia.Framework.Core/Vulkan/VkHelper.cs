@@ -14,7 +14,7 @@ using Exomia.Framework.Core.Vulkan.Exceptions;
 
 namespace Exomia.Framework.Core.Vulkan;
 
-internal static unsafe class VkHelper
+static unsafe class VkHelper
 {
     public static void AssertVkResult(this               VkResult result,
                                       [CallerMemberName] string   callingMethod         = "",

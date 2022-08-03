@@ -9,6 +9,7 @@
 #endregion
 
 using Exomia.Framework.Core.Application.Configurations;
+using Exomia.Framework.Core.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -34,6 +35,7 @@ public abstract unsafe partial class Application : IDisposable
     private readonly List<IRenderable>            _renderableComponents;
     private readonly List<IRenderable>            _currentlyRenderableComponents;
     private readonly DisposeCollector             _collector;
+    private readonly IInputDevice                 _inputDevice;
     private          bool                         _isRunning, _isInitialized, _isContentLoaded, _shutdown;
 
     /// <summary> The <see cref="ServiceProvider" />. </summary>
@@ -95,6 +97,9 @@ public abstract unsafe partial class Application : IDisposable
                 _isShutdownCompleted.Wait(5 * 1000);
             }
         };
+
+        // NOTE: The input device should be registered during the platform creation!
+        _inputDevice = _serviceProvider.GetRequiredService<IInputDevice>();
     }
 
     /// <summary> Runs the application. </summary>

@@ -8,6 +8,8 @@
 
 #endregion
 
+using Exomia.Framework.Core.Input;
+
 namespace Exomia.Framework.Core.Application;
 
 public abstract partial class Application
@@ -99,6 +101,11 @@ public abstract partial class Application
             renderable.RenderOrderChanged += RenderableOnRenderOrderChanged;
         }
 
+        if (item is IInputHandler inputHandler)
+        {
+            inputHandler.RegisterInput(_inputDevice);
+        }
+
         if (item is IDisposable disposable)
         {
             ToDispose(disposable);
@@ -150,6 +157,11 @@ public abstract partial class Application
                 _renderableComponents.Remove(renderable);
             }
             renderable.RenderOrderChanged -= RenderableOnRenderOrderChanged;
+        }
+
+        if (item is IInputHandler inputHandler)
+        {
+            inputHandler.UnregisterInput(_inputDevice);
         }
 
         if (item is IDisposable disposable)
