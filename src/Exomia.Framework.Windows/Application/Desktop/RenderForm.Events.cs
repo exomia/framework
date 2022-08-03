@@ -61,7 +61,9 @@ sealed partial class RenderForm
             case WM.INPUT:
             {
                 int sizeOfRawInputData = 0;
+#pragma warning disable CA1806
                 User32.GetRawInputData(
+#pragma warning restore CA1806
                     lParam, RID_INPUT, null, ref sizeOfRawInputData, s_sizeOfRawInputHeader);
 
                 if (sizeOfRawInputData == 0) { return IntPtr.Zero; }
