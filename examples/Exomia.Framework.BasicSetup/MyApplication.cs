@@ -15,13 +15,12 @@ using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Vulkan.Api.Core;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.BasicSetup;
 
-sealed unsafe class MyApplication : Application
+internal sealed unsafe class MyApplication : Application
 {
 #pragma warning disable IDE0052 // Remove unread private members
     // ReSharper disable once NotAccessedField.Local
@@ -33,14 +32,19 @@ sealed unsafe class MyApplication : Application
     private readonly SpriteBatch _spriteBatch;
     private readonly Texture     _texture1;
 
+    private int   frames = 0;
+    private float timer  = 0;
+
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider">           The service provider. </param>
+    /// <param name="vulkan">                    The vulkan. </param>
     /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The Depth stencil configuration. </param>
     /// <param name="logger">                    The logger. </param>
     /// <param name="contentManager">            Manager for content. </param>
     public MyApplication(
         IServiceProvider                    serviceProvider,
+        Core.Vulkan.Vulkan                  vulkan,
         IOptions<SwapchainConfiguration>    swapchainConfiguration,
         IOptions<DepthStencilConfiguration> depthStencilConfiguration,
         ILogger<MyApplication>              logger,
@@ -54,8 +58,6 @@ sealed unsafe class MyApplication : Application
         //IsFixedTimeStep   = true;
         //TargetElapsedTime = 1000.0 / 144;
 
-        Core.Vulkan.Vulkan vulkan = serviceProvider.GetRequiredService<Core.Vulkan.Vulkan>();
-
         RenderPassConfiguration renderPassConfiguration = new();
 
         _swapchain = new Swapchain(
@@ -66,13 +68,10 @@ sealed unsafe class MyApplication : Application
 
         _renderer    = new Renderer(_swapchain);
         _spriteBatch = new SpriteBatch(_swapchain);
-        
+
 
         _texture1 = contentManager.Load<Texture>("icon.e1");
     }
-
-    int   frames = 0;
-    float timer  = 0;
 
     protected override bool BeginFrame()
     {
@@ -94,7 +93,7 @@ sealed unsafe class MyApplication : Application
 
                 _spriteBatch.DrawFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900), 50 + rnd.Next(0, 600), 40, 40),
-                    new VkColor(0.3f, 0.4f, 0.9f, 1f),
+                    new VkColor(0.3f, 0.4f, 0.9f),
                     rnd.NextSingle());
             }
             _spriteBatch.End(commandBuffer);
@@ -106,28 +105,28 @@ sealed unsafe class MyApplication : Application
                 {
                     _spriteBatch.DrawFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 0f, 0f, 1f),
+                        new VkColor(0f, 0f, 0f),
                         rnd.NextSingle());
                 }
                 else if (i > iterations * 0.50)
                 {
                     _spriteBatch.DrawFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 0f, 1f, 1f),
+                        new VkColor(0f, 0f, 1f),
                         rnd.NextSingle());
                 }
                 else if (i > iterations * 0.25)
                 {
                     _spriteBatch.DrawFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(0f, 1f, 0f, 1f),
+                        new VkColor(0f, 1f, 0f),
                         rnd.NextSingle());
                 }
                 else
                 {
                     _spriteBatch.DrawFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
-                        new VkColor(1f, 0f, 0f, 1f),
+                        new VkColor(1f, 0f, 0f),
                         rnd.NextSingle());
                 }
             }

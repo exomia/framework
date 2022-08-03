@@ -21,8 +21,9 @@ using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageSeverityFlagBitsEXT;
 
 namespace Exomia.Framework.BasicSetup;
 
-internal sealed class Program
+internal static class Program
 {
+    // ReSharper disable once UnusedParameter.Local
     private static void Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
