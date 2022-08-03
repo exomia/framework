@@ -69,34 +69,6 @@ public sealed unsafe partial class Vulkan : IDisposable
         *(_context = Allocator.Allocate<VkContext>(1u)) = VkContext.Create();
     }
 
-    internal bool Initialize()
-    {
-        using (_logger.BeginScope("[{method}] started...", nameof(Initialize)))
-        {
-            if (!InitializeInstance())
-            {
-                _logger.LogCritical("{method} failed!", nameof(Initialize));
-                return false;
-            }
-
-            CreateDevice();
-
-            _logger.LogInformation("[{method}] done!", nameof(Initialize));
-            return true;
-        }
-    }
-
-    internal void Cleanup()
-    {
-        using (_logger.BeginScope("[{method}] started...", nameof(Cleanup)))
-        {
-            DestroyDevice();
-            CleanupInstance();
-
-            _logger.LogInformation("[{method}] done!", nameof(Cleanup));
-        }
-    }
-
     /// <summary> Begins immediate submit. </summary>
     /// <param name="device">      The device. </param>
     /// <param name="commandPool"> The command pool. </param>
@@ -147,12 +119,12 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Ends immediate submit. </summary>
-        /// <param name="device">        The device. </param>
-        /// <param name="queue">         The queue. </param>
-        /// <param name="commandPool">   The command pool. </param>
-        /// <param name="commandBuffer"> Buffer for command data. </param>
-        /// <param name="fence">         The fence. </param>
-        public static void EndImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, VkCommandBuffer commandBuffer, VkFence fence)
+    /// <param name="device">        The device. </param>
+    /// <param name="queue">         The queue. </param>
+    /// <param name="commandPool">   The command pool. </param>
+    /// <param name="commandBuffer"> Buffer for command data. </param>
+    /// <param name="fence">         The fence. </param>
+    public static void EndImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, VkCommandBuffer commandBuffer, VkFence fence)
     {
         vkEndCommandBuffer(commandBuffer)
 #if DEBUG
@@ -187,11 +159,11 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Immediate submit. </summary>
-        /// <param name="device">      The device. </param>
-        /// <param name="queue">       The queue. </param>
-        /// <param name="commandPool"> The command pool. </param>
-        /// <param name="cb">          The cb. </param>
-        public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb)
+    /// <param name="device">      The device. </param>
+    /// <param name="queue">       The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
+    /// <param name="cb">          The cb. </param>
+    public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb)
     {
         VkFenceCreateInfo fenceCreateInfo;
         fenceCreateInfo.sType = VkFenceCreateInfo.STYPE;
@@ -219,10 +191,38 @@ public sealed unsafe partial class Vulkan : IDisposable
     public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb, VkFence fence)
     {
         VkCommandBuffer commandBuffer = BeginImmediateSubmit(device, commandPool);
-        
+
         cb(commandBuffer);
 
         EndImmediateSubmit(device, queue, commandPool, commandBuffer, fence);
+    }
+
+    internal bool Initialize()
+    {
+        using (_logger.BeginScope("[{method}] started...", nameof(Initialize)))
+        {
+            if (!InitializeInstance())
+            {
+                _logger.LogCritical("{method} failed!", nameof(Initialize));
+                return false;
+            }
+
+            CreateDevice();
+
+            _logger.LogInformation("[{method}] done!", nameof(Initialize));
+            return true;
+        }
+    }
+
+    internal void Cleanup()
+    {
+        using (_logger.BeginScope("[{method}] started...", nameof(Cleanup)))
+        {
+            DestroyDevice();
+            CleanupInstance();
+
+            _logger.LogInformation("[{method}] done!", nameof(Cleanup));
+        }
     }
 
     #region IDisposable Support

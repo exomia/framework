@@ -15,6 +15,7 @@ public enum CompressMode : byte
 {
     /// <summary> An enum constant representing the none option. </summary>
     None = 1 << 0,
+
     /// <summary> An enum constant representing the gzip option. </summary>
     Gzip = 1 << 1
 }

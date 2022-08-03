@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Exomia.Framework.Core.Graphics;
 
-sealed class TextureContentReader : IContentReader
+internal sealed class TextureContentReader : IContentReader
 {
     /// <inheritdoc />
     public unsafe object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)

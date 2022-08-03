@@ -144,7 +144,7 @@ public sealed unsafe partial class SpriteBatch
                     CreateVertexInputAttributeDescriptions = &CreateVertexInputAttributeDescriptions
                 })
             {
-                DynamicState = { States = new[] { VkDynamicState.VK_DYNAMIC_STATE_SCISSOR } },
+                DynamicState = { States = new[] { VkDynamicState.VK_DYNAMIC_STATE_SCISSOR } }
             }, _context->PipelineLayout, new[]
             {
                 _shader["DEFAULT_VS"],

@@ -15,10 +15,10 @@ namespace Exomia.Framework.Core;
 /// <summary> A component. </summary>
 public abstract class Component : IInitializable, IContentable, IUpdateable, IDisposable
 {
-    /// <summary> Occurs when Enabled Changed. </summary>
+    /// <inheritdoc />
     public event EventHandler? EnabledChanged;
 
-    /// <summary> Occurs when Update Order Changed. </summary>
+    /// <inheritdoc />
     public event EventHandler? UpdateOrderChanged;
 
     private readonly DisposeCollector _collector;

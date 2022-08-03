@@ -54,7 +54,7 @@ public sealed unsafe class Pipeline : IDisposable
     /// <returns> A <see cref="Pipeline" />. </returns>
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
     public static Pipeline Create(
-        Swapchain                                                                                                       swapchain,
+        Swapchain                                                                                                swapchain,
         params (PipelineConfiguration configuration, VkPipelineLayout pipelineLayout, Shader.Module[] modules)[] createInfos)
     {
         VkContext*        vkContext        = swapchain.VkContext;

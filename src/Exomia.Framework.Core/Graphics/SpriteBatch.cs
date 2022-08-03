@@ -10,11 +10,11 @@
 
 //#define USE_32BIT_INDEX
 
+using System.Diagnostics;
+using System.Numerics;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
-using System.Diagnostics;
-using System.Numerics;
 using Exomia.Framework.Core.Vulkan.Buffers;
 using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
@@ -70,7 +70,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private          uint           _spriteQueueCount, _spriteQueueLength, _sortedQueueLength;
     private          Matrix4x4      _projectionMatrix;
     private          VkRect2D       _scissorRectangle;
-    
+
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
@@ -146,7 +146,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-        
+
 
         Setup();
         Resize(_vkContext->InitialWidth, _vkContext->InitialHeight);
@@ -237,11 +237,11 @@ public sealed unsafe partial class SpriteBatch : IDisposable
                 CleanupVulkan();
             }
 
-            Allocator.Free<int>(_tmpSortBuffer,   _sortedQueueLength);
-            Allocator.Free<int>(ref _sortIndices, _sortedQueueLength);
-            Allocator.Free<SpriteInfo>(ref _sortedSprites, _sortedQueueLength);
-            Allocator.Free<SpriteInfo>(ref _spriteQueue,   _spriteQueueLength);
-            Allocator.Free<TextureInfo>(ref _textureQueue, _spriteQueueLength);
+            Allocator.Free(_tmpSortBuffer,     _sortedQueueLength);
+            Allocator.Free(ref _sortIndices,   _sortedQueueLength);
+            Allocator.Free(ref _sortedSprites, _sortedQueueLength);
+            Allocator.Free(ref _spriteQueue,   _spriteQueueLength);
+            Allocator.Free(ref _textureQueue,  _spriteQueueLength);
 
             Allocator.Free(ref _context, 1u);
         }

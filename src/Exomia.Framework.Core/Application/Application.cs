@@ -8,7 +8,6 @@
 
 #endregion
 
-using System.Diagnostics;
 using Exomia.Framework.Core.Application.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -16,17 +15,32 @@ using Microsoft.Extensions.Options;
 namespace Exomia.Framework.Core.Application;
 
 /// <summary> An application. </summary>
-public abstract unsafe class Application : IRunnable
+public abstract unsafe partial class Application : IDisposable
 {
-    private const double                           FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+    private const int    INITIAL_QUEUE_SIZE        = 16;
+    private const double FIXED_TIMESTAMP_THRESHOLD = 3.14159265359;
+
     private event EventHandler<Application, bool>? _IsRunningChanged;
 
-    private readonly delegate*<void> _doEvents;
-
-    private readonly IServiceProvider     _serviceProvider;
+    private readonly delegate*<void>      _doEvents;
     private readonly ManualResetEventSlim _isShutdownCompleted;
 
-    private bool _isRunning, _isInitialized, _isContentLoaded, _shutdown;
+    private readonly Dictionary<Guid, IComponent> _applicationComponents;
+    private readonly List<IInitializable>         _pendingInitializables;
+    private readonly List<IContentable>           _contentableComponents;
+    private readonly List<IContentable>           _currentlyContentableComponents;
+    private readonly List<IUpdateable>            _updateableComponents;
+    private readonly List<IUpdateable>            _currentlyUpdateableComponents;
+    private readonly List<IRenderable>            _renderableComponents;
+    private readonly List<IRenderable>            _currentlyRenderableComponents;
+    private readonly DisposeCollector             _collector;
+    private          bool                         _isRunning, _isInitialized, _isContentLoaded, _shutdown;
+
+    /// <summary> The <see cref="ServiceProvider" />. </summary>
+    protected readonly IServiceProvider _serviceProvider;
+
+    /// <summary> The <see cref="IRenderForm" />. </summary>
+    protected readonly IRenderForm _renderForm;
 
     /// <summary> Gets or sets a value indicating whether this application is using a fixed time step. </summary>
     /// <value> True if this application is using fixed time step, false if not. </value>
@@ -36,7 +50,7 @@ public abstract unsafe class Application : IRunnable
     /// <value> The target elapsed time in ms. </value>
     public double TargetElapsedTime { get; set; } = 1000.0 / 60.0;
 
-    /// <inheritdoc />
+    /// <summary> Gets or sets the flag if the application should be running. </summary>
     public bool IsRunning
     {
         get { return _isRunning; }
@@ -61,8 +75,19 @@ public abstract unsafe class Application : IRunnable
 
         _doEvents = serviceProvider.GetRequiredService<IOptions<ApplicationConfiguration>>().Value.DoEvents;
 
-        IRenderForm renderForm = serviceProvider.GetRequiredService<IRenderForm>();
-        renderForm.Closing += (ref bool cancel) =>
+        _applicationComponents          = new Dictionary<Guid, IComponent>(INITIAL_QUEUE_SIZE);
+        _pendingInitializables          = new List<IInitializable>(INITIAL_QUEUE_SIZE);
+        _contentableComponents          = new List<IContentable>(INITIAL_QUEUE_SIZE);
+        _currentlyContentableComponents = new List<IContentable>(INITIAL_QUEUE_SIZE);
+        _updateableComponents           = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+        _currentlyUpdateableComponents  = new List<IUpdateable>(INITIAL_QUEUE_SIZE);
+        _renderableComponents           = new List<IRenderable>(INITIAL_QUEUE_SIZE);
+        _currentlyRenderableComponents  = new List<IRenderable>(INITIAL_QUEUE_SIZE);
+
+        _collector = new DisposeCollector();
+
+        _renderForm = serviceProvider.GetRequiredService<IRenderForm>();
+        _renderForm.Closing += (ref bool cancel) =>
         {
             if (!cancel)
             {
@@ -70,10 +95,10 @@ public abstract unsafe class Application : IRunnable
                 _isShutdownCompleted.Wait(5 * 1000);
             }
         };
-        renderForm.Show();
     }
 
-    /// <inheritdoc />
+    /// <summary> Runs the application. </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the instance is already running.</exception>
     public void Run()
     {
         if (_isRunning)
@@ -85,7 +110,19 @@ public abstract unsafe class Application : IRunnable
 
         if (!_isInitialized)
         {
+            OnBeforeInitialize();
+            OnInitialize();
+            InitializePendingInitializations();
+            OnAfterInitialize();
+
+            _isInitialized = true;
+
+            LoadContent();
+
+            _renderForm.Show();
+
             Time time = Time.StartNew();
+
             void OnIsRunningChanged(Application s, bool v)
             {
                 if (v) { time.Start(); }
@@ -104,10 +141,12 @@ public abstract unsafe class Application : IRunnable
             }
 
             _IsRunningChanged -= OnIsRunningChanged;
+
+            UnloadContent();
         }
     }
 
-    /// <inheritdoc />
+    /// <summary> Shutdowns the application </summary>
     public void Shutdown()
     {
         if (!_shutdown)
@@ -117,79 +156,16 @@ public abstract unsafe class Application : IRunnable
         }
     }
 
-    /// <summary> Begins a frame. </summary>
-    /// <returns> True if it succeeds, false if it fails. </returns>
-    protected abstract bool BeginFrame();
-
-    /// <summary> Render to the scene. </summary>
-    /// <param name="time"> The time. </param>
-    protected abstract void Render(Time time);
-
-    /// <summary> Ends a frame. </summary>
-    protected abstract void EndFrame();
-
-    private void RenderloopVariableTime(Time time)
-    {
-        while (!_shutdown)
-        {
-            _doEvents();
-
-            if (!_isRunning)
-            {
-                Thread.Sleep(16);
-                continue;
-            }
-
-            if (BeginFrame())
-            {
-                Render(time);
-                EndFrame();
-            }
-
-            time.Tick();
-        }
-
-        _isShutdownCompleted.Set();
-    }
-
-    private void RenderloopFixedTime(Time time)
-    {
-        Stopwatch stopwatch = new Stopwatch();
-
-        while (!_shutdown)
-        {
-            stopwatch.Restart();
-
-            _doEvents();
-
-            if (!_isRunning)
-            {
-                Thread.Sleep(16);
-                continue;
-            }
-
-            if (BeginFrame())
-            {
-                Render(time);
-                EndFrame();
-            }
-
-            //SLEEP
-            while (TargetElapsedTime - FIXED_TIMESTAMP_THRESHOLD > stopwatch.Elapsed.TotalMilliseconds)
-            {
-                Thread.Yield();
-            }
-
-            //IDLE
-            while (stopwatch.Elapsed.TotalMilliseconds < TargetElapsedTime) { }
-
-            time.Tick();
-        }
-
-        _isShutdownCompleted.Set();
-    }
-
     #region IDisposable Support
+
+    /// <summary> Adds a <see cref="IDisposable" /> object to the dispose collector. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="obj"> The object. </param>
+    /// <returns> <paramref name="obj" /> as <typeparamref name="T" />. </returns>
+    public T ToDispose<T>(T obj) where T : IDisposable
+    {
+        return _collector.Collect(obj);
+    }
 
     private bool _disposed;
 
@@ -207,8 +183,27 @@ public abstract unsafe class Application : IRunnable
             OnDispose(disposing);
             if (disposing)
             {
-                //_spriteBatch.Dispose();
+                lock (_renderableComponents)
+                {
+                    _renderableComponents.Clear();
+                    _currentlyRenderableComponents.Clear();
+                }
+                lock (_updateableComponents)
+                {
+                    _updateableComponents.Clear();
+                    _currentlyUpdateableComponents.Clear();
+                }
+                lock (_contentableComponents)
+                {
+                    _contentableComponents.Clear();
+                    _currentlyContentableComponents.Clear();
+                }
+
+                _applicationComponents.Clear();
+                _pendingInitializables.Clear();
             }
+
+            _collector.Dispose();
 
             _disposed = true;
         }

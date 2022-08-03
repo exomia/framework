@@ -1,62 +1,62 @@
 <!--EXTERNAL_PROPERTIES: GITHUB_ACTIONS;MSBuildThisFileDirectory-->
 <Project>
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
-  <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
-    <Platforms>AnyCPU;x64</Platforms>
-    <Description>a framework for building 2D and 3D applications and more inspired by the XNA/Mono framework</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net6.0</TargetFrameworks>
+        <Platforms>AnyCPU;x64</Platforms>
+        <Description>a framework for building 2D and 3D applications and more inspired by the XNA/Mono framework</Description>
+    </PropertyGroup>
 
-  <!-- vulkan definitions -->
-  <PropertyGroup>
-    <VulkanVersion>1.3.223</VulkanVersion>
-  </PropertyGroup>
+    <!-- vulkan definitions -->
+    <PropertyGroup>
+        <VulkanVersion>1.3.223</VulkanVersion>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageTags>exomia framework vulkan 2d 3d game engine xna mono unity unreal</PackageTags>
-    <PackageOutputPath>.</PackageOutputPath>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
-    <PackageIcon>icon.png</PackageIcon>
-    <IncludeBuildOutput>true</IncludeBuildOutput>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageProjectUrl>https://github.com/exomia/framework</PackageProjectUrl>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageTags>exomia framework vulkan 2d 3d game engine xna mono unity unreal</PackageTags>
+        <PackageOutputPath>.</PackageOutputPath>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageIconUrl>https://avatars0.githubusercontent.com/u/37782223</PackageIconUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <PackageId>$(MSBuildProjectName)</PackageId>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
-    <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
-    <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
+        <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
+        <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
+    </PropertyGroup>
 
-  <!-- Source Link Support -->
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <IncludeSymbols>true</IncludeSymbols>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Deterministic>True</Deterministic>
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)'=='true'">True</ContinuousIntegrationBuild>
-  </PropertyGroup>
+    <!-- Source Link Support -->
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <IncludeSymbols>true</IncludeSymbols>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Deterministic>True</Deterministic>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)'=='true'">True</ContinuousIntegrationBuild>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'=='Debug'">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
 </Project>

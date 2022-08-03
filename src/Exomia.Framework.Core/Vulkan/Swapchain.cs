@@ -379,10 +379,10 @@ public sealed unsafe partial class Swapchain : IDisposable
             .AssertVkResult();
 
         Vulkan.CreateImageView(
-            _vkContext->Device, 
-            _context->DepthStencilImage, 
+            _vkContext->Device,
+            _context->DepthStencilImage,
             &_context->DepthStencilImageView,
-            _context->DepthStencilFormat, 
+            _context->DepthStencilFormat,
             Vulkan.GetImageAspectMask(_context->DepthStencilFormat));
     }
 

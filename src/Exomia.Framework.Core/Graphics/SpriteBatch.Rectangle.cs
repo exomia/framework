@@ -134,7 +134,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.Source  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = 0.0f;
         spriteInfo.Origin           = s_vector2Zero;
@@ -160,7 +160,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.Source  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = 0.0f;
         spriteInfo.Origin           = s_vector2Zero;
@@ -190,7 +190,7 @@ public sealed partial class SpriteBatch
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
         spriteInfo.ScaleDestination = false;
-        spriteInfo.Source  = s_nullRectangle;
+        spriteInfo.Source           = s_nullRectangle;
         spriteInfo.Color            = color;
         spriteInfo.Rotation         = rotation;
         spriteInfo.Origin           = origin;

@@ -9,7 +9,6 @@
 #endregion
 
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
@@ -19,6 +18,8 @@ namespace Exomia.Framework.Core.Graphics;
 
 public sealed unsafe partial class SpriteBatch
 {
+    private int* test = Allocator.Allocate<int>(200_000);
+
     private static void UpdateVertexFromSpriteInfo(
         SpriteInfo*                 spriteInfo,
         TextureInfo*                textureInfo,
@@ -243,8 +244,6 @@ public sealed unsafe partial class SpriteBatch
         vkCmdSetScissor(commandBuffer, 0u, 1u, &scissorRectangle);
     }
 
-    private int* test = Allocator.Allocate<int>(200_000);
-
     private void FlushBatch(VkCommandBuffer commandBuffer)
     {
         SpriteInfo* spriteQueueForBatch;
@@ -331,7 +330,7 @@ public sealed unsafe partial class SpriteBatch
         VkDescriptorSet* pDescriptorSets = stackalloc VkDescriptorSet[2]
         {
             *(_context->UboDescriptorSets + _swapchainContext->FrameInFlight),
-            *(texture->DescriptorSets     + _swapchainContext->FrameInFlight),
+            *(texture->DescriptorSets     + _swapchainContext->FrameInFlight)
         };
 
         vkCmdBindDescriptorSets(

@@ -12,7 +12,6 @@ namespace Exomia.Framework.Core;
 
 internal sealed class UpdateableComparer : IComparer<IUpdateable>
 {
-    /// <summary> The default. </summary>
     public static readonly UpdateableComparer Default = new UpdateableComparer();
 
     /// <inheritdoc />

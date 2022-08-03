@@ -20,6 +20,7 @@ using static Exomia.Vulkan.Api.Core.VkSharingMode;
 using static Exomia.Vulkan.Api.Core.VkSampleCountFlagBits;
 using static Exomia.Vulkan.Api.Core.VkMemoryPropertyFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageAspectFlagBits;
+using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -36,8 +37,10 @@ public sealed unsafe class Texture : IDisposable
 
     /// <summary> The identifier. </summary>
     public readonly ulong ID;
+
     /// <summary> The width. </summary>
     public readonly uint Width;
+
     /// <summary> The height. </summary>
     public readonly uint Height;
 
@@ -59,7 +62,7 @@ public sealed unsafe class Texture : IDisposable
         Height       = height;
     }
 
-    /// <summary> Implicit cast that converts the given Texture to a <see cref="VkImage"/>. </summary>
+    /// <summary> Implicit cast that converts the given Texture to a <see cref="VkImage" />. </summary>
     /// <param name="texture"> The texture. </param>
     /// <returns> The result of the operation. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -68,7 +71,7 @@ public sealed unsafe class Texture : IDisposable
         return texture._image;
     }
 
-    /// <summary> Implicit cast that converts the given Texture to a <see cref="VkImageView"/>. </summary>
+    /// <summary> Implicit cast that converts the given Texture to a <see cref="VkImageView" />. </summary>
     /// <param name="texture"> The texture. </param>
     /// <returns> The result of the operation. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -93,7 +96,7 @@ public sealed unsafe class Texture : IDisposable
         VkImageCreateFlagBits imageCreateFlagBits = 0)
     {
         // TODO: add Vulkan.CreateImage(...) method -> duplicated code here and in swapchain CreateDepthResources
-        using (Vulkan.Buffers.Buffer staging = Vulkan.Buffers.Buffer.CreateStagingBuffer<byte>(vkContext, data.Length))
+        using (Buffer staging = Buffer.CreateStagingBuffer<byte>(vkContext, data.Length))
         {
             byte* dst = staging.Map<byte>();
             fixed (byte* src = data)

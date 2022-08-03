@@ -38,21 +38,21 @@ public unsafe struct VkContext
     internal static VkContext Create()
     {
         Unsafe.SkipInit(out VkContext context);
-        context.Version                         = new VkVersion(0, 0, 0, 0);
-        context.Instance                        = VkInstance.Null;
-        context.DebugUtilsMessengerExt          = VkDebugUtilsMessengerEXT.Null;
-        context.SurfaceKhr                      = VkSurfaceKHR.Null;
-        context.InitialWidth                    = 0u;
-        context.InitialHeight                   = 0u;
-        context.PhysicalDevice                  = VkPhysicalDevice.Null;
-        context.SupportedSampleCountFlags       = VK_SAMPLE_COUNT_1_BIT;
-        context.QueueFamilyIndex                = uint.MaxValue;
-        context.MaxQueueCount                   = 0u;
-        context.Device                          = VkDevice.Null;
-        context.QueuesCount                     = 0u;
-        context.Queues                          = null;
-        context.CommandPool                     = VkCommandPool.Null;
-        context.ShortLivedCommandPool           = VkCommandPool.Null;
+        context.Version                   = new VkVersion(0, 0, 0, 0);
+        context.Instance                  = VkInstance.Null;
+        context.DebugUtilsMessengerExt    = VkDebugUtilsMessengerEXT.Null;
+        context.SurfaceKhr                = VkSurfaceKHR.Null;
+        context.InitialWidth              = 0u;
+        context.InitialHeight             = 0u;
+        context.PhysicalDevice            = VkPhysicalDevice.Null;
+        context.SupportedSampleCountFlags = VK_SAMPLE_COUNT_1_BIT;
+        context.QueueFamilyIndex          = uint.MaxValue;
+        context.MaxQueueCount             = 0u;
+        context.Device                    = VkDevice.Null;
+        context.QueuesCount               = 0u;
+        context.Queues                    = null;
+        context.CommandPool               = VkCommandPool.Null;
+        context.ShortLivedCommandPool     = VkCommandPool.Null;
         return context;
     }
 }

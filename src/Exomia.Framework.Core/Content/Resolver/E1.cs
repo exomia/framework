@@ -1,4 +1,14 @@
-﻿namespace Exomia.Framework.Core.Content.Resolver;
+﻿#region License
+
+// Copyright (c) 2018-2022, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+namespace Exomia.Framework.Core.Content.Resolver;
 
 /// <summary> A e1. </summary>
 public class E1
@@ -11,5 +21,4 @@ public class E1
 
     /// <summary> The texture magic header. </summary>
     public static readonly byte[] TextureMagicHeader = { 64, 116, 101, 120 };
-
 }

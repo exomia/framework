@@ -10,7 +10,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Exomia.Framework.Core.Content.Compression;
 
 namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 

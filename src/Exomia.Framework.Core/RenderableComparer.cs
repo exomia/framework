@@ -10,20 +10,19 @@
 
 namespace Exomia.Framework.Core;
 
-internal sealed class DrawableComparer : IComparer<IDrawable>
+internal sealed class RenderableComparer : IComparer<IRenderable>
 {
-    /// <summary> The default. </summary>
-    public static readonly DrawableComparer Default = new DrawableComparer();
+    public static readonly RenderableComparer Default = new RenderableComparer();
 
     /// <inheritdoc />
-    public int Compare(IDrawable? left, IDrawable? right)
+    public int Compare(IRenderable? left, IRenderable? right)
     {
         if (Equals(left, right)) { return 0; }
 
         if (left is null) { return 1; }
         if (right is null) { return -1; }
 
-        return left.DrawOrder < right.DrawOrder
+        return left.RenderOrder < right.RenderOrder
             ? 1
             : -1;
     }

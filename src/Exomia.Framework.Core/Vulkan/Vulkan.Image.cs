@@ -119,7 +119,7 @@ public sealed unsafe partial class Vulkan
                         VK_ACCESS_NONE, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT),
                 // undefined -> depth / stencil attachment
                 (VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) =>
-                (VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                    (VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
                         VK_ACCESS_NONE, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT),
                 // undefined -> transfer dst
                 (VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) =>
@@ -150,12 +150,12 @@ public sealed unsafe partial class Vulkan
     /// <param name="aspectMask">    The aspect mask. </param>
     /// <param name="imageViewType"> Type of the image view. </param>
     public static void CreateImageView(
-        VkDevice device, 
-        VkImage image,
-        VkImageView* imageView, 
-        VkFormat format,
+        VkDevice              device,
+        VkImage               image,
+        VkImageView*          imageView,
+        VkFormat              format,
         VkImageAspectFlagBits aspectMask,
-        VkImageViewType imageViewType = VK_IMAGE_VIEW_TYPE_2D)
+        VkImageViewType       imageViewType = VK_IMAGE_VIEW_TYPE_2D)
     {
         VkImageViewCreateInfo imageViewCreateInfo;
         imageViewCreateInfo.sType                           = VkImageViewCreateInfo.STYPE;
@@ -176,7 +176,5 @@ public sealed unsafe partial class Vulkan
 
         vkCreateImageView(device, &imageViewCreateInfo, null, imageView)
             .AssertVkResult();
-
-
     }
 }

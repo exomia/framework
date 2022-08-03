@@ -17,10 +17,10 @@ namespace Exomia.Framework.Core;
 public interface ICloneable<out T>
 {
     /// <summary>
-    ///     returns a deep copy of the object.
+    ///     Returns a deep copy of the object.
     /// </summary>
     /// <returns>
-    ///     a new deep copied object.
+    ///     A new deep copied object.
     /// </returns>
     T Clone();
 }

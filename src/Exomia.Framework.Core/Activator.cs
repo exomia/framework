@@ -14,9 +14,8 @@ using System.Reflection;
 namespace Exomia.Framework.Core;
 
 /// <summary>
-///     A delegate that can be used to repeatedly create instances of type T using a specific constructor. You cannot use
-///     the same delegate for different constructors. You
-///     should create a delegate using GetCreator for each constructor that you need to call.
+///     A delegate that can be used to repeatedly create instances of type T using a specific constructor. You cannot use the same delegate for different constructors.
+///     You should create a delegate using GetCreator for each constructor that you need to call.
 /// </summary>
 /// <typeparam name="T"> The type of object that this delegate will create. </typeparam>
 /// <param name="parameters"> The parameters to create the object with. </param>
@@ -28,13 +27,11 @@ public static class Activator
 {
     /// <summary>
     ///     Get a compiled lambda expression that can then be used to repeatedly create instances of that type using the
-    ///     constructor that the compiled lambda expression was created
-    ///     from.
+    ///     constructor that the compiled lambda expression was created from.
     /// </summary>
     /// <param name="dType"> The type. </param>
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
     /// <exception cref="NotSupportedException">  Thrown when the requested operation is not supported. </exception>
-    /// ###
     /// <returns> A compiled lambda expression in the form of a delegate. </returns>
     public static Delegate GetCreator(Type dType)
     {
@@ -59,8 +56,7 @@ public static class Activator
 
     /// <summary>
     ///     Get a compiled lambda expression that can then be used to repeatedly create instances of that type using the
-    ///     constructor that the compiled lambda expression was created
-    ///     from.
+    ///     constructor that the compiled lambda expression was created from.
     /// </summary>
     /// <typeparam name="TDelegate"> The type of object that the compiled lambda expression will create. </typeparam>
     /// <returns> A compiled lambda expression in the form of a delegate. </returns>
@@ -73,16 +69,13 @@ public static class Activator
 
     /// <summary>
     ///     Get a compiled lambda expression that can then be used to repeatedly create instances of that type using the
-    ///     constructor that the compiled lambda expression was created
-    ///     from. Uses the constructor that matches the constructor parameters passed in.
+    ///     constructor that the compiled lambda expression was created from.
+    ///     Uses the constructor that matches the constructor parameters passed in.
     /// </summary>
     /// <typeparam name="TRes"> The type of object that the compiled lambda expression will create. </typeparam>
     /// <param name="constructorParameters"> An ordered array of the parameters the constructor takes. </param>
     /// <returns> A compiled lambda expression in the form of a delegate. </returns>
-    /// <exception cref="ArgumentException">
-    ///     Thrown when T does not have a constructor that takes the passed in set of
-    ///     parameters.
-    /// </exception>
+    /// <exception cref="ArgumentException"> Thrown when T does not have a constructor that takes the passed in set of parameters. </exception>
     public static Creator<TRes> GetCreator<TRes>(params Type[] constructorParameters)
     {
         constructorParameters ??= Type.EmptyTypes;
@@ -110,8 +103,8 @@ public static class Activator
 
     /// <summary>
     ///     Get a compiled lambda expression that can then be used to repeatedly create instances of that type using the
-    ///     constructor that the compiled lambda expression was created
-    ///     from. Uses the constructor that matches the constructor parameters passed in.
+    ///     constructor that the compiled lambda expression was created from.
+    ///     Uses the constructor that matches the constructor parameters passed in.
     /// </summary>
     /// <typeparam name="TRes"> The type of object that the compiled lambda expression will create. </typeparam>
     /// <param name="constructorParameters"> An ordered array of the parameters the constructor takes. </param>

@@ -18,12 +18,6 @@ public sealed unsafe partial class SpriteBatch
     private const int INSERTION_SORT_BLOCK_SIZE = 64;
     private const int SEQUENTIAL_THRESHOLD      = 2048;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Sort(TextureInfo* tInfo, int* arr, int offset, int length)
-    {
-        MergeSort(tInfo, arr, offset, length - 1, _tmpSortBuffer);
-    }
-
     private static void MergeSort(
         TextureInfo* tInfo,
         int*         arr,
@@ -139,5 +133,11 @@ public sealed unsafe partial class SpriteBatch
         }
 
         return left;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void Sort(TextureInfo* tInfo, int* arr, int offset, int length)
+    {
+        MergeSort(tInfo, arr, offset, length - 1, _tmpSortBuffer);
     }
 }

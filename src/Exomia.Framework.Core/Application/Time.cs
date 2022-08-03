@@ -96,11 +96,11 @@ public sealed class Time
     }
 
     /// <summary>
-    ///     Initializes a new <see cref="Time"/> instance, 
+    ///     Initializes a new <see cref="Time" /> instance,
     ///     sets the (delta) time to zero and starts measuring the elapsed time since start and delta time between each ticks.
     /// </summary>
     /// <returns>
-    ///     A <see cref="Time"/>.
+    ///     A <see cref="Time" />.
     /// </returns>
     public static Time StartNew()
     {
@@ -154,7 +154,7 @@ public sealed class Time
             _deltaTimeS = _deltaTimeMs = 0;
             return;
         }
-        
+
         _deltaTimeS = (_deltaTimeMs = (float)(((_currTime = Stopwatch.GetTimestamp()) - _prevTime) * s_countsPerMSec)) * 0.001f;
         _prevTime   = _currTime;
     }

@@ -8,7 +8,6 @@
 
 #endregion
 
-
 using Exomia.Framework.Core.Vulkan.Configurations;
 
 namespace Exomia.Framework.Core.Application.Configurations;

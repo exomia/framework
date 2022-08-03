@@ -14,7 +14,7 @@ using static Exomia.Vulkan.Api.Core.VkPhysicalDeviceType;
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
 /// <summary> A physical device configuration. This class cannot be inherited. </summary>
-public sealed unsafe class PhysicalDeviceConfiguration : IConfigurableConfiguration
+public sealed class PhysicalDeviceConfiguration : IConfigurableConfiguration
 {
     public VkVersion            RequiredMinimumVkApiVersion { get; set; } = VkVersion.VulkanApiVersion12;
     public VkPhysicalDeviceType RequiredPhysicalDeviceType  { get; set; } = VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;

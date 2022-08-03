@@ -119,20 +119,20 @@ sealed unsafe partial class Vulkan
             _logger.LogCritical("The system doesn't support the minimum required vulkan version: {0}", _applicationConfiguration.ApiVersion.ToString());
             return false;
         }
-        
+
         if (!CheckInstanceLayerSupport(_instanceConfiguration.EnabledLayerNames))
         {
             _logger.LogCritical("The system doesn't support the requested instance layers: {0}", string.Join(',', _instanceConfiguration.EnabledLayerNames));
             return false;
         }
-        
+
         if (!CheckInstanceExtensionSupport(_instanceConfiguration.EnabledExtensionNames, _instanceConfiguration.EnabledLayerNames))
         {
             _logger.LogCritical("The system doesn't support the requested instance extensions: {0}", string.Join(',', _instanceConfiguration.EnabledExtensionNames));
             return false;
         }
 
-        if (_debugUtilsMessengerConfiguration.IsEnabled && 
+        if (_debugUtilsMessengerConfiguration.IsEnabled &&
             !_instanceConfiguration.EnabledExtensionNames.Contains(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
         {
             _instanceConfiguration.EnabledExtensionNames.Add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -153,7 +153,7 @@ sealed unsafe partial class Vulkan
                 _instanceConfiguration.EnabledExtensionNames.Add(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
             }
 
-            VkValidationFeatureEnableEXT* pValidationFeatureEnableExt = 
+            VkValidationFeatureEnableEXT* pValidationFeatureEnableExt =
                 stackalloc VkValidationFeatureEnableEXT[_instanceConfiguration.ValidationFeatureEnable.Count];
 
             for (int i = 0; i < _instanceConfiguration.ValidationFeatureEnable.Count; i++)
@@ -215,7 +215,7 @@ sealed unsafe partial class Vulkan
         {
             vkCreateInstance(&instanceCreateInfo, null, &_context->Instance)
                 .AssertVkResult();
-            
+
             _context->Version = _applicationConfiguration.ApiVersion;
 
             return true;

@@ -10,7 +10,6 @@
 
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Allocators;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkMemoryPropertyFlagBits;
 using static Exomia.Vulkan.Api.Core.VkBufferUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkSharingMode;
@@ -598,7 +597,7 @@ public sealed unsafe class Buffer : IDisposable
         vkUnmapMemory(_device, _deviceMemory);
     }
 
-    /// <summary> Copies the contents of the current buffer to the <paramref name="dst"/> buffer. </summary>
+    /// <summary> Copies the contents of the current buffer to the <paramref name="dst" /> buffer. </summary>
     /// <param name="dst">         Destination for the copy operation. </param>
     /// <param name="queue">       The queue. </param>
     /// <param name="commandPool"> The command pool. </param>
@@ -619,8 +618,8 @@ public sealed unsafe class Buffer : IDisposable
             vkCmdCopyBuffer(cb, *_buffer, *dst._buffer, 1u, &bufferCopy);
         });
     }
-    
-    /// <summary> Copies the contents of the current buffer to the <paramref name="dst"/> buffer. </summary>
+
+    /// <summary> Copies the contents of the current buffer to the <paramref name="dst" /> buffer. </summary>
     /// <param name="dst">         Destination for the copy operation. </param>
     /// <param name="dstOffset">   Destination offset. </param>
     /// <param name="queue">       The queue. </param>

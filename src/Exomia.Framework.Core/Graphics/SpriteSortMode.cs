@@ -23,5 +23,5 @@ public enum SpriteSortMode
     /// <summary>
     ///     An enum constant representing the texture option.
     /// </summary>
-    Texture = 1,
+    Texture = 1
 }

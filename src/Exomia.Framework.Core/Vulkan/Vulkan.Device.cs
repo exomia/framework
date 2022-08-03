@@ -97,8 +97,8 @@ sealed unsafe partial class Vulkan
         }
 
         VkPhysicalDeviceFeatures2 physicalDeviceFeatures2;
-        physicalDeviceFeatures2.sType = VkPhysicalDeviceFeatures2.STYPE;
-        physicalDeviceFeatures2.pNext = pNext; 
+        physicalDeviceFeatures2.sType                      = VkPhysicalDeviceFeatures2.STYPE;
+        physicalDeviceFeatures2.pNext                      = pNext;
         physicalDeviceFeatures2.features.samplerAnisotropy = VkBool32.True;
         if (_deviceConfiguration.SetVkPhysicalDeviceFeatures != null)
         {

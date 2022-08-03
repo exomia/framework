@@ -1,56 +1,56 @@
 ﻿<!--EXTERNAL_PROPERTIES: VulkanVersion-->
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-     <PackageTags>$(PackageTags) core</PackageTags>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageTags>$(PackageTags) core</PackageTags>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
-    <PreBuildEvent>$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat</PreBuildEvent>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+        <PreBuildEvent>$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat</PreBuildEvent>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
-    <PackageReference Include="Exomia.Vulkan.Api.Core" Version="$(VulkanVersion)" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
+        <PackageReference Include="Exomia.Vulkan.Api.Core" Version="$(VulkanVersion)"/>
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
-    <PackageReference Include="Exomia.Vulkan.Api.Core.x64" Version="$(VulkanVersion)" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
+        <PackageReference Include="Exomia.Vulkan.Api.Core.x64" Version="$(VulkanVersion)"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="**\*.*.cs">
-      <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="**\*.*.cs">
+            <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\shaders\*-opt.spv">
-      <LogicalName>$(AssemblyName).Resources.shaders.%(filename).spv</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\shaders\*-opt.spv">
+            <LogicalName>$(AssemblyName).Resources.shaders.%(filename).spv</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\fonts\arial\*.e1">
-      <LogicalName>$(AssemblyName).Resources.fonts.arial.%(filename).e1</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\fonts\arial\*.e1">
+            <LogicalName>$(AssemblyName).Resources.fonts.arial.%(filename).e1</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Resources\shaders\src\**\*" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="Resources\shaders\src\**\*"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Exomia.Framework.Linux, PublicKey=0024000004800000940000000602000000240000525341310004000001000100C9B46B495B91AA893ECA61DD9675B3983B8AF77F377CA225C624BB6BF33DA888049A7499BF2BE35873C70FC5FDC5593287B5A28267626DF6064B2D4E1041C370A931A7C6FB733D0C8FD57EB222FF7656CF1AEBBE1AAD5F2CEB58A5AEE8A802F87A05E878DEC2F0D0E4A5C3DA4D0AEAC441778A1321B2A1AAF47CB716A1B543AC</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Exomia.Framework.Windows, PublicKey=0024000004800000940000000602000000240000525341310004000001000100C9B46B495B91AA893ECA61DD9675B3983B8AF77F377CA225C624BB6BF33DA888049A7499BF2BE35873C70FC5FDC5593287B5A28267626DF6064B2D4E1041C370A931A7C6FB733D0C8FD57EB222FF7656CF1AEBBE1AAD5F2CEB58A5AEE8A802F87A05E878DEC2F0D0E4A5C3DA4D0AEAC441778A1321B2A1AAF47CB716A1B543AC</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Exomia.Framework.Linux, PublicKey=0024000004800000940000000602000000240000525341310004000001000100C9B46B495B91AA893ECA61DD9675B3983B8AF77F377CA225C624BB6BF33DA888049A7499BF2BE35873C70FC5FDC5593287B5A28267626DF6064B2D4E1041C370A931A7C6FB733D0C8FD57EB222FF7656CF1AEBBE1AAD5F2CEB58A5AEE8A802F87A05E878DEC2F0D0E4A5C3DA4D0AEAC441778A1321B2A1AAF47CB716A1B543AC</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Exomia.Framework.Windows, PublicKey=0024000004800000940000000602000000240000525341310004000001000100C9B46B495B91AA893ECA61DD9675B3983B8AF77F377CA225C624BB6BF33DA888049A7499BF2BE35873C70FC5FDC5593287B5A28267626DF6064B2D4E1041C370A931A7C6FB733D0C8FD57EB222FF7656CF1AEBBE1AAD5F2CEB58A5AEE8A802F87A05E878DEC2F0D0E4A5C3DA4D0AEAC441778A1321B2A1AAF47CB716A1B543AC</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>

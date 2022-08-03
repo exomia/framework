@@ -21,7 +21,7 @@ public sealed unsafe class DebugUtilsMessengerConfiguration : IConfigurableConfi
     public bool IsEnabled { get; set; }
 #if DEBUG
         = true;
-#endif 
+#endif
 
     /// <summary> Gets or sets the message severity. </summary>
     /// <value> The message severity. </value>

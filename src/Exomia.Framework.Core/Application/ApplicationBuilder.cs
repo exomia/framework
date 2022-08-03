@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using ApplicationConfiguration = Exomia.Framework.Core.Vulkan.Configurations.ApplicationConfiguration;
 
 namespace Exomia.Framework.Core.Application;
 
@@ -70,7 +71,7 @@ public sealed class ApplicationBuilder : IApplicationBuilder
                                                   .AddSingleton<Application>(p => p.GetRequiredService<TApplication>());
 
         /* vulkan options */
-        AddOptions<Vulkan.Configurations.ApplicationConfiguration>(appServiceCollection);
+        AddOptions<ApplicationConfiguration>(appServiceCollection);
         AddOptions<DebugUtilsMessengerConfiguration>(appServiceCollection);
         AddOptions<DepthStencilConfiguration>(appServiceCollection);
         AddOptions<DeviceConfiguration>(appServiceCollection);

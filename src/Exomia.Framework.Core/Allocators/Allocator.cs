@@ -390,7 +390,7 @@ public static unsafe class Allocator
     public static void ReAllocate<T>(ref T* src, uint srcCount, uint newCount)
         where T : unmanaged
     {
-        Free<T>(src, srcCount);
+        Free(src, srcCount);
         src = Allocate<T>(newCount);
     }
 }

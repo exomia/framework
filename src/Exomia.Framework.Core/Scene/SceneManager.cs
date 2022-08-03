@@ -9,32 +9,19 @@
 #endregion
 
 using System.Diagnostics.CodeAnalysis;
-using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Input;
 
 namespace Exomia.Framework.Core.Scene;
 
-internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable, IDrawable, IDisposable
+internal sealed partial class SceneManager : ISceneManager, IInitializable, IUpdateable, IRenderable, IDisposable
 {
     private const int INITIAL_QUEUE_SIZE = 16;
 
-    /// <summary> Occurs when Enabled Changed. </summary>
-    public event EventHandler? EnabledChanged;
-
-    /// <summary> Occurs when Update Order Changed. </summary>
-    public event EventHandler? UpdateOrderChanged;
-
-    /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
-    public event EventHandler? DrawOrderChanged;
-
-    /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
-    public event EventHandler? VisibleChanged;
-
-    private readonly List<SceneBase>               _currentDrawableScenes;
-    private readonly List<SceneBase>               _currentScenes;
-    private readonly List<SceneBase>               _currentUpdateableScenes;
-    private readonly List<SceneBase>               _pendingInitializableScenes;
     private readonly Dictionary<string, SceneBase> _scenes;
+    private readonly List<SceneBase>               _pendingInitializableScenes;
+    private readonly List<SceneBase>               _currentScenes;
+    private readonly List<SceneBase>               _currentDrawableScenes;
+    private readonly List<SceneBase>               _currentUpdateableScenes;
     private readonly List<SceneBase>               _scenesToUnload;
     private readonly IInputDevice                  _inputDevice;
     private          bool                          _isInitialized;
@@ -42,62 +29,6 @@ internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable,
     private          int                           _updateOrder;
     private          int                           _drawOrder;
     private          bool                          _visible;
-
-    /// <inheritdoc />
-    public bool Enabled
-    {
-        get { return _enabled; }
-        set
-        {
-            if (_enabled != value)
-            {
-                _enabled = value;
-                EnabledChanged?.Invoke();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public int UpdateOrder
-    {
-        get { return _updateOrder; }
-        set
-        {
-            if (_updateOrder != value)
-            {
-                _updateOrder = value;
-                UpdateOrderChanged?.Invoke();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public int DrawOrder
-    {
-        get { return _drawOrder; }
-        set
-        {
-            if (_drawOrder != value)
-            {
-                _drawOrder = value;
-                DrawOrderChanged?.Invoke();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public bool Visible
-    {
-        get { return _visible; }
-        set
-        {
-            if (_visible != value)
-            {
-                _visible = value;
-                VisibleChanged?.Invoke();
-            }
-        }
-    }
 
     public SceneManager(IInputDevice inputDevice, IEnumerable<(bool, SceneBase)> sceneCollection)
     {
@@ -125,57 +56,6 @@ internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable,
                     _pendingInitializableScenes.Add(scene);
                 }
             }
-        }
-    }
-
-    /// <inheritdoc />
-    bool IDrawable.BeginDraw()
-    {
-        return _visible;
-    }
-
-    /// <inheritdoc />
-    void IDrawable.Draw(Time gameTime)
-    {
-        lock (_currentScenes)
-        {
-            _currentDrawableScenes.AddRange(_currentScenes);
-        }
-        for (int i = 0; i < _currentDrawableScenes.Count; i++)
-        {
-            SceneBase scene = _currentDrawableScenes[i];
-            if (scene.State == SceneState.Ready && scene.BeginDraw())
-            {
-                scene.Draw(gameTime);
-                scene.EndDraw();
-            }
-        }
-
-        _currentDrawableScenes.Clear();
-    }
-
-    /// <inheritdoc />
-    void IDrawable.EndDraw() { }
-
-    /// <inheritdoc />
-    void IInitializable.Initialize()
-    {
-        if (!_isInitialized)
-        {
-            lock (_pendingInitializableScenes)
-            {
-                _pendingInitializableScenes[0].Initialize();
-                _pendingInitializableScenes[0].LoadContent();
-                _pendingInitializableScenes.RemoveAt(0);
-
-                while (_pendingInitializableScenes.Count != 0)
-                {
-                    _pendingInitializableScenes[0].Initialize();
-                    _pendingInitializableScenes.RemoveAt(0);
-                }
-            }
-
-            _isInitialized = true;
         }
     }
 
@@ -326,26 +206,6 @@ internal sealed class SceneManager : ISceneManager, IInitializable, IUpdateable,
     public bool HideScene(string key)
     {
         return _scenes.TryGetValue(key, out SceneBase? intern) && HideScene(intern);
-    }
-
-    /// <inheritdoc />
-    void IUpdateable.Update(Time gameTime)
-    {
-        lock (_currentScenes)
-        {
-            _currentUpdateableScenes.AddRange(_currentScenes);
-        }
-
-        for (int i = _currentUpdateableScenes.Count - 1; i >= 0; i--)
-        {
-            SceneBase scene = _currentUpdateableScenes[i];
-            if (scene.State == SceneState.Ready && scene.Enabled)
-            {
-                scene.Update(gameTime);
-            }
-        }
-
-        _currentUpdateableScenes.Clear();
     }
 
     public bool HideScene(SceneBase scene)

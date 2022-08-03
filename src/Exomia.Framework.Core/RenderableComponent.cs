@@ -12,28 +12,28 @@ using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
-/// <summary> A drawable component. </summary>
-public abstract class DrawableComponent : Component, IDrawable
+/// <summary> A renderable component. </summary>
+public abstract class RenderableComponent : Component, IRenderable
 {
-    /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
-    public event EventHandler? DrawOrderChanged;
+    /// <inheritdoc />
+    public event EventHandler? RenderOrderChanged;
 
-    /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
+    /// <inheritdoc />
     public event EventHandler? VisibleChanged;
 
-    private int  _drawOrder;
+    private int  _renderOrder;
     private bool _visible;
 
     /// <inheritdoc />
-    public int DrawOrder
+    public int RenderOrder
     {
-        get { return _drawOrder; }
+        get { return _renderOrder; }
         set
         {
-            if (_drawOrder != value)
+            if (_renderOrder != value)
             {
-                _drawOrder = value;
-                DrawOrderChanged?.Invoke();
+                _renderOrder = value;
+                RenderOrderChanged?.Invoke();
             }
         }
     }
@@ -53,14 +53,14 @@ public abstract class DrawableComponent : Component, IDrawable
     }
 
     /// <inheritdoc />
-    public virtual bool BeginDraw()
+    public virtual bool BeginFrame()
     {
         return _visible;
     }
 
     /// <inheritdoc />
-    public abstract void Draw(Time time);
+    public abstract void Render(Time time);
 
     /// <inheritdoc />
-    public virtual void EndDraw() { }
+    public virtual void EndFrame() { }
 }

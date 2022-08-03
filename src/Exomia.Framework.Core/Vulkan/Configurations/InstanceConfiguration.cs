@@ -8,7 +8,6 @@
 
 #endregion
 
-
 #pragma warning disable 1591
 namespace Exomia.Framework.Core.Vulkan.Configurations;
 
@@ -28,7 +27,7 @@ public sealed unsafe class InstanceConfiguration : IConfigurableConfiguration
     public List<string> EnabledExtensionNames { get; set; } = new List<string>
     {
         VK_KHR_SURFACE_EXTENSION_NAME,
-        VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME,
+        VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME
     };
 
     public List<VkValidationFeatureEnableEXT>  ValidationFeatureEnable  { get; set; } = new List<VkValidationFeatureEnableEXT>();

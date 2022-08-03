@@ -48,5 +48,10 @@ public enum SceneState
     /// <summary>
     ///     An enum constant representing the disposing option.
     /// </summary>
-    Disposing
+    Disposing,
+
+    /// <summary>
+    ///     An enum constant representing the disposed option.
+    /// </summary>
+    Disposed
 }

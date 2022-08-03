@@ -60,15 +60,14 @@ internal sealed unsafe class MyApplication : Application
 
         RenderPassConfiguration renderPassConfiguration = new();
 
-        _swapchain = new Swapchain(
+        _swapchain = ToDispose(new Swapchain(
             vulkan.Context,
             swapchainConfiguration.Value,
             depthStencilConfiguration.Value,
-            renderPassConfiguration);
+            renderPassConfiguration));
 
-        _renderer    = new Renderer(_swapchain);
-        _spriteBatch = new SpriteBatch(_swapchain);
-
+        _renderer    = ToDispose(new Renderer(_swapchain));
+        _spriteBatch = ToDispose(new SpriteBatch(_swapchain));
 
         _texture1 = contentManager.Load<Texture>("icon.e1");
     }
@@ -136,6 +135,8 @@ internal sealed unsafe class MyApplication : Application
 
             _renderer.EndRenderPass(commandBuffer);
             _renderer.End(commandBuffer);
+
+            base.Render(time);
         }
 
         timer += time.DeltaTimeS;
@@ -155,9 +156,6 @@ internal sealed unsafe class MyApplication : Application
 
     protected override void OnDispose(bool disposing)
     {
-        _spriteBatch.Dispose();
-        _renderer.Dispose();
-        _swapchain.Dispose();
         _texture1.Dispose();
     }
 }

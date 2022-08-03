@@ -10,22 +10,18 @@
 
 using Exomia.Framework.Core.Application;
 
-namespace Exomia.Framework.Core;
+namespace Exomia.Framework.Core.Scene;
 
-/// <summary> A renderer. </summary>
-public abstract class Renderer : IDrawable
+internal sealed partial class SceneManager
 {
-    /// <summary> Occurs when the <see cref="DrawOrder" /> property changes. </summary>
-    public event EventHandler? DrawOrderChanged;
-
-    /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
-    public event EventHandler? VisibleChanged;
-
-    private int  _drawOrder;
-    private bool _visible;
+    /// <inheritdoc />
+    public event EventHandler? RenderOrderChanged;
 
     /// <inheritdoc />
-    public int DrawOrder
+    public event EventHandler? VisibleChanged;
+
+    /// <inheritdoc />
+    public int RenderOrder
     {
         get { return _drawOrder; }
         set
@@ -33,7 +29,7 @@ public abstract class Renderer : IDrawable
             if (_drawOrder != value)
             {
                 _drawOrder = value;
-                DrawOrderChanged?.Invoke();
+                RenderOrderChanged?.Invoke();
             }
         }
     }
@@ -53,14 +49,31 @@ public abstract class Renderer : IDrawable
     }
 
     /// <inheritdoc />
-    public virtual bool BeginDraw()
+    bool IRenderable.BeginFrame()
     {
         return _visible;
     }
 
     /// <inheritdoc />
-    public virtual void Draw(Time gameTime) { }
+    void IRenderable.Render(Time time)
+    {
+        lock (_currentScenes)
+        {
+            _currentDrawableScenes.AddRange(_currentScenes);
+        }
+        for (int i = 0; i < _currentDrawableScenes.Count; i++)
+        {
+            SceneBase scene = _currentDrawableScenes[i];
+            if (scene.State == SceneState.Ready && scene.BeginFrame())
+            {
+                scene.Render(time);
+                scene.EndFrame();
+            }
+        }
+
+        _currentDrawableScenes.Clear();
+    }
 
     /// <inheritdoc />
-    public virtual void EndDraw() { }
+    void IRenderable.EndFrame() { }
 }
