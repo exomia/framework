@@ -195,10 +195,10 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             M22 = yRatio * 2f,
             M33 = 1f,
             M44 = 1f,
-            M41 = _configuration.Center
+            M41 = _configuration.Centered
                 ? 0f
                 : -1f,
-            M42 = _configuration.Center
+            M42 = _configuration.Centered
                 ? 0f
                 : -1f
         };
