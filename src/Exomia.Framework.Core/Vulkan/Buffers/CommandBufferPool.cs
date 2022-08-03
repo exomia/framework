@@ -13,7 +13,7 @@ using Exomia.Framework.Core.Allocators;
 
 namespace Exomia.Framework.Core.Vulkan.Buffers;
 
-internal sealed unsafe class CommandBufferPool : IDisposable
+sealed unsafe class CommandBufferPool : IDisposable
 {
     private readonly VkContext*           _vkContext;
     private readonly uint                 _maxFramesInFlight;

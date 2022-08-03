@@ -10,7 +10,7 @@
 
 namespace Exomia.Framework.Core.Scene;
 
-internal sealed partial class SceneManager
+sealed partial class SceneManager
 {
     /// <inheritdoc />
     void IInitializable.Initialize()

@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Windows.Application.Desktop;
 
-internal sealed partial class RenderForm
+sealed partial class RenderForm
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int LowWord(IntPtr number)

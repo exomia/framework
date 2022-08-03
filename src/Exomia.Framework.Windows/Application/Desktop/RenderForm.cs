@@ -23,7 +23,7 @@ using Microsoft.Extensions.Options;
 namespace Exomia.Framework.Windows.Application.Desktop;
 
 /// <summary> The RenderForm. </summary>
-internal sealed partial class RenderForm : IWin32RenderForm
+sealed partial class RenderForm : IWin32RenderForm
 {
     private const string LP_CLASS_NAME = "Exomia.Framework.RenderForm";
 

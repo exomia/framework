@@ -10,7 +10,7 @@
 
 namespace Exomia.Framework.Core;
 
-internal sealed class RenderableComparer : IComparer<IRenderable>
+sealed class RenderableComparer : IComparer<IRenderable>
 {
     public static readonly RenderableComparer Default = new RenderableComparer();
 

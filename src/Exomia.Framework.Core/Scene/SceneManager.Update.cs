@@ -12,7 +12,7 @@ using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core.Scene;
 
-internal sealed partial class SceneManager
+sealed partial class SceneManager
 {
     /// <inheritdoc />
     public event EventHandler? EnabledChanged;

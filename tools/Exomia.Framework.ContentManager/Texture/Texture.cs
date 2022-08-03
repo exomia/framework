@@ -4,7 +4,7 @@ namespace Exomia.Framework.ContentManager.Texture;
 
 [Serializable]
 [XmlRoot("texture")]
-internal class Texture
+class Texture
 {
     [XmlElement("width")]
     public int Width { get; set; }

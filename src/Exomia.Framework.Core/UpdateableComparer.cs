@@ -10,7 +10,7 @@
 
 namespace Exomia.Framework.Core;
 
-internal sealed class UpdateableComparer : IComparer<IUpdateable>
+sealed class UpdateableComparer : IComparer<IUpdateable>
 {
     public static readonly UpdateableComparer Default = new UpdateableComparer();
 

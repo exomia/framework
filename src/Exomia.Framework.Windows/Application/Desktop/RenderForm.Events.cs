@@ -21,7 +21,7 @@ using EventHandler = Exomia.Framework.Core.EventHandler;
 
 namespace Exomia.Framework.Windows.Application.Desktop;
 
-internal sealed partial class RenderForm
+sealed partial class RenderForm
 {
     private const uint RID_ERROR               = unchecked((uint)-1);
     private const int  RID_INPUT               = 0x10000003;

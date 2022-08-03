@@ -93,7 +93,7 @@ public sealed unsafe class Shader : IDisposable
     }
 
     /// <summary> A shader module. </summary>
-    public class Module : IDisposable
+    public sealed class Module : IDisposable
     {
         private readonly VkDevice       _device;
         internal         VkShaderModule ShaderModule;
@@ -148,7 +148,7 @@ public sealed unsafe class Shader : IDisposable
             }
         }
 
-        internal class Configuration
+        internal sealed class Configuration
         {
             public string?               Name     { get; set; }
             public byte*                 Code     { get; set; }
@@ -157,7 +157,7 @@ public sealed unsafe class Shader : IDisposable
         }
 
         /// <summary> A shader module stage. </summary>
-        internal class Stage
+        internal sealed class Stage
         {
             public byte*                               Name;
             public VkShaderStageFlagBits               ShaderStage;
@@ -165,7 +165,7 @@ public sealed unsafe class Shader : IDisposable
             public VkSpecializationInfo*               SpecializationInfo;
 
             // ReSharper disable once MemberHidesStaticFromOuterClass
-            internal class Configuration
+            internal sealed class Configuration
             {
                 public string?                             Name            { get; set; }
                 public StageType                           Type            { get; set; }
@@ -173,10 +173,10 @@ public sealed unsafe class Shader : IDisposable
                 public Specialization.Configuration[]      Specializations { get; set; } = Array.Empty<Specialization.Configuration>();
             }
 
-            internal class Specialization
+            internal sealed class Specialization
             {
                 // ReSharper disable once MemberHidesStaticFromOuterClass
-                internal class Configuration
+                internal sealed class Configuration
                 {
                     public uint                ConstantID { get; init; }
                     public SpecializationValue Value      { get; init; }

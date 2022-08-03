@@ -14,7 +14,7 @@ using Exomia.Framework.Windows.Input;
 
 namespace Exomia.Framework.Windows.Application.Desktop;
 
-internal sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
+sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
 {
     private readonly Pipe<RawKeyEventHandler>   _rawKeyPipe;
     private readonly Pipe<KeyEventHandler>      _keyUpPipe, _keyDownPipe;

@@ -11,7 +11,7 @@
 namespace Exomia.Framework.Core.Content.Resolver;
 
 [ContentResolver(int.MinValue)]
-internal sealed class E1FileStreamContentResolver : IContentResolver
+sealed class E1FileStreamContentResolver : IContentResolver
 {
     /// <inheritdoc />
     public bool Exists(string assetName)

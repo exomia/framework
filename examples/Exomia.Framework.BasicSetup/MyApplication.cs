@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.BasicSetup;
 
-internal sealed unsafe class MyApplication : Application
+sealed unsafe class MyApplication : Application
 {
 #pragma warning disable IDE0052 // Remove unread private members
     // ReSharper disable once NotAccessedField.Local

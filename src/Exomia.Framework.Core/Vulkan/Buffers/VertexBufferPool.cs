@@ -13,7 +13,7 @@ using Exomia.Framework.Core.Allocators;
 
 namespace Exomia.Framework.Core.Vulkan.Buffers;
 
-internal sealed unsafe class VertexBufferPool<T> : IDisposable
+sealed unsafe class VertexBufferPool<T> : IDisposable
     where T : unmanaged
 {
     private readonly VkContext*  _vkContext;

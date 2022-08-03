@@ -13,7 +13,7 @@ using Exomia.Framework.Core.Input;
 
 namespace Exomia.Framework.Core.Scene;
 
-internal sealed partial class SceneManager : ISceneManager, IInitializable, IUpdateable, IRenderable, IDisposable
+sealed partial class SceneManager : ISceneManager, IInitializable, IUpdateable, IRenderable, IDisposable
 {
     private const int INITIAL_QUEUE_SIZE = 16;
 

@@ -14,7 +14,7 @@ using System.Reflection;
 namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 
 [ContentResolver(int.MinValue)]
-internal class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+sealed class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
 {
     /// <inheritdoc />
     public bool Exists(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
