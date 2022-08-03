@@ -49,7 +49,7 @@ internal sealed partial class SceneManager
     }
 
     /// <inheritdoc />
-    void IUpdateable.Update(Time gameTime)
+    void IUpdateable.Update(Time time)
     {
         lock (_currentScenes)
         {
@@ -61,7 +61,7 @@ internal sealed partial class SceneManager
             SceneBase scene = _currentUpdateableScenes[i];
             if (scene.State == SceneState.Ready && scene.Enabled)
             {
-                scene.Update(gameTime);
+                scene.Update(time);
             }
         }
 

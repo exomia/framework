@@ -135,11 +135,11 @@ public sealed class Timer2 : IUpdateable
     }
 
     /// <inheritdoc />
-    public void Update(Time gameTime)
+    public void Update(Time time)
     {
         if (!_enabled) { return; }
 
-        _elapsedTime += gameTime.DeltaTimeMs;
+        _elapsedTime += time.DeltaTimeMs;
         if (_elapsedTime >= TimerTick)
         {
             _elapsedTime -= TimerTick;

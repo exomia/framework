@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 namespace Exomia.Framework.Core.Application;
 
 /// <summary>
-///     Current timing used for variable-step (real time) or fixed-step (application time) games.
+///     Current timing used for variable-step (real time) or fixed-step (application time).
 /// </summary>
 public sealed class Time
 {

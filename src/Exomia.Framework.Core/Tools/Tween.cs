@@ -101,12 +101,12 @@ public sealed class Tween : IUpdateable
     }
 
     /// <inheritdoc />
-    public void Update(Time gameTime)
+    public void Update(Time time)
     {
-        _delayTime = Math.Min(_delayTime + gameTime.DeltaTimeMs, _delay);
+        _delayTime = Math.Min(_delayTime + time.DeltaTimeMs, _delay);
         if (_delayTime < _delay) { return; }
 
-        _time += gameTime.DeltaTimeMs;
+        _time += time.DeltaTimeMs;
 
         if (_time > _duration)
         {
