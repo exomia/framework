@@ -13,9 +13,7 @@ using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.Core.Application;
 
-/// <summary>
-///     Current timing used for variable-step (real time) or fixed-step (application time).
-/// </summary>
+/// <summary> Current timing used for variable-step (real time) or fixed-step (application time). </summary>
 public sealed class Time
 {
     private static readonly double s_countsPerMSec = 1000.0 / Stopwatch.Frequency;
@@ -25,36 +23,24 @@ public sealed class Time
     private                 float  _deltaTimeMs;
     private                 float  _deltaTimeS;
 
-    /// <summary>
-    ///     Gets the delta time in milliseconds.
-    /// </summary>
-    /// <value>
-    ///     The delta time in milliseconds.
-    /// </value>
+    /// <summary> Gets the delta time in milliseconds. </summary>
+    /// <value> The delta time in milliseconds. </value>
     public float DeltaTimeMs
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return _deltaTimeMs; }
     }
 
-    /// <summary>
-    ///     Gets the delta time in seconds.
-    /// </summary>
-    /// <value>
-    ///     The delta time in seconds.
-    /// </value>
+    /// <summary> Gets the delta time in seconds. </summary>
+    /// <value> The delta time in seconds. </value>
     public float DeltaTimeS
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return _deltaTimeS; }
     }
 
-    /// <summary>
-    ///     Gets the total number of time in milliseconds.
-    /// </summary>
-    /// <value>
-    ///     The total number of time in milliseconds.
-    /// </value>
+    /// <summary> Gets the total number of time in milliseconds. </summary>
+    /// <value> The total number of time in milliseconds. </value>
     public float TotalTimeMs
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -68,12 +54,8 @@ public sealed class Time
         }
     }
 
-    /// <summary>
-    ///     Gets the total number of time in seconds.
-    /// </summary>
-    /// <value>
-    ///     The total number of time in seconds.
-    /// </value>
+    /// <summary> Gets the total number of time in seconds. </summary>
+    /// <value> The total number of time in seconds. </value>
     public float TotalTimeS
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,9 +69,7 @@ public sealed class Time
         }
     }
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="Time" /> class.
-    /// </summary>
+    /// <summary> Initializes a new instance of the <see cref="Time" /> class. </summary>
     private Time()
     {
         _prevTime = _baseTime = Stopwatch.GetTimestamp();
@@ -99,17 +79,13 @@ public sealed class Time
     ///     Initializes a new <see cref="Time" /> instance,
     ///     sets the (delta) time to zero and starts measuring the elapsed time since start and delta time between each ticks.
     /// </summary>
-    /// <returns>
-    ///     A <see cref="Time" />.
-    /// </returns>
+    /// <returns> A <see cref="Time" />. </returns>
     public static Time StartNew()
     {
         return new Time();
     }
 
-    /// <summary>
-    ///     reset the time.
-    /// </summary>
+    /// <summary> Reset the time. </summary>
     public void Reset()
     {
         _prevTime = _baseTime = Stopwatch.GetTimestamp();
@@ -117,9 +93,7 @@ public sealed class Time
         _stopped  = false;
     }
 
-    /// <summary>
-    ///     start the time.
-    /// </summary>
+    /// <summary> Start the time. </summary>
     public void Start()
     {
         _prevTime = _baseTime = Stopwatch.GetTimestamp();
@@ -132,9 +106,7 @@ public sealed class Time
         Tick();
     }
 
-    /// <summary>
-    ///     stop the time.
-    /// </summary>
+    /// <summary> Stop the time. </summary>
     public void Stop()
     {
         if (!_stopped)
@@ -144,9 +116,7 @@ public sealed class Time
         }
     }
 
-    /// <summary>
-    ///     Perform a tick and update the delta times.
-    /// </summary>
+    /// <summary> Perform a tick and update the delta times. </summary>
     public void Tick()
     {
         if (_stopped)
