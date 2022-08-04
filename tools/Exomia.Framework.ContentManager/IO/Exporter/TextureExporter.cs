@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
 using Exomia.Framework.Core.Content.Resolver;
 
@@ -20,8 +21,7 @@ sealed class TextureExporter : Exporter<Texture.Texture>
             Directory.CreateDirectory(
                 Path.GetDirectoryName(assetName) ?? throw new NoNullAllowedException());
         }
-
-
+        
         using (Stream staging = new MemoryStream())
         using (BinaryWriter bw = new BinaryWriter(staging))
         {
@@ -37,6 +37,12 @@ sealed class TextureExporter : Exporter<Texture.Texture>
             {
                 fs.Write(E1.MagicHeader,        0, E1.MagicHeader.Length);
                 fs.Write(E1.TextureMagicHeader, 0, E1.TextureMagicHeader.Length);
+                
+                fs.WriteByte(0); //reserved for future use
+                fs.WriteByte(0); //reserved for future use
+                fs.WriteByte(0); //reserved for future use
+                fs.WriteByte(0); //reserved for future use
+                
                 ContentCompressor.CompressStream(staging, fs);
             }
         }

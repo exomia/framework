@@ -26,6 +26,7 @@ public sealed partial class JsonEditorForm : Form
     public JsonEditorForm()
     {
         InitializeComponent();
+        this.FormClosing += JsonEditorForm_FormClosing;
     }
 
     /// <summary>
@@ -53,7 +54,7 @@ public sealed partial class JsonEditorForm : Form
     {
         try
         {
-            obj = JsonConvert.DeserializeObject<T>(textBox1.Text);
+            obj = JsonConvert.DeserializeObject<T>(textBox1.Text)!;
             return true;
         }
         catch
@@ -72,7 +73,7 @@ public sealed partial class JsonEditorForm : Form
         File.WriteAllText(filePath, textBox1.Text, Encoding.UTF8);
     }
 
-    private void JsonEditorForm_FormClosing(object sender, FormClosingEventArgs e)
+    private void JsonEditorForm_FormClosing(object? sender, FormClosingEventArgs e)
     {
         try
         {

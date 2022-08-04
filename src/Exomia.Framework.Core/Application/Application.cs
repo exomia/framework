@@ -146,7 +146,7 @@ public abstract unsafe partial class Application : IDisposable
             }
 
             _IsRunningChanged -= OnIsRunningChanged;
-
+            
             UnloadContent();
         }
     }

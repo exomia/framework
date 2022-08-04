@@ -10,7 +10,6 @@
 
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
-using Exomia.Framework.Core.Content.Resolver;
 using Exomia.Framework.Core.Vulkan;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +26,11 @@ sealed class TextureContentReader : IContentReader
         {
             return null;
         }
+
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
 
         using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
         using BinaryReader br     = new BinaryReader(stream);

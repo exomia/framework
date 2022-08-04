@@ -32,8 +32,8 @@ static class ImporterExporterManager
 
         foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         {
-            if (a.FullName.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)) { continue; }
-            if (a.FullName.StartsWith("ms",     StringComparison.InvariantCultureIgnoreCase)) { continue; }
+            if (a.FullName!.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)) { continue; }
+            if (a.FullName!.StartsWith("ms",     StringComparison.InvariantCultureIgnoreCase)) { continue; }
 
             foreach (Type t in a.GetTypes())
             {
@@ -42,7 +42,7 @@ static class ImporterExporterManager
                     if (typeof(IImporter).IsAssignableFrom(t))
                     {
                         ImporterAttribute importerAttribute
-                            = t.GetCustomAttribute<ImporterAttribute>(false);
+                            = t.GetCustomAttribute<ImporterAttribute>(false)!;
                         IImporter importer = System.Activator.CreateInstance(t)
                             as IImporter ?? throw new TypeLoadException(
                             $"Can't create an instance of {nameof(IImporter)} from type: {t.AssemblyQualifiedName}");

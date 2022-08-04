@@ -227,7 +227,7 @@ partial class MainForm
             x =>
             {
                 x.SelectedObject = null;
-                if (e.Node.Tag is PropertyGridItem item)
+                if (e.Node!.Tag is PropertyGridItem item)
                 {
                     x.SelectedObject = item;
                 }
@@ -236,7 +236,7 @@ partial class MainForm
 
     private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
-        if (e.Node.Name.StartsWith(FOLDER_KEY_PREFIX))
+        if (e.Node!.Name.StartsWith(FOLDER_KEY_PREFIX))
         {
             e.Node.SelectedImageIndex = e.Node.ImageIndex = 2;
         }
@@ -244,7 +244,7 @@ partial class MainForm
 
     private void treeView1_AfterCollapse(object sender, TreeViewEventArgs e)
     {
-        if (e.Node.Name.StartsWith(FOLDER_KEY_PREFIX))
+        if (e.Node!.Name.StartsWith(FOLDER_KEY_PREFIX))
         {
             e.Node.SelectedImageIndex = e.Node.ImageIndex = 1;
         }

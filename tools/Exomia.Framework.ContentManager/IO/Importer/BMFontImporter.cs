@@ -126,10 +126,10 @@ sealed class BMFontImporter : Importer<FontFile>
                                 if (CheckFontImageFiles(fontFile, TEMP_FILE_DIR))
                                 {
                                     fontFile.Pages![0].File =
-                                        Path.GetFullPath(Path.Combine(TEMP_FILE_DIR, fontFile.Pages[0].File));
+                                        Path.GetFullPath(Path.Combine(TEMP_FILE_DIR, fontFile.Pages![0].File!));
                                     return fontFile;
                                 }
-                                context.AddMessage("Font page file '{1}' not found!", fontFile.Pages![0].File);
+                                context.AddMessage("Font page file '{1}' not found!", fontFile.Pages![0].File!);
                                 return null;
                             }
                             foreach (string file in Directory.GetFiles(TEMP_FILE_DIR, $"{description.Size}*"))
@@ -176,7 +176,7 @@ sealed class BMFontImporter : Importer<FontFile>
 
     private static bool CheckFontImageFiles(FontFile fontFile, string fontDirectory)
     {
-        return fontFile.Pages.All(page => File.Exists(Path.Combine(fontDirectory, page.File)));
+        return fontFile.Pages!.All(page => File.Exists(Path.Combine(fontDirectory, page.File!)));
     }
 
     private static string CreateConfig(FontDescription fontDescription,

@@ -8,7 +8,7 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Content.Resolver;
+namespace Exomia.Framework.Core.Content;
 
 /// <summary> A e1. </summary>
 public class E1
@@ -17,8 +17,11 @@ public class E1
     public const string EXTENSION_NAME = ".e1";
 
     /// <summary> The magic header. </summary>
-    public static readonly byte[] MagicHeader = { 64, 101, 120, 49 };
+    public static readonly byte[] MagicHeader = { 0x40, 0x65, 0x78, 0x31 };
 
     /// <summary> The texture magic header. </summary>
-    public static readonly byte[] TextureMagicHeader = { 64, 116, 101, 120 };
+    public static readonly byte[] TextureMagicHeader = { 0x40, 0x74, 0x65, 0x78 };
+    
+    /// <summary> The texture magic header. </summary>
+    public static readonly byte[] SpritefontMagicHeader = { 0x40, 0x73, 0x66, 0x6E, 0x74 };
 }

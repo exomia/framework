@@ -8,10 +8,12 @@
 
 #endregion
 
+using System.Numerics;
 using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Mathematics;
+using Exomia.Framework.Core.Resources;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Vulkan.Api.Core;
@@ -22,15 +24,15 @@ namespace Exomia.Framework.BasicSetup;
 
 sealed unsafe class MyApplication : Application
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    // ReSharper disable once NotAccessedField.Local
     private readonly ILogger<MyApplication> _logger;
-#pragma warning restore IDE0052 // Remove unread private members
+    private readonly Core.Vulkan.Vulkan     _vulkan;
+    private readonly IContentManager        _contentManager;
 
     private readonly Swapchain   _swapchain;
     private readonly Renderer    _renderer;
     private readonly SpriteBatch _spriteBatch;
-    private readonly Texture     _texture1;
+    private          Texture     _texture1    = null!;
+    private          SpriteFont  _spriteFont1 = null!;
 
     private int   frames = 0;
     private float timer  = 0;
@@ -38,22 +40,24 @@ sealed unsafe class MyApplication : Application
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider">           The service provider. </param>
     /// <param name="vulkan">                    The vulkan. </param>
+    /// <param name="contentManager">            Manager for content. </param>
     /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The Depth stencil configuration. </param>
     /// <param name="logger">                    The logger. </param>
-    /// <param name="contentManager">            Manager for content. </param>
     public MyApplication(
         IServiceProvider                    serviceProvider,
         Core.Vulkan.Vulkan                  vulkan,
+        IContentManager                     contentManager,
         IOptions<SwapchainConfiguration>    swapchainConfiguration,
         IOptions<DepthStencilConfiguration> depthStencilConfiguration,
-        ILogger<MyApplication>              logger,
-        IContentManager                     contentManager)
+        ILogger<MyApplication>              logger)
         : base(serviceProvider)
     {
-        _logger = logger;
+        _vulkan         = vulkan;
+        _contentManager = contentManager;
+        _logger         = logger;
 
-        contentManager.RootDirectory = "Content";
+        _contentManager.RootDirectory = "Content";
 
         //IsFixedTimeStep   = true;
         //TargetElapsedTime = 1000.0 / 144;
@@ -68,8 +72,21 @@ sealed unsafe class MyApplication : Application
 
         _renderer    = ToDispose(new Renderer(_swapchain));
         _spriteBatch = ToDispose(new SpriteBatch(_swapchain));
+    }
 
-        _texture1 = contentManager.Load<Texture>("icon.e1");
+    /// <inheritdoc />
+    protected override void OnLoadContent()
+    {
+        _texture1    = _contentManager.Load<Texture>("icon.e1");
+        _spriteFont1 = _contentManager.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
+    }
+
+    /// <inheritdoc />
+    protected override void OnUnloadContent()
+    {
+        _vulkan.DeviceWaitIdle();
+        _contentManager.Unload<Texture>("icon.e1");
+        _contentManager.Unload<SpriteFont>(Fonts.ARIAL_12_PX);
     }
 
     protected override bool BeginFrame()
@@ -88,7 +105,7 @@ sealed unsafe class MyApplication : Application
             _spriteBatch.Begin(SpriteSortMode.Texture);
             for (int i = 0; i < iterations / 100; i++)
             {
-                _spriteBatch.Draw(_texture1, new RectangleF(rnd.Next(0, 900), rnd.Next(0, 700), 40, 40), VkColors.White);
+                _spriteBatch.Draw(_texture1, new RectangleF(rnd.Next(50, 900), rnd.Next(50, 700), 40, 40), VkColors.White);
 
                 _spriteBatch.DrawFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900), 50 + rnd.Next(0, 600), 40, 40),
@@ -98,6 +115,9 @@ sealed unsafe class MyApplication : Application
             _spriteBatch.End(commandBuffer);
 
             _spriteBatch.Begin();
+            _spriteBatch.RenderText(_spriteFont1, "Hey there!", new Vector2(10, 10), VkColors.Black, 0.0f, 0.0f);
+            _spriteBatch.Draw(_texture1, new Vector2(0,                         200), new Rectangle(0, 50, 100, 100), VkColors.White);
+
             for (int i = 0; i < iterations; i++)
             {
                 if (i > iterations * 0.75)
@@ -154,8 +174,5 @@ sealed unsafe class MyApplication : Application
         _swapchain.EndFrame();
     }
 
-    protected override void OnDispose(bool disposing)
-    {
-        _texture1.Dispose();
-    }
+    protected override void OnDispose(bool disposing) { }
 }

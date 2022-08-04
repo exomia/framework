@@ -31,8 +31,8 @@ public sealed unsafe partial class SpriteBatch
         if (spriteInfo->Source.HasValue)
         {
             Rectangle rectangle = spriteInfo->Source!.Value;
-            sw = rectangle.Right  - (sx = rectangle.Top);
-            sh = rectangle.Bottom - (sy = rectangle.Left);
+            sw = rectangle.Right  - (sx = rectangle.Left);
+            sh = rectangle.Bottom - (sy = rectangle.Top);
         }
         else
         {

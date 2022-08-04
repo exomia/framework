@@ -58,7 +58,7 @@ partial class MainForm
                 {
                     WriteLine(
                         $"skipping item {{0}}! Reason: {msg}",
-                        Path.Combine(gridItem.VirtualPath, gridItem.Name));
+                        Path.Combine(gridItem.VirtualPath!, gridItem.Name!));
                     Interlocked.Increment(ref skipped);
                 }
 
@@ -73,14 +73,14 @@ partial class MainForm
 
                 WriteLine(
                     "Import item {0}...",
-                    Path.Combine(gridItem.VirtualPath, gridItem.Name));
+                    Path.Combine(gridItem.VirtualPath!, gridItem.Name!));
 
                 ImporterContext importerContext = new ImporterContext(
                     gridItem.Name!, gridItem.VirtualPath!);
 
                 object? obj;
                 using (FileStream fs = new FileStream(
-                           Path.Combine(_projectFile!.Location, gridItem.VirtualPath, gridItem.Name),
+                           Path.Combine(_projectFile!.Location, gridItem.VirtualPath!, gridItem.Name!),
                            FileMode.Open, FileAccess.Read))
                 {
                     obj = await gridItem.Importer!.ImportAsync(fs, importerContext, cancellationToken);
@@ -102,7 +102,7 @@ partial class MainForm
 
                 WriteLine(
                     "Export item {0}...",
-                    Path.Combine(gridItem.VirtualPath, gridItem.Name));
+                    Path.Combine(gridItem.VirtualPath!, gridItem.Name!));
 
                 string outputFolder = contentPropertyGridItem.OutputFolder;
                 if (string.IsNullOrEmpty(outputFolder))

@@ -22,18 +22,18 @@ partial class AboutForm : Form
         Load += OnLoad;
     }
 
-    private void OnLoad(object sender, EventArgs e)
+    private void OnLoad(object? sender, EventArgs e)
     {
-        Assembly? assembly = Assembly.GetExecutingAssembly();
-        Text                = $"About {assembly.GetCustomAttribute<AssemblyTitleAttribute>().Title}";
-        productNameLbl.Text = assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
-        versionLbl.Text     = $"Version {assembly.GetName().Version}";
-        copyrightLbl.Text   = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
-        companyLbl.Text     = assembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
-        descriptionTb.Text  = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
+        Assembly assembly = Assembly.GetExecutingAssembly()!;
+        Text                = $"About {assembly.GetCustomAttribute<AssemblyTitleAttribute>()!.Title}";
+        productNameLbl.Text = assembly.GetCustomAttribute<AssemblyProductAttribute>()!.Product;
+        versionLbl.Text     = $"Version {assembly.GetName()!.Version}";
+        copyrightLbl.Text   = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()!.Copyright;
+        companyLbl.Text     = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()!.Company;
+        descriptionTb.Text  = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()!.Description;
     }
 
-    private void okBtn_Click(object sender, EventArgs e)
+    private void okBtn_Click(object? sender, EventArgs e)
     {
         DialogResult = DialogResult.OK;
     }

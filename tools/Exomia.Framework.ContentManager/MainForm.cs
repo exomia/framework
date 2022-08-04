@@ -179,7 +179,7 @@ public partial class MainForm : Form
     {
         // Compare the length of the strings, or the strings
         // themselves, if they are the same length.
-        public int Compare(object x, object y)
+        public int Compare(object? x, object? y)
         {
             if (x is TreeNode tx && y is TreeNode ty)
             {

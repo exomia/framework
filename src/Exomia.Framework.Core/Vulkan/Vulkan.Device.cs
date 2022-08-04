@@ -143,6 +143,16 @@ sealed unsafe partial class Vulkan
             }
         }
     }
+    
+    /// <summary> DeviceWaitIdle - Wait for a device to become idle </summary>
+    public void DeviceWaitIdle()
+    {
+        if (_context->Device != VkDevice.Null)
+        {
+            vkDeviceWaitIdle(_context->Device)
+               .AssertVkResult();
+        }
+    }
 
     private void DestroyDevice()
     {

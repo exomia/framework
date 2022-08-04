@@ -102,7 +102,7 @@ class ItemPropertyGridItem : PropertyGridItem
 
     public ItemPropertyGridItem Initialize()
     {
-        Importers = ImporterExporterManager.GetImporterFor(Path.GetExtension(Name));
+        Importers = ImporterExporterManager.GetImporterFor(Path.GetExtension(Name)!);
         if (Importers.Count > 0)
         {
             Importer = Importers[0];

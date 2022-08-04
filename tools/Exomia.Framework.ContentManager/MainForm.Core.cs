@@ -57,12 +57,12 @@ partial class MainForm
                 case ItemPropertyGridItem i:
                     new FileInfo(
                         Path.Combine(
-                            _projectFile!.Location, i.VirtualPath, i.Name)).DeleteIfExists();
+                            _projectFile!.Location, i.VirtualPath!, i.Name!)).DeleteIfExists();
                     break;
                 case FolderPropertyGridItem f:
                     new DirectoryInfo(
                         Path.Combine(
-                            _projectFile!.Location, f.VirtualPath, f.Name)).DeleteIfExists();
+                            _projectFile!.Location, f.VirtualPath!, f.Name!)).DeleteIfExists();
                     foreach (TreeNode childNodes in node.Nodes)
                     {
                         treeView1_RemoveNode(childNodes);
@@ -95,13 +95,12 @@ partial class MainForm
 
     private void EditItem(TreeNode node)
     {
-        if (node == null) { return; }
         if (node.Tag is ItemPropertyGridItem item)
         {
             if (Path.GetExtension(item.Name) == ".fnt")
             {
                 FontDescription? description = Json.Deserialize<FontDescription>(
-                    Path.Combine(_projectFile!.Location, item.VirtualPath, item.Name));
+                    Path.Combine(_projectFile!.Location, item.VirtualPath!, item.Name!));
                 if (description == null) { return; }
 
                 using (JsonEditorForm? jsonEditorForm =
@@ -112,7 +111,7 @@ partial class MainForm
                         SetStatusLabel(StatusType.Error, "The font was not edited!");
                         return;
                     }
-                    jsonEditorForm.Save(Path.Combine(_projectFile!.Location, item.VirtualPath, item.Name));
+                    jsonEditorForm.Save(Path.Combine(_projectFile!.Location, item.VirtualPath!, item.Name!));
                 }
             }
         }

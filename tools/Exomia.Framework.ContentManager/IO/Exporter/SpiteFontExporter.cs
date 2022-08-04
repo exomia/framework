@@ -9,95 +9,114 @@
 #endregion
 
 using System.Data;
+using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
+using Exomia.Framework.Core.Content;
+using Exomia.Framework.Core.Content.Compression;
+using Exomia.Framework.Core.Content.Resolver;
+using Exomia.Framework.Core.Graphics;
 
 
 namespace Exomia.Framework.ContentManager.IO.Exporter;
 
-    ///// <summary>
-    /////     A bm font exporter. This class cannot be inherited.
-    ///// </summary>
-    //[Exporter("SpiteFont Exporter")]
-    //sealed class SpiteFontExporter : Exporter<FontFile>
-    //{
-    //    /// <inheritdoc />
-    //    public override bool Export(FontFile fontFile, ExporterContext context)
-    //    {
-    //        byte[] imageData;
-    //        using (FileStream fs = new FileStream(
-    //            fontFile.Pages![0].File, FileMode.Open, FileAccess.Read))
-    //        {
-    //            imageData = new byte[fs.Length];
-    //            fs.Read(imageData, 0, imageData.Length);
-    //        }
-    //        SpriteFont font = new SpriteFont
-    //        {
-    //            ImageData        = imageData,
-    //            Face             = fontFile.Info!.Face,
-    //            Size             = fontFile.Info.Size,
-    //            Bold             = fontFile.Info.Bold != 0,
-    //            Italic           = fontFile.Info.Italic != 0,
-    //            LineSpacing      = fontFile.Common!.LineHeight,
-    //            DefaultCharacter = -1
-    //        };
+[Exporter("SpiteFont Exporter")]
+sealed class SpiteFontExporter : Exporter<FontFile>
+{
+    /// <inheritdoc />
+    public override bool Export(FontFile fontFile, ExporterContext context)
+    {
+        string outputFile = Path.Combine(
+            context.OutputFolder, context.VirtualPath,
+            Path.GetFileNameWithoutExtension(context.ItemName));
 
-    //        for (int i = 0; i < fontFile.Chars!.Count; i++)
-    //        {
-    //            FontChar c = fontFile.Chars[i];
-    //            font.Glyphs.Add(
-    //                c.ID,
-    //                new SpriteFont.Glyph
-    //                {
-    //                    Character = c.ID,
-    //                    OffsetX   = c.XOffset,
-    //                    OffsetY   = c.YOffset,
-    //                    XAdvance  = c.XAdvance,
-    //                    Subrect   = new Rectangle(c.X, c.Y, c.Width, c.Height)
-    //                });
-    //        }
-    //        for (int i = 0; i < fontFile.Kernings!.Count; i++)
-    //        {
-    //            FontKerning k = fontFile.Kernings[i];
-    //            font.Kernings.Add(
-    //                (k.First << 16) | k.Second,
-    //                new SpriteFont.Kerning { First = k.First, Second = k.Second, Offset = k.Amount });
-    //        }
+        string assetName = outputFile + E1.EXTENSION_NAME;
 
-    //        string outputFile = Path.Combine(
-    //            context.OutputFolder, context.VirtualPath,
-    //            Path.GetFileNameWithoutExtension(context.ItemName));
+        if (!Directory.Exists(Path.GetDirectoryName(assetName)))
+        {
+            Directory.CreateDirectory(
+                Path.GetDirectoryName(assetName) ?? throw new NoNullAllowedException());
+        }
 
-    //        string assetName1 = outputFile + ".min" + ContentSerializer.DEFAULT_EXTENSION;
-    //        string assetName2 = outputFile + ContentCompressor.DEFAULT_COMPRESSED_EXTENSION;
+        using (Stream staging = new MemoryStream())
+        using (BinaryWriter bw = new BinaryWriter(staging))
+        {
+            bw.Write(fontFile.Info!.Face!);
+            bw.Write(fontFile.Info.Size);
+            bw.Write(fontFile.Common!.LineHeight);
+            bw.Write(-1);
+            bw.Write(false);
+            bw.Write(fontFile.Info.Bold   != 0);
+            bw.Write(fontFile.Info.Italic != 0);
 
-    //        if (!Directory.Exists(Path.GetDirectoryName(assetName1)))
-    //        {
-    //            Directory.CreateDirectory(
-    //                Path.GetDirectoryName(assetName1) ?? throw new NoNullAllowedException());
-    //        }
+            bw.Write(fontFile.Chars!.Count);
+            for (int i = 0; i < fontFile.Chars!.Count; i++)
+            {
+                FontChar c = fontFile.Chars[i];
+                bw.Write(c.ID);
+                bw.Write(c.X);
+                bw.Write(c.Y);
+                bw.Write(c.Width);
+                bw.Write(c.Height);
+                bw.Write(c.XOffset);
+                bw.Write(c.YOffset);
+                bw.Write(c.XAdvance);
+            }
 
-    //        ContentSerializer.Write(assetName1, font, true);
+            bw.Write(fontFile.Kernings!.Count);
+            for (int i = 0; i < fontFile.Kernings!.Count; i++)
+            {
+                FontKerning k = fontFile.Kernings[i];
+                bw.Write(k.First);
+                bw.Write(k.Second);
+                bw.Write(k.Amount);
+            }
+            
+            using (FileStream fs = new FileStream(
+                       fontFile.Pages?[0].File ?? throw new NullReferenceException(), FileMode.Open, FileAccess.Read))
+            {
+                using Bitmap bitmap = new Bitmap(fs);
+                BitmapData   data   = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                try
+                {
+                    byte[] bytes = new byte[data.Stride * data.Height];
+                    
+                    unsafe
+                    {
+                        fixed (byte* dst = bytes)
+                        {
+                            Unsafe.CopyBlock(dst, data.Scan0.ToPointer(), (uint)bytes.Length);
+                        }
+                    }
+                    
+                    bw.Write(bitmap.Width);
+                    bw.Write(bitmap.Height);
+                    bw.Write(bytes);
+                }
+                finally
+                {
+                    bitmap.UnlockBits(data);
+                }
+            }
 
-    //        using (FileStream fs = new FileStream(assetName1, FileMode.Open, FileAccess.Read))
-    //        {
-    //            if (ContentCompressor.CompressStream(
-    //                fs, out Stream compressedStream))
-    //            {
-    //                using (FileStream fs1 = new FileStream(
-    //                    assetName2, FileMode.Create, FileAccess.Write))
-    //                {
-    //                    byte[] buffer = new byte[1024];
-    //                    int    write;
-    //                    while ((write = compressedStream.Read(buffer, 0, buffer.Length)) != 0)
-    //                    {
-    //                        fs1.Write(buffer, 0, write);
-    //                    }
-    //                }
+            staging.Seek(0, SeekOrigin.Begin);
 
-    //                context.AddMessage("{0:green} {1}", "successful created", assetName2);
-    //            }
-    //        }
+            using (FileStream fs = new FileStream(assetName, FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(E1.MagicHeader,           0, E1.MagicHeader.Length);
+                fs.Write(E1.SpritefontMagicHeader, 0, E1.SpritefontMagicHeader.Length);
+                
+                fs.WriteByte(0); //reserved for future use
+                fs.WriteByte(0); //reserved for future use
+                fs.WriteByte(0); //reserved for future use
+                fs.WriteByte(0); //reserved for future use
+                
+                ContentCompressor.CompressStream(staging, fs);
+            }
+        }
 
-    //        return true;
-    //    }
-    //}
+        context.AddMessage("{0:green} {1}", "successful created", assetName);
+
+        return true;
+    }
+}
