@@ -10,9 +10,7 @@
 
 namespace Exomia.Framework.Core;
 
-/// <summary>
-///     An interface to clone a object.
-/// </summary>
+/// <summary> An interface to clone a object. </summary>
 /// <typeparam name="T"> Generic type parameter. </typeparam>
 public interface ICloneable<out T>
 {

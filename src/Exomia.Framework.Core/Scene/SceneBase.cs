@@ -101,7 +101,7 @@ public abstract partial class SceneBase : IDisposable
 
     /// <summary> called than a scene is shown. </summary>
     /// <param name="comingFrom"> coming from. </param>
-    /// <param name="payload">    payload. </param>
+    /// <param name="payload"> payload. </param>
     protected virtual void OnShow(SceneBase? comingFrom, object[] payload) { }
 
     internal void Show(SceneBase? comingFrom, object[] payload)

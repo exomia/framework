@@ -22,7 +22,7 @@ public sealed class ArrayPool<T>
     private          int      _index;
 
     /// <summary> Initializes a new instance of the <see cref="ArrayPool{T}" /> class. </summary>
-    /// <param name="bufferLength">    Length of the buffer. </param>
+    /// <param name="bufferLength"> Length of the buffer. </param>
     /// <param name="numberOfBuffers"> (Optional) Number of buffers. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public ArrayPool(int bufferLength, int numberOfBuffers = 10)
@@ -64,7 +64,7 @@ public sealed class ArrayPool<T>
     }
 
     /// <summary> Returns. </summary>
-    /// <param name="array">      The array. </param>
+    /// <param name="array"> The array. </param>
     /// <param name="clearArray"> True to clear array. </param>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public void Return(T[] array, bool clearArray)

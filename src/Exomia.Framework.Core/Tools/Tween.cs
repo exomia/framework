@@ -69,10 +69,10 @@ public sealed class Tween : IUpdateable
     /// <summary>
     ///     Initializes a new instance of the <see cref="Tween" /> class.
     /// </summary>
-    /// <param name="target">   Target for the. </param>
-    /// <param name="values">   The values. </param>
+    /// <param name="target"> Target for the. </param>
+    /// <param name="values"> The values. </param>
     /// <param name="duration"> The duration. </param>
-    /// <param name="delay">    The delay. </param>
+    /// <param name="delay"> The delay. </param>
     /// <param name="callback"> The callback. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     public Tween(object target, object values, float duration, float delay, EasingFunction callback)
@@ -155,7 +155,7 @@ public sealed class Tween : IUpdateable
         ///     Initializes a new instance of the <see cref="TweenItem" /> class.
         /// </summary>
         /// <param name="from"> Source for the. </param>
-        /// <param name="to">   to. </param>
+        /// <param name="to"> to. </param>
         /// <param name="info"> The information. </param>
         public TweenItem(float from, float to, PropertyInfo info)
         {

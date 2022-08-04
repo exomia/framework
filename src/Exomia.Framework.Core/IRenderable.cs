@@ -12,9 +12,7 @@ using Exomia.Framework.Core.Application;
 
 namespace Exomia.Framework.Core;
 
-/// <summary>
-///     An interface to render an application component.
-/// </summary>
+/// <summary> An interface to render an application component. </summary>
 public interface IRenderable
 {
     /// <summary> Occurs when the <see cref="Visible" /> property changes. </summary>
@@ -31,14 +29,14 @@ public interface IRenderable
     int RenderOrder { get; }
 
     /// <summary> Gets a value indicating whether the <see cref="Render" /> method should be called by the <see cref="Application" />. </summary>
-    /// <value> <c>true</c> if this drawable component is visible; otherwise, <c>false</c>. </value>
+    /// <value> <c> true </c> if this drawable component is visible; otherwise, <c> false </c>. </value>
     bool Visible { get; }
 
     /// <summary>
     ///     Starts the rendering of a frame.
     ///     This method is followed by calls to <see cref="Render" /> and <see cref="EndFrame" />.
     /// </summary>
-    /// <returns> <c>true</c> if Draw should occur, <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if Draw should occur, <c> false </c> otherwise. </returns>
     bool BeginFrame();
 
     /// <summary> Perform rendering operations. </summary>

@@ -48,11 +48,11 @@ public readonly struct Arc2
     public readonly float End; //Note: do not reorder this field, unless you know what you are doing.
 
     /// <summary> Initializes a new instance of the <see cref="Arc2" /> struct. </summary>
-    /// <param name="x">      The x value. </param>
-    /// <param name="y">      The y value. </param>
+    /// <param name="x"> The x value. </param>
+    /// <param name="y"> The y value. </param>
     /// <param name="radius"> The radius. </param>
-    /// <param name="start">  (Optional) The start angle in radians. </param>
-    /// <param name="end">    (Optional) The end angle in radians. </param>
+    /// <param name="start"> (Optional) The start angle in radians. </param>
+    /// <param name="end"> (Optional) The end angle in radians. </param>
     public Arc2(float x, float y, float radius, float start = 0, float end = Math2.TWO_PI)
     {
         X      = x;
@@ -65,16 +65,16 @@ public readonly struct Arc2
     /// <summary> Initializes a new instance of the <see cref="Arc2" /> struct. </summary>
     /// <param name="center"> The center. </param>
     /// <param name="radius"> The radius. </param>
-    /// <param name="start">  (Optional) The start angle in radians. </param>
-    /// <param name="end">    (Optional) The end angle in radians. </param>
+    /// <param name="start"> (Optional) The start angle in radians. </param>
+    /// <param name="end"> (Optional) The end angle in radians. </param>
     public Arc2(VectorI2 center, float radius, float start = 0, float end = Math2.TWO_PI)
         : this(center.X, center.Y, radius, start, end) { }
 
     /// <summary> Initializes a new instance of the <see cref="Arc2" /> struct. </summary>
     /// <param name="center"> The center. </param>
     /// <param name="radius"> The radius. </param>
-    /// <param name="start">  (Optional) The start angle in radians. </param>
-    /// <param name="end">    (Optional) The end angle in radians. </param>
+    /// <param name="start"> (Optional) The start angle in radians. </param>
+    /// <param name="end"> (Optional) The end angle in radians. </param>
     public Arc2(Vector2 center, float radius, float start = 0, float end = Math2.TWO_PI)
         : this(center.X, center.Y, radius, start, end) { }
 
@@ -87,7 +87,7 @@ public readonly struct Arc2
 
     /// <summary> Determines whether the specified <see cref="Arc2" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="Line2" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cref="Arc2" /> is equal to this instance; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if the specified <see cref="Arc2" /> is equal to this instance; <c> false </c> otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(in Arc2 other)
     {

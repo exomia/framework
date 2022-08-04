@@ -31,7 +31,7 @@ public class CircularBuffer<T>
         get { return _buffer.Length; }
     }
 
-    /// <summary> <c>true</c> if the circular buffer is empty; <c>false</c> otherwise. </summary>
+    /// <summary> <c> true </c> if the circular buffer is empty; <c> false </c> otherwise. </summary>
     /// <value> True if this object is empty, false if not. </value>
     public bool IsEmpty
     {
@@ -71,7 +71,7 @@ public class CircularBuffer<T>
 
     /// <summary> Initializes a new instance of the <see cref="CircularBuffer{T}" /> class. </summary>
     /// <param name="capacity"> (Optional) Buffer capacity. Must be positive. </param>
-    /// <param name="items">    (Optional) Items to fill buffer with. Items length must be less or equal than capacity. </param>
+    /// <param name="items"> (Optional) Items to fill buffer with. Items length must be less or equal than capacity. </param>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public CircularBuffer(int capacity = 1024, T[]? items = null!)
     {

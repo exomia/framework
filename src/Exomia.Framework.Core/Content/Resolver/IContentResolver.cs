@@ -15,7 +15,7 @@ public interface IContentResolver
 {
     /// <summary> Checks if the specified asset name exists. </summary>
     /// <param name="assetName"> Name of the asset. </param>
-    /// <returns> <c>true</c> if the specified asset name exists; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if the specified asset name exists; <c> false </c> otherwise. </returns>
     bool Exists(string assetName);
 
     /// <summary> Resolves the specified asset name to a stream. </summary>

@@ -19,8 +19,8 @@ public static class ContentCompressor
     private const int BUFFER_SIZE = 4096;
 
     /// <summary> Compress a given stream with the given compression mode. </summary>
-    /// <param name="src">          the stream to compress. </param>
-    /// <param name="dst">          True to dispose the stream. </param>
+    /// <param name="src"> the stream to compress. </param>
+    /// <param name="dst"> True to dispose the stream. </param>
     /// <param name="compressMode"> (Optional) the compression mode. </param>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public static void CompressStream(
@@ -44,7 +44,7 @@ public static class ContentCompressor
 
     /// <summary> Decompress a given stream with the given compression mode. </summary>
     /// <param name="src"> Source for the. </param>
-    /// <returns> <c>true</c> if successfully decompressed the stream; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if successfully decompressed the stream; <c> false </c> otherwise. </returns>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public static Stream DecompressStream(Stream src)
     {

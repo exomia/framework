@@ -14,7 +14,7 @@ namespace Exomia.Framework.Core.Scene;
 public interface ISceneManager
 {
     /// <summary> Gets a scene. </summary>
-    /// <param name="key">   The key. </param>
+    /// <param name="key"> The key. </param>
     /// <param name="scene"> [out] The scene. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     bool GetScene(string key, out SceneBase? scene);
@@ -35,14 +35,14 @@ public interface ISceneManager
     bool RemoveScene(string key);
 
     /// <summary> Shows the scene. </summary>
-    /// <param name="scene">   [out] The scene. </param>
+    /// <param name="scene"> [out] The scene. </param>
     /// <param name="payload"> A variable-length parameters list containing payload. </param>
     /// <returns> A ShowSceneResult. </returns>
     ShowSceneResult ShowScene(SceneBase scene, params object[] payload);
 
     /// <summary> Shows the scene. </summary>
-    /// <param name="key">     The key. </param>
-    /// <param name="scene">   [out] The scene. </param>
+    /// <param name="key"> The key. </param>
+    /// <param name="scene"> [out] The scene. </param>
     /// <param name="payload"> A variable-length parameters list containing payload. </param>
     /// <returns> A ShowSceneResult. </returns>
     ShowSceneResult ShowScene(string key, out SceneBase? scene, params object[] payload);

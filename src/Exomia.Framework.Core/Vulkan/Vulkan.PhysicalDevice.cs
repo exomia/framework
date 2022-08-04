@@ -19,8 +19,8 @@ sealed unsafe partial class Vulkan
 {
     /// <summary> Searches for the first memory type index. </summary>
     /// <param name="physicalDevice"> The physical device. </param>
-    /// <param name="typeFilter">     A filter specifying the type. </param>
-    /// <param name="properties">     The properties. </param>
+    /// <param name="typeFilter"> A filter specifying the type. </param>
+    /// <param name="properties"> The properties. </param>
     /// <returns> The found memory type index. </returns>
     /// <exception cref="VulkanException"> Thrown when a Vulkan error condition occurs. </exception>
     public static uint FindMemoryTypeIndex(
@@ -46,8 +46,8 @@ sealed unsafe partial class Vulkan
     }
 
     /// <summary> Gets suitable present mode. </summary>
-    /// <param name="context">          [in,out] If non-null, the context. </param>
-    /// <param name="presentModes">     The present modes. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="presentModes"> The present modes. </param>
     /// <param name="vkPresentModeKhr"> [out] The vk present mode khr. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     public static bool GetSuitablePresentMode(

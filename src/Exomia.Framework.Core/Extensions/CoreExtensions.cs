@@ -29,7 +29,7 @@ public static class CoreExtensions
 
     /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default scene management. </summary>
     /// <param name="serviceCollection"> The serviceCollection to act on. </param>
-    /// <param name="sceneBuilder">      The scene builder. </param>
+    /// <param name="sceneBuilder"> The scene builder. </param>
     /// <returns> An <see cref="IServiceCollection" />. </returns>
     public static IServiceCollection AddDefaultSceneManagement(this IServiceCollection serviceCollection, Func<SceneBuilder, SceneBuilder> sceneBuilder)
     {

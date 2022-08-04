@@ -42,10 +42,10 @@ public readonly ref struct MouseEventArgs
     public readonly int WheelDelta;
 
     /// <summary> Initializes a new instance of the <see cref="MouseEventArgs" /> struct. </summary>
-    /// <param name="x">          The x coordinate. </param>
-    /// <param name="y">          The y coordinate. </param>
-    /// <param name="buttons">    The buttons. </param>
-    /// <param name="clicks">     The clicks. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="buttons"> The buttons. </param>
+    /// <param name="clicks"> The clicks. </param>
     /// <param name="wheelDelta"> The wheel delta. </param>
     public MouseEventArgs(int x, int y, MouseButtons buttons, int clicks, int wheelDelta)
     {

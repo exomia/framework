@@ -22,9 +22,9 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">  The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="position"> The position. </param>
-    /// <param name="color">    The Color. </param>
+    /// <param name="color"> The Color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture texture, in Vector2 position, in VkColor color)
     {
@@ -44,9 +44,9 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
+    /// <param name="color"> The Color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture texture, in RectangleF destinationRectangle, in VkColor color)
     {
@@ -66,10 +66,10 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">         The texture. </param>
-    /// <param name="position">        The position. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
-    /// <param name="color">           The Color. </param>
+    /// <param name="color"> The Color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in VkColor color)
     {
@@ -89,10 +89,10 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="sourceRectangle">      The source rectangle. </param>
-    /// <param name="color">                The Color. </param>
+    /// <param name="sourceRectangle"> The source rectangle. </param>
+    /// <param name="color"> The Color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture       texture,
                      in RectangleF destinationRectangle,
@@ -115,11 +115,11 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">    The texture. </param>
-    /// <param name="position">   The position. </param>
-    /// <param name="color">      The Color. </param>
-    /// <param name="rotation">   The Rotation. </param>
-    /// <param name="origin">     The Origin. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
     /// <param name="layerDepth"> (Optional) The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture    texture,
@@ -145,12 +145,12 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="rotation">             The Rotation. </param>
-    /// <param name="origin">               The Origin. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture       texture,
                      in RectangleF destinationRectangle,
@@ -175,15 +175,15 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="sourceRectangle">      The source rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="rotation">             The Rotation. </param>
-    /// <param name="origin">               The Origin. </param>
-    /// <param name="opacity">              The Opacity. </param>
-    /// <param name="effects">              The Effects. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="sourceRectangle"> The source rectangle. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="effects"> The Effects. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture        texture,
                      in RectangleF  destinationRectangle,
@@ -211,16 +211,16 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">         The texture. </param>
-    /// <param name="position">        The position. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
-    /// <param name="color">           The Color. </param>
-    /// <param name="rotation">        The Rotation. </param>
-    /// <param name="origin">          The Origin. </param>
-    /// <param name="scale">           The scale. </param>
-    /// <param name="opacity">         The Opacity. </param>
-    /// <param name="effects">         The Effects. </param>
-    /// <param name="layerDepth">      The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
+    /// <param name="scale"> The scale. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="effects"> The Effects. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture        texture,
                      in Vector2     position,
@@ -249,16 +249,16 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draws a texture to the screen.
     /// </summary>
-    /// <param name="texture">         The texture. </param>
-    /// <param name="position">        The position. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
-    /// <param name="color">           The Color. </param>
-    /// <param name="rotation">        The Rotation. </param>
-    /// <param name="origin">          The Origin. </param>
-    /// <param name="scale">           The scale. </param>
-    /// <param name="opacity">         The Opacity. </param>
-    /// <param name="effects">         The Effects. </param>
-    /// <param name="layerDepth">      The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
+    /// <param name="scale"> The scale. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="effects"> The Effects. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture        texture,
                      in Vector2     position,

@@ -35,7 +35,7 @@ public interface IRenderForm : IDisposable
     int Width { get; }
 
     /// <summary> Resizes the render form. </summary>
-    /// <param name="width">  The width. </param>
+    /// <param name="width"> The width. </param>
     /// <param name="height"> The height. </param>
     void Resize(int width, int height);
 

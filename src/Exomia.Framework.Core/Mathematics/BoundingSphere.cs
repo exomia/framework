@@ -49,7 +49,7 @@ public struct BoundingSphere
 
     /// <summary> Determines whether the specified <see cin="BoundingSphere" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="BoundingSphere" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cin="BoundingSphere" /> is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified <see cin="BoundingSphere" /> is equal to this instance; otherwise, <c> false </c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in BoundingSphere value)
     {
@@ -59,7 +59,7 @@ public struct BoundingSphere
 
     /// <summary> Determines whether the specified <see cin="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c> false </c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {
@@ -78,7 +78,7 @@ public struct BoundingSphere
 
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="Ray" />. </summary>
-    /// <param name="ray">      The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -91,7 +91,7 @@ public struct BoundingSphere
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="Ray" />. </summary>
-    /// <param name="ray">   The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
     ///     if there was no intersection.
@@ -182,10 +182,10 @@ public struct BoundingSphere
 
     /// <summary> Constructs a <see cin="BoundingSphere" /> that fully contains the given points. </summary>
     /// <param name="points"> The points that will be contained by the sphere. </param>
-    /// <param name="start">  The start index from points array to start compute the bounding sphere. </param>
-    /// <param name="count">  The count of points to process to compute the bounding sphere. </param>
+    /// <param name="start"> The start index from points array to start compute the bounding sphere. </param>
+    /// <param name="count"> The count of points to process to compute the bounding sphere. </param>
     /// <param name="result"> [out] When the method completes, contains the newly constructed bounding sphere. </param>
-    /// <exception cin="System.ArgumentNullException">       points. </exception>
+    /// <exception cin="System.ArgumentNullException"> points. </exception>
     /// <exception cin="System.ArgumentOutOfRangeException"> start or count. </exception>
     public static void FromPoints(Vector3[] points, int start, int count, out BoundingSphere result)
     {
@@ -265,7 +265,7 @@ public struct BoundingSphere
     }
 
     /// <summary> Constructs a <see cin="BoundingSphere" /> from a given box. </summary>
-    /// <param name="box">    The box that will designate the extents of the sphere. </param>
+    /// <param name="box"> The box that will designate the extents of the sphere. </param>
     /// <param name="result"> [out] When the method completes, the newly constructed bounding sphere. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void FromBox(in BoundingBox box, out BoundingSphere result)
@@ -340,11 +340,11 @@ public struct BoundingSphere
     }
 
     /// <summary> Tests for equality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
-    ///     <c>false</c>.
+    ///     <c> true </c> if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
+    ///     <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(BoundingSphere left, BoundingSphere right)
@@ -353,11 +353,11 @@ public struct BoundingSphere
     }
 
     /// <summary> Tests for inequality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
-    ///     <c>false</c>.
+    ///     <c> true </c> if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
+    ///     <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(BoundingSphere left, BoundingSphere right)

@@ -14,9 +14,9 @@ namespace Exomia.Framework.Core.Vulkan;
 sealed unsafe partial class Vulkan
 {
     /// <summary> Creates command pool. </summary>
-    /// <param name="device">                    The device. </param>
-    /// <param name="queueFamilyIndex">          The configuration. </param>
-    /// <param name="commandPool">               [in,out] If non-null, the command pool. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="queueFamilyIndex"> The configuration. </param>
+    /// <param name="commandPool"> [in,out] If non-null, the command pool. </param>
     /// <param name="commandPoolCreateFlagBits"> (Optional) The command pool create flag bits. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     public static void CreateCommandPool(
@@ -36,7 +36,7 @@ sealed unsafe partial class Vulkan
     }
 
     /// <summary> Destroys the command pool. </summary>
-    /// <param name="device">      The device. </param>
+    /// <param name="device"> The device. </param>
     /// <param name="commandPool"> [in,out] [in,out] If non-null, the command pool. </param>
     public static void DestroyCommandPool(VkDevice device, ref VkCommandPool commandPool)
     {

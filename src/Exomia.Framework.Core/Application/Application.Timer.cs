@@ -15,9 +15,9 @@ namespace Exomia.Framework.Core.Application;
 public abstract partial class Application
 {
     /// <summary> Adds a timer. </summary>
-    /// <param name="tick">                The tick. </param>
-    /// <param name="enabled">             True to enable, false to disable. </param>
-    /// <param name="maxIterations">       (Optional) The maximum iterations. </param>
+    /// <param name="tick"> The tick. </param>
+    /// <param name="enabled"> True to enable, false to disable. </param>
+    /// <param name="maxIterations"> (Optional) The maximum iterations. </param>
     /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
     /// <returns> A Timer2. </returns>
     public Timer2 AddTimer(float tick, bool enabled, uint maxIterations = 0, bool removeAfterFinished = false)
@@ -31,10 +31,10 @@ public abstract partial class Application
     }
 
     /// <summary> Adds a timer. </summary>
-    /// <param name="tick">                The tick. </param>
-    /// <param name="enabled">             True to enable, false to disable. </param>
-    /// <param name="tickCallback">        The tick callback. </param>
-    /// <param name="maxIterations">       (Optional) The maximum iterations. </param>
+    /// <param name="tick"> The tick. </param>
+    /// <param name="enabled"> True to enable, false to disable. </param>
+    /// <param name="tickCallback"> The tick callback. </param>
+    /// <param name="maxIterations"> (Optional) The maximum iterations. </param>
     /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
     /// <returns> A Timer2. </returns>
     public Timer2 AddTimer(float                tick,
@@ -52,11 +52,11 @@ public abstract partial class Application
     }
 
     /// <summary> Adds a timer. </summary>
-    /// <param name="tick">                The tick. </param>
-    /// <param name="enabled">             True to enable, false to disable. </param>
-    /// <param name="tickCallback">        The tick callback. </param>
-    /// <param name="finishedCallback">    The finished callback. </param>
-    /// <param name="maxIterations">       The maximum iterations. </param>
+    /// <param name="tick"> The tick. </param>
+    /// <param name="enabled"> True to enable, false to disable. </param>
+    /// <param name="tickCallback"> The tick callback. </param>
+    /// <param name="finishedCallback"> The finished callback. </param>
+    /// <param name="maxIterations"> The maximum iterations. </param>
     /// <param name="removeAfterFinished"> (Optional) True if remove after finished. </param>
     /// <returns> A Timer2. </returns>
     public Timer2 AddTimer(float                tick,

@@ -33,9 +33,9 @@ public struct ContentReaderParameters
     public bool KeepStreamOpen { get; set; }
 
     /// <summary> Initializes a new instance of the <see cref="ContentReaderParameters" /> class. </summary>
-    /// <param name="assetName">      Name of the asset currently loaded when using <see cref="IContentManager.Load{T}" />. </param>
-    /// <param name="assetType">      Type of the asset currently loaded when using <see cref="IContentManager.Load{T}" />. </param>
-    /// <param name="stream">         Stream of the asset to load. </param>
+    /// <param name="assetName"> Name of the asset currently loaded when using <see cref="IContentManager.Load{T}" />. </param>
+    /// <param name="assetType"> Type of the asset currently loaded when using <see cref="IContentManager.Load{T}" />. </param>
+    /// <param name="stream"> Stream of the asset to load. </param>
     /// <param name="keepStreamOpen">
     ///     (Optional) This parameter is an out parameter for <see cref="IContentReader.ReadContent" />.
     ///     Set to true to let the ContentManager close the stream once the reader is done.

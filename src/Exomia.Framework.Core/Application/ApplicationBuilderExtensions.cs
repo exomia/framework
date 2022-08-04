@@ -16,7 +16,7 @@ namespace Exomia.Framework.Core.Application;
 public static class ApplicationBuilderExtensions
 {
     /// <summary> An <see cref="IApplicationBuilder" /> extension method that use latency mode. </summary>
-    /// <param name="builder">       The builder to act on. </param>
+    /// <param name="builder"> The builder to act on. </param>
     /// <param name="gcLatencyMode"> (Optional) The GC latency mode. </param>
     /// <returns> An <see cref="IApplicationBuilder" />. </returns>
     public static IApplicationBuilder UseLatencyMode(this IApplicationBuilder builder, GCLatencyMode gcLatencyMode = GCLatencyMode.LowLatency)

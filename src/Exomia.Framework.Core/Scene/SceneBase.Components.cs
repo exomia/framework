@@ -161,9 +161,9 @@ public abstract partial class SceneBase
     }
 
     /// <summary> Get an application component by its guid. </summary>
-    /// <param name="guid">   Unique identifier. </param>
+    /// <param name="guid"> Unique identifier. </param>
     /// <param name="system"> [out] out found application system. </param>
-    /// <returns> <c>true</c> if found; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if found; <c> false </c> otherwise. </returns>
     public bool GetComponent(Guid guid, out IComponent? system)
     {
         return _sceneComponents.TryGetValue(guid, out system);

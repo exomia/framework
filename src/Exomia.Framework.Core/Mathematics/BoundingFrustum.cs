@@ -15,8 +15,8 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Core.Mathematics;
 
 /// <summary>
-///     Defines a frustum which can be used in frustum culling, zoom to Extents (zoom to fit) operations, (matrix, frustum,
-///     camera) interchange, and many kind of intersection testing.
+///     Defines a frustum which can be used in frustum culling, zoom to Extents (zoom to fit) operations, (matrix, frustum, camera) interchange,
+///     and many kind of intersection testing.
 /// </summary>
 [StructLayout(LayoutKind.Explicit, Pack = 4)]
 public unsafe struct BoundingFrustum
@@ -108,7 +108,7 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Indicate whether the current BoundingFrustrum is Orthographic. </summary>
-    /// <value> <c>true</c> if the current BoundingFrustrum is Orthographic; otherwise, <c>false</c>. </value>
+    /// <value> <c> true </c> if the current BoundingFrustrum is Orthographic; <c> false </c> otherwise. </value>
     public readonly bool IsOrthographic
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -135,8 +135,7 @@ public unsafe struct BoundingFrustum
     /// <summary> Determines whether the specified <see cref="BoundingFrustum" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="BoundingFrustum" /> to compare with this instance. </param>
     /// <returns>
-    ///     <c>true</c> if the specified <see cref="BoundingFrustum" /> is equal to this instance; otherwise,
-    ///     <c>false</c>.
+    ///     <c> true </c> if the specified <see cref="BoundingFrustum" /> is equal to this instance; <c> false </c> otherwise.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in BoundingFrustum other)
@@ -146,7 +145,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Determines whether the specified <see cref="System.Object" /> is equal to this instance. </summary>
     /// <param name="obj"> The <see cref="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified <see cref="System.Object" /> is equal to this instance; <c> false </c> otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? obj)
     {
@@ -155,12 +154,12 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Creates a new frustum relaying on perspective camera parameters. </summary>
     /// <param name="cameraPos"> The camera pos. </param>
-    /// <param name="lookDir">   The look dir. </param>
-    /// <param name="upDir">     Up dir. </param>
-    /// <param name="fov">       The fov. </param>
-    /// <param name="zNear">     The zNear. </param>
-    /// <param name="zFar">      The zFar. </param>
-    /// <param name="aspect">    The aspect. </param>
+    /// <param name="lookDir"> The look dir. </param>
+    /// <param name="upDir"> Up dir. </param>
+    /// <param name="fov"> The fov. </param>
+    /// <param name="zNear"> The zNear. </param>
+    /// <param name="zFar"> The zFar. </param>
+    /// <param name="aspect"> The aspect. </param>
     /// <returns> The bounding frustum calculated from perspective camera. </returns>
     public static BoundingFrustum FromCamera(in Vector3 cameraPos, in Vector3 lookDir, in Vector3 upDir, float fov, float zNear, float zFar, float aspect)
     {
@@ -245,8 +244,7 @@ public unsafe struct BoundingFrustum
     ///     Returns the 8 corners of the frustum, element0 is Near1 (near right down corner)
     ///     element1 is Near2 (near right top corner), element2 is Near3 (near Left top corner), element3 is Near4 (near Left
     ///     down corner), element4 is Far1 (far right down corner),
-    ///     element5 is Far2 (far right top corner), element6 is Far3 (far left top corner), element7 is Far4 (far left down
-    ///     corner)
+    ///     element5 is Far2 (far right top corner), element6 is Far3 (far left top corner), element7 is Far4 (far left down corner)
     /// </summary>
     /// <returns> The 8 corners of the frustum. </returns>
     public readonly Vector3[] GetCorners()
@@ -260,12 +258,9 @@ public unsafe struct BoundingFrustum
     ///     Returns the 8 corners of the frustum, element0 is Near1 (near right down corner)
     ///     element1 is Near2 (near right top corner), element2 is Near3 (near Left top corner), element3 is Near4 (near Left
     ///     down corner), element4 is Far1 (far right down corner),
-    ///     element5 is Far2 (far right top corner), element6 is Far3 (far left top corner), element7 is Far4 (far left down
-    ///     corner)
+    ///     element5 is Far2 (far right top corner), element6 is Far3 (far left top corner), element7 is Far4 (far left down corner)
     /// </summary>
     /// <param name="corners"> The corners. </param>
-    /// ###
-    /// <returns> The 8 corners of the frustum. </returns>
     public readonly void GetCorners(Vector3[] corners)
     {
         corners[0] = Get3PlanesInterPoint(in _pNear, in _pBottom, in _pRight); //Near1
@@ -279,13 +274,13 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Extracts perspective camera parameters from the frustum, doesn't work with orthographic frustums. </summary>
-    /// <param name="position">    [out] The position. </param>
-    /// <param name="lookAt">      [out] The look at. </param>
-    /// <param name="up">          [out] The up. </param>
-    /// <param name="fov">         [out] The fov. </param>
+    /// <param name="position"> [out] The position. </param>
+    /// <param name="lookAt"> [out] The look at. </param>
+    /// <param name="up"> [out] The up. </param>
+    /// <param name="fov"> [out] The fov. </param>
     /// <param name="aspectRatio"> [out] The aspect ratio. </param>
-    /// <param name="zNear">       [out] The zNear. </param>
-    /// <param name="zFar">        [out] The zFar. </param>
+    /// <param name="zNear"> [out] The zNear. </param>
+    /// <param name="zFar"> [out] The zFar. </param>
     /// ###
     /// <returns> Perspective camera parameters from the frustum. </returns>
     public readonly void GetCameraParams(out Vector3 position, out Vector3 lookAt, out Vector3 up, out float fov, out float aspectRatio, out float zNear, out float zFar)
@@ -357,7 +352,7 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Determines the intersection relationship between the frustum and a bounding box. </summary>
-    /// <param name="box">    The box. </param>
+    /// <param name="box"> The box. </param>
     /// <param name="result"> [out] Type of the containment. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Contains(in BoundingBox box, out ContainmentType result)
@@ -436,7 +431,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Determines the intersection relationship between the frustum and another bounding frustum. </summary>
     /// <param name="frustum"> The frustum. </param>
-    /// <param name="result">  [out] Type of the containment. </param>
+    /// <param name="result"> [out] Type of the containment. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Contains(in BoundingFrustum frustum, out ContainmentType result)
     {
@@ -454,7 +449,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects a BoundingSphere. </summary>
     /// <param name="sphere"> The sphere. </param>
-    /// <param name="result"> [out] Set to <c>true</c> if the current BoundingFrustum intersects a BoundingSphere. </param>
+    /// <param name="result"> [out] Set to <c> true </c> if the current BoundingFrustum intersects a BoundingSphere. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Intersects(in BoundingSphere sphere, out bool result)
     {
@@ -463,7 +458,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects a BoundingBox. </summary>
     /// <param name="box"> The box. </param>
-    /// <returns> <c>true</c> if the current BoundingFrustum intersects a BoundingSphere. </returns>
+    /// <returns> <c> true </c> if the current BoundingFrustum intersects a BoundingSphere. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Intersects(in BoundingBox box)
     {
@@ -471,8 +466,8 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Checks whether the current BoundingFrustum intersects a BoundingBox. </summary>
-    /// <param name="box">    The box. </param>
-    /// <param name="result"> [out] <c>true</c> if the current BoundingFrustum intersects a BoundingSphere. </param>
+    /// <param name="box"> The box. </param>
+    /// <param name="result"> [out] <c> true </c> if the current BoundingFrustum intersects a BoundingSphere. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Intersects(in BoundingBox box, out bool result)
     {
@@ -489,7 +484,7 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Checks whether the current BoundingFrustum intersects the specified Plane. </summary>
-    /// <param name="plane">  The plane. </param>
+    /// <param name="plane"> The plane. </param>
     /// <param name="result"> [out] Plane intersection type. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Intersects(in Plane plane, out PlaneIntersectionType result)
@@ -517,7 +512,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects the specified Ray. </summary>
     /// <param name="ray"> The ray. </param>
-    /// <returns> <c>true</c> if the current BoundingFrustum intersects the specified Ray. </returns>
+    /// <returns> <c> true </c> if the current BoundingFrustum intersects the specified Ray. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Intersects(in Ray ray)
     {
@@ -525,13 +520,10 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Checks whether the current BoundingFrustum intersects the specified Ray. </summary>
-    /// <param name="ray">         The Ray to check for intersection with. </param>
-    /// <param name="inDistance">
-    ///     [out] The distance at which the ray enters the frustum if there is an intersection and the
-    ///     ray starts outside the frustum.
-    /// </param>
+    /// <param name="ray"> The Ray to check for intersection with. </param>
+    /// <param name="inDistance"> [out] The distance at which the ray enters the frustum if there is an intersection and the ray starts outside the frustum. </param>
     /// <param name="outDistance"> [out] The distance at which the ray exits the frustum if there is an intersection. </param>
-    /// <returns> <c>true</c> if the current BoundingFrustum intersects the specified Ray. </returns>
+    /// <returns> <c> true </c> if the current BoundingFrustum intersects the specified Ray. </returns>
     public readonly bool Intersects(in Ray ray, out float? inDistance, out float? outDistance)
     {
         if (Contains(ray.Position) != ContainmentType.Disjoint)
@@ -583,11 +575,10 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary>
-    ///     Get the distance which when added to camera position along the lookat direction will do the effect of zoom to
-    ///     extents (zoom to fit) operation, so all the passed points
-    ///     will fit in the current view. if the returned value is positive, the camera will move toward the lookat direction
-    ///     (ZoomIn). if the returned value is negative, the camera
-    ///     will move in the reverse direction of the lookat direction (ZoomOut).
+    ///     Get the distance which when added to camera position along the lookat direction will do the effect of zoom to extents (zoom to fit) operation,
+    ///     so all the passed points will fit in the current view.
+    ///     If the returned value is positive, the camera will move toward the lookat direction (ZoomIn).
+    ///     If the returned value is negative, the camera will move in the reverse direction of the lookat direction (ZoomOut).
     /// </summary>
     /// <param name="points"> The points. </param>
     /// <returns> The zoom to fit distance. </returns>
@@ -611,11 +602,10 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary>
-    ///     Get the distance which when added to camera position along the lookat direction will do the effect of zoom to
-    ///     extents (zoom to fit) operation, so all the passed points
-    ///     will fit in the current view. if the returned value is positive, the camera will move toward the lookat direction
-    ///     (ZoomIn). if the returned value is negative, the camera
-    ///     will move in the reverse direction of the lookat direction (ZoomOut).
+    ///     Get the distance which when added to camera position along the lookat direction will do the effect of zoom to extents (zoom to fit) operation,
+    ///     so all the passed points will fit in the current view.
+    ///     If the returned value is positive, the camera will move toward the lookat direction (ZoomIn).
+    ///     If the returned value is negative, the camera will move in the reverse direction of the lookat direction (ZoomOut).
     /// </summary>
     /// <param name="boundingBox"> The bounding box. </param>
     /// <returns> The zoom to fit distance. </returns>
@@ -626,8 +616,8 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary>
-    ///     Get the vector shift which when added to camera position will do the effect of zoom to extents (zoom to fit)
-    ///     operation, so all the passed points will fit in the current view.
+    ///     Get the vector shift which when added to camera position will do the effect of zoom to extents (zoom to fit) operation,
+    ///     so all the passed points will fit in the current view.
     /// </summary>
     /// <param name="points"> The points. </param>
     /// <returns> The zoom to fit vector. </returns>
@@ -638,8 +628,8 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary>
-    ///     Get the vector shift which when added to camera position will do the effect of zoom to extents (zoom to fit)
-    ///     operation, so all the passed points will fit in the current view.
+    ///     Get the vector shift which when added to camera position will do the effect of zoom to extents (zoom to fit) operation,
+    ///     so all the passed points will fit in the current view.
     /// </summary>
     /// <param name="boundingBox"> The bounding box. </param>
     /// <returns> The zoom to fit vector. </returns>
@@ -749,7 +739,7 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Implements the operator ==. </summary>
-    /// <param name="left">  The left. </param>
+    /// <param name="left"> The left. </param>
     /// <param name="right"> The right. </param>
     /// <returns> The result of the operator. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -759,7 +749,7 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Implements the operator !=. </summary>
-    /// <param name="left">  The left. </param>
+    /// <param name="left"> The left. </param>
     /// <param name="right"> The right. </param>
     /// <returns> The result of the operator. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

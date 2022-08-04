@@ -16,7 +16,7 @@ public class LoadingScene : SceneBase
     private readonly SceneBase _sceneToLoad;
 
     /// <summary> Initializes a new instance of the <see cref="LoadingScene" /> class. </summary>
-    /// <param name="key">         The key. </param>
+    /// <param name="key"> The key. </param>
     /// <param name="sceneToLoad"> The scene to load. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     public LoadingScene(string key, SceneBase sceneToLoad)

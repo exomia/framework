@@ -16,11 +16,11 @@ namespace Exomia.Framework.Core.Mathematics;
 public static class Collision
 {
     /// <summary> Determines the closest point between a point and a triangle. </summary>
-    /// <param name="point">   The point to test. </param>
+    /// <param name="point"> The point to test. </param>
     /// <param name="vertex1"> The first vertex to test. </param>
     /// <param name="vertex2"> The second vertex to test. </param>
     /// <param name="vertex3"> The third vertex to test. </param>
-    /// <param name="result">  [out] When the method completes, contains the closest point between the two objects. </param>
+    /// <param name="result"> [out] When the method completes, contains the closest point between the two objects. </param>
     public static void ClosestPointPointTriangle(in  Vector3 point,
                                                  in  Vector3 vertex1,
                                                  in  Vector3 vertex2,
@@ -98,8 +98,8 @@ public static class Collision
     }
 
     /// <summary> Determines the closest point between a <see cin="Plane" /> and a point. </summary>
-    /// <param name="plane">  The plane to test. </param>
-    /// <param name="point">  The point to test. </param>
+    /// <param name="plane"> The plane to test. </param>
+    /// <param name="point"> The point to test. </param>
     /// <param name="result"> [out] When the method completes, contains the closest point between the two objects. </param>
     public static void ClosestPointPlanePoint(in Plane plane, in Vector3 point, out Vector3 result)
     {
@@ -110,8 +110,8 @@ public static class Collision
     }
 
     /// <summary> Determines the closest point between a <see cin="BoundingBox" /> and a point. </summary>
-    /// <param name="box">    The box to test. </param>
-    /// <param name="point">  The point to test. </param>
+    /// <param name="box"> The box to test. </param>
+    /// <param name="point"> The point to test. </param>
     /// <param name="result"> [out] When the method completes, contains the closest point between the two objects. </param>
     public static void ClosestPointBoxPoint(in BoundingBox box, in Vector3 point, out Vector3 result)
     {
@@ -123,7 +123,7 @@ public static class Collision
 
     /// <summary> Determines the closest point between a <see cin="BoundingSphere" /> and a point. </summary>
     /// <param name="sphere"> . </param>
-    /// <param name="point">  The point to test. </param>
+    /// <param name="point"> The point to test. </param>
     /// <param name="result">
     ///     [out] When the method completes, contains the closest point between the two objects;
     ///     or, if the point is directly in the center of the sphere, contains <see cin="Vector3.Zero" />.
@@ -164,7 +164,7 @@ public static class Collision
     }
 
     /// <summary> Determines the distance between a <see cin="BoundingBox" /> and a point. </summary>
-    /// <param name="box">   The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="point"> The point to test. </param>
     /// <returns> The distance between the two objects. </returns>
     public static float DistanceBoxPoint(in BoundingBox box, in Vector3 point)
@@ -256,7 +256,7 @@ public static class Collision
 
     /// <summary> Determines the distance between a <see cin="BoundingSphere" /> and a point. </summary>
     /// <param name="sphere"> The sphere to test. </param>
-    /// <param name="point">  The point to test. </param>
+    /// <param name="point"> The point to test. </param>
     /// <returns> The distance between the two objects. </returns>
     public static float DistanceSpherePoint(in BoundingSphere sphere, in Vector3 point)
     {
@@ -273,7 +273,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a point. </summary>
-    /// <param name="ray">   The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="point"> The point to test. </param>
     /// <returns> Whether the two objects intersect. </returns>
     public static bool RayIntersectsPoint(in Ray ray, in Vector3 point)
@@ -290,8 +290,8 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Ray" />. </summary>
-    /// <param name="ray1">  The first ray to test. </param>
-    /// <param name="ray2">  The second ray to test. </param>
+    /// <param name="ray1"> The first ray to test. </param>
+    /// <param name="ray2"> The second ray to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
     ///     if there was no intersection.
@@ -379,8 +379,8 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />. </summary>
-    /// <param name="ray">      The ray to test. </param>
-    /// <param name="plane">    The plane to test. </param>
+    /// <param name="ray"> The ray to test. </param>
+    /// <param name="plane"> The plane to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -411,7 +411,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />. </summary>
-    /// <param name="ray">   The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="plane"> The plane to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
@@ -434,10 +434,10 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a triangle. </summary>
-    /// <param name="ray">      The ray to test. </param>
-    /// <param name="vertex1">  The first vertex of the triangle to test. </param>
-    /// <param name="vertex2">  The second vertex of the triangle to test. </param>
-    /// <param name="vertex3">  The third vertex of the triangle to test. </param>
+    /// <param name="ray"> The ray to test. </param>
+    /// <param name="vertex1"> The first vertex of the triangle to test. </param>
+    /// <param name="vertex2"> The second vertex of the triangle to test. </param>
+    /// <param name="vertex3"> The third vertex of the triangle to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -514,7 +514,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a triangle. </summary>
-    /// <param name="ray">     The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="vertex1"> The first vertex of the triangle to test. </param>
     /// <param name="vertex2"> The second vertex of the triangle to test. </param>
     /// <param name="vertex3"> The third vertex of the triangle to test. </param>
@@ -540,8 +540,8 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingBox" />. </summary>
-    /// <param name="ray">      The ray to test. </param>
-    /// <param name="box">      The box to test. </param>
+    /// <param name="ray"> The ray to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -651,8 +651,8 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="Plane" />. </summary>
-    /// <param name="ray">   The ray to test. </param>
-    /// <param name="box">   The box to test. </param>
+    /// <param name="ray"> The ray to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
     ///     if there was no intersection.
@@ -671,8 +671,8 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingSphere" />. </summary>
-    /// <param name="ray">      The ray to test. </param>
-    /// <param name="sphere">   The sphere to test. </param>
+    /// <param name="ray"> The ray to test. </param>
+    /// <param name="sphere"> The sphere to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -713,7 +713,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Ray" /> and a <see cin="BoundingSphere" />. </summary>
-    /// <param name="ray">    The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="sphere"> The sphere to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or
@@ -809,7 +809,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a triangle. </summary>
-    /// <param name="plane">   The plane to test. </param>
+    /// <param name="plane"> The plane to test. </param>
     /// <param name="vertex1"> The first vertex of the triangle to test. </param>
     /// <param name="vertex2"> The second vertex of the triangle to test. </param>
     /// <param name="vertex3"> The third vertex of the triangle to test. </param>
@@ -848,7 +848,7 @@ public static class Collision
     ///     <see cin="BoundingBox" />.
     /// </summary>
     /// <param name="plane"> The plane to test. </param>
-    /// <param name="box">   The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <returns> Whether the two objects intersected. </returns>
     public static PlaneIntersectionType PlaneIntersectsBox(in Plane plane, in BoundingBox box)
     {
@@ -891,7 +891,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="Plane" /> and a <see cin="BoundingSphere" />. </summary>
-    /// <param name="plane">  The plane to test. </param>
+    /// <param name="plane"> The plane to test. </param>
     /// <param name="sphere"> The sphere to test. </param>
     /// <returns> Whether the two objects intersected. </returns>
     public static PlaneIntersectionType PlaneIntersectsSphere(in Plane plane, in BoundingSphere sphere)
@@ -918,7 +918,7 @@ public static class Collision
     ///     Determines whether there is an intersection between a <see cin="Plane" /> and a
     ///     <see cin="BoundingFrustum" />.
     /// </summary>
-    /// <param name="plane">   The plane to test. </param>
+    /// <param name="plane"> The plane to test. </param>
     /// <param name="frustum"> The frustum to test. </param>
     /// <returns> Whether the two objects intersected. </returns>
     public static PlaneIntersectionType PlaneIntersectsFrustum(in Plane plane, in BoundingFrustum frustum)
@@ -966,7 +966,7 @@ public static class Collision
     ///     Determines whether there is an intersection between a <see cin="BoundingBox" /> and a
     ///     <see cin="BoundingSphere" />.
     /// </summary>
-    /// <param name="box">    The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="sphere"> The sphere to test. </param>
     /// <returns> Whether the two objects intersected. </returns>
     public static bool BoxIntersectsSphere(in BoundingBox box, in BoundingSphere sphere)
@@ -979,7 +979,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether there is an intersection between a <see cin="BoundingSphere" /> and a triangle. </summary>
-    /// <param name="sphere">  The sphere to test. </param>
+    /// <param name="sphere"> The sphere to test. </param>
     /// <param name="vertex1"> The first vertex of the triangle to test. </param>
     /// <param name="vertex2"> The second vertex of the triangle to test. </param>
     /// <param name="vertex3"> The third vertex of the triangle to test. </param>
@@ -1011,7 +1011,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether a <see cin="BoundingBox" /> contains a point. </summary>
-    /// <param name="box">   The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="point"> The point to test. </param>
     /// <returns> True if the box contains the point; false otherwise. </returns>
     public static bool BoxContainsPoint(in BoundingBox box, in Vector3 point)
@@ -1051,7 +1051,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether a <see cin="BoundingBox" /> contains a <see cin="BoundingSphere" />. </summary>
-    /// <param name="box">    The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="sphere"> The sphere to test. </param>
     /// <returns> The type of containment the two objects have. </returns>
     public static ContainmentType BoxContainsSphere(in BoundingBox box, in BoundingSphere sphere)
@@ -1079,7 +1079,7 @@ public static class Collision
 
     /// <summary> Determines whether a <see cin="BoundingSphere" /> contains a point. </summary>
     /// <param name="sphere"> The sphere to test. </param>
-    /// <param name="point">  The point to test. </param>
+    /// <param name="point"> The point to test. </param>
     /// <returns> True if the sphere contains the point; false otherwise. </returns>
     public static bool SphereContainsPoint(in BoundingSphere sphere, in Vector3 point)
     {
@@ -1087,7 +1087,7 @@ public static class Collision
     }
 
     /// <summary> Determines whether a <see cin="BoundingSphere" /> contains a triangle. </summary>
-    /// <param name="sphere">  The sphere to test. </param>
+    /// <param name="sphere"> The sphere to test. </param>
     /// <param name="vertex1"> The first vertex of the triangle to test. </param>
     /// <param name="vertex2"> The second vertex of the triangle to test. </param>
     /// <param name="vertex3"> The third vertex of the triangle to test. </param>
@@ -1117,7 +1117,7 @@ public static class Collision
 
     /// <summary> Determines whether a <see cin="BoundingSphere" /> contains a <see cin="BoundingBox" />. </summary>
     /// <param name="sphere"> The sphere to test. </param>
-    /// <param name="box">    The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <returns> The type of containment the two objects have. </returns>
     public static ContainmentType SphereContainsBox(in BoundingSphere sphere, in BoundingBox box)
     {

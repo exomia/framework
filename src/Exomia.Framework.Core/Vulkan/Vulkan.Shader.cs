@@ -13,11 +13,11 @@ namespace Exomia.Framework.Core.Vulkan;
 sealed unsafe partial class Vulkan
 {
     /// <summary> Creates shader module. </summary>
-    /// <param name="device">       The device. </param>
-    /// <param name="code">         [in,out] If non-null, the code. </param>
-    /// <param name="codeSize">     Size of the code. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="code"> [in,out] If non-null, the code. </param>
+    /// <param name="codeSize"> Size of the code. </param>
     /// <param name="shaderModule"> [out] The shader module. </param>
-    /// <param name="flags">        (Optional) The flags. </param>
+    /// <param name="flags"> (Optional) The flags. </param>
     public static void CreateShaderModule(VkDevice device, byte* code, nuint codeSize, out VkShaderModule shaderModule, VkShaderModuleCreateFlags flags = 0)
     {
         VkShaderModuleCreateInfo shaderModuleCreateInfo;
@@ -35,7 +35,7 @@ sealed unsafe partial class Vulkan
     }
 
     /// <summary> Destroys the shader module. </summary>
-    /// <param name="device">       The device. </param>
+    /// <param name="device"> The device. </param>
     /// <param name="shaderModule"> [in,out] The shader module. </param>
     public static void DestroyShaderModule(VkDevice device, ref VkShaderModule shaderModule)
     {

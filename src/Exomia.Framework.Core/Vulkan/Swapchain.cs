@@ -71,11 +71,11 @@ public sealed unsafe partial class Swapchain : IDisposable
     }
 
     /// <summary> Initializes a new instance of the <see cref="Swapchain" /> class. </summary>
-    /// <param name="vkContext">                 The vk context. </param>
-    /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
+    /// <param name="vkContext"> The vk context. </param>
+    /// <param name="swapchainConfiguration"> The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The depth stencil configuration. </param>
-    /// <param name="renderPassConfiguration">  The render pass configurations. </param>
-    /// <param name="oldSwapchain">              (Optional) The old swapchain. </param>
+    /// <param name="renderPassConfiguration"> The render pass configurations. </param>
+    /// <param name="oldSwapchain"> (Optional) The old swapchain. </param>
     public Swapchain(
         VkContext*                vkContext,
         SwapchainConfiguration    swapchainConfiguration,
@@ -111,7 +111,7 @@ public sealed unsafe partial class Swapchain : IDisposable
     }
 
     /// <summary> Resize the swapchain to specified <paramref name="width" /> and <paramref name="height" />. </summary>
-    /// <param name="width">  The width. </param>
+    /// <param name="width"> The width. </param>
     /// <param name="height"> The height. </param>
     public void Resize(uint width, uint height)
     {
@@ -133,10 +133,10 @@ public sealed unsafe partial class Swapchain : IDisposable
     }
 
     /// <summary> Creates a new <see cref="Swapchain" />. </summary>
-    /// <param name="oldSwapchain">            (Optional) The old swapchain. </param>
+    /// <param name="oldSwapchain"> (Optional) The old swapchain. </param>
     /// <returns> A <see cref="Swapchain" />. </returns>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
-    /// <exception cref="VulkanException">   Thrown when a Vulkan error condition occurs. </exception>
+    /// <exception cref="VulkanException"> Thrown when a Vulkan error condition occurs. </exception>
     private void CreateSwapChain(Swapchain? oldSwapchain = null)
     {
         if (_swapchainConfiguration.BeforeSwapchainCreation != null &&

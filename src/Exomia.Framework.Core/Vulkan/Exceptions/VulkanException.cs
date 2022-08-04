@@ -20,7 +20,7 @@ public class VulkanException : Exception
 
     /// <summary> Initializes a new instance of the <see cref="VulkanException" /> class. </summary>
     /// <param name="format"> Describes the format to use. </param>
-    /// <param name="args">   A variable-length parameters list containing arguments. </param>
+    /// <param name="args"> A variable-length parameters list containing arguments. </param>
     public VulkanException(string format, params object[] args)
         : base(string.Format(format, args)) { }
 
@@ -30,7 +30,7 @@ public class VulkanException : Exception
         : this($"VkResult: {result}") { }
 
     /// <summary> Initializes a new instance of the <see cref="VulkanException" /> class. </summary>
-    /// <param name="result">  The result. </param>
+    /// <param name="result"> The result. </param>
     /// <param name="message"> The message. </param>
     public VulkanException(VkResult result, string? message)
         : this($"VkResult: {result} {message}") { }
@@ -38,14 +38,14 @@ public class VulkanException : Exception
     /// <summary> Initializes a new instance of the <see cref="VulkanException" /> class. </summary>
     /// <param name="result"> The result. </param>
     /// <param name="format"> Describes the format to use. </param>
-    /// <param name="args">   A variable-length parameters list containing arguments. </param>
+    /// <param name="args"> A variable-length parameters list containing arguments. </param>
     public VulkanException(VkResult result, string format, params object[] args)
         : this($"VkResult: {result} {string.Format(format, args)}") { }
 
     /// <summary> Initializes a new instance of the <see cref="VulkanException" /> class. </summary>
-    /// <param name="result">                The result. </param>
-    /// <param name="callingMethod">         The calling method. </param>
-    /// <param name="callingFilePath">       Full pathname of the calling file. </param>
+    /// <param name="result"> The result. </param>
+    /// <param name="callingMethod"> The calling method. </param>
+    /// <param name="callingFilePath"> Full pathname of the calling file. </param>
     /// <param name="callingFileLineNumber"> The calling file line number. </param>
     public VulkanException(VkResult result,
                            string   callingMethod,

@@ -49,7 +49,7 @@ public sealed unsafe class Pipeline : IDisposable
     }
 
     /// <summary> Creates a new <see cref="Pipeline" />. </summary>
-    /// <param name="swapchain">   The swapchain. </param>
+    /// <param name="swapchain"> The swapchain. </param>
     /// <param name="createInfos"> The create infos. </param>
     /// <returns> A <see cref="Pipeline" />. </returns>
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>

@@ -14,7 +14,7 @@ namespace Exomia.Framework.Core.Input;
 public interface IInputDevice
 {
     /// <summary> Registers the key up. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -27,7 +27,7 @@ public interface IInputDevice
     void RegisterKeyUp(KeyEventHandler handler, int position = -1);
 
     /// <summary> Registers the key press. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -40,7 +40,7 @@ public interface IInputDevice
     void RegisterKeyPress(KeyPressEventHandler handler, int position = -1);
 
     /// <summary> Registers the key down. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -53,7 +53,7 @@ public interface IInputDevice
     void RegisterKeyDown(KeyEventHandler handler, int position = -1);
 
     /// <summary> Registers the raw mouse input. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -66,7 +66,7 @@ public interface IInputDevice
     void RegisterRawMouseInput(MouseEventHandler handler, int position = -1);
 
     /// <summary> Registers the mouse down. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -79,7 +79,7 @@ public interface IInputDevice
     void RegisterMouseDown(MouseEventHandler handler, int position = -1);
 
     /// <summary> Registers the mouse up. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -92,7 +92,7 @@ public interface IInputDevice
     void RegisterMouseUp(MouseEventHandler handler, int position = -1);
 
     /// <summary> Registers the mouse click. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -105,7 +105,7 @@ public interface IInputDevice
     void RegisterMouseClick(MouseEventHandler handler, int position = -1);
 
     /// <summary> Registers the mouse move. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>
@@ -118,7 +118,7 @@ public interface IInputDevice
     void RegisterMouseMove(MouseEventHandler handler, int position = -1);
 
     /// <summary> Registers the mouse wheel. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>

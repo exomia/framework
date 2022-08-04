@@ -29,7 +29,7 @@ public sealed class Heap<T>
 
     /// <summary> Initializes a new instance of the &lt;see cref="Heap&lt;T&gt;"/&gt; class. </summary>
     /// <param name="capacity"> The capacity. </param>
-    /// <param name="compare">  The compare function. </param>
+    /// <param name="compare"> The compare function. </param>
     public Heap(int capacity, Compare compare)
     {
         _compare = compare;

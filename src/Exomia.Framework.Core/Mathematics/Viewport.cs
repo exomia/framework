@@ -70,9 +70,9 @@ public struct Viewport
     }
 
     /// <summary> Initializes a new instance of the <see cref="Viewport" /> struct. </summary>
-    /// <param name="x">      The x coordinate of the upper-left corner of the viewport in pixels. </param>
-    /// <param name="y">      The y coordinate of the upper-left corner of the viewport in pixels. </param>
-    /// <param name="width">  The width of the viewport in pixels. </param>
+    /// <param name="x"> The x coordinate of the upper-left corner of the viewport in pixels. </param>
+    /// <param name="y"> The y coordinate of the upper-left corner of the viewport in pixels. </param>
+    /// <param name="width"> The width of the viewport in pixels. </param>
     /// <param name="height"> The height of the viewport in pixels. </param>
     public Viewport(int x, int y, int width, int height)
     {
@@ -85,10 +85,10 @@ public struct Viewport
     }
 
     /// <summary> Initializes a new instance of the <see cref="Viewport" /> struct. </summary>
-    /// <param name="x">        The x coordinate of the upper-left corner of the viewport in pixels. </param>
-    /// <param name="y">        The y coordinate of the upper-left corner of the viewport in pixels. </param>
-    /// <param name="width">    The width of the viewport in pixels. </param>
-    /// <param name="height">   The height of the viewport in pixels. </param>
+    /// <param name="x"> The x coordinate of the upper-left corner of the viewport in pixels. </param>
+    /// <param name="y"> The y coordinate of the upper-left corner of the viewport in pixels. </param>
+    /// <param name="width"> The width of the viewport in pixels. </param>
+    /// <param name="height"> The height of the viewport in pixels. </param>
     /// <param name="minDepth"> The minimum depth of the clip volume. </param>
     /// <param name="maxDepth"> The maximum depth of the clip volume. </param>
     public Viewport(int x, int y, int width, int height, float minDepth, float maxDepth)
@@ -136,7 +136,7 @@ public struct Viewport
 
     /// <summary> Determines whether the specified <see cref="Viewport" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="Viewport" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cref="Viewport" /> is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified <see cref="Viewport" /> is equal to this instance; otherwise, <c> false </c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in Viewport other)
     {
@@ -151,7 +151,7 @@ public struct Viewport
 
     /// <summary> Determines whether the specified object is equal to this instance. </summary>
     /// <param name="value"> The object to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified object is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified object is equal to this instance; otherwise, <c> false </c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {
@@ -173,11 +173,11 @@ public struct Viewport
     }
 
     /// <summary> Projects a 3D vector from object space into screen space. </summary>
-    /// <param name="source">     The vector to project. </param>
+    /// <param name="source"> The vector to project. </param>
     /// <param name="projection"> The projection matrix. </param>
-    /// <param name="view">       The view matrix. </param>
-    /// <param name="world">      The world matrix. </param>
-    /// <param name="vector">     [out] The projected vector. </param>
+    /// <param name="view"> The view matrix. </param>
+    /// <param name="world"> The world matrix. </param>
+    /// <param name="vector"> [out] The projected vector. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Project(in  Vector3   source,
                                  in  Matrix4x4 projection,
@@ -209,11 +209,11 @@ public struct Viewport
     }
 
     /// <summary> Converts a screen space point into a corresponding point in world space. </summary>
-    /// <param name="source">     The vector to project. </param>
+    /// <param name="source"> The vector to project. </param>
     /// <param name="projection"> The projection matrix. </param>
-    /// <param name="view">       The view matrix. </param>
-    /// <param name="world">      The world matrix. </param>
-    /// <param name="vector">     [out] The unprojected vector. </param>
+    /// <param name="view"> The view matrix. </param>
+    /// <param name="world"> The world matrix. </param>
+    /// <param name="vector"> [out] The unprojected vector. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Unproject(in  Vector3   source,
                                    in  Matrix4x4 projection,
@@ -246,7 +246,7 @@ public struct Viewport
     }
 
     /// <summary> Implements the operator ==. </summary>
-    /// <param name="left">  The left. </param>
+    /// <param name="left"> The left. </param>
     /// <param name="right"> The right. </param>
     /// <returns> The result of the operator. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -256,7 +256,7 @@ public struct Viewport
     }
 
     /// <summary> Implements the operator !=. </summary>
-    /// <param name="left">  The left. </param>
+    /// <param name="left"> The left. </param>
     /// <param name="right"> The right. </param>
     /// <returns> The result of the operator. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -42,7 +42,7 @@ public static unsafe class Allocator
     }
 
     /// <summary> Allocates the given count of bytes. </summary>
-    /// <param name="count">   Number of bytes to allocate. </param>
+    /// <param name="count"> Number of bytes to allocate. </param>
     /// <param name="default"> The default. </param>
     /// <returns> Null if it fails, else a byte*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -54,7 +54,7 @@ public static unsafe class Allocator
     }
 
     /// <summary> Allocates the given count of bytes. </summary>
-    /// <param name="count">   Number of bytes to allocate. </param>
+    /// <param name="count"> Number of bytes to allocate. </param>
     /// <param name="default"> The default. </param>
     /// <returns> Null if it fails, else a byte*. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -93,7 +93,7 @@ public static unsafe class Allocator
 
     /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="count">   Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
     /// <param name="default"> The default value to set. </param>
     /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
     public static T* Allocate<T>(uint count, byte @default)
@@ -106,7 +106,7 @@ public static unsafe class Allocator
 
     /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="count">   Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
     /// <param name="default"> The default. </param>
     /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
     public static T* Allocate<T>(int count, byte @default)
@@ -119,7 +119,7 @@ public static unsafe class Allocator
 
     /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="count">   Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
     /// <param name="default"> The default value to set. </param>
     /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
     public static T* Allocate<T>(uint count, T @default)
@@ -135,7 +135,7 @@ public static unsafe class Allocator
 
     /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="count">   Number of <typeparamref name="T" /> to allocate. </param>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
     /// <param name="default"> The default. </param>
     /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
     public static T* Allocate<T>(int count, T @default)
@@ -176,7 +176,7 @@ public static unsafe class Allocator
     }
 
     /// <summary> Frees a given pointer. </summary>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of bytes to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Free(void* ptr, uint count)
@@ -187,7 +187,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Free<T>(ref T* ptr, uint count) where T : unmanaged
@@ -198,7 +198,7 @@ public static unsafe class Allocator
     }
 
     /// <summary> Frees a given pointer. </summary>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of bytes to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Free(void* ptr, int count)
@@ -209,7 +209,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Free<T>(ref T* ptr, int count) where T : unmanaged
@@ -221,7 +221,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer of <typeparamref name="T" />. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Free<T>(T* ptr, uint count)
@@ -233,7 +233,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of <typeparamref name="T" /> to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Free<T>(T* ptr, int count)
@@ -245,7 +245,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of bytes to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void FreePtr<T>(T** ptr, int count)
@@ -257,7 +257,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of bytes to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void FreePtr<T>(T** ptr, uint count)
@@ -269,7 +269,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of bytes to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void FreePtr<T>(ref T** ptr, int count)
@@ -282,7 +282,7 @@ public static unsafe class Allocator
 
     /// <summary> Frees a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="ptr">   [in,out] If non-null, the pointer. </param>
+    /// <param name="ptr"> [in,out] If non-null, the pointer. </param>
     /// <param name="count"> Number of bytes to free. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void FreePtr<T>(ref T** ptr, uint count)
@@ -321,7 +321,7 @@ public static unsafe class Allocator
 
     /// <summary> Resizes a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">      [in,out] If non-null, the pointer. </param>
+    /// <param name="src"> [in,out] If non-null, the pointer. </param>
     /// <param name="srcCount"> [in,out] Number of <typeparamref name="T" /> elements. </param>
     /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -337,7 +337,7 @@ public static unsafe class Allocator
 
     /// <summary> Resizes a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">      [in,out] If non-null, the pointer. </param>
+    /// <param name="src"> [in,out] If non-null, the pointer. </param>
     /// <param name="srcCount"> [in,out] Number of <typeparamref name="T" /> elements. </param>
     /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -353,7 +353,7 @@ public static unsafe class Allocator
 
     /// <summary> Resizes a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">      [in,out] If non-null, the pointer. </param>
+    /// <param name="src"> [in,out] If non-null, the pointer. </param>
     /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
     /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -368,7 +368,7 @@ public static unsafe class Allocator
 
     /// <summary> Resizes a given pointer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">      [in,out] If non-null, the pointer. </param>
+    /// <param name="src"> [in,out] If non-null, the pointer. </param>
     /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
     /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -383,7 +383,7 @@ public static unsafe class Allocator
 
     /// <summary> Free and allocate. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">      [in,out] If non-null, the pointer. </param>
+    /// <param name="src"> [in,out] If non-null, the pointer. </param>
     /// <param name="srcCount"> Number of <typeparamref name="T" /> elements. </param>
     /// <param name="newCount"> Number of <typeparamref name="T" /> to allocate. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

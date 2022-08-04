@@ -65,7 +65,7 @@ public struct VectorI3
 
     /// <summary> Initializes a new instance of the vector3 struct. equal to <see cref="VectorI3" /> (value.x, value.y, 0) </summary>
     /// <param name="value"> Initial value for the X and Y component of the vector. </param>
-    /// <param name="z">     Initial value for the Z component of the vector. </param>
+    /// <param name="z"> Initial value for the Z component of the vector. </param>
     public VectorI3(in VectorI2 value, int z)
     {
         X = value.X;
@@ -88,7 +88,7 @@ public struct VectorI3
 
     /// <summary> Determines whether the specified <see cref="VectorI3" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="VectorI3" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cref="VectorI3" /> is equal to this instance; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if the specified <see cref="VectorI3" /> is equal to this instance; <c> false </c> otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in VectorI3 other)
     {
@@ -117,8 +117,8 @@ public struct VectorI3
     }
 
     /// <summary> Adds two vectors. </summary>
-    /// <param name="left">   [in,out] The first vector to add. </param>
-    /// <param name="right">  [in,out] The second vector to add. </param>
+    /// <param name="left"> [in,out] The first vector to add. </param>
+    /// <param name="right"> [in,out] The second vector to add. </param>
     /// <param name="result"> [out] When the method completes, contains the sum of the two vectors. </param>
     public static void Add(ref VectorI3 left, ref VectorI3 right, out VectorI3 result)
     {
@@ -128,7 +128,7 @@ public struct VectorI3
     }
 
     /// <summary> Adds two vectors. </summary>
-    /// <param name="left">  The first vector to add. </param>
+    /// <param name="left"> The first vector to add. </param>
     /// <param name="right"> The second vector to add. </param>
     /// <returns> The sum of the two vectors. </returns>
     public static VectorI3 Add(in VectorI3 left, in VectorI3 right)
@@ -137,8 +137,8 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise addition. </summary>
-    /// <param name="left">   [in,out] The input vector. </param>
-    /// <param name="right">  [in,out] The scalar value to be added to elements. </param>
+    /// <param name="left"> [in,out] The input vector. </param>
+    /// <param name="right"> [in,out] The scalar value to be added to elements. </param>
     /// <param name="result"> [out] The vector with added scalar for each element. </param>
     public static void Add(ref VectorI3 left, ref int right, out VectorI3 result)
     {
@@ -148,7 +148,7 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise addition. </summary>
-    /// <param name="left">  The input vector. </param>
+    /// <param name="left"> The input vector. </param>
     /// <param name="right"> The scalar value to be added to elements. </param>
     /// <returns> The vector with added scalar for each element. </returns>
     public static VectorI3 Add(in VectorI3 left, int right)
@@ -157,8 +157,8 @@ public struct VectorI3
     }
 
     /// <summary> Subtracts two vectors. </summary>
-    /// <param name="left">   [in,out] The first vector to subtract. </param>
-    /// <param name="right">  [in,out] The second vector to subtract. </param>
+    /// <param name="left"> [in,out] The first vector to subtract. </param>
+    /// <param name="right"> [in,out] The second vector to subtract. </param>
     /// <param name="result"> [out] When the method completes, contains the difference of the two vectors. </param>
     public static void Subtract(ref VectorI3 left, ref VectorI3 right, out VectorI3 result)
     {
@@ -168,7 +168,7 @@ public struct VectorI3
     }
 
     /// <summary> Subtracts two vectors. </summary>
-    /// <param name="left">  The first vector to subtract. </param>
+    /// <param name="left"> The first vector to subtract. </param>
     /// <param name="right"> The second vector to subtract. </param>
     /// <returns> The difference of the two vectors. </returns>
     public static VectorI3 Subtract(in VectorI3 left, in VectorI3 right)
@@ -177,8 +177,8 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise subtraction. </summary>
-    /// <param name="left">   [in,out] The input vector. </param>
-    /// <param name="right">  [in,out] The scalar value to be subtracted from elements. </param>
+    /// <param name="left"> [in,out] The input vector. </param>
+    /// <param name="right"> [in,out] The scalar value to be subtracted from elements. </param>
     /// <param name="result"> [out] The vector with subtracted scalar for each element. </param>
     public static void Subtract(ref VectorI3 left, ref int right, out VectorI3 result)
     {
@@ -188,7 +188,7 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise subtraction. </summary>
-    /// <param name="left">  The input vector. </param>
+    /// <param name="left"> The input vector. </param>
     /// <param name="right"> The scalar value to be subtracted from elements. </param>
     /// <returns> The vector with subtracted scalar for each element. </returns>
     public static VectorI3 Subtract(in VectorI3 left, int right)
@@ -197,8 +197,8 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise subtraction. </summary>
-    /// <param name="left">   [in,out] The scalar value to be subtracted from elements. </param>
-    /// <param name="right">  [in,out] The input vector. </param>
+    /// <param name="left"> [in,out] The scalar value to be subtracted from elements. </param>
+    /// <param name="right"> [in,out] The input vector. </param>
     /// <param name="result"> [out] The vector with subtracted scalar for each element. </param>
     public static void Subtract(ref int left, ref VectorI3 right, out VectorI3 result)
     {
@@ -208,7 +208,7 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise subtraction. </summary>
-    /// <param name="left">  The scalar value to be subtracted from elements. </param>
+    /// <param name="left"> The scalar value to be subtracted from elements. </param>
     /// <param name="right"> The input vector. </param>
     /// <returns> The vector with subtracted scalar for each element. </returns>
     public static VectorI3 Subtract(int left, in VectorI3 right)
@@ -217,8 +217,8 @@ public struct VectorI3
     }
 
     /// <summary> Scales a vector by the given value. </summary>
-    /// <param name="value">  [in,out] The vector to scale. </param>
-    /// <param name="scale">  The amount by which to vector the vector. </param>
+    /// <param name="value"> [in,out] The vector to scale. </param>
+    /// <param name="scale"> The amount by which to vector the vector. </param>
     /// <param name="result"> [out] When the method completes, contains the scaled vector. </param>
     public static void Multiply(ref VectorI3 value, int scale, out VectorI3 result)
     {
@@ -237,8 +237,8 @@ public struct VectorI3
     }
 
     /// <summary> Multiplies a vector with another by performing component-wise multiplication. </summary>
-    /// <param name="left">   [in,out] The first vector to multiply. </param>
-    /// <param name="right">  [in,out] The second vector to multiply. </param>
+    /// <param name="left"> [in,out] The first vector to multiply. </param>
+    /// <param name="right"> [in,out] The second vector to multiply. </param>
     /// <param name="result"> [out] When the method completes, contains the multiplied vector. </param>
     public static void Multiply(ref VectorI3 left, ref VectorI3 right, out VectorI3 result)
     {
@@ -248,7 +248,7 @@ public struct VectorI3
     }
 
     /// <summary> Multiplies a vector with another by performing component-wise multiplication. </summary>
-    /// <param name="left">  The first vector to multiply. </param>
+    /// <param name="left"> The first vector to multiply. </param>
     /// <param name="right"> The vector vector to multiply. </param>
     /// <returns> The multiplied vector. </returns>
     public static VectorI3 Multiply(in VectorI3 left, in VectorI3 right)
@@ -257,8 +257,8 @@ public struct VectorI3
     }
 
     /// <summary> Scales a vector by the given value. </summary>
-    /// <param name="value">  [in,out] The vector to scale. </param>
-    /// <param name="scale">  The amount by which to vector the vector. </param>
+    /// <param name="value"> [in,out] The vector to scale. </param>
+    /// <param name="scale"> The amount by which to vector the vector. </param>
     /// <param name="result"> [out] When the method completes, contains the scaled vector. </param>
     public static void Divide(ref VectorI3 value, int scale, out VectorI3 result)
     {
@@ -277,8 +277,8 @@ public struct VectorI3
     }
 
     /// <summary> Scales a vector with another by performing component-wise multiplication. </summary>
-    /// <param name="left">   [in,out] The first vector to multiply. </param>
-    /// <param name="right">  [in,out] The second vector to multiply. </param>
+    /// <param name="left"> [in,out] The first vector to multiply. </param>
+    /// <param name="right"> [in,out] The second vector to multiply. </param>
     /// <param name="result"> [out] When the method completes, contains the multiplied vector. </param>
     public static void Divide(ref VectorI3 left, ref VectorI3 right, out VectorI3 result)
     {
@@ -288,7 +288,7 @@ public struct VectorI3
     }
 
     /// <summary> Scales a vector with another by performing component-wise multiplication. </summary>
-    /// <param name="left">  The first vector to multiply. </param>
+    /// <param name="left"> The first vector to multiply. </param>
     /// <param name="right"> The vector vector to multiply. </param>
     /// <returns> The multiplied vector. </returns>
     public static VectorI3 Divide(in VectorI3 left, in VectorI3 right)
@@ -297,7 +297,7 @@ public struct VectorI3
     }
 
     /// <summary> Reverses the direction of a given vector. </summary>
-    /// <param name="value">  [in,out] The vector to negate. </param>
+    /// <param name="value"> [in,out] The vector to negate. </param>
     /// <param name="result"> [out] When the method completes, contains a vector facing in the opposite direction. </param>
     public static void Negate(ref VectorI3 value, out VectorI3 result)
     {
@@ -315,7 +315,7 @@ public struct VectorI3
     }
 
     /// <summary> Returns per component absolute value of a vector. </summary>
-    /// <param name="value">  [in,out] Input vector. </param>
+    /// <param name="value"> [in,out] Input vector. </param>
     /// <param name="result">
     ///     [out] When the method completes, contains a vector with each component being the absolute value
     ///     of the input component.
@@ -391,8 +391,8 @@ public struct VectorI3
     }
 
     /// <summary> Calculates the dot product of two vectors. </summary>
-    /// <param name="left">   [in,out] First source vector. </param>
-    /// <param name="right">  [in,out] Second source vector. </param>
+    /// <param name="left"> [in,out] First source vector. </param>
+    /// <param name="right"> [in,out] Second source vector. </param>
     /// <param name="result"> [out] When the method completes, contains the dot product of the two vectors. </param>
     public static void Dot(ref VectorI3 left, ref VectorI3 right, out int result)
     {
@@ -400,7 +400,7 @@ public struct VectorI3
     }
 
     /// <summary> Calculates the dot product of two vectors. </summary>
-    /// <param name="left">  First source vector. </param>
+    /// <param name="left"> First source vector. </param>
     /// <param name="right"> Second source vector. </param>
     /// <returns> The dot product of the two vectors. </returns>
     public static int Dot(in VectorI3 left, in VectorI3 right)
@@ -409,8 +409,8 @@ public struct VectorI3
     }
 
     /// <summary> Returns a vector containing the largest components of the specified vectors. </summary>
-    /// <param name="left">   [in,out] The first source vector. </param>
-    /// <param name="right">  [in,out] The second source vector. </param>
+    /// <param name="left"> [in,out] The first source vector. </param>
+    /// <param name="right"> [in,out] The second source vector. </param>
     /// <param name="result">
     ///     [out] When the method completes, contains an new vector composed of the largest components of the
     ///     source vectors.
@@ -429,7 +429,7 @@ public struct VectorI3
     }
 
     /// <summary> Returns a vector containing the largest components of the specified vectors. </summary>
-    /// <param name="left">  The first source vector. </param>
+    /// <param name="left"> The first source vector. </param>
     /// <param name="right"> The second source vector. </param>
     /// <returns> A vector containing the largest components of the source vectors. </returns>
     public static VectorI3 Max(in VectorI3 left, in VectorI3 right)
@@ -447,8 +447,8 @@ public struct VectorI3
     }
 
     /// <summary> Returns a vector containing the smallest components of the specified vectors. </summary>
-    /// <param name="left">   [in,out] The first source vector. </param>
-    /// <param name="right">  [in,out] The second source vector. </param>
+    /// <param name="left"> [in,out] The first source vector. </param>
+    /// <param name="right"> [in,out] The second source vector. </param>
     /// <param name="result">
     ///     [out] When the method completes, contains an new vector composed of the smallest components of
     ///     the source vectors.
@@ -467,7 +467,7 @@ public struct VectorI3
     }
 
     /// <summary> Returns a vector containing the smallest components of the specified vectors. </summary>
-    /// <param name="left">  The first source vector. </param>
+    /// <param name="left"> The first source vector. </param>
     /// <param name="right"> The second source vector. </param>
     /// <returns> A vector containing the smallest components of the source vectors. </returns>
     public static VectorI3 Min(in VectorI3 left, in VectorI3 right)
@@ -501,7 +501,7 @@ public struct VectorI3
     }
 
     /// <summary> Adds two vectors. </summary>
-    /// <param name="left">  The first vector to add. </param>
+    /// <param name="left"> The first vector to add. </param>
     /// <param name="right"> The second vector to add. </param>
     /// <returns> The sum of the two vectors. </returns>
     public static VectorI3 operator +(in VectorI3 left, in VectorI3 right)
@@ -510,7 +510,7 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise addition. </summary>
-    /// <param name="value">  The input vector. </param>
+    /// <param name="value"> The input vector. </param>
     /// <param name="scalar"> The scalar value to be added on elements. </param>
     /// <returns> The vector with added scalar for each element. </returns>
     public static VectorI3 operator +(in VectorI3 value, int scalar)
@@ -520,7 +520,7 @@ public struct VectorI3
 
     /// <summary> Perform a component-wise addition. </summary>
     /// <param name="scalar"> The scalar value to be added on elements. </param>
-    /// <param name="value">  The input vector. </param>
+    /// <param name="value"> The input vector. </param>
     /// <returns> The vector with added scalar for each element. </returns>
     public static VectorI3 operator +(int scalar, in VectorI3 value)
     {
@@ -536,7 +536,7 @@ public struct VectorI3
     }
 
     /// <summary> Subtract two vectors. </summary>
-    /// <param name="left">  The first vector be subtracted from. </param>
+    /// <param name="left"> The first vector be subtracted from. </param>
     /// <param name="right"> The second vector to subtract. </param>
     /// <returns> The sum of the two vectors. </returns>
     public static VectorI3 operator -(in VectorI3 left, in VectorI3 right)
@@ -545,7 +545,7 @@ public struct VectorI3
     }
 
     /// <summary> Perform a component-wise subtraction. </summary>
-    /// <param name="value">  The input vector. </param>
+    /// <param name="value"> The input vector. </param>
     /// <param name="scalar"> The scalar value to be subtracted from elements. </param>
     /// <returns> The vector with subtracted scalar from each element. </returns>
     public static VectorI3 operator -(in VectorI3 value, int scalar)
@@ -555,7 +555,7 @@ public struct VectorI3
 
     /// <summary> Perform a component-wise subtraction. </summary>
     /// <param name="scalar"> The scalar value to be subtracted from elements. </param>
-    /// <param name="value">  The input vector. </param>
+    /// <param name="value"> The input vector. </param>
     /// <returns> The vector with subtracted scalar from each element. </returns>
     public static VectorI3 operator -(int scalar, in VectorI3 value)
     {
@@ -574,7 +574,7 @@ public struct VectorI3
     ///     Multiplies a vector with another by performing component-wise multiplication equivalent to
     ///     <see cref="Multiply(ref VectorI3, ref VectorI3, out VectorI3)" />.
     /// </summary>
-    /// <param name="left">  The first vector to multiply. </param>
+    /// <param name="left"> The first vector to multiply. </param>
     /// <param name="right"> The second vector to multiply. </param>
     /// <returns> The multiplication of the two vectors. </returns>
     public static VectorI3 operator *(in VectorI3 left, in VectorI3 right)
@@ -628,12 +628,12 @@ public struct VectorI3
     }
 
     /// <summary> Tests for equality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramref name="left" /> has the same value as <paramref name="right" />;
+    ///     <c> true </c> if <paramref name="left" /> has the same value as <paramref name="right" />;
     ///     otherwise,
-    ///     <c>false</c>.
+    ///     <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(in VectorI3 left, in VectorI3 right)
@@ -642,12 +642,12 @@ public struct VectorI3
     }
 
     /// <summary> Tests for inequality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramref name="left" /> has a different value than
+    ///     <c> true </c> if <paramref name="left" /> has a different value than
     ///     <paramref name="right" />; otherwise,
-    ///     <c>false</c>.
+    ///     <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(in VectorI3 left, in VectorI3 right)

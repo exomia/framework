@@ -111,7 +111,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     }
 
     /// <summary> Initializes a new instance of the <see cref="SpriteBatch" /> class. </summary>
-    /// <param name="swapchain">     The swapchain. </param>
+    /// <param name="swapchain"> The swapchain. </param>
     /// <param name="configuration"> (Optional) The configuration. </param>
     public SpriteBatch(
         Swapchain      swapchain,
@@ -178,7 +178,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     }
 
     /// <summary> Resizes to the given size. </summary>
-    /// <param name="width">  The width. </param>
+    /// <param name="width"> The width. </param>
     /// <param name="height"> The height. </param>
     public void Resize(float width, float height)
     {

@@ -74,7 +74,7 @@ public sealed unsafe class Shader : IDisposable
     }
 
     /// <summary> Attempts to get a <see cref="Module" /> from the given <paramref name="name" />. </summary>
-    /// <param name="name">  The module name. </param>
+    /// <param name="name"> The module name. </param>
     /// <param name="module"> [out] The <see cref="Module" />. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

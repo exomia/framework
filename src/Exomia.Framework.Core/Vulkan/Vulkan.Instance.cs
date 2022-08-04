@@ -22,10 +22,10 @@ sealed unsafe partial class Vulkan
 {
     /// <summary> Gets suitable depth stencil format. </summary>
     /// <param name="physicalDevice"> The physical device. </param>
-    /// <param name="formats">        The formats. </param>
-    /// <param name="tiling">         The tiling. </param>
-    /// <param name="features">       The features. </param>
-    /// <param name="format">         [out] Describes the format to use. </param>
+    /// <param name="formats"> The formats. </param>
+    /// <param name="tiling"> The tiling. </param>
+    /// <param name="features"> The features. </param>
+    /// <param name="format"> [out] Describes the format to use. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     public static bool GetSuitableDepthStencilFormat(
         VkPhysicalDevice        physicalDevice,

@@ -64,9 +64,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a vertex buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new vertex buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,9 +87,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a vertex buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new vertex buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -110,9 +110,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a vertex buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new vertex buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -133,9 +133,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a index buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new index buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -156,9 +156,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a index buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new index buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -179,9 +179,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a index buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new index buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,8 +202,8 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a index buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="items">                  The items. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="items"> The items. </param>
     /// <returns> The new index buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Buffer CreateIndexBuffer<T>(
@@ -231,9 +231,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a uniform buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -254,9 +254,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a uniform buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -277,9 +277,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a uniform buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -300,9 +300,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a uniform buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -323,9 +323,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a uniform buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -346,9 +346,9 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Creates a uniform buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="count">                  Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits">    (Optional) The buffer usage flag bits. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="count"> Number of <typeparamref name="T" />. </param>
+    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -368,10 +368,10 @@ public sealed unsafe class Buffer : IDisposable
     }
 
     /// <summary> Creates a new Buffer. </summary>
-    /// <param name="context">                [in,out] If non-null, the context. </param>
-    /// <param name="size">                   The size. </param>
-    /// <param name="bufferUsageFlagBits">    The buffer usage flag bits. </param>
-    /// <param name="sharingMode">            (Optional) The sharing mode. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="size"> The size. </param>
+    /// <param name="bufferUsageFlagBits"> The buffer usage flag bits. </param>
+    /// <param name="sharingMode"> (Optional) The sharing mode. </param>
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> A <see cref="Buffer" />. </returns>
     public static Buffer Create(
@@ -535,8 +535,8 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Updates the buffer with the given values. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">    [in,out] If non-null, the source to copy from. </param>
-    /// <param name="count">  Number of elements in <paramref name="src" />. </param>
+    /// <param name="src"> [in,out] If non-null, the source to copy from. </param>
+    /// <param name="count"> Number of elements in <paramref name="src" />. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(T* src, int count)
         where T : unmanaged
@@ -553,7 +553,7 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Updates the buffer with the given value. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="value">  The value. </param>
+    /// <param name="value"> The value. </param>
     /// <param name="offset"> The offset. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(in T value, VkDeviceSize offset)
@@ -571,8 +571,8 @@ public sealed unsafe class Buffer : IDisposable
 
     /// <summary> Updates the buffer with the given values. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="src">    [in,out] If non-null, the source to copy from. </param>
-    /// <param name="count">  Number of elements in <paramref name="src" />. </param>
+    /// <param name="src"> [in,out] If non-null, the source to copy from. </param>
+    /// <param name="count"> Number of elements in <paramref name="src" />. </param>
     /// <param name="offset"> The offset. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Update<T>(T* src, int count, VkDeviceSize offset)
@@ -598,8 +598,8 @@ public sealed unsafe class Buffer : IDisposable
     }
 
     /// <summary> Copies the contents of the current buffer to the <paramref name="dst" /> buffer. </summary>
-    /// <param name="dst">         Destination for the copy operation. </param>
-    /// <param name="queue">       The queue. </param>
+    /// <param name="dst"> Destination for the copy operation. </param>
+    /// <param name="queue"> The queue. </param>
     /// <param name="commandPool"> The command pool. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void CopyTo(Buffer dst, VkQueue queue, VkCommandPool commandPool)
@@ -620,9 +620,9 @@ public sealed unsafe class Buffer : IDisposable
     }
 
     /// <summary> Copies the contents of the current buffer to the <paramref name="dst" /> buffer. </summary>
-    /// <param name="dst">         Destination for the copy operation. </param>
-    /// <param name="dstOffset">   Destination offset. </param>
-    /// <param name="queue">       The queue. </param>
+    /// <param name="dst"> Destination for the copy operation. </param>
+    /// <param name="dstOffset"> Destination offset. </param>
+    /// <param name="queue"> The queue. </param>
     /// <param name="commandPool"> The command pool. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void CopyTo(Buffer dst, VkDeviceSize dstOffset, VkQueue queue, VkCommandPool commandPool)

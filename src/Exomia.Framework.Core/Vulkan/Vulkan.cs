@@ -39,14 +39,14 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Initializes a new instance of the <see cref="Vulkan" /> class. </summary>
-    /// <param name="applicationConfiguration">         The application configuration. </param>
+    /// <param name="applicationConfiguration"> The application configuration. </param>
     /// <param name="debugUtilsMessengerConfiguration"> The debug utilities messenger configuration. </param>
-    /// <param name="deviceConfiguration">              The device configuration. </param>
-    /// <param name="instanceConfiguration">            The instance configuration. </param>
-    /// <param name="physicalDeviceConfiguration">      The physical device configuration. </param>
-    /// <param name="queueConfiguration">               The queue configuration. </param>
-    /// <param name="surfaceConfiguration">             The surface configuration. </param>
-    /// <param name="logger">                           The logger. </param>
+    /// <param name="deviceConfiguration"> The device configuration. </param>
+    /// <param name="instanceConfiguration"> The instance configuration. </param>
+    /// <param name="physicalDeviceConfiguration"> The physical device configuration. </param>
+    /// <param name="queueConfiguration"> The queue configuration. </param>
+    /// <param name="surfaceConfiguration"> The surface configuration. </param>
+    /// <param name="logger"> The logger. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     public Vulkan(IOptions<ApplicationConfiguration>         applicationConfiguration,
                   IOptions<DebugUtilsMessengerConfiguration> debugUtilsMessengerConfiguration,
@@ -70,7 +70,7 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Begins immediate submit. </summary>
-    /// <param name="device">      The device. </param>
+    /// <param name="device"> The device. </param>
     /// <param name="commandPool"> The command pool. </param>
     /// <returns> A VkCommandBuffer. </returns>
     public static VkCommandBuffer BeginImmediateSubmit(VkDevice device, VkCommandPool commandPool)
@@ -94,11 +94,11 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Ends immediate submit. </summary>
-    /// <param name="device">        The device. </param>
-    /// <param name="queue">         The queue. </param>
-    /// <param name="commandPool">   The command pool. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="queue"> The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
     /// <param name="commandBuffer"> Buffer for command data. </param>
-    /// <param name="fence">         The fence. </param>
+    /// <param name="fence"> The fence. </param>
     public static void EndImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, VkCommandBuffer commandBuffer)
     {
         VkFenceCreateInfo fenceCreateInfo;
@@ -119,11 +119,11 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Ends immediate submit. </summary>
-    /// <param name="device">        The device. </param>
-    /// <param name="queue">         The queue. </param>
-    /// <param name="commandPool">   The command pool. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="queue"> The queue. </param>
+    /// <param name="commandPool"> The command pool. </param>
     /// <param name="commandBuffer"> Buffer for command data. </param>
-    /// <param name="fence">         The fence. </param>
+    /// <param name="fence"> The fence. </param>
     public static void EndImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, VkCommandBuffer commandBuffer, VkFence fence)
     {
         vkEndCommandBuffer(commandBuffer)
@@ -159,10 +159,10 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Immediate submit. </summary>
-    /// <param name="device">      The device. </param>
-    /// <param name="queue">       The queue. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="queue"> The queue. </param>
     /// <param name="commandPool"> The command pool. </param>
-    /// <param name="cb">          The cb. </param>
+    /// <param name="cb"> The cb. </param>
     public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb)
     {
         VkFenceCreateInfo fenceCreateInfo;
@@ -183,11 +183,11 @@ public sealed unsafe partial class Vulkan : IDisposable
     }
 
     /// <summary> Immediate submit. </summary>
-    /// <param name="device">      The device. </param>
-    /// <param name="queue">       The queue. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="queue"> The queue. </param>
     /// <param name="commandPool"> The command pool. </param>
-    /// <param name="cb">          The cb. </param>
-    /// <param name="fence">       The fence. </param>
+    /// <param name="cb"> The cb. </param>
+    /// <param name="fence"> The fence. </param>
     public static void ImmediateSubmit(VkDevice device, VkQueue queue, VkCommandPool commandPool, Action<VkCommandBuffer> cb, VkFence fence)
     {
         VkCommandBuffer commandBuffer = BeginImmediateSubmit(device, commandPool);

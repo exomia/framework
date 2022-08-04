@@ -18,7 +18,7 @@ public static class Vector2Extensions
 {
     /// <summary> Calculate the angle from the anchor point to another point vector. </summary>
     /// <param name="anchor"> This anchor <see cref="Vector2" />. </param>
-    /// <param name="point">  The point <see cref="Vector2" />. </param>
+    /// <param name="point"> The point <see cref="Vector2" />. </param>
     /// <returns> The angle from anchor vector to the point vector in radians. </returns>
     public static double AngleTo(this Vector2 anchor, in Vector2 point)
     {
@@ -55,7 +55,7 @@ public static class Vector2Extensions
     }
 
     /// <summary> Rotate a <see cref="Vector2" /> by an angle (in radian) </summary>
-    /// <param name="vec">   This <see cref="Vector2" />. </param>
+    /// <param name="vec"> This <see cref="Vector2" />. </param>
     /// <param name="angle"> angle. </param>
     /// <returns> The new rotated <see cref="Vector2" />. </returns>
     public static Vector2 Rotate(this Vector2 vec, double angle)
@@ -66,7 +66,7 @@ public static class Vector2Extensions
     }
 
     /// <summary> Transforms the <see cref="Vector2" /> with a transform <see cref="Matrix4x4" />. </summary>
-    /// <param name="vec">       this vec. </param>
+    /// <param name="vec"> this vec. </param>
     /// <param name="transform"> transform. </param>
     /// <returns> the new <see cref="Vector2" />. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

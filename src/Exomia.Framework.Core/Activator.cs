@@ -31,7 +31,7 @@ public static class Activator
     /// </summary>
     /// <param name="dType"> The type. </param>
     /// <exception cref="NullReferenceException"> Thrown when a value was unexpectedly null. </exception>
-    /// <exception cref="NotSupportedException">  Thrown when the requested operation is not supported. </exception>
+    /// <exception cref="NotSupportedException"> Thrown when the requested operation is not supported. </exception>
     /// <returns> A compiled lambda expression in the form of a delegate. </returns>
     public static Delegate GetCreator(Type dType)
     {
@@ -102,8 +102,7 @@ public static class Activator
     }
 
     /// <summary>
-    ///     Get a compiled lambda expression that can then be used to repeatedly create instances of that type using the
-    ///     constructor that the compiled lambda expression was created from.
+    ///     Get a compiled lambda expression that can then be used to repeatedly create instances of that type using the constructor that the compiled lambda expression was created from.
     ///     Uses the constructor that matches the constructor parameters passed in.
     /// </summary>
     /// <typeparam name="TRes"> The type of object that the compiled lambda expression will create. </typeparam>

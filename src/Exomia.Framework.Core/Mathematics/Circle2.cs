@@ -29,8 +29,8 @@ public readonly struct Circle2
     public readonly float Radius; //Note: do not reorder this field, unless you know what you are doing.
 
     /// <summary> Initializes a new instance of the <see cref="Circle2" /> struct. </summary>
-    /// <param name="x">      The x value. </param>
-    /// <param name="y">      The y value. </param>
+    /// <param name="x"> The x value. </param>
+    /// <param name="y"> The y value. </param>
     /// <param name="radius"> The radius. </param>
     public Circle2(float x, float y, float radius)
     {
@@ -60,7 +60,7 @@ public readonly struct Circle2
 
     /// <summary> Determines whether the specified <see cref="Circle2" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="Line2" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cref="Circle2" /> is equal to this instance; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if the specified <see cref="Circle2" /> is equal to this instance; <c> false </c> otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(in Circle2 other)
     {

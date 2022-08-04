@@ -205,7 +205,7 @@ public abstract class NoiseBase : INoise
     ///     Hash 1 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
     /// <returns>
     ///     An int.
     /// </returns>
@@ -225,8 +225,8 @@ public abstract class NoiseBase : INoise
     ///     Hash 2 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
     /// <returns>
     ///     An int.
     /// </returns>
@@ -247,9 +247,9 @@ public abstract class NoiseBase : INoise
     ///     Hash 3 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
     /// <returns>
     ///     An int.
     /// </returns>
@@ -271,10 +271,10 @@ public abstract class NoiseBase : INoise
     ///     Hash 4 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
-    /// <param name="w">    The width. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
+    /// <param name="w"> The width. </param>
     /// <returns>
     ///     An int.
     /// </returns>
@@ -297,7 +297,7 @@ public abstract class NoiseBase : INoise
     ///     Value coordinate 1 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -313,8 +313,8 @@ public abstract class NoiseBase : INoise
     ///     Value coordinate 2 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -332,9 +332,9 @@ public abstract class NoiseBase : INoise
     ///     Value coordinate 3 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -353,10 +353,10 @@ public abstract class NoiseBase : INoise
     ///     Value coordinate 4 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
-    /// <param name="w">    The width. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
+    /// <param name="w"> The width. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -376,8 +376,8 @@ public abstract class NoiseBase : INoise
     ///     Graduated coordinate 1 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="xd">   The xd. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="xd"> The xd. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -399,10 +399,10 @@ public abstract class NoiseBase : INoise
     ///     Graduated coordinate 2 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="xd">   The xd. </param>
-    /// <param name="yd">   The yd. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="xd"> The xd. </param>
+    /// <param name="yd"> The yd. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -425,12 +425,12 @@ public abstract class NoiseBase : INoise
     ///     Graduated coordinate 3 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
-    /// <param name="xd">   The xd. </param>
-    /// <param name="yd">   The yd. </param>
-    /// <param name="zd">   The zd. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
+    /// <param name="xd"> The xd. </param>
+    /// <param name="yd"> The yd. </param>
+    /// <param name="zd"> The zd. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -454,14 +454,14 @@ public abstract class NoiseBase : INoise
     ///     Graduated coordinate 4 d.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
-    /// <param name="w">    The width. </param>
-    /// <param name="xd">   The xd. </param>
-    /// <param name="yd">   The yd. </param>
-    /// <param name="zd">   The zd. </param>
-    /// <param name="wd">   The wd. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
+    /// <param name="w"> The width. </param>
+    /// <param name="xd"> The xd. </param>
+    /// <param name="yd"> The yd. </param>
+    /// <param name="zd"> The zd. </param>
+    /// <param name="wd"> The wd. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -610,7 +610,7 @@ public abstract class NoiseBase : INoise
     ///     Singles.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -718,8 +718,8 @@ public abstract class NoiseBase : INoise
     ///     Singles.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
     /// <returns>
     ///     A float.
     /// </returns>
@@ -833,9 +833,9 @@ public abstract class NoiseBase : INoise
     ///     Singles.
     /// </summary>
     /// <param name="seed"> The seed. </param>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
     /// <returns>
     ///     A float.
     /// </returns>

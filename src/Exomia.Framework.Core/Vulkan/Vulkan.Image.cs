@@ -22,10 +22,10 @@ namespace Exomia.Framework.Core.Vulkan;
 public sealed unsafe partial class Vulkan
 {
     /// <summary> Gets suitable image format. </summary>
-    /// <param name="context">                       [in,out] If non-null, the context. </param>
-    /// <param name="formats">                       The formats. </param>
+    /// <param name="context"> [in,out] If non-null, the context. </param>
+    /// <param name="formats"> The formats. </param>
     /// <param name="physicalDeviceSurfaceInfo2Khr"> [in,out] If non-null, the physical device surface information 2 khr. </param>
-    /// <param name="surfaceFormatKhr">              [out] The surface format khr. </param>
+    /// <param name="surfaceFormatKhr"> [out] The surface format khr. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     public static bool GetSuitableImageFormat(
         VkContext*                       context,
@@ -83,11 +83,11 @@ public sealed unsafe partial class Vulkan
 
     /// <summary> Transition image layout. </summary>
     /// <param name="commandBuffer"> Buffer for command data. </param>
-    /// <param name="image">         The image. </param>
-    /// <param name="aspects">       The aspects. </param>
-    /// <param name="oldLayout">     The old layout. </param>
-    /// <param name="newLayout">     The new layout. </param>
-    /// <param name="mipLevels">     (Optional) The mip levels. </param>
+    /// <param name="image"> The image. </param>
+    /// <param name="aspects"> The aspects. </param>
+    /// <param name="oldLayout"> The old layout. </param>
+    /// <param name="newLayout"> The new layout. </param>
+    /// <param name="mipLevels"> (Optional) The mip levels. </param>
     public static void TransitionImageLayout(
         VkCommandBuffer    commandBuffer,
         VkImage            image,
@@ -143,11 +143,11 @@ public sealed unsafe partial class Vulkan
     }
 
     /// <summary> Creates image view. </summary>
-    /// <param name="device">        The device. </param>
-    /// <param name="image">         The image. </param>
-    /// <param name="imageView">     [in,out] If non-null, the image view. </param>
-    /// <param name="format">        Describes the format to use. </param>
-    /// <param name="aspectMask">    The aspect mask. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="image"> The image. </param>
+    /// <param name="imageView"> [in,out] If non-null, the image view. </param>
+    /// <param name="format"> Describes the format to use. </param>
+    /// <param name="aspectMask"> The aspect mask. </param>
     /// <param name="imageViewType"> Type of the image view. </param>
     public static void CreateImageView(
         VkDevice              device,

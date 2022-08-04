@@ -90,8 +90,8 @@ public struct BoundingBox
     /// <summary> Determines whether the specified <see cref="BoundingBox" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cref="BoundingBox" /> to compare with this instance. </param>
     /// <returns>
-    ///     <c>true</c> if the specified <see cref="BoundingBox" /> is equal to this instance;
-    ///     otherwise, <c>false</c>.
+    ///     <c> true </c> if the specified <see cref="BoundingBox" /> is equal to this instance;
+    ///     otherwise, <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in BoundingBox value)
@@ -102,8 +102,8 @@ public struct BoundingBox
     /// <summary> Determines whether the specified <see cref="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cref="System.Object" /> to compare with this instance. </param>
     /// <returns>
-    ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance;
-    ///     otherwise, <c>false</c>.
+    ///     <c> true </c> if the specified <see cref="System.Object" /> is equal to this instance;
+    ///     otherwise, <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
@@ -124,7 +124,7 @@ public struct BoundingBox
     /// <summary> Constructs a <see cref="BoundingBox" /> that fully contains the given points. </summary>
     /// <param name="points"> The points that will be contained by the box. </param>
     /// <param name="result"> [out] When the method completes, contains the newly constructed bounding box. </param>
-    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="points" /> is <c>null</c>. </exception>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="points" /> is <c> null </c>. </exception>
     public static void FromPoints(Vector3[] points, out BoundingBox result)
     {
         if (points == null)
@@ -147,7 +147,7 @@ public struct BoundingBox
     /// <summary> Constructs a <see cref="BoundingBox" /> that fully contains the given points. </summary>
     /// <param name="points"> The points that will be contained by the box. </param>
     /// <returns> The newly constructed bounding box. </returns>
-    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="points" /> is <c>null</c>. </exception>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="points" /> is <c> null </c>. </exception>
     public static BoundingBox FromPoints(Vector3[] points)
     {
         if (points == null)
@@ -224,11 +224,11 @@ public struct BoundingBox
     }
 
     /// <summary> Tests for equality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramref name="left" /> has the same value as <paramref name="right" />;
-    ///     otherwise, <c>false</c>.
+    ///     <c> true </c> if <paramref name="left" /> has the same value as <paramref name="right" />;
+    ///     otherwise, <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(in BoundingBox left, in BoundingBox right)
@@ -237,11 +237,11 @@ public struct BoundingBox
     }
 
     /// <summary> Tests for inequality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramref name="left" /> has a different value than
-    ///     <paramref name="right" />; otherwise, <c>false</c>.
+    ///     <c> true </c> if <paramref name="left" /> has a different value than
+    ///     <paramref name="right" />; otherwise, <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(in BoundingBox left, in BoundingBox right)
@@ -274,7 +274,7 @@ public struct BoundingBox
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cref="Ray" />. </summary>
-    /// <param name="ray">      The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -287,7 +287,7 @@ public struct BoundingBox
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cref="Ray" />. </summary>
-    /// <param name="ray">   The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or
     ///     <see cref="Vector3.Zero" /> if there was no intersection.

@@ -228,7 +228,7 @@ public sealed class List<T>
     }
 
     /// <summary> Searches for the first match. </summary>
-    /// <param name="item">  The item to find the index of. </param>
+    /// <param name="item"> The item to find the index of. </param>
     /// <param name="index"> Zero-based index to start searching from. </param>
     /// <returns> An int. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -238,7 +238,7 @@ public sealed class List<T>
     }
 
     /// <summary> Searches for the first match. </summary>
-    /// <param name="item">  The item to find the index of. </param>
+    /// <param name="item"> The item to find the index of. </param>
     /// <param name="index"> Zero-based index to start searching from. </param>
     /// <param name="count"> Number of the search range. </param>
     /// <returns> An int. </returns>
@@ -250,7 +250,7 @@ public sealed class List<T>
 
     /// <summary> Inserts the item into the list. </summary>
     /// <param name="index"> Zero-based index to insert the item. </param>
-    /// <param name="item">  The item to insert at index. </param>
+    /// <param name="item"> The item to insert at index. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Insert(int index, in T item)
     {
@@ -282,7 +282,7 @@ public sealed class List<T>
     }
 
     /// <summary> Searches for the last match. </summary>
-    /// <param name="item">  The item to find the last index of. </param>
+    /// <param name="item"> The item to find the last index of. </param>
     /// <param name="index"> Zero-based index to start searching from. </param>
     /// <returns> An int. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -292,7 +292,7 @@ public sealed class List<T>
     }
 
     /// <summary> Searches for the last match. </summary>
-    /// <param name="item">  The item to find the last index of. </param>
+    /// <param name="item"> The item to find the last index of. </param>
     /// <param name="index"> Zero-based index to start searching from. </param>
     /// <param name="count"> Number of the search range. </param>
     /// <returns> An int. </returns>
@@ -373,8 +373,8 @@ public sealed class List<T>
     }
 
     /// <summary> Sorts. </summary>
-    /// <param name="index">    Zero-based index of the. </param>
-    /// <param name="count">    Number of. </param>
+    /// <param name="index"> Zero-based index of the. </param>
+    /// <param name="count"> Number of. </param>
     /// <param name="comparer"> The comparer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Sort(int index, int count, IComparer<T> comparer)

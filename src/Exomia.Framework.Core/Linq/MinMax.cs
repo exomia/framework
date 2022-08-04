@@ -19,14 +19,14 @@ public static partial class LinqExt
     ///     Returns the element which has the minimum value in a generic sequence.
     /// </summary>
     /// <typeparam name="TSource"> The type of elements of <paramref name="source" />. </typeparam>
-    /// <typeparam name="T">       The type to compare the elements of <paramref name="source" /> with. </typeparam>
-    /// <param name="source">    A sequence of elements to determine the minimum value of. </param>
+    /// <typeparam name="T"> The type to compare the elements of <paramref name="source" /> with. </typeparam>
+    /// <param name="source"> A sequence of elements to determine the minimum value of. </param>
     /// <param name="predicate"> A function that returns the value to check against the current lowest value. </param>
-    /// <param name="comparer">  (Optional) A comparer used to define the semantics of element comparison. </param>
+    /// <param name="comparer"> (Optional) A comparer used to define the semantics of element comparison. </param>
     /// <returns>
     ///     The element in the specified sequence with the lowest value.
     /// </returns>
-    /// <exception cref="ArgumentNullException">     Thrown when one or more required arguments are null. </exception>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     /// <exception cref="InvalidOperationException"> The source sequence is empty. </exception>
     public static TSource Min<TSource, T>(this IEnumerable<TSource> source,
                                           Func<TSource, T>          predicate,
@@ -60,14 +60,14 @@ public static partial class LinqExt
     ///     Returns the element which has the maximum value in a generic sequence.
     /// </summary>
     /// <typeparam name="TSource"> The type of elements of <paramref name="source" />. </typeparam>
-    /// <typeparam name="T">       The type to compare the elements of <paramref name="source" /> with. </typeparam>
-    /// <param name="source">    A sequence of elements to determine the maximum value of. </param>
+    /// <typeparam name="T"> The type to compare the elements of <paramref name="source" /> with. </typeparam>
+    /// <param name="source"> A sequence of elements to determine the maximum value of. </param>
     /// <param name="predicate"> A function that returns the value to check against the current biggest value. </param>
-    /// <param name="comparer">  (Optional) A comparer used to define the semantics of element comparison. </param>
+    /// <param name="comparer"> (Optional) A comparer used to define the semantics of element comparison. </param>
     /// <returns>
     ///     The element in the specified sequence with the biggest value.
     /// </returns>
-    /// <exception cref="ArgumentNullException">     Thrown when one or more required arguments are null. </exception>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     /// <exception cref="InvalidOperationException"> The source sequence is empty. </exception>
     public static TSource Max<TSource, T>(this IEnumerable<TSource> source,
                                           Func<TSource, T>          predicate,

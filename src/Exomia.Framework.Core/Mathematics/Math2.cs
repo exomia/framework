@@ -39,7 +39,7 @@ public static partial class Math2
 
     /// <summary> Determines whether the specified value is close to zero (0.0f). </summary>
     /// <param name="a"> The floating value. </param>
-    /// <returns> <c>true</c> if the specified value is close to zero (0.0f); otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified value is close to zero (0.0f); otherwise, <c> false </c>. </returns>
     public static bool IsZero(float a)
     {
         return Math.Abs(a) < ZERO_TOLERANCE;
@@ -47,7 +47,7 @@ public static partial class Math2
 
     /// <summary> Determines whether the specified value is not close to zero (0.0f). </summary>
     /// <param name="a"> The floating value. </param>
-    /// <returns> <c>true</c> if the specified value is not close to zero (0.0f); otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified value is not close to zero (0.0f); otherwise, <c> false </c>. </returns>
     public static bool IsNotZero(float a)
     {
         return Math.Abs(a) >= ZERO_TOLERANCE;
@@ -55,7 +55,7 @@ public static partial class Math2
 
     /// <summary> Determines whether the specified value is close to one (1.0f). </summary>
     /// <param name="a"> The floating value. </param>
-    /// <returns> <c>true</c> if the specified value is close to one (1.0f); otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified value is close to one (1.0f); otherwise, <c> false </c>. </returns>
     public static bool IsOne(float a)
     {
         return IsZero(a - 1.0f);
@@ -68,7 +68,7 @@ public static partial class Math2
     /// </summary>
     /// <param name="a"> The left value to compare. </param>
     /// <param name="b"> The right value to compare. </param>
-    /// <returns> <c>true</c> if a almost equal to b, <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if a almost equal to b, <c> false </c> otherwise. </returns>
     /// <remarks>
     ///     The code is using the technique described by Bruce Dawson in
     ///     <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
@@ -105,10 +105,10 @@ public static partial class Math2
     }
 
     /// <summary> Checks if a - b are almost equals within a float epsilon. </summary>
-    /// <param name="a">       The left value to compare. </param>
-    /// <param name="b">       The right value to compare. </param>
+    /// <param name="a"> The left value to compare. </param>
+    /// <param name="b"> The right value to compare. </param>
     /// <param name="epsilon"> Epsilon value. </param>
-    /// <returns> <c>true</c> if a almost equal to b within a float epsilon, <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if a almost equal to b within a float epsilon, <c> false </c> otherwise. </returns>
     public static bool WithinEpsilon(float a, float b, float epsilon)
     {
         float num = a - b;
@@ -241,7 +241,7 @@ public static partial class Math2
     }
 
     /// <summary> Sine cosine. </summary>
-    /// <param name="x">   The value in radians. </param>
+    /// <param name="x"> The value in radians. </param>
     /// <param name="sin"> [out] The sine. </param>
     /// <param name="cos"> [out] The cosine. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -311,8 +311,8 @@ public static partial class Math2
 
     /// <summary> Clamps the specified value. </summary>
     /// <param name="value"> The value. </param>
-    /// <param name="min">   The min. </param>
-    /// <param name="max">   The max. </param>
+    /// <param name="min"> The min. </param>
+    /// <param name="max"> The max. </param>
     /// <returns> The result of clamping a value between min and max. </returns>
     public static float Clamp(float value, float min, float max)
     {
@@ -325,8 +325,8 @@ public static partial class Math2
 
     /// <summary> Clamps the specified value. </summary>
     /// <param name="value"> The value. </param>
-    /// <param name="min">   The min. </param>
-    /// <param name="max">   The max. </param>
+    /// <param name="min"> The min. </param>
+    /// <param name="max"> The max. </param>
     /// <returns> The result of clamping a value between min and max. </returns>
     public static int Clamp(int value, int min, int max)
     {
@@ -689,8 +689,8 @@ public static partial class Math2
 
     /// <summary> Wraps the specified value into a range [min, max]. </summary>
     /// <param name="value"> The value to wrap. </param>
-    /// <param name="min">   The min. </param>
-    /// <param name="max">   The max. </param>
+    /// <param name="min"> The min. </param>
+    /// <param name="max"> The max. </param>
     /// <returns> Result of the wrapping. </returns>
     /// <exception cref="ArgumentException"> Is thrown when <paramref name="min" /> is greater than <paramref name="max" />. </exception>
     public static int Wrap(int value, int min, int max)
@@ -715,8 +715,8 @@ public static partial class Math2
 
     /// <summary> Wraps the specified value into a range [min, max[. </summary>
     /// <param name="value"> The value. </param>
-    /// <param name="min">   The min. </param>
-    /// <param name="max">   The max. </param>
+    /// <param name="min"> The min. </param>
+    /// <param name="max"> The max. </param>
     /// <returns> Result of the wrapping. </returns>
     /// <exception cref="ArgumentException"> Is thrown when <paramref name="min" /> is greater than <paramref name="max" />. </exception>
     public static float Wrap(float value, float min, float max)
@@ -746,7 +746,7 @@ public static partial class Math2
     #region Map
 
     /// <summary> Maps a value from l1 to u1 to l2 to u2. </summary>
-    /// <param name="v">  Value. </param>
+    /// <param name="v"> Value. </param>
     /// <param name="l1"> Lower 1. </param>
     /// <param name="u1"> Upper 1. </param>
     /// <param name="l2"> Lower 2. </param>
@@ -759,7 +759,7 @@ public static partial class Math2
     }
 
     /// <summary> Maps a value from l1 to u1 to l2 to u2. </summary>
-    /// <param name="v">  Value. </param>
+    /// <param name="v"> Value. </param>
     /// <param name="l1"> Lower 1. </param>
     /// <param name="u1"> Upper 1. </param>
     /// <param name="l2"> Lower 2. </param>
@@ -841,7 +841,7 @@ public static partial class Math2
         return ((int)x + (int)(x >> 32)) & 0x0000007F;
     }
 
-    /// <summary> Sets the first <paramref name="count"></paramref> bits to one. </summary>
+    /// <summary> Sets the first <paramref name="count"> </paramref> bits to one. </summary>
     /// <param name="count"> The number of bits who will be set to one </param>
     /// <returns> An uint. </returns>
     public static uint SetOnes(int count)
@@ -849,7 +849,7 @@ public static partial class Math2
         return (1u << count) - 1u;
     }
 
-    /// <summary> Sets the first <paramref name="count"></paramref> bits to one. </summary>
+    /// <summary> Sets the first <paramref name="count"> </paramref> bits to one. </summary>
     /// <param name="count"> The number of bits who will be set to one </param>
     /// <returns> An uint. </returns>
     public static uint SetOnes(uint count)

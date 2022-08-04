@@ -20,11 +20,11 @@ public sealed partial class SpriteBatch
     ///     Draw rectangle.
     /// </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="lineWidth">            The width of the line. </param>
-    /// <param name="rotation">             The Rotation. </param>
-    /// <param name="opacity">              The Opacity. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawRectangle(in RectangleF destinationRectangle,
                               in VkColor    color,
@@ -40,12 +40,12 @@ public sealed partial class SpriteBatch
     ///     Draw rectangle.
     /// </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="lineWidth">            The width of the line. </param>
-    /// <param name="rotation">             The Rotation. </param>
-    /// <param name="origin">               The Origin. </param>
-    /// <param name="opacity">              The Opacity. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     public void DrawRectangle(in RectangleF destinationRectangle,
                               in VkColor    color,
                               float         lineWidth,
@@ -104,8 +104,8 @@ public sealed partial class SpriteBatch
     ///     Draw fill rectangle.
     /// </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color)
     {
@@ -126,8 +126,8 @@ public sealed partial class SpriteBatch
     ///     Draw fill rectangle.
     /// </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color, float layerDepth)
     {
@@ -148,9 +148,9 @@ public sealed partial class SpriteBatch
     ///     Draw fill rectangle.
     /// </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="opacity">              The Opacity. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawFillRectangle(in RectangleF destinationRectangle,
                                   in VkColor    color,
@@ -174,11 +174,11 @@ public sealed partial class SpriteBatch
     ///     Draw fill rectangle.
     /// </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
-    /// <param name="color">                The Color. </param>
-    /// <param name="rotation">             The Rotation. </param>
-    /// <param name="origin">               The Origin. </param>
-    /// <param name="opacity">              The Opacity. </param>
-    /// <param name="layerDepth">           The Depth of the layer. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="rotation"> The Rotation. </param>
+    /// <param name="origin"> The Origin. </param>
+    /// <param name="opacity"> The Opacity. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawFillRectangle(in RectangleF destinationRectangle,
                                   in VkColor    color,

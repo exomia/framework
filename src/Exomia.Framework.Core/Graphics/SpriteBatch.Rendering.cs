@@ -130,8 +130,8 @@ public sealed unsafe partial class SpriteBatch
     }
 
     /// <summary> Begins a new batch. </summary>
-    /// <param name="sortMode">         (Optional) The sort mode. </param>
-    /// <param name="transformMatrix">  (Optional) The transform matrix. </param>
+    /// <param name="sortMode"> (Optional) The sort mode. </param>
+    /// <param name="transformMatrix"> (Optional) The transform matrix. </param>
     /// <param name="scissorRectangle"> (Optional) The scissor rectangle. </param>
     /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
     public void Begin(SpriteSortMode sortMode         = SpriteSortMode.Deferred,

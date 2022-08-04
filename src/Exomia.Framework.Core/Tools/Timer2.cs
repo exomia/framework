@@ -89,7 +89,7 @@ public sealed class Timer2 : IUpdateable
     /// <summary>
     ///     Initializes a new instance of the <see cref="Timer2" /> class.
     /// </summary>
-    /// <param name="tick">          time in ms after a timer Tick occurs. </param>
+    /// <param name="tick"> time in ms after a timer Tick occurs. </param>
     /// <param name="maxIterations">
     ///     (Optional) set the max iteration count for this timer or 0 for
     ///     unlimited.
@@ -103,8 +103,8 @@ public sealed class Timer2 : IUpdateable
     /// <summary>
     ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Core.Tools.Timer2" /> class.
     /// </summary>
-    /// <param name="tick">          time in ms after a timer Tick occurs. </param>
-    /// <param name="tickCallback">  callback for each tick event. </param>
+    /// <param name="tick"> time in ms after a timer Tick occurs. </param>
+    /// <param name="tickCallback"> callback for each tick event. </param>
     /// <param name="maxIterations">
     ///     (Optional) set the max iteration count for this timer or 0 for
     ///     unlimited.
@@ -118,8 +118,8 @@ public sealed class Timer2 : IUpdateable
     /// <summary>
     ///     Initializes a new instance of the <see cref="T:Exomia.Framework.Core.Tools.Timer2" /> class.
     /// </summary>
-    /// <param name="tick">             time in ms after a timer Tick occurs. </param>
-    /// <param name="tickCallback">     callback for each tick event. </param>
+    /// <param name="tick"> time in ms after a timer Tick occurs. </param>
+    /// <param name="tickCallback"> callback for each tick event. </param>
     /// <param name="finishedCallback"> callback for timer finished. </param>
     /// <param name="maxIterations">
     ///     set the max iteration count for this timer or 0 for

@@ -22,10 +22,10 @@ namespace Exomia.Framework.Core.Vulkan;
 sealed unsafe partial class Vulkan
 {
     /// <summary> Handler, called within the debug user callback to log to the logger of the vulkan instance. </summary>
-    /// <param name="logLevel">      The log level. </param>
-    /// <param name="exception">     The exception. </param>
+    /// <param name="logLevel"> The log level. </param>
+    /// <param name="exception"> The exception. </param>
     /// <param name="messageFormat"> The message format. </param>
-    /// <param name="args">          A variable-length parameters list containing arguments. </param>
+    /// <param name="args"> A variable-length parameters list containing arguments. </param>
     public delegate void LogHandler(LogLevel logLevel, Exception? exception, string messageFormat, params object[] args);
 
     private static VkBool32 UserCallbackDefault(

@@ -57,7 +57,7 @@ public sealed unsafe partial class Swapchain
     }
 
     /// <summary> Destroys the module. </summary>
-    /// <param name="module">  [in,out] [in,out] If non-null, the module. </param>
+    /// <param name="module"> [in,out] [in,out] If non-null, the module. </param>
     public void DestroyModule(ref VkModule* module)
     {
         lock (_modulesLock)
@@ -91,7 +91,7 @@ public sealed unsafe partial class Swapchain
     }
 
     /// <summary> Attempts to get a <see cref="VkModule" />* from the given identifier. </summary>
-    /// <param name="id">     The identifier. </param>
+    /// <param name="id"> The identifier. </param>
     /// <param name="module"> [in,out] If non-null, [out] The module. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     public bool TryGet(ushort id, out VkModule* module)

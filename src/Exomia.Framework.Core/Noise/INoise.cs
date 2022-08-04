@@ -18,7 +18,7 @@ public interface INoise
     /// <summary>
     ///     generates a 1-dimensional noise array in range from -1 to 1.
     /// </summary>
-    /// <param name="x">    The x coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
     /// <param name="xMax"> The x maximum. </param>
     /// <returns>
     ///     1-dimensional noise array in range from -1 to 1.
@@ -28,8 +28,8 @@ public interface INoise
     /// <summary>
     ///     generates a 2-dimensional noise array in range from -1 to 1.
     /// </summary>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
     /// <param name="xMax"> The x maximum. </param>
     /// <param name="yMax"> The y maximum. </param>
     /// <returns>
@@ -40,9 +40,9 @@ public interface INoise
     /// <summary>
     ///     generates a 3-dimensional noise array in range from -1 to 1.
     /// </summary>
-    /// <param name="x">    The x coordinate. </param>
-    /// <param name="y">    The y coordinate. </param>
-    /// <param name="z">    The z coordinate. </param>
+    /// <param name="x"> The x coordinate. </param>
+    /// <param name="y"> The y coordinate. </param>
+    /// <param name="z"> The z coordinate. </param>
     /// <param name="xMax"> The x maximum. </param>
     /// <param name="yMax"> The y maximum. </param>
     /// <param name="zMax"> The z maximum. </param>

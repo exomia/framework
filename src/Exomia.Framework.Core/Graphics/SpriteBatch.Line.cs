@@ -19,11 +19,11 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draw line.
     /// </summary>
-    /// <param name="point1">     The first point. </param>
-    /// <param name="point2">     The second point. </param>
-    /// <param name="color">      The Color. </param>
-    /// <param name="lineWidth">  The width of the line. </param>
-    /// <param name="opacity">    The Opacity. </param>
+    /// <param name="point1"> The first point. </param>
+    /// <param name="point2"> The second point. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Vector2 point1,
@@ -39,10 +39,10 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draw line.
     /// </summary>
-    /// <param name="line">       The line. </param>
-    /// <param name="color">      The Color. </param>
-    /// <param name="lineWidth">  The width of the line. </param>
-    /// <param name="opacity">    The Opacity. </param>
+    /// <param name="line"> The line. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Line2   line,
@@ -57,13 +57,13 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draw line.
     /// </summary>
-    /// <param name="point1">       The first point. </param>
-    /// <param name="point2">       The second point. </param>
-    /// <param name="color">        The Color. </param>
-    /// <param name="lineWidth">    The width of the line. </param>
-    /// <param name="opacity">      The Opacity. </param>
+    /// <param name="point1"> The first point. </param>
+    /// <param name="point2"> The second point. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="opacity"> The Opacity. </param>
     /// <param name="lengthFactor"> The length factor. </param>
-    /// <param name="layerDepth">   The Depth of the layer. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Vector2 point1,
                          in Vector2 point2,
@@ -79,12 +79,12 @@ public sealed partial class SpriteBatch
     /// <summary>
     ///     Draw line.
     /// </summary>
-    /// <param name="line">         The line. </param>
-    /// <param name="color">        The Color. </param>
-    /// <param name="lineWidth">    The width of the line. </param>
-    /// <param name="opacity">      The Opacity. </param>
+    /// <param name="line"> The line. </param>
+    /// <param name="color"> The Color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="opacity"> The Opacity. </param>
     /// <param name="lengthFactor"> The length factor. </param>
-    /// <param name="layerDepth">   The Depth of the layer. </param>
+    /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(in Line2   line,
                          in VkColor color,

@@ -49,6 +49,6 @@ public sealed unsafe class DebugUtilsMessengerConfiguration : IConfigurableConfi
 
     /// <summary> Gets or sets the log handler. </summary>
     /// <value> The log handler. </value>
-    /// <remarks>! for internal use only !</remarks>
+    /// <remarks> ! for internal use only ! </remarks>
     internal Vulkan.LogHandler LogHandler { get; set; } = null!;
 }

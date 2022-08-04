@@ -29,7 +29,7 @@ public struct Ray
     public Vector3 Direction;
 
     /// <summary> Initializes a new instance of the <see cin="Ray" /> struct. </summary>
-    /// <param name="position">  The position in three dimensional space of the origin of the ray. </param>
+    /// <param name="position"> The position in three dimensional space of the origin of the ray. </param>
     /// <param name="direction"> The normalized direction of the ray. </param>
     public Ray(Vector3 position, Vector3 direction)
     {
@@ -52,7 +52,7 @@ public struct Ray
 
     /// <summary> Determines whether the specified <see cin="Ray" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="Ray" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cin="Ray" /> is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified <see cin="Ray" /> is equal to this instance; otherwise, <c> false </c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in Ray value)
     {
@@ -61,7 +61,7 @@ public struct Ray
 
     /// <summary> Determines whether the specified <see cin="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c>false</c>. </returns>
+    /// <returns> <c> true </c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c> false </c>. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {
@@ -88,7 +88,7 @@ public struct Ray
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="Ray" />. </summary>
-    /// <param name="ray">   The ray to test. </param>
+    /// <param name="ray"> The ray to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
     ///     if there was no intersection.
@@ -101,7 +101,7 @@ public struct Ray
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="Plane" />. </summary>
-    /// <param name="plane">    The plane to test. </param>
+    /// <param name="plane"> The plane to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -127,9 +127,9 @@ public struct Ray
     }
 
     /// <summary> Determines if there is an intersection between the current object and a triangle. </summary>
-    /// <param name="vertex1">  The first vertex of the triangle to test. </param>
-    /// <param name="vertex2">  The second vertex of the triangle to test. </param>
-    /// <param name="vertex3">  The third vertex of the triangle to test. </param>
+    /// <param name="vertex1"> The first vertex of the triangle to test. </param>
+    /// <param name="vertex2"> The second vertex of the triangle to test. </param>
+    /// <param name="vertex3"> The third vertex of the triangle to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -157,7 +157,7 @@ public struct Ray
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="BoundingBox" />. </summary>
-    /// <param name="box">      The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -170,7 +170,7 @@ public struct Ray
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="BoundingBox" />. </summary>
-    /// <param name="box">   The box to test. </param>
+    /// <param name="box"> The box to test. </param>
     /// <param name="point">
     ///     [out] When the method completes, contains the point of intersection, or <see cin="Vector3.Zero" />
     ///     if there was no intersection.
@@ -183,7 +183,7 @@ public struct Ray
     }
 
     /// <summary> Determines if there is an intersection between the current object and a <see cin="BoundingSphere" />. </summary>
-    /// <param name="sphere">   The sphere to test. </param>
+    /// <param name="sphere"> The sphere to test. </param>
     /// <param name="distance">
     ///     [out] When the method completes, contains the distance of the intersection, or 0 if there was
     ///     no intersection.
@@ -209,9 +209,9 @@ public struct Ray
     }
 
     /// <summary> Calculates a world space <see cin="Ray" /> from 2d screen coordinates. </summary>
-    /// <param name="x">                   X coordinate on 2d screen. </param>
-    /// <param name="y">                   Y coordinate on 2d screen. </param>
-    /// <param name="viewport">            <see cin="ViewportF" />. </param>
+    /// <param name="x"> X coordinate on 2d screen. </param>
+    /// <param name="y"> Y coordinate on 2d screen. </param>
+    /// <param name="viewport"> <see cin="ViewportF" />. </param>
     /// <param name="worldViewProjection"> Transformation <see cin="Matrix" />. </param>
     /// <returns> Resulting <see cin="Ray" />. </returns>
     public static Ray GetPickRay(int x, int y, in ViewportF viewport, in Matrix4x4 worldViewProjection)
@@ -239,11 +239,11 @@ public struct Ray
     }
 
     /// <summary> Tests for equality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
-    ///     <c>false</c>.
+    ///     <c> true </c> if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
+    ///     <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(in Ray left, in Ray right)
@@ -252,11 +252,11 @@ public struct Ray
     }
 
     /// <summary> Tests for inequality between two objects. </summary>
-    /// <param name="left">  The first value to compare. </param>
+    /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c>true</c> if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
-    ///     <c>false</c>.
+    ///     <c> true </c> if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
+    ///     <c> false </c>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(in Ray left, in Ray right)

@@ -45,12 +45,12 @@ public sealed unsafe class Texture : IDisposable
     public readonly uint Height;
 
     /// <summary> Texture constructor. </summary>
-    /// <param name="device">      The device. </param>
-    /// <param name="image">       The image. </param>
+    /// <param name="device"> The device. </param>
+    /// <param name="image"> The image. </param>
     /// <param name="imageMemory"> The image memory. </param>
-    /// <param name="imageView">   The image view. </param>
-    /// <param name="width">       width. </param>
-    /// <param name="height">      height. </param>
+    /// <param name="imageView"> The image view. </param>
+    /// <param name="width"> width. </param>
+    /// <param name="height"> height. </param>
     public Texture(VkDevice device, VkImage image, VkDeviceMemory imageMemory, VkImageView imageView, uint width, uint height)
     {
         _device      = device;
@@ -82,10 +82,10 @@ public sealed unsafe class Texture : IDisposable
 
 
     /// <summary> Creates a new Texture. </summary>
-    /// <param name="vkContext">           [in,out] If non-null, context for the vk. </param>
-    /// <param name="width">               The width. </param>
-    /// <param name="height">              The height. </param>
-    /// <param name="data">                The data. </param>
+    /// <param name="vkContext"> [in,out] If non-null, context for the vk. </param>
+    /// <param name="width"> The width. </param>
+    /// <param name="height"> The height. </param>
+    /// <param name="data"> The data. </param>
     /// <param name="imageCreateFlagBits"> (Optional) The image create flag bits. </param>
     /// <returns> A Texture. </returns>
     public static Texture Create(

@@ -16,10 +16,10 @@ namespace Exomia.Framework.Core.Mathematics;
 public static partial class Math2
 {
     /// <summary> calculates a transform matrix. </summary>
-    /// <param name="position">  position. </param>
-    /// <param name="origin">    origin. </param>
-    /// <param name="scale">     scale. </param>
-    /// <param name="rotation">  rotation. </param>
+    /// <param name="position"> position. </param>
+    /// <param name="origin"> origin. </param>
+    /// <param name="scale"> scale. </param>
+    /// <param name="rotation"> rotation. </param>
     /// <param name="transform"> [out] out transform matrix. </param>
     public static void CalculateTransformMatrix(in Vector2    position,
                                                 in Vector2    origin,
@@ -35,8 +35,8 @@ public static partial class Math2
 
     /// <summary> calculates a transform matrix. </summary>
     /// <param name="position"> position. </param>
-    /// <param name="origin">   origin. </param>
-    /// <param name="scale">    scale. </param>
+    /// <param name="origin"> origin. </param>
+    /// <param name="scale"> scale. </param>
     /// <param name="rotation"> rotation. </param>
     /// <returns> transform matrix. </returns>
     public static Matrix4x4 CalculateTransformMatrix(in Vector2 position,
@@ -52,9 +52,9 @@ public static partial class Math2
 
     /// <summary> creates an axis aligned bounding box. </summary>
     /// <param name="transform"> transform. </param>
-    /// <param name="width">     width. </param>
-    /// <param name="height">    height. </param>
-    /// <param name="aabb">      [out] out aabb. </param>
+    /// <param name="width"> width. </param>
+    /// <param name="height"> height. </param>
+    /// <param name="aabb"> [out] out aabb. </param>
     public static void CreateAABB(in Matrix4x4 transform, float width, float height, out RectangleF aabb)
     {
         Vector2 leftTop     = Vector2.Transform(Vector2.Zero,               transform);
@@ -74,8 +74,8 @@ public static partial class Math2
 
     /// <summary> creates an axis aligned bounding box. </summary>
     /// <param name="transform"> transform. </param>
-    /// <param name="width">     width. </param>
-    /// <param name="height">    height. </param>
+    /// <param name="width"> width. </param>
+    /// <param name="height"> height. </param>
     /// <returns> axis aligned bounding box. </returns>
     public static RectangleF CreateAABB(in Matrix4x4 transform, float width, float height)
     {
@@ -96,11 +96,11 @@ public static partial class Math2
 
     /// <summary> creates an axis aligned bounding box. </summary>
     /// <param name="position"> position. </param>
-    /// <param name="origin">   origin. </param>
-    /// <param name="scale">    scale. </param>
+    /// <param name="origin"> origin. </param>
+    /// <param name="scale"> scale. </param>
     /// <param name="rotation"> rotation. </param>
-    /// <param name="width">    width. </param>
-    /// <param name="height">   height. </param>
+    /// <param name="width"> width. </param>
+    /// <param name="height"> height. </param>
     /// <returns> axis aligned bounding box. </returns>
     public static RectangleF CreateAABB(in Vector2 position,
                                         in Vector2 origin,

@@ -36,8 +36,8 @@ public sealed unsafe class RenderPass : IDisposable
     }
 
     /// <summary> Creates a new <see cref="RenderPass" />. </summary>
-    /// <param name="vkContext">     [in,out] If non-null, the vk context. </param>
-    /// <param name="context">       [in,out] If non-null, the swapchain context. </param>
+    /// <param name="vkContext"> [in,out] If non-null, the vk context. </param>
+    /// <param name="context"> [in,out] If non-null, the swapchain context. </param>
     /// <param name="configuration"> The configuration. </param>
     /// <returns> The <see cref="RenderPass" />. </returns>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>

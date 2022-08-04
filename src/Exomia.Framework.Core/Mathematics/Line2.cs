@@ -83,7 +83,7 @@ public readonly struct Line2
 
     /// <summary> Determines whether the specified <see cref="Line2" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="Line2" /> to compare with this instance. </param>
-    /// <returns> <c>true</c> if the specified <see cref="Line2" /> is equal to this instance; <c>false</c> otherwise. </returns>
+    /// <returns> <c> true </c> if the specified <see cref="Line2" /> is equal to this instance; <c> false </c> otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(in Line2 other)
     {
@@ -117,9 +117,9 @@ public readonly struct Line2
     }
 
     /// <summary> Rotates the line around the given <paramref name="origin" />. </summary>
-    /// <param name="line">     The line. </param>
+    /// <param name="line"> The line. </param>
     /// <param name="rotation"> The rotation (in radians). </param>
-    /// <param name="origin">   The origin. </param>
+    /// <param name="origin"> The origin. </param>
     /// <returns> A new <see cref="Line2" />. </returns>
     public static Line2 RotateAround(in Line2 line, float rotation, in Vector2 origin)
     {
@@ -141,9 +141,9 @@ public readonly struct Line2
     ///     Creates a line out of <paramref name="p1" /> and <paramref name="p2" />, as well the perpendicular from this
     ///     line.
     /// </summary>
-    /// <param name="p1">            [in,out] The first ref <see cref="Vector2" />. </param>
-    /// <param name="p2">            [in,out] The second ref <see cref="Vector2" />. </param>
-    /// <param name="offset">        The offset. </param>
+    /// <param name="p1"> [in,out] The first ref <see cref="Vector2" />. </param>
+    /// <param name="p2"> [in,out] The second ref <see cref="Vector2" />. </param>
+    /// <param name="offset"> The offset. </param>
     /// <param name="perpendicular"> [out] The perpendicular. </param>
     /// <returns> The line created from <paramref name="p1" /> and <paramref name="p2" />. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -164,7 +164,7 @@ public readonly struct Line2
     }
 
     /// <summary> Intersect with other <see cref="Line2" />. </summary>
-    /// <param name="other">             The <see cref="Line2" /> to compare with this instance. </param>
+    /// <param name="other"> The <see cref="Line2" /> to compare with this instance. </param>
     /// <param name="intersectionPoint"> [out] The intersection point. </param>
     /// <returns> True if it succeeds, false if it fails. </returns>
     public bool IntersectWith(in Line2 other, out Vector2 intersectionPoint)

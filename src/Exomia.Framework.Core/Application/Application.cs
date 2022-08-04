@@ -103,7 +103,7 @@ public abstract unsafe partial class Application : IDisposable
     }
 
     /// <summary> Runs the application. </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the instance is already running.</exception>
+    /// <exception cref="InvalidOperationException"> Thrown if the instance is already running. </exception>
     public void Run()
     {
         if (_isRunning)

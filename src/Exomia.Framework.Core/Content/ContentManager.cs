@@ -53,7 +53,7 @@ public sealed class ContentManager : IContentManager
     /// <summary> Initializes a new instance of the <see cref="ContentManager" /> class. </summary>
     /// <param name="serviceProvider"> The service provider. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    /// <exception cref="TypeLoadException">     Thrown when a Type Load error condition occurs. </exception>
+    /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
     public ContentManager(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -466,7 +466,7 @@ public sealed class ContentManager : IContentManager
         }
 
         /// <summary> Equality operator. </summary>
-        /// <param name="left">  The left. </param>
+        /// <param name="left"> The left. </param>
         /// <param name="right"> The right. </param>
         /// <returns> The result of the operation. </returns>
         public static bool operator ==(AssetKey left, AssetKey right)
@@ -475,7 +475,7 @@ public sealed class ContentManager : IContentManager
         }
 
         /// <summary> Inequality operator. </summary>
-        /// <param name="left">  The left. </param>
+        /// <param name="left"> The left. </param>
         /// <param name="right"> The right. </param>
         /// <returns> The result of the operation. </returns>
         public static bool operator !=(AssetKey left, AssetKey right)
