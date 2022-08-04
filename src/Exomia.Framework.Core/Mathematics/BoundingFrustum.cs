@@ -516,7 +516,7 @@ public unsafe struct BoundingFrustum
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Intersects(in Ray ray)
     {
-        return Intersects(in ray, out float? inDist, out float? outDist);
+        return Intersects(in ray, out _, out _);
     }
 
     /// <summary> Checks whether the current BoundingFrustum intersects the specified Ray. </summary>
@@ -540,6 +540,7 @@ public unsafe struct BoundingFrustum
                     }
                 }
             }
+
             inDistance  = nearestPlaneDistance;
             outDistance = null;
             return true;
@@ -562,6 +563,7 @@ public unsafe struct BoundingFrustum
                 }
             }
         }
+
         Vector3 center = ((ray.Position + ray.Direction * minDist) + (ray.Position + ray.Direction * maxDist)) * 0.5f;
         if (Contains(in center) != ContainmentType.Disjoint)
         {
@@ -569,6 +571,7 @@ public unsafe struct BoundingFrustum
             outDistance = maxDist;
             return true;
         }
+
         inDistance  = null;
         outDistance = null;
         return false;
@@ -695,7 +698,7 @@ public unsafe struct BoundingFrustum
             - p3.D   * Vector3.Cross(p1.Normal, p2.Normal) / Vector3.Dot(p3.Normal, Vector3.Cross(p1.Normal, p2.Normal));
     }
 
-    private readonly void GetBoxToPlanePVertexNVertex(in BoundingBox box, in Vector3 planeNormal, out Vector3 p, out Vector3 n)
+    private static void GetBoxToPlanePVertexNVertex(in BoundingBox box, in Vector3 planeNormal, out Vector3 p, out Vector3 n)
     {
         p = box.Minimum;
         if (planeNormal.X >= 0)
