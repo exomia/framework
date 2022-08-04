@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal enum MonitorFlags : uint
+enum MonitorFlags : uint
 {
     DEFAULTTONULL    = 0u,
     DEFAULTTOPRIMARY = 1u,

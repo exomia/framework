@@ -15,7 +15,7 @@
 namespace Exomia.Framework.Windows.Win32;
 
 [Flags]
-internal enum ClassStyles : uint
+enum ClassStyles : uint
 {
     /// <summary>
     ///     Aligns the window's client area on a byte boundary (in the x direction). This style affects the width of the
@@ -57,13 +57,13 @@ internal enum ClassStyles : uint
     /// </summary>
     GlobalClass = 0x4000,
 
-    /// <summary>Redraws the entire window if a movement or size adjustment changes the width of the client area.</summary>
+    /// <summary> Redraws the entire window if a movement or size adjustment changes the width of the client area. </summary>
     HorizontalRedraw = 0x2,
 
-    /// <summary>Disables Close on the window menu.</summary>
+    /// <summary> Disables Close on the window menu. </summary>
     NoClose = 0x200,
 
-    /// <summary>Allocates a unique device context for each window in the class.</summary>
+    /// <summary> Allocates a unique device context for each window in the class. </summary>
     OwnDC = 0x20,
 
     /// <summary>
@@ -89,6 +89,6 @@ internal enum ClassStyles : uint
     /// </summary>
     SaveBits = 0x800,
 
-    /// <summary>Redraws the entire window if a movement or size adjustment changes the height of the client area.</summary>
+    /// <summary> Redraws the entire window if a movement or size adjustment changes the height of the client area. </summary>
     VerticalRedraw = 0x1
 }

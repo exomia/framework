@@ -109,12 +109,12 @@ public sealed partial class SpriteFont : IDisposable
     /// <param name="defaultCharacter"> (Optional) The default character. </param>
     public SpriteFont(string face, int size, int lineHeight, Dictionary<int, Glyph> glyphs, Dictionary<int, int> kernings, Texture texture, int defaultCharacter = -1)
     {
-        _face        = face;
-        _size        = size;
+        _face       = face;
+        _size       = size;
         _lineHeight = lineHeight;
-        _texture     = texture;
-        _glyphs      = glyphs;
-        _kernings    = kernings;
+        _texture    = texture;
+        _glyphs     = glyphs;
+        _kernings   = kernings;
 
         _defaultCharacter = defaultCharacter;
 

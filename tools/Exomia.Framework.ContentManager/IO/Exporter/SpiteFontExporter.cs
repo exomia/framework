@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -14,9 +14,6 @@ using System.Runtime.CompilerServices;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
-using Exomia.Framework.Core.Content.Resolver;
-using Exomia.Framework.Core.Graphics;
-
 
 namespace Exomia.Framework.ContentManager.IO.Exporter;
 
@@ -71,7 +68,7 @@ sealed class SpiteFontExporter : Exporter<FontFile>
                 bw.Write(k.Second);
                 bw.Write(k.Amount);
             }
-            
+
             using (FileStream fs = new FileStream(
                        fontFile.Pages?[0].File ?? throw new NullReferenceException(), FileMode.Open, FileAccess.Read))
             {
@@ -80,7 +77,7 @@ sealed class SpiteFontExporter : Exporter<FontFile>
                 try
                 {
                     byte[] bytes = new byte[data.Stride * data.Height];
-                    
+
                     unsafe
                     {
                         fixed (byte* dst = bytes)
@@ -88,7 +85,7 @@ sealed class SpiteFontExporter : Exporter<FontFile>
                             Unsafe.CopyBlock(dst, data.Scan0.ToPointer(), (uint)bytes.Length);
                         }
                     }
-                    
+
                     bw.Write(bitmap.Width);
                     bw.Write(bitmap.Height);
                     bw.Write(bytes);
@@ -105,12 +102,12 @@ sealed class SpiteFontExporter : Exporter<FontFile>
             {
                 fs.Write(E1.MagicHeader,           0, E1.MagicHeader.Length);
                 fs.Write(E1.SpritefontMagicHeader, 0, E1.SpritefontMagicHeader.Length);
-                
+
                 fs.WriteByte(0); //reserved for future use
                 fs.WriteByte(0); //reserved for future use
                 fs.WriteByte(0); //reserved for future use
                 fs.WriteByte(0); //reserved for future use
-                
+
                 ContentCompressor.CompressStream(staging, fs);
             }
         }

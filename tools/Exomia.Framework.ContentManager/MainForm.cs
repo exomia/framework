@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,13 +8,10 @@
 
 #endregion
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Exomia.Framework.ContentManager.Extensions;
+using Exomia.Framework.ContentManager.Properties;
 
 namespace Exomia.Framework.ContentManager;
 
@@ -36,12 +33,35 @@ public partial class MainForm : Form
         treeView1.TreeViewNodeSorter = new NodeSorter();
     }
 
+    private static bool IsNumber(object? value)
+    {
+        return value is sbyte
+         || value is byte
+         || value is short
+         || value is ushort
+         || value is int
+         || value is uint
+         || value is long
+         || value is ulong
+         || value is float
+         || value is double
+         || value is decimal;
+    }
+
+    private static void ForAll<T>(Action<T> action, params T[] items)
+    {
+        foreach (T item in items)
+        {
+            action(item);
+        }
+    }
+
     /// <summary>
     ///     Sets status label.
     /// </summary>
     /// <param name="statusType"> Type of the status. </param>
-    /// <param name="text">       The text. </param>
-    /// <param name="args">       A variable-length parameters list containing arguments. </param>
+    /// <param name="text"> The text. </param>
+    /// <param name="args"> A variable-length parameters list containing arguments. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void SetStatusLabel(StatusType statusType, string text, params object?[] args)
     {
@@ -50,12 +70,12 @@ public partial class MainForm : Form
             {
                 toolStripStatusLabel1.Image = statusType switch
                 {
-                    StatusType.Warning => Properties.Resources
-                                                    .StatusWarning_16x,
-                    StatusType.Error => Properties.Resources
-                                                  .StatusCriticalError_16x,
-                    StatusType.Info => Properties.Resources
-                                                 .StatusInformation_16x,
+                    StatusType.Warning => Resources
+                       .StatusWarning_16x,
+                    StatusType.Error => Resources
+                       .StatusCriticalError_16x,
+                    StatusType.Info => Resources
+                       .StatusInformation_16x,
                     _ => throw new ArgumentOutOfRangeException(nameof(statusType), statusType, null)
                 };
                 toolStripStatusLabel1.Text = string.Format(text, args);
@@ -140,7 +160,7 @@ public partial class MainForm : Form
 
     private void WriteLineMessages(IEnumerable<(string, object?[])> messages)
     {
-        foreach (var (text, args) in messages)
+        foreach ((string text, object?[] args) in messages)
         {
             WriteLine($"\t> {text}", args);
         }
@@ -150,29 +170,6 @@ public partial class MainForm : Form
     {
         Save();
         _projectFile = null;
-    }
-
-    private static bool IsNumber(object? value)
-    {
-        return value is sbyte
-            || value is byte
-            || value is short
-            || value is ushort
-            || value is int
-            || value is uint
-            || value is long
-            || value is ulong
-            || value is float
-            || value is double
-            || value is decimal;
-    }
-
-    private static void ForAll<T>(Action<T> action, params T[] items)
-    {
-        foreach (T item in items)
-        {
-            action(item);
-        }
     }
 
     private class NodeSorter : IComparer

@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct RAWINPUT
+struct RAWINPUT
 {
     /// <summary> The header. </summary>
     public RAWINPUTHEADER Header;

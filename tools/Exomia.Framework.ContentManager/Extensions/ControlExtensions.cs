@@ -1,15 +1,12 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
 #endregion
-
-using System;
-using System.Windows.Forms;
 
 namespace Exomia.Framework.ContentManager.Extensions;
 
@@ -23,7 +20,7 @@ static class ControlExtensions
     /// </summary>
     /// <typeparam name="TControl"> Type of the control. </typeparam>
     /// <param name="control"> The control to act on. </param>
-    /// <param name="action">  The action. </param>
+    /// <param name="action"> The action. </param>
     public static void InvokeIfRequired<TControl>(this TControl control, Action<TControl> action)
         where TControl : Control
     {
@@ -41,9 +38,9 @@ static class ControlExtensions
     ///     A Control extension method that executes if required on a different thread, and waits for the result.
     /// </summary>
     /// <typeparam name="TControl"> Generic type parameter. </typeparam>
-    /// <typeparam name="TResult">  Type of the result. </typeparam>
+    /// <typeparam name="TResult"> Type of the result. </typeparam>
     /// <param name="control"> The control to act on. </param>
-    /// <param name="func">    The function. </param>
+    /// <param name="func"> The function. </param>
     /// <returns>
     ///     A T.
     /// </returns>
@@ -61,7 +58,7 @@ static class ControlExtensions
     ///     A Control extension method that executes if required on a different thread, and waits for the result.
     /// </summary>
     /// <typeparam name="TControl"> Type of the control. </typeparam>
-    /// <param name="action">   The action. </param>
+    /// <param name="action"> The action. </param>
     /// <param name="controls"> A variable-length parameters list containing controls. </param>
     public static void InvokeIfRequiredOn<TControl>(Action<TControl> action, params TControl[] controls)
         where TControl : Control

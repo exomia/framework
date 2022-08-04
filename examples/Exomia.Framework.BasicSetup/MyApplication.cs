@@ -38,12 +38,12 @@ sealed unsafe class MyApplication : Application
     private float timer  = 0;
 
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
-    /// <param name="serviceProvider">           The service provider. </param>
-    /// <param name="vulkan">                    The vulkan. </param>
-    /// <param name="contentManager">            Manager for content. </param>
-    /// <param name="swapchainConfiguration">    The swapchain configuration. </param>
+    /// <param name="serviceProvider"> The service provider. </param>
+    /// <param name="vulkan"> The vulkan. </param>
+    /// <param name="contentManager"> Manager for content. </param>
+    /// <param name="swapchainConfiguration"> The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The Depth stencil configuration. </param>
-    /// <param name="logger">                    The logger. </param>
+    /// <param name="logger"> The logger. </param>
     public MyApplication(
         IServiceProvider                    serviceProvider,
         Core.Vulkan.Vulkan                  vulkan,

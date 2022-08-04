@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,10 +8,8 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using Exomia.Framework.ContentManager.IO;
 using Exomia.Framework.ContentManager.PropertyGridItems;

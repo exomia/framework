@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct RAWINPUTHID
+struct RAWINPUTHID
 {
     /// <summary> Size of the HID data in bytes. </summary>
     public int Size;

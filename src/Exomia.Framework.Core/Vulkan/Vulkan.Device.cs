@@ -15,6 +15,16 @@ namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan
 {
+    /// <summary> DeviceWaitIdle - Wait for a device to become idle </summary>
+    public void DeviceWaitIdle()
+    {
+        if (_context->Device != VkDevice.Null)
+        {
+            vkDeviceWaitIdle(_context->Device)
+               .AssertVkResult();
+        }
+    }
+
     private void CreateDevice()
     {
         uint additionalDeviceQueueCreateInfoCount = 0u;
@@ -141,16 +151,6 @@ sealed unsafe partial class Vulkan
             {
                 Allocator.FreeNtString(*(ppEnabledLayerNames + i));
             }
-        }
-    }
-    
-    /// <summary> DeviceWaitIdle - Wait for a device to become idle </summary>
-    public void DeviceWaitIdle()
-    {
-        if (_context->Device != VkDevice.Null)
-        {
-            vkDeviceWaitIdle(_context->Device)
-               .AssertVkResult();
         }
     }
 

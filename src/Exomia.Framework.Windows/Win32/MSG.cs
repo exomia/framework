@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct MSG
+struct MSG
 {
     public IntPtr  hWnd;
     public uint    msg;

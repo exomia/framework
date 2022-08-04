@@ -1,26 +1,26 @@
 <!--EXTERNAL_PROPERTIES: MSBuildThisFileDirectory-->
 <Project>
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <PackageId>$(MSBuildProjectName)</PackageId>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
-    <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
-    <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'!='AnyCPU'">
+        <AssemblyName>$(MSBuildProjectName).$(Platform)</AssemblyName>
+        <PackageId>$(MSBuildProjectName).$(Platform)</PackageId>
+    </PropertyGroup>
 </Project>

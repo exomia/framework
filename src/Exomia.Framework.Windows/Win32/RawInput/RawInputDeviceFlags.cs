@@ -13,11 +13,11 @@
 // ReSharper disable IdentifierTypo
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
-/// <summary>Enumeration containing flags for a raw input device.</summary>
+/// <summary> Enumeration containing flags for a raw input device. </summary>
 [Flags]
-internal enum RawInputDeviceFlags
+enum RawInputDeviceFlags
 {
-    /// <summary>No flags.</summary>
+    /// <summary> No flags. </summary>
     None = 0,
 
     /// <summary>
@@ -50,7 +50,7 @@ internal enum RawInputDeviceFlags
     /// </summary>
     InputSink = 0x00000100,
 
-    /// <summary>If set, the mouse button click does not activate the other window.</summary>
+    /// <summary> If set, the mouse button click does not activate the other window. </summary>
     CaptureMouse = 0x00000200,
 
     /// <summary>
@@ -60,6 +60,6 @@ internal enum RawInputDeviceFlags
     /// </summary>
     NoHotKeys = 0x00000200,
 
-    /// <summary>If set, application keys are handled.  NoLegacy must be specified.  Keyboard only.</summary>
+    /// <summary> If set, application keys are handled.  NoLegacy must be specified.  Keyboard only. </summary>
     AppKeys = 0x00000400
 }

@@ -14,17 +14,17 @@
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [Flags]
-internal enum RawMouseFlags : ushort
+enum RawMouseFlags : ushort
 {
-    /// <summary>Relative to the last position.</summary>
+    /// <summary> Relative to the last position. </summary>
     MoveRelative = 0,
 
-    /// <summary>Absolute positioning.</summary>
+    /// <summary> Absolute positioning. </summary>
     MoveAbsolute = 1,
 
-    /// <summary>Coordinate data is mapped to a virtual desktop.</summary>
+    /// <summary> Coordinate data is mapped to a virtual desktop. </summary>
     VirtualDesktop = 2,
 
-    /// <summary>Attributes for the mouse have changed.</summary>
+    /// <summary> Attributes for the mouse have changed. </summary>
     AttributesChanged = 4
 }

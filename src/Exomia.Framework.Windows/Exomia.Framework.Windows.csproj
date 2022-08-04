@@ -1,24 +1,24 @@
 <!--EXTERNAL_PROPERTIES: VulkanVersion-->
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-     <PackageTags>$(PackageTags) windows</PackageTags>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageTags>$(PackageTags) windows</PackageTags>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
-    <PackageReference Include="Exomia.Vulkan.Api.Win32" Version="$(VulkanVersion)" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
+        <PackageReference Include="Exomia.Vulkan.Api.Win32" Version="$(VulkanVersion)"/>
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
-    <PackageReference Include="Exomia.Vulkan.Api.Win32.x64" Version="$(VulkanVersion)" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
+        <PackageReference Include="Exomia.Vulkan.Api.Win32.x64" Version="$(VulkanVersion)"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="**\*.*.cs">
-      <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="**\*.*.cs">
+            <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
 </Project>

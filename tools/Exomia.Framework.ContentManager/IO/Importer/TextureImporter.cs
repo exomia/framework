@@ -1,4 +1,14 @@
-﻿using System.Drawing.Imaging;
+﻿#region License
+
+// Copyright (c) 2018-2022, exomia
+// All rights reserved.
+// 
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+#endregion
+
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 
 namespace Exomia.Framework.ContentManager.IO.Importer;
@@ -12,7 +22,7 @@ sealed class TextureImporter : Importer<Texture.Texture>
             () =>
             {
                 using Bitmap bitmap = new Bitmap(stream);
-                BitmapData    data   = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                BitmapData   data   = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
                 try
                 {
                     byte[] bytes = new byte[data.Stride * data.Height];

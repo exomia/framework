@@ -21,49 +21,49 @@ using static Exomia.Vulkan.Api.Core.VkDebugUtilsMessageSeverityFlagBitsEXT;
 
 namespace Exomia.Framework.BasicSetup;
 
-internal static class Program
+static class Program
 {
     // ReSharper disable once UnusedParameter.Local
     private static void Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-                     .MinimumLevel.Debug()
-                     .WriteTo.Console()
-                     .CreateLogger();
+                    .MinimumLevel.Debug()
+                    .WriteTo.Console()
+                    .CreateLogger();
 
         using (IApplicationBuilder applicationBuilder = ApplicationBuilder.Create())
         using (Application application
                = applicationBuilder
-                 .ConfigureServices(serviceCollection =>
+                .ConfigureServices(serviceCollection =>
                  {
                      serviceCollection
-                         .AddLogging(builder =>
+                        .AddLogging(builder =>
                          {
                              builder.ClearProviders();
                              builder.AddSerilog(Log.Logger);
                          })
-                         .AddDefaultContentManagement();
+                        .AddDefaultContentManagement();
                  })
-                 .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>
+                .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>
                  {
                      configuration.MessageSeverity |= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
                  })
-                 .Configure<RenderFormConfiguration>((configuration, _) =>
+                .Configure<RenderFormConfiguration>((configuration, _) =>
                  {
                      configuration.Title       = "Exomia.Framework.BasicSetup";
                      configuration.Width       = 1024;
                      configuration.Height      = 768;
                      configuration.DisplayType = DisplayType.Window;
                  })
-                 .Configure<InstanceConfiguration>((configuration, _) =>
+                .Configure<InstanceConfiguration>((configuration, _) =>
                  {
 #if DEBUG
                      configuration.ValidationFeatureEnable.Add(
                          VkValidationFeatureEnableEXT.VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT);
 #endif
                  })
-                 .UseWin32Platform() // should always be the last in the chain before calling build!
-                 .Build<MyApplication>())
+                .UseWin32Platform() // should always be the last in the chain before calling build!
+                .Build<MyApplication>())
         {
             application.Run();
         }

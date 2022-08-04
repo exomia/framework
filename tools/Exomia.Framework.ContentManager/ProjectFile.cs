@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,8 +8,6 @@
 
 #endregion
 
-using System.Collections.Generic;
-using System.IO;
 using Exomia.Framework.ContentManager.PropertyGridItems;
 using Newtonsoft.Json;
 
@@ -63,7 +61,7 @@ sealed class ProjectFile
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProjectFile" /> class.
     /// </summary>
-    /// <param name="projectName">     The project name. </param>
+    /// <param name="projectName"> The project name. </param>
     /// <param name="projectLocation"> The project location. </param>
     [JsonConstructor]
     public ProjectFile([JsonProperty("Name")]     string projectName,

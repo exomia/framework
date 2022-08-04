@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -62,7 +62,7 @@ partial class MainForm
                     Interlocked.Increment(ref skipped);
                 }
 
-                foreach (var (check, msg) in s_checks)
+                foreach ((Func<ItemPropertyGridItem, bool> check, string msg) in s_checks)
                 {
                     if (check(gridItem))
                     {
@@ -185,25 +185,29 @@ partial class MainForm
 
         CancellationToken cancellationToken = _cancellationTokenSource.Token;
         await Task.Run(
-                      async () =>
-                      {
-                          Stopwatch stopwatch = Stopwatch.StartNew();
-                          (int succeeded, int skipped, int failed) = await BuildAsync(cancellationToken);
-                          stopwatch.Stop();
+                       async () =>
+                       {
+                           Stopwatch stopwatch = Stopwatch.StartNew();
+                           (int succeeded, int skipped, int failed) = await BuildAsync(cancellationToken);
+                           stopwatch.Stop();
 
-                          WriteLine(
-                              "\n{3:Black}!\n{0:DarkGreen} succeeded, {1:DarkBlue} skipped, {2:Red} failed.\n",
-                              succeeded, skipped, failed,
-                              cancellationToken.IsCancellationRequested ? "Build canceled" : "Build successful");
-                          WriteLine("Time elapsed {0}", stopwatch.Elapsed);
+                           WriteLine(
+                               "\n{3:Black}!\n{0:DarkGreen} succeeded, {1:DarkBlue} skipped, {2:Red} failed.\n",
+                               succeeded, skipped, failed,
+                               cancellationToken.IsCancellationRequested
+                                   ? "Build canceled"
+                                   : "Build successful");
+                           WriteLine("Time elapsed {0}", stopwatch.Elapsed);
 
-                          SetStatusLabel(
-                              StatusType.Info,
-                              "Build {3}! {0} succeeded, {1} skipped, {2} failed.",
-                              succeeded, skipped, failed,
-                              cancellationToken.IsCancellationRequested ? "canceled" : "successful");
-                      }
-                      , _cancellationTokenSource.Token)
+                           SetStatusLabel(
+                               StatusType.Info,
+                               "Build {3}! {0} succeeded, {1} skipped, {2} failed.",
+                               succeeded, skipped, failed,
+                               cancellationToken.IsCancellationRequested
+                                   ? "canceled"
+                                   : "successful");
+                       }
+                     , _cancellationTokenSource.Token)
                   .ConfigureAwait(false);
 
         SetProgressbarValue(false);

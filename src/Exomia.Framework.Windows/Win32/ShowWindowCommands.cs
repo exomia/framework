@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal enum ShowWindowCommands
+enum ShowWindowCommands
 {
     /// <summary>
     ///     Hides the window and activates another window.
@@ -91,7 +91,7 @@ internal enum ShowWindowCommands
     ShowDefault = 10,
 
     /// <summary>
-    ///     <b>Windows 2000/XP:</b> Minimizes a window, even if the thread
+    ///     <b> Windows 2000/XP: </b> Minimizes a window, even if the thread
     ///     that owns the window is not responding. This flag should only be
     ///     used when minimizing windows from a different thread.
     /// </summary>

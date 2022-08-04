@@ -20,7 +20,7 @@ public sealed partial class SpriteFont
 
         /// <summary> The y. </summary>
         public int Y;
-        
+
         /// <summary> The width. </summary>
         public int Width;
 

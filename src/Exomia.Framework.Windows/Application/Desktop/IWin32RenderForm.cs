@@ -25,13 +25,13 @@ public interface IWin32RenderForm : IRenderForm
 
     /// <summary> Gets or sets the state of the window. </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-    /// <exception cref="Win32Exception">              Thrown when a win32 error condition occurs. </exception>
+    /// <exception cref="Win32Exception"> Thrown when a win32 error condition occurs. </exception>
     /// <value> The window state. </value>
     FormWindowState WindowState { get; set; }
 
     /// <summary> Gets or sets the state of the window. </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-    /// <exception cref="Win32Exception">              Thrown when a win32 error condition occurs. </exception>
+    /// <exception cref="Win32Exception"> Thrown when a win32 error condition occurs. </exception>
     /// <value> The window state. </value>
     FormBorderStyle BorderStyle { get; set; }
 }

@@ -14,26 +14,26 @@
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [Flags]
-internal enum RawKeyboardFlags : ushort
+enum RawKeyboardFlags : ushort
 {
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyMake = 0,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyBreak = 1,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyE0 = 2,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyE1 = 4,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TerminalServerSetLED = 8,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TerminalServerShadow = 0x10,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TerminalServerVKPACKET = 0x20
 }

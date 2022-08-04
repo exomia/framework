@@ -180,7 +180,7 @@ sealed partial class RenderForm : IInputDevice, IWindowsInputDevice
         }
 
         /// <summary> Registers this object. </summary>
-        /// <param name="handler">  The handler. </param>
+        /// <param name="handler"> The handler. </param>
         /// <param name="position"> (Optional) The position. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Register(in TDelegate handler, int position = -1)

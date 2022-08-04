@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-     <PackageTags>$(PackageTags) linux</PackageTags>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageTags>$(PackageTags) linux</PackageTags>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="**\*.*.cs">
-      <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="**\*.*.cs">
+            <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32;
 
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-internal struct WndClassEx
+struct WndClassEx
 {
     [MarshalAs(UnmanagedType.U4)]
     public int cbSize;

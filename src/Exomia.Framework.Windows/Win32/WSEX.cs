@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class WSEX
+static class WSEX
 {
     /// <summary> Specifies a window that accepts drag-drop files. </summary>
     public const uint ACCEPTFILES = 0x00000010;

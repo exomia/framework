@@ -14,7 +14,7 @@ namespace Exomia.Framework.Windows.Input;
 public interface IWindowsInputDevice
 {
     /// <summary> Registers the raw key event. </summary>
-    /// <param name="handler">  The handler. </param>
+    /// <param name="handler"> The handler. </param>
     /// <param name="position"> (Optional) The position. </param>
     /// <remarks>
     ///     <para>

@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class SM
+static class SM
 {
     /// <summary> The flags that specify how the system arranged minimized windows. For more information, see the Remarks section in this topic. </summary>
     public const int ARRANGE = 56;

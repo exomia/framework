@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -52,7 +52,7 @@ partial class MainForm
                     {
                         x.Nodes.Clear();
 
-                        var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name, 0, 0);
+                        TreeNode node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name, 0, 0);
                         node.Tag              = _projectFile.Content;
                         node.ContextMenuStrip = rootContextMenuStrip;
                     });
@@ -103,17 +103,17 @@ partial class MainForm
                     {
                         x.Nodes.Clear();
 
-                        var node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name!, 0, 0);
+                        TreeNode node = x.Nodes.Add(ROOT_KEY_PREFIX, _projectFile!.Content!.Name!, 0, 0);
                         node.Tag              = _projectFile.Content;
                         node.ContextMenuStrip = rootContextMenuStrip;
 
                         foreach (FolderPropertyGridItem f in _projectFile
-                                                             .Resources
-                                                             .OfType<FolderPropertyGridItem>()
-                                                             .OrderBy(p => p.VirtualPath!.Length))
+                                                            .Resources
+                                                            .OfType<FolderPropertyGridItem>()
+                                                            .OrderBy(p => p.VirtualPath!.Length))
                         {
                             TreeNode? n = GetNodeFromPath(node, f.VirtualPath!)
-                                ?? throw new InvalidDataException("The project file is corrupt!");
+                             ?? throw new InvalidDataException("The project file is corrupt!");
                             int nodeCount = n.GetNodeCount(false);
                             n = n.Nodes.Add(
                                 $"{FOLDER_KEY_PREFIX}{nodeCount}", f.Name, 1, 1);
@@ -122,11 +122,11 @@ partial class MainForm
                         }
 
                         foreach (ItemPropertyGridItem i in _projectFile
-                                                           .Resources
-                                                           .OfType<ItemPropertyGridItem>())
+                                                          .Resources
+                                                          .OfType<ItemPropertyGridItem>())
                         {
                             TreeNode? n = GetNodeFromPath(node, i.VirtualPath!)
-                                ?? throw new InvalidDataException("The project file is corrupt!");
+                             ?? throw new InvalidDataException("The project file is corrupt!");
                             int nodeCount = n.GetNodeCount(false);
                             n = n.Nodes.Add(
                                 $"{FONT_KEY_PREFIX}{nodeCount}", i.Name, 4, 4);
@@ -204,10 +204,10 @@ partial class MainForm
 
     #region TreeView1
 
-    private const string ROOT_KEY_PREFIX   = "-ROOT-";
-    private const string FOLDER_KEY_PREFIX = "-folder-";
-    private const string FONT_KEY_PREFIX   = "-font-";
-    private const string TEXTURE_KEY_PREFIX   = "-texture-";
+    private const string ROOT_KEY_PREFIX    = "-ROOT-";
+    private const string FOLDER_KEY_PREFIX  = "-folder-";
+    private const string FONT_KEY_PREFIX    = "-font-";
+    private const string TEXTURE_KEY_PREFIX = "-texture-";
 
     private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
     {
@@ -291,8 +291,8 @@ partial class MainForm
         }
 
         if (e.Node.Level == 0 ||
-            Check(e.Node, n => n.PrevNode) &&
-            Check(e.Node, n => n.NextNode))
+            (Check(e.Node,    n => n.PrevNode) &&
+                Check(e.Node, n => n.NextNode)))
         {
             if (e.Node.Tag is PropertyGridItem item)
             {
@@ -428,7 +428,7 @@ partial class MainForm
                     }
 
                     int i = 0;
-                    if (jsonEditorForm.Deserialize<FontDescription>(out var fntDescription))
+                    if (jsonEditorForm.Deserialize<FontDescription>(out FontDescription fntDescription))
                     {
                         string fntFilePath;
                         while (File.Exists(
@@ -443,10 +443,10 @@ partial class MainForm
                             $"{FONT_KEY_PREFIX}{selectedNodeCount}",
                             Path.GetFileName(fntFilePath), 4, 4);
                         node.Tag = _projectFile.AddResource(
-                                                   new ItemPropertyGridItem
-                                                   {
-                                                       Name = node.Text, VirtualPath = node.Parent.FullPath,
-                                                   })
+                                                    new ItemPropertyGridItem
+                                                    {
+                                                        Name = node.Text, VirtualPath = node.Parent.FullPath
+                                                    })
                                                .Initialize();
                         node.ContextMenuStrip = itemContextMenuStrip;
 
@@ -498,11 +498,11 @@ partial class MainForm
                         $"{TEXTURE_KEY_PREFIX}{selectedNodeCount}",
                         Path.GetFileName(fntFilePath), 4, 4);
                     node.Tag = _projectFile.AddResource(
-                                               new ItemPropertyGridItem
-                                               {
-                                                   Name        = node.Text,
-                                                   VirtualPath = node.Parent.FullPath,
-                                               })
+                                                new ItemPropertyGridItem
+                                                {
+                                                    Name        = node.Text,
+                                                    VirtualPath = node.Parent.FullPath
+                                                })
                                            .Initialize();
                     node.ContextMenuStrip = itemContextMenuStrip;
 

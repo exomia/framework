@@ -17,7 +17,7 @@ using System.Security;
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class Shell32
+static class Shell32
 {
     private const string SHELL32 = "shell32.dll";
 

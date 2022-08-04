@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,8 +8,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Exomia.Framework.ContentManager.IO;
@@ -37,19 +35,21 @@ static class ImporterExporterManager
 
             foreach (Type t in a.GetTypes())
             {
-                if ((t.IsClass && !t.IsInterface || t.IsValueType && !t.IsEnum) && !t.IsAbstract)
+                if (((t.IsClass && !t.IsInterface) || (t.IsValueType && !t.IsEnum)) && !t.IsAbstract)
                 {
                     if (typeof(IImporter).IsAssignableFrom(t))
                     {
                         ImporterAttribute importerAttribute
                             = t.GetCustomAttribute<ImporterAttribute>(false)!;
-                        IImporter importer = System.Activator.CreateInstance(t)
+                        IImporter importer = Activator.CreateInstance(t)
                             as IImporter ?? throw new TypeLoadException(
                             $"Can't create an instance of {nameof(IImporter)} from type: {t.AssemblyQualifiedName}");
                         foreach (string extension in importerAttribute.Extensions)
                         {
                             if (!s_importers.TryGetValue(
-                                    extension.StartsWith(".") ? extension : $".{extension}", out var importers))
+                                    extension.StartsWith(".")
+                                        ? extension
+                                        : $".{extension}", out List<IImporter>? importers))
                             {
                                 s_importers.Add(extension, importers = new List<IImporter>());
                             }
@@ -58,11 +58,11 @@ static class ImporterExporterManager
                     }
                     else if (typeof(IExporter).IsAssignableFrom(t))
                     {
-                        IExporter exporter = System.Activator.CreateInstance(t)
+                        IExporter exporter = Activator.CreateInstance(t)
                             as IExporter ?? throw new TypeLoadException(
                             $"Can't create an instance of {nameof(IImporter)} from type: {t.AssemblyQualifiedName}");
 
-                        if (!s_exporters.TryGetValue(exporter.ImportType, out var exporters))
+                        if (!s_exporters.TryGetValue(exporter.ImportType, out List<IExporter>? exporters))
                         {
                             s_exporters.Add(exporter.ImportType, exporters = new List<IExporter>());
                         }
@@ -75,7 +75,7 @@ static class ImporterExporterManager
 
     public static List<IImporter> GetImporterFor(string extension)
     {
-        if (!s_importers.TryGetValue(extension, out var importers))
+        if (!s_importers.TryGetValue(extension, out List<IImporter>? importers))
         {
             throw new Exception($"No importer for extension '{extension}' registered!");
         }
@@ -84,7 +84,7 @@ static class ImporterExporterManager
 
     public static List<IExporter> GetExportersFor(Type importedType)
     {
-        if (!s_exporters.TryGetValue(importedType, out var exporters))
+        if (!s_exporters.TryGetValue(importedType, out List<IExporter>? exporters))
         {
             throw new Exception($"No exporter for import type '{importedType}' registered!");
         }

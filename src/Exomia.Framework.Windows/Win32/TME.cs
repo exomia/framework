@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class TME
+static class TME
 {
     /// <summary>
     ///     The caller wants to cancel a prior tracking request. The caller should also specify the type of tracking that it wants to cancel. For example, to cancel hover tracking,

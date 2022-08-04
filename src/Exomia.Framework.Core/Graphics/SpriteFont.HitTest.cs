@@ -8,20 +8,17 @@
 
 #endregion
 
-using System.Numerics;
-using System.Runtime.CompilerServices;
-
 namespace Exomia.Framework.Core.Graphics;
 
 public sealed partial class SpriteFont
 {
-    /// <summary>Determines which item (if any) has been hit.</summary>
+    /// <summary> Determines which item (if any) has been hit. </summary>
     /// <param name="text"> The text. </param>
     /// <param name="start"> The start. </param>
     /// <param name="end"> The end. </param>
     /// <param name="xPos"> The position. </param>
     /// <param name="yPos"> The position. </param>
-    /// <returns>An int. </returns>
+    /// <returns> An int. </returns>
     public int HitTest(ReadOnlySpan<char> text, int start, int end, float xPos, float yPos)
     {
         if (start >= end) { return end; }

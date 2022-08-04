@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct RAWINPUTHEADER
+struct RAWINPUTHEADER
 {
     /// <summary> Type of device the input is coming from. </summary>
     public int Type;

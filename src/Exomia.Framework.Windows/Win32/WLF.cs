@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class WLF
+static class WLF
 {
     public const int GWL_EXSTYLE     = -20;
     public const int GWLP_HINSTANCE  = -6;

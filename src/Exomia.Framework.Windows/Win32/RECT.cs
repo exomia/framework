@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct RECT
+struct RECT
 {
     public POINT LeftTop;
     public POINT RightBottom;

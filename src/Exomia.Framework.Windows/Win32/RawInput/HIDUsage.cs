@@ -13,452 +13,452 @@
 // ReSharper disable IdentifierTypo
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
-internal enum HIDUsage : ushort
+enum HIDUsage : ushort
 {
-    /// <summary></summary>
+    /// <summary> </summary>
     Pointer = 0x01,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Mouse = 0x02,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Joystick = 0x04,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Gamepad = 0x05,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Keyboard = 0x06,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Keypad = 0x07,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControl = 0x80,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     X = 0x30,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Y = 0x31,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Z = 0x32,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     RelativeX = 0x33,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     RelativeY = 0x34,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     RelativeZ = 0x35,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Slider = 0x36,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Dial = 0x37,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Wheel = 0x38,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     HatSwitch = 0x39,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     CountedBuffer = 0x3A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     ByteCount = 0x3B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     MotionWakeup = 0x3C,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VX = 0x40,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VY = 0x41,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VZ = 0x42,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VBRX = 0x43,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VBRY = 0x44,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VBRZ = 0x45,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     VNO = 0x46,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlPower = 0x81,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlSleep = 0x82,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlWake = 0x83,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlContextMenu = 0x84,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMainMenu = 0x85,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlApplicationMenu = 0x86,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlHelpMenu = 0x87,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMenuExit = 0x88,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMenuSelect = 0x89,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMenuRight = 0x8A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMenuLeft = 0x8B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMenuUp = 0x8C,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SystemControlMenuDown = 0x8D,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardNoEvent = 0x00,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardRollover = 0x01,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardPostFail = 0x02,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardUndefined = 0x03,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardaA = 0x04,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardzZ = 0x1D,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Keyboard1 = 0x1E,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     Keyboard0 = 0x27,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardLeftControl = 0xE0,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardLeftShift = 0xE1,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardLeftALT = 0xE2,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardLeftGUI = 0xE3,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardRightControl = 0xE4,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardRightShift = 0xE5,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardRightALT = 0xE6,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardRightGUI = 0xE7,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardScrollLock = 0x47,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardNumLock = 0x53,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardCapsLock = 0x39,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardF1 = 0x3A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardF12 = 0x45,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardReturn = 0x28,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardEscape = 0x29,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardDelete = 0x2A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     KeyboardPrintScreen = 0x46,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDNumLock = 0x01,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCapsLock = 0x02,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDScrollLock = 0x03,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCompose = 0x04,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDKana = 0x05,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDPower = 0x06,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDShift = 0x07,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDDoNotDisturb = 0x08,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDMute = 0x09,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDToneEnable = 0x0A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDHighCutFilter = 0x0B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDLowCutFilter = 0x0C,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDEqualizerEnable = 0x0D,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSoundFieldOn = 0x0E,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSurroundFieldOn = 0x0F,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRepeat = 0x10,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDStereo = 0x11,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSamplingRateDirect = 0x12,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSpinning = 0x13,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCAV = 0x14,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCLV = 0x15,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRecordingFormatDet = 0x16,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDOffHook = 0x17,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRing = 0x18,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDMessageWaiting = 0x19,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDDataMode = 0x1A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDBatteryOperation = 0x1B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDBatteryOK = 0x1C,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDBatteryLow = 0x1D,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSpeaker = 0x1E,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDHeadset = 0x1F,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDHold = 0x20,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDMicrophone = 0x21,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCoverage = 0x22,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDNightMode = 0x23,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSendCalls = 0x24,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCallPickup = 0x25,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDConference = 0x26,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDStandBy = 0x27,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCameraOn = 0x28,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDCameraOff = 0x29,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDOnLine = 0x2A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDOffLine = 0x2B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDBusy = 0x2C,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDReady = 0x2D,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDPaperOut = 0x2E,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDPaperJam = 0x2F,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRemote = 0x30,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDForward = 0x31,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDReverse = 0x32,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDStop = 0x33,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRewind = 0x34,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDFastForward = 0x35,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDPlay = 0x36,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDPause = 0x37,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRecord = 0x38,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDError = 0x39,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSelectedIndicator = 0x3A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDInUseIndicator = 0x3B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDMultiModeIndicator = 0x3C,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDIndicatorOn = 0x3D,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDIndicatorFlash = 0x3E,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDIndicatorSlowBlink = 0x3F,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDIndicatorFastBlink = 0x40,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDIndicatorOff = 0x41,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDFlashOnTime = 0x42,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSlowBlinkOnTime = 0x43,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDSlowBlinkOffTime = 0x44,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDFastBlinkOnTime = 0x45,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDFastBlinkOffTime = 0x46,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDIndicatorColor = 0x47,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDRed = 0x48,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDGreen = 0x49,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDAmber = 0x4A,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     LEDGenericIndicator = 0x3B,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyPhone = 0x01,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyAnsweringMachine = 0x02,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyMessageControls = 0x03,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyHandset = 0x04,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyHeadset = 0x05,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyKeypad = 0x06,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     TelephonyProgrammableButton = 0x07,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SimulationRudder = 0xBA,
 
-    /// <summary></summary>
+    /// <summary> </summary>
     SimulationThrottle = 0xBB
 }

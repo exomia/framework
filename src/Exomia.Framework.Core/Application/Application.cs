@@ -146,7 +146,7 @@ public abstract unsafe partial class Application : IDisposable
             }
 
             _IsRunningChanged -= OnIsRunningChanged;
-            
+
             UnloadContent();
         }
     }
@@ -186,9 +186,9 @@ public abstract unsafe partial class Application : IDisposable
         if (!_disposed)
         {
             _collector.Dispose();
-            
+
             OnDispose(disposing);
-            
+
             if (disposing)
             {
                 lock (_renderableComponents)
@@ -210,7 +210,7 @@ public abstract unsafe partial class Application : IDisposable
                 _applicationComponents.Clear();
                 _pendingInitializables.Clear();
             }
-            
+
             _disposed = true;
         }
     }

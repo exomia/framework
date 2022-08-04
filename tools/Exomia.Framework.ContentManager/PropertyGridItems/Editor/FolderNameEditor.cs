@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -8,10 +8,8 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Linq;
 using Exomia.Framework.ContentManager.Attributes;
 
 namespace Exomia.Framework.ContentManager.PropertyGridItems.Editor;
@@ -33,8 +31,8 @@ public class FolderNameEditor : UITypeEditor
         using (OpenFileDialog dialog = new OpenFileDialog
                {
                    Title = context.PropertyDescriptor.Attributes.OfType<FolderNameEditorTitleAttribute>()
-                                  ?.FirstOrDefault()
-                                  ?.Title ?? "Select a folder.",
+                                 ?.FirstOrDefault()
+                                 ?.Title ?? "Select a folder.",
                    RestoreDirectory = true
                })
         {

@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct POINT
+struct POINT
 {
     public int X;
     public int Y;

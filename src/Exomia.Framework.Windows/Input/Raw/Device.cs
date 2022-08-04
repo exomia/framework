@@ -15,7 +15,7 @@ using Exomia.Framework.Windows.Win32.RawInput;
 
 namespace Exomia.Framework.Windows.Input.Raw;
 
-internal static class Device
+static class Device
 {
     public static void RegisterDevice(HIDUsagePage        hidUsagePage,
                                       HIDUsage            hidUsage,

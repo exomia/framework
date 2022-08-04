@@ -14,9 +14,9 @@ layout(location = 0) out vec4 outColor;
 layout(location = 1) out vec2 outUV;
 
 void main() {
-//#ifdef GL_EXT_debug_printf
-//    debugPrintfEXT("gl_VertexIndex = %i", gl_VertexIndex);
-//#endif
+    //#ifdef GL_EXT_debug_printf
+    //    debugPrintfEXT("gl_VertexIndex = %i", gl_VertexIndex);
+    //#endif
 
     outColor = inColor * inPosition.w;
     outUV = inUV;

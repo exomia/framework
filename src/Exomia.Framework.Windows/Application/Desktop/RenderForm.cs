@@ -143,7 +143,7 @@ sealed partial class RenderForm : IWin32RenderForm
     /// <summary> Initializes a new instance of the <see cref="RenderForm" /> class. </summary>
     /// <param name="configuration"> The configuration. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    /// <exception cref="Win32Exception">        Thrown when a Window 32 error condition occurs. </exception>
+    /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
     public RenderForm(IOptions<RenderFormConfiguration> configuration)
     {
         if (configuration == null) { throw new ArgumentNullException(nameof(configuration)); }
@@ -225,10 +225,10 @@ sealed partial class RenderForm : IWin32RenderForm
     }
 
     /// <summary> Resizes the window. </summary>
-    /// <param name="width">  The width. </param>
+    /// <param name="width"> The width. </param>
     /// <param name="height"> The height. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-    /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
+    /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
     public void Resize(int width, int height)
     {
         RECT windowRect;
@@ -281,7 +281,7 @@ sealed partial class RenderForm : IWin32RenderForm
     /// <summary> Creates the window. </summary>
     /// <returns> The new window. </returns>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
-    /// <exception cref="Win32Exception">              Thrown when a Window 32 error condition occurs. </exception>
+    /// <exception cref="Win32Exception"> Thrown when a Window 32 error condition occurs. </exception>
     public (IntPtr, IntPtr) CreateWindow()
     {
         if (HWnd != IntPtr.Zero) { return (_wndClassEx.hInstance, HWnd); }

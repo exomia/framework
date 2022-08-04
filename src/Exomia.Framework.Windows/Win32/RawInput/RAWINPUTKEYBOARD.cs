@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct RAWINPUTKEYBOARD
+struct RAWINPUTKEYBOARD
 {
     /// <summary> Scan code for key depression. </summary>
     public ushort MakeCode;

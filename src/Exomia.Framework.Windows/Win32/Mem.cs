@@ -15,7 +15,7 @@ using System.Security;
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static unsafe class Mem
+static unsafe class Mem
 {
     private const string NTDLL = "ntdll.dll";
 
@@ -24,9 +24,9 @@ internal static unsafe class Mem
     ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
     ///     destination.
     /// </summary>
-    /// <param name="dest">destination ptr</param>
-    /// <param name="src">source ptr</param>
-    /// <param name="count">count of bytes to copy</param>
+    /// <param name="dest"> destination ptr </param>
+    /// <param name="src"> source ptr </param>
+    /// <param name="count"> count of bytes to copy </param>
     [SuppressUnmanagedCodeSecurity]
     [DllImport(NTDLL, EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
     public static extern void Cpy(void* dest, void* src, int count);
@@ -36,9 +36,9 @@ internal static unsafe class Mem
     ///     Copies the values of num bytes from the location pointed to by source directly to the memory block pointed to by
     ///     destination.
     /// </summary>
-    /// <param name="dest">destination ptr</param>
-    /// <param name="src">source ptr</param>
-    /// <param name="count">count of bytes to copy</param>
+    /// <param name="dest"> destination ptr </param>
+    /// <param name="src"> source ptr </param>
+    /// <param name="count"> count of bytes to copy </param>
     [SuppressUnmanagedCodeSecurity]
     [DllImport(NTDLL, EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
     public static extern void Move(void* dest, void* src, int count);
@@ -48,7 +48,7 @@ internal static unsafe class Mem
     ///     Sets the first num bytes of the block of memory pointed by ptr to the specified value
     ///     (interpreted as an unsigned char).
     /// </summary>
-    /// <param name="dest">  [in,out] destination addr. </param>
+    /// <param name="dest"> [in,out] destination addr. </param>
     /// <param name="value"> value to be set. </param>
     /// <param name="count"> count of bytes. </param>
     /// <returns>

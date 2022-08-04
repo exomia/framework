@@ -14,7 +14,7 @@
 // ReSharper disable CommentTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class WS
+static class WS
 {
     /// <summary> The window has a thin-line border. </summary>
     public const uint BORDER = 0x800000;

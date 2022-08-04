@@ -17,7 +17,7 @@ using Exomia.Framework.Windows.Win32.RawInput;
 // ReSharper disable IdentifierTypo
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class User32
+static class User32
 {
     private const string USER32 = "user32.dll";
 

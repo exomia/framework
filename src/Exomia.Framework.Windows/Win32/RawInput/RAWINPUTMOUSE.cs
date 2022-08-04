@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [StructLayout(LayoutKind.Explicit)]
-internal struct RAWINPUTMOUSE
+struct RAWINPUTMOUSE
 {
     /// <summary> The mouse state. </summary>
     [FieldOffset(0)]

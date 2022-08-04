@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Exomia.Framework.Windows\Exomia.Framework.Windows.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\Exomia.Framework.Windows\Exomia.Framework.Windows.csproj"/>
+    </ItemGroup>
 </Project>

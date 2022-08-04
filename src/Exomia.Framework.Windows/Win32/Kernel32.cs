@@ -13,7 +13,7 @@ using System.Security;
 
 namespace Exomia.Framework.Windows.Win32;
 
-internal static class Kernel32
+static class Kernel32
 {
     private const string KERNEL32 = "kernel32.dll";
 

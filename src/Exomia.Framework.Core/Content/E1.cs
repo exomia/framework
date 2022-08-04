@@ -21,7 +21,7 @@ public class E1
 
     /// <summary> The texture magic header. </summary>
     public static readonly byte[] TextureMagicHeader = { 0x40, 0x74, 0x65, 0x78 };
-    
+
     /// <summary> The texture magic header. </summary>
     public static readonly byte[] SpritefontMagicHeader = { 0x40, 0x73, 0x66, 0x6E, 0x74 };
 }

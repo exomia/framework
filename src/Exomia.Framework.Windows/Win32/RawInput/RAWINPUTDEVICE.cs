@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Exomia.Framework.Windows.Win32.RawInput;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct RAWINPUTDEVICE
+struct RAWINPUTDEVICE
 {
     /// <summary> Top level collection Usage page for the raw input device. </summary>
     public HIDUsagePage UsagePage;
