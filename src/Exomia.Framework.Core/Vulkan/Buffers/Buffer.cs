@@ -393,7 +393,7 @@ public sealed unsafe class Buffer : IDisposable
 
         VkBuffer buffer;
         vkCreateBuffer(context->Device, &bufferCreateInfo, null, &buffer)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkBufferMemoryRequirementsInfo2 bufferMemoryRequirementsInfo2;
         bufferMemoryRequirementsInfo2.sType  = VkBufferMemoryRequirementsInfo2.STYPE;
@@ -414,7 +414,7 @@ public sealed unsafe class Buffer : IDisposable
 
         VkDeviceMemory deviceMemory;
         vkAllocateMemory(context->Device, &memoryAllocateInfo, null, &deviceMemory)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkBindBufferMemoryInfo bindBufferMemoryInfo;
         bindBufferMemoryInfo.sType        = VkBindBufferMemoryInfo.STYPE;
@@ -423,7 +423,7 @@ public sealed unsafe class Buffer : IDisposable
         bindBufferMemoryInfo.memory       = deviceMemory;
         bindBufferMemoryInfo.memoryOffset = VkDeviceSize.Zero;
         vkBindBufferMemory2(context->Device, 1u, &bindBufferMemoryInfo)
-            .AssertVkResult();
+           .AssertVkResult();
         ;
 
         return new Buffer(context->Device, buffer, deviceMemory, bufferCreateInfo.size);
@@ -437,7 +437,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         return ptr;
@@ -452,7 +452,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         return (T*)ptr;
@@ -466,7 +466,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         return ptr;
@@ -481,7 +481,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, Size - offset, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         return (T*)ptr;
@@ -495,7 +495,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         return ptr;
@@ -510,7 +510,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset, length, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         return (T*)ptr;
@@ -526,7 +526,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, Size, 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         *(T*)ptr = value;
@@ -544,7 +544,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         Unsafe.CopyBlock(ptr, src, (uint)(sizeof(T) * count));
@@ -562,7 +562,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)sizeof(T), 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
         *(T*)ptr = value;
@@ -581,7 +581,7 @@ public sealed unsafe class Buffer : IDisposable
         void* ptr;
         vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 

@@ -31,7 +31,7 @@ public sealed unsafe partial class Swapchain
                 1u,            _context->InFlightFences + _context->FrameInFlight,
                 VkBool32.True, ulong.MaxValue)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -73,7 +73,7 @@ public sealed unsafe partial class Swapchain
                     1u,            _context->ImagesInFlightFence + _context->ImageIndex,
                     VkBool32.True, ulong.MaxValue)
 #if DEBUG
-                .AssertVkResult()
+               .AssertVkResult()
 #endif
                 ;
         }
@@ -180,13 +180,13 @@ public sealed unsafe partial class Swapchain
 
         vkResetFences(_vkContext->Device, 1u, &fence)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
         vkQueueSubmit(*(_vkContext->Queues - 1u), 1u, &submitInfo, fence)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
     }
@@ -228,7 +228,7 @@ public sealed unsafe partial class Swapchain
                         _context->MaxFramesInFlight, _context->InFlightFences,
                         VkBool32.True,               ulong.MaxValue)
 #if DEBUG
-                    .AssertVkResult()
+                   .AssertVkResult()
 #endif
                     ;
 

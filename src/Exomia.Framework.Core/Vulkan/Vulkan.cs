@@ -86,7 +86,7 @@ public sealed unsafe partial class Vulkan : IDisposable
 
         vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -109,7 +109,7 @@ public sealed unsafe partial class Vulkan : IDisposable
         VkFence fence;
         vkCreateFence(device, &fenceCreateInfo, null, &fence)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -128,7 +128,7 @@ public sealed unsafe partial class Vulkan : IDisposable
     {
         vkEndCommandBuffer(commandBuffer)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -145,13 +145,13 @@ public sealed unsafe partial class Vulkan : IDisposable
 
         vkQueueSubmit(queue, 1u, &submitInfo, fence)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
         vkWaitForFences(device, 1u, &fence, VK_TRUE, ulong.MaxValue)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -173,7 +173,7 @@ public sealed unsafe partial class Vulkan : IDisposable
         VkFence fence;
         vkCreateFence(device, &fenceCreateInfo, null, &fence)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 

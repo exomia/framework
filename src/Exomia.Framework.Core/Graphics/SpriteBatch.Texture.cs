@@ -340,7 +340,7 @@ public sealed partial class SpriteBatch
 
                     textureInfo.DescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
                     vkAllocateDescriptorSets(_vkContext->Device, &textureDescriptorSetAllocateInfo, textureInfo.DescriptorSets)
-                        .AssertVkResult();
+                       .AssertVkResult();
 
                     for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
                     {

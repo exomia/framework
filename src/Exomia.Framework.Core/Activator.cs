@@ -43,15 +43,15 @@ public static class Activator
 
         return
             Expression
-                .Lambda(
+               .Lambda(
                     dType,
                     Expression.New(
                         mi.ReturnType.GetConstructor(pTypes)
-                        ?? throw new NullReferenceException(
+                     ?? throw new NullReferenceException(
                             // ReSharper disable once CoVariantArrayConversion (can be disabled cause we do no write operations at run-time)
                             $"Can not create a constructor for {dType}"), parameters),
                     parameters)
-                .Compile();
+               .Compile();
     }
 
     /// <summary>
@@ -92,12 +92,14 @@ public static class Activator
         }
 
         return (Creator<TRes>)Expression.Lambda(
-                                            typeof(Creator<TRes>),
-                                            Expression.New(
-                                                typeof(TRes).GetConstructor(constructorParameters)
-                                                ?? throw new ArgumentException(
-                                                    "This type does not have a constructor that takes the passed in set of parameters.",
-                                                    nameof(constructorParameters)), argsExpressions), param)
+                                             typeof(Creator<TRes>),
+                                             Expression.New(
+                                                 typeof(TRes).GetConstructor(constructorParameters)
+                                              ?? throw new ArgumentException(
+                                                     "This type does not have a constructor that takes the passed in set of parameters.",
+                                                     nameof(constructorParameters)),
+                                                 argsExpressions),
+                                             param)
                                         .Compile();
     }
 

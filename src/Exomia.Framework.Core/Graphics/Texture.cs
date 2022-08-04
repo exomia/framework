@@ -126,7 +126,7 @@ public sealed unsafe class Texture : IDisposable
 
             VkImage image;
             vkCreateImage(vkContext->Device, &imageCreateInfo, null, &image)
-                .AssertVkResult();
+               .AssertVkResult();
 
             VkMemoryRequirements memRequirements;
             vkGetImageMemoryRequirements(vkContext->Device, image, &memRequirements);
@@ -139,10 +139,10 @@ public sealed unsafe class Texture : IDisposable
 
             VkDeviceMemory imageMemory;
             vkAllocateMemory(vkContext->Device, &allocInfo, null, &imageMemory)
-                .AssertVkResult();
+               .AssertVkResult();
 
             vkBindImageMemory(vkContext->Device, image, imageMemory, 0)
-                .AssertVkResult();
+               .AssertVkResult();
 
             VkCommandBuffer commandBuffer = Vulkan.Vulkan.BeginImmediateSubmit(
                 vkContext->Device, vkContext->ShortLivedCommandPool);

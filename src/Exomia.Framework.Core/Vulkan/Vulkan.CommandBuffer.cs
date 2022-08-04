@@ -36,6 +36,6 @@ sealed unsafe partial class Vulkan
         commandBufferAllocateInfo.commandBufferCount = commandBufferCount;
 
         vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffers)
-            .AssertVkResult();
+           .AssertVkResult();
     }
 }

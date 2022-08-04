@@ -29,7 +29,7 @@ sealed unsafe partial class Vulkan
 
         VkShaderModule module;
         vkCreateShaderModule(device, &shaderModuleCreateInfo, null, &module)
-            .AssertVkResult();
+           .AssertVkResult();
 
         shaderModule = module;
     }

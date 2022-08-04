@@ -27,7 +27,7 @@ sealed class E1FileStreamContentResolver : IContentResolver
 
         byte[] buffer = new byte[E1.MagicHeader.Length];
         if (stream.Read(buffer, 0, buffer.Length) != E1.MagicHeader.Length
-            || !E1.MagicHeader.SequenceEqual(buffer))
+         || !E1.MagicHeader.SequenceEqual(buffer))
         {
             stream.Dispose();
             return null;

@@ -24,7 +24,7 @@ public static class CoreExtensions
     public static IServiceCollection AddDefaultContentManagement(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .AddSingleton<IContentManager, ContentManager>();
+           .AddSingleton<IContentManager, ContentManager>();
     }
 
     /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default scene management. </summary>
@@ -34,7 +34,7 @@ public static class CoreExtensions
     public static IServiceCollection AddDefaultSceneManagement(this IServiceCollection serviceCollection, Func<SceneBuilder, SceneBuilder> sceneBuilder)
     {
         return serviceCollection
-            .AddSingleton<ISceneManager>(
+           .AddSingleton<ISceneManager>(
                 p => new SceneManager(
                     p.GetRequiredService<IInputDevice>(),
                     sceneBuilder(new SceneBuilder(p)).BuildAndClear()));

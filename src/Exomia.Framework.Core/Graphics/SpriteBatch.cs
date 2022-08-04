@@ -224,7 +224,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             if (_vkContext->Device != VkDevice.Null)
             {
                 vkDeviceWaitIdle(_vkContext->Device)
-                    .AssertVkResult();
+                   .AssertVkResult();
 
                 _uniformBuffer.Dispose();
                 _indexBuffer.Dispose();

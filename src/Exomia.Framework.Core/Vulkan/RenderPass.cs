@@ -162,7 +162,7 @@ public sealed unsafe class RenderPass : IDisposable
 
         VkRenderPass renderPass;
         vkCreateRenderPass2(vkContext->Device, &renderPassCreateInfo2, null, &renderPass)
-            .AssertVkResult();
+           .AssertVkResult();
 
         return new RenderPass(vkContext, renderPass);
     }
@@ -180,7 +180,7 @@ public sealed unsafe class RenderPass : IDisposable
             if (_vkContext->Device != VkDevice.Null && _renderPass != VkRenderPass.Null)
             {
                 vkDeviceWaitIdle(_vkContext->Device)
-                    .AssertVkResult();
+                   .AssertVkResult();
 
                 vkDestroyRenderPass(_vkContext->Device, _renderPass, null);
                 _renderPass = VkRenderPass.Null;

@@ -60,7 +60,7 @@ public sealed unsafe class Renderer : IDisposable
                 commandBuffer = *(_commandBuffers + _swapchainContext->FrameInFlight),
                 &commandBufferBeginInfo)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -96,7 +96,7 @@ public sealed unsafe class Renderer : IDisposable
 #endif
         vkEndCommandBuffer(*(_commandBuffers + _swapchainContext->FrameInFlight))
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -119,7 +119,7 @@ public sealed unsafe class Renderer : IDisposable
                 _commandBuffers         != null)
             {
                 vkDeviceWaitIdle(_vkContext->Device)
-                    .AssertVkResult();
+                   .AssertVkResult();
 
                 vkFreeCommandBuffers(_vkContext->Device, _vkContext->CommandPool, _swapchainContext->MaxFramesInFlight, _commandBuffers);
                 Allocator.Free(ref _commandBuffers, _swapchainContext->MaxFramesInFlight);

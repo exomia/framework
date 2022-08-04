@@ -58,19 +58,19 @@ public static class LinqExt<T>
         ParameterExpression rExpr      = Expression.Variable(typeof(T));
         LabelTarget         breakLabel = Expression.Label(typeof(T));
         return Expression.Lambda<Func<T[], T>>(
-                             Expression.Block(
-                                 new[] { rExpr, iExpr },
-                                 Expression.Loop(
-                                     Expression.IfThenElse(
-                                         Expression.LessThan(iExpr, Expression.ArrayLength(arrayExpr)),
-                                         Expression.Block(
-                                             Expression.AddAssign(
-                                                 rExpr,
-                                                 Expression.ArrayAccess(arrayExpr, iExpr)),
-                                             Expression.Assign(iExpr, Expression.Increment(iExpr))),
-                                         Expression.Break(breakLabel, rExpr)
-                                     ),
-                                     breakLabel)), arrayExpr)
+                              Expression.Block(
+                                  new[] { rExpr, iExpr },
+                                  Expression.Loop(
+                                      Expression.IfThenElse(
+                                          Expression.LessThan(iExpr, Expression.ArrayLength(arrayExpr)),
+                                          Expression.Block(
+                                              Expression.AddAssign(
+                                                  rExpr,
+                                                  Expression.ArrayAccess(arrayExpr, iExpr)),
+                                              Expression.Assign(iExpr, Expression.Increment(iExpr))),
+                                          Expression.Break(breakLabel, rExpr)
+                                      ),
+                                      breakLabel)), arrayExpr)
                          .Compile(false);
     }
 
@@ -87,30 +87,30 @@ public static class LinqExt<T>
             enumeratorVar, typeof(IEnumerator).GetMethod("MoveNext") ?? throw new InvalidOperationException());
         LabelTarget endLabel = Expression.Label(elementType, "endLabel");
         return Expression.Lambda<Func<IEnumerable<T>, T>>(
-                             Expression.Block(
-                                 new[] { enumeratorVar, rExpr },
-                                 Expression.Assign(
-                                     enumeratorVar,
-                                     Expression.Call(
-                                         arrayExpr,
-                                         enumerableType.GetMethod("GetEnumerator") ??
-                                         throw new InvalidOperationException())),
-                                 Expression.IfThenElse(
-                                     Expression.Equal(moveNextCall, Expression.Constant(true)),
-                                     Expression.Assign(
-                                         rExpr,
-                                         Expression.Property(enumeratorVar, "Current")),
-                                     Expression.Return(endLabel, Expression.Default(elementType))
-                                 ),
-                                 Expression.Loop(
-                                     Expression.IfThenElse(
-                                         Expression.Equal(moveNextCall, Expression.Constant(true)),
-                                         Expression.AddAssign(
-                                             rExpr,
-                                             Expression.Property(enumeratorVar, "Current")),
-                                         Expression.Return(endLabel, rExpr)
-                                     )),
-                                 Expression.Label(endLabel, rExpr)), arrayExpr)
+                              Expression.Block(
+                                  new[] { enumeratorVar, rExpr },
+                                  Expression.Assign(
+                                      enumeratorVar,
+                                      Expression.Call(
+                                          arrayExpr,
+                                          enumerableType.GetMethod("GetEnumerator") ??
+                                          throw new InvalidOperationException())),
+                                  Expression.IfThenElse(
+                                      Expression.Equal(moveNextCall, Expression.Constant(true)),
+                                      Expression.Assign(
+                                          rExpr,
+                                          Expression.Property(enumeratorVar, "Current")),
+                                      Expression.Return(endLabel, Expression.Default(elementType))
+                                  ),
+                                  Expression.Loop(
+                                      Expression.IfThenElse(
+                                          Expression.Equal(moveNextCall, Expression.Constant(true)),
+                                          Expression.AddAssign(
+                                              rExpr,
+                                              Expression.Property(enumeratorVar, "Current")),
+                                          Expression.Return(endLabel, rExpr)
+                                      )),
+                                  Expression.Label(endLabel, rExpr)), arrayExpr)
                          .Compile(false);
     }
 }

@@ -190,7 +190,7 @@ public sealed unsafe partial class SpriteBatch
 
         vkEndCommandBuffer(subCommandBuffer)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 
@@ -228,7 +228,7 @@ public sealed unsafe partial class SpriteBatch
         commandBuffer = _commandBufferPool.Next(_swapchainContext->FrameInFlight);
         vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo)
 #if DEBUG
-            .AssertVkResult()
+           .AssertVkResult()
 #endif
             ;
 

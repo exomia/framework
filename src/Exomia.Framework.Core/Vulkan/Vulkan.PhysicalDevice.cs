@@ -57,11 +57,11 @@ sealed unsafe partial class Vulkan
     {
         uint presentModeCount = 0u;
         vkGetPhysicalDeviceSurfacePresentModesKHR(context->PhysicalDevice, context->SurfaceKhr, &presentModeCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkPresentModeKHR* pPresentModeKhr = stackalloc VkPresentModeKHR[(int)presentModeCount];
         vkGetPhysicalDeviceSurfacePresentModesKHR(context->PhysicalDevice, context->SurfaceKhr, &presentModeCount, pPresentModeKhr)
-            .AssertVkResult();
+           .AssertVkResult();
 
         for (int i = 0; i < presentModes.Length; i++)
         {
@@ -97,11 +97,11 @@ sealed unsafe partial class Vulkan
     {
         uint extensionCount = 0;
         vkEnumerateDeviceExtensionProperties(physicalDevice, layerName, &extensionCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkExtensionProperties* pAvailableExtensions = stackalloc VkExtensionProperties[(int)extensionCount];
         vkEnumerateDeviceExtensionProperties(physicalDevice, layerName, &extensionCount, pAvailableExtensions)
-            .AssertVkResult();
+           .AssertVkResult();
 
         for (uint i = 0; i < extensionCount; i++)
         {
@@ -127,8 +127,8 @@ sealed unsafe partial class Vulkan
 
         for (uint i = 0u; i < amountOfQueueFamilies; i++)
         {
-            if ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueCount                              > 0
-                && ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
+            if ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueCount                           > 0
+             && ((pQueueFamilyProperties2 + i)->queueFamilyProperties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
             {
                 queueFamilyIndex = i;
                 maxQueueCount    = (pQueueFamilyProperties2 + i)->queueFamilyProperties.queueCount;
@@ -145,11 +145,11 @@ sealed unsafe partial class Vulkan
     {
         uint physicalDeviceCount;
         vkEnumeratePhysicalDevices(_context->Instance, &physicalDeviceCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkPhysicalDevice* pPhysicalDevices = stackalloc VkPhysicalDevice[(int)physicalDeviceCount];
         vkEnumeratePhysicalDevices(_context->Instance, &physicalDeviceCount, pPhysicalDevices)
-            .AssertVkResult();
+           .AssertVkResult();
 
         for (uint i = 0; i < physicalDeviceCount; i++)
         {
@@ -176,7 +176,7 @@ sealed unsafe partial class Vulkan
             {
                 VkBool32 supported = VkBool32.False;
                 vkGetPhysicalDeviceSurfaceSupportKHR(*(pPhysicalDevices + i), queueFamilyIndex, _context->SurfaceKhr, &supported)
-                    .AssertVkResult();
+                   .AssertVkResult();
                 if (supported)
                 {
                     _context->PhysicalDevice = *(pPhysicalDevices + i);
@@ -198,11 +198,11 @@ sealed unsafe partial class Vulkan
     {
         uint layerCount = 0;
         vkEnumerateDeviceLayerProperties(physicalDevice, &layerCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkLayerProperties* pAvailableLayers = stackalloc VkLayerProperties[(int)layerCount];
         vkEnumerateDeviceLayerProperties(physicalDevice, &layerCount, pAvailableLayers)
-            .AssertVkResult();
+           .AssertVkResult();
 
         string[] availableLayerNames = new string[layerCount];
         for (uint i = 0; i < layerCount; i++)

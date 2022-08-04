@@ -95,20 +95,20 @@ sealed unsafe partial class Vulkan
             : (void*)Marshal.GetFunctionPointerForDelegate(
                 debugUtilsMessengerConfiguration.LogHandler =
                     Expression.Lambda<LogHandler>(
-                                  Expression.Call(
-                                      null,
-                                      typeof(Vulkan).GetMethod(
-                                          nameof(LogCallback),
-                                          BindingFlags.NonPublic | BindingFlags.Static,
-                                          null,
-                                          CallingConventions.Standard,
-                                          parameters.Select(p => p.Type).ToArray(),
-                                          null) ?? throw new NullReferenceException(),
-                                      parameters.Cast<Expression>()),
-                                  parameters.OfType<ParameterExpression>())
+                                   Expression.Call(
+                                       null,
+                                       typeof(Vulkan).GetMethod(
+                                           nameof(LogCallback),
+                                           BindingFlags.NonPublic | BindingFlags.Static,
+                                           null,
+                                           CallingConventions.Standard,
+                                           parameters.Select(p => p.Type).ToArray(),
+                                           null) ?? throw new NullReferenceException(),
+                                       parameters.Cast<Expression>()),
+                                   parameters.OfType<ParameterExpression>())
                               .Compile());
 
         vkCreateDebugUtilsMessengerEXT(_context->Instance, &debugUtilsMessengerCreateInfoExt, null, &_context->DebugUtilsMessengerExt)
-            .AssertVkResult();
+           .AssertVkResult();
     }
 }

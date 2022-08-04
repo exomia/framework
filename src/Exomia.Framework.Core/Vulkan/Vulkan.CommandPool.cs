@@ -32,7 +32,7 @@ sealed unsafe partial class Vulkan
         commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 
         vkCreateCommandPool(device, &commandPoolCreateInfo, null, commandPool)
-            .AssertVkResult();
+           .AssertVkResult();
     }
 
     /// <summary> Destroys the command pool. </summary>

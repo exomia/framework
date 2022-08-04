@@ -420,7 +420,7 @@ public sealed class ContentManager : IContentManager
             }
 
             return contentReader.ReadContent(this, ref parameters)
-                ?? throw new NotSupportedException(
+             ?? throw new NotSupportedException(
                     $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
         }
         finally

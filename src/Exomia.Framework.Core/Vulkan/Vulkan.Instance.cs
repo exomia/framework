@@ -73,11 +73,11 @@ sealed unsafe partial class Vulkan
     {
         uint extensionCount = 0u;
         vkEnumerateInstanceExtensionProperties(layerName, &extensionCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkExtensionProperties* pAvailableExtensions = stackalloc VkExtensionProperties[(int)extensionCount];
         vkEnumerateInstanceExtensionProperties(layerName, &extensionCount, pAvailableExtensions)
-            .AssertVkResult();
+           .AssertVkResult();
 
         for (uint i = 0u; i < extensionCount; i++)
         {
@@ -110,7 +110,7 @@ sealed unsafe partial class Vulkan
     {
         VkVersion instanceVersion;
         vkEnumerateInstanceVersion(&instanceVersion)
-            .AssertVkResult();
+           .AssertVkResult();
 
         _logger.LogInformation("Vulkan instance version: {0}", instanceVersion.ToString());
 
@@ -214,7 +214,7 @@ sealed unsafe partial class Vulkan
         try
         {
             vkCreateInstance(&instanceCreateInfo, null, &_context->Instance)
-                .AssertVkResult();
+               .AssertVkResult();
 
             _context->Version = _applicationConfiguration.ApiVersion;
 
@@ -273,11 +273,11 @@ sealed unsafe partial class Vulkan
     {
         uint layerCount = 0u;
         vkEnumerateInstanceLayerProperties(&layerCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkLayerProperties* pAvailableLayers = stackalloc VkLayerProperties[(int)layerCount];
         vkEnumerateInstanceLayerProperties(&layerCount, pAvailableLayers)
-            .AssertVkResult();
+           .AssertVkResult();
 
         string[] availableLayerNames = new string[layerCount];
         for (uint i = 0u; i < layerCount; i++)

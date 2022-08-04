@@ -65,10 +65,10 @@ public sealed class ApplicationBuilder : IApplicationBuilder
     {
         IServiceCollection appServiceCollection = new ServiceCollection()
                                                   /* vulkan */
-                                                  .AddSingleton<Vulkan.Vulkan>()
+                                                 .AddSingleton<Vulkan.Vulkan>()
                                                   /* application */
-                                                  .AddSingleton<TApplication>()
-                                                  .AddSingleton<Application>(p => p.GetRequiredService<TApplication>());
+                                                 .AddSingleton<TApplication>()
+                                                 .AddSingleton<Application>(p => p.GetRequiredService<TApplication>());
 
         /* vulkan options */
         AddOptions<ApplicationConfiguration>(appServiceCollection);
@@ -120,8 +120,8 @@ public sealed class ApplicationBuilder : IApplicationBuilder
         if (_configurables.TryGetValue(typeof(TOption), out IList<Action<object, IServiceProvider>>? callbacks))
         {
             serviceCollection
-                .AddOptions<TOption>()
-                .Configure<IServiceProvider>(((configuration, provider) =>
+               .AddOptions<TOption>()
+               .Configure<IServiceProvider>(((configuration, provider) =>
                 {
                     foreach (Action<object, IServiceProvider> callback in callbacks)
                     {

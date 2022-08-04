@@ -121,7 +121,7 @@ sealed unsafe partial class Vulkan
         try
         {
             vkCreateDevice(_context->PhysicalDevice, &deviceCreateInfo, null, &_context->Device)
-                .AssertVkResult();
+               .AssertVkResult();
 
             RetrieveDeviceQueue();
 
@@ -149,7 +149,7 @@ sealed unsafe partial class Vulkan
         if (_context->Device != VkDevice.Null)
         {
             vkDeviceWaitIdle(_context->Device)
-                .AssertVkResult();
+               .AssertVkResult();
 
             if (_context->ShortLivedCommandPool != VkCommandPool.Null)
             {

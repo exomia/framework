@@ -260,7 +260,7 @@ public sealed unsafe class Pipeline : IDisposable
 
         VkPipeline* pipelines = Allocator.Allocate<VkPipeline>(createInfos.Length);
         vkCreateGraphicsPipelines(vkContext->Device, VkPipelineCache.Null, (uint)createInfos.Length, graphicsPipelineCreateInfos, null, pipelines)
-            .AssertVkResult();
+           .AssertVkResult();
 
         return new Pipeline(vkContext->Device, pipelines, (uint)createInfos.Length);
     }

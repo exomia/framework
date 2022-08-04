@@ -180,7 +180,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         }
 
         if ((surfaceCapabilities2Khr.surfaceCapabilities.supportedTransforms & _swapchainConfiguration.PreTransform)
-            != _swapchainConfiguration.PreTransform)
+         != _swapchainConfiguration.PreTransform)
         {
             throw new VulkanException(
                 "The system doesn't support the pre transform '{0}' (supported: {1})!",
@@ -189,7 +189,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         }
 
         if ((surfaceCapabilities2Khr.surfaceCapabilities.supportedCompositeAlpha & _swapchainConfiguration.CompositeAlpha)
-            != _swapchainConfiguration.CompositeAlpha)
+         != _swapchainConfiguration.CompositeAlpha)
         {
             throw new VulkanException(
                 "The system doesn't support the composite alpha '{0}' (supported: {1})!",
@@ -198,7 +198,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         }
 
         if ((surfaceCapabilities2Khr.surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
-            != VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+         != VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
         {
             throw new VulkanException(
                 "The system doesn't support the usage flag '{0}' (supported: {1})!",
@@ -238,7 +238,7 @@ public sealed unsafe partial class Swapchain : IDisposable
 
         VkSwapchainKHR swapchainKhr;
         vkCreateSwapchainKHR(_vkContext->Device, &swapchainCreateInfoKhr, null, &swapchainKhr)
-            .AssertVkResult();
+           .AssertVkResult();
 
         if (_swapchainConfiguration.AfterSwapchainCreation != null &&
             !_swapchainConfiguration.AfterSwapchainCreation(_vkContext))
@@ -281,12 +281,12 @@ public sealed unsafe partial class Swapchain : IDisposable
     private void CreateImageViews()
     {
         vkGetSwapchainImagesKHR(_vkContext->Device, _swapchain, &_context->SwapchainImageCount, null)
-            .AssertVkResult();
+           .AssertVkResult();
 
         _context->SwapchainImages = Allocator.Allocate<VkImage>(_context->SwapchainImageCount);
 
         vkGetSwapchainImagesKHR(_vkContext->Device, _swapchain, &_context->SwapchainImageCount, _context->SwapchainImages)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkImageViewCreateInfo imageViewCreateInfo;
         imageViewCreateInfo.sType                           = VkImageViewCreateInfo.STYPE;
@@ -311,7 +311,7 @@ public sealed unsafe partial class Swapchain : IDisposable
             imageViewCreateInfo.image = *(_context->SwapchainImages + i);
 
             vkCreateImageView(_vkContext->Device, &imageViewCreateInfo, null, _context->SwapchainImageViews + i)
-                .AssertVkResult();
+               .AssertVkResult();
         }
     }
 
@@ -343,7 +343,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         imageCreateInfo.initialLayout         = VK_IMAGE_LAYOUT_UNDEFINED;
 
         vkCreateImage(_vkContext->Device, &imageCreateInfo, null, &_context->DepthStencilImage)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkImageMemoryRequirementsInfo2 imageMemoryRequirementsInfo2;
         imageMemoryRequirementsInfo2.sType = VkImageMemoryRequirementsInfo2.STYPE;
@@ -366,7 +366,7 @@ public sealed unsafe partial class Swapchain : IDisposable
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
         vkAllocateMemory(_vkContext->Device, &memoryAllocateInfo, null, &_context->DepthStencilDeviceMemory)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkBindImageMemoryInfo bindImageMemoryInfo;
         bindImageMemoryInfo.sType        = VkBindImageMemoryInfo.STYPE;
@@ -376,7 +376,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         bindImageMemoryInfo.memoryOffset = VkDeviceSize.Zero;
 
         vkBindImageMemory2(_vkContext->Device, 1u, &bindImageMemoryInfo)
-            .AssertVkResult();
+           .AssertVkResult();
 
         Vulkan.CreateImageView(
             _vkContext->Device,
@@ -420,7 +420,7 @@ public sealed unsafe partial class Swapchain : IDisposable
             framebufferCreateInfo.layers          = 1u;
 
             vkCreateFramebuffer(_vkContext->Device, &framebufferCreateInfo, null, _context->Framebuffers + i)
-                .AssertVkResult();
+               .AssertVkResult();
         }
     }
 
@@ -448,14 +448,14 @@ public sealed unsafe partial class Swapchain : IDisposable
             for (uint q = 0u; q < _vkContext->QueuesCount; q++)
             {
                 vkCreateFence(_vkContext->Device, &fenceCreateInfo, null, *(_context->QueuesFences + i) + q)
-                    .AssertVkResult();
+                   .AssertVkResult();
             }
             vkCreateFence(_vkContext->Device, &fenceCreateInfo, null, _context->InFlightFences + i)
-                .AssertVkResult();
+               .AssertVkResult();
             vkCreateSemaphore(_vkContext->Device, &semaphoreCreateInfo, null, _context->SemaphoresImageAvailable + i)
-                .AssertVkResult();
+               .AssertVkResult();
             vkCreateSemaphore(_vkContext->Device, &semaphoreCreateInfo, null, _context->SemaphoresRenderingDone + i)
-                .AssertVkResult();
+               .AssertVkResult();
         }
 
         _context->ImagesInFlightFence = Allocator.Allocate<VkFence>(_context->SwapchainImageCount, 0);
@@ -478,7 +478,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         if (_vkContext->Device != VkDevice.Null)
         {
             vkDeviceWaitIdle(_vkContext->Device)
-                .AssertVkResult();
+               .AssertVkResult();
 
             if (_context->InFlightFences != null)
             {

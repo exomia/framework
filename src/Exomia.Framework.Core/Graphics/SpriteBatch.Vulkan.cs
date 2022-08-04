@@ -183,7 +183,7 @@ public sealed unsafe partial class SpriteBatch
         samplerCreateInfo.maxLod                  = 0.0f;
 
         vkCreateSampler(_vkContext->Device, &samplerCreateInfo, null, &_context->TextureSampler)
-            .AssertVkResult();
+           .AssertVkResult();
 
         return true;
     }
@@ -203,7 +203,7 @@ public sealed unsafe partial class SpriteBatch
         uboDescriptorPoolCreateInfo.pPoolSizes    = &uboDescriptorPoolSize;
 
         vkCreateDescriptorPool(_vkContext->Device, &uboDescriptorPoolCreateInfo, null, &_context->UboDescriptorPool)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkDescriptorPoolSize textureDescriptorPoolSize;
         textureDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -218,7 +218,7 @@ public sealed unsafe partial class SpriteBatch
         textureDescriptorPoolCreateInfo.pPoolSizes    = &textureDescriptorPoolSize;
 
         vkCreateDescriptorPool(_vkContext->Device, &textureDescriptorPoolCreateInfo, null, &_context->TextureDescriptorPool)
-            .AssertVkResult();
+           .AssertVkResult();
 
         return true;
     }
@@ -240,7 +240,7 @@ public sealed unsafe partial class SpriteBatch
         uboDescriptorSetLayoutCreateInfo.pBindings    = &uboDescriptorSetLayoutBinding;
 
         vkCreateDescriptorSetLayout(_vkContext->Device, &uboDescriptorSetLayoutCreateInfo, null, &_context->UboDescriptorSetLayout)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkDescriptorSetLayoutBinding textureDescriptorSetLayoutBinding;
         textureDescriptorSetLayoutBinding.binding            = 0u;
@@ -257,7 +257,7 @@ public sealed unsafe partial class SpriteBatch
         textureDescriptorSetLayoutCreateInfo.pBindings    = &textureDescriptorSetLayoutBinding;
 
         vkCreateDescriptorSetLayout(_vkContext->Device, &textureDescriptorSetLayoutCreateInfo, null, &_context->TextureDescriptorSetLayout)
-            .AssertVkResult();
+           .AssertVkResult();
 
         VkDescriptorSetLayout* uboLayouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
         for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
@@ -274,7 +274,7 @@ public sealed unsafe partial class SpriteBatch
 
         _context->UboDescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
         vkAllocateDescriptorSets(_vkContext->Device, &uboDescriptorSetAllocateInfo, _context->UboDescriptorSets)
-            .AssertVkResult();
+           .AssertVkResult();
 
         for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
         {
@@ -319,7 +319,7 @@ public sealed unsafe partial class SpriteBatch
         pipelineLayoutCreateInfo.pPushConstantRanges    = null;
 
         vkCreatePipelineLayout(_vkContext->Device, &pipelineLayoutCreateInfo, null, &_context->PipelineLayout)
-            .AssertVkResult();
+           .AssertVkResult();
 
         return true;
     }
