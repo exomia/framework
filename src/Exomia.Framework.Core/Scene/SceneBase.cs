@@ -144,7 +144,10 @@ public abstract partial class SceneBase : IDisposable
         {
             State = SceneState.Disposing;
 
+            _collector.Dispose();
+
             OnDispose(disposing);
+
             if (disposing)
             {
                 lock (_renderableComponents)
@@ -166,8 +169,6 @@ public abstract partial class SceneBase : IDisposable
                 _sceneComponents.Clear();
                 _pendingInitializables.Clear();
             }
-
-            _collector.Dispose();
 
             State = SceneState.Disposed;
 

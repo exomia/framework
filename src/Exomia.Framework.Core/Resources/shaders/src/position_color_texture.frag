@@ -1,5 +1,5 @@
-#version 450 core
-#extension GL_KHR_vulkan_glsl : enable
+#version 460 core
+#extension GL_ARB_separate_shader_objects : enable
 //layout(constant_id = 0) const int MAX_TEXTURES_COUNT = 4;
 
 layout(set = 1, binding = 0) uniform sampler2D texSampler;
