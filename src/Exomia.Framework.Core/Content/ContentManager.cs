@@ -8,11 +8,8 @@
 
 #endregion
 
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Exomia.Framework.Core.Content.ContentReader;
-using Exomia.Framework.Core.Content.E1;
-using Exomia.Framework.Core.Content.Exceptions;
 using Exomia.Framework.Core.Content.Resolver;
 
 namespace Exomia.Framework.Core.Content;
@@ -22,13 +19,13 @@ public sealed partial class ContentManager : IContentManager
 {
     private const int INITIAL_QUEUE_SIZE = 16;
 
-    private readonly Dictionary<AssetKey, object>           _assetLockers;
-    private readonly Dictionary<AssetKey, object>           _loadedAssets;
-    private readonly List<IContentReaderFactory>            _registeredContentReaderFactories;
-    private readonly Dictionary<Type, IContentReader>       _registeredContentReaders;
-    private readonly List<IContentResolver>                 _registeredContentResolvers;
-    private readonly List<IEmbeddedResourceContentResolver> _registeredEmbeddedResourceResolvers;
-    private          string                                 _rootDirectory = string.Empty;
+    private readonly Dictionary<AssetKey, object>                       _assetLockers;
+    private readonly Dictionary<AssetKey, object>                       _loadedAssets;
+    private readonly Dictionary<Type, List<IContentReaderFactory>>      _registeredContentReaderFactories;
+    private readonly Dictionary<Type, Dictionary<Type, IContentReader>> _registeredContentReaders;
+    private readonly List<IContentResolver>                             _registeredContentResolvers;
+    private readonly List<IEmbeddedResourceContentResolver>             _registeredEmbeddedResourceResolvers;
+    private          string                                             _rootDirectory = string.Empty;
 
     /// <inheritdoc />
     public string RootDirectory
@@ -63,8 +60,8 @@ public sealed partial class ContentManager : IContentManager
         _loadedAssets                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
         _registeredContentResolvers          = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
         _registeredEmbeddedResourceResolvers = new List<IEmbeddedResourceContentResolver>(INITIAL_QUEUE_SIZE);
-        _registeredContentReaders            = new Dictionary<Type, IContentReader>(INITIAL_QUEUE_SIZE);
-        _registeredContentReaderFactories    = new List<IContentReaderFactory>(INITIAL_QUEUE_SIZE);
+        _registeredContentReaders            = new Dictionary<Type, Dictionary<Type, IContentReader>>(INITIAL_QUEUE_SIZE);
+        _registeredContentReaderFactories    = new Dictionary<Type, List<IContentReaderFactory>>(INITIAL_QUEUE_SIZE);
         _assetLockers                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
 
         List<(int order, IContentResolver resolver)>                 resolvers                 = new(3);

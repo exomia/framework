@@ -8,13 +8,19 @@
 
 #endregion
 
-using Exomia.Framework.Core.Content.E1;
+using Exomia.Framework.Core.Content.Protocols;
 
 namespace Exomia.Framework.Core.Content.Resolver;
 
 [ContentResolver(int.MinValue)]
 sealed class E1FileStreamContentResolver : IContentResolver
 {
+    /// <inheritdoc />
+    public Type ProtocolType
+    {
+        get { return typeof(E1Protocol); }
+    }
+    
     /// <inheritdoc />
     public bool Exists(string assetName)
     {

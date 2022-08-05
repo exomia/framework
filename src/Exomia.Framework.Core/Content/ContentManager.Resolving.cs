@@ -16,7 +16,7 @@ namespace Exomia.Framework.Core.Content;
 
 public sealed partial class ContentManager
 {
-    private Stream ResolveStream(string assetName)
+    private Stream ResolveStream(string assetName, out Type protocolType)
     {
         List<IContentResolver> resolvers;
         lock (_registeredContentResolvers)
@@ -38,7 +38,11 @@ public sealed partial class ContentManager
                 if (contentResolver.Exists(assetName))
                 {
                     Stream? stream = contentResolver.Resolve(assetName);
-                    if (stream != null) { return stream; }
+                    if (stream != null)
+                    {
+                        protocolType = contentResolver.ProtocolType;
+                        return stream;
+                    }
                 }
             }
             catch (Exception ex) { lastException = ex; }
@@ -47,7 +51,7 @@ public sealed partial class ContentManager
         throw new AssetNotFoundException(assetName, lastException);
     }
 
-    private Stream ResolveEmbeddedResourceStream(Type assetType, string assetName)
+    private Stream ResolveEmbeddedResourceStream(Type assetType, string assetName, out Type protocolType)
     {
         List<IEmbeddedResourceContentResolver> resolvers;
         lock (_registeredContentResolvers)
@@ -69,7 +73,11 @@ public sealed partial class ContentManager
                 if (contentResolver.Exists(assetType, assetName, out Assembly? assembly))
                 {
                     Stream? stream = contentResolver.Resolve(assembly, assetName);
-                    if (stream != null) { return stream; }
+                    if (stream != null)
+                    {
+                        protocolType = contentResolver.ProtocolType;
+                        return stream;
+                    }
                 }
             }
             catch (Exception ex) { lastException = ex; }
@@ -78,51 +86,69 @@ public sealed partial class ContentManager
         throw new AssetNotFoundException(assetName, lastException);
     }
 
-    private object LoadAssetWithDynamicContentReader(Type assetType, string assetName, Stream stream)
+    private object LoadAsset(Type assetType, string assetName, Stream stream, Type protocolType)
     {
-        ContentReaderParameters parameters = new(assetName, assetType, stream);
-
-        try
+        object LoadAssetFromContentReader(IContentReader contentReader)
         {
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (!_registeredContentReaders.TryGetValue(assetType, out IContentReader? contentReader))
+            ContentReaderParameters parameters = new(assetName, assetType, stream);
+            try
             {
-                lock (_registeredContentReaderFactories)
+                return contentReader.ReadContent(this, ref parameters)
+                 ?? throw new NotSupportedException(
+                        $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
+            }
+            finally
+            {
+                if (!parameters.KeepStreamOpen)
                 {
-                    if (!_registeredContentReaders.TryGetValue(assetType, out contentReader))
+                    stream.Dispose();
+                }
+            }
+        }
+
+        object LoadAssetFromFactory()
+        {
+            lock (_registeredContentReaders)
+            {
+                if (_registeredContentReaders.TryGetValue(protocolType, out Dictionary<Type, IContentReader>? contentReaders))
+                {
+                    if (contentReaders.TryGetValue(assetType, out IContentReader? contentReader))
                     {
-                        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                        foreach (IContentReaderFactory factory in _registeredContentReaderFactories)
+                        return LoadAssetFromContentReader(contentReader);
+                    }
+                }
+                else
+                {
+                    _registeredContentReaders.Add(protocolType, contentReaders = new Dictionary<Type, IContentReader>());
+                }
+
+                if (_registeredContentReaderFactories.TryGetValue(protocolType, out List<IContentReaderFactory>? factories))
+                {
+                    // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+                    foreach (IContentReaderFactory factory in factories)
+                    {
+                        if (factory.TryCreate(assetType, out IContentReader? contentReader))
                         {
-                            if (factory.TryCreate(assetType, out contentReader))
-                            {
-                                lock (_registeredContentReaders)
-                                {
-                                    _registeredContentReaders.Add(assetType, contentReader);
-                                }
-                                break;
-                            }
+                            contentReaders.Add(assetType, contentReader);
+                            return LoadAssetFromContentReader(contentReader);
                         }
                     }
                 }
-            }
 
-            if (contentReader == null)
-            {
                 throw new NotSupportedException(
-                    $"Type [{assetType.FullName}] doesn't provide a {nameof(ContentReadableAttribute)}, and there is no registered content reader/factory for it.");
+                    $"The protocol type [{protocolType}] has no registered content reader to load the asset {assetName} of type {assetType} from.");
+            }
+        }
+
+        {
+            // ReSharper disable once InconsistentlySynchronizedField
+            if (_registeredContentReaders.TryGetValue(protocolType, out Dictionary<Type, IContentReader>? contentReaders) &&
+                contentReaders.TryGetValue(assetType, out IContentReader? contentReader))
+            {
+                return LoadAssetFromContentReader(contentReader);
             }
 
-            return contentReader.ReadContent(this, ref parameters)
-             ?? throw new NotSupportedException(
-                    $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
-        }
-        finally
-        {
-            if (!parameters.KeepStreamOpen)
-            {
-                stream.Dispose();
-            }
+            return LoadAssetFromFactory();
         }
     }
 

@@ -19,8 +19,18 @@ public sealed partial class ContentManager
     {
         lock (_registeredContentReaders)
         {
-            if (_registeredContentReaders.ContainsKey(type)) { return false; }
-            _registeredContentReaders.Add(type, reader);
+            if (!_registeredContentReaders.TryGetValue(reader.ProtocolType, out Dictionary<Type, IContentReader>? contentReaders))
+            {
+                _registeredContentReaders.Add(reader.ProtocolType, new Dictionary<Type, IContentReader>
+                {
+                    [type] = reader
+                });
+
+                return true;
+            }
+            
+            if (contentReaders.ContainsKey(type)) { return false; }
+            contentReaders.Add(type, reader);
         }
         return true;
     }
@@ -30,8 +40,18 @@ public sealed partial class ContentManager
     {
         lock (_registeredContentReaderFactories)
         {
-            if (_registeredContentReaderFactories.Contains(factory)) { return false; }
-            _registeredContentReaderFactories.Add(factory);
+            if (!_registeredContentReaderFactories.TryGetValue(factory.ProtocolType, out List<IContentReaderFactory>? contentReaderFactories))
+            {
+                _registeredContentReaderFactories.Add(factory.ProtocolType, new List<IContentReaderFactory>
+                {
+                    factory
+                });
+
+                return true;
+            }
+            
+            if (contentReaderFactories.Contains(factory)) { return false; }
+            contentReaderFactories.Add(factory);
         }
         return true;
     }

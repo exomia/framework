@@ -10,13 +10,19 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Exomia.Framework.Core.Content.E1;
+using Exomia.Framework.Core.Content.Protocols;
 
 namespace Exomia.Framework.Core.Content.Resolver;
 
 [ContentResolver(int.MinValue)]
 sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolver
 {
+    /// <inheritdoc />
+    public Type ProtocolType
+    {
+        get { return typeof(E1Protocol); }
+    }
+    
     /// <inheritdoc />
     public bool Exists(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
     {

@@ -13,6 +13,9 @@ namespace Exomia.Framework.Core.Content.Resolver;
 /// <summary> A content resolver is in charge of locating a stream from an asset name. </summary>
 public interface IContentResolver
 {
+    /// <summary> The protocol type this <see cref="IContentResolver"/> can resolve content of. </summary>
+    Type ProtocolType { get; }
+    
     /// <summary> Checks if the specified asset name exists. </summary>
     /// <param name="assetName"> Name of the asset. </param>
     /// <returns> <c> true </c> if the specified asset name exists; <c> false </c> otherwise. </returns>

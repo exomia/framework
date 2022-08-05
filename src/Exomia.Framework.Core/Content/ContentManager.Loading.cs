@@ -66,14 +66,16 @@ public sealed partial class ContentManager
                 {
                     if (!_loadedAssets.TryGetValue(assetKey, out result))
                     {
-                        result = LoadAssetWithDynamicContentReader(
+                        Type protocolType;
+                        Stream stream = fromEmbeddedResource
+                            ? ResolveEmbeddedResourceStream(assetType, assetName, out protocolType)
+                            : ResolveStream(Path.Combine(_rootDirectory, assetName), out protocolType);
+                        
+                        _loadedAssets.Add(assetKey, result = LoadAsset(
                             assetType,
                             assetName,
-                            fromEmbeddedResource
-                                ? ResolveEmbeddedResourceStream(assetType, assetName)
-                                : ResolveStream(Path.Combine(_rootDirectory, assetName)));
-
-                        _loadedAssets.Add(assetKey, result);
+                            stream,
+                            protocolType));
                     }
                 }
             }

@@ -9,32 +9,23 @@
 #endregion
 
 using Exomia.Framework.Core.Content.Compression;
-using Exomia.Framework.Core.Content.E1;
+using Exomia.Framework.Core.Content.Protocols;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Vulkan;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Exomia.Framework.Core.Content.ContentReader;
 
-sealed class E1TextureContentReader : IContentReader
+sealed unsafe class E1TextureContentReader : IContentReader
 {
     /// <inheritdoc />
-    public unsafe object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+    public Type ProtocolType
     {
-        byte[] buffer = new byte[E1Protocol.TextureMagicHeader.Length];
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.TextureMagicHeader.Length) != E1Protocol.TextureMagicHeader.Length ||
-            !E1Protocol.TextureMagicHeader.SequenceEqual(buffer))
-        {
-            //reset the stream position
-            parameters.Stream.Seek(-E1Protocol.TextureMagicHeader.Length, SeekOrigin.Current);
-            return null;
-        }
+        get { return typeof(E1Protocol); }
+    }
 
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-
+    private static object? ReadContentV10(IContentManager contentManager, ref ContentReaderParameters parameters)
+    {
         using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
         using BinaryReader br     = new BinaryReader(stream);
 
@@ -51,5 +42,42 @@ sealed class E1TextureContentReader : IContentReader
         VkContext* vkContext = contentManager.ServiceProvider.GetRequiredService<Vulkan.Vulkan>().Context;
 
         return Texture.Create(vkContext, (uint)width, (uint)height, data);
+    }
+
+    /// <inheritdoc />
+    public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+    {
+        long startPosition = parameters.Stream.Position;
+
+        byte[] buffer = new byte[E1Protocol.Texture.MagicHeader.Length];
+
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.Texture.MagicHeader.Length) != E1Protocol.Texture.MagicHeader.Length ||
+            !buffer.AsSpan().SequenceEqual(E1Protocol.Texture.MagicHeader))
+        {
+            //reset the stream position
+            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
+            return null;
+        }
+
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
+        {
+            //reset the stream position
+            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
+            return null;
+        }
+
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+
+        if (buffer.AsSpan().StartsWith(E1Protocol.Texture.Version10))
+        {
+            return ReadContentV10(contentManager, ref parameters);
+        }
+
+        //reset the stream position
+        parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
+        return null;
     }
 }

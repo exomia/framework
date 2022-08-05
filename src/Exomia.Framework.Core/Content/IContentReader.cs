@@ -13,6 +13,9 @@ namespace Exomia.Framework.Core.Content;
 /// <summary> An interface to read content. </summary>
 public interface IContentReader
 {
+    /// <summary> The protocol type this <see cref="IContentReader"/> can read content of. </summary>
+    Type ProtocolType { get; }
+    
     /// <summary> Reads the content of a particular data from a stream. </summary>
     /// <param name="contentManager"> The content manager. </param>
     /// <param name="parameters"> [in,out]. </param>

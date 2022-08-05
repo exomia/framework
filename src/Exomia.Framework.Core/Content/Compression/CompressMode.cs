@@ -14,8 +14,8 @@ namespace Exomia.Framework.Core.Content.Compression;
 public enum CompressMode : byte
 {
     /// <summary> An enum constant representing the none option. </summary>
-    None = 1 << 0,
+    None = 0x00,
 
     /// <summary> An enum constant representing the gzip option. </summary>
-    Gzip = 1 << 1
+    Gzip = 0x01
 }
