@@ -70,7 +70,7 @@ public sealed partial class ContentManager
                         Stream stream = fromEmbeddedResource
                             ? ResolveEmbeddedResourceStream(assetType, assetName, out protocolType)
                             : ResolveStream(Path.Combine(_rootDirectory, assetName), out protocolType);
-                        
+
                         _loadedAssets.Add(assetKey, result = LoadAsset(
                             assetType,
                             assetName,

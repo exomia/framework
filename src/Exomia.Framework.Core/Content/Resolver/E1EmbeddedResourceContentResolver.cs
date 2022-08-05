@@ -22,7 +22,7 @@ sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolve
     {
         get { return typeof(E1Protocol); }
     }
-    
+
     /// <inheritdoc />
     public bool Exists(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
     {
@@ -62,13 +62,13 @@ sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolve
             string name = GetAssetName(assetName, a);
             return a.GetManifestResourceNames().Any(resourceName => resourceName.Equals(name));
         }
-        
+
         if (CheckAssembly(assetType.Assembly))
         {
             assembly = assetType.Assembly;
             return true;
         }
-        
+
         foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         {
             if (CheckAssembly(a))

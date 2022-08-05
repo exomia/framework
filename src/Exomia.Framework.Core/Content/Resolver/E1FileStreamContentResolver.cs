@@ -20,7 +20,7 @@ sealed class E1FileStreamContentResolver : IContentResolver
     {
         get { return typeof(E1Protocol); }
     }
-    
+
     /// <inheritdoc />
     public bool Exists(string assetName)
     {

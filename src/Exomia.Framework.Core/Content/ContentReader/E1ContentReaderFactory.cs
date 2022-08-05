@@ -15,7 +15,7 @@ using Exomia.Framework.Core.Graphics;
 namespace Exomia.Framework.Core.Content.ContentReader;
 
 sealed class E1ContentReaderFactory : IContentReaderFactory
-{ 
+{
     /// <inheritdoc />
     public Type ProtocolType
     {

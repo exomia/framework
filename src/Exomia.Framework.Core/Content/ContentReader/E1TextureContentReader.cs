@@ -24,26 +24,6 @@ sealed unsafe class E1TextureContentReader : IContentReader
         get { return typeof(E1Protocol); }
     }
 
-    private static object? ReadContentV10(IContentManager contentManager, ref ContentReaderParameters parameters)
-    {
-        using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
-        using BinaryReader br     = new BinaryReader(stream);
-
-        int width  = br.ReadInt32();
-        int height = br.ReadInt32();
-
-        if (width == 0 || height == 0)
-        {
-            throw new NotSupportedException($"Invalid texture size of {width}x{height}; The texture must be at least 1x1!");
-        }
-
-        byte[] data = br.ReadBytes(width * height * 4 /* RGBA */);
-
-        VkContext* vkContext = contentManager.ServiceProvider.GetRequiredService<Vulkan.Vulkan>().Context;
-
-        return Texture.Create(vkContext, (uint)width, (uint)height, data);
-    }
-
     /// <inheritdoc />
     public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
@@ -79,5 +59,25 @@ sealed unsafe class E1TextureContentReader : IContentReader
         //reset the stream position
         parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
         return null;
+    }
+
+    private static object? ReadContentV10(IContentManager contentManager, ref ContentReaderParameters parameters)
+    {
+        using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
+        using BinaryReader br     = new BinaryReader(stream);
+
+        int width  = br.ReadInt32();
+        int height = br.ReadInt32();
+
+        if (width == 0 || height == 0)
+        {
+            throw new NotSupportedException($"Invalid texture size of {width}x{height}; The texture must be at least 1x1!");
+        }
+
+        byte[] data = br.ReadBytes(width * height * 4 /* RGBA */);
+
+        VkContext* vkContext = contentManager.ServiceProvider.GetRequiredService<Vulkan.Vulkan>().Context;
+
+        return Texture.Create(vkContext, (uint)width, (uint)height, data);
     }
 }

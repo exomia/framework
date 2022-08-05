@@ -24,6 +24,41 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
         get { return typeof(E1Protocol); }
     }
 
+    /// <inheritdoc />
+    public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
+    {
+        long   startPosition = parameters.Stream.Position;
+        byte[] buffer        = new byte[E1Protocol.Spritefont.MagicHeader.Length];
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.Spritefont.MagicHeader.Length) != E1Protocol.Spritefont.MagicHeader.Length ||
+            !buffer.AsSpan().SequenceEqual(E1Protocol.Spritefont.MagicHeader))
+        {
+            //reset the stream position
+            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
+            return null;
+        }
+
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
+        {
+            //reset the stream position
+            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
+            return null;
+        }
+
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+        parameters.Stream.ReadByte(); //reserved for future use
+
+        if (buffer.AsSpan().StartsWith(E1Protocol.Spritefont.Version10))
+        {
+            return ReadContentV10(contentManager, ref parameters);
+        }
+
+        //reset the stream position
+        parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
+        return null;
+    }
+
     private static object? ReadContentV10(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
         using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
@@ -85,40 +120,5 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
             Bold                    = bold,
             Italic                  = italic
         };
-    }
-
-    /// <inheritdoc />
-    public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
-    {
-        long   startPosition = parameters.Stream.Position;
-        byte[] buffer        = new byte[E1Protocol.Spritefont.MagicHeader.Length];
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.Spritefont.MagicHeader.Length) != E1Protocol.Spritefont.MagicHeader.Length ||
-            !buffer.AsSpan().SequenceEqual(E1Protocol.Spritefont.MagicHeader))
-        {
-            //reset the stream position
-            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
-            return null;
-        }
-
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
-        {
-            //reset the stream position
-            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
-            return null;
-        }
-        
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        
-        if (buffer.AsSpan().StartsWith(E1Protocol.Spritefont.Version10))
-        {
-            return ReadContentV10(contentManager, ref parameters);
-        }
-        
-        //reset the stream position
-        parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
-        return null;
     }
 }

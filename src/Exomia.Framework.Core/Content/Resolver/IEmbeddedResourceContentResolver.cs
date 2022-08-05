@@ -16,9 +16,9 @@ namespace Exomia.Framework.Core.Content.Resolver;
 /// <summary> A embedded resource content resolver is in charge of resolve a embedded resource stream. </summary>
 public interface IEmbeddedResourceContentResolver
 {
-    /// <summary> The protocol type this <see cref="IEmbeddedResourceContentResolver"/> can resolve content of. </summary>
+    /// <summary> The protocol type this <see cref="IEmbeddedResourceContentResolver" /> can resolve content of. </summary>
     Type ProtocolType { get; }
-    
+
     /// <summary> Checks if the specified asset name exists. </summary>
     /// <param name="assetType"> Type of the asset. </param>
     /// <param name="assetName"> Name of the asset. </param>

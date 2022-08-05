@@ -28,7 +28,7 @@ public sealed partial class ContentManager
 
                 return true;
             }
-            
+
             if (contentReaders.ContainsKey(type)) { return false; }
             contentReaders.Add(type, reader);
         }
@@ -49,7 +49,7 @@ public sealed partial class ContentManager
 
                 return true;
             }
-            
+
             if (contentReaderFactories.Contains(factory)) { return false; }
             contentReaderFactories.Add(factory);
         }
