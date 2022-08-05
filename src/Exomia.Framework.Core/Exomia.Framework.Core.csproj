@@ -27,9 +27,6 @@
         <Compile Update="**\*.*.cs">
             <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
         </Compile>
-        <Compile Update="Graphics\SpriteBatch.SpriteFont.cs">
-            <DependentUpon>SpriteBatch.cs</DependentUpon>
-        </Compile>
     </ItemGroup>
 
     <ItemGroup>
