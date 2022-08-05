@@ -9,11 +9,12 @@
 #endregion
 
 using Exomia.Framework.Core.Content.Compression;
+using Exomia.Framework.Core.Content.E1;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Vulkan;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Exomia.Framework.Core.Content.E1.ContentReader;
+namespace Exomia.Framework.Core.Content.ContentReader;
 
 sealed class E1TextureContentReader : IContentReader
 {

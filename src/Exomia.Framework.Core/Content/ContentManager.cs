@@ -10,8 +10,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Exomia.Framework.Core.Content.ContentReader;
 using Exomia.Framework.Core.Content.E1;
-using Exomia.Framework.Core.Content.E1.ContentReader;
 using Exomia.Framework.Core.Content.Exceptions;
 using Exomia.Framework.Core.Content.Resolver;
 
