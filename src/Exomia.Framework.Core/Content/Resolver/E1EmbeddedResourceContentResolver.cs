@@ -10,16 +10,17 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Exomia.Framework.Core.Content.E1;
 
-namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
+namespace Exomia.Framework.Core.Content.Resolver;
 
 [ContentResolver(int.MinValue)]
-sealed class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
+sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolver
 {
     /// <inheritdoc />
     public bool Exists(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
     {
-        if (Path.GetExtension(assetName) == E1.EXTENSION_NAME)
+        if (Path.GetExtension(assetName) == E1Protocol.EXTENSION_NAME)
         {
             return ExistsInternal(assetType, assetName, out assembly);
         }
@@ -37,9 +38,9 @@ sealed class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
             return null;
         }
 
-        byte[] buffer = new byte[E1.MagicHeader.Length];
-        if (stream.Read(buffer, 0, buffer.Length) != E1.MagicHeader.Length
-         || !E1.MagicHeader.SequenceEqual(buffer))
+        byte[] buffer = new byte[E1Protocol.MagicHeader.Length];
+        if (stream.Read(buffer, 0, buffer.Length) != E1Protocol.MagicHeader.Length
+         || !E1Protocol.MagicHeader.SequenceEqual(buffer))
         {
             stream.Dispose();
             return null;
@@ -50,18 +51,25 @@ sealed class E1EmbeddedResourceStreamResolver : IEmbeddedResourceResolver
 
     private static bool ExistsInternal(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly)
     {
-        assembly = assetType.Assembly;
-        string name = GetAssetName(assetName, assembly);
-        if (assembly.GetManifestResourceNames().Any(resourceName => resourceName.Equals(name)))
+        bool CheckAssembly(Assembly a)
         {
+            string name = GetAssetName(assetName, a);
+            return a.GetManifestResourceNames().Any(resourceName => resourceName.Equals(name));
+        }
+        
+        if (CheckAssembly(assetType.Assembly))
+        {
+            assembly = assetType.Assembly;
             return true;
         }
-
-        assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
-        name     = GetAssetName(assetName, assembly);
-        if (assembly.GetManifestResourceNames().Any(resourceName => resourceName.Equals(name)))
+        
+        foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         {
-            return true;
+            if (CheckAssembly(a))
+            {
+                assembly = a;
+                return true;
+            }
         }
 
         assembly = null;

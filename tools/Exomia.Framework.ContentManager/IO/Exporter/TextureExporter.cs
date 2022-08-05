@@ -11,6 +11,7 @@
 using System.Data;
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
+using Exomia.Framework.Core.Content.E1;
 
 namespace Exomia.Framework.ContentManager.IO.Exporter;
 
@@ -23,7 +24,7 @@ sealed class TextureExporter : Exporter<Texture.Texture>
             context.OutputFolder, context.VirtualPath,
             Path.GetFileNameWithoutExtension(context.ItemName));
 
-        string assetName = outputFile + E1.EXTENSION_NAME;
+        string assetName = outputFile + E1Protocol.EXTENSION_NAME;
 
         if (!Directory.Exists(Path.GetDirectoryName(assetName)))
         {
@@ -44,8 +45,8 @@ sealed class TextureExporter : Exporter<Texture.Texture>
 
             using (FileStream fs = new FileStream(assetName, FileMode.Create, FileAccess.Write))
             {
-                fs.Write(E1.MagicHeader,        0, E1.MagicHeader.Length);
-                fs.Write(E1.TextureMagicHeader, 0, E1.TextureMagicHeader.Length);
+                fs.Write(E1Protocol.MagicHeader,        0, E1Protocol.MagicHeader.Length);
+                fs.Write(E1Protocol.TextureMagicHeader, 0, E1Protocol.TextureMagicHeader.Length);
 
                 fs.WriteByte(0); //reserved for future use
                 fs.WriteByte(0); //reserved for future use

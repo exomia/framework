@@ -8,12 +8,9 @@
 
 #endregion
 
-using Exomia.Framework.Core.Content;
-
 namespace Exomia.Framework.Core.Graphics;
 
 /// <summary> A sprite font. This class cannot be inherited. </summary>
-[ContentReadable(typeof(SpriteFontContentReader))]
 public sealed partial class SpriteFont : IDisposable
 {
     private readonly string                 _face;

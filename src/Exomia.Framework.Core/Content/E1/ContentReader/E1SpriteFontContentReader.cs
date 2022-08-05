@@ -8,22 +8,24 @@
 
 #endregion
 
-using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
+using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Vulkan;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Exomia.Framework.Core.Graphics;
+namespace Exomia.Framework.Core.Content.E1.ContentReader;
 
-sealed unsafe class SpriteFontContentReader : IContentReader
+sealed unsafe class E1SpriteFontContentReader : IContentReader
 {
     /// <inheritdoc />
     public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
-        byte[] buffer = new byte[E1.SpritefontMagicHeader.Length];
-        if (parameters.Stream.Read(buffer, 0, E1.SpritefontMagicHeader.Length) != E1.SpritefontMagicHeader.Length ||
-            !E1.SpritefontMagicHeader.SequenceEqual(buffer))
+        byte[] buffer = new byte[E1Protocol.SpritefontMagicHeader.Length];
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.SpritefontMagicHeader.Length) != E1Protocol.SpritefontMagicHeader.Length ||
+            !E1Protocol.SpritefontMagicHeader.SequenceEqual(buffer))
         {
+            //reset the stream position
+            parameters.Stream.Seek(-E1Protocol.SpritefontMagicHeader.Length, SeekOrigin.Current);
             return null;
         }
 
@@ -71,7 +73,7 @@ sealed unsafe class SpriteFontContentReader : IContentReader
 
         if (width == 0 || height == 0)
         {
-            return null;
+            throw new NotSupportedException($"Invalid texture size of {width}x{height}; The texture must be at least 1x1!");
         }
 
         byte[] data = br.ReadBytes(width * height * 4 /* RGBA */);

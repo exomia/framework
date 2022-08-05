@@ -8,10 +8,10 @@
 
 #endregion
 
-namespace Exomia.Framework.Core.Content;
+namespace Exomia.Framework.Core.Content.E1;
 
 /// <summary> A e1. </summary>
-public class E1
+public class E1Protocol
 {
     /// <summary> Name of the e1 extension. </summary>
     public const string EXTENSION_NAME = ".e1";

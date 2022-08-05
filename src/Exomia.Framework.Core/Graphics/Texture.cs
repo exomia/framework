@@ -9,7 +9,6 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Vulkan;
 using static Exomia.Vulkan.Api.Core.VkImageType;
 using static Exomia.Vulkan.Api.Core.VkFormat;
@@ -24,10 +23,7 @@ using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
 
 namespace Exomia.Framework.Core.Graphics;
 
-/// <summary>
-///     A texture. This class cannot be inherited.
-/// </summary>
-[ContentReadable(typeof(TextureContentReader))]
+/// <summary> A texture. This class cannot be inherited. </summary>
 public sealed unsafe class Texture : IDisposable
 {
     private readonly VkDevice       _device;

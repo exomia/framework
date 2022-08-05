@@ -11,10 +11,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
+namespace Exomia.Framework.Core.Content.Resolver;
 
 /// <summary> A embedded resource content resolver is in charge of resolve a embedded resource stream. </summary>
-public interface IEmbeddedResourceResolver
+public interface IEmbeddedResourceContentResolver
 {
     /// <summary> Checks if the specified asset name exists. </summary>
     /// <param name="assetType"> Type of the asset. </param>

@@ -10,17 +10,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
-        <PackageReference Include="Exomia.Vulkan.Api.Core" Version="$(VulkanVersion)"/>
+        <PackageReference Include="Exomia.Vulkan.Api.Core" Version="$(VulkanVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
-        <PackageReference Include="Exomia.Vulkan.Api.Core.x64" Version="$(VulkanVersion)"/>
+        <PackageReference Include="Exomia.Vulkan.Api.Core.x64" Version="$(VulkanVersion)" />
     </ItemGroup>
 
     <ItemGroup>
@@ -45,7 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Resources\shaders\src\**\*"/>
+        <None Include="Resources\shaders\src\**\*" />
     </ItemGroup>
 
     <ItemGroup>

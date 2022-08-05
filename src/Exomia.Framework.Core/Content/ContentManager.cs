@@ -8,25 +8,27 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Exomia.Framework.Core.Content.E1;
+using Exomia.Framework.Core.Content.E1.ContentReader;
 using Exomia.Framework.Core.Content.Exceptions;
 using Exomia.Framework.Core.Content.Resolver;
-using Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 
 namespace Exomia.Framework.Core.Content;
 
 /// <summary> Manager for contents. This class cannot be inherited. </summary>
-public sealed class ContentManager : IContentManager
+public sealed partial class ContentManager : IContentManager
 {
     private const int INITIAL_QUEUE_SIZE = 16;
 
-    private readonly Dictionary<AssetKey, object>     _assetLockers;
-    private readonly Dictionary<AssetKey, object>     _loadedAssets;
-    private readonly List<IContentReaderFactory>      _registeredContentReaderFactories;
-    private readonly Dictionary<Type, IContentReader> _registeredContentReaders;
-    private readonly List<IContentResolver>           _registeredContentResolvers;
-    private readonly List<IEmbeddedResourceResolver>  _registeredEmbeddedResourceResolvers;
-    private          string                           _rootDirectory = string.Empty;
+    private readonly Dictionary<AssetKey, object>           _assetLockers;
+    private readonly Dictionary<AssetKey, object>           _loadedAssets;
+    private readonly List<IContentReaderFactory>            _registeredContentReaderFactories;
+    private readonly Dictionary<Type, IContentReader>       _registeredContentReaders;
+    private readonly List<IContentResolver>                 _registeredContentResolvers;
+    private readonly List<IEmbeddedResourceContentResolver> _registeredEmbeddedResourceResolvers;
+    private          string                                 _rootDirectory = string.Empty;
 
     /// <inheritdoc />
     public string RootDirectory
@@ -60,14 +62,13 @@ public sealed class ContentManager : IContentManager
 
         _loadedAssets                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
         _registeredContentResolvers          = new List<IContentResolver>(INITIAL_QUEUE_SIZE);
-        _registeredEmbeddedResourceResolvers = new List<IEmbeddedResourceResolver>(INITIAL_QUEUE_SIZE);
+        _registeredEmbeddedResourceResolvers = new List<IEmbeddedResourceContentResolver>(INITIAL_QUEUE_SIZE);
         _registeredContentReaders            = new Dictionary<Type, IContentReader>(INITIAL_QUEUE_SIZE);
         _registeredContentReaderFactories    = new List<IContentReaderFactory>(INITIAL_QUEUE_SIZE);
         _assetLockers                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
 
-        List<(int order, IContentResolver resolver)> resolvers = new List<(int, IContentResolver)>(3);
-        List<(int order, IEmbeddedResourceResolver resolver)> embeddedResourceResolvers =
-            new List<(int, IEmbeddedResourceResolver)>(1);
+        List<(int order, IContentResolver resolver)>                 resolvers                 = new(3);
+        List<(int order, IEmbeddedResourceContentResolver resolver)> embeddedResourceResolvers = new(1);
 
         foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         {
@@ -97,14 +98,14 @@ public sealed class ContentManager : IContentManager
                                     $"Can't create an instance of {nameof(IContentResolver)} from type: {t.AssemblyQualifiedName}")));
                     }
 
-                    if (typeof(IEmbeddedResourceResolver).IsAssignableFrom(t))
+                    if (typeof(IEmbeddedResourceContentResolver).IsAssignableFrom(t))
                     {
                         ContentResolverAttribute? contentResolverAttribute = t.GetCustomAttribute<ContentResolverAttribute>(false);
                         embeddedResourceResolvers.Add(
                             (contentResolverAttribute?.Order ?? 0,
                                 System.Activator.CreateInstance(t)
-                                    as IEmbeddedResourceResolver ?? throw new TypeLoadException(
-                                    $"Can't create an instance of {nameof(IEmbeddedResourceResolver)} from type: {t.AssemblyQualifiedName}")));
+                                    as IEmbeddedResourceContentResolver ?? throw new TypeLoadException(
+                                    $"Can't create an instance of {nameof(IEmbeddedResourceContentResolver)} from type: {t.AssemblyQualifiedName}")));
                     }
                 }
             }
@@ -117,319 +118,15 @@ public sealed class ContentManager : IContentManager
 
         resolvers.Clear();
 
-        foreach ((_, IEmbeddedResourceResolver resolver) in embeddedResourceResolvers.OrderBy(t => t.order))
+        foreach ((_, IEmbeddedResourceContentResolver resolver) in embeddedResourceResolvers.OrderBy(t => t.order))
         {
             AddEmbeddedResourceContentResolver(resolver);
         }
 
         embeddedResourceResolvers.Clear();
-    }
 
-    /// <inheritdoc />
-    public bool AddContentReader(Type type, IContentReader reader)
-    {
-        lock (_registeredContentReaders)
-        {
-            if (_registeredContentReaders.ContainsKey(type)) { return false; }
-            _registeredContentReaders.Add(type, reader);
-        }
-        return true;
-    }
-
-    /// <inheritdoc />
-    public bool AddContentReaderFactory(IContentReaderFactory factory)
-    {
-        lock (_registeredContentReaderFactories)
-        {
-            if (_registeredContentReaderFactories.Contains(factory)) { return false; }
-            _registeredContentReaderFactories.Add(factory);
-        }
-        return true;
-    }
-
-    /// <inheritdoc />
-    public bool AddContentResolver(IContentResolver resolver)
-    {
-        lock (_registeredContentResolvers)
-        {
-            if (_registeredContentResolvers.Contains(resolver)) { return false; }
-            _registeredContentResolvers.Add(resolver);
-        }
-
-        return true;
-    }
-
-    /// <inheritdoc />
-    public bool AddEmbeddedResourceContentResolver(IEmbeddedResourceResolver resolver)
-    {
-        lock (_registeredEmbeddedResourceResolvers)
-        {
-            if (_registeredEmbeddedResourceResolvers.Contains(resolver)) { return false; }
-            _registeredEmbeddedResourceResolvers.Add(resolver);
-        }
-
-        return true;
-    }
-
-    /// <inheritdoc />
-    public bool Exists(string assetName)
-    {
-        if (assetName == null)
-        {
-            throw new ArgumentNullException(nameof(assetName));
-        }
-
-        List<IContentResolver> resolvers;
-        lock (_registeredContentResolvers)
-        {
-            resolvers = new List<IContentResolver>(_registeredContentResolvers);
-        }
-
-        if (resolvers.Count == 0)
-        {
-            throw new InvalidOperationException("No resolver registered to this content manager");
-        }
-
-        string assetPath = Path.Combine(_rootDirectory, assetName);
-
-        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-        foreach (IContentResolver contentResolver in resolvers)
-        {
-            if (contentResolver.Exists(assetPath)) { return true; }
-        }
-
-        return false;
-    }
-
-    /// <inheritdoc />
-    public object Load(Type assetType, string assetName, bool fromEmbeddedResource = false)
-    {
-        if (assetName == null)
-        {
-            throw new ArgumentNullException(nameof(assetName));
-        }
-
-        if (assetType == null)
-        {
-            throw new ArgumentNullException(nameof(assetType));
-        }
-
-        AssetKey assetKey = new AssetKey(assetType, assetName);
-        lock (GetAssetLocker(assetKey, true)!)
-        {
-            if (_loadedAssets.TryGetValue(assetKey, out object? result))
-            {
-                return result;
-            }
-            result = LoadAssetWithDynamicContentReader(
-                assetType,
-                assetName,
-                fromEmbeddedResource
-                    ? ResolveEmbeddedResourceStream(assetType, assetName)
-                    : ResolveStream(Path.Combine(_rootDirectory, assetName)));
-
-            lock (_loadedAssets)
-            {
-                _loadedAssets.Add(assetKey, result);
-            }
-
-            return result;
-        }
-    }
-
-    /// <inheritdoc />
-    public T Load<T>(string assetName, bool fromEmbeddedResource = false)
-    {
-        return (T)Load(typeof(T), assetName, fromEmbeddedResource);
-    }
-
-    /// <inheritdoc />
-    public void Unload()
-    {
-        lock (_assetLockers)
-        {
-            lock (_loadedAssets)
-            {
-                foreach (object loadedAsset in _loadedAssets.Values)
-                {
-                    if (loadedAsset is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
-                }
-
-                _assetLockers.Clear();
-                _loadedAssets.Clear();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public bool Unload(Type assetType, string assetName)
-    {
-        if (assetType == null)
-        {
-            throw new ArgumentNullException(nameof(assetType));
-        }
-
-        if (assetName == null)
-        {
-            throw new ArgumentNullException(nameof(assetName));
-        }
-
-        AssetKey assetKey = new AssetKey(assetType, assetName);
-
-        object? assetLockerRead = GetAssetLocker(assetKey, false);
-        if (assetLockerRead == null) { return false; }
-
-        object? asset;
-
-        lock (assetLockerRead)
-        {
-            lock (_loadedAssets)
-            {
-                if (!_loadedAssets.TryGetValue(assetKey, out asset)) { return false; }
-                _loadedAssets.Remove(assetKey);
-            }
-
-            lock (_assetLockers)
-            {
-                _assetLockers.Remove(assetKey);
-            }
-        }
-
-        if (asset is IDisposable disposable)
-        {
-            disposable.Dispose();
-        }
-
-        return true;
-    }
-
-    /// <inheritdoc />
-    public bool Unload<T>(string assetName)
-    {
-        return Unload(typeof(T), assetName);
-    }
-
-    private Stream ResolveStream(string assetName)
-    {
-        List<IContentResolver> resolvers;
-        lock (_registeredContentResolvers)
-        {
-            resolvers = new List<IContentResolver>(_registeredContentResolvers);
-        }
-
-        if (resolvers.Count == 0)
-        {
-            throw new InvalidOperationException(
-                $"No {nameof(IContentResolver)} registered to this content manager");
-        }
-
-        Exception? lastException = null;
-        foreach (IContentResolver contentResolver in resolvers)
-        {
-            try
-            {
-                if (contentResolver.Exists(assetName))
-                {
-                    Stream? stream = contentResolver.Resolve(assetName);
-                    if (stream != null) { return stream; }
-                }
-            }
-            catch (Exception ex) { lastException = ex; }
-        }
-
-        throw new AssetNotFoundException(assetName, lastException);
-    }
-
-    private Stream ResolveEmbeddedResourceStream(Type assetType, string assetName)
-    {
-        List<IEmbeddedResourceResolver> resolvers;
-        lock (_registeredContentResolvers)
-        {
-            resolvers = new List<IEmbeddedResourceResolver>(_registeredEmbeddedResourceResolvers);
-        }
-
-        if (resolvers.Count == 0)
-        {
-            throw new InvalidOperationException(
-                $"No {nameof(IEmbeddedResourceResolver)} registered to this content manager");
-        }
-
-        Exception? lastException = null;
-        foreach (IEmbeddedResourceResolver contentResolver in resolvers)
-        {
-            try
-            {
-                if (contentResolver.Exists(assetType, assetName, out Assembly? assembly))
-                {
-                    Stream? stream = contentResolver.Resolve(assembly, assetName);
-                    if (stream != null) { return stream; }
-                }
-            }
-            catch (Exception ex) { lastException = ex; }
-        }
-
-        throw new AssetNotFoundException(assetName, lastException);
-    }
-
-    private object? GetAssetLocker(AssetKey assetKey, bool create)
-    {
-        lock (_assetLockers)
-        {
-            if (!_assetLockers.TryGetValue(assetKey, out object? assetLockerRead) && create)
-            {
-                assetLockerRead = new object();
-                _assetLockers.Add(assetKey, assetLockerRead);
-            }
-            return assetLockerRead;
-        }
-    }
-
-    private object LoadAssetWithDynamicContentReader(Type assetType, string assetName, Stream stream)
-    {
-        ContentReaderParameters parameters =
-            new ContentReaderParameters(assetName, assetType, stream);
-
-        try
-        {
-            if (!_registeredContentReaders.TryGetValue(assetType, out IContentReader? contentReader))
-            {
-                lock (_registeredContentReaderFactories)
-                {
-                    // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                    foreach (IContentReaderFactory factory in _registeredContentReaderFactories)
-                    {
-                        if (factory.TryCreate(assetType, out contentReader))
-                        {
-                            lock (_registeredContentReaders)
-                            {
-                                _registeredContentReaders.Add(assetType, contentReader);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (contentReader == null)
-            {
-                throw new NotSupportedException(
-                    $"Type [{assetType.FullName}] doesn't provide a {nameof(ContentReadableAttribute)}, and there is no registered content reader/factory for it.");
-            }
-
-            return contentReader.ReadContent(this, ref parameters)
-             ?? throw new NotSupportedException(
-                    $"Registered {nameof(IContentReader)} of type [{contentReader.GetType()}] fails to load content of type [{assetType.FullName}] from file [{assetName}].");
-        }
-        finally
-        {
-            if (!parameters.KeepStreamOpen)
-            {
-                stream.Dispose();
-            }
-        }
+        // Add default e1 content reader factory
+        AddContentReaderFactory(new E1ContentReaderFactory());
     }
 
     private readonly struct AssetKey : IEquatable<AssetKey>

@@ -24,9 +24,9 @@ namespace Exomia.Framework.BasicSetup;
 
 sealed unsafe class MyApplication : Application
 {
-    private readonly ILogger<MyApplication> _logger;
     private readonly Core.Vulkan.Vulkan     _vulkan;
     private readonly IContentManager        _contentManager;
+    private readonly ILogger<MyApplication> _logger;
 
     private readonly Swapchain   _swapchain;
     private readonly Renderer    _renderer;

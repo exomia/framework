@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
+using Exomia.Framework.Core.Content.E1;
 
 namespace Exomia.Framework.ContentManager.IO.Exporter;
 
@@ -27,7 +28,7 @@ sealed class SpiteFontExporter : Exporter<FontFile>
             context.OutputFolder, context.VirtualPath,
             Path.GetFileNameWithoutExtension(context.ItemName));
 
-        string assetName = outputFile + E1.EXTENSION_NAME;
+        string assetName = outputFile + E1Protocol.EXTENSION_NAME;
 
         if (!Directory.Exists(Path.GetDirectoryName(assetName)))
         {
@@ -100,8 +101,8 @@ sealed class SpiteFontExporter : Exporter<FontFile>
 
             using (FileStream fs = new FileStream(assetName, FileMode.Create, FileAccess.Write))
             {
-                fs.Write(E1.MagicHeader,           0, E1.MagicHeader.Length);
-                fs.Write(E1.SpritefontMagicHeader, 0, E1.SpritefontMagicHeader.Length);
+                fs.Write(E1Protocol.MagicHeader,           0, E1Protocol.MagicHeader.Length);
+                fs.Write(E1Protocol.SpritefontMagicHeader, 0, E1Protocol.SpritefontMagicHeader.Length);
 
                 fs.WriteByte(0); //reserved for future use
                 fs.WriteByte(0); //reserved for future use

@@ -9,7 +9,6 @@
 #endregion
 
 using Exomia.Framework.Core.Content.Resolver;
-using Exomia.Framework.Core.Content.Resolver.EmbeddedResource;
 
 namespace Exomia.Framework.Core.Content;
 
@@ -43,7 +42,7 @@ public interface IContentManager : IDisposable
     /// <summary> add a new embedded resource content resolver to the list. </summary>
     /// <param name="resolver"> the content resolver to add. </param>
     /// <returns> <c> true </c> if the specified content resolver successfully added, <c> false </c> otherwise. </returns>
-    bool AddEmbeddedResourceContentResolver(IEmbeddedResourceResolver resolver);
+    bool AddEmbeddedResourceContentResolver(IEmbeddedResourceContentResolver resolver);
 
     /// <summary> Checks if the specified assets exists. </summary>
     /// <param name="assetName"> The asset name with extension. </param>

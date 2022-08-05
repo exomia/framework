@@ -8,6 +8,8 @@
 
 #endregion
 
+using Exomia.Framework.Core.Content.E1;
+
 namespace Exomia.Framework.Core.Content.Resolver;
 
 [ContentResolver(int.MinValue)]
@@ -16,7 +18,7 @@ sealed class E1FileStreamContentResolver : IContentResolver
     /// <inheritdoc />
     public bool Exists(string assetName)
     {
-        return Path.GetExtension(assetName) == E1.EXTENSION_NAME &&
+        return Path.GetExtension(assetName) == E1Protocol.EXTENSION_NAME &&
             File.Exists(assetName);
     }
 
@@ -25,9 +27,9 @@ sealed class E1FileStreamContentResolver : IContentResolver
     {
         FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read);
 
-        byte[] buffer = new byte[E1.MagicHeader.Length];
-        if (stream.Read(buffer, 0, buffer.Length) != E1.MagicHeader.Length
-         || !E1.MagicHeader.SequenceEqual(buffer))
+        byte[] buffer = new byte[E1Protocol.MagicHeader.Length];
+        if (stream.Read(buffer, 0, buffer.Length) != E1Protocol.MagicHeader.Length
+         || !E1Protocol.MagicHeader.SequenceEqual(buffer))
         {
             stream.Dispose();
             return null;
