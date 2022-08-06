@@ -100,3 +100,5 @@ public static class E1Protocol
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
 }
+
+// ReSharper enable MemberHidesStaticFromOuterClass
