@@ -18,9 +18,9 @@ public static class ContentCompressor
 {
     private const int BUFFER_SIZE = 4096;
 
-    /// <summary> Compress a given stream with the given compression mode. </summary>
-    /// <param name="src"> the stream to compress. </param>
-    /// <param name="dst"> True to dispose the stream. </param>
+    /// <summary> Compress a given <paramref name="src"/> stream into a given <paramref name="dst"/> stream with the given compression mode. </summary>
+    /// <param name="src"> The source stream. </param>
+    /// <param name="dst"> The destination stream. </param>
     /// <param name="compressMode"> (Optional) the compression mode. </param>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public static void CompressStream(
@@ -28,28 +28,31 @@ public static class ContentCompressor
         Stream       dst,
         CompressMode compressMode = CompressMode.Gzip)
     {
-        dst.WriteByte((byte)compressMode);
-
         switch (compressMode)
         {
-            case CompressMode.None:
+            case CompressMode.None: 
+                dst.WriteByte((byte)compressMode);
                 CopyStream(src, dst);
                 break;
-            case CompressMode.Gzip:
+            case CompressMode.Gzip: 
+                dst.WriteByte((byte)compressMode);
                 GzipCompress(src, dst);
                 break;
-            default: throw new ArgumentException("No compression method found", nameof(compressMode));
+            default: throw new ArgumentOutOfRangeException(nameof(compressMode), compressMode, "Invalid compression mode!");
         }
     }
 
-    /// <summary> Decompress a given stream with the given compression mode. </summary>
+    /// <summary>
+    ///     Decompress a given <paramref name="src"/> stream into a given <paramref name="dst"/> stream,
+    ///     deriving the compression mode from the first byte of the <paramref name="src"/> stream.
+    /// </summary>
     /// <param name="src"> The source stream. </param>
     /// <param name="dst"> The destination stream. </param>
-    /// <returns> <c> true </c> if successfully decompressed the stream; <c> false </c> otherwise. </returns>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public static void DecompressStream(Stream src, Stream dst)
     {
-        switch ((CompressMode)src.ReadByte())
+        CompressMode compressMode = (CompressMode)src.ReadByte();
+        switch (compressMode)
         {
             case CompressMode.None:
                 CopyStream(src, dst);
@@ -57,8 +60,7 @@ public static class ContentCompressor
             case CompressMode.Gzip:
                 GzipDecompress(src, dst);
                 break;
-
-            default: throw new ArgumentException("No compression method found", nameof(src));
+            default: throw new ArgumentOutOfRangeException(nameof(CompressMode), compressMode, "Invalid compression mode!");
         }
     }
 
