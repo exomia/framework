@@ -99,7 +99,7 @@ public sealed partial class ContentManager : IContentManager
                     {
                         ContentResolverAttribute? contentResolverAttribute = t.GetCustomAttribute<ContentResolverAttribute>(false);
                         embeddedResourceResolvers.Add(
-                            (contentResolverAttribute?.Order ?? 0,
+                            (contentResolverAttribute?.Order ?? 1,
                                 System.Activator.CreateInstance(t)
                                     as IEmbeddedResourceContentResolver ?? throw new TypeLoadException(
                                     $"Can't create an instance of {nameof(IEmbeddedResourceContentResolver)} from type: {t.AssemblyQualifiedName}")));

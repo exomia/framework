@@ -14,13 +14,6 @@ namespace Exomia.Framework.Core.Content.Resolver;
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class ContentResolverAttribute : Attribute
 {
-    internal int Order { get; }
-
-    /// <inheritdoc />
-    /// <summary> Initializes a new instance of the <see cref="T:Exomia.Framework.Core.Content.Resolver.ContentResolverAttribute" /> class. </summary>
-    /// <param name="order"> the order in which the resolvers should be gone through. </param>
-    public ContentResolverAttribute(int order)
-    {
-        Order = order;
-    }
+    /// <summary> The lower the number, the earlier the resolver will get called. </summary>
+    public int Order { get; init; } = 1;
 }

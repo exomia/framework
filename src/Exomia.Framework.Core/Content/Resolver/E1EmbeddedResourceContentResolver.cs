@@ -14,7 +14,7 @@ using Exomia.Framework.Core.Content.Protocols;
 
 namespace Exomia.Framework.Core.Content.Resolver;
 
-[ContentResolver(int.MinValue)]
+[ContentResolver(Order = -1)]
 sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolver
 {
     /// <inheritdoc />
