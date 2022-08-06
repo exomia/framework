@@ -22,7 +22,7 @@ namespace Exomia.Framework.Core.Content.Protocols;
 ///     - 1 bytes: compression mode (0x00 = no compression, 0x01 = GZIP) <see cref="CompressMode" /><br />
 ///     - N bytes: (compressed) data<br />
 /// </remarks>
-public sealed class E1Protocol
+public static class E1Protocol
 {
     /// <summary> Name of the e1 extension. </summary>
     public const string EXTENSION_NAME = ".e1";
@@ -34,7 +34,7 @@ public sealed class E1Protocol
     public static readonly byte[] MagicHeader = { 0x40, 0x65, 0x78, 0x31 };
 
     /// <summary> The texture protocol information. This class cannot be inherited. </summary>
-    public sealed class Texture
+    public static class Texture
     {
         /// <summary> The texture magic header. </summary>
         public static readonly byte[] MagicHeader = { 0x40, 0x74, 0x65, 0x78 };
@@ -44,7 +44,7 @@ public sealed class E1Protocol
     }
 
     /// <summary> The spritefont protocol information. This class cannot be inherited. </summary>
-    public sealed class Spritefont
+    public static class Spritefont
     {
         /// <summary> The spritefont magic header. </summary>
         public static readonly byte[] MagicHeader = { 0x40, 0x73, 0x66, 0x6E, 0x74 };
