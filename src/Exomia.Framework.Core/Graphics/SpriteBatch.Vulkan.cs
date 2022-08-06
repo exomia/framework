@@ -161,7 +161,7 @@ public sealed unsafe partial class SpriteBatch
         samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        if (_configuration.AnisotropyEnable && _vkContext->PhysicalDeviceFeatures.samplerAnisotropy)
+        if (_configuration.AnisotropyEnable && _vkContext->PhysicalDeviceFeatures2.features.samplerAnisotropy)
         {
             samplerCreateInfo.anisotropyEnable = VkBool32.True;
             samplerCreateInfo.maxAnisotropy = Math.Min(

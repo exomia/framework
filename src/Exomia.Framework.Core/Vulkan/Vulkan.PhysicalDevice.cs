@@ -160,8 +160,6 @@ sealed unsafe partial class Vulkan
             if (_context->PhysicalDeviceProperties2.properties.apiVersion < _physicalDeviceConfiguration.RequiredMinimumVkApiVersion) { continue; }
             if (_context->PhysicalDeviceProperties2.properties.deviceType != _physicalDeviceConfiguration.RequiredPhysicalDeviceType) { continue; }
 
-            _context->SupportedSampleCountFlags = _context->PhysicalDeviceProperties2.properties.limits.framebufferColorSampleCounts;
-
             if (CheckDeviceLayerSupport(
                     *(pPhysicalDevices + i),
                     _deviceConfiguration.EnabledLayerNames) &&
@@ -179,8 +177,10 @@ sealed unsafe partial class Vulkan
                    .AssertVkResult();
                 if (supported)
                 {
-                    _context->PhysicalDevice = *(pPhysicalDevices + i);
-                    vkGetPhysicalDeviceFeatures(_context->PhysicalDevice, &_context->PhysicalDeviceFeatures);
+                    _context->PhysicalDevice                = *(pPhysicalDevices + i);
+                    _context->PhysicalDeviceFeatures2.sType = VkPhysicalDeviceFeatures2.STYPE;
+                    _context->PhysicalDeviceFeatures2.pNext = null;
+                    vkGetPhysicalDeviceFeatures2(_context->PhysicalDevice, &_context->PhysicalDeviceFeatures2);
 
                     _context->QueueFamilyIndex = queueFamilyIndex;
                     _context->MaxQueueCount    = maxQueueCount;
