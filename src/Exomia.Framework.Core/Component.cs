@@ -121,8 +121,7 @@ public abstract class Component : IInitializable, IContentable, IUpdateable, IDi
 
     /// <summary> flag to identify if the component is already disposed. </summary>
     protected bool _disposed;
-
-    /// <inheritdoc />
+    
     /// <summary> Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged/managed resources. </summary>
     public void Dispose()
     {
