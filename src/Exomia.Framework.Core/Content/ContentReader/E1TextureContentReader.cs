@@ -55,8 +55,11 @@ sealed unsafe class E1TextureContentReader : IContentReader
 
     private static object? ReadContentV10(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
-        using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
-        using BinaryReader br     = new BinaryReader(stream);
+        using Stream stream = new MemoryStream();
+        ContentCompressor.DecompressStream(parameters.Stream, stream);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        using BinaryReader br = new BinaryReader(stream);
 
         int width  = br.ReadInt32();
         int height = br.ReadInt32();

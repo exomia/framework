@@ -43,13 +43,12 @@ public static class ContentCompressor
     }
 
     /// <summary> Decompress a given stream with the given compression mode. </summary>
-    /// <param name="src"> Source for the. </param>
+    /// <param name="src"> The source stream. </param>
+    /// <param name="dst"> The destination stream. </param>
     /// <returns> <c> true </c> if successfully decompressed the stream; <c> false </c> otherwise. </returns>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
-    public static Stream DecompressStream(Stream src)
+    public static void DecompressStream(Stream src, Stream dst)
     {
-        long   srcPos = src.Position;
-        Stream dst    = new MemoryStream();
         switch ((CompressMode)src.ReadByte())
         {
             case CompressMode.None:
@@ -61,9 +60,6 @@ public static class ContentCompressor
 
             default: throw new ArgumentException("No compression method found", nameof(src));
         }
-        src.Seek(srcPos, SeekOrigin.Begin);
-        dst.Seek(0, SeekOrigin.Begin);
-        return dst;
     }
 
     private static void CopyStream(Stream src, Stream dst)
