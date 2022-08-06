@@ -12,8 +12,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DocumentationFile></DocumentationFile>
         <Nullable>enable</Nullable>
-        <ApplicationIcon/>
-        <StartupObject/>
+        <ApplicationIcon />
+        <StartupObject />
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -45,7 +45,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Exomia.Framework" Version="1.5.3"/>
+        <PackageReference Include="Exomia.Framework" Version="1.5.3" />
     </ItemGroup>
 
 </Project>

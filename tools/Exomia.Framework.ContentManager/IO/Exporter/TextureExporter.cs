@@ -9,7 +9,6 @@
 #endregion
 
 using System.Data;
-using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
 using Exomia.Framework.Core.Content.Protocols;
 

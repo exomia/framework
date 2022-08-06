@@ -5,15 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj"/>
+        <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Platform)'=='AnyCPU'">
-        <PackageReference Include="Exomia.Vulkan.Api.Win32" Version="$(VulkanVersion)"/>
+        <PackageReference Include="Exomia.Vulkan.Api.Win32" Version="$(VulkanVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Platform)'!='AnyCPU'">
-        <PackageReference Include="Exomia.Vulkan.Api.Win32.x64" Version="$(VulkanVersion)"/>
+        <PackageReference Include="Exomia.Vulkan.Api.Win32.x64" Version="$(VulkanVersion)" />
     </ItemGroup>
 
     <ItemGroup>

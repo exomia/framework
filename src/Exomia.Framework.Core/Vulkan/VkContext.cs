@@ -9,7 +9,6 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using static Exomia.Vulkan.Api.Core.VkSampleCountFlagBits;
 
 #pragma warning disable 1591
 namespace Exomia.Framework.Core.Vulkan;

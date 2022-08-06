@@ -428,7 +428,7 @@ partial class MainForm
                     }
 
                     int i = 0;
-                    if (jsonEditorForm.Deserialize<FontDescription>(out FontDescription fntDescription))
+                    if (jsonEditorForm.Deserialize(out FontDescription fntDescription))
                     {
                         string fntFilePath;
                         while (File.Exists(

@@ -1,6 +1,6 @@
 <!--EXTERNAL_PROPERTIES: GITHUB_ACTIONS;MSBuildThisFileDirectory-->
 <Project>
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
     <PropertyGroup>
         <TargetFrameworks>net6.0</TargetFrameworks>
@@ -57,6 +57,6 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(Configuration)'=='Debug'">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj"/>
+        <ProjectReference Include="..\Exomia.Framework.Core\Exomia.Framework.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

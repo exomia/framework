@@ -8,7 +8,6 @@
 
 #endregion
 
-using System.Text;
 using Exomia.Framework.Core.Content.Compression;
 using Exomia.Framework.Core.Content.Protocols;
 using Exomia.Framework.Core.Graphics;

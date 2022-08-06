@@ -12,7 +12,6 @@ using System.Data;
 using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.ContentManager.Fonts.BMFont;
-using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Content.Compression;
 using Exomia.Framework.Core.Content.Protocols;
 

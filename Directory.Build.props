@@ -42,8 +42,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory).editorconfig" Link=".editorconfig"/>
-        <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" Visible="false" PackagePath=""/>
-        <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" Visible="false" PackagePath=""/>
+        <None Include="$(MSBuildThisFileDirectory).editorconfig" Link=".editorconfig" />
+        <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" Visible="false" PackagePath="" />
+        <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" Visible="false" PackagePath="" />
     </ItemGroup>
 </Project>
