@@ -8,6 +8,7 @@
 
 #endregion
 
+using System.Text;
 using Exomia.Framework.Core.Content.Compression;
 using Exomia.Framework.Core.Content.Protocols;
 using Exomia.Framework.Core.Graphics;
@@ -27,20 +28,16 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
     /// <inheritdoc />
     public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
-        long   startPosition = parameters.Stream.Position;
-        byte[] buffer        = new byte[E1Protocol.Spritefont.MagicHeader.Length];
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.Spritefont.MagicHeader.Length) != E1Protocol.Spritefont.MagicHeader.Length ||
-            !buffer.AsSpan().SequenceEqual(E1Protocol.Spritefont.MagicHeader))
+        byte[] buffer = new byte[E1Protocol.Spritefont.MagicHeader.Length];
+
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.Spritefont.MagicHeader.Length) != E1Protocol.Spritefont.MagicHeader.Length
+         || !buffer.AsSpan().SequenceEqual(E1Protocol.Spritefont.MagicHeader))
         {
-            //reset the stream position
-            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
             return null;
         }
 
         if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
         {
-            //reset the stream position
-            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
             return null;
         }
 
@@ -54,8 +51,6 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
             return ReadContentV10(contentManager, ref parameters);
         }
 
-        //reset the stream position
-        parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
         return null;
     }
 
@@ -63,7 +58,7 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
     {
         using Stream       stream = ContentCompressor.DecompressStream(parameters.Stream);
         using BinaryReader br     = new BinaryReader(stream);
-
+        
         string face                    = br.ReadString();
         int    size                    = br.ReadInt32();
         int    lineHeight              = br.ReadInt32();
@@ -84,7 +79,7 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
                 Height   = br.ReadInt32(),
                 OffsetX  = br.ReadInt32(),
                 OffsetY  = br.ReadInt32(),
-                XAdvance = br.ReadInt32()
+                AdvanceX = br.ReadInt32()
             });
         }
 

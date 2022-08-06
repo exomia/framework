@@ -27,22 +27,16 @@ sealed unsafe class E1TextureContentReader : IContentReader
     /// <inheritdoc />
     public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
-        long startPosition = parameters.Stream.Position;
-
         byte[] buffer = new byte[E1Protocol.Texture.MagicHeader.Length];
 
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.Texture.MagicHeader.Length) != E1Protocol.Texture.MagicHeader.Length ||
-            !buffer.AsSpan().SequenceEqual(E1Protocol.Texture.MagicHeader))
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.Texture.MagicHeader.Length) != E1Protocol.Texture.MagicHeader.Length
+         || !buffer.AsSpan().SequenceEqual(E1Protocol.Texture.MagicHeader))
         {
-            //reset the stream position
-            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
             return null;
         }
 
         if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
         {
-            //reset the stream position
-            parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
             return null;
         }
 
@@ -56,8 +50,6 @@ sealed unsafe class E1TextureContentReader : IContentReader
             return ReadContentV10(contentManager, ref parameters);
         }
 
-        //reset the stream position
-        parameters.Stream.Seek(startPosition, SeekOrigin.Begin);
         return null;
     }
 

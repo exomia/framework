@@ -10,6 +10,7 @@
 
 using Exomia.Framework.Core.Content.Compression;
 
+// ReSharper disable MemberHidesStaticFromOuterClass
 namespace Exomia.Framework.Core.Content.Protocols;
 
 /// <summary> The e1 protocol. This class cannot be inherited. </summary>
@@ -40,6 +41,17 @@ public static class E1Protocol
         public static readonly byte[] MagicHeader = { 0x40, 0x74, 0x65, 0x78 };
 
         /// <summary> The texture protocol version 1.0 </summary>
+        /// <remarks>
+        ///     Protocol definition:<br />
+        ///     - 4 bytes (int): the texture width<br />
+        ///     - 4 bytes (int): the texture height<br />
+        ///     - "width * height" Pixel: the texture pixel data<br />
+        ///         -> Pixel<br />
+        ///             - 1 byte (byte): red value<br />
+        ///             - 1 byte (byte): green value<br />
+        ///             - 1 byte (byte): blue value<br />
+        ///             - 1 byte (byte): alpha value<br />
+        /// </remarks>
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
 
@@ -50,6 +62,41 @@ public static class E1Protocol
         public static readonly byte[] MagicHeader = { 0x40, 0x73, 0x66, 0x6E, 0x74 };
 
         /// <summary> The spritefont protocol version 1.0 </summary>
+        /// <remarks>
+        ///     Protocol definition:<br />
+        ///     - N bytes (string): face string with prefixed length encoded as an integer 7 bits at a time<br />
+        ///     - 4 bytes (int): the font size<br />
+        ///     - 4 bytes (int): the font line height<br />
+        ///     - 4 bytes (int): the font default character <br />
+        ///     - 1 bytes (boolean): != 0 if font has to ignore unknown characters<br />
+        ///     - 1 bytes (boolean): != 0 if font is bold<br />
+        ///     - 1 bytes (boolean): != 0 if font is italic<br />
+        ///     - 4 bytes (int): the glyph count<br />
+        ///     - "glyph count" Glyph: the glyph data<br />
+        ///         -> Glyph<br />
+        ///             - 4 bytes (int): the character<br />
+        ///             - 4 bytes (int): the x<br />
+        ///             - 4 bytes (int): the y<br />
+        ///             - 4 bytes (int): the width<br />
+        ///             - 4 bytes (int): the height<br />
+        ///             - 4 bytes (int): the x offset<br />
+        ///             - 4 bytes (int): the y offset<br />
+        ///             - 4 bytes (int): the x advance<br />
+        ///     - 4 bytes (int): the kerning count<br />
+        ///     - "kerning count" Kerning: the kerning data<br />
+        ///         -> Kerning<br />
+        ///             - 4 bytes (int): the first character<br />
+        ///             - 4 bytes (int): the first character<br />
+        ///             - 4 bytes (int): the x offset<br />
+        ///     - 4 bytes (int): the texture width<br />
+        ///     - 4 bytes (int): the texture height<br />
+        ///     - "width * height" Pixel: the texture pixel data<br />
+        ///         -> Pixel<br />
+        ///             - 1 byte (byte): red value<br />
+        ///             - 1 byte (byte): green value<br />
+        ///             - 1 byte (byte): blue value<br />
+        ///             - 1 byte (byte): alpha value<br />
+        /// </remarks>
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
 }

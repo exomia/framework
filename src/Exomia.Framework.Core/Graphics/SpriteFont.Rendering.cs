@@ -94,7 +94,7 @@ public sealed partial class SpriteFont
                             new Rectangle(glyph.X, glyph.Y, glyph.Width, glyph.Height),
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
-                        x += glyph.XAdvance;
+                        x += glyph.AdvanceX;
                         break;
                     }
                 }
@@ -153,7 +153,7 @@ public sealed partial class SpriteFont
                             new Rectangle(glyph.X, glyph.Y, glyph.Width, glyph.Height),
                             color, rotation, Vector2.Zero, 1.0f, opacity, effects, layerDepth);
 
-                        x += glyph.XAdvance;
+                        x += glyph.AdvanceX;
                         break;
                     }
                 }
@@ -229,7 +229,7 @@ public sealed partial class SpriteFont
                             new Rectangle(glyph.X, glyph.Y, glyph.Width, glyph.Height),
                             color, rotation, origin, 1.0f, opacity, effects, layerDepth);
 
-                        x += glyph.XAdvance;
+                        x += glyph.AdvanceX;
                         break;
                     }
                 }
@@ -291,7 +291,7 @@ public sealed partial class SpriteFont
                             new Rectangle(glyph.X, glyph.Y, glyph.Width, glyph.Height),
                             color, rotation, Vector2.Zero, 1.0f, opacity, effects, layerDepth);
 
-                        x += glyph.XAdvance;
+                        x += glyph.AdvanceX;
                         break;
                     }
                 }

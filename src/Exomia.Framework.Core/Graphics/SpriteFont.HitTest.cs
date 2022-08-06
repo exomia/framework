@@ -68,7 +68,7 @@ public sealed partial class SpriteFont
                         dx += offset;
                     }
 
-                    float nextX = x + glyph.XAdvance;
+                    float nextX = x + glyph.AdvanceX;
                     float h     = y + _lineHeight;
 
                     if (xPos >= x && xPos <= nextX + dx && yPos <= h && yPos >= y)

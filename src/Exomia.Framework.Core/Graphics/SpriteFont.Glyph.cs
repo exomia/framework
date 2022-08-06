@@ -34,6 +34,6 @@ public sealed partial class SpriteFont
         public int OffsetY;
 
         /// <summary> The advance. </summary>
-        public int XAdvance;
+        public int AdvanceX;
     }
 }
