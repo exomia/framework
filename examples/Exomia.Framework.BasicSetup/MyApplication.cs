@@ -101,22 +101,11 @@ sealed unsafe class MyApplication : Application
         if (_renderer.Begin(out VkCommandBuffer commandBuffer))
         {
             _renderer.BeginRenderPass(commandBuffer);
+            
             const int iterations = 10_000;
-            _spriteBatch.Begin(SpriteSortMode.Texture);
-            for (int i = 0; i < iterations / 100; i++)
-            {
-                _spriteBatch.Draw(_texture1, new RectangleF(rnd.Next(50, 900), rnd.Next(50, 700), 40, 40), VkColors.White);
-
-                _spriteBatch.DrawFillRectangle(
-                    new RectangleF(50 + rnd.Next(0, 900), 50 + rnd.Next(0, 600), 40, 40),
-                    new VkColor(0.3f, 0.4f, 0.9f),
-                    rnd.NextSingle());
-            }
-            _spriteBatch.End(commandBuffer);
-
+            
             _spriteBatch.Begin();
             _spriteBatch.RenderText(_spriteFont1, "Hey there!", new Vector2(10, 10), VkColors.Black, 0.0f, 0.0f);
-            _spriteBatch.Draw(_texture1, new Vector2(0,                         200), new Rectangle(0, 50, 100, 100), VkColors.White);
 
             for (int i = 0; i < iterations; i++)
             {
@@ -148,6 +137,18 @@ sealed unsafe class MyApplication : Application
                         new VkColor(1f, 0f, 0f),
                         rnd.NextSingle());
                 }
+            }
+            _spriteBatch.End(commandBuffer);
+            
+            _spriteBatch.Begin(SpriteSortMode.Texture);
+            for (int i = 0; i < iterations / 100; i++)
+            {
+                _spriteBatch.Draw(_texture1, new RectangleF(rnd.Next(50, 900), rnd.Next(50, 700), 40, 40), VkColors.White);
+
+                _spriteBatch.DrawFillRectangle(
+                    new RectangleF(50 + rnd.Next(0, 900), 50 + rnd.Next(0, 600), 40, 40),
+                    new VkColor(0.3f, 0.4f, 0.9f),
+                    rnd.NextSingle());
             }
             _spriteBatch.End(commandBuffer);
 
