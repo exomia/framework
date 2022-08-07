@@ -15,13 +15,15 @@ namespace Exomia.Framework.Core.Content.Protocols;
 
 /// <summary> The e1 protocol. This class cannot be inherited. </summary>
 /// <remarks>
+///     <code>
 ///     Protocol definition:<br />
-///     - 4 bytes: e1 magic header (0x40, 0x65, 0x78, 0x31)<br />
+///     - 4 bytes: e1 magic header (<see cref="MagicHeader" />)<br />
 ///     - N bytes: type magic header (e.g. <see cref="Texture.MagicHeader" />, <see cref="Spritefont.MagicHeader" /><br />
 ///     - 2 bytes: type protocol version (e.g. <see cref="Texture.Version10" />, <see cref="Spritefont.Version10" /><br />
 ///     - 4 bytes: type reserved bytes for future use<br />
 ///     - 1 bytes: compression mode (<see cref="CompressMode" />)<br />
 ///     - N bytes: (compressed) data<br />
+///     </code>
 /// </remarks>
 public static class E1Protocol
 {
@@ -41,7 +43,8 @@ public static class E1Protocol
         public static readonly byte[] MagicHeader = { 0x40, 0x74, 0x65, 0x78 };
 
         /// <summary> The texture protocol version 1.0 </summary>
-        /// <remarks><code>
+        /// <remarks>
+        ///     <code>
         ///     Protocol definition:<br />
         ///     - 4 bytes (int): the texture width<br />
         ///     - 4 bytes (int): the texture height<br />
@@ -51,7 +54,8 @@ public static class E1Protocol
         ///         - 1 byte (byte): green value<br />
         ///         - 1 byte (byte): blue value<br />
         ///         - 1 byte (byte): alpha value<br />
-        /// </code></remarks>
+        ///     </code>
+        /// </remarks>
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
 
@@ -62,7 +66,8 @@ public static class E1Protocol
         public static readonly byte[] MagicHeader = { 0x40, 0x73, 0x66, 0x6E, 0x74 };
 
         /// <summary> The spritefont protocol version 1.0 </summary>
-        /// <remarks><code>
+        /// <remarks>
+        ///     <code>
         ///     Protocol definition:<br />
         ///     - N bytes (string): face string with prefixed length encoded as an integer 7 bits at a time<br />
         ///     - 4 bytes (int): the font size<br />
@@ -96,7 +101,8 @@ public static class E1Protocol
         ///         - 1 byte (byte): green value<br />
         ///         - 1 byte (byte): blue value<br />
         ///         - 1 byte (byte): alpha value<br />
-        /// </code></remarks>
+        ///     </code>
+        /// </remarks>
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
 }
