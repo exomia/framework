@@ -20,7 +20,7 @@ namespace Exomia.Framework.Core.Content.Protocols;
 ///     - N bytes: type magic header (e.g. <see cref="Texture.MagicHeader" />, <see cref="Spritefont.MagicHeader" /><br />
 ///     - 2 bytes: type protocol version (e.g. <see cref="Texture.Version10" />, <see cref="Spritefont.Version10" /><br />
 ///     - 4 bytes: type reserved bytes for future use<br />
-///     - 1 bytes: compression mode (0x00 = no compression, 0x01 = GZIP) <see cref="CompressMode" /><br />
+///     - 1 bytes: compression mode (<see cref="CompressMode" />)<br />
 ///     - N bytes: (compressed) data<br />
 /// </remarks>
 public static class E1Protocol
@@ -47,10 +47,10 @@ public static class E1Protocol
         ///     - 4 bytes (int): the texture height<br />
         ///     - "width * height" Pixel: the texture pixel data<br />
         ///     -> Pixel<br />
-        ///     - 1 byte (byte): red value<br />
-        ///     - 1 byte (byte): green value<br />
-        ///     - 1 byte (byte): blue value<br />
-        ///     - 1 byte (byte): alpha value<br />
+        ///         - 1 byte (byte): red value<br />
+        ///         - 1 byte (byte): green value<br />
+        ///         - 1 byte (byte): blue value<br />
+        ///         - 1 byte (byte): alpha value<br />
         /// </remarks>
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
@@ -74,28 +74,28 @@ public static class E1Protocol
         ///     - 4 bytes (int): the glyph count<br />
         ///     - "glyph count" Glyph: the glyph data<br />
         ///     -> Glyph<br />
-        ///     - 4 bytes (int): the character<br />
-        ///     - 4 bytes (int): the x<br />
-        ///     - 4 bytes (int): the y<br />
-        ///     - 4 bytes (int): the width<br />
-        ///     - 4 bytes (int): the height<br />
-        ///     - 4 bytes (int): the x offset<br />
-        ///     - 4 bytes (int): the y offset<br />
-        ///     - 4 bytes (int): the x advance<br />
+        ///         - 4 bytes (int): the character<br />
+        ///         - 4 bytes (int): the x<br />
+        ///         - 4 bytes (int): the y<br />
+        ///         - 4 bytes (int): the width<br />
+        ///         - 4 bytes (int): the height<br />
+        ///         - 4 bytes (int): the x offset<br />
+        ///         - 4 bytes (int): the y offset<br />
+        ///         - 4 bytes (int): the x advance<br />
         ///     - 4 bytes (int): the kerning count<br />
         ///     - "kerning count" Kerning: the kerning data<br />
         ///     -> Kerning<br />
-        ///     - 4 bytes (int): the first character<br />
-        ///     - 4 bytes (int): the first character<br />
-        ///     - 4 bytes (int): the x offset<br />
-        ///     - 4 bytes (int): the texture width<br />
-        ///     - 4 bytes (int): the texture height<br />
+        ///         - 4 bytes (int): the first character<br />
+        ///         - 4 bytes (int): the first character<br />
+        ///         - 4 bytes (int): the x offset<br />
+        ///         - 4 bytes (int): the texture width<br />
+        ///         - 4 bytes (int): the texture height<br />
         ///     - "width * height" Pixel: the texture pixel data<br />
         ///     -> Pixel<br />
-        ///     - 1 byte (byte): red value<br />
-        ///     - 1 byte (byte): green value<br />
-        ///     - 1 byte (byte): blue value<br />
-        ///     - 1 byte (byte): alpha value<br />
+        ///         - 1 byte (byte): red value<br />
+        ///         - 1 byte (byte): green value<br />
+        ///         - 1 byte (byte): blue value<br />
+        ///         - 1 byte (byte): alpha value<br />
         /// </remarks>
         public static readonly byte[] Version10 = { 0x01, 0x00 };
     }
