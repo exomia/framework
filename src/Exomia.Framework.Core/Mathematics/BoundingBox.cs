@@ -90,8 +90,8 @@ public struct BoundingBox
     /// <summary> Determines whether the specified <see cref="BoundingBox" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cref="BoundingBox" /> to compare with this instance. </param>
     /// <returns>
-    ///     <c> true </c> if the specified <see cref="BoundingBox" /> is equal to this instance;
-    ///     otherwise, <c> false </c>.
+    ///     true if the specified <see cref="BoundingBox" /> is equal to this instance;
+    ///     otherwise, false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in BoundingBox value)
@@ -102,8 +102,8 @@ public struct BoundingBox
     /// <summary> Determines whether the specified <see cref="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cref="System.Object" /> to compare with this instance. </param>
     /// <returns>
-    ///     <c> true </c> if the specified <see cref="System.Object" /> is equal to this instance;
-    ///     otherwise, <c> false </c>.
+    ///     true if the specified <see cref="System.Object" /> is equal to this instance;
+    ///     otherwise, false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
@@ -227,8 +227,8 @@ public struct BoundingBox
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramref name="left" /> has the same value as <paramref name="right" />;
-    ///     otherwise, <c> false </c>.
+    ///     true if <paramref name="left" /> has the same value as <paramref name="right" />;
+    ///     otherwise, false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(in BoundingBox left, in BoundingBox right)
@@ -240,8 +240,8 @@ public struct BoundingBox
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramref name="left" /> has a different value than
-    ///     <paramref name="right" />; otherwise, <c> false </c>.
+    ///     true if <paramref name="left" /> has a different value than
+    ///     <paramref name="right" />; otherwise, false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(in BoundingBox left, in BoundingBox right)

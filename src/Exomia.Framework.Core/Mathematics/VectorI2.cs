@@ -68,7 +68,7 @@ public struct VectorI2
 
     /// <summary> Determines whether the specified <see cref="VectorI2" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="VectorI2" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cref="VectorI2" /> is equal to this instance; <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified <see cref="VectorI2" /> is equal to this instance; false otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in VectorI2 other)
     {
@@ -581,9 +581,9 @@ public struct VectorI2
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramref name="left" /> has the same value as <paramref name="right" />;
+    ///     true if <paramref name="left" /> has the same value as <paramref name="right" />;
     ///     otherwise,
-    ///     <c> false </c>.
+    ///     false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(in VectorI2 left, in VectorI2 right)
@@ -595,9 +595,9 @@ public struct VectorI2
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramref name="left" /> has a different value than
+    ///     true if <paramref name="left" /> has a different value than
     ///     <paramref name="right" />; otherwise,
-    ///     <c> false </c>.
+    ///     false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(in VectorI2 left, in VectorI2 right)

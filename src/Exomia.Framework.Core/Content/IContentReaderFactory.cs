@@ -21,6 +21,6 @@ public interface IContentReaderFactory
     /// <summary> Returns an instance of a <see cref="IContentReader" /> for loading the specified type or null if not handled by this factory. </summary>
     /// <param name="type"> The type. </param>
     /// <param name="reader"> [out] An instance of a <see cref="IContentReader" /> for loading the specified type. </param>
-    /// <returns> <c> true </c> if a <see cref="IContentReader" /> is returned; <c> false </c> otherwise. </returns>
+    /// <returns> true if a <see cref="IContentReader" /> is returned; false otherwise. </returns>
     bool TryCreate(Type type, [NotNullWhen(true)] out IContentReader? reader);
 }

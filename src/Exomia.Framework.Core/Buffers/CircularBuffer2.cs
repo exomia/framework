@@ -33,7 +33,7 @@ public class CircularBuffer2<T>
         get { return _buffer.Length; }
     }
 
-    /// <summary> <c> true </c> if the circular buffer is empty; <c> false </c> otherwise. </summary>
+    /// <summary> true if the circular buffer is empty; false otherwise. </summary>
     /// <value> True if this object is empty, false if not. </value>
     public bool IsEmpty
     {

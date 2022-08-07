@@ -131,7 +131,7 @@ public struct RectangleF
     }
 
     /// <summary> Gets a value that indicates whether the rectangle is empty. </summary>
-    /// <value> <c> true </c> if [is empty]; otherwise, <c> false </c>. </value>
+    /// <value> true if [is empty]; otherwise, false. </value>
     public bool IsEmpty
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -226,7 +226,7 @@ public struct RectangleF
 
     /// <summary> Determines whether the specified <see cref="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cref="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cref="System.Object" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {
@@ -235,7 +235,7 @@ public struct RectangleF
 
     /// <summary> Determines whether the specified <see cref="RectangleF" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="RectangleF" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cref="RectangleF" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cref="RectangleF" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in RectangleF other)
     {
@@ -297,7 +297,7 @@ public struct RectangleF
 
     /// <summary> Checks, if specified <see cref="Vector2" /> is inside <see cref="RectangleF" />. </summary>
     /// <param name="value"> The <see cref="Vector2" />. </param>
-    /// <returns> <c> true </c> if <see cref="Vector2" /> is inside <see cref="RectangleF" />, otherwise <c> false </c>. </returns>
+    /// <returns> true if <see cref="Vector2" /> is inside <see cref="RectangleF" />, otherwise false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(in Vector2 value)
     {
@@ -318,7 +318,7 @@ public struct RectangleF
 
     /// <summary> Checks, if specified <see cref="Rectangle" /> is entirely inside <see cref="RectangleF" />. </summary>
     /// <param name="value"> The <see cref="Rectangle" />. </param>
-    /// <returns> <c> true </c> if <see cref="Vector2" /> is inside <see cref="RectangleF" />, otherwise <c> false </c>. </returns>
+    /// <returns> true if <see cref="Vector2" /> is inside <see cref="RectangleF" />, otherwise false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(in Rectangle value)
     {
@@ -339,7 +339,7 @@ public struct RectangleF
 
     /// <summary> Checks, if specified <see cref="RectangleF" /> is entirely inside <see cref="RectangleF" />. </summary>
     /// <param name="value"> The <see cref="RectangleF" />. </param>
-    /// <returns> <c> true </c> if <see cref="Vector2" /> is inside <see cref="RectangleF" />, otherwise <c> false </c>. </returns>
+    /// <returns> true if <see cref="Vector2" /> is inside <see cref="RectangleF" />, otherwise false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(in RectangleF value)
     {
@@ -361,7 +361,7 @@ public struct RectangleF
     /// <summary> Checks, if specified x and y value is inside <see cref="RectangleF" />. </summary>
     /// <param name="x"> The x value. </param>
     /// <param name="y"> The y value. </param>
-    /// <returns> <c> true </c> if point is inside <see cref="RectangleF" />, otherwise <c> false </c>. </returns>
+    /// <returns> true if point is inside <see cref="RectangleF" />, otherwise false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(int x, int y)
     {
@@ -384,7 +384,7 @@ public struct RectangleF
     /// <summary> Checks, if specified x and y value is inside <see cref="RectangleF" />. </summary>
     /// <param name="x"> The x value. </param>
     /// <param name="y"> The y value. </param>
-    /// <returns> <c> true </c> if point is inside <see cref="RectangleF" />, otherwise <c> false </c>. </returns>
+    /// <returns> true if point is inside <see cref="RectangleF" />, otherwise false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(float x, float y)
     {

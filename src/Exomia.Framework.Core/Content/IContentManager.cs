@@ -26,33 +26,33 @@ public interface IContentManager : IDisposable
     /// <summary> add a new content reader to the list. </summary>
     /// <param name="type"> the type of the content reader. </param>
     /// <param name="reader"> the content reader to add. </param>
-    /// <returns> <c> true </c> if the specified content reader successfully added, <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified content reader successfully added, false otherwise. </returns>
     bool AddContentReader(Type type, IContentReader reader);
 
     /// <summary> add a new content reader factory to the list. </summary>
     /// <param name="factory"> the content reader factory to add. </param>
-    /// <returns> <c> true </c> if the specified content reader factory successfully added, <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified content reader factory successfully added, false otherwise. </returns>
     bool AddContentReaderFactory(IContentReaderFactory factory);
 
     /// <summary> add a new content resolver to the list. </summary>
     /// <param name="resolver"> the content resolver to add. </param>
-    /// <returns> <c> true </c> if the specified content resolver successfully added, <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified content resolver successfully added, false otherwise. </returns>
     bool AddContentResolver(IContentResolver resolver);
 
     /// <summary> add a new embedded resource content resolver to the list. </summary>
     /// <param name="resolver"> the content resolver to add. </param>
-    /// <returns> <c> true </c> if the specified content resolver successfully added, <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified content resolver successfully added, false otherwise. </returns>
     bool AddEmbeddedResourceContentResolver(IEmbeddedResourceContentResolver resolver);
 
     /// <summary> Checks if the specified assets exists. </summary>
     /// <param name="assetName"> The asset name with extension. </param>
-    /// <returns> <c> true </c> if the specified assets exists, <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified assets exists, false otherwise. </returns>
     bool Exists(string assetName);
 
     /// <summary> Loads an asset that has been processed by the content pipeline. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="assetName"> Asset path and name (with its extension) </param>
-    /// <param name="fromEmbeddedResource"> (Optional) <c> true </c> if the asset should be loaded from an embedded resource; <c> false </c> otherwise. </param>
+    /// <param name="fromEmbeddedResource"> (Optional) true if the asset should be loaded from an embedded resource; false otherwise. </param>
     /// <returns> A  asset of type <typeparamref name="T" />. </returns>
     /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all <see cref="IContentResolver" />. </exception>
     /// <exception cref="NotSupportedException"> If no content reader was suitable to decode the asset. </exception>
@@ -61,7 +61,7 @@ public interface IContentManager : IDisposable
     /// <summary> Loads an asset that has been processed by the Content Pipeline. </summary>
     /// <param name="assetType"> Asset Type. </param>
     /// <param name="assetName"> Full asset name (with its extension) </param>
-    /// <param name="fromEmbeddedResource"> (Optional) <c> true </c> if the asset should be loaded from an embedded resource; <c> false </c> otherwise. </param>
+    /// <param name="fromEmbeddedResource"> (Optional) true if the asset should be loaded from an embedded resource; false otherwise. </param>
     /// <returns> An asset of type <paramref name="assetType" />. </returns>
     /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all <see cref="IContentResolver" />. </exception>
     /// <exception cref="NotSupportedException"> If no content reader was suitable to decode the asset. </exception>
@@ -74,12 +74,12 @@ public interface IContentManager : IDisposable
     /// <summary> Unloads and disposes an asset. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="assetName"> The asset name. </param>
-    /// <returns> <c> true </c> if the asset exists and was unloaded, <c> false </c> otherwise. </returns>
+    /// <returns> true if the asset exists and was unloaded, false otherwise. </returns>
     bool Unload<T>(string assetName);
 
     /// <summary> Unloads and disposes an asset. </summary>
     /// <param name="assetType"> The asset type. </param>
     /// <param name="assetName"> The asset name. </param>
-    /// <returns> <c> true </c> if the asset exists and was unloaded, <c> false </c> otherwise. </returns>
+    /// <returns> true if the asset exists and was unloaded, false otherwise. </returns>
     bool Unload(Type assetType, string assetName);
 }

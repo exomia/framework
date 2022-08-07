@@ -83,7 +83,7 @@ public readonly struct Line2
 
     /// <summary> Determines whether the specified <see cref="Line2" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="Line2" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cref="Line2" /> is equal to this instance; <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified <see cref="Line2" /> is equal to this instance; false otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(in Line2 other)
     {

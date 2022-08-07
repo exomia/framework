@@ -39,7 +39,7 @@ public static partial class Math2
 
     /// <summary> Determines whether the specified value is close to zero (0.0f). </summary>
     /// <param name="a"> The floating value. </param>
-    /// <returns> <c> true </c> if the specified value is close to zero (0.0f); otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified value is close to zero (0.0f); otherwise, false. </returns>
     public static bool IsZero(float a)
     {
         return Math.Abs(a) < ZERO_TOLERANCE;
@@ -47,7 +47,7 @@ public static partial class Math2
 
     /// <summary> Determines whether the specified value is not close to zero (0.0f). </summary>
     /// <param name="a"> The floating value. </param>
-    /// <returns> <c> true </c> if the specified value is not close to zero (0.0f); otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified value is not close to zero (0.0f); otherwise, false. </returns>
     public static bool IsNotZero(float a)
     {
         return Math.Abs(a) >= ZERO_TOLERANCE;
@@ -55,7 +55,7 @@ public static partial class Math2
 
     /// <summary> Determines whether the specified value is close to one (1.0f). </summary>
     /// <param name="a"> The floating value. </param>
-    /// <returns> <c> true </c> if the specified value is close to one (1.0f); otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified value is close to one (1.0f); otherwise, false. </returns>
     public static bool IsOne(float a)
     {
         return IsZero(a - 1.0f);
@@ -68,7 +68,7 @@ public static partial class Math2
     /// </summary>
     /// <param name="a"> The left value to compare. </param>
     /// <param name="b"> The right value to compare. </param>
-    /// <returns> <c> true </c> if a almost equal to b, <c> false </c> otherwise. </returns>
+    /// <returns> true if a almost equal to b, false otherwise. </returns>
     /// <remarks>
     ///     The code is using the technique described by Bruce Dawson in
     ///     <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
@@ -108,7 +108,7 @@ public static partial class Math2
     /// <param name="a"> The left value to compare. </param>
     /// <param name="b"> The right value to compare. </param>
     /// <param name="epsilon"> Epsilon value. </param>
-    /// <returns> <c> true </c> if a almost equal to b within a float epsilon, <c> false </c> otherwise. </returns>
+    /// <returns> true if a almost equal to b within a float epsilon, false otherwise. </returns>
     public static bool WithinEpsilon(float a, float b, float epsilon)
     {
         float num = a - b;

@@ -16,7 +16,7 @@ public abstract partial class Application
     ///     Starts the rendering of a frame.
     ///     This method is followed by calls to <see cref="Render" /> and <see cref="EndFrame" />.
     /// </summary>
-    /// <returns> <c> true </c> if Draw should occur, <c> false </c> otherwise. </returns>
+    /// <returns> true if Draw should occur, false otherwise. </returns>
     protected abstract bool BeginFrame();
 
     /// <summary> Perform rendering operations. </summary>

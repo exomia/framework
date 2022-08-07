@@ -52,7 +52,7 @@ public struct Ray
 
     /// <summary> Determines whether the specified <see cin="Ray" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="Ray" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cin="Ray" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cin="Ray" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in Ray value)
     {
@@ -61,7 +61,7 @@ public struct Ray
 
     /// <summary> Determines whether the specified <see cin="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cin="System.Object" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {
@@ -242,8 +242,8 @@ public struct Ray
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
-    ///     <c> false </c>.
+    ///     true if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
+    ///     false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(in Ray left, in Ray right)
@@ -255,8 +255,8 @@ public struct Ray
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
-    ///     <c> false </c>.
+    ///     true if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
+    ///     false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(in Ray left, in Ray right)

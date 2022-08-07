@@ -29,14 +29,14 @@ public interface IRenderable
     int RenderOrder { get; }
 
     /// <summary> Gets a value indicating whether the <see cref="Render" /> method should be called by the <see cref="Application" />. </summary>
-    /// <value> <c> true </c> if this drawable component is visible; otherwise, <c> false </c>. </value>
+    /// <value> true if this drawable component is visible; otherwise, false. </value>
     bool Visible { get; }
 
     /// <summary>
     ///     Starts the rendering of a frame.
     ///     This method is followed by calls to <see cref="Render" /> and <see cref="EndFrame" />.
     /// </summary>
-    /// <returns> <c> true </c> if Draw should occur, <c> false </c> otherwise. </returns>
+    /// <returns> true if Draw should occur, false otherwise. </returns>
     bool BeginFrame();
 
     /// <summary> Perform rendering operations. </summary>

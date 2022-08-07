@@ -135,7 +135,7 @@ public struct ViewportF
 
     /// <summary> Determines whether the specified <see cref="ViewportF" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="ViewportF" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cref="ViewportF" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cref="ViewportF" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in ViewportF other)
     {
@@ -149,7 +149,7 @@ public struct ViewportF
 
     /// <summary> Determines whether the specified object is equal to this instance. </summary>
     /// <param name="value"> The object to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified object is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified object is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {

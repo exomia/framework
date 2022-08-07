@@ -18,7 +18,7 @@ public abstract partial class SceneBase
     ///     Starts the rendering of a frame.
     ///     This method is followed by calls to <see cref="Render" /> and <see cref="EndFrame" />.
     /// </summary>
-    /// <returns> <c> true </c> if Draw should occur, <c> false </c> otherwise. </returns>
+    /// <returns> true if Draw should occur, false otherwise. </returns>
     public virtual bool BeginFrame()
     {
         return Visible;

@@ -22,7 +22,7 @@ public interface IUpdateable
     event EventHandler UpdateOrderChanged;
 
     /// <summary> Gets a value indicating whether the application component's Update method should be called. </summary>
-    /// <value> <c> true </c> if update is enabled; otherwise, <c> false </c>. </value>
+    /// <value> true if update is enabled; otherwise, false. </value>
     bool Enabled { get; set; }
 
     /// <summary>

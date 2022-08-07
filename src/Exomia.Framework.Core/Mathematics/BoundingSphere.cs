@@ -49,7 +49,7 @@ public struct BoundingSphere
 
     /// <summary> Determines whether the specified <see cin="BoundingSphere" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="BoundingSphere" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cin="BoundingSphere" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cin="BoundingSphere" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in BoundingSphere value)
     {
@@ -59,7 +59,7 @@ public struct BoundingSphere
 
     /// <summary> Determines whether the specified <see cin="System.Object" /> is equal to this instance. </summary>
     /// <param name="value"> The <see cin="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cin="System.Object" /> is equal to this instance; otherwise, <c> false </c>. </returns>
+    /// <returns> true if the specified <see cin="System.Object" /> is equal to this instance; otherwise, false. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? value)
     {
@@ -343,8 +343,8 @@ public struct BoundingSphere
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
-    ///     <c> false </c>.
+    ///     true if <paramin name="left" /> has the same value as <paramin name="right" />; otherwise,
+    ///     false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(BoundingSphere left, BoundingSphere right)
@@ -356,8 +356,8 @@ public struct BoundingSphere
     /// <param name="left"> The first value to compare. </param>
     /// <param name="right"> The second value to compare. </param>
     /// <returns>
-    ///     <c> true </c> if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
-    ///     <c> false </c>.
+    ///     true if <paramin name="left" /> has a different value than <paramin name="right" />; otherwise,
+    ///     false.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(BoundingSphere left, BoundingSphere right)

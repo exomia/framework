@@ -108,7 +108,7 @@ public unsafe struct BoundingFrustum
     }
 
     /// <summary> Indicate whether the current BoundingFrustrum is Orthographic. </summary>
-    /// <value> <c> true </c> if the current BoundingFrustrum is Orthographic; <c> false </c> otherwise. </value>
+    /// <value> true if the current BoundingFrustrum is Orthographic; false otherwise. </value>
     public readonly bool IsOrthographic
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -135,7 +135,7 @@ public unsafe struct BoundingFrustum
     /// <summary> Determines whether the specified <see cref="BoundingFrustum" /> is equal to this instance. </summary>
     /// <param name="other"> The <see cref="BoundingFrustum" /> to compare with this instance. </param>
     /// <returns>
-    ///     <c> true </c> if the specified <see cref="BoundingFrustum" /> is equal to this instance; <c> false </c> otherwise.
+    ///     true if the specified <see cref="BoundingFrustum" /> is equal to this instance; false otherwise.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Equals(in BoundingFrustum other)
@@ -145,7 +145,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Determines whether the specified <see cref="System.Object" /> is equal to this instance. </summary>
     /// <param name="obj"> The <see cref="System.Object" /> to compare with this instance. </param>
-    /// <returns> <c> true </c> if the specified <see cref="System.Object" /> is equal to this instance; <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified <see cref="System.Object" /> is equal to this instance; false otherwise. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals(object? obj)
     {
@@ -449,7 +449,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects a BoundingSphere. </summary>
     /// <param name="sphere"> The sphere. </param>
-    /// <param name="result"> [out] Set to <c> true </c> if the current BoundingFrustum intersects a BoundingSphere. </param>
+    /// <param name="result"> [out] Set to true if the current BoundingFrustum intersects a BoundingSphere. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Intersects(in BoundingSphere sphere, out bool result)
     {
@@ -458,7 +458,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects a BoundingBox. </summary>
     /// <param name="box"> The box. </param>
-    /// <returns> <c> true </c> if the current BoundingFrustum intersects a BoundingSphere. </returns>
+    /// <returns> true if the current BoundingFrustum intersects a BoundingSphere. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Intersects(in BoundingBox box)
     {
@@ -467,7 +467,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects a BoundingBox. </summary>
     /// <param name="box"> The box. </param>
-    /// <param name="result"> [out] <c> true </c> if the current BoundingFrustum intersects a BoundingSphere. </param>
+    /// <param name="result"> [out] true if the current BoundingFrustum intersects a BoundingSphere. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Intersects(in BoundingBox box, out bool result)
     {
@@ -512,7 +512,7 @@ public unsafe struct BoundingFrustum
 
     /// <summary> Checks whether the current BoundingFrustum intersects the specified Ray. </summary>
     /// <param name="ray"> The ray. </param>
-    /// <returns> <c> true </c> if the current BoundingFrustum intersects the specified Ray. </returns>
+    /// <returns> true if the current BoundingFrustum intersects the specified Ray. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool Intersects(in Ray ray)
     {
@@ -523,7 +523,7 @@ public unsafe struct BoundingFrustum
     /// <param name="ray"> The Ray to check for intersection with. </param>
     /// <param name="inDistance"> [out] The distance at which the ray enters the frustum if there is an intersection and the ray starts outside the frustum. </param>
     /// <param name="outDistance"> [out] The distance at which the ray exits the frustum if there is an intersection. </param>
-    /// <returns> <c> true </c> if the current BoundingFrustum intersects the specified Ray. </returns>
+    /// <returns> true if the current BoundingFrustum intersects the specified Ray. </returns>
     public readonly bool Intersects(in Ray ray, out float? inDistance, out float? outDistance)
     {
         if (Contains(ray.Position) != ContainmentType.Disjoint)

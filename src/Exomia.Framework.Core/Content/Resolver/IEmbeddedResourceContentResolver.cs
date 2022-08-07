@@ -23,7 +23,7 @@ public interface IEmbeddedResourceContentResolver
     /// <param name="assetType"> Type of the asset. </param>
     /// <param name="assetName"> Name of the asset. </param>
     /// <param name="assembly"> [out] The assembly in which the resource exists. </param>
-    /// <returns> <c> true </c> if the specified asset name exists; <c> false </c> otherwise. </returns>
+    /// <returns> true if the specified asset name exists; false otherwise. </returns>
     bool Exists(Type assetType, string assetName, [NotNullWhen(true)] out Assembly? assembly);
 
     /// <summary> Resolves the specified asset name to a stream. </summary>
