@@ -57,8 +57,6 @@ sealed unsafe class MyApplication : Application
         _contentManager = contentManager;
         _logger         = logger;
 
-        _contentManager.RootDirectory = "Content";
-
         //IsFixedTimeStep   = true;
         //TargetElapsedTime = 1000.0 / 144;
 

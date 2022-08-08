@@ -25,37 +25,27 @@ public sealed partial class ContentManager : IContentManager
     private readonly Dictionary<Type, Dictionary<Type, IContentReader>> _registeredContentReaders;
     private readonly List<IContentResolver>                             _registeredContentResolvers;
     private readonly List<IEmbeddedResourceContentResolver>             _registeredEmbeddedResourceResolvers;
-    private          string                                             _rootDirectory = string.Empty;
-
+    private readonly string                                             _rootDirectory;
+    
+    /// <inheritdoc />
+    public IServiceProvider ServiceProvider { get; }
+    
     /// <inheritdoc />
     public string RootDirectory
     {
         get { return _rootDirectory; }
-        set
-        {
-            lock (_loadedAssets)
-            {
-                if (_loadedAssets.Count > 0)
-                {
-                    throw new InvalidOperationException(
-                        $"{nameof(RootDirectory)} cannot be changed when a {nameof(ContentManager)} has already assets loaded");
-                }
-            }
-
-            _rootDirectory = value;
-        }
     }
-
-    /// <inheritdoc />
-    public IServiceProvider ServiceProvider { get; }
 
     /// <summary> Initializes a new instance of the <see cref="ContentManager" /> class. </summary>
     /// <param name="serviceProvider"> The service provider. </param>
+    /// <param name="configuration"> The configuration. </param>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     /// <exception cref="TypeLoadException"> Thrown when a Type Load error condition occurs. </exception>
-    public ContentManager(IServiceProvider serviceProvider)
+    public ContentManager(IServiceProvider serviceProvider, Configuration configuration)
     {
         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+        
+        _rootDirectory = configuration.RootDirectory;
 
         _loadedAssets                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);
         _registeredContentResolvers          = new List<IContentResolver>(INITIAL_QUEUE_SIZE);

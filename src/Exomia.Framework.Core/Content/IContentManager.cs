@@ -15,32 +15,32 @@ namespace Exomia.Framework.Core.Content;
 /// <summary> IContentManager interface. </summary>
 public interface IContentManager : IDisposable
 {
-    /// <summary> RootDirectory. </summary>
+    /// <summary>The root directory. </summary>
     /// <value> The pathname of the root directory. </value>
-    string RootDirectory { get; set; }
+    string RootDirectory { get;  }
 
     /// <summary> Gets the service provider. </summary>
     /// <value> The service provider. </value>
     IServiceProvider ServiceProvider { get; }
 
-    /// <summary> add a new content reader to the list. </summary>
-    /// <param name="type"> the type of the content reader. </param>
-    /// <param name="reader"> the content reader to add. </param>
+    /// <summary> Add a new content reader to the list. </summary>
+    /// <param name="type"> The type of the content reader. </param>
+    /// <param name="reader"> The content reader to add. </param>
     /// <returns> true if the specified content reader successfully added, false otherwise. </returns>
     bool AddContentReader(Type type, IContentReader reader);
 
-    /// <summary> add a new content reader factory to the list. </summary>
-    /// <param name="factory"> the content reader factory to add. </param>
+    /// <summary> Add a new content reader factory to the list. </summary>
+    /// <param name="factory"> The content reader factory to add. </param>
     /// <returns> true if the specified content reader factory successfully added, false otherwise. </returns>
     bool AddContentReaderFactory(IContentReaderFactory factory);
 
-    /// <summary> add a new content resolver to the list. </summary>
+    /// <summary> Add a new content resolver to the list. </summary>
     /// <param name="resolver"> the content resolver to add. </param>
     /// <returns> true if the specified content resolver successfully added, false otherwise. </returns>
     bool AddContentResolver(IContentResolver resolver);
 
-    /// <summary> add a new embedded resource content resolver to the list. </summary>
-    /// <param name="resolver"> the content resolver to add. </param>
+    /// <summary> Add a new embedded resource content resolver to the list. </summary>
+    /// <param name="resolver"> The content resolver to add. </param>
     /// <returns> true if the specified content resolver successfully added, false otherwise. </returns>
     bool AddEmbeddedResourceContentResolver(IEmbeddedResourceContentResolver resolver);
 
@@ -53,7 +53,7 @@ public interface IContentManager : IDisposable
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="assetName"> Asset path and name (with its extension) </param>
     /// <param name="fromEmbeddedResource"> (Optional) true if the asset should be loaded from an embedded resource; false otherwise. </param>
-    /// <returns> A  asset of type <typeparamref name="T" />. </returns>
+    /// <returns> A asset of type <typeparamref name="T" />. </returns>
     /// <exception cref="Exceptions.AssetNotFoundException"> If the asset was not found from all <see cref="IContentResolver" />. </exception>
     /// <exception cref="NotSupportedException"> If no content reader was suitable to decode the asset. </exception>
     T Load<T>(string assetName, bool fromEmbeddedResource = false);
