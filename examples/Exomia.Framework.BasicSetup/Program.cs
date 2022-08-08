@@ -10,7 +10,6 @@
 
 using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Application.Configurations;
-using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Extensions;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Windows.Application.Desktop;
@@ -43,9 +42,9 @@ static class Program
                              builder.ClearProviders();
                              builder.AddSerilog(Log.Logger);
                          })
-                        .AddDefaultContentManagement(new ContentManager.Configuration
+                        .AddDefaultContentManagement(configuration =>
                          {
-                             RootDirectory = "Content"
+                             configuration.RootDirectory = "Content";
                          });
                  })
                 .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>

@@ -10,13 +10,13 @@
 
 namespace Exomia.Framework.Core.Content;
 
-public sealed partial class ContentManager 
+public sealed partial class ContentManager
 {
-    /// <summary> The <see cref="ContentManager"/> configuration. </summary>
+    /// <summary> The <see cref="ContentManager" /> configuration. </summary>
     public sealed class Configuration
     {
         /// <summary> Get or sets the root directory. </summary>
         /// <value> The pathname of the root directory. </value>
-        public string RootDirectory { get; init; } = string.Empty;
+        public string RootDirectory { get; set; } = string.Empty;
     }
 }

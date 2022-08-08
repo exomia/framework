@@ -20,12 +20,18 @@ public static class CoreExtensions
 {
     /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default content management. </summary>
     /// <param name="serviceCollection"> The serviceCollection to act on. </param>
-    /// <param name="configuration"> The configuration. </param>
+    /// <param name="configure"> The configure delegate. </param>
     /// <returns> An <see cref="IServiceCollection" />. </returns>
-    public static IServiceCollection AddDefaultContentManagement(this IServiceCollection serviceCollection, ContentManager.Configuration? configuration = null)
+    public static IServiceCollection AddDefaultContentManagement(this IServiceCollection serviceCollection, Action<ContentManager.Configuration>? configure = null)
     {
         return serviceCollection
-           .AddSingleton<IContentManager>(p => new ContentManager(p, configuration ?? new ContentManager.Configuration()));
+           .AddSingleton<IContentManager>(
+                p =>
+                {
+                    ContentManager.Configuration configuration = new();
+                    configure?.Invoke(configuration);
+                    return new ContentManager(p, configuration);
+                });
     }
 
     /// <summary> An <see cref="IServiceCollection" /> extension method that adds the default scene management. </summary>
