@@ -25,7 +25,7 @@ namespace Exomia.Framework.Core.Graphics;
 #if USE_32BIT_INDEX
     using TIndex = UInt32;
 #else
-    using TIndex = UInt16;
+using TIndex = UInt16;
 #endif
 
 /// <summary> A sprite batch. This class cannot be inherited. </summary>
@@ -68,10 +68,10 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private          uint           _spriteQueueCount, _spriteQueueLength, _sortedQueueLength;
     private          Matrix4x4      _projectionMatrix;
     private          VkRect2D       _scissorRectangle;
-    
+
     private readonly Dictionary<ulong, TextureInfo> _textureInfos = new Dictionary<ulong, TextureInfo>(8);
     private          SpinLock                       _spinLock     = new SpinLock(Debugger.IsAttached);
-    
+
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
 #endif
@@ -127,7 +127,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         _sortedSprites = Allocator.Allocate<SpriteInfo>(_sortedQueueLength);
         _spriteQueue   = Allocator.Allocate<SpriteInfo>(_spriteQueueLength);
         _textureQueue  = Allocator.Allocate<TextureInfo>(_spriteQueueLength);
-        
+
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
         _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
         _vertexBufferPool =
@@ -135,9 +135,9 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-        
+
         Setup();
-        
+
         swapchain.SwapChainRecreated += SwapchainOnSwapChainRecreated;
         swapchain.CleanupSwapChain   += SwapchainOnCleanupSwapChain;
 
@@ -154,10 +154,10 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     {
         foreach ((ulong _, TextureInfo textureInfo) in _textureInfos)
         {
-            Allocator.Free<VkDescriptorSet>(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
+            Allocator.Free(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
         }
         _textureInfos.Clear();
-        
+
         CleanupVulkan();
     }
 

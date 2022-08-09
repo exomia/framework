@@ -14,6 +14,7 @@ using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
     private struct VkCanvasContext
@@ -68,19 +69,19 @@ public sealed unsafe partial class Canvas
         [FieldOffset(OFFSET_ORIGIN)]    public Vector2 Origin;
         [FieldOffset(OFFSET_OPACITY)]   public float   Opacity;
 
-        [FieldOffset(OFFSET_TYPE_START)] public ArcType       ArcType;
-        [FieldOffset(OFFSET_TYPE_START)] public LineType      LineType;
-        [FieldOffset(OFFSET_TYPE_START)] public PolygonType   PolygonType;
-        [FieldOffset(OFFSET_TYPE_START)] public RectangleType RectangleType;
-        [FieldOffset(OFFSET_TYPE_START)] public TextureType   TextureType;
-        [FieldOffset(OFFSET_TYPE_START)] public TriangleType  TriangleType;
+        [FieldOffset(OFFSET_TYPE_START)] public          ArcType       ArcType;
+        [FieldOffset(OFFSET_TYPE_START)] public          LineType      LineType;
+        [FieldOffset(OFFSET_TYPE_START)] public          PolygonType   PolygonType;
+        [FieldOffset(OFFSET_TYPE_START)] public          RectangleType RectangleType;
+        [FieldOffset(OFFSET_TYPE_START)] public readonly TextureType   TextureType;
+        [FieldOffset(OFFSET_TYPE_START)] public          TriangleType  TriangleType;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct ArcType
     {
-        public Arc2 Arc;
-        public float  LineWidth;
+        public Arc2  Arc;
+        public float LineWidth;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -109,12 +110,12 @@ public sealed unsafe partial class Canvas
     [StructLayout(LayoutKind.Sequential)]
     private struct TextureType
     {
-        public TextureInfo    TextureInfo;
-        public RectangleF     Destination;
-        public bool           ScaleDestination;
-        public Rectangle?     SourceRectangle;
-        public TextureEffects Effects;
-        public float          Mode;
+        public readonly TextureInfo    TextureInfo;
+        public readonly RectangleF     Destination;
+        public readonly bool           ScaleDestination;
+        public readonly Rectangle?     SourceRectangle;
+        public readonly TextureEffects Effects;
+        public readonly float          Mode;
     }
 
     [StructLayout(LayoutKind.Sequential)]

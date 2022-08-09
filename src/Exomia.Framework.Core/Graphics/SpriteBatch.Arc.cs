@@ -14,6 +14,7 @@ using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed partial class SpriteBatch
 {
     /// <summary> Renders a circle. </summary>
@@ -26,12 +27,12 @@ public sealed partial class SpriteBatch
     /// <param name="layerDepth"> The depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderCircle(in Vector2 center,
-                           float      radius,
-                           in VkColor color,
-                           float      lineWidth,
-                           float      opacity,
-                           int        segments,
-                           float      layerDepth)
+                             float      radius,
+                             in VkColor color,
+                             float      lineWidth,
+                             float      opacity,
+                             int        segments,
+                             float      layerDepth)
     {
         RenderArc(new Arc2(center, radius), color, lineWidth, opacity, segments, layerDepth);
     }

@@ -14,6 +14,7 @@ using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed partial class SpriteBatch
 {
     /// <summary> Render text. </summary>

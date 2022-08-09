@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -17,12 +17,13 @@ using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">  The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="position"> The position. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="color"> The color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture texture, in Vector2 position, in VkColor color)
     {
@@ -32,9 +33,9 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The destination rectangle. </param>
-    /// <param name="color">                The color. </param>
+    /// <param name="color"> The color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture texture, in RectangleF destinationRectangle, in VkColor color)
     {
@@ -44,10 +45,10 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">         The texture. </param>
-    /// <param name="position">        The position. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
-    /// <param name="color">           The color. </param>
+    /// <param name="color"> The color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in VkColor color)
     {
@@ -57,10 +58,10 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The destination rectangle. </param>
-    /// <param name="sourceRectangle">      The source rectangle. </param>
-    /// <param name="color">                The color. </param>
+    /// <param name="sourceRectangle"> The source rectangle. </param>
+    /// <param name="color"> The color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture       texture,
                        in RectangleF destinationRectangle,
@@ -73,14 +74,14 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">              The texture. </param>
+    /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The destination rectangle. </param>
-    /// <param name="sourceRectangle">      The source rectangle. </param>
-    /// <param name="color">                The color. </param>
-    /// <param name="rotation">             The rotation. </param>
-    /// <param name="origin">               The origin. </param>
-    /// <param name="opacity">              The opacity. </param>
-    /// <param name="effects">              The effects. </param>
+    /// <param name="sourceRectangle"> The source rectangle. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="effects"> The effects. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in RectangleF  destinationRectangle,
@@ -97,15 +98,15 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">         The texture. </param>
-    /// <param name="position">        The position. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
-    /// <param name="color">           The color. </param>
-    /// <param name="rotation">        The rotation. </param>
-    /// <param name="origin">          The origin. </param>
-    /// <param name="scale">           The scale. </param>
-    /// <param name="opacity">         The opacity. </param>
-    /// <param name="effects">         The effects. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="scale"> The scale. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="effects"> The effects. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in Vector2     position,
@@ -123,15 +124,15 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a texture. </summary>
-    /// <param name="texture">         The texture. </param>
-    /// <param name="position">        The position. </param>
+    /// <param name="texture"> The texture. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
-    /// <param name="color">           The color. </param>
-    /// <param name="rotation">        The rotation. </param>
-    /// <param name="origin">          The origin. </param>
-    /// <param name="scale">           The scale. </param>
-    /// <param name="opacity">         The opacity. </param>
-    /// <param name="effects">         The effects. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="scale"> The scale. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="effects"> The effects. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in Vector2     position,

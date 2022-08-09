@@ -16,10 +16,9 @@ using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed unsafe partial class SpriteBatch
 {
-    private int* test = Allocator.Allocate<int>(200_000);
-
     private static void UpdateVertexFromSpriteInfo(
         SpriteInfo*                 spriteInfo,
         TextureInfo*                textureInfo,

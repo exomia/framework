@@ -10,7 +10,8 @@
 
 namespace Exomia.Framework.Core.Graphics;
 
-public sealed unsafe partial class Canvas
+/// <content> A canvas. This class cannot be inherited. </content>
+public sealed partial class Canvas
 {
     /// <summary> A configuration. This class cannot be inherited. </summary>
     public sealed class Configuration

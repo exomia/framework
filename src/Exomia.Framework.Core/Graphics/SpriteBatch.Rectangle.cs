@@ -14,6 +14,7 @@ using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed partial class SpriteBatch
 {
     /// <summary> Renders a rectangle. </summary>
@@ -25,11 +26,11 @@ public sealed partial class SpriteBatch
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderRectangle(in RectangleF destinationRectangle,
-                              in VkColor    color,
-                              float         lineWidth,
-                              float         rotation,
-                              float         opacity,
-                              float         layerDepth)
+                                in VkColor    color,
+                                float         lineWidth,
+                                float         rotation,
+                                float         opacity,
+                                float         layerDepth)
     {
         RenderRectangle(destinationRectangle, color, lineWidth, rotation, s_vector2Zero, opacity, layerDepth);
     }

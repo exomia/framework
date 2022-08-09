@@ -66,7 +66,7 @@ public sealed unsafe partial class Canvas
     private          Shader                                           _shader   = null!;
     private          Pipeline?                                        _pipeline = null;
 
-    private VkCanvasContext* _context;
+    private readonly VkCanvasContext* _context;
 
     private readonly Configuration  _configuration;
     private readonly Texture        _whiteTexture;
@@ -83,10 +83,10 @@ public sealed unsafe partial class Canvas
     private Matrix4x4 _projectionMatrix;
     private VkRect2D  _scissorRectangle;
 
-    private readonly Dictionary<ulong, TextureInfo> _textureInfos   = new Dictionary<ulong, TextureInfo>(8);
-    private          SpinLock                       _itemSpinLock   = new SpinLock(Debugger.IsAttached);
-    private          SpinLock                       _textureSpinLock   = new SpinLock(Debugger.IsAttached);
-    private          SpinLock                       _vertexSpinLock = new SpinLock(Debugger.IsAttached);
+    private readonly Dictionary<ulong, TextureInfo> _textureInfos    = new Dictionary<ulong, TextureInfo>(8);
+    private          SpinLock                       _itemSpinLock    = new SpinLock(Debugger.IsAttached);
+    private          SpinLock                       _textureSpinLock = new SpinLock(Debugger.IsAttached);
+    private          SpinLock                       _vertexSpinLock  = new SpinLock(Debugger.IsAttached);
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;

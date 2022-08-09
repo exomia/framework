@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -13,15 +13,16 @@ using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
     /// <summary> Renders an arc. </summary>
-    /// <param name="arc">       The arc. </param>
+    /// <param name="arc"> The arc. </param>
     /// <param name="lineWidth"> The width of the line. </param>
-    /// <param name="color">     The color. </param>
-    /// <param name="rotation">  The rotation. </param>
-    /// <param name="origin">    The origin. </param>
-    /// <param name="opacity">   The opacity. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     public void RenderArc(in Arc2    arc,
                           float      lineWidth,
                           in VkColor color,
@@ -40,11 +41,11 @@ public sealed unsafe partial class Canvas
     }
 
     /// <summary> Renders a filled arc. </summary>
-    /// <param name="arc">      The arc. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="arc"> The arc. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
-    /// <param name="origin">   The origin. </param>
-    /// <param name="opacity">  The opacity. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     public void RenderFillArc(in Arc2    arc,
                               in VkColor color,
                               float      rotation,

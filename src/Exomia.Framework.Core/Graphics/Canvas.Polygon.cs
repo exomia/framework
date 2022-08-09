@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -12,16 +12,16 @@ using System.Numerics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
-    
     /// <summary> Renders a polygon. </summary>
-    /// <param name="vertices">  The vertices. </param>
-    /// <param name="color">     The color. </param>
+    /// <param name="vertices"> The vertices. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
-    /// <param name="rotation">  The rotation. </param>
-    /// <param name="origin">    The origin. </param>
-    /// <param name="opacity">   The opacity. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void RenderPolygon(Vector2[]  vertices,
                               float      lineWidth,
@@ -32,15 +32,15 @@ public sealed unsafe partial class Canvas
     {
         RenderPolygon(ReserveVertices(vertices), vertices.Length, lineWidth, in color, rotation, in origin, opacity);
     }
-    
+
     /// <summary> Renders a polygon. </summary>
-    /// <param name="vertices">  The vertices. </param>
-    /// <param name="verticesCount">  The count of vertices. </param>
-    /// <param name="color">     The color. </param>
+    /// <param name="vertices"> The vertices. </param>
+    /// <param name="verticesCount"> The count of vertices. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
-    /// <param name="rotation">  The rotation. </param>
-    /// <param name="origin">    The origin. </param>
-    /// <param name="opacity">   The opacity. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void RenderPolygon(Vector2*   vertices,
                               int        verticesCount,
@@ -63,10 +63,10 @@ public sealed unsafe partial class Canvas
 
     /// <summary> Renders a filled polygon. </summary>
     /// <param name="vertices"> The vertices. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
-    /// <param name="origin">   The origin. </param>
-    /// <param name="opacity">  The opacity. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     /// <remarks>
     ///     Attention:
@@ -75,22 +75,21 @@ public sealed unsafe partial class Canvas
     ///     - Complex polygons may not work at all!
     /// </remarks>
     public void RenderFillPolygon(Vector2[]  vertices,
-                           in VkColor color,
-                           float      rotation,
-                           in Vector2 origin,
-                           float      opacity)
+                                  in VkColor color,
+                                  float      rotation,
+                                  in Vector2 origin,
+                                  float      opacity)
     {
-        
         RenderFillPolygon(ReserveVertices(vertices), vertices.Length, in color, rotation, in origin, opacity);
     }
-    
+
     /// <summary> Renders a filled polygon. </summary>
     /// <param name="vertices"> The vertices. </param>
-    /// <param name="verticesCount">  The count of vertices. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="verticesCount"> The count of vertices. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
-    /// <param name="origin">   The origin. </param>
-    /// <param name="opacity">  The opacity. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     /// <remarks>
     ///     Attention:

@@ -23,9 +23,9 @@ using static Exomia.Vulkan.Api.Core.VkBorderColor;
 using static Exomia.Vulkan.Api.Core.VkCompareOp;
 using static Exomia.Vulkan.Api.Core.VkSamplerMipmapMode;
 
-
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed unsafe partial class SpriteBatch
 {
     private void Setup()
@@ -328,7 +328,7 @@ public sealed unsafe partial class SpriteBatch
     {
         _pipeline?.Dispose();
         _pipeline = null;
-        
+
         if (_context->PipelineLayout != VkPipelineLayout.Null)
         {
             vkDestroyPipelineLayout(_vkContext->Device, _context->PipelineLayout, null);

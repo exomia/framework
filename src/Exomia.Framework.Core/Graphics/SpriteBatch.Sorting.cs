@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 namespace Exomia.Framework.Core.Graphics;
 
 // ReSharper disable ArrangeRedundantParentheses
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed unsafe partial class SpriteBatch
 {
     private const int INSERTION_SORT_BLOCK_SIZE = 64;

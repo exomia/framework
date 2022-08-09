@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -9,19 +9,20 @@
 #endregion
 
 using System.Numerics;
-using RectangleF = Exomia.Framework.Core.Mathematics.RectangleF;
+using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
     /// <summary> Renders a rectangle. </summary>
     /// <param name="destination"> The destination rectangle. </param>
-    /// <param name="color">       The color. </param>
-    /// <param name="lineWidth">   The width of the line. </param>
-    /// <param name="rotation">    The rotation. </param>
-    /// <param name="origin">      The origin. </param>
-    /// <param name="opacity">     The opacity. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     public void RenderRectangle(in RectangleF destination,
                                 in VkColor    color,
                                 float         lineWidth,
@@ -41,10 +42,10 @@ public sealed unsafe partial class Canvas
 
     /// <summary> Renders fill rectangle. </summary>
     /// <param name="destination"> The destination rectangle. </param>
-    /// <param name="color">       The color. </param>
-    /// <param name="rotation">    The rotation. </param>
-    /// <param name="origin">      The origin. </param>
-    /// <param name="opacity">     The opacity. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
     public void RenderFillRectangle(in RectangleF destination,
                                     in VkColor    color,
                                     float         rotation,

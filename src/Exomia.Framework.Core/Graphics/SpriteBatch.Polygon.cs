@@ -12,6 +12,7 @@ using System.Numerics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A sprite batch. This class cannot be inherited. </content>
 public sealed partial class SpriteBatch
 {
     /// <summary> Renders a polygon. </summary>

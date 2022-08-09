@@ -1,6 +1,6 @@
 ﻿#region License
 
-// Copyright (c) 2018-2020, exomia
+// Copyright (c) 2018-2022, exomia
 // All rights reserved.
 // 
 // This source code is licensed under the BSD-style license found in the
@@ -10,18 +10,18 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Rectangle = Exomia.Framework.Core.Mathematics.Rectangle;
-using RectangleF = Exomia.Framework.Core.Mathematics.RectangleF;
+using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
 
+/// <content> A canvas. This class cannot be inherited. </content>
 public sealed partial class Canvas
 {
     /// <summary> Renders a text. </summary>
-    /// <param name="font">     The font. </param>
-    /// <param name="text">     The text. </param>
+    /// <param name="font"> The font. </param>
+    /// <param name="text"> The text. </param>
     /// <param name="position"> The position. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="color"> The color. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont font, ReadOnlySpan<char> text, in Vector2 position, in VkColor color)
     {
@@ -29,10 +29,10 @@ public sealed partial class Canvas
     }
 
     /// <summary> Renders a text. </summary>
-    /// <param name="font">     The font. </param>
-    /// <param name="text">     The text. </param>
+    /// <param name="font"> The font. </param>
+    /// <param name="text"> The text. </param>
     /// <param name="position"> The position. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
@@ -45,14 +45,14 @@ public sealed partial class Canvas
     }
 
     /// <summary> Renders a text. </summary>
-    /// <param name="font">     The font. </param>
-    /// <param name="text">     The text. </param>
+    /// <param name="font"> The font. </param>
+    /// <param name="text"> The text. </param>
     /// <param name="position"> The position. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
-    /// <param name="origin">   The origin. </param>
-    /// <param name="opacity">  The opacity. </param>
-    /// <param name="effects">  The effects. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="effects"> The effects. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -68,16 +68,16 @@ public sealed partial class Canvas
 
 
     /// <summary> Renders a text. </summary>
-    /// <param name="font">     The font. </param>
-    /// <param name="text">     The text. </param>
-    /// <param name="start">    The start. </param>
-    /// <param name="end">      The end. </param>
+    /// <param name="font"> The font. </param>
+    /// <param name="text"> The text. </param>
+    /// <param name="start"> The start. </param>
+    /// <param name="end"> The end. </param>
     /// <param name="position"> The position. </param>
-    /// <param name="color">    The color. </param>
+    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
-    /// <param name="origin">   The origin. </param>
-    /// <param name="opacity">  The opacity. </param>
-    /// <param name="effects">  The effects. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="effects"> The effects. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -95,17 +95,17 @@ public sealed partial class Canvas
 
 
     /// <summary> Renders a text. </summary>
-    /// <param name="font">      The font. </param>
-    /// <param name="text">      The text. </param>
-    /// <param name="start">     The start. </param>
-    /// <param name="end">       The end. </param>
-    /// <param name="position">  The position. </param>
+    /// <param name="font"> The font. </param>
+    /// <param name="text"> The text. </param>
+    /// <param name="start"> The start. </param>
+    /// <param name="end"> The end. </param>
+    /// <param name="position"> The position. </param>
     /// <param name="dimension"> The dimension. </param>
-    /// <param name="color">     The color. </param>
-    /// <param name="rotation">  The rotation. </param>
-    /// <param name="origin">    The origin. </param>
-    /// <param name="opacity">   The opacity. </param>
-    /// <param name="effects">   The effects. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="effects"> The effects. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
