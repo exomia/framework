@@ -127,10 +127,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         _sortedSprites = Allocator.Allocate<SpriteInfo>(_sortedQueueLength);
         _spriteQueue   = Allocator.Allocate<SpriteInfo>(_spriteQueueLength);
         _textureQueue  = Allocator.Allocate<TextureInfo>(_spriteQueueLength);
-
-        //vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
-        //vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
-
+        
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
         _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
         _vertexBufferPool =
@@ -138,22 +135,31 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-
-
+        
         Setup();
-        Resize(_vkContext->InitialWidth, _vkContext->InitialHeight);
+        
+        swapchain.SwapChainRecreated += SwapchainOnSwapChainRecreated;
+        swapchain.CleanupSwapChain   += SwapchainOnCleanupSwapChain;
+
+        Resize(_swapchainContext->Width, _swapchainContext->Height);
     }
 
-    //private void OnVulkanOnSwapChainRecreated(Vulkan.Vulkan v)
-    //{
-    //    SetupVulkan(v.Context);
-    //    Resize(v.Context->InitialWidth, v.Context->InitialHeight);
-    //}
+    private void SwapchainOnSwapChainRecreated(Swapchain swapchain)
+    {
+        SetupVulkan();
+        Resize(swapchain.Context->Width, swapchain.Context->Height);
+    }
 
-    //private void OnVulkanOnCleanupSwapChain(Vulkan.Vulkan v)
-    //{
-    //    CleanupVulkan();
-    //}
+    private void SwapchainOnCleanupSwapChain(Swapchain swapchain)
+    {
+        foreach ((ulong _, TextureInfo textureInfo) in _textureInfos)
+        {
+            Allocator.Free<VkDescriptorSet>(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
+        }
+        _textureInfos.Clear();
+        
+        CleanupVulkan();
+    }
 
     /// <summary> Resizes to the given size. </summary>
     /// <param name="size"> The size. </param>
@@ -208,9 +214,9 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         {
             if (disposing)
             {
-                //_vulkan.SwapChainRecreated -= OnVulkanOnSwapChainRecreated;
-                //_vulkan.CleanupSwapChain   -= OnVulkanOnCleanupSwapChain;
-                _disposed = true;
+                _swapchain.SwapChainRecreated -= SwapchainOnSwapChainRecreated;
+                _swapchain.CleanupSwapChain   -= SwapchainOnCleanupSwapChain;
+                _disposed                     =  true;
             }
 
             if (_vkContext->Device != VkDevice.Null)

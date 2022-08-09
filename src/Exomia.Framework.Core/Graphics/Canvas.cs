@@ -85,6 +85,7 @@ public sealed unsafe partial class Canvas
 
     private readonly Dictionary<ulong, TextureInfo> _textureInfos   = new Dictionary<ulong, TextureInfo>(8);
     private          SpinLock                       _itemSpinLock   = new SpinLock(Debugger.IsAttached);
+    private          SpinLock                       _textureSpinLock   = new SpinLock(Debugger.IsAttached);
     private          SpinLock                       _vertexSpinLock = new SpinLock(Debugger.IsAttached);
 
 #if DEBUG // only track in debug builds

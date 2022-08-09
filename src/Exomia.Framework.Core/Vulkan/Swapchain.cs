@@ -129,7 +129,7 @@ public sealed unsafe partial class Swapchain : IDisposable
         CreateSwapChain(this);
         Initialize();
 
-        SwapChainRecreated?.Invoke(this, _vkContext);
+        SwapChainRecreated?.Invoke(this);
     }
 
     /// <summary> Creates a new <see cref="Swapchain" />. </summary>
@@ -463,7 +463,7 @@ public sealed unsafe partial class Swapchain : IDisposable
 
     private void Cleanup()
     {
-        CleanupSwapChain?.Invoke(this, _vkContext);
+        CleanupSwapChain?.Invoke(this);
 
         if (_moduleCommandBuffers != null)
         {

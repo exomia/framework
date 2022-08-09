@@ -328,7 +328,7 @@ public sealed unsafe partial class SpriteBatch
     {
         _pipeline?.Dispose();
         _pipeline = null;
-
+        
         if (_context->PipelineLayout != VkPipelineLayout.Null)
         {
             vkDestroyPipelineLayout(_vkContext->Device, _context->PipelineLayout, null);

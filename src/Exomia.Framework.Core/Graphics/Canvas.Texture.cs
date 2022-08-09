@@ -10,7 +10,10 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
+using Exomia.Framework.Core.Vulkan;
+using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -157,6 +160,68 @@ public sealed unsafe partial class Canvas
                                float          mode = TEXTURE_MODE)
 
     {
-        // TODO
+        if (!_textureInfos.TryGetValue(texture.ID, out TextureInfo textureInfo))
+        {
+            bool lockTaken = false;
+            try
+            {
+                _textureSpinLock.Enter(ref lockTaken);
+                if (!_textureInfos.TryGetValue(texture.ID, out textureInfo))
+                {
+                    textureInfo = new TextureInfo(texture.ID, texture.Width, texture.Height);
+
+                    VkDescriptorSetLayout* textureLayouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
+                    for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
+                    {
+                        *(textureLayouts + i) = _context->TextureDescriptorSetLayout;
+                    }
+
+                    VkDescriptorSetAllocateInfo textureDescriptorSetAllocateInfo;
+                    textureDescriptorSetAllocateInfo.sType              = VkDescriptorSetAllocateInfo.STYPE;
+                    textureDescriptorSetAllocateInfo.pNext              = null;
+                    textureDescriptorSetAllocateInfo.descriptorPool     = _context->TextureDescriptorPool;
+                    textureDescriptorSetAllocateInfo.descriptorSetCount = _swapchainContext->MaxFramesInFlight;
+                    textureDescriptorSetAllocateInfo.pSetLayouts        = textureLayouts;
+
+                    textureInfo.DescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
+                    vkAllocateDescriptorSets(_vkContext->Device, &textureDescriptorSetAllocateInfo, textureInfo.DescriptorSets)
+                       .AssertVkResult();
+
+                    for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
+                    {
+                        VkDescriptorImageInfo descriptorImageInfo;
+                        descriptorImageInfo.imageLayout = VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                        descriptorImageInfo.imageView   = texture;
+                        descriptorImageInfo.sampler     = _context->TextureSampler;
+
+                        VkWriteDescriptorSet writeDescriptorSet;
+                        writeDescriptorSet.sType            = VkWriteDescriptorSet.STYPE;
+                        writeDescriptorSet.pNext            = null;
+                        writeDescriptorSet.dstSet           = *(textureInfo.DescriptorSets + i);
+                        writeDescriptorSet.dstBinding       = 0u;
+                        writeDescriptorSet.dstArrayElement  = 0u;
+                        writeDescriptorSet.descriptorCount  = 1u;
+                        writeDescriptorSet.descriptorType   = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+                        writeDescriptorSet.pImageInfo       = &descriptorImageInfo;
+                        writeDescriptorSet.pBufferInfo      = null;
+                        writeDescriptorSet.pTexelBufferView = null;
+
+                        vkUpdateDescriptorSets(
+                            _vkContext->Device,
+                            1u, &writeDescriptorSet,
+                            0u, null);
+                    }
+
+                    _textureInfos.Add(texture.ID, textureInfo);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                {
+                    _textureSpinLock.Exit(false);
+                }
+            }
+        }
     }
 }
