@@ -16,9 +16,7 @@ namespace Exomia.Framework.Core.Graphics;
 
 public sealed partial class SpriteBatch
 {
-    /// <summary>
-    ///     Draws a circle.
-    /// </summary>
+    /// <summary> Renders a circle. </summary>
     /// <param name="center"> The center. </param>
     /// <param name="radius"> The radius. </param>
     /// <param name="color"> The color. </param>
@@ -27,7 +25,7 @@ public sealed partial class SpriteBatch
     /// <param name="segments"> The segments. </param>
     /// <param name="layerDepth"> The depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawCircle(in Vector2 center,
+    public void RenderCircle(in Vector2 center,
                            float      radius,
                            in VkColor color,
                            float      lineWidth,
@@ -35,12 +33,10 @@ public sealed partial class SpriteBatch
                            int        segments,
                            float      layerDepth)
     {
-        DrawArc(new Arc2(center, radius), color, lineWidth, opacity, segments, layerDepth);
+        RenderArc(new Arc2(center, radius), color, lineWidth, opacity, segments, layerDepth);
     }
 
-    /// <summary>
-    ///     Draws a circle.
-    /// </summary>
+    /// <summary> Renders a circle. </summary>
     /// <param name="circle"> The circle. </param>
     /// <param name="color"> The color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
@@ -48,19 +44,17 @@ public sealed partial class SpriteBatch
     /// <param name="segments"> The segments. </param>
     /// <param name="layerDepth"> The depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawCircle(in Circle2 circle,
-                           in VkColor color,
-                           float      lineWidth,
-                           float      opacity,
-                           int        segments,
-                           float      layerDepth)
+    public void RenderCircle(in Circle2 circle,
+                             in VkColor color,
+                             float      lineWidth,
+                             float      opacity,
+                             int        segments,
+                             float      layerDepth)
     {
-        DrawArc(new Arc2(circle.X, circle.Y, circle.Radius), color, lineWidth, opacity, segments, layerDepth);
+        RenderArc(new Arc2(circle.X, circle.Y, circle.Radius), color, lineWidth, opacity, segments, layerDepth);
     }
 
-    /// <summary>
-    ///     Draws a circle.
-    /// </summary>
+    /// <summary> Renders an arc. </summary>
     /// <param name="center"> The center. </param>
     /// <param name="radius"> The radius. </param>
     /// <param name="start"> The start. </param>
@@ -71,34 +65,32 @@ public sealed partial class SpriteBatch
     /// <param name="segments"> The segments. </param>
     /// <param name="layerDepth"> The depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawArc(in Vector2 center,
-                        float      radius,
-                        float      start,
-                        float      end,
-                        in VkColor color,
-                        float      lineWidth,
-                        float      opacity,
-                        int        segments,
-                        float      layerDepth)
+    public void RenderArc(in Vector2 center,
+                          float      radius,
+                          float      start,
+                          float      end,
+                          in VkColor color,
+                          float      lineWidth,
+                          float      opacity,
+                          int        segments,
+                          float      layerDepth)
     {
-        DrawArc(new Arc2(center, radius, start, end), in color, lineWidth, opacity, segments, layerDepth);
+        RenderArc(new Arc2(center, radius, start, end), in color, lineWidth, opacity, segments, layerDepth);
     }
 
-    /// <summary>
-    ///     Draws a circle.
-    /// </summary>
+    /// <summary> Renders an arc. </summary>
     /// <param name="arc"> The arc. </param>
     /// <param name="color"> The color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="segments"> The segments. </param>
     /// <param name="layerDepth"> The depth of the layer. </param>
-    public void DrawArc(in Arc2    arc,
-                        in VkColor color,
-                        float      lineWidth,
-                        float      opacity,
-                        int        segments,
-                        float      layerDepth)
+    public void RenderArc(in Arc2    arc,
+                          in VkColor color,
+                          float      lineWidth,
+                          float      opacity,
+                          int        segments,
+                          float      layerDepth)
     {
         Vector2[] vertex = new Vector2[segments];
 
@@ -112,6 +104,6 @@ public sealed partial class SpriteBatch
             theta       += increment;
         }
 
-        DrawPolygon(vertex, color, lineWidth, opacity, layerDepth);
+        RenderPolygon(vertex, color, lineWidth, opacity, layerDepth);
     }
 }

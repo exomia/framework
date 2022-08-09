@@ -109,28 +109,28 @@ sealed unsafe class MyApplication : Application
             {
                 if (i > iterations * 0.75)
                 {
-                    _spriteBatch.DrawFillRectangle(
+                    _spriteBatch.RenderFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                         new VkColor(0f, 0f, 0f),
                         rnd.NextSingle());
                 }
                 else if (i > iterations * 0.50)
                 {
-                    _spriteBatch.DrawFillRectangle(
+                    _spriteBatch.RenderFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                         new VkColor(0f, 0f, 1f),
                         rnd.NextSingle());
                 }
                 else if (i > iterations * 0.25)
                 {
-                    _spriteBatch.DrawFillRectangle(
+                    _spriteBatch.RenderFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                         new VkColor(0f, 1f, 0f),
                         rnd.NextSingle());
                 }
                 else
                 {
-                    _spriteBatch.DrawFillRectangle(
+                    _spriteBatch.RenderFillRectangle(
                         new RectangleF(50 + rnd.Next(0, 900) + MathF.Sin(time.TotalTimeS) * 50, 50 + rnd.Next(0, 600), 4, 4),
                         new VkColor(1f, 0f, 0f),
                         rnd.NextSingle());
@@ -141,9 +141,9 @@ sealed unsafe class MyApplication : Application
             _spriteBatch.Begin(SpriteSortMode.Texture);
             for (int i = 0; i < iterations / 100; i++)
             {
-                _spriteBatch.Draw(_texture1, new RectangleF(rnd.Next(50, 900), rnd.Next(50, 700), 40, 40), VkColors.White);
+                _spriteBatch.Render(_texture1, new RectangleF(rnd.Next(50, 900), rnd.Next(50, 700), 40, 40), VkColors.White);
 
-                _spriteBatch.DrawFillRectangle(
+                _spriteBatch.RenderFillRectangle(
                     new RectangleF(50 + rnd.Next(0, 900), 50 + rnd.Next(0, 600), 40, 40),
                     new VkColor(0.3f, 0.4f, 0.9f),
                     rnd.NextSingle());

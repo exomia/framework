@@ -142,6 +142,6 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = opacity;
         spriteInfo.Effects          = effects;
         spriteInfo.Depth            = layerDepth;
-        DrawSprite(spriteInfo, texture);
+        RenderSprite(spriteInfo, texture);
     }
 }

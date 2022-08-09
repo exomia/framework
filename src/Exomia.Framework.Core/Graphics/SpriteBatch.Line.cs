@@ -16,9 +16,7 @@ namespace Exomia.Framework.Core.Graphics;
 
 public sealed partial class SpriteBatch
 {
-    /// <summary>
-    ///     Draw line.
-    /// </summary>
+    /// <summary> Renders a line. </summary>
     /// <param name="point1"> The first point. </param>
     /// <param name="point2"> The second point. </param>
     /// <param name="color"> The Color. </param>
@@ -26,37 +24,33 @@ public sealed partial class SpriteBatch
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawLine(in Vector2 point1,
-                         in Vector2 point2,
-                         in VkColor color,
-                         float      lineWidth,
-                         float      opacity,
-                         float      layerDepth)
+    public void RenderLine(in Vector2 point1,
+                           in Vector2 point2,
+                           in VkColor color,
+                           float      lineWidth,
+                           float      opacity,
+                           float      layerDepth)
     {
-        DrawLine(point1, point2, color, lineWidth, opacity, 1.0f, layerDepth);
+        RenderLine(point1, point2, color, lineWidth, opacity, 1.0f, layerDepth);
     }
 
-    /// <summary>
-    ///     Draw line.
-    /// </summary>
+    /// <summary> Renders a line. </summary>
     /// <param name="line"> The line. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawLine(in Line2   line,
-                         in VkColor color,
-                         float      lineWidth,
-                         float      opacity,
-                         float      layerDepth)
+    public void RenderLine(in Line2   line,
+                           in VkColor color,
+                           float      lineWidth,
+                           float      opacity,
+                           float      layerDepth)
     {
-        DrawLine(in line, color, lineWidth, opacity, 1.0f, layerDepth);
+        RenderLine(in line, color, lineWidth, opacity, 1.0f, layerDepth);
     }
 
-    /// <summary>
-    ///     Draw line.
-    /// </summary>
+    /// <summary> Renders a line. </summary>
     /// <param name="point1"> The first point. </param>
     /// <param name="point2"> The second point. </param>
     /// <param name="color"> The Color. </param>
@@ -65,20 +59,18 @@ public sealed partial class SpriteBatch
     /// <param name="lengthFactor"> The length factor. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawLine(in Vector2 point1,
-                         in Vector2 point2,
-                         in VkColor color,
-                         float      lineWidth,
-                         float      opacity,
-                         float      lengthFactor,
-                         float      layerDepth)
+    public void RenderLine(in Vector2 point1,
+                           in Vector2 point2,
+                           in VkColor color,
+                           float      lineWidth,
+                           float      opacity,
+                           float      lengthFactor,
+                           float      layerDepth)
     {
-        DrawLine(new Line2(in point1, in point2), color, lineWidth, opacity, lengthFactor, layerDepth);
+        RenderLine(new Line2(in point1, in point2), color, lineWidth, opacity, lengthFactor, layerDepth);
     }
 
-    /// <summary>
-    ///     Draw line.
-    /// </summary>
+    /// <summary> Renders a line. </summary>
     /// <param name="line"> The line. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
@@ -86,7 +78,7 @@ public sealed partial class SpriteBatch
     /// <param name="lengthFactor"> The length factor. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawLine(in Line2   line,
+    public void RenderLine(in Line2   line,
                          in VkColor color,
                          float      lineWidth,
                          float      opacity,
@@ -106,6 +98,6 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = opacity;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        DrawSprite(spriteInfo, _whiteTexture);
+        RenderSprite(spriteInfo, _whiteTexture);
     }
 }

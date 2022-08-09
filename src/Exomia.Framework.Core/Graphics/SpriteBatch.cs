@@ -25,12 +25,10 @@ namespace Exomia.Framework.Core.Graphics;
 #if USE_32BIT_INDEX
     using TIndex = UInt32;
 #else
-using TIndex = UInt16;
+    using TIndex = UInt16;
 #endif
 
-/// <summary>
-///     A sprite batch. This class cannot be inherited.
-/// </summary>
+/// <summary> A sprite batch. This class cannot be inherited. </summary>
 public sealed unsafe partial class SpriteBatch : IDisposable
 {
 #if USE_32BIT_INDEX
@@ -70,22 +68,16 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private          uint           _spriteQueueCount, _spriteQueueLength, _sortedQueueLength;
     private          Matrix4x4      _projectionMatrix;
     private          VkRect2D       _scissorRectangle;
-
-
+    
+    private readonly Dictionary<ulong, TextureInfo> _textureInfos = new Dictionary<ulong, TextureInfo>(8);
+    private          SpinLock                       _spinLock     = new SpinLock(Debugger.IsAttached);
+    
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
 #endif
 
-    private readonly Dictionary<ulong, TextureInfo> _textureInfos = new Dictionary<ulong, TextureInfo>(8);
-    private          SpinLock                       _spinLock     = new SpinLock(Debugger.IsAttached);
-
-    /// <summary>
-    ///     Initializes static members of the <see cref="SpriteBatch" /> class.
-    /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException">
-    ///     Thrown when one or more arguments are outside
-    ///     the required range.
-    /// </exception>
+    /// <summary> Initializes static members of the <see cref="SpriteBatch" /> class. </summary>
+    /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     static SpriteBatch()
     {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse

@@ -16,9 +16,7 @@ namespace Exomia.Framework.Core.Graphics;
 
 public sealed partial class SpriteBatch
 {
-    /// <summary>
-    ///     Draw rectangle.
-    /// </summary>
+    /// <summary> Renders a rectangle. </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
@@ -26,19 +24,17 @@ public sealed partial class SpriteBatch
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawRectangle(in RectangleF destinationRectangle,
+    public void RenderRectangle(in RectangleF destinationRectangle,
                               in VkColor    color,
                               float         lineWidth,
                               float         rotation,
                               float         opacity,
                               float         layerDepth)
     {
-        DrawRectangle(destinationRectangle, color, lineWidth, rotation, s_vector2Zero, opacity, layerDepth);
+        RenderRectangle(destinationRectangle, color, lineWidth, rotation, s_vector2Zero, opacity, layerDepth);
     }
 
-    /// <summary>
-    ///     Draw rectangle.
-    /// </summary>
+    /// <summary> Renders a rectangle. </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
@@ -46,13 +42,13 @@ public sealed partial class SpriteBatch
     /// <param name="origin"> The Origin. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
-    public void DrawRectangle(in RectangleF destinationRectangle,
-                              in VkColor    color,
-                              float         lineWidth,
-                              float         rotation,
-                              in Vector2    origin,
-                              float         opacity,
-                              float         layerDepth)
+    public void RenderRectangle(in RectangleF destinationRectangle,
+                                in VkColor    color,
+                                float         lineWidth,
+                                float         rotation,
+                                in Vector2    origin,
+                                float         opacity,
+                                float         layerDepth)
     {
         Vector2[] vertex;
 
@@ -97,17 +93,15 @@ public sealed partial class SpriteBatch
             }
         }
 
-        DrawPolygon(vertex, color, lineWidth, opacity, layerDepth);
+        RenderPolygon(vertex, color, lineWidth, opacity, layerDepth);
     }
 
-    /// <summary>
-    ///     Draw fill rectangle.
-    /// </summary>
+    /// <summary> Renders a filled rectangle. </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color)
+    public void RenderFillRectangle(in RectangleF destinationRectangle, in VkColor color)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -119,17 +113,15 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = 0.0f;
-        DrawSprite(spriteInfo, _whiteTexture);
+        RenderSprite(spriteInfo, _whiteTexture);
     }
 
-    /// <summary>
-    ///     Draw fill rectangle.
-    /// </summary>
+    /// <summary> Renders a filled rectangle. </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawFillRectangle(in RectangleF destinationRectangle, in VkColor color, float layerDepth)
+    public void RenderFillRectangle(in RectangleF destinationRectangle, in VkColor color, float layerDepth)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -141,21 +133,19 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        DrawSprite(spriteInfo, _whiteTexture);
+        RenderSprite(spriteInfo, _whiteTexture);
     }
 
-    /// <summary>
-    ///     Draw fill rectangle.
-    /// </summary>
+    /// <summary> Renders a filled rectangle. </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawFillRectangle(in RectangleF destinationRectangle,
-                                  in VkColor    color,
-                                  float         opacity,
-                                  float         layerDepth)
+    public void RenderFillRectangle(in RectangleF destinationRectangle,
+                                    in VkColor    color,
+                                    float         opacity,
+                                    float         layerDepth)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -167,12 +157,10 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = opacity;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        DrawSprite(spriteInfo, _whiteTexture);
+        RenderSprite(spriteInfo, _whiteTexture);
     }
 
-    /// <summary>
-    ///     Draw fill rectangle.
-    /// </summary>
+    /// <summary> Renders a filled rectangle. </summary>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
     /// <param name="rotation"> The Rotation. </param>
@@ -180,12 +168,12 @@ public sealed partial class SpriteBatch
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="layerDepth"> The Depth of the layer. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DrawFillRectangle(in RectangleF destinationRectangle,
-                                  in VkColor    color,
-                                  float         rotation,
-                                  in Vector2    origin,
-                                  float         opacity,
-                                  float         layerDepth)
+    public void RenderFillRectangle(in RectangleF destinationRectangle,
+                                    in VkColor    color,
+                                    float         rotation,
+                                    in Vector2    origin,
+                                    float         opacity,
+                                    float         layerDepth)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -197,6 +185,6 @@ public sealed partial class SpriteBatch
         spriteInfo.Opacity          = opacity;
         spriteInfo.Effects          = TextureEffects.None;
         spriteInfo.Depth            = layerDepth;
-        DrawSprite(spriteInfo, _whiteTexture);
+        RenderSprite(spriteInfo, _whiteTexture);
     }
 }
