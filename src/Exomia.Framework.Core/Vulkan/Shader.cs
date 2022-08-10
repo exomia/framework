@@ -11,8 +11,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Exomia.Framework.Core.Allocators;
-using static Exomia.Vulkan.Api.Core.VkShaderStageFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 

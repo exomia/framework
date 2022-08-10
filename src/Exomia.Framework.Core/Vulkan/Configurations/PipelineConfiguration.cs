@@ -11,7 +11,6 @@
 using static Exomia.Vulkan.Api.Core.VkPrimitiveTopology;
 using static Exomia.Vulkan.Api.Core.VkPolygonMode;
 using static Exomia.Vulkan.Api.Core.VkFrontFace;
-using static Exomia.Vulkan.Api.Core.VkCompareOp;
 using static Exomia.Vulkan.Api.Core.VkStencilOp;
 using static Exomia.Vulkan.Api.Core.VkCullModeFlagBits;
 using static Exomia.Vulkan.Api.Core.VkSampleCountFlagBits;

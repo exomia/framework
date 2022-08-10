@@ -11,7 +11,6 @@
 using System.Text;
 using Exomia.Framework.Core.Vulkan.Exceptions;
 using Microsoft.Extensions.Logging;
-using static Exomia.Vulkan.Api.Core.VkQueueFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 

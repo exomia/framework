@@ -8,10 +8,6 @@
 
 #endregion
 
-using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferUsageFlagBits;
-
 namespace Exomia.Framework.Core.Vulkan;
 
 /// <summary> A renderer. This class cannot be inherited. </summary>
@@ -66,23 +62,7 @@ public sealed unsafe class Renderer : IDisposable
 
         return true;
     }
-
-    /// <summary> Begins the render pass. </summary>
-    /// <param name="commandBuffer"> Buffer for command data. </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void BeginRenderPass(VkCommandBuffer commandBuffer)
-    {
-        _swapchain.BeginRenderPass(commandBuffer, VkSubpassContents.VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
-    }
-
-    /// <summary> Ends the render pass. </summary>
-    /// <param name="commandBuffer"> Buffer for command data. </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void EndRenderPass(VkCommandBuffer commandBuffer)
-    {
-        _swapchain.EndRenderPass(commandBuffer);
-    }
-
+    
     /// <summary> Ends the rendering. </summary>
     /// <param name="commandBuffer"> If non-null, the command buffers. </param>
     /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>

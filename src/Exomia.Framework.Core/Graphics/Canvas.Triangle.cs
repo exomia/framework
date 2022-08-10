@@ -40,7 +40,7 @@ public sealed unsafe partial class Canvas
                                in Vector2   origin,
                                float        opacity)
     {
-        Item* item = Reserve();
+        Item* item = _itemBuffer.Reserve(1);
         item->Type                   = Item.TRIANGLE_TYPE;
         item->TriangleType.Triangle  = triangle;
         item->TriangleType.LineWidth = lineWidth;
@@ -71,7 +71,7 @@ public sealed unsafe partial class Canvas
                                    in Vector2   origin,
                                    float        opacity)
     {
-        Item* item = Reserve();
+        Item* item = _itemBuffer.Reserve(1);
         item->Type                  = Item.FILL_TRIANGLE_TYPE;
         item->TriangleType.Triangle = triangle;
         item->Color                 = color;

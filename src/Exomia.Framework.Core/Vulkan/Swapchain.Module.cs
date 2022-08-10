@@ -8,7 +8,6 @@
 
 #endregion
 
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Vulkan;

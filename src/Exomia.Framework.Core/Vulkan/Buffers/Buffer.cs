@@ -9,10 +9,6 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
-using static Exomia.Vulkan.Api.Core.VkMemoryPropertyFlagBits;
-using static Exomia.Vulkan.Api.Core.VkBufferUsageFlagBits;
-using static Exomia.Vulkan.Api.Core.VkSharingMode;
 
 namespace Exomia.Framework.Core.Vulkan.Buffers;
 

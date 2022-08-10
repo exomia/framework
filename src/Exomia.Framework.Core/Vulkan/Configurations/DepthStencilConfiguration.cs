@@ -8,7 +8,6 @@
 
 #endregion
 
-using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkImageTiling;
 
 #pragma warning disable 1591

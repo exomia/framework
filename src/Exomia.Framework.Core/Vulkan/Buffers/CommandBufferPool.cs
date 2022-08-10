@@ -9,7 +9,6 @@
 #endregion
 
 using System.Diagnostics;
-using Exomia.Framework.Core.Allocators;
 
 namespace Exomia.Framework.Core.Vulkan.Buffers;
 

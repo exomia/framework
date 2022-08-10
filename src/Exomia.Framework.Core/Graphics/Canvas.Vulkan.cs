@@ -16,27 +16,27 @@ using Exomia.Framework.Core.Vulkan.Configurations;
 
 namespace Exomia.Framework.Core.Graphics;
 
-/// <content> A sprite batch. This class cannot be inherited. </content>
-public sealed unsafe partial class SpriteBatch
+/// <content> A canvas. This class cannot be inherited. </content>
+public sealed unsafe partial class Canvas
 {
     private void Setup()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
         using Stream vertexShaderStream =
-            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_VERT_OPT}") ??
-            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_VERT_OPT}");
+            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_VERT_OPT}") ??
+            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_VERT_OPT}");
 
-        byte* vert = stackalloc byte[(int)vertexShaderStream.Length]; // ~1.35 KiB
+        byte* vert = stackalloc byte[(int)vertexShaderStream.Length]; // ~1.73 KiB
         if (vertexShaderStream.Length != vertexShaderStream.Read(new Span<byte>(vert, (int)vertexShaderStream.Length)))
         {
             throw new Exception("Invalid length of vertex shader was read!");
         }
 
         using Stream fragmentShaderStream =
-            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_FRAG_OPT}") ??
-            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_FRAG_OPT}");
+            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_FRAG_OPT}") ??
+            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_FRAG_OPT}");
 
-        byte* frag = stackalloc byte[(int)fragmentShaderStream.Length]; // ~412 B
+        byte* frag = stackalloc byte[(int)fragmentShaderStream.Length]; // ~4,54 KiB
         if (fragmentShaderStream.Length != fragmentShaderStream.Read(new Span<byte>(frag, (int)fragmentShaderStream.Length)))
         {
             throw new Exception("Invalid length of fragment shader was read!");
@@ -69,7 +69,20 @@ public sealed unsafe partial class SpriteBatch
                     {
                         Type  = Shader.StageType.FragmentShaderStage,
                         Name  = "main",
-                        Flags = 0
+                        Flags = 0,
+                        Specializations = new[]
+                        {
+                            new Shader.Module.Stage.Specialization.Configuration()
+                            {
+                                ConstantID = 0,
+                                Value      = _configuration.MaxTextureSlots
+                            },
+                            new Shader.Module.Stage.Specialization.Configuration()
+                            {
+                                ConstantID = 1,
+                                Value      = _configuration.MaxFontTextureSlots
+                            }
+                        }
                     }
                 }
             }
@@ -106,7 +119,7 @@ public sealed unsafe partial class SpriteBatch
         {
             if (pAttributeDescriptions == null)
             {
-                *attributesCount = 3u;
+                *attributesCount = 4u;
                 return;
             }
 
@@ -124,6 +137,11 @@ public sealed unsafe partial class SpriteBatch
             (pAttributeDescriptions + 2)->binding  = 0;
             (pAttributeDescriptions + 2)->format   = VK_FORMAT_R32G32_SFLOAT;
             (pAttributeDescriptions + 2)->offset   = sizeof(float) * 8;
+
+            (pAttributeDescriptions + 3)->location = 3;
+            (pAttributeDescriptions + 3)->binding  = 0;
+            (pAttributeDescriptions + 3)->format   = VK_FORMAT_R32G32B32A32_SFLOAT;
+            (pAttributeDescriptions + 3)->offset   = sizeof(float) * 10;
         }
 
         _pipeline = Pipeline.Create(_swapchain, (
@@ -131,7 +149,7 @@ public sealed unsafe partial class SpriteBatch
                 new VertexInputConfiguration
                 {
                     Binding                                = 0,
-                    Stride                                 = (uint)sizeof(VertexPositionColorTexture),
+                    Stride                                 = (uint)sizeof(VertexPositionColorTextureMode),
                     CreateVertexInputAttributeDescriptions = &CreateVertexInputAttributeDescriptions
                 })
             {
@@ -141,6 +159,7 @@ public sealed unsafe partial class SpriteBatch
                 _shader["DEFAULT_VS"],
                 _shader["DEFAULT_FS"]
             }));
+        ;
     }
 
     private bool CreateTextureSampler()
@@ -184,7 +203,7 @@ public sealed unsafe partial class SpriteBatch
         VkDescriptorPoolSize uboDescriptorPoolSize;
         uboDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         uboDescriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
-        
+
         VkDescriptorPoolSize samplerDescriptorPoolSize;
         samplerDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_SAMPLER;
         samplerDescriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
@@ -194,7 +213,7 @@ public sealed unsafe partial class SpriteBatch
             uboDescriptorPoolSize,
             samplerDescriptorPoolSize
         };
-        
+
         VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
         descriptorPoolCreateInfo.sType         = VkDescriptorPoolCreateInfo.STYPE;
         descriptorPoolCreateInfo.pNext         = null;
@@ -232,7 +251,7 @@ public sealed unsafe partial class SpriteBatch
         uboDescriptorSetLayoutBinding.descriptorCount    = 1u;
         uboDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_VERTEX_BIT;
         uboDescriptorSetLayoutBinding.pImmutableSamplers = null;
-        
+
         VkDescriptorSetLayoutBinding samplerDescriptorSetLayoutBinding;
         samplerDescriptorSetLayoutBinding.binding            = 1u;
         samplerDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_SAMPLER;
@@ -245,7 +264,7 @@ public sealed unsafe partial class SpriteBatch
             uboDescriptorSetLayoutBinding,
             samplerDescriptorSetLayoutBinding
         };
-        
+
         VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
         descriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
         descriptorSetLayoutCreateInfo.pNext        = null;
@@ -254,23 +273,6 @@ public sealed unsafe partial class SpriteBatch
         descriptorSetLayoutCreateInfo.pBindings    = pDescriptorPoolSizes;
 
         vkCreateDescriptorSetLayout(_vkContext->Device, &descriptorSetLayoutCreateInfo, null, &_context->DescriptorSetLayout)
-           .AssertVkResult();
-
-        VkDescriptorSetLayoutBinding textureDescriptorSetLayoutBinding;
-        textureDescriptorSetLayoutBinding.binding            = 0u;
-        textureDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-        textureDescriptorSetLayoutBinding.descriptorCount    = 1u;
-        textureDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_FRAGMENT_BIT;
-        textureDescriptorSetLayoutBinding.pImmutableSamplers = null;
-
-        VkDescriptorSetLayoutCreateInfo textureDescriptorSetLayoutCreateInfo;
-        textureDescriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
-        textureDescriptorSetLayoutCreateInfo.pNext        = null;
-        textureDescriptorSetLayoutCreateInfo.flags        = 0u;
-        textureDescriptorSetLayoutCreateInfo.bindingCount = 1u;
-        textureDescriptorSetLayoutCreateInfo.pBindings    = &textureDescriptorSetLayoutBinding;
-
-        vkCreateDescriptorSetLayout(_vkContext->Device, &textureDescriptorSetLayoutCreateInfo, null, &_context->TextureDescriptorSetLayout)
            .AssertVkResult();
 
         VkDescriptorSetLayout* layouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
@@ -300,36 +302,66 @@ public sealed unsafe partial class SpriteBatch
             uboDescriptorBufferInfo.buffer = _uniformBuffer;
             uboDescriptorBufferInfo.offset = (ulong)(sizeof(Matrix4x4) * i);
             uboDescriptorBufferInfo.range  = (ulong)sizeof(Matrix4x4);
-            
-            (pWriteDescriptorSet +0)->sType            = VkWriteDescriptorSet.STYPE;
-            (pWriteDescriptorSet +0)->pNext            = null;
-            (pWriteDescriptorSet +0)->dstSet           = *(_context->DescriptorSets + i);
-            (pWriteDescriptorSet +0)->dstBinding       = 0u;
-            (pWriteDescriptorSet +0)->dstArrayElement  = 0u;
-            (pWriteDescriptorSet +0)->descriptorCount  = 1u;
-            (pWriteDescriptorSet +0)->descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            (pWriteDescriptorSet +0)->pImageInfo       = null;
-            (pWriteDescriptorSet +0)->pBufferInfo      = &uboDescriptorBufferInfo;
-            (pWriteDescriptorSet +0)->pTexelBufferView = null;
-            
+
+            (pWriteDescriptorSet + 0)->sType            = VkWriteDescriptorSet.STYPE;
+            (pWriteDescriptorSet + 0)->pNext            = null;
+            (pWriteDescriptorSet + 0)->dstSet           = *(_context->DescriptorSets + i);
+            (pWriteDescriptorSet + 0)->dstBinding       = 0u;
+            (pWriteDescriptorSet + 0)->dstArrayElement  = 0u;
+            (pWriteDescriptorSet + 0)->descriptorCount  = 1u;
+            (pWriteDescriptorSet + 0)->descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            (pWriteDescriptorSet + 0)->pImageInfo       = null;
+            (pWriteDescriptorSet + 0)->pBufferInfo      = &uboDescriptorBufferInfo;
+            (pWriteDescriptorSet + 0)->pTexelBufferView = null;
+
             VkDescriptorImageInfo samplerDescriptorBufferInfo;
-            samplerDescriptorBufferInfo.sampler       = _context->TextureSampler;
-            samplerDescriptorBufferInfo.imageLayout   = 0;
-            samplerDescriptorBufferInfo.imageView     = VkImageView.Null;
-            
-            (pWriteDescriptorSet +1)->sType            = VkWriteDescriptorSet.STYPE;
-            (pWriteDescriptorSet +1)->pNext            = null;
-            (pWriteDescriptorSet +1)->dstSet           = *(_context->DescriptorSets + i);
-            (pWriteDescriptorSet +1)->dstBinding       = 1u;
-            (pWriteDescriptorSet +1)->dstArrayElement  = 0u;
-            (pWriteDescriptorSet +1)->descriptorCount  = 1u;
-            (pWriteDescriptorSet +1)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLER;
-            (pWriteDescriptorSet +1)->pImageInfo       = &samplerDescriptorBufferInfo;
-            (pWriteDescriptorSet +1)->pBufferInfo      = null;
-            (pWriteDescriptorSet +1)->pTexelBufferView = null;
+            samplerDescriptorBufferInfo.sampler     = _context->TextureSampler;
+            samplerDescriptorBufferInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            samplerDescriptorBufferInfo.imageView   = VkImageView.Null;
+
+            (pWriteDescriptorSet + 1)->sType            = VkWriteDescriptorSet.STYPE;
+            (pWriteDescriptorSet + 1)->pNext            = null;
+            (pWriteDescriptorSet + 1)->dstSet           = *(_context->DescriptorSets + i);
+            (pWriteDescriptorSet + 1)->dstBinding       = 1u;
+            (pWriteDescriptorSet + 1)->dstArrayElement  = 0u;
+            (pWriteDescriptorSet + 1)->descriptorCount  = 1u;
+            (pWriteDescriptorSet + 1)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLER;
+            (pWriteDescriptorSet + 1)->pImageInfo       = &samplerDescriptorBufferInfo;
+            (pWriteDescriptorSet + 1)->pBufferInfo      = null;
+            (pWriteDescriptorSet + 1)->pTexelBufferView = null;
 
             vkUpdateDescriptorSets(_vkContext->Device, 2u, pWriteDescriptorSet, 0u, null);
         }
+
+        VkDescriptorSetLayoutBinding textureDescriptorSetLayoutBinding;
+        textureDescriptorSetLayoutBinding.binding            = 0u;
+        textureDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        textureDescriptorSetLayoutBinding.descriptorCount    = (uint)_configuration.MaxTextureSlots;
+        textureDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_FRAGMENT_BIT;
+        textureDescriptorSetLayoutBinding.pImmutableSamplers = null;
+
+        VkDescriptorSetLayoutBinding fontTextureDescriptorSetLayoutBinding;
+        fontTextureDescriptorSetLayoutBinding.binding            = 1u;
+        fontTextureDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        fontTextureDescriptorSetLayoutBinding.descriptorCount    = (uint)_configuration.MaxFontTextureSlots;
+        fontTextureDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_FRAGMENT_BIT;
+        fontTextureDescriptorSetLayoutBinding.pImmutableSamplers = null;
+
+        VkDescriptorSetLayoutBinding* pDescriptorSetLayoutBinding = stackalloc VkDescriptorSetLayoutBinding[2]
+        {
+            textureDescriptorSetLayoutBinding,
+            fontTextureDescriptorSetLayoutBinding
+        };
+
+        VkDescriptorSetLayoutCreateInfo textureDescriptorSetLayoutCreateInfo;
+        textureDescriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
+        textureDescriptorSetLayoutCreateInfo.pNext        = null;
+        textureDescriptorSetLayoutCreateInfo.flags        = 0u;
+        textureDescriptorSetLayoutCreateInfo.bindingCount = 2u;
+        textureDescriptorSetLayoutCreateInfo.pBindings    = pDescriptorSetLayoutBinding;
+
+        vkCreateDescriptorSetLayout(_vkContext->Device, &textureDescriptorSetLayoutCreateInfo, null, &_context->TextureDescriptorSetLayout)
+           .AssertVkResult();
 
         return true;
     }

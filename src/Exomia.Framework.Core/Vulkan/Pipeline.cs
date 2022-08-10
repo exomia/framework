@@ -9,9 +9,7 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
-using static Exomia.Vulkan.Api.Core.VkVertexInputRate;
 
 namespace Exomia.Framework.Core.Vulkan;
 

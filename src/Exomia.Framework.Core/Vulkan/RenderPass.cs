@@ -9,9 +9,6 @@
 #endregion
 
 using Exomia.Framework.Core.Vulkan.Configurations;
-using static Exomia.Vulkan.Api.Core.VkPipelineStageFlagBits;
-using static Exomia.Vulkan.Api.Core.VkAccessFlagBits;
-using static Exomia.Vulkan.Api.Core.VkDependencyFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 

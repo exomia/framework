@@ -41,15 +41,7 @@ static class Program
                          {
                              builder.ClearProviders();
                              builder.AddSerilog(Log.Logger);
-                         })
-                        .AddDefaultContentManagement(configuration =>
-                         {
-                             configuration.RootDirectory = "Content";
                          });
-                 })
-                .Configure<DebugUtilsMessengerConfiguration>((configuration, _) =>
-                 {
-                     configuration.MessageSeverity |= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
                  })
                 .Configure<RenderFormConfiguration>((configuration, _) =>
                  {
@@ -57,13 +49,6 @@ static class Program
                      configuration.Width       = 1024;
                      configuration.Height      = 768;
                      configuration.DisplayType = DisplayType.Window;
-                 })
-                .Configure<InstanceConfiguration>((configuration, _) =>
-                 {
-#if DEBUG
-                     configuration.ValidationFeatureEnable.Add(
-                         VkValidationFeatureEnableEXT.VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT);
-#endif
                  })
                 .UseWin32Platform() // should always be the last in the chain before calling build!
                 .Build<MyApplication>())

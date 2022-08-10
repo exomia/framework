@@ -8,11 +8,8 @@
 
 #endregion
 
-using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkImageLayout;
 using static Exomia.Vulkan.Api.Core.VkImageAspectFlagBits;
-using static Exomia.Vulkan.Api.Core.VkAccessFlagBits;
-using static Exomia.Vulkan.Api.Core.VkPipelineStageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageViewType;
 using static Exomia.Vulkan.Api.Core.VkComponentSwizzle;
 

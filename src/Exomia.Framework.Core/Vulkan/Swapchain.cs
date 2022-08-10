@@ -9,10 +9,8 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
-using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkFormatFeatureFlagBits;
 using static Exomia.Vulkan.Api.Core.VkSampleCountFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageType;
@@ -21,8 +19,6 @@ using static Exomia.Vulkan.Api.Core.VkImageUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageViewType;
 using static Exomia.Vulkan.Api.Core.VkImageLayout;
 using static Exomia.Vulkan.Api.Core.VkComponentSwizzle;
-using static Exomia.Vulkan.Api.Core.VkSharingMode;
-using static Exomia.Vulkan.Api.Core.VkMemoryPropertyFlagBits;
 using static Exomia.Vulkan.Api.Core.VkFenceCreateFlagBits;
 
 #pragma warning disable 1591

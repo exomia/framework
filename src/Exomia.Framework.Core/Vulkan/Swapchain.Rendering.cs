@@ -17,6 +17,12 @@ namespace Exomia.Framework.Core.Vulkan;
 
 public sealed unsafe partial class Swapchain
 {
+    private static readonly VkClearDepthStencilValue s_defaultClearDepthStencilValue = new VkClearDepthStencilValue
+    {
+        depth   = 1.0f,
+        stencil = 0u
+    };
+
     public bool BeginFrame()
     {
 #if DEBUG
@@ -86,9 +92,27 @@ public sealed unsafe partial class Swapchain
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void BeginRenderPass(
         VkCommandBuffer   commandBuffer,
         VkSubpassContents subpassContents = VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE)
+    {
+        BeginRenderPass(commandBuffer, VkColors.CornflowerBlue, in s_defaultClearDepthStencilValue, subpassContents);
+    }
+
+    public void BeginRenderPass(
+        VkCommandBuffer      commandBuffer,
+        in VkClearColorValue clearColor,
+        VkSubpassContents    subpassContents = VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE)
+    {
+        BeginRenderPass(commandBuffer, in clearColor, in s_defaultClearDepthStencilValue, subpassContents);
+    }
+
+    public void BeginRenderPass(
+        VkCommandBuffer             commandBuffer,
+        in VkClearColorValue        clearColor,
+        in VkClearDepthStencilValue clearDepthStencil,
+        VkSubpassContents           subpassContents = VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE)
     {
         VkRenderPassBeginInfo renderPassBeginInfo;
         renderPassBeginInfo.sType                    = VkRenderPassBeginInfo.STYPE;
@@ -101,9 +125,8 @@ public sealed unsafe partial class Swapchain
         renderPassBeginInfo.renderArea.extent.height = _context->Height;
 
         VkClearValue* pClearValues = stackalloc VkClearValue[2];
-        (pClearValues + 0)->color                = VkColors.DimGray;
-        (pClearValues + 1)->depthStencil.depth   = 1.0f;
-        (pClearValues + 1)->depthStencil.stencil = 0u;
+        (pClearValues + 0)->color        = clearColor;
+        (pClearValues + 1)->depthStencil = clearDepthStencil;
 
         renderPassBeginInfo.clearValueCount = 2u;
         renderPassBeginInfo.pClearValues    = pClearValues;
@@ -154,7 +177,7 @@ public sealed unsafe partial class Swapchain
     {
         VkPipelineStageFlagBits* pWaitDstStageMask = stackalloc VkPipelineStageFlagBits[]
         {
-            VkPipelineStageFlagBits.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
         };
 
         VkSubmitInfo submitInfo;

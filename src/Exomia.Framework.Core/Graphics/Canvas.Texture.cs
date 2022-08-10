@@ -10,10 +10,8 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
-using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 
 namespace Exomia.Framework.Core.Graphics;
 

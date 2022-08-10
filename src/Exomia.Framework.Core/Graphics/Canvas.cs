@@ -13,24 +13,23 @@
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
+using Exomia.Framework.Core.Buffers;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Buffers;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
 
 namespace Exomia.Framework.Core.Graphics;
 
 // ReSharper disable BuiltInTypeReferenceStyle
 #if USE_32BIT_INDEX
-    using TIndex = UInt32;
+using TIndex = UInt32;
 #else
 using TIndex = UInt16;
 #endif
 
-/// <summary> A sprite batch. This class cannot be inherited. </summary>
-public sealed unsafe partial class Canvas
+/// <summary> A canvas. This class cannot be inherited. </summary>
+public sealed unsafe partial class Canvas : IDisposable
 {
 #if USE_32BIT_INDEX
     private const int MAX_BATCH_SIZE = 1 << 18;
@@ -41,15 +40,15 @@ public sealed unsafe partial class Canvas
     private const uint INDICES_PER_SPRITE         = 6u;
     private const uint MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
     private const int  BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
-    private const int  VERTEX_STRIDE              = sizeof(float) * 10;
+    private const int  VERTEX_STRIDE              = sizeof(float) * 12;
 
-    private const float COLOR_MODE             = 0.0f;
-    private const float TEXTURE_MODE           = 1.0f;
-    private const float FONT_TEXTURE_MODE      = 2.0f;
-    private const float FILL_CIRCLE_MODE       = 3.0f;
-    private const float FILL_CIRCLE_ARC_MODE   = 4.0f;
-    private const float BORDER_CIRCLE_MODE     = 5.0f;
-    private const float BORDER_CIRCLE_ARC_MODE = 6.0f;
+    private const int COLOR_MODE             = 0;
+    private const int TEXTURE_MODE           = 1;
+    private const int FONT_TEXTURE_MODE      = 2;
+    private const int FILL_CIRCLE_MODE       = 3;
+    private const int FILL_CIRCLE_ARC_MODE   = 4;
+    private const int BORDER_CIRCLE_MODE     = 5;
+    private const int BORDER_CIRCLE_ARC_MODE = 6;
 
     private static readonly TIndex[]   s_indices;
     private static readonly Vector2[]  s_cornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
@@ -66,27 +65,18 @@ public sealed unsafe partial class Canvas
     private          Shader                                           _shader   = null!;
     private          Pipeline?                                        _pipeline = null;
 
-    private readonly VkCanvasContext* _context;
+    private VkCanvasContext* _context;
 
-    private readonly Configuration  _configuration;
-    private readonly Texture        _whiteTexture;
-    private          SpriteSortMode _spriteSortMode;
-
-    private Item* _itemQueue;
-    private int   _itemQueueLength;
-    private int   _itemQueueCount;
-
-    private Vector2* _vertexQueue;
-    private int      _vertexQueueLength;
-    private int      _vertexQueueCount;
+    private readonly Configuration            _configuration;
+    private readonly Texture                  _whiteTexture;
+    private readonly StructureBuffer<Item>    _itemBuffer;
+    private readonly StructureBuffer<Vector2> _vertexBuffer;
 
     private Matrix4x4 _projectionMatrix;
     private VkRect2D  _scissorRectangle;
 
     private readonly Dictionary<ulong, TextureInfo> _textureInfos    = new Dictionary<ulong, TextureInfo>(8);
-    private          SpinLock                       _itemSpinLock    = new SpinLock(Debugger.IsAttached);
     private          SpinLock                       _textureSpinLock = new SpinLock(Debugger.IsAttached);
-    private          SpinLock                       _vertexSpinLock  = new SpinLock(Debugger.IsAttached);
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
@@ -130,82 +120,157 @@ public sealed unsafe partial class Canvas
         _swapchainContext = swapchain.Context;
         _vkContext        = swapchain.VkContext;
 
-        _context = Allocator.Allocate(1u, VkCanvasContext.Create());
-
+        _context      = Allocator.Allocate(1u, VkCanvasContext.Create());
         _whiteTexture = Texture.Create(_vkContext, 1, 1, new byte[] { 255, 255, 255, 255 });
 
-        _itemQueue = Allocator.Allocate<Item>(_itemQueueLength = MAX_BATCH_SIZE);
-
-        _vertexQueue = Allocator.Allocate<Vector2>(_vertexQueueLength = 32);
-
-        //vulkan.CleanupSwapChain   += OnVulkanOnCleanupSwapChain;
-        //vulkan.SwapChainRecreated += OnVulkanOnSwapChainRecreated;
+        _itemBuffer   = new StructureBuffer<Item>(MAX_BATCH_SIZE);
+        _vertexBuffer = new StructureBuffer<Vector2>(32);
 
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
         _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
         _vertexBufferPool =
             new VertexBufferPool<VertexPositionColorTextureMode>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_SPRITE, MAX_BATCH_SIZE);
-
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
 
+        Setup();
 
-        //Setup();
-        //Resize(_vkContext->InitialWidth, _vkContext->InitialHeight);
+        swapchain.SwapChainRecreated += SwapchainOnSwapChainRecreated;
+        swapchain.CleanupSwapChain   += SwapchainOnCleanupSwapChain;
+
+        Resize(_swapchainContext->Width, _swapchainContext->Height);
     }
 
-    private Item* Reserve()
+    private void SwapchainOnSwapChainRecreated(Swapchain swapchain)
     {
-        if (_itemQueueCount >= _itemQueueLength)
+        SetupVulkan();
+        Resize(swapchain.Context->Width, swapchain.Context->Height);
+    }
+
+    private void SwapchainOnCleanupSwapChain(Swapchain swapchain)
+    {
+        bool lockTaken = false;
+        try
         {
-            bool lockTaken = false;
-            try
+            _textureSpinLock.Enter(ref lockTaken);
+            foreach ((ulong _, TextureInfo textureInfo) in _textureInfos)
             {
-                _itemSpinLock.Enter(ref lockTaken);
-                if (_itemQueueCount >= _itemQueueLength)
-                {
-                    Allocator.Resize(ref _itemQueue, ref _itemQueueLength, _itemQueueLength * 2);
-                }
+                Allocator.Free(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
             }
-            finally
-            {
-                if (lockTaken)
-                {
-                    _itemSpinLock.Exit(false);
-                }
-            }
+            _textureInfos.Clear();
+        }
+        finally
+        {
+            if (lockTaken) { _textureSpinLock.Exit(false); }
         }
 
-        return _itemQueue + (Interlocked.Increment(ref _itemQueueCount) - 1);
+        CleanupVulkan();
     }
 
+    /// <summary> Resizes to the given size. </summary>
+    /// <param name="size"> The size. </param>
+    public void Resize(Vector2 size)
+    {
+        Resize(size.X, size.Y);
+    }
+
+    /// <summary> Resizes to the given size. </summary>
+    /// <param name="viewport"> The viewport. </param>
+    public void Resize(ViewportF viewport)
+    {
+        Resize(viewport.Width, viewport.Height);
+    }
+
+    /// <summary> Resizes to the given size. </summary>
+    /// <param name="width"> The width. </param>
+    /// <param name="height"> The height. </param>
+    public void Resize(float width, float height)
+    {
+        float xRatio = width > 0
+            ? 1f / width
+            : 0f;
+        float yRatio = height > 0
+            ? 1f / height
+            : 0f;
+
+        _projectionMatrix = new Matrix4x4
+        {
+            M11 = xRatio * 2f,
+            M22 = yRatio * 2f,
+            M33 = 1f,
+            M44 = 1f,
+            M41 = _configuration.Centered
+                ? 0f
+                : -1f,
+            M42 = _configuration.Centered
+                ? 0f
+                : -1f
+        };
+    }
+    
     private Vector2* ReserveVertices(Vector2[] vertices)
     {
-        if (_vertexQueueCount + vertices.Length >= _vertexQueueLength)
-        {
-            bool lockTaken = false;
-            try
-            {
-                _vertexSpinLock.Enter(ref lockTaken);
-                if (_vertexQueueCount + vertices.Length >= _vertexQueueLength)
-                {
-                    Allocator.Resize(ref _vertexQueue, ref _vertexQueueLength, _vertexQueueLength * 2);
-                }
-            }
-            finally
-            {
-                if (lockTaken)
-                {
-                    _vertexSpinLock.Exit(false);
-                }
-            }
-        }
-
-        Vector2* dst = _vertexQueue + (Interlocked.Add(ref _vertexQueueCount, vertices.Length) - vertices.Length);
+        Vector2* dst = _vertexBuffer.Reserve(vertices.Length);
         fixed (Vector2* src = vertices)
         {
             Unsafe.CopyBlockUnaligned(dst, src, (uint)(sizeof(Vector2) * vertices.Length));
         }
         return dst;
     }
+
+    #region IDisposable Support
+
+    private bool _disposed;
+
+    /// <summary> Releases the unmanaged resources used by the Exomia.Framework.Core.Graphics.Canvas and optionally releases the managed resources. </summary>
+    /// <param name="disposing"> True to release both managed and unmanaged resources; false to release only unmanaged resources. </param>
+    private void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _swapchain.SwapChainRecreated -= SwapchainOnSwapChainRecreated;
+                _swapchain.CleanupSwapChain   -= SwapchainOnCleanupSwapChain;
+            }
+
+            if (_vkContext->Device != VkDevice.Null)
+            {
+                vkDeviceWaitIdle(_vkContext->Device)
+                   .AssertVkResult();
+
+                _uniformBuffer.Dispose();
+                _indexBuffer.Dispose();
+                _vertexBufferPool.Dispose();
+                _commandBufferPool.Dispose();
+                _shader.Dispose();
+
+                _whiteTexture.Dispose();
+
+                CleanupVulkan();
+            }
+
+            _vertexBuffer.Dispose();
+            _itemBuffer.Dispose();
+            
+            Allocator.Free(ref _context, 1u);
+
+            _disposed = true;
+        }
+    }
+
+    /// <summary> Finalizes an instance of the <see cref="Canvas" /> class. </summary>
+    ~Canvas()
+    {
+        Dispose(false);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    #endregion
 }

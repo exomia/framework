@@ -8,8 +8,6 @@
 
 #endregion
 
-using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
-
 namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan

@@ -10,7 +10,7 @@
 
 namespace Exomia.Framework.Core.Vulkan;
 
-public sealed unsafe partial class Swapchain
+public sealed partial class Swapchain
 {
     /// <summary> Delegate for handling swapchain events. </summary>
     /// <param name="swapchain"> The swapchain. </param>

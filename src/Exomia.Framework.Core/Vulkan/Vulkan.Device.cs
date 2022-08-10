@@ -8,9 +8,6 @@
 
 #endregion
 
-using Exomia.Framework.Core.Allocators;
-using static Exomia.Vulkan.Api.Core.VkCommandPoolCreateFlagBits;
-
 namespace Exomia.Framework.Core.Vulkan;
 
 sealed unsafe partial class Vulkan

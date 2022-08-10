@@ -15,9 +15,9 @@ namespace Exomia.Framework.Core.Content;
 /// <summary> IContentManager interface. </summary>
 public interface IContentManager : IDisposable
 {
-    /// <summary>The root directory. </summary>
+    /// <summary> The root directory. </summary>
     /// <value> The pathname of the root directory. </value>
-    string RootDirectory { get;  }
+    string RootDirectory { get; }
 
     /// <summary> Gets the service provider. </summary>
     /// <value> The service provider. </value>

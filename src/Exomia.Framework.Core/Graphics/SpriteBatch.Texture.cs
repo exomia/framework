@@ -10,10 +10,8 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
-using static Exomia.Vulkan.Api.Core.VkDescriptorType;
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -281,7 +279,7 @@ public sealed partial class SpriteBatch
             bool lockTaken = false;
             try
             {
-                _spinLock.Enter(ref lockTaken);
+                _textureSpinLock.Enter(ref lockTaken);
                 if (_spriteQueueCount >= _spriteQueueLength)
                 {
                     uint size = _spriteQueueCount << 1;
@@ -291,10 +289,7 @@ public sealed partial class SpriteBatch
             }
             finally
             {
-                if (lockTaken)
-                {
-                    _spinLock.Exit(false);
-                }
+                if (lockTaken) { _textureSpinLock.Exit(false); }
             }
         }
 
@@ -303,7 +298,7 @@ public sealed partial class SpriteBatch
             bool lockTaken = false;
             try
             {
-                _spinLock.Enter(ref lockTaken);
+                _textureSpinLock.Enter(ref lockTaken);
                 if (!_textureInfos.TryGetValue(texture.ID, out textureInfo))
                 {
                     textureInfo = new TextureInfo(texture.ID, texture.Width, texture.Height);
@@ -330,7 +325,7 @@ public sealed partial class SpriteBatch
                         VkDescriptorImageInfo descriptorImageInfo;
                         descriptorImageInfo.imageLayout = VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                         descriptorImageInfo.imageView   = texture;
-                        descriptorImageInfo.sampler     = _context->TextureSampler;
+                        descriptorImageInfo.sampler     = VkSampler.Null;
 
                         VkWriteDescriptorSet writeDescriptorSet;
                         writeDescriptorSet.sType            = VkWriteDescriptorSet.STYPE;
@@ -339,7 +334,7 @@ public sealed partial class SpriteBatch
                         writeDescriptorSet.dstBinding       = 0u;
                         writeDescriptorSet.dstArrayElement  = 0u;
                         writeDescriptorSet.descriptorCount  = 1u;
-                        writeDescriptorSet.descriptorType   = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+                        writeDescriptorSet.descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
                         writeDescriptorSet.pImageInfo       = &descriptorImageInfo;
                         writeDescriptorSet.pBufferInfo      = null;
                         writeDescriptorSet.pTexelBufferView = null;
@@ -355,10 +350,7 @@ public sealed partial class SpriteBatch
             }
             finally
             {
-                if (lockTaken)
-                {
-                    _spinLock.Exit(false);
-                }
+                if (lockTaken) { _textureSpinLock.Exit(false); }
             }
         }
 

@@ -12,18 +12,16 @@
 
 using System.Diagnostics;
 using System.Numerics;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Buffers;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
 
 namespace Exomia.Framework.Core.Graphics;
 
 // ReSharper disable BuiltInTypeReferenceStyle
 #if USE_32BIT_INDEX
-    using TIndex = UInt32;
+using TIndex = UInt32;
 #else
 using TIndex = UInt16;
 #endif
@@ -69,8 +67,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private          Matrix4x4      _projectionMatrix;
     private          VkRect2D       _scissorRectangle;
 
-    private readonly Dictionary<ulong, TextureInfo> _textureInfos = new Dictionary<ulong, TextureInfo>(8);
-    private          SpinLock                       _spinLock     = new SpinLock(Debugger.IsAttached);
+    private readonly Dictionary<ulong, TextureInfo> _textureInfos    = new Dictionary<ulong, TextureInfo>(8);
+    private          SpinLock                       _textureSpinLock = new SpinLock(Debugger.IsAttached);
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
@@ -114,8 +112,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         _swapchainContext = swapchain.Context;
         _vkContext        = swapchain.VkContext;
 
-        _context = Allocator.Allocate(1u, VkSpriteBatchContext.Create());
-
+        _context      = Allocator.Allocate(1u, VkSpriteBatchContext.Create());
         _whiteTexture = Texture.Create(_vkContext, 1, 1, new byte[] { 255, 255, 255, 255 });
 
         _spriteQueueCount  = 0;
@@ -152,12 +149,20 @@ public sealed unsafe partial class SpriteBatch : IDisposable
 
     private void SwapchainOnCleanupSwapChain(Swapchain swapchain)
     {
-        foreach ((ulong _, TextureInfo textureInfo) in _textureInfos)
+        bool lockTaken = false;
+        try
         {
-            Allocator.Free(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
+            _textureSpinLock.Enter(ref lockTaken);
+            foreach ((ulong _, TextureInfo textureInfo) in _textureInfos)
+            {
+                Allocator.Free(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
+            }
+            _textureInfos.Clear();
         }
-        _textureInfos.Clear();
-
+        finally
+        {
+            if (lockTaken) { _textureSpinLock.Exit(false); }
+        }
         CleanupVulkan();
     }
 
@@ -216,7 +221,6 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             {
                 _swapchain.SwapChainRecreated -= SwapchainOnSwapChainRecreated;
                 _swapchain.CleanupSwapChain   -= SwapchainOnCleanupSwapChain;
-                _disposed                     =  true;
             }
 
             if (_vkContext->Device != VkDevice.Null)
@@ -242,6 +246,8 @@ public sealed unsafe partial class SpriteBatch : IDisposable
             Allocator.Free(ref _textureQueue,  _spriteQueueLength);
 
             Allocator.Free(ref _context, 1u);
+
+            _disposed = true;
         }
     }
 

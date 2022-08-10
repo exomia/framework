@@ -50,21 +50,21 @@ public sealed unsafe partial class SpriteBatch
     {
         public VkSampler             TextureSampler;
         public VkPipelineLayout      PipelineLayout;
-        public VkDescriptorPool      UboDescriptorPool;
+        public VkDescriptorPool      DescriptorPool;
         public VkDescriptorPool      TextureDescriptorPool;
-        public VkDescriptorSetLayout UboDescriptorSetLayout;
+        public VkDescriptorSetLayout DescriptorSetLayout;
         public VkDescriptorSetLayout TextureDescriptorSetLayout;
-        public VkDescriptorSet*      UboDescriptorSets;
+        public VkDescriptorSet*      DescriptorSets;
 
         public static VkSpriteBatchContext Create()
         {
             VkSpriteBatchContext context;
             context.TextureSampler             = VkSampler.Null;
             context.PipelineLayout             = VkPipelineLayout.Null;
-            context.UboDescriptorPool          = VkDescriptorPool.Null;
+            context.DescriptorPool          = VkDescriptorPool.Null;
             context.TextureDescriptorPool      = VkDescriptorPool.Null;
-            context.UboDescriptorSetLayout     = VkDescriptorSetLayout.Null;
-            context.UboDescriptorSets          = null;
+            context.DescriptorSetLayout     = VkDescriptorSetLayout.Null;
+            context.DescriptorSets          = null;
             context.TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
             return context;
         }

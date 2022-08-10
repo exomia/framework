@@ -9,11 +9,9 @@
 #endregion
 
 using System.Runtime.CompilerServices;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferUsageFlagBits;
 
 namespace Exomia.Framework.Core.Vulkan;
 

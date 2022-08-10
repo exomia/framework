@@ -26,10 +26,10 @@ public sealed partial class ContentManager : IContentManager
     private readonly List<IContentResolver>                             _registeredContentResolvers;
     private readonly List<IEmbeddedResourceContentResolver>             _registeredEmbeddedResourceResolvers;
     private readonly string                                             _rootDirectory;
-    
+
     /// <inheritdoc />
     public IServiceProvider ServiceProvider { get; }
-    
+
     /// <inheritdoc />
     public string RootDirectory
     {
@@ -44,7 +44,7 @@ public sealed partial class ContentManager : IContentManager
     public ContentManager(IServiceProvider serviceProvider, Configuration configuration)
     {
         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        
+
         _rootDirectory = configuration.RootDirectory;
 
         _loadedAssets                        = new Dictionary<AssetKey, object>(INITIAL_QUEUE_SIZE);

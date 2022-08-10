@@ -9,7 +9,6 @@
 #endregion
 
 using System.Numerics;
-using Exomia.Framework.Core.Allocators;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
@@ -219,9 +218,9 @@ public sealed unsafe partial class SpriteBatch
         commandBufferInheritance.pipelineStatistics   = 0;
 
         VkCommandBufferBeginInfo commandBufferBeginInfo;
-        commandBufferBeginInfo.sType = VkCommandBufferBeginInfo.STYPE;
-        commandBufferBeginInfo.pNext = null;
-        commandBufferBeginInfo.flags = VkCommandBufferUsageFlagBits.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VkCommandBufferUsageFlagBits.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+        commandBufferBeginInfo.sType            = VkCommandBufferBeginInfo.STYPE;
+        commandBufferBeginInfo.pNext            = null;
+        commandBufferBeginInfo.flags            = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
         commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritance;
 
         commandBuffer = _commandBufferPool.Next(_swapchainContext->FrameInFlight);
@@ -328,7 +327,7 @@ public sealed unsafe partial class SpriteBatch
     {
         VkDescriptorSet* pDescriptorSets = stackalloc VkDescriptorSet[2]
         {
-            *(_context->UboDescriptorSets + _swapchainContext->FrameInFlight),
+            *(_context->DescriptorSets + _swapchainContext->FrameInFlight),
             *(texture->DescriptorSets     + _swapchainContext->FrameInFlight)
         };
 

@@ -9,8 +9,6 @@
 #endregion
 
 using System.Runtime.InteropServices;
-using Exomia.Framework.Core.Allocators;
-using static Exomia.Vulkan.Api.Core.VkCommandBufferLevel;
 
 namespace Exomia.Framework.Core.Vulkan;
 

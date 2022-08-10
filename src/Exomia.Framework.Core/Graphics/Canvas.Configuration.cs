@@ -8,6 +8,8 @@
 
 #endregion
 
+using Exomia.Framework.Core.Vulkan;
+
 namespace Exomia.Framework.Core.Graphics;
 
 /// <content> A canvas. This class cannot be inherited. </content>
@@ -31,5 +33,13 @@ public sealed partial class Canvas
         /// <summary> Gets the descriptor pool maximum sets. </summary>
         /// <value> The descriptor pool maximum sets. </value>
         public uint DescriptorPoolMaxSets { get; init; } = 128u;
+
+        /// <summary> Gets or sets the max texture slot count. </summary>
+        /// <value> The texture slot count. </value>
+        public int MaxTextureSlots { get; set; } = 8;
+        
+        /// <summary> Gets or sets the max font texture slot count. </summary>
+        /// <value> The font texture slot count. </value>
+        public int MaxFontTextureSlots { get; set; } = 4;
     }
 }

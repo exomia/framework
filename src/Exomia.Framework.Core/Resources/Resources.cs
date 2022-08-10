@@ -38,11 +38,15 @@ public static class Fonts
 /// <summary> shader paths </summary>
 public static class Shaders
 {
-    /// <summary>
-    ///     The position color optimized vertex shader resource path.
-    /// </summary>
+    /// <summary> The position color texture optimized vertex shader resource path. </summary>
     public const string POSITION_COLOR_TEXTURE_VERT_OPT = "Resources.shaders.position_color_texture.vert-opt.spv";
 
-    /// <summary> The position color optimized fragment shader resource path. </summary>
+    /// <summary> The position color texture optimized fragment shader resource path. </summary>
     public const string POSITION_COLOR_TEXTURE_FRAG_OPT = "Resources.shaders.position_color_texture.frag-opt.spv";
+    
+    /// <summary> The position color texture mode optimized vertex shader resource path. </summary>
+    public const string POSITION_COLOR_TEXTURE_MODE_VERT_OPT = "Resources.shaders.position_color_texture_mode.vert-opt.spv";
+
+    /// <summary> The position color texture mode optimized fragment shader resource path. </summary>
+    public const string POSITION_COLOR_TEXTURE_MODE_FRAG_OPT = "Resources.shaders.position_color_texture_mode.frag-opt.spv";
 }

@@ -8,9 +8,7 @@
 
 #endregion
 
-using static Exomia.Vulkan.Api.Core.VkFormat;
 using static Exomia.Vulkan.Api.Core.VkImageUsageFlagBits;
-using static Exomia.Vulkan.Api.Core.VkSharingMode;
 using static Exomia.Vulkan.Api.Core.VkSurfaceTransformFlagBitsKHR;
 using static Exomia.Vulkan.Api.Core.VkPresentModeKHR;
 using static Exomia.Vulkan.Api.Core.VkCompositeAlphaFlagBitsKHR;

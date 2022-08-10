@@ -25,7 +25,7 @@ public interface IRenderable
     ///     Gets the render order relative to other renderable objects.
     ///     <see cref="IRenderable" /> objects with a lower value are drawn first.
     /// </summary>
-    /// <value> The draw order. </value>
+    /// <value> The render order. </value>
     int RenderOrder { get; }
 
     /// <summary> Gets a value indicating whether the <see cref="Render" /> method should be called by the <see cref="Application" />. </summary>

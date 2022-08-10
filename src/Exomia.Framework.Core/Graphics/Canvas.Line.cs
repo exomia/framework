@@ -32,7 +32,7 @@ public sealed unsafe partial class Canvas
                            in Vector2 origin,
                            float      lengthFactor = 1.0f)
     {
-        Item* item = Reserve();
+        Item* item = _itemBuffer.Reserve(1);
         item->Type                  = Item.LINE_TYPE;
         item->LineType.Line         = line;
         item->LineType.LengthFactor = lengthFactor;

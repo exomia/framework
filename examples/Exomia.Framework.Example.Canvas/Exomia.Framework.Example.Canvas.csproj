@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Content\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
@@ -20,5 +16,17 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Exomia.Framework.Windows\Exomia.Framework.Windows.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Content\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Content\.gitkeep">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Content\icon.e1">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>
