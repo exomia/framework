@@ -72,7 +72,7 @@ public sealed class Time
     /// <summary> Initializes a new instance of the <see cref="Time" /> class. </summary>
     private Time()
     {
-        _prevTime = _baseTime = Stopwatch.GetTimestamp();
+        _currTime = _prevTime = _baseTime = Stopwatch.GetTimestamp();
     }
 
     /// <summary>

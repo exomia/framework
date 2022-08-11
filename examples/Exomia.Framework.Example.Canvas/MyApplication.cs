@@ -104,20 +104,31 @@ sealed unsafe class MyApplication : Application
              _swapchain.BeginRenderPass(commandBuffer, VkColors.CornflowerBlue, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS );
             
             _canvas.Begin();
-            
-            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100), 40f, VkColors.Black, 0f, Vector2.Zero, 1f);
-            
-            Random2 rnd = new Random2(100);
+
+            Random2 rnd = new Random2(100); 
             for (int i = 0; i < 1_000; i++)
             {
-               _canvas.RenderArc(
-                    new Arc2(new Vector2(rnd.Next(50, 900), rnd.Next(50, 700)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS)), 
-                    10f,
-                    new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
-                    0f, 
-                    Vector2.Zero, 
-                    1f);
+               // _canvas.RenderArc(
+               //      new Arc2(new Vector2(rnd.Next(150, 900), rnd.Next(150, 600)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS), rnd.NextSingle() * MathF.PI * 2f, rnd.NextSingle() * MathF.PI * 2f), 
+               //      20f,
+               //      new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
+               //      0f, 
+               //      Vector2.Zero, 
+               //      1f,
+               //      1f);
+               
+               _canvas.RenderFillArc(
+                   new Arc2(new Vector2(rnd.Next(150, 900), rnd.Next(150, 600)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS), rnd.NextSingle() * MathF.PI * 2f, rnd.NextSingle() * MathF.PI * 2f),
+                   new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
+                   0f, 
+                   Vector2.Zero, 
+                   1f,
+                   1f);
             }
+            
+            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 40f, VkColors.Black, time.TotalTimeS, new Vector2(450, 450), 1f, 0f);
+            
+            _canvas.RenderFillArc(new Arc2(new Vector2(300, 300), 100, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), VkColors.Black, time.TotalTimeS, new Vector2(320, 320), 1f, 0f);
             
             _canvas.End(commandBuffer);
             

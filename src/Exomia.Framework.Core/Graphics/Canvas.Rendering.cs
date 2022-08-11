@@ -173,6 +173,9 @@ public sealed unsafe partial class Canvas
                         case Item.ARC_TYPE:
                             RenderArc(item, pVertex + (index << 2));
                             break;
+                        case Item.FILL_ARC_TYPE:
+                            RenderFillArc(item, pVertex + (index << 2));
+                            break;
                     }
                 }
             
@@ -188,6 +191,9 @@ public sealed unsafe partial class Canvas
                     {
                         case Item.ARC_TYPE:
                             RenderArc(item, pVertex + (i << 2));
+                            break;
+                        case Item.FILL_ARC_TYPE:
+                            RenderFillArc(item, pVertex + (i << 2));
                             break;
                     }
                 }

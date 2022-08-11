@@ -84,7 +84,9 @@ public sealed unsafe partial class Canvas
     [StructLayout(LayoutKind.Sequential)]
     private struct ArcType
     {
-        public Arc2  Arc;
+        public float Radius;
+        public float Start;
+        public float End;
         public float LineWidth;
         public byte  Index;
     }

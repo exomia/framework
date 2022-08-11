@@ -27,32 +27,23 @@ layout(location = 0) out vec4 outColor;
 void main() {
     switch (int(inUVMO.z))
     {
-        default :
-        case COLOR_MODE:
-        outColor = inColor;
-        return;
-        case TEXTURE_MODE:
-        outColor = texture(sampler2D(_textures[int(inUVMO.w)], _sampler), inUVMO.xy) * inColor;
-        return;
+        default:
+        case COLOR_MODE: 
+        {
+            outColor = inColor;
+            return;
+        }
+        case TEXTURE_MODE: 
+        {
+            outColor = texture(sampler2D(_textures[int(inUVMO.w)], _sampler), inUVMO.xy) * inColor;
+            return;
+        }
         case FONT_TEXTURE_MODE:
-        outColor = texture(sampler2D(_fontTextures[int(inUVMO.w)], _sampler), inUVMO.xy) * inColor;
-        return;
-        //        case FILL_CIRCLE_MODE:
-        //        {
-        //            vec2 p = gl_FragCoord.xy;
-        //            vec2 center = inMOPQ.zw;
-        //            float radius = inMOPQ.y;
-        //            
-        //            vec2 d = center - p;
-        //            float ls = (d.x * d.x) + (d.y * d.y);
-        //            
-        //            if (ls > radius * radius)
-        //                discard;
-        //            
-        //            outColor = inColor;
-        //            return;
-        //        }
-        case FILL_ARC_MODE:
+        {
+            outColor = texture(sampler2D(_fontTextures[int(inUVMO.w)], _sampler), inUVMO.xy) * inColor;
+            return;
+        }
+        case FILL_ARC_MODE: 
         {
             vec2 p = gl_FragCoord.xy;
             vec2 center = inUVMO.xy;
@@ -67,51 +58,6 @@ void main() {
                 float start = inData.z;
                 float end = inData.w;
 
-                float anglePositive = atan(d.y, d.x) + PI;
-                float angleNegative = atan(d.y, d.x) - PI;
-
-                if (anglePositive >= start && anglePositive <= end ||
-                    angleNegative >= start && angleNegative <= end)
-                {
-                    outColor = inColor;
-                    return;
-                }
-            }
-            discard;
-        }
-        //        case BORDER_CIRCLE_MODE:
-        //        {
-        //            vec2 p = gl_FragCoord.xy;
-        //            vec2 center = inMOPQ.zw;
-        //            
-        //            vec2 d = center - p;
-        //            float ls = (d.x * d.x) + (d.y * d.y);
-        //            
-        //            float r = (int(inMOPQ.y) >> 16) / 10.0f;
-        //            float l = (int(inMOPQ.y) & 0xffff) / 10.0f;
-        //            
-        //            if (ls > r * r || ls < l * l)
-        //                discard;
-        //
-        //            outColor = inColor;
-        //            return;
-        //        }
-        case BORDER_ARC_MODE:
-        {
-            vec2 p = gl_FragCoord.xy;
-            vec2 center = inUVMO.xy;
-
-            vec2 d = center - p;
-            float ls = (d.x * d.x) + (d.y * d.y);
-            
-            float r = inData.x;
-            float l = r - inData.y;
-            
-            if (ls < r * r && ls > l * l)
-            {
-                float start = inData.z;
-                float end = inData.w;
-                
                 if (start == 0 && end == TWO_PI)
                 {
                     outColor = inColor;
@@ -122,7 +68,41 @@ void main() {
                 float angleNegative = atan(d.y, d.x) - PI;
 
                 if (anglePositive >= start && anglePositive <= end ||
-                    angleNegative >= start && angleNegative <= end)
+                angleNegative >= start && angleNegative <= end)
+                {
+                    outColor = inColor;
+                    return;
+                }
+            }
+            discard;
+        }
+        case BORDER_ARC_MODE:
+        {
+            vec2 p = gl_FragCoord.xy;
+            vec2 center = inUVMO.xy;
+
+            vec2 d = center - p;
+            float ls = (d.x * d.x) + (d.y * d.y);
+
+            float r = inData.x;
+            float l = r - inData.y;
+
+            if (ls < r * r && ls > l * l)
+            {
+                float start = inData.z;
+                float end = inData.w;
+
+                if (start == 0 && end == TWO_PI)
+                {
+                    outColor = inColor;
+                    return;
+                }
+
+                float anglePositive = atan(d.y, d.x) + PI;
+                float angleNegative = atan(d.y, d.x) - PI;
+
+                if (anglePositive >= start && anglePositive <= end ||
+                angleNegative >= start && angleNegative <= end)
                 {
                     outColor = inColor;
                     return;
