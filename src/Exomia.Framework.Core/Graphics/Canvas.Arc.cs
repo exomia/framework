@@ -91,7 +91,8 @@ public sealed unsafe partial class Canvas
             x = ((cos * dx)  - (sin * dy)) + origin.X;
             y = ((sin * dx)  + (cos * dy)) + origin.Y;
         }
-
+        
+        // TODO: Optimize this. we could also work out the quadrants here and only render the appropriate quadrants.
         Item* item = _itemBuffer.Reserve(4);
         for (byte i = 0; i < 4; i++)
         {
@@ -182,6 +183,7 @@ public sealed unsafe partial class Canvas
             y = ((sin * dx)  + (cos * dy)) + origin.Y;
         }
 
+        // TODO: Optimize this. we could also work out the quadrants here and only render the appropriate quadrants.
         Item* item = _itemBuffer.Reserve(1);
         item->Type           = Item.FILL_ARC_TYPE;
         item->ArcType.Radius = arc.Radius;
