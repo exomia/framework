@@ -22,6 +22,9 @@ public sealed unsafe partial class Canvas
     private void Setup()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
+
+        var k = assembly.GetManifestResourceNames();
+        
         using Stream vertexShaderStream =
             assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_VERT_OPT}") ??
             throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_VERT_OPT}");
@@ -135,13 +138,13 @@ public sealed unsafe partial class Canvas
 
             (pAttributeDescriptions + 2)->location = 2;
             (pAttributeDescriptions + 2)->binding  = 0;
-            (pAttributeDescriptions + 2)->format   = VK_FORMAT_R32G32_SFLOAT;
+            (pAttributeDescriptions + 2)->format   = VK_FORMAT_R32G32B32A32_SFLOAT;
             (pAttributeDescriptions + 2)->offset   = sizeof(float) * 8;
 
             (pAttributeDescriptions + 3)->location = 3;
             (pAttributeDescriptions + 3)->binding  = 0;
             (pAttributeDescriptions + 3)->format   = VK_FORMAT_R32G32B32A32_SFLOAT;
-            (pAttributeDescriptions + 3)->offset   = sizeof(float) * 10;
+            (pAttributeDescriptions + 3)->offset   = sizeof(float) * 12;
         }
 
         _pipeline = Pipeline.Create(_swapchain, (
@@ -149,7 +152,7 @@ public sealed unsafe partial class Canvas
                 new VertexInputConfiguration
                 {
                     Binding                                = 0,
-                    Stride                                 = (uint)sizeof(VertexPositionColorTextureMode),
+                    Stride                                 = (uint)sizeof(Vertex),
                     CreateVertexInputAttributeDescriptions = &CreateVertexInputAttributeDescriptions
                 })
             {
@@ -314,10 +317,10 @@ public sealed unsafe partial class Canvas
             (pWriteDescriptorSet + 0)->pBufferInfo      = &uboDescriptorBufferInfo;
             (pWriteDescriptorSet + 0)->pTexelBufferView = null;
 
-            VkDescriptorImageInfo samplerDescriptorBufferInfo;
-            samplerDescriptorBufferInfo.sampler     = _context->TextureSampler;
-            samplerDescriptorBufferInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            samplerDescriptorBufferInfo.imageView   = VkImageView.Null;
+            VkDescriptorImageInfo samplerDescriptorImageInfo;
+            samplerDescriptorImageInfo.sampler     = _context->TextureSampler;
+            samplerDescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            samplerDescriptorImageInfo.imageView   = VkImageView.Null;
 
             (pWriteDescriptorSet + 1)->sType            = VkWriteDescriptorSet.STYPE;
             (pWriteDescriptorSet + 1)->pNext            = null;
@@ -326,7 +329,7 @@ public sealed unsafe partial class Canvas
             (pWriteDescriptorSet + 1)->dstArrayElement  = 0u;
             (pWriteDescriptorSet + 1)->descriptorCount  = 1u;
             (pWriteDescriptorSet + 1)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLER;
-            (pWriteDescriptorSet + 1)->pImageInfo       = &samplerDescriptorBufferInfo;
+            (pWriteDescriptorSet + 1)->pImageInfo       = &samplerDescriptorImageInfo;
             (pWriteDescriptorSet + 1)->pBufferInfo      = null;
             (pWriteDescriptorSet + 1)->pTexelBufferView = null;
 
@@ -362,6 +365,74 @@ public sealed unsafe partial class Canvas
 
         vkCreateDescriptorSetLayout(_vkContext->Device, &textureDescriptorSetLayoutCreateInfo, null, &_context->TextureDescriptorSetLayout)
            .AssertVkResult();
+
+        VkDescriptorSetLayout* textureLayouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
+        for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
+        {
+            *(textureLayouts + i) = _context->TextureDescriptorSetLayout;
+        }
+
+        VkDescriptorSetAllocateInfo textureDescriptorSetAllocateInfo;
+        textureDescriptorSetAllocateInfo.sType              = VkDescriptorSetAllocateInfo.STYPE;
+        textureDescriptorSetAllocateInfo.pNext              = null;
+        textureDescriptorSetAllocateInfo.descriptorPool     = _context->TextureDescriptorPool;
+        textureDescriptorSetAllocateInfo.descriptorSetCount = _swapchainContext->MaxFramesInFlight;
+        textureDescriptorSetAllocateInfo.pSetLayouts        = textureLayouts;
+
+        _context->TextureDescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
+        vkAllocateDescriptorSets(_vkContext->Device, &textureDescriptorSetAllocateInfo, _context->TextureDescriptorSets)
+           .AssertVkResult();
+
+        for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
+        {
+#pragma warning disable CA2014 // ReSharper disable once StackAllocInsideLoop
+            VkWriteDescriptorSet* pWriteDescriptorSet = stackalloc VkWriteDescriptorSet[2];
+#pragma warning restore CA2014
+            
+#pragma warning disable CA2014 // ReSharper disable once StackAllocInsideLoop
+            VkDescriptorImageInfo* pTextureDescriptorImageInfo = stackalloc VkDescriptorImageInfo[_configuration.MaxTextureSlots];
+#pragma warning restore CA2014
+            for (int t = 0; t < _configuration.MaxTextureSlots; t++)
+            {
+                (pTextureDescriptorImageInfo + t)->sampler     = VkSampler.Null;
+                (pTextureDescriptorImageInfo + t)->imageLayout = VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL;
+                (pTextureDescriptorImageInfo + t)->imageView   = _whiteTexture;
+            }
+
+            (pWriteDescriptorSet + 0)->sType            = VkWriteDescriptorSet.STYPE;
+            (pWriteDescriptorSet + 0)->pNext            = null;
+            (pWriteDescriptorSet + 0)->dstSet           = *(_context->TextureDescriptorSets + i);
+            (pWriteDescriptorSet + 0)->dstBinding       = 0u;
+            (pWriteDescriptorSet + 0)->dstArrayElement  = 0u;
+            (pWriteDescriptorSet + 0)->descriptorCount  = (uint)_configuration.MaxTextureSlots;
+            (pWriteDescriptorSet + 0)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+            (pWriteDescriptorSet + 0)->pImageInfo       = pTextureDescriptorImageInfo;
+            (pWriteDescriptorSet + 0)->pBufferInfo      = null;
+            (pWriteDescriptorSet + 0)->pTexelBufferView = null;
+
+#pragma warning disable CA2014 // ReSharper disable once StackAllocInsideLoop
+            VkDescriptorImageInfo* pFontTextureDescriptorImageInfo = stackalloc VkDescriptorImageInfo[_configuration.MaxFontTextureSlots];
+#pragma warning restore CA2014
+            for (int t = 0; t < _configuration.MaxTextureSlots; t++)
+            {
+                (pFontTextureDescriptorImageInfo + t)->sampler     = VkSampler.Null;
+                (pFontTextureDescriptorImageInfo + t)->imageLayout = VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL;
+                (pFontTextureDescriptorImageInfo + t)->imageView   = _whiteTexture;
+            }
+
+            (pWriteDescriptorSet + 1)->sType            = VkWriteDescriptorSet.STYPE;
+            (pWriteDescriptorSet + 1)->pNext            = null;
+            (pWriteDescriptorSet + 1)->dstSet           = *(_context->TextureDescriptorSets + i);
+            (pWriteDescriptorSet + 1)->dstBinding       = 1u;
+            (pWriteDescriptorSet + 1)->dstArrayElement  = 0u;
+            (pWriteDescriptorSet + 1)->descriptorCount  = (uint)_configuration.MaxFontTextureSlots;
+            (pWriteDescriptorSet + 1)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+            (pWriteDescriptorSet + 1)->pImageInfo       = pFontTextureDescriptorImageInfo;
+            (pWriteDescriptorSet + 1)->pBufferInfo      = null;
+            (pWriteDescriptorSet + 1)->pTexelBufferView = null;
+
+            vkUpdateDescriptorSets(_vkContext->Device, 2u, pWriteDescriptorSet, 0u, null);
+        }
 
         return true;
     }

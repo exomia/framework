@@ -131,7 +131,7 @@ public sealed unsafe partial class SpriteBatch
                 new VertexInputConfiguration
                 {
                     Binding                                = 0,
-                    Stride                                 = (uint)sizeof(VertexPositionColorTexture),
+                    Stride                                 = (uint)sizeof(Vertex),
                     CreateVertexInputAttributeDescriptions = &CreateVertexInputAttributeDescriptions
                 })
             {

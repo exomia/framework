@@ -52,7 +52,7 @@ sealed unsafe class VertexBufferPool<T> : IDisposable
                 _lock.Enter(ref lockTaken);
                 if (next >= _buffers[frameInFlight].Length)
                 {
-                    int newNumberOfBuffers = _buffers[frameInFlight].Length * 2;
+                    int newNumberOfBuffers = _buffers[frameInFlight].Length << 1;
                     Array.Resize(ref _buffers[frameInFlight], newNumberOfBuffers);
                 }
             }

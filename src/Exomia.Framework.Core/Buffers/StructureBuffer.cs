@@ -19,13 +19,13 @@ public sealed unsafe class StructureBuffer<T> : IDisposable
     where T : unmanaged
 {
     private T*       _buffer;
-    private int      _length;
-    private int      _count;
+    private uint     _length;
+    private uint     _count;
     private SpinLock _spinLock = new SpinLock(Debugger.IsAttached);
 
     /// <summary> Gets the current count of items reserved. </summary>
     /// <value> The current amount of reserved items. </value>
-    public int Count
+    public uint Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get { return _count; }
@@ -33,13 +33,13 @@ public sealed unsafe class StructureBuffer<T> : IDisposable
 
     /// <summary> Initializes a new instance of the <see cref="StructureBuffer{T}" /> class. </summary>
     /// <param name="initialCount"> The initial count of items the buffer can hold without resizing. </param>
-    public StructureBuffer(int initialCount)
+    public StructureBuffer(uint initialCount)
     {
         _buffer = Allocator.Allocate<T>(_length = initialCount);
         _count  = 0;
     }
 
-    /// <summary> Implicit cast that converts the given <see cref="StructureBuffer{T}" /> to a <see cref="T" />*. </summary>
+    /// <summary> Implicit cast that converts the given <see cref="StructureBuffer{T}" /> to a <typeparamref name="T"/>*. </summary>
     /// <param name="buffer"> The structure buffer. </param>
     /// <returns> The result of the operation. </returns>
     public static implicit operator T*(StructureBuffer<T> buffer)
@@ -50,9 +50,9 @@ public sealed unsafe class StructureBuffer<T> : IDisposable
     /// <summary> Reserves the amount of <typeparamref name="T" /> items defined by <paramref name="count" />. </summary>
     /// <param name="count"> The amount of items to reserve. </param>
     /// <returns> A pointer to the first reserved item. </returns>
-    public T* Reserve(int count)
+    public T* Reserve(uint count)
     {
-        int index = Interlocked.Add(ref _count, count);
+        uint index = Interlocked.Add(ref _count, count);
         if (index >= _length)
         {
             bool lockTaken = false;

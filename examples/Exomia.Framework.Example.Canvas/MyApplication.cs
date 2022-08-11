@@ -8,15 +8,20 @@
 
 #endregion
 
+using System.Diagnostics;
+using System.Numerics;
 using Exomia.Framework.Core.Application;
 using Exomia.Framework.Core.Content;
 using Exomia.Framework.Core.Graphics;
+using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Resources;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Vulkan.Api.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using static Exomia.Vulkan.Api.Core.VkSubpassContents;
 
 namespace Exomia.Framework.Example.Canvas;
 
@@ -96,15 +101,34 @@ sealed unsafe class MyApplication : Application
     {
         if (_renderer.Begin(out VkCommandBuffer commandBuffer))
         {
-            _swapchain.BeginRenderPass(commandBuffer, VkColors.CornflowerBlue);
+             _swapchain.BeginRenderPass(commandBuffer, VkColors.CornflowerBlue, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS );
             
-
+            _canvas.Begin();
+            
+            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100), 40f, VkColors.Black, 0f, Vector2.Zero, 1f);
+            
+            Random2 rnd = new Random2(100);
+            for (int i = 0; i < 1_000; i++)
+            {
+               _canvas.RenderArc(
+                    new Arc2(new Vector2(rnd.Next(50, 900), rnd.Next(50, 700)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS)), 
+                    10f,
+                    new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
+                    0f, 
+                    Vector2.Zero, 
+                    1f);
+            }
+            
+            _canvas.End(commandBuffer);
+            
+            _canvas.EndFrame();
+            
             _swapchain.EndRenderPass(commandBuffer);
+            
             _renderer.End(commandBuffer);
-
-            base.Render(time);
         }
-
+        
+        
         _timer += time.DeltaTimeS;
         if (_timer > 1.0f)
         {
@@ -113,6 +137,8 @@ sealed unsafe class MyApplication : Application
             _frames = 0;
         }
         _frames++;
+        
+        base.Render(time);
     }
 
     protected override void EndFrame()

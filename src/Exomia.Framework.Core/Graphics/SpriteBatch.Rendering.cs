@@ -19,11 +19,11 @@ namespace Exomia.Framework.Core.Graphics;
 public sealed unsafe partial class SpriteBatch
 {
     private static void UpdateVertexFromSpriteInfo(
-        SpriteInfo*                 spriteInfo,
-        TextureInfo*                textureInfo,
-        VertexPositionColorTexture* pVpct,
-        float                       deltaX,
-        float                       deltaY)
+        SpriteInfo*  spriteInfo,
+        TextureInfo* textureInfo,
+        Vertex*      pVpct,
+        float        deltaX,
+        float        deltaY)
     {
         float sx, sy, sw, sh;
         if (spriteInfo->Source.HasValue)
@@ -86,7 +86,7 @@ public sealed unsafe partial class SpriteBatch
         {
             for (int j = 0; j < VERTICES_PER_SPRITE; j++)
             {
-                VertexPositionColorTexture* vertex = pVpct + j;
+                Vertex* vertex = pVpct + j;
 
                 Vector2 corner = s_cornerOffsets[j];
 
@@ -108,7 +108,7 @@ public sealed unsafe partial class SpriteBatch
             float sin = MathF.Sin(spriteInfo->Rotation);
             for (int j = 0; j < VERTICES_PER_SPRITE; j++)
             {
-                VertexPositionColorTexture* vertex = pVpct + j;
+                Vertex* vertex = pVpct + j;
 
                 Vector2 corner = s_cornerOffsets[j];
                 float   posX   = (corner.X - origin.X) * dw;
@@ -177,22 +177,20 @@ public sealed unsafe partial class SpriteBatch
         }
 #endif
 
-        if (_spriteQueueCount <= 0)
+        if (_spriteQueueCount > 0)
         {
-            return;
-        }
+            BeginRendering(out VkCommandBuffer subCommandBuffer);
 
-        BeginRendering(out VkCommandBuffer subCommandBuffer);
+            FlushBatch(subCommandBuffer);
 
-        FlushBatch(subCommandBuffer);
-
-        vkEndCommandBuffer(subCommandBuffer)
+            vkEndCommandBuffer(subCommandBuffer)
 #if DEBUG
-           .AssertVkResult()
+               .AssertVkResult()
 #endif
-            ;
+                ;
 
-        vkCmdExecuteCommands(commandBuffer, 1u, &subCommandBuffer);
+            vkCmdExecuteCommands(commandBuffer, 1u, &subCommandBuffer);
+        }
 
 #if DEBUG
         _isBeginCalled = false;
@@ -282,8 +280,8 @@ public sealed unsafe partial class SpriteBatch
             previousTexture            = *(_textureQueue + sortIndex);
         }
 
-        Buffer                      vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _spriteQueueCount);
-        VertexPositionColorTexture* pVpct        = vertexBuffer.Map<VertexPositionColorTexture>();
+        Buffer  vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _spriteQueueCount);
+        Vertex* pVertex      = vertexBuffer.Map<Vertex>();
 
         uint offset = 0u;
         for (uint i = 1u; i < _spriteQueueCount; i++)
@@ -302,14 +300,14 @@ public sealed unsafe partial class SpriteBatch
 
             if (texture.ID != previousTexture.ID)
             {
-                DrawBatchPerTexture(commandBuffer, vertexBuffer, &previousTexture, pVpct, spriteQueueForBatch, offset, i - offset);
+                DrawBatchPerTexture(commandBuffer, vertexBuffer, &previousTexture, pVertex, spriteQueueForBatch, offset, i - offset);
 
                 offset          = i;
                 previousTexture = texture;
             }
         }
 
-        DrawBatchPerTexture(commandBuffer, vertexBuffer, &previousTexture, pVpct, spriteQueueForBatch, offset, _spriteQueueCount - offset);
+        DrawBatchPerTexture(commandBuffer, vertexBuffer, &previousTexture, pVertex, spriteQueueForBatch, offset, _spriteQueueCount - offset);
 
         vertexBuffer.Unmap();
 
@@ -317,18 +315,18 @@ public sealed unsafe partial class SpriteBatch
     }
 
     private void DrawBatchPerTexture(
-        VkCommandBuffer             commandBuffer,
-        Buffer                      vertexBuffer,
-        TextureInfo*                texture,
-        VertexPositionColorTexture* pVpct,
-        SpriteInfo*                 sprites,
-        uint                        offset,
-        uint                        count)
+        VkCommandBuffer commandBuffer,
+        Buffer          vertexBuffer,
+        TextureInfo*    texture,
+        Vertex*         pVertex,
+        SpriteInfo*     sprites,
+        uint            offset,
+        uint            count)
     {
         VkDescriptorSet* pDescriptorSets = stackalloc VkDescriptorSet[2]
         {
             *(_context->DescriptorSets + _swapchainContext->FrameInFlight),
-            *(texture->DescriptorSets     + _swapchainContext->FrameInFlight)
+            *(texture->DescriptorSets  + _swapchainContext->FrameInFlight)
         };
 
         vkCmdBindDescriptorSets(
@@ -355,7 +353,7 @@ public sealed unsafe partial class SpriteBatch
                 {
                     long slot = offset + index;
                     UpdateVertexFromSpriteInfo(
-                        sprites + slot, texture, pVpct + (slot << 2), deltaX, deltaY);
+                        sprites + slot, texture, pVertex + (slot << 2), deltaX, deltaY);
                 }
 
                 Parallel.For(0, batchSize, VertexUpdate);
@@ -366,11 +364,11 @@ public sealed unsafe partial class SpriteBatch
                 {
                     long slot = offset + i;
                     UpdateVertexFromSpriteInfo(
-                        sprites + slot, texture, pVpct + (slot << 2), deltaX, deltaY);
+                        sprites + slot, texture, pVertex + (slot << 2), deltaX, deltaY);
                 }
             }
 
-            VkDeviceSize vertexBufferOffset = (ulong)(offset * VERTICES_PER_SPRITE * sizeof(VertexPositionColorTexture));
+            VkDeviceSize vertexBufferOffset = (ulong)(offset * VERTICES_PER_SPRITE * sizeof(Vertex));
             vkCmdBindVertexBuffers(commandBuffer, 0u, 1u, vertexBuffer, &vertexBufferOffset);
             vkCmdDrawIndexed(
                 commandBuffer,

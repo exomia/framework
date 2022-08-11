@@ -480,4 +480,5 @@ LICENSE file in the root directory of this source tree.</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=USEDEFAULT/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=VERT/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=vpct/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Vpctm/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=vulkan/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

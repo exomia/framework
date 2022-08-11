@@ -26,6 +26,7 @@ public sealed unsafe partial class Canvas
         public VkDescriptorSetLayout DescriptorSetLayout;
         public VkDescriptorSetLayout TextureDescriptorSetLayout;
         public VkDescriptorSet*      DescriptorSets;
+        public VkDescriptorSet*      TextureDescriptorSets;
 
         public static VkCanvasContext Create()
         {
@@ -37,6 +38,7 @@ public sealed unsafe partial class Canvas
             context.DescriptorSetLayout        = VkDescriptorSetLayout.Null;
             context.DescriptorSets             = null;
             context.TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
+            context.TextureDescriptorSets      = null;
             return context;
         }
     }
@@ -44,12 +46,13 @@ public sealed unsafe partial class Canvas
     [StructLayout(LayoutKind.Explicit)]
     private struct Item
     {
-        private const int OFFSET_TYPE_KIND  = 0;
-        private const int OFFSET_VK_COLOR   = OFFSET_TYPE_KIND + 4;
-        private const int OFFSET_ROTATION   = OFFSET_VK_COLOR  + (4 * 4);
-        private const int OFFSET_ORIGIN     = OFFSET_ROTATION  + 4;
-        private const int OFFSET_OPACITY    = OFFSET_ORIGIN    + (4 * 2);
-        private const int OFFSET_TYPE_START = OFFSET_OPACITY   + 4;
+        private const int OFFSET_TYPE_KIND   = 0;
+        private const int OFFSET_VK_COLOR    = OFFSET_TYPE_KIND   + 4;
+        private const int OFFSET_ROTATION    = OFFSET_VK_COLOR    + (4 * 4);
+        private const int OFFSET_ORIGIN      = OFFSET_ROTATION    + 4;
+        private const int OFFSET_OPACITY     = OFFSET_ORIGIN      + (4 * 2);
+        private const int OFFSET_LAYER_DEPTH = OFFSET_OPACITY     + 4;
+        private const int OFFSET_TYPE_START  = OFFSET_LAYER_DEPTH + 4;
 
         public const int NONE_TYPE           = 0;
         public const int ARC_TYPE            = 1;
@@ -63,11 +66,12 @@ public sealed unsafe partial class Canvas
         public const int FILL_RECTANGLE_TYPE = 9;
         public const int FILL_TRIANGLE_TYPE  = 10;
 
-        [FieldOffset(OFFSET_TYPE_KIND)] public int     Type;
-        [FieldOffset(OFFSET_VK_COLOR)]  public VkColor Color;
-        [FieldOffset(OFFSET_ROTATION)]  public float   Rotation;
-        [FieldOffset(OFFSET_ORIGIN)]    public Vector2 Origin;
-        [FieldOffset(OFFSET_OPACITY)]   public float   Opacity;
+        [FieldOffset(OFFSET_TYPE_KIND)]   public int     Type;
+        [FieldOffset(OFFSET_VK_COLOR)]    public VkColor Color;
+        [FieldOffset(OFFSET_ROTATION)]    public float   Rotation;
+        [FieldOffset(OFFSET_ORIGIN)]      public Vector2 Origin;
+        [FieldOffset(OFFSET_OPACITY)]     public float   Opacity;
+        [FieldOffset(OFFSET_LAYER_DEPTH)] public float   LayerDepth;
 
         [FieldOffset(OFFSET_TYPE_START)] public          ArcType       ArcType;
         [FieldOffset(OFFSET_TYPE_START)] public          LineType      LineType;
@@ -82,6 +86,7 @@ public sealed unsafe partial class Canvas
     {
         public Arc2  Arc;
         public float LineWidth;
+        public byte  Index;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -144,7 +149,7 @@ public sealed unsafe partial class Canvas
 
 
     [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE, Pack = 4)]
-    private struct VertexPositionColorTextureMode
+    private struct Vertex
     {
         // ReSharper disable MemberCanBePrivate.Local
         // ReSharper disable FieldCanBeMadeReadOnly.Local
@@ -165,8 +170,11 @@ public sealed unsafe partial class Canvas
         [FieldOffset(32)] public Vector2 UV;
         [FieldOffset(40)] public float   M;
         [FieldOffset(44)] public float   O;
-        [FieldOffset(48)] public float   P;
-        [FieldOffset(52)] public float   Q;
+        [FieldOffset(40)] public Vector2 MO;
+        [FieldOffset(48)] public float   D1;
+        [FieldOffset(52)] public float   D2;
+        [FieldOffset(56)] public float   D3;
+        [FieldOffset(60)] public float   D4;
 
         /// <inheritdoc />
         public override string ToString()

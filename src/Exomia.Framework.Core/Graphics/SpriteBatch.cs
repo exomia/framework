@@ -50,7 +50,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private readonly SwapchainContext*                            _swapchainContext;
     private readonly Buffer                                       _indexBuffer;
     private readonly Buffer                                       _uniformBuffer;
-    private readonly VertexBufferPool<VertexPositionColorTexture> _vertexBufferPool;
+    private readonly VertexBufferPool<Vertex> _vertexBufferPool;
     private readonly CommandBufferPool                            _commandBufferPool;
     private          Shader                                       _shader   = null!;
     private          Pipeline?                                    _pipeline = null;
@@ -128,7 +128,7 @@ public sealed unsafe partial class SpriteBatch : IDisposable
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
         _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
         _vertexBufferPool =
-            new VertexBufferPool<VertexPositionColorTexture>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_SPRITE, MAX_BATCH_SIZE);
+            new VertexBufferPool<Vertex>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_SPRITE, MAX_BATCH_SIZE);
 
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);

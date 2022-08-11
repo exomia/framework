@@ -8,6 +8,7 @@
 
 #endregion
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Vulkan.Exceptions;
 
@@ -200,13 +201,13 @@ public sealed unsafe partial class Swapchain
 
         submitInfo.signalSemaphoreCount = 1u;
         submitInfo.pSignalSemaphores    = _context->SemaphoresRenderingDone + _context->FrameInFlight;
-
+        
         vkResetFences(_vkContext->Device, 1u, &fence)
 #if DEBUG
            .AssertVkResult()
 #endif
             ;
-
+        
         vkQueueSubmit(*(_vkContext->Queues - 1u), 1u, &submitInfo, fence)
 #if DEBUG
            .AssertVkResult()

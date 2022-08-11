@@ -7,16 +7,16 @@ layout(set = 0, binding = 0) uniform UniformBufferObject {
 
 layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inColor;
-layout(location = 2) in vec2 inUV;
-layout(location = 3) in vec4 inMOPQ;
+layout(location = 2) in vec4 inUVMO;
+layout(location = 3) in vec4 inData;
 
 layout(location = 0) out vec4 outColor;
-layout(location = 1) out vec2 outUV;
-layout(location = 2) out vec4 outMOPQ;
+layout(location = 1) out vec4 outUVMO;
+layout(location = 2) out vec4 outData;
 
 void main() {
-    outColor = inColor * inPosition.w;
-    outUV = inUV;
-    outMOPQ = inMOPQ;
     gl_Position = g_worldViewProjection * vec4(inPosition.xy, clamp(inPosition.z, 0.0f, 1.0f), 1.0f);
+    outColor = inColor * inPosition.w;
+    outUVMO = inUVMO;
+    outData = inData;
 }

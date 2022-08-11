@@ -32,23 +32,21 @@ using TIndex = UInt16;
 public sealed unsafe partial class Canvas : IDisposable
 {
 #if USE_32BIT_INDEX
-    private const int MAX_BATCH_SIZE = 1 << 18;
+    private const uint MAX_BATCH_SIZE = 1 << 18;
 #else
-    private const int MAX_BATCH_SIZE = 1 << 13;
+    private const uint MAX_BATCH_SIZE = 1 << 13;
 #endif
-    private const uint VERTICES_PER_SPRITE        = 4u;
-    private const uint INDICES_PER_SPRITE         = 6u;
-    private const uint MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_SPRITE;
+    private const uint VERTICES_PER_OBJECT        = 4u;
+    private const uint INDICES_PER_OBJECT         = 6u;
+    private const uint MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_OBJECT;
     private const int  BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
-    private const int  VERTEX_STRIDE              = sizeof(float) * 12;
+    private const int  VERTEX_STRIDE              = sizeof(float) * 14;
 
-    private const int COLOR_MODE             = 0;
-    private const int TEXTURE_MODE           = 1;
-    private const int FONT_TEXTURE_MODE      = 2;
-    private const int FILL_CIRCLE_MODE       = 3;
-    private const int FILL_CIRCLE_ARC_MODE   = 4;
-    private const int BORDER_CIRCLE_MODE     = 5;
-    private const int BORDER_CIRCLE_ARC_MODE = 6;
+    private const int COLOR_MODE        = 0;
+    private const int TEXTURE_MODE      = 1;
+    private const int FONT_TEXTURE_MODE = 2;
+    private const int FILL_ARC_MODE     = 3;
+    private const int BORDER_ARC_MODE   = 4;
 
     private static readonly TIndex[]   s_indices;
     private static readonly Vector2[]  s_cornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
@@ -60,7 +58,7 @@ public sealed unsafe partial class Canvas : IDisposable
     private readonly SwapchainContext*                                _swapchainContext;
     private readonly Buffer                                           _indexBuffer;
     private readonly Buffer                                           _uniformBuffer;
-    private readonly VertexBufferPool<VertexPositionColorTextureMode> _vertexBufferPool;
+    private readonly VertexBufferPool<Vertex> _vertexBufferPool;
     private readonly CommandBufferPool                                _commandBufferPool;
     private          Shader                                           _shader   = null!;
     private          Pipeline?                                        _pipeline = null;
@@ -95,7 +93,7 @@ public sealed unsafe partial class Canvas : IDisposable
         }
 #pragma warning restore 162
         s_indices = new TIndex[MAX_INDEX_COUNT];
-        for (uint i = 0, k = 0; i < MAX_INDEX_COUNT; i += INDICES_PER_SPRITE, k += VERTICES_PER_SPRITE)
+        for (uint i = 0, k = 0; i < MAX_INDEX_COUNT; i += INDICES_PER_OBJECT, k += VERTICES_PER_OBJECT)
         {
             // ReSharper disable RedundantCast
             s_indices[i + 0u] = (TIndex)(k + 0u);
@@ -124,12 +122,12 @@ public sealed unsafe partial class Canvas : IDisposable
         _whiteTexture = Texture.Create(_vkContext, 1, 1, new byte[] { 255, 255, 255, 255 });
 
         _itemBuffer   = new StructureBuffer<Item>(MAX_BATCH_SIZE);
-        _vertexBuffer = new StructureBuffer<Vector2>(32);
+        _vertexBuffer = new StructureBuffer<Vector2>(32u);
 
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
         _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
         _vertexBufferPool =
-            new VertexBufferPool<VertexPositionColorTextureMode>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_SPRITE, MAX_BATCH_SIZE);
+            new VertexBufferPool<Vertex>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_OBJECT, MAX_BATCH_SIZE);
         _commandBufferPool =
             new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
 
@@ -207,10 +205,10 @@ public sealed unsafe partial class Canvas : IDisposable
                 : -1f
         };
     }
-    
+
     private Vector2* ReserveVertices(Vector2[] vertices)
     {
-        Vector2* dst = _vertexBuffer.Reserve(vertices.Length);
+        Vector2* dst = _vertexBuffer.Reserve((uint)vertices.Length);
         fixed (Vector2* src = vertices)
         {
             Unsafe.CopyBlockUnaligned(dst, src, (uint)(sizeof(Vector2) * vertices.Length));
@@ -252,7 +250,7 @@ public sealed unsafe partial class Canvas : IDisposable
 
             _vertexBuffer.Dispose();
             _itemBuffer.Dispose();
-            
+
             Allocator.Free(ref _context, 1u);
 
             _disposed = true;

@@ -71,7 +71,7 @@ public sealed unsafe partial class SpriteBatch
     }
 
     [StructLayout(LayoutKind.Explicit, Size = VERTEX_STRIDE, Pack = 4)]
-    private struct VertexPositionColorTexture
+    private struct Vertex
     {
         // ReSharper disable MemberCanBePrivate.Local
         // ReSharper disable FieldCanBeMadeReadOnly.Local
