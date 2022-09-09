@@ -22,29 +22,25 @@ sealed class TextureImporter : Importer<Texture.Texture>
             () =>
             {
                 using Bitmap bitmap = new Bitmap(stream);
-                BitmapData   data   = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                try
-                {
-                    byte[] bytes = new byte[data.Stride * data.Height];
 
-                    unsafe
-                    {
-                        fixed (byte* dst = bytes)
-                        {
-                            Unsafe.CopyBlock(dst, data.Scan0.ToPointer(), (uint)bytes.Length);
-                        }
-                    }
-                    return new Texture.Texture
-                    {
-                        Width  = bitmap.Width,
-                        Height = bitmap.Height,
-                        Data   = bytes
-                    };
-                }
-                finally
+                byte[] bytes = new byte[bitmap.Width * bitmap.Height * 4]; // RGBA
+
+                for (int y = 0; y < bitmap.Height; y++)
+                for (int x = 0; x < bitmap.Width; x++)
                 {
-                    bitmap.UnlockBits(data);
+                    Color pixel = bitmap.GetPixel(x, y);
+                    bytes[(x + (y * bitmap.Width)) * 4 + 0] = pixel.R;
+                    bytes[(x + (y * bitmap.Width)) * 4 + 1] = pixel.G;
+                    bytes[(x + (y * bitmap.Width)) * 4 + 2] = pixel.B;
+                    bytes[(x + (y * bitmap.Width)) * 4 + 3] = pixel.A;
                 }
+
+                return new Texture.Texture
+                {
+                    Width  = bitmap.Width,
+                    Height = bitmap.Height,
+                    Data   = bytes
+                };
             }, cancellationToken);
     }
 }
