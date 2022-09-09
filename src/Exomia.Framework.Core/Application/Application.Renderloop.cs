@@ -26,6 +26,8 @@ public abstract unsafe partial class Application
                 continue;
             }
 
+            Update(time);
+
             if (BeginFrame())
             {
                 Render(time);
@@ -53,6 +55,8 @@ public abstract unsafe partial class Application
                 Thread.Sleep(16);
                 continue;
             }
+
+            Update(time);
 
             if (BeginFrame())
             {
