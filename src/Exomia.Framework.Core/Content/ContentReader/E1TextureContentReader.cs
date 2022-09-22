@@ -71,7 +71,7 @@ sealed unsafe class E1TextureContentReader : IContentReader
 
         byte[] data = br.ReadBytes(width * height * 4 /* RGBA */);
 
-        VkContext* vkContext = contentManager.ServiceProvider.GetRequiredService<Vulkan.Vulkan>().Context;
+        VkContext* vkContext = contentManager.ServiceProvider.GetRequiredService<IVkContextAccessor>().Context;
 
         return Texture.Create(vkContext, (uint)width, (uint)height, data);
     }

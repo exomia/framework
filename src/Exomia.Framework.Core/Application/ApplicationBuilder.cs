@@ -9,6 +9,7 @@
 #endregion
 
 using Exomia.Framework.Core.Application.Configurations;
+using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Framework.Core.Vulkan.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,6 +67,7 @@ public sealed class ApplicationBuilder : IApplicationBuilder
         IServiceCollection appServiceCollection = new ServiceCollection()
                                                   /* vulkan */
                                                  .AddSingleton<Vulkan.Vulkan>()
+                                                 .AddSingleton<IVkContextAccessor>(p => p.GetRequiredService<Vulkan.Vulkan>())
                                                   /* application */
                                                  .AddSingleton<TApplication>()
                                                  .AddSingleton<Application>(p => p.GetRequiredService<TApplication>());

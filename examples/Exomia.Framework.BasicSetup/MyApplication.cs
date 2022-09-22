@@ -32,13 +32,13 @@ sealed unsafe class MyApplication : Application
     
     /// <summary> Initializes a new instance of the <see cref="MyApplication" /> class. </summary>
     /// <param name="serviceProvider"> The service provider. </param>
-    /// <param name="vulkan"> The vulkan. </param>
+    /// <param name="vkContextAccessor"> The vk context accessor. </param>
     /// <param name="swapchainConfiguration"> The swapchain configuration. </param>
     /// <param name="depthStencilConfiguration"> The Depth stencil configuration. </param>
     /// <param name="logger"> The logger. </param>
     public MyApplication(
         IServiceProvider                    serviceProvider,
-        Core.Vulkan.Vulkan                  vulkan,
+        IVkContextAccessor                  vkContextAccessor,
         IOptions<SwapchainConfiguration>    swapchainConfiguration,
         IOptions<DepthStencilConfiguration> depthStencilConfiguration,
         ILogger<MyApplication>              logger)
@@ -52,7 +52,7 @@ sealed unsafe class MyApplication : Application
         RenderPassConfiguration renderPassConfiguration = new();
 
         _swapchain = ToDispose(new Swapchain(
-            vulkan.Context,
+            vkContextAccessor.Context,
             swapchainConfiguration.Value,
             depthStencilConfiguration.Value,
             renderPassConfiguration));

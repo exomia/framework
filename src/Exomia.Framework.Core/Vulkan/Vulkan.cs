@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace Exomia.Framework.Core.Vulkan;
 
-public sealed unsafe partial class Vulkan : IDisposable
+public sealed unsafe partial class Vulkan : IVkContextAccessor, IDisposable
 {
     private readonly ILogger<Vulkan>                  _logger;
     private readonly ApplicationConfiguration         _applicationConfiguration;
