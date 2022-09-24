@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 namespace Exomia.Framework.Core.Buffers;
 
 /// <summary> A structure buffer. This class cannot be inherited. </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T"> The generic type. </typeparam>
 public sealed unsafe class StructureBuffer<T> : IDisposable
     where T : unmanaged
 {
@@ -39,7 +39,7 @@ public sealed unsafe class StructureBuffer<T> : IDisposable
         _count  = 0;
     }
 
-    /// <summary> Implicit cast that converts the given <see cref="StructureBuffer{T}" /> to a <typeparamref name="T"/>*. </summary>
+    /// <summary> Implicit cast that converts the given <see cref="StructureBuffer{T}" /> to a <typeparamref name="T" />*. </summary>
     /// <param name="buffer"> The structure buffer. </param>
     /// <returns> The result of the operation. </returns>
     public static implicit operator T*(StructureBuffer<T> buffer)

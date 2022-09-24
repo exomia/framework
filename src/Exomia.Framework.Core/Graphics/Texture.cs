@@ -12,7 +12,6 @@ using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Vulkan;
 using static Exomia.Vulkan.Api.Core.VkImageType;
 using static Exomia.Vulkan.Api.Core.VkImageTiling;
-using static Exomia.Vulkan.Api.Core.VkImageLayout;
 using static Exomia.Vulkan.Api.Core.VkImageUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkSampleCountFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageAspectFlagBits;

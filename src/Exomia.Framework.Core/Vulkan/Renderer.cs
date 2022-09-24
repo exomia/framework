@@ -62,7 +62,7 @@ public sealed unsafe class Renderer : IDisposable
 
         return true;
     }
-    
+
     /// <summary> Ends the rendering. </summary>
     /// <param name="commandBuffer"> If non-null, the command buffers. </param>
     /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>

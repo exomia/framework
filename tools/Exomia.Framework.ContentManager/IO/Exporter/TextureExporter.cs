@@ -46,12 +46,11 @@ sealed class TextureExporter : Exporter<Texture.Texture>
             {
                 fs.Write(E1Protocol.MagicHeader,         0, E1Protocol.MagicHeader.Length);
                 fs.Write(E1Protocol.Texture.MagicHeader, 0, E1Protocol.Texture.MagicHeader.Length);
+                for (int i = 0; i < E1Protocol.TYPE_RESERVED_BYTES_LENGHT; i++) //reserved for future use
+                {
+                    fs.WriteByte(0); 
+                }
                 fs.Write(E1Protocol.Texture.Version10,   0, E1Protocol.Texture.Version10.Length);
-
-                fs.WriteByte(0); //reserved for future use
-                fs.WriteByte(0); //reserved for future use
-                fs.WriteByte(0); //reserved for future use
-                fs.WriteByte(0); //reserved for future use
 
                 ContentCompressor.CompressStream(staging, fs);
             }

@@ -61,10 +61,10 @@ public sealed unsafe partial class SpriteBatch
             VkSpriteBatchContext context;
             context.TextureSampler             = VkSampler.Null;
             context.PipelineLayout             = VkPipelineLayout.Null;
-            context.DescriptorPool          = VkDescriptorPool.Null;
+            context.DescriptorPool             = VkDescriptorPool.Null;
             context.TextureDescriptorPool      = VkDescriptorPool.Null;
-            context.DescriptorSetLayout     = VkDescriptorSetLayout.Null;
-            context.DescriptorSets          = null;
+            context.DescriptorSetLayout        = VkDescriptorSetLayout.Null;
+            context.DescriptorSets             = null;
             context.TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
             return context;
         }

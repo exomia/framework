@@ -27,13 +27,13 @@ layout(location = 0) out vec4 outColor;
 void main() {
     switch (int(inUVMO.z))
     {
-        default:
-        case COLOR_MODE: 
+        default :
+        case COLOR_MODE:
         {
             outColor = inColor;
             return;
         }
-        case TEXTURE_MODE: 
+        case TEXTURE_MODE:
         {
             outColor = texture(sampler2D(_textures[int(inUVMO.w)], _sampler), inUVMO.xy) * inColor;
             return;
@@ -43,7 +43,7 @@ void main() {
             outColor = texture(sampler2D(_fontTextures[int(inUVMO.w)], _sampler), inUVMO.xy) * inColor;
             return;
         }
-        case FILL_ARC_MODE: 
+        case FILL_ARC_MODE:
         {
             vec2 p = gl_FragCoord.xy;
             vec2 center = inUVMO.xy;

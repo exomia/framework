@@ -9,6 +9,7 @@
 #endregion
 
 using Exomia.Framework.Core.Content.Protocols;
+using Exomia.Framework.Core.Extensions;
 
 namespace Exomia.Framework.Core.Content.Resolver;
 
@@ -33,9 +34,7 @@ sealed class E1FileStreamContentResolver : IContentResolver
     {
         FileStream stream = new FileStream(assetName, FileMode.Open, FileAccess.Read);
 
-        byte[] buffer = new byte[E1Protocol.MAGIC_HEADER_LENGHT];
-        if (stream.Read(buffer, 0, buffer.Length) != E1Protocol.MAGIC_HEADER_LENGHT
-         || !buffer.AsSpan().SequenceEqual(E1Protocol.MagicHeader))
+        if (!stream.SequenceEqual(E1Protocol.MagicHeader))
         {
             stream.Dispose();
             return null;

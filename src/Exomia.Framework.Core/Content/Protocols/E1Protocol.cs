@@ -19,8 +19,8 @@ namespace Exomia.Framework.Core.Content.Protocols;
 ///     Protocol definition:<br />
 ///     - 4 bytes: e1 magic header (<see cref="MagicHeader" />)<br />
 ///     - 8 bytes: type magic header (e.g. <see cref="Texture.MagicHeader" />, <see cref="Spritefont.MagicHeader" /><br />
-///     - 2 bytes: type protocol version (e.g. <see cref="Texture.Version10" />, <see cref="Spritefont.Version10" /><br />
 ///     - 4 bytes: type reserved bytes for future use<br />
+///     - 2 bytes: type protocol version (e.g. <see cref="Texture.Version10" />, <see cref="Spritefont.Version10" /><br />
 ///     - 1 bytes: compression mode (<see cref="CompressMode" />)<br />
 ///     - N bytes: (compressed) data<br />
 ///     </code>
@@ -32,6 +32,9 @@ public static class E1Protocol
 
     /// <summary> The magic header length. </summary>
     public const int MAGIC_HEADER_LENGHT = 4;
+
+    /// <summary> The type reserved bytes length. </summary>
+    public const int TYPE_RESERVED_BYTES_LENGHT = 4;
 
     /// <summary> The type magic header length. </summary>
     public const int TYPE_MAGIC_HEADER_LENGHT = 8;

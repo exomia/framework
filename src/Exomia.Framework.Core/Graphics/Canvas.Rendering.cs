@@ -18,6 +18,9 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
+    private readonly Dictionary<long, int> _textureSlotMap     = new Dictionary<long, int>(8);
+    private readonly Dictionary<long, int> _fontTextureSlotMap = new Dictionary<long, int>(4);
+
     /// <summary> Begins a new batch. </summary>
     /// <param name="transformMatrix"> (Optional) The transform matrix. </param>
     /// <param name="scissorRectangle"> (Optional) The scissor rectangle. </param>
@@ -129,15 +132,12 @@ public sealed unsafe partial class Canvas
         vkCmdSetScissor(commandBuffer, 0u, 1u, &scissorRectangle);
     }
 
-    private readonly Dictionary<long, int> _textureSlotMap     = new Dictionary<long, int>(8);
-    private readonly Dictionary<long, int> _fontTextureSlotMap = new Dictionary<long, int>(4);
-
     private void FlushBatch(VkCommandBuffer commandBuffer)
     {
         VkDescriptorSet* pDescriptorSets = stackalloc VkDescriptorSet[2]
         {
             *(_context->DescriptorSets        + _swapchainContext->FrameInFlight),
-            *(_context->TextureDescriptorSets + _swapchainContext->FrameInFlight),
+            *(_context->TextureDescriptorSets + _swapchainContext->FrameInFlight)
         };
 
         vkCmdBindDescriptorSets(
@@ -167,7 +167,7 @@ public sealed unsafe partial class Canvas
                 void VertexUpdate(long index)
                 {
                     Item* item = pItems + index;
-            
+
                     switch (item->Type)
                     {
                         case Item.ARC_TYPE:
@@ -178,7 +178,7 @@ public sealed unsafe partial class Canvas
                             break;
                     }
                 }
-            
+
                 Parallel.For(offset, offset + batchSize, VertexUpdate);
             }
             else

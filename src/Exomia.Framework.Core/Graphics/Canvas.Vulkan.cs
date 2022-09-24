@@ -23,8 +23,8 @@ public sealed unsafe partial class Canvas
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
 
-        var k = assembly.GetManifestResourceNames();
-        
+        string[] k = assembly.GetManifestResourceNames();
+
         using Stream vertexShaderStream =
             assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_VERT_OPT}") ??
             throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_MODE_VERT_OPT}");
@@ -75,12 +75,12 @@ public sealed unsafe partial class Canvas
                         Flags = 0,
                         Specializations = new[]
                         {
-                            new Shader.Module.Stage.Specialization.Configuration()
+                            new Shader.Module.Stage.Specialization.Configuration
                             {
                                 ConstantID = 0,
                                 Value      = _configuration.MaxTextureSlots
                             },
-                            new Shader.Module.Stage.Specialization.Configuration()
+                            new Shader.Module.Stage.Specialization.Configuration
                             {
                                 ConstantID = 1,
                                 Value      = _configuration.MaxFontTextureSlots
@@ -388,7 +388,7 @@ public sealed unsafe partial class Canvas
 #pragma warning disable CA2014 // ReSharper disable once StackAllocInsideLoop
             VkWriteDescriptorSet* pWriteDescriptorSet = stackalloc VkWriteDescriptorSet[2];
 #pragma warning restore CA2014
-            
+
 #pragma warning disable CA2014 // ReSharper disable once StackAllocInsideLoop
             VkDescriptorImageInfo* pTextureDescriptorImageInfo = stackalloc VkDescriptorImageInfo[_configuration.MaxTextureSlots];
 #pragma warning restore CA2014

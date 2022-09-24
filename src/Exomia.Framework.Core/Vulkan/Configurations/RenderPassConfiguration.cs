@@ -11,7 +11,6 @@
 using static Exomia.Vulkan.Api.Core.VkSampleCountFlagBits;
 using static Exomia.Vulkan.Api.Core.VkAttachmentLoadOp;
 using static Exomia.Vulkan.Api.Core.VkAttachmentStoreOp;
-using static Exomia.Vulkan.Api.Core.VkImageLayout;
 using static Exomia.Vulkan.Api.Core.VkImageAspectFlagBits;
 using static Exomia.Vulkan.Api.Core.VkPipelineBindPoint;
 

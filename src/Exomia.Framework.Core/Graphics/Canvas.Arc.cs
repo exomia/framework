@@ -17,6 +17,8 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
+    private static readonly float s_sin45 = MathF.Sin(45f.ToRadians());
+
     /// <summary> Renders an arc. </summary>
     /// <param name="arc"> The arc. </param>
     /// <param name="lineWidth"> The width of the line. </param>
@@ -91,7 +93,7 @@ public sealed unsafe partial class Canvas
             x = ((cos * dx)  - (sin * dy)) + origin.X;
             y = ((sin * dx)  + (cos * dy)) + origin.Y;
         }
-        
+
         // TODO: Optimize this. we could also work out the quadrants here and only render the appropriate quadrants.
         Item* item = _itemBuffer.Reserve(4);
         for (byte i = 0; i < 4; i++)
@@ -196,8 +198,6 @@ public sealed unsafe partial class Canvas
         item->Opacity        = opacity;
         item->LayerDepth     = layerDepth;
     }
-
-    private static readonly float s_sin45 = MathF.Sin(45f.ToRadians());
 
     private void RenderArc(Item* item, Vertex* vertex)
     {

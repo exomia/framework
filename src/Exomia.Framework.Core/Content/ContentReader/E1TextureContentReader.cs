@@ -10,6 +10,7 @@
 
 using Exomia.Framework.Core.Content.Compression;
 using Exomia.Framework.Core.Content.Protocols;
+using Exomia.Framework.Core.Extensions;
 using Exomia.Framework.Core.Graphics;
 using Exomia.Framework.Core.Vulkan;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,25 +28,23 @@ sealed unsafe class E1TextureContentReader : IContentReader
     /// <inheritdoc />
     public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
-        byte[] buffer = new byte[E1Protocol.TYPE_MAGIC_HEADER_LENGHT];
-
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_MAGIC_HEADER_LENGHT) != E1Protocol.TYPE_MAGIC_HEADER_LENGHT
-         || !buffer.AsSpan().SequenceEqual(E1Protocol.Texture.MagicHeader))
+        if (!parameters.Stream.SequenceEqual(E1Protocol.Texture.MagicHeader))
         {
             return null;
         }
 
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
+        for (int i = 0; i < E1Protocol.TYPE_RESERVED_BYTES_LENGHT; i++) //reserved for future use
+        {
+            parameters.Stream.ReadByte(); //reserved for future use
+        }
+
+        Span<byte> protocolVersion = stackalloc byte[E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT];
+        if (parameters.Stream.Read(protocolVersion) != E1Protocol.TYPE_PROTOCOL_VERSION_LENGHT)
         {
             return null;
         }
 
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-        parameters.Stream.ReadByte(); //reserved for future use
-
-        if (buffer.AsSpan().StartsWith(E1Protocol.Texture.Version10))
+        if (protocolVersion.SequenceEqual(E1Protocol.Texture.Version10))
         {
             return ReadContentV10(contentManager, ref parameters);
         }

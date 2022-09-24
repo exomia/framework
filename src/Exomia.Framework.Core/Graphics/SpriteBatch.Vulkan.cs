@@ -184,7 +184,7 @@ public sealed unsafe partial class SpriteBatch
         VkDescriptorPoolSize uboDescriptorPoolSize;
         uboDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         uboDescriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
-        
+
         VkDescriptorPoolSize samplerDescriptorPoolSize;
         samplerDescriptorPoolSize.type            = VK_DESCRIPTOR_TYPE_SAMPLER;
         samplerDescriptorPoolSize.descriptorCount = _swapchainContext->MaxFramesInFlight;
@@ -194,7 +194,7 @@ public sealed unsafe partial class SpriteBatch
             uboDescriptorPoolSize,
             samplerDescriptorPoolSize
         };
-        
+
         VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
         descriptorPoolCreateInfo.sType         = VkDescriptorPoolCreateInfo.STYPE;
         descriptorPoolCreateInfo.pNext         = null;
@@ -232,7 +232,7 @@ public sealed unsafe partial class SpriteBatch
         uboDescriptorSetLayoutBinding.descriptorCount    = 1u;
         uboDescriptorSetLayoutBinding.stageFlags         = VK_SHADER_STAGE_VERTEX_BIT;
         uboDescriptorSetLayoutBinding.pImmutableSamplers = null;
-        
+
         VkDescriptorSetLayoutBinding samplerDescriptorSetLayoutBinding;
         samplerDescriptorSetLayoutBinding.binding            = 1u;
         samplerDescriptorSetLayoutBinding.descriptorType     = VK_DESCRIPTOR_TYPE_SAMPLER;
@@ -245,7 +245,7 @@ public sealed unsafe partial class SpriteBatch
             uboDescriptorSetLayoutBinding,
             samplerDescriptorSetLayoutBinding
         };
-        
+
         VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
         descriptorSetLayoutCreateInfo.sType        = VkDescriptorSetLayoutCreateInfo.STYPE;
         descriptorSetLayoutCreateInfo.pNext        = null;
@@ -300,33 +300,33 @@ public sealed unsafe partial class SpriteBatch
             uboDescriptorBufferInfo.buffer = _uniformBuffer;
             uboDescriptorBufferInfo.offset = (ulong)(sizeof(Matrix4x4) * i);
             uboDescriptorBufferInfo.range  = (ulong)sizeof(Matrix4x4);
-            
-            (pWriteDescriptorSet +0)->sType            = VkWriteDescriptorSet.STYPE;
-            (pWriteDescriptorSet +0)->pNext            = null;
-            (pWriteDescriptorSet +0)->dstSet           = *(_context->DescriptorSets + i);
-            (pWriteDescriptorSet +0)->dstBinding       = 0u;
-            (pWriteDescriptorSet +0)->dstArrayElement  = 0u;
-            (pWriteDescriptorSet +0)->descriptorCount  = 1u;
-            (pWriteDescriptorSet +0)->descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            (pWriteDescriptorSet +0)->pImageInfo       = null;
-            (pWriteDescriptorSet +0)->pBufferInfo      = &uboDescriptorBufferInfo;
-            (pWriteDescriptorSet +0)->pTexelBufferView = null;
-            
+
+            (pWriteDescriptorSet + 0)->sType            = VkWriteDescriptorSet.STYPE;
+            (pWriteDescriptorSet + 0)->pNext            = null;
+            (pWriteDescriptorSet + 0)->dstSet           = *(_context->DescriptorSets + i);
+            (pWriteDescriptorSet + 0)->dstBinding       = 0u;
+            (pWriteDescriptorSet + 0)->dstArrayElement  = 0u;
+            (pWriteDescriptorSet + 0)->descriptorCount  = 1u;
+            (pWriteDescriptorSet + 0)->descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            (pWriteDescriptorSet + 0)->pImageInfo       = null;
+            (pWriteDescriptorSet + 0)->pBufferInfo      = &uboDescriptorBufferInfo;
+            (pWriteDescriptorSet + 0)->pTexelBufferView = null;
+
             VkDescriptorImageInfo samplerDescriptorBufferInfo;
-            samplerDescriptorBufferInfo.sampler       = _context->TextureSampler;
-            samplerDescriptorBufferInfo.imageLayout   = 0;
-            samplerDescriptorBufferInfo.imageView     = VkImageView.Null;
-            
-            (pWriteDescriptorSet +1)->sType            = VkWriteDescriptorSet.STYPE;
-            (pWriteDescriptorSet +1)->pNext            = null;
-            (pWriteDescriptorSet +1)->dstSet           = *(_context->DescriptorSets + i);
-            (pWriteDescriptorSet +1)->dstBinding       = 1u;
-            (pWriteDescriptorSet +1)->dstArrayElement  = 0u;
-            (pWriteDescriptorSet +1)->descriptorCount  = 1u;
-            (pWriteDescriptorSet +1)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLER;
-            (pWriteDescriptorSet +1)->pImageInfo       = &samplerDescriptorBufferInfo;
-            (pWriteDescriptorSet +1)->pBufferInfo      = null;
-            (pWriteDescriptorSet +1)->pTexelBufferView = null;
+            samplerDescriptorBufferInfo.sampler     = _context->TextureSampler;
+            samplerDescriptorBufferInfo.imageLayout = 0;
+            samplerDescriptorBufferInfo.imageView   = VkImageView.Null;
+
+            (pWriteDescriptorSet + 1)->sType            = VkWriteDescriptorSet.STYPE;
+            (pWriteDescriptorSet + 1)->pNext            = null;
+            (pWriteDescriptorSet + 1)->dstSet           = *(_context->DescriptorSets + i);
+            (pWriteDescriptorSet + 1)->dstBinding       = 1u;
+            (pWriteDescriptorSet + 1)->dstArrayElement  = 0u;
+            (pWriteDescriptorSet + 1)->descriptorCount  = 1u;
+            (pWriteDescriptorSet + 1)->descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLER;
+            (pWriteDescriptorSet + 1)->pImageInfo       = &samplerDescriptorBufferInfo;
+            (pWriteDescriptorSet + 1)->pBufferInfo      = null;
+            (pWriteDescriptorSet + 1)->pTexelBufferView = null;
 
             vkUpdateDescriptorSets(_vkContext->Device, 2u, pWriteDescriptorSet, 0u, null);
         }

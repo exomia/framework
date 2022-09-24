@@ -102,12 +102,11 @@ sealed class SpiteFontExporter : Exporter<FontFile>
             {
                 fs.Write(E1Protocol.MagicHeader,            0, E1Protocol.MagicHeader.Length);
                 fs.Write(E1Protocol.Spritefont.MagicHeader, 0, E1Protocol.Spritefont.MagicHeader.Length);
-                fs.Write(E1Protocol.Spritefont.Version10,   0, E1Protocol.Spritefont.Version10.Length);
-
-                fs.WriteByte(0); //reserved for future use
-                fs.WriteByte(0); //reserved for future use
-                fs.WriteByte(0); //reserved for future use
-                fs.WriteByte(0); //reserved for future use
+                for (int i = 0; i < E1Protocol.TYPE_RESERVED_BYTES_LENGHT; i++) //reserved for future use
+                {
+                    fs.WriteByte(0);
+                }
+                fs.Write(E1Protocol.Spritefont.Version10, 0, E1Protocol.Spritefont.Version10.Length);
 
                 ContentCompressor.CompressStream(staging, fs);
             }

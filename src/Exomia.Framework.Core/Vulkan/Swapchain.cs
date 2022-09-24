@@ -17,7 +17,6 @@ using static Exomia.Vulkan.Api.Core.VkImageType;
 using static Exomia.Vulkan.Api.Core.VkImageTiling;
 using static Exomia.Vulkan.Api.Core.VkImageUsageFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageViewType;
-using static Exomia.Vulkan.Api.Core.VkImageLayout;
 using static Exomia.Vulkan.Api.Core.VkComponentSwizzle;
 using static Exomia.Vulkan.Api.Core.VkFenceCreateFlagBits;
 

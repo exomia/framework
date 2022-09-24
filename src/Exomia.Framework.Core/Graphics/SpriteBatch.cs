@@ -45,15 +45,15 @@ public sealed unsafe partial class SpriteBatch : IDisposable
     private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
     private static readonly Rectangle? s_nullRectangle = null;
 
-    private readonly Swapchain                                    _swapchain;
-    private readonly VkContext*                                   _vkContext;
-    private readonly SwapchainContext*                            _swapchainContext;
-    private readonly Buffer                                       _indexBuffer;
-    private readonly Buffer                                       _uniformBuffer;
+    private readonly Swapchain                _swapchain;
+    private readonly VkContext*               _vkContext;
+    private readonly SwapchainContext*        _swapchainContext;
+    private readonly Buffer                   _indexBuffer;
+    private readonly Buffer                   _uniformBuffer;
     private readonly VertexBufferPool<Vertex> _vertexBufferPool;
-    private readonly CommandBufferPool                            _commandBufferPool;
-    private          Shader                                       _shader   = null!;
-    private          Pipeline?                                    _pipeline = null;
+    private readonly CommandBufferPool        _commandBufferPool;
+    private          Shader                   _shader   = null!;
+    private          Pipeline?                _pipeline = null;
 
     private VkSpriteBatchContext* _context;
 

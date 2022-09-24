@@ -323,7 +323,7 @@ public sealed partial class SpriteBatch
                     for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
                     {
                         VkDescriptorImageInfo descriptorImageInfo;
-                        descriptorImageInfo.imageLayout = VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                        descriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                         descriptorImageInfo.imageView   = texture;
                         descriptorImageInfo.sampler     = VkSampler.Null;
 

@@ -55,7 +55,19 @@ public static class ContentCompressor
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     public static void DecompressStream(Stream src, Stream dst)
     {
-        CompressMode compressMode = (CompressMode)src.ReadByte();
+        DecompressStream(src, dst, (CompressMode)src.ReadByte());
+    }
+
+    /// <summary>
+    ///     Decompress a given <paramref name="src" /> stream into a given <paramref name="dst" /> stream,
+    ///     deriving the compression mode from the first byte of the <paramref name="src" /> stream.
+    /// </summary>
+    /// <param name="src"> The source stream. </param>
+    /// <param name="dst"> The destination stream. </param>
+    /// <param name="compressMode"> The compress mode to use for decompression. </param>
+    /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
+    public static void DecompressStream(Stream src, Stream dst, CompressMode compressMode)
+    {
         switch (compressMode)
         {
             case CompressMode.Deflate:

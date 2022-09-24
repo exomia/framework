@@ -11,6 +11,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Exomia.Framework.Core.Content.Protocols;
+using Exomia.Framework.Core.Extensions;
 
 namespace Exomia.Framework.Core.Content.Resolver;
 
@@ -39,14 +40,9 @@ sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolve
     public Stream? Resolve(Assembly assembly, string assetName)
     {
         Stream? stream = assembly.GetManifestResourceStream(GetAssetName(assetName, assembly));
-        if (stream == null)
-        {
-            return null;
-        }
+        if (stream == null) { return null; }
 
-        byte[] buffer = new byte[E1Protocol.MAGIC_HEADER_LENGHT];
-        if (stream.Read(buffer, 0, buffer.Length) != E1Protocol.MAGIC_HEADER_LENGHT
-         || !buffer.AsSpan().SequenceEqual(E1Protocol.MagicHeader))
+        if (!stream.SequenceEqual(E1Protocol.MagicHeader))
         {
             stream.Dispose();
             return null;
