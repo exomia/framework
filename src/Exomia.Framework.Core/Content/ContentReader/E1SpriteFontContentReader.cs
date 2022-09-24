@@ -27,9 +27,9 @@ sealed unsafe class E1SpriteFontContentReader : IContentReader
     /// <inheritdoc />
     public object? ReadContent(IContentManager contentManager, ref ContentReaderParameters parameters)
     {
-        byte[] buffer = new byte[E1Protocol.Spritefont.MagicHeader.Length];
+        byte[] buffer = new byte[E1Protocol.TYPE_MAGIC_HEADER_LENGHT];
 
-        if (parameters.Stream.Read(buffer, 0, E1Protocol.Spritefont.MagicHeader.Length) != E1Protocol.Spritefont.MagicHeader.Length
+        if (parameters.Stream.Read(buffer, 0, E1Protocol.TYPE_MAGIC_HEADER_LENGHT) != E1Protocol.TYPE_MAGIC_HEADER_LENGHT
          || !buffer.AsSpan().SequenceEqual(E1Protocol.Spritefont.MagicHeader))
         {
             return null;

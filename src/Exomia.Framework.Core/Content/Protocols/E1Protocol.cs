@@ -18,7 +18,7 @@ namespace Exomia.Framework.Core.Content.Protocols;
 ///     <code>
 ///     Protocol definition:<br />
 ///     - 4 bytes: e1 magic header (<see cref="MagicHeader" />)<br />
-///     - N bytes: type magic header (e.g. <see cref="Texture.MagicHeader" />, <see cref="Spritefont.MagicHeader" /><br />
+///     - 8 bytes: type magic header (e.g. <see cref="Texture.MagicHeader" />, <see cref="Spritefont.MagicHeader" /><br />
 ///     - 2 bytes: type protocol version (e.g. <see cref="Texture.Version10" />, <see cref="Spritefont.Version10" /><br />
 ///     - 4 bytes: type reserved bytes for future use<br />
 ///     - 1 bytes: compression mode (<see cref="CompressMode" />)<br />
@@ -30,17 +30,23 @@ public static class E1Protocol
     /// <summary> Name of the e1 extension. </summary>
     public const string EXTENSION_NAME = ".e1";
 
+    /// <summary> The magic header length. </summary>
+    public const int MAGIC_HEADER_LENGHT = 4;
+
+    /// <summary> The type magic header length. </summary>
+    public const int TYPE_MAGIC_HEADER_LENGHT = 8;
+
     /// <summary> The type protocol version length. </summary>
     public const int TYPE_PROTOCOL_VERSION_LENGHT = 2;
 
     /// <summary> The e1 magic header. </summary>
-    public static readonly byte[] MagicHeader = { 0x40, 0x65, 0x78, 0x31 };
+    public static readonly byte[] MagicHeader = new byte[MAGIC_HEADER_LENGHT] { 0x40, 0x65, 0x78, 0x31 };
 
-    /// <summary> The texture protocol information. This class cannot be inherited. </summary>
+    /// <summary> The e1 texture protocol information. This class cannot be inherited. </summary>
     public static class Texture
     {
         /// <summary> The texture magic header. </summary>
-        public static readonly byte[] MagicHeader = { 0x40, 0x74, 0x65, 0x78 };
+        public static readonly byte[] MagicHeader = new byte[TYPE_MAGIC_HEADER_LENGHT] { 0x40, 0x74, 0x65, 0x78, 0x00, 0x00, 0x00, 0x00 };
 
         /// <summary> The texture protocol version 1.0 </summary>
         /// <remarks>
@@ -56,14 +62,14 @@ public static class E1Protocol
         ///         - 1 byte (byte): alpha value<br />
         ///     </code>
         /// </remarks>
-        public static readonly byte[] Version10 = { 0x01, 0x00 };
+        public static readonly byte[] Version10 = new byte[TYPE_PROTOCOL_VERSION_LENGHT] { 0x31, 0x30 };
     }
 
-    /// <summary> The spritefont protocol information. This class cannot be inherited. </summary>
+    /// <summary> The e1 spritefont protocol information. This class cannot be inherited. </summary>
     public static class Spritefont
     {
         /// <summary> The spritefont magic header. </summary>
-        public static readonly byte[] MagicHeader = { 0x40, 0x73, 0x66, 0x6E, 0x74 };
+        public static readonly byte[] MagicHeader = new byte[TYPE_MAGIC_HEADER_LENGHT] { 0x40, 0x73, 0x66, 0x6E, 0x74, 0x00, 0x00, 0x00 };
 
         /// <summary> The spritefont protocol version 1.0 </summary>
         /// <remarks>
@@ -103,7 +109,7 @@ public static class E1Protocol
         ///         - 1 byte (byte): alpha value<br />
         ///     </code>
         /// </remarks>
-        public static readonly byte[] Version10 = { 0x01, 0x00 };
+        public static readonly byte[] Version10 = new byte[TYPE_PROTOCOL_VERSION_LENGHT] { 0x31, 0x30 };
     }
 }
 

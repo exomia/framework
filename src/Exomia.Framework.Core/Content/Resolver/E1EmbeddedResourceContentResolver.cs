@@ -44,9 +44,9 @@ sealed class E1EmbeddedResourceContentResolver : IEmbeddedResourceContentResolve
             return null;
         }
 
-        byte[] buffer = new byte[E1Protocol.MagicHeader.Length];
-        if (stream.Read(buffer, 0, buffer.Length) != E1Protocol.MagicHeader.Length
-         || !E1Protocol.MagicHeader.SequenceEqual(buffer))
+        byte[] buffer = new byte[E1Protocol.MAGIC_HEADER_LENGHT];
+        if (stream.Read(buffer, 0, buffer.Length) != E1Protocol.MAGIC_HEADER_LENGHT
+         || !buffer.AsSpan().SequenceEqual(E1Protocol.MagicHeader))
         {
             stream.Dispose();
             return null;
