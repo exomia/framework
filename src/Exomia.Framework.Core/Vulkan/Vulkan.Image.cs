@@ -11,6 +11,7 @@
 using static Exomia.Vulkan.Api.Core.VkImageAspectFlagBits;
 using static Exomia.Vulkan.Api.Core.VkImageViewType;
 using static Exomia.Vulkan.Api.Core.VkComponentSwizzle;
+using static Exomia.Vulkan.Api.Core.VkColorSpaceKHR;
 
 
 namespace Exomia.Framework.Core.Vulkan;
@@ -47,7 +48,8 @@ public sealed unsafe partial class Vulkan
         {
             for (uint s = 0u; s < formatCount; s++)
             {
-                if (formats[i] == pSurfaceFormat2Khr[s].surfaceFormat.format)
+                if (formats[i] == pSurfaceFormat2Khr[s].surfaceFormat.format 
+                 && pSurfaceFormat2Khr[s].surfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
                 {
                     surfaceFormatKhr = pSurfaceFormat2Khr[s].surfaceFormat;
                     return true;

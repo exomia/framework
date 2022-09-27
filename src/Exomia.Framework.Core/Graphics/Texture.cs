@@ -79,13 +79,15 @@ public sealed unsafe class Texture : IDisposable
     /// <param name="height"> The height. </param>
     /// <param name="data"> The data. </param>
     /// <param name="imageCreateFlagBits"> (Optional) The image create flag bits. </param>
+    /// <param name="imageFormat"> (Optional) The image format. </param>
     /// <returns> A Texture. </returns>
     public static Texture Create(
         VkContext*            vkContext,
         uint                  width,
         uint                  height,
         byte[]                data,
-        VkImageCreateFlagBits imageCreateFlagBits = 0)
+        VkImageCreateFlagBits imageCreateFlagBits = 0,
+        VkFormat              imageFormat         = VK_FORMAT_R8G8B8A8_SRGB)
     {
         // TODO: add Vulkan.CreateImage(...) method -> duplicated code here and in swapchain CreateDepthResources
         using (Buffer staging = Buffer.CreateStagingBuffer<byte>(vkContext, data.Length))
@@ -102,7 +104,7 @@ public sealed unsafe class Texture : IDisposable
             imageCreateInfo.pNext                 = null;
             imageCreateInfo.flags                 = imageCreateFlagBits;
             imageCreateInfo.imageType             = VK_IMAGE_TYPE_2D;
-            imageCreateInfo.format                = VK_FORMAT_R8G8B8A8_SRGB;
+            imageCreateInfo.format                = imageFormat;
             imageCreateInfo.extent.width          = width;
             imageCreateInfo.extent.height         = height;
             imageCreateInfo.extent.depth          = 1u;
@@ -177,7 +179,7 @@ public sealed unsafe class Texture : IDisposable
                 vkContext->Device,
                 image,
                 &imageView,
-                VK_FORMAT_R8G8B8A8_SRGB,
+                imageFormat,
                 VK_IMAGE_ASPECT_COLOR_BIT);
 
             return new Texture(vkContext->Device, image, imageMemory, imageView, width, height);

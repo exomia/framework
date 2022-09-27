@@ -448,13 +448,36 @@ public static class VkColors
     /// <summary> Yellow color. </summary>
     public static readonly VkColor Zomp = FromArgb(0xFF39A78E);
 
-    private static VkColor FromArgb(uint argb)
+    /// <summary>
+    /// Creates a <see cref="VkColor"/> structure from a 32-bit ARGB value.
+    /// </summary>
+    /// <param name="argb">A value specifying the 32-bit ARGB value.</param>
+    /// <returns>A <see cref="VkColor"/> structure.</returns>
+    public static VkColor FromArgb(uint argb)
     {
         VkColor color;
         color.A = (((argb >> 24) & 0xFF) / 255.0f);
         color.R = (((argb >> 16) & 0xFF) / 255.0f);
         color.G = (((argb >> 8)  & 0xFF) / 255.0f);
         color.B = (((argb >> 0)  & 0xFF) / 255.0f);
+        return color;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="VkColor"/> structure from the four ARGB component (alpha, red, green, and blue) values.
+    /// </summary>
+    /// <param name="alpha">The alpha component. Valid values are 0 through 255.</param>
+    /// <param name="red">The red component. Valid values are 0 through 255.</param>
+    /// <param name="green">The green component. Valid values are 0 through 255.</param>
+    /// <param name="blue">The blue component. Valid values are 0 through 255.</param>
+    /// <returns>A <see cref="VkColor"/> structure.</returns>
+    public static VkColor FromArgb(byte alpha, byte red, byte green, byte blue)
+    {
+        VkColor color;
+        color.A = (alpha / 255.0f);
+        color.R = (red   / 255.0f);
+        color.G = (green / 255.0f);
+        color.B = (blue  / 255.0f);
         return color;
     }
 }
