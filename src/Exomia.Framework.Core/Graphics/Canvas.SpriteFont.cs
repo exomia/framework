@@ -22,26 +22,17 @@ public sealed partial class Canvas
     /// <param name="text"> The text. </param>
     /// <param name="position"> The position. </param>
     /// <param name="color"> The color. </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void RenderText(SpriteFont font, ReadOnlySpan<char> text, in Vector2 position, in VkColor color)
-    {
-        font.Render(RenderTextInternal, text, position, color, 0f, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
-    }
-
-    /// <summary> Renders a text. </summary>
-    /// <param name="font"> The font. </param>
-    /// <param name="text"> The text. </param>
-    /// <param name="position"> The position. </param>
-    /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
                            in Vector2         position,
                            in VkColor         color,
-                           float              rotation)
+                           float              rotation = 0.0f,
+                           float              layerDepth = 0.0f)
     {
-        font.Render(RenderTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, 0f);
+        font.Render(RenderTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
     }
 
     /// <summary> Renders a text. </summary>
@@ -53,6 +44,7 @@ public sealed partial class Canvas
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -61,9 +53,10 @@ public sealed partial class Canvas
                            float              rotation,
                            in Vector2         origin,
                            float              opacity,
-                           TextureEffects     effects)
+                           TextureEffects     effects,
+                           float              layerDepth = 0.0f)
     {
-        font.Render(RenderTextInternal, text, position, color, rotation, origin, opacity, effects, 0f);
+        font.Render(RenderTextInternal, text, position, color, rotation, origin, opacity, effects, layerDepth);
     }
 
 
@@ -78,6 +71,7 @@ public sealed partial class Canvas
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -88,9 +82,10 @@ public sealed partial class Canvas
                            float              rotation,
                            in Vector2         origin,
                            float              opacity,
-                           TextureEffects     effects)
+                           TextureEffects     effects,
+                           float              layerDepth = 0.0f)
     {
-        font.Render(RenderTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, 0f);
+        font.Render(RenderTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, layerDepth);
     }
 
 
@@ -106,6 +101,7 @@ public sealed partial class Canvas
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -117,9 +113,10 @@ public sealed partial class Canvas
                            float              rotation,
                            in Vector2         origin,
                            float              opacity,
-                           TextureEffects     effects)
+                           TextureEffects     effects,
+                           float              layerDepth = 0.0f)
     {
-        font.Render(RenderTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, 0f);
+        font.Render(RenderTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, layerDepth);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -135,7 +132,8 @@ public sealed partial class Canvas
                                      float          layerDepth)
     {
         RenderTexture(
-            texture,  new RectangleF(position.X, position.Y, scale, scale), true,    sourceRectangle, color,
-            rotation, origin,                                               opacity, effects,         FONT_TEXTURE_MODE);
+            texture,
+            new RectangleF(position.X, position.Y, scale, scale),
+            true, sourceRectangle, color, rotation, origin, opacity, effects, FONT_TEXTURE_MODE, layerDepth);
     }
 }

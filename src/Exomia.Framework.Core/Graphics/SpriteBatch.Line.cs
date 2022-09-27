@@ -23,7 +23,7 @@ public sealed partial class SpriteBatch
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The Opacity. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderLine(in Vector2 point1,
                            in Vector2 point2,
@@ -40,7 +40,7 @@ public sealed partial class SpriteBatch
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The Opacity. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderLine(in Line2   line,
                            in VkColor color,
@@ -58,7 +58,7 @@ public sealed partial class SpriteBatch
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="lengthFactor"> The length factor. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderLine(in Vector2 point1,
                            in Vector2 point2,
@@ -77,7 +77,7 @@ public sealed partial class SpriteBatch
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="lengthFactor"> The length factor. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderLine(in Line2   line,
                            in VkColor color,

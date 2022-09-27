@@ -20,7 +20,7 @@ public sealed partial class SpriteBatch
     /// <param name="color"> The Color. </param>
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The Opacity. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     public void RenderPolygon(Vector2[] vertex, in VkColor color, float lineWidth, float opacity, float layerDepth)
     {
         if (vertex.Length > 1)

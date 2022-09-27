@@ -24,7 +24,7 @@ public sealed partial class SpriteBatch
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="segments"> The segments. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderCircle(in Vector2 center,
                              float      radius,
@@ -43,7 +43,7 @@ public sealed partial class SpriteBatch
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="segments"> The segments. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderCircle(in Circle2 circle,
                              in VkColor color,
@@ -64,7 +64,7 @@ public sealed partial class SpriteBatch
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="segments"> The segments. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderArc(in Vector2 center,
                           float      radius,
@@ -85,7 +85,7 @@ public sealed partial class SpriteBatch
     /// <param name="lineWidth"> The width of the line. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="segments"> The segments. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     public void RenderArc(in Arc2    arc,
                           in VkColor color,
                           float      lineWidth,

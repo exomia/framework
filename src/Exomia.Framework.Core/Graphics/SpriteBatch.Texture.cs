@@ -22,8 +22,12 @@ public sealed partial class SpriteBatch
     /// <param name="texture"> The texture. </param>
     /// <param name="position"> The position. </param>
     /// <param name="color"> The Color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Render(Texture texture, in Vector2 position, in VkColor color)
+    public void Render(Texture    texture,
+                       in Vector2 position,
+                       in VkColor color,
+                       float      layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, 1f, 1f);
@@ -34,7 +38,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Origin           = s_vector2Zero;
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
-        spriteInfo.Depth            = 0.0f;
+        spriteInfo.Depth            = layerDepth;
         RenderSprite(spriteInfo, texture);
     }
 
@@ -42,8 +46,12 @@ public sealed partial class SpriteBatch
     /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="color"> The Color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Render(Texture texture, in RectangleF destinationRectangle, in VkColor color)
+    public void Render(Texture       texture,
+                       in RectangleF destinationRectangle,
+                       in VkColor    color,
+                       float         layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -54,7 +62,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Origin           = s_vector2Zero;
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
-        spriteInfo.Depth            = 0.0f;
+        spriteInfo.Depth            = layerDepth;
         RenderSprite(spriteInfo, texture);
     }
 
@@ -63,8 +71,13 @@ public sealed partial class SpriteBatch
     /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
     /// <param name="color"> The Color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Render(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in VkColor color)
+    public void Render(Texture       texture,
+                       in Vector2    position,
+                       in Rectangle? sourceRectangle,
+                       in VkColor    color,
+                       float         layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, 1f, 1f);
@@ -75,7 +88,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Origin           = s_vector2Zero;
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
-        spriteInfo.Depth            = 0.0f;
+        spriteInfo.Depth            = layerDepth;
         RenderSprite(spriteInfo, texture);
     }
 
@@ -84,11 +97,13 @@ public sealed partial class SpriteBatch
     /// <param name="destinationRectangle"> The Destination rectangle. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
     /// <param name="color"> The Color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture       texture,
                        in RectangleF destinationRectangle,
                        in Rectangle? sourceRectangle,
-                       in VkColor    color)
+                       in VkColor    color,
+                       float         layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -99,7 +114,7 @@ public sealed partial class SpriteBatch
         spriteInfo.Origin           = s_vector2Zero;
         spriteInfo.Opacity          = 1.0f;
         spriteInfo.Effects          = TextureEffects.None;
-        spriteInfo.Depth            = 0.0f;
+        spriteInfo.Depth            = layerDepth;
         RenderSprite(spriteInfo, texture);
     }
 
@@ -109,14 +124,14 @@ public sealed partial class SpriteBatch
     /// <param name="color"> The Color. </param>
     /// <param name="rotation"> The Rotation. </param>
     /// <param name="origin"> The Origin. </param>
-    /// <param name="layerDepth"> (Optional) The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture    texture,
                        in Vector2 position,
                        in VkColor color,
                        float      rotation,
                        in Vector2 origin,
-                       float      layerDepth = 0f)
+                       float      layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, 1f, 1f);
@@ -137,14 +152,14 @@ public sealed partial class SpriteBatch
     /// <param name="color"> The Color. </param>
     /// <param name="rotation"> The Rotation. </param>
     /// <param name="origin"> The Origin. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture       texture,
                        in RectangleF destinationRectangle,
                        in VkColor    color,
                        float         rotation,
                        in Vector2    origin,
-                       float         layerDepth = 0f)
+                       float         layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -168,7 +183,7 @@ public sealed partial class SpriteBatch
     /// <param name="origin"> The Origin. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="effects"> The Effects. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in RectangleF  destinationRectangle,
@@ -178,7 +193,7 @@ public sealed partial class SpriteBatch
                        in Vector2     origin,
                        float          opacity,
                        TextureEffects effects,
-                       float          layerDepth)
+                       float          layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = destinationRectangle;
@@ -203,7 +218,7 @@ public sealed partial class SpriteBatch
     /// <param name="scale"> The scale. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="effects"> The Effects. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in Vector2     position,
@@ -214,7 +229,7 @@ public sealed partial class SpriteBatch
                        float          scale,
                        float          opacity,
                        TextureEffects effects,
-                       float          layerDepth)
+                       float          layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, scale, scale);
@@ -239,7 +254,7 @@ public sealed partial class SpriteBatch
     /// <param name="scale"> The scale. </param>
     /// <param name="opacity"> The Opacity. </param>
     /// <param name="effects"> The Effects. </param>
-    /// <param name="layerDepth"> The Depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in Vector2     position,
@@ -250,7 +265,7 @@ public sealed partial class SpriteBatch
                        in Vector2     scale,
                        float          opacity,
                        TextureEffects effects,
-                       float          layerDepth)
+                       float          layerDepth = 0.0f)
     {
         SpriteInfo spriteInfo;
         spriteInfo.Destination      = new RectangleF(position, scale);

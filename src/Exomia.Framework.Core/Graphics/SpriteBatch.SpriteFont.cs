@@ -23,14 +23,14 @@ public sealed partial class SpriteBatch
     /// <param name="position"> The position. </param>
     /// <param name="color"> The color. </param>
     /// <param name="rotation"> The rotation. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
                            in Vector2         position,
                            in VkColor         color,
                            float              rotation   = 0.0f,
-                           float              layerDepth = 1.0f)
+                           float              layerDepth = 0.0f)
     {
         font.Render(
             RenderTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
@@ -45,7 +45,7 @@ public sealed partial class SpriteBatch
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -55,7 +55,7 @@ public sealed partial class SpriteBatch
                            in Vector2         origin,
                            float              opacity,
                            TextureEffects     effects,
-                           float              layerDepth = 1.0f)
+                           float              layerDepth = 0.0f)
     {
         font.Render(
             RenderTextInternal, text, position, color, rotation, origin, opacity, effects, layerDepth);
@@ -72,7 +72,7 @@ public sealed partial class SpriteBatch
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -84,7 +84,7 @@ public sealed partial class SpriteBatch
                            in Vector2         origin,
                            float              opacity,
                            TextureEffects     effects,
-                           float              layerDepth = 1.0f)
+                           float              layerDepth = 0.0f)
     {
         font.Render(
             RenderTextInternal, text, start, end, position, color, rotation, origin, opacity, effects, layerDepth);
@@ -102,7 +102,7 @@ public sealed partial class SpriteBatch
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
-    /// <param name="layerDepth"> The depth of the layer. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void RenderText(SpriteFont         font,
                            ReadOnlySpan<char> text,
@@ -115,7 +115,7 @@ public sealed partial class SpriteBatch
                            in Vector2         origin,
                            float              opacity,
                            TextureEffects     effects,
-                           float              layerDepth = 1.0f)
+                           float              layerDepth = 0.0f)
     {
         font.Render(
             RenderTextInternal, text, start, end, position, dimension, color, rotation, origin, opacity, effects, layerDepth);

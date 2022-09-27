@@ -22,15 +22,17 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void RenderPolygon(Vector2[]  vertices,
                               float      lineWidth,
                               in VkColor color,
                               float      rotation,
                               in Vector2 origin,
-                              float      opacity)
+                              float      opacity,
+                              float      layerDepth = 0.0f)
     {
-        RenderPolygon(ReserveVertices(vertices), vertices.Length, lineWidth, in color, rotation, in origin, opacity);
+        RenderPolygon(ReserveVertices(vertices), vertices.Length, lineWidth, in color, rotation, in origin, opacity, layerDepth);
     }
 
     /// <summary> Renders a polygon. </summary>
@@ -41,6 +43,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     public void RenderPolygon(Vector2*   vertices,
                               int        verticesCount,
@@ -48,7 +51,8 @@ public sealed unsafe partial class Canvas
                               in VkColor color,
                               float      rotation,
                               in Vector2 origin,
-                              float      opacity)
+                              float      opacity,
+                              float      layerDepth = 0.0f)
     {
         Item* item = _itemBuffer.Reserve(1);
         item->Type                      = Item.POLYGON_TYPE;
@@ -59,6 +63,7 @@ public sealed unsafe partial class Canvas
         item->Rotation                  = rotation;
         item->Origin                    = origin;
         item->Opacity                   = opacity;
+        item->LayerDepth                = layerDepth;
     }
 
     /// <summary> Renders a filled polygon. </summary>
@@ -67,6 +72,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     /// <remarks>
     ///     Attention:
@@ -78,9 +84,10 @@ public sealed unsafe partial class Canvas
                                   in VkColor color,
                                   float      rotation,
                                   in Vector2 origin,
-                                  float      opacity)
+                                  float      opacity,
+                                  float      layerDepth = 0.0f)
     {
-        RenderFillPolygon(ReserveVertices(vertices), vertices.Length, in color, rotation, in origin, opacity);
+        RenderFillPolygon(ReserveVertices(vertices), vertices.Length, in color, rotation, in origin, opacity, layerDepth);
     }
 
     /// <summary> Renders a filled polygon. </summary>
@@ -90,6 +97,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the required range. </exception>
     /// <remarks>
     ///     Attention:
@@ -102,7 +110,8 @@ public sealed unsafe partial class Canvas
                                   in VkColor color,
                                   float      rotation,
                                   in Vector2 origin,
-                                  float      opacity)
+                                  float      opacity,
+                                  float      layerDepth = 0.0f)
     {
         Item* item = _itemBuffer.Reserve(1);
         item->Type                      = Item.FILL_POLYGON_TYPE;
@@ -112,5 +121,6 @@ public sealed unsafe partial class Canvas
         item->Rotation                  = rotation;
         item->Origin                    = origin;
         item->Opacity                   = opacity;
+        item->LayerDepth                = layerDepth;
     }
 }

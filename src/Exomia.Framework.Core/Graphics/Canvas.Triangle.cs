@@ -23,6 +23,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     /// <remarks>
     ///     The points 1 to 3 from the <paramref name="triangle" /> have to match the winding order,
@@ -38,7 +39,8 @@ public sealed unsafe partial class Canvas
                                float        lineWidth,
                                float        rotation,
                                in Vector2   origin,
-                               float        opacity)
+                               float        opacity,
+                               float        layerDepth = 0.0f)
     {
         Item* item = _itemBuffer.Reserve(1);
         item->Type                   = Item.TRIANGLE_TYPE;
@@ -48,6 +50,7 @@ public sealed unsafe partial class Canvas
         item->Rotation               = rotation;
         item->Origin                 = origin;
         item->Opacity                = opacity;
+        item->LayerDepth             = layerDepth;
     }
 
     /// <summary> Renders a filled triangle. </summary>
@@ -56,6 +59,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     /// <remarks>
     ///     The points 1 to 3 from the <paramref name="triangle" /> have to match the winding order,
     ///     so for default the points have to use one of the following winding order:
@@ -69,7 +73,8 @@ public sealed unsafe partial class Canvas
                                    in VkColor   color,
                                    float        rotation,
                                    in Vector2   origin,
-                                   float        opacity)
+                                   float        opacity,
+                                   float        layerDepth = 0.0f)
     {
         Item* item = _itemBuffer.Reserve(1);
         item->Type                  = Item.FILL_TRIANGLE_TYPE;
@@ -78,5 +83,6 @@ public sealed unsafe partial class Canvas
         item->Rotation              = rotation;
         item->Origin                = origin;
         item->Opacity               = opacity;
+        item->LayerDepth            = layerDepth;
     }
 }

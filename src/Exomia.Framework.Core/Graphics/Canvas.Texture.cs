@@ -22,24 +22,32 @@ public sealed unsafe partial class Canvas
     /// <param name="texture"> The texture. </param>
     /// <param name="position"> The position. </param>
     /// <param name="color"> The color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Render(Texture texture, in Vector2 position, in VkColor color)
+    public void Render(Texture    texture,
+                       in Vector2 position,
+                       in VkColor color,
+                       float      layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         new RectangleF(position.X, position.Y, 1f, 1f), true,
-            s_nullRectangle, color,                                          0f, s_vector2Zero, 1.0f, TextureEffects.None);
+            texture, new RectangleF(position.X, position.Y, 1f, 1f),
+            true,    s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
     /// <param name="texture"> The texture. </param>
     /// <param name="destinationRectangle"> The destination rectangle. </param>
     /// <param name="color"> The color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Render(Texture texture, in RectangleF destinationRectangle, in VkColor color)
+    public void Render(Texture       texture,
+                       in RectangleF destinationRectangle,
+                       in VkColor    color,
+                       float         layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         destinationRectangle, false,
-            s_nullRectangle, color,                0f, s_vector2Zero, 1.0f, TextureEffects.None);
+            texture, destinationRectangle,
+            false,   s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -47,12 +55,17 @@ public sealed unsafe partial class Canvas
     /// <param name="position"> The position. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
     /// <param name="color"> The color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Draw(Texture texture, in Vector2 position, in Rectangle? sourceRectangle, in VkColor color)
+    public void Draw(Texture       texture,
+                     in Vector2    position,
+                     in Rectangle? sourceRectangle,
+                     in VkColor    color,
+                     float         layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         new RectangleF(position.X, position.Y, 1f, 1f), true,
-            sourceRectangle, color,                                          0f, s_vector2Zero, 1.0f, TextureEffects.None);
+            texture, new RectangleF(position.X, position.Y, 1f, 1f),
+            true,    sourceRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -60,15 +73,17 @@ public sealed unsafe partial class Canvas
     /// <param name="destinationRectangle"> The destination rectangle. </param>
     /// <param name="sourceRectangle"> The source rectangle. </param>
     /// <param name="color"> The color. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture       texture,
                        in RectangleF destinationRectangle,
                        in Rectangle? sourceRectangle,
-                       in VkColor    color)
+                       in VkColor    color,
+                       float         layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         destinationRectangle, false,
-            sourceRectangle, color,                0f, s_vector2Zero, 1.0f, TextureEffects.None);
+            texture, destinationRectangle,
+            false,   sourceRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -80,6 +95,7 @@ public sealed unsafe partial class Canvas
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in RectangleF  destinationRectangle,
@@ -88,11 +104,12 @@ public sealed unsafe partial class Canvas
                        float          rotation,
                        in Vector2     origin,
                        float          opacity,
-                       TextureEffects effects)
+                       TextureEffects effects,
+                       float          layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         destinationRectangle, false,
-            sourceRectangle, color,                rotation, origin, opacity, effects);
+            texture, destinationRectangle,
+            false,   sourceRectangle, color, rotation, origin, opacity, effects, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -105,6 +122,7 @@ public sealed unsafe partial class Canvas
     /// <param name="scale"> The scale. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in Vector2     position,
@@ -114,11 +132,13 @@ public sealed unsafe partial class Canvas
                        in Vector2     origin,
                        float          scale,
                        float          opacity,
-                       TextureEffects effects)
+                       TextureEffects effects,
+                       float          layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         new RectangleF(position.X, position.Y, scale, scale), true,
-            sourceRectangle, color,                                                rotation, origin, opacity, effects);
+            texture,
+            new RectangleF(position.X, position.Y, scale, scale),
+            true, sourceRectangle, color, rotation, origin, opacity, effects, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -131,6 +151,7 @@ public sealed unsafe partial class Canvas
     /// <param name="scale"> The scale. </param>
     /// <param name="opacity"> The opacity. </param>
     /// <param name="effects"> The effects. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Render(Texture        texture,
                        in Vector2     position,
@@ -140,11 +161,13 @@ public sealed unsafe partial class Canvas
                        in Vector2     origin,
                        in Vector2     scale,
                        float          opacity,
-                       TextureEffects effects)
+                       TextureEffects effects,
+                       float          layerDepth = 0.0f)
     {
         RenderTexture(
-            texture,         new RectangleF(position.X, position.Y, scale.X, scale.Y), true,
-            sourceRectangle, color,                                                    rotation, origin, opacity, effects);
+            texture,
+            new RectangleF(position.X, position.Y, scale.X, scale.Y),
+            true, sourceRectangle, color, rotation, origin, opacity, effects, layerDepth);
     }
 
     private void RenderTexture(Texture        texture,
@@ -156,7 +179,8 @@ public sealed unsafe partial class Canvas
                                in Vector2     origin,
                                float          opacity,
                                TextureEffects effects,
-                               float          mode = TEXTURE_MODE)
+                               float          mode       = TEXTURE_MODE,
+                               float          layerDepth = 0f)
 
     {
         if (!_textureInfos.TryGetValue(texture.ID, out TextureInfo textureInfo))

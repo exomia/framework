@@ -26,7 +26,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
-    /// <param name="layerDepth"> The layer depth [0.0;1.0]. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     public void RenderArc(in Arc2    arc,
                           float      lineWidth,
                           in VkColor color,
@@ -118,7 +118,7 @@ public sealed unsafe partial class Canvas
     /// <param name="rotation"> The rotation. </param>
     /// <param name="origin"> The origin. </param>
     /// <param name="opacity"> The opacity. </param>
-    /// <param name="layerDepth"> The layer depth [0.0;1.0]. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     public void RenderFillArc(in Arc2    arc,
                               in VkColor color,
                               float      rotation,
