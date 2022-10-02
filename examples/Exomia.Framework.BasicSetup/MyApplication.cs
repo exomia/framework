@@ -8,12 +8,7 @@
 
 #endregion
 
-using System.Numerics;
 using Exomia.Framework.Core.Application;
-using Exomia.Framework.Core.Content;
-using Exomia.Framework.Core.Graphics;
-using Exomia.Framework.Core.Mathematics;
-using Exomia.Framework.Core.Resources;
 using Exomia.Framework.Core.Vulkan;
 using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Vulkan.Api.Core;
