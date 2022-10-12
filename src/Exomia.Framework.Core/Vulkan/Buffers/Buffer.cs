@@ -81,52 +81,6 @@ public sealed unsafe class Buffer : IDisposable
             memoryPropertyFlagBits);
     }
 
-    /// <summary> Creates a vertex buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new vertex buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateVertexBuffer<T>(
-        VkContext*               context,
-        ulong                    count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            count * (ulong)sizeof(T),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
-    /// <summary> Creates a vertex buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new vertex buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateVertexBuffer<T>(
-        VkContext*               context,
-        long                     count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            (VkDeviceSize)(count * sizeof(T)),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
     /// <summary> Creates a index buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="context"> [in,out] If non-null, the context. </param>
@@ -149,53 +103,7 @@ public sealed unsafe class Buffer : IDisposable
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
     }
-
-    /// <summary> Creates a index buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new index buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateIndexBuffer<T>(
-        VkContext*               context,
-        ulong                    count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            count * (ulong)sizeof(T),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
-    /// <summary> Creates a index buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new index buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateIndexBuffer<T>(
-        VkContext*               context,
-        long                     count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            (VkDeviceSize)(count * sizeof(T)),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
+    
     /// <summary> Creates a index buffer. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="context"> [in,out] If non-null, the context. </param>
@@ -209,11 +117,11 @@ public sealed unsafe class Buffer : IDisposable
     {
         Buffer indexBuffer = CreateIndexBuffer<T>(
             context,
-            items.Length,
+            (VkDeviceSize)items.Length,
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-        using (Buffer stagingIndexBuffer = CreateStagingBuffer<T>(context, items.Length))
+        using (Buffer stagingIndexBuffer = CreateStagingBuffer<T>(context, (VkDeviceSize)items.Length))
         {
             fixed (T* src = items)
             {
@@ -256,52 +164,6 @@ public sealed unsafe class Buffer : IDisposable
     /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
     /// <returns> The new uniform buffer. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateStagingBuffer<T>(
-        VkContext*               context,
-        ulong                    count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            count * (ulong)sizeof(T),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
-    /// <summary> Creates a uniform buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new uniform buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateStagingBuffer<T>(
-        VkContext*               context,
-        long                     count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            (VkDeviceSize)(count * sizeof(T)),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
-    /// <summary> Creates a uniform buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new uniform buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Buffer CreateUniformBuffer<T>(
         VkContext*               context,
         VkDeviceSize             count,
@@ -317,49 +179,26 @@ public sealed unsafe class Buffer : IDisposable
             memoryPropertyFlagBits);
     }
 
-    /// <summary> Creates a uniform buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <summary> Creates a new Buffer. </summary>
     /// <param name="context"> [in,out] If non-null, the context. </param>
     /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new uniform buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateUniformBuffer<T>(
+    /// <param name="bufferUsageFlagBits"> The buffer usage flag bits. </param>
+    /// <param name="sharingMode"> The sharing mode. </param>
+    /// <param name="memoryPropertyFlagBits"> The memory property flag bits. </param>
+    /// <returns> A <see cref="Buffer" />. </returns>
+    public static Buffer Create<T>(
         VkContext*               context,
-        ulong                    count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        VkDeviceSize             count,
+        VkBufferUsageFlagBits    bufferUsageFlagBits,
+        VkSharingMode            sharingMode,
+        VkMemoryPropertyFlagBits memoryPropertyFlagBits)
         where T : unmanaged
     {
         return Create(
             context,
-            count * (ulong)sizeof(T),
+            count * sizeof(T),
             bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
-            memoryPropertyFlagBits);
-    }
-
-    /// <summary> Creates a uniform buffer. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="context"> [in,out] If non-null, the context. </param>
-    /// <param name="count"> Number of <typeparamref name="T" />. </param>
-    /// <param name="bufferUsageFlagBits"> (Optional) The buffer usage flag bits. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
-    /// <returns> The new uniform buffer. </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Buffer CreateUniformBuffer<T>(
-        VkContext*               context,
-        long                     count,
-        VkBufferUsageFlagBits    bufferUsageFlagBits    = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VkMemoryPropertyFlagBits memoryPropertyFlagBits = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-        where T : unmanaged
-    {
-        return Create(
-            context,
-            (VkDeviceSize)(count * sizeof(T)),
-            bufferUsageFlagBits,
-            VK_SHARING_MODE_EXCLUSIVE,
+            sharingMode,
             memoryPropertyFlagBits);
     }
 
@@ -367,8 +206,8 @@ public sealed unsafe class Buffer : IDisposable
     /// <param name="context"> [in,out] If non-null, the context. </param>
     /// <param name="size"> The size. </param>
     /// <param name="bufferUsageFlagBits"> The buffer usage flag bits. </param>
-    /// <param name="sharingMode"> (Optional) The sharing mode. </param>
-    /// <param name="memoryPropertyFlagBits"> (Optional) The memory property flag bits. </param>
+    /// <param name="sharingMode"> The sharing mode. </param>
+    /// <param name="memoryPropertyFlagBits"> The memory property flag bits. </param>
     /// <returns> A <see cref="Buffer" />. </returns>
     public static Buffer Create(
         VkContext*               context,
