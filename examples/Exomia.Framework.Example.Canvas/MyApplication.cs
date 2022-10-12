@@ -126,9 +126,9 @@ sealed unsafe class MyApplication : Application
                    1f);
             }
             
-            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 40f, VkColors.Black, time.TotalTimeS, new Vector2(450, 450), 1f, 0f);
+            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100 + MathF.Sin(time.TotalTimeS) * 50, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 40 + MathF.Sin(time.TotalTimeS) * 20, VkColors.Black, time.TotalTimeS, new Vector2(450, 450), 1f, 0f);
             
-            _canvas.RenderFillArc(new Arc2(new Vector2(300, 300), 100, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), VkColors.Black, time.TotalTimeS, new Vector2(320, 320), 1f, 0f);
+            _canvas.RenderFillArc(new Arc2(new Vector2(300, 300), 100 + MathF.Sin(time.TotalTimeS) * 50, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), VkColors.Black, time.TotalTimeS, new Vector2(320, 320), 1f, 0f);
             
             _canvas.End(commandBuffer);
             

@@ -4,10 +4,17 @@
         <PackageTags>$(PackageTags) core</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
-        <PreBuildEvent>$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat</PreBuildEvent>
-    </PropertyGroup>
+    <Target Name="CompilingShaders" BeforeTargets="PrepareForBuild">
+        <Exec Command="$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat" ContinueOnError="false" />
+        <ItemGroup>
+            <CompiledAndOptimizedShaderSourceFiles Include="Resources\shaders\compiled\*-opt.spv" />
+        </ItemGroup>
+        <ItemGroup>
+            <EmbeddedResource Include="@(CompiledAndOptimizedShaderSourceFiles)">
+                <LogicalName>$(AssemblyName).Resources.shaders.%(filename).spv</LogicalName>
+            </EmbeddedResource>
+        </ItemGroup>
+    </Target>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
@@ -24,25 +31,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="**\*.*.cs">
-            <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\shaders\*-opt.spv">
-            <LogicalName>$(AssemblyName).Resources.shaders.%(filename).spv</LogicalName>
-        </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
         <EmbeddedResource Include="Resources\fonts\arial\*.e1">
             <LogicalName>$(AssemblyName).Resources.fonts.arial.%(filename).e1</LogicalName>
         </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Resources\shaders\src\**\*" />
+        <Compile Update="**\*.*.cs">
+            <DependentUpon>$([MSBuild]::ValueOrDefault('%(filename)', '').Split('.')[0]).cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

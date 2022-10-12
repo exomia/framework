@@ -22,9 +22,10 @@ public sealed unsafe partial class SpriteBatch
     private void Setup()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
+        
         using Stream vertexShaderStream =
-            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_VERT_OPT}") ??
-            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_VERT_OPT}");
+            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.SPRITEBATCH_VERT_OPT}") ??
+            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.SPRITEBATCH_VERT_OPT}");
 
         byte* vert = stackalloc byte[(int)vertexShaderStream.Length]; // ~1.35 KiB
         if (vertexShaderStream.Length != vertexShaderStream.Read(new Span<byte>(vert, (int)vertexShaderStream.Length)))
@@ -33,8 +34,8 @@ public sealed unsafe partial class SpriteBatch
         }
 
         using Stream fragmentShaderStream =
-            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_FRAG_OPT}") ??
-            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.POSITION_COLOR_TEXTURE_FRAG_OPT}");
+            assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.SPRITEBATCH_FRAG_OPT}") ??
+            throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.SPRITEBATCH_FRAG_OPT}");
 
         byte* frag = stackalloc byte[(int)fragmentShaderStream.Length]; // ~412 B
         if (fragmentShaderStream.Length != fragmentShaderStream.Read(new Span<byte>(frag, (int)fragmentShaderStream.Length)))
