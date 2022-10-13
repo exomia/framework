@@ -39,7 +39,7 @@ public sealed unsafe partial class Canvas : IDisposable
     private const uint VERTICES_PER_OBJECT        = 4u;
     private const uint INDICES_PER_OBJECT         = 6u;
     private const uint MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_OBJECT;
-    private const int  BATCH_SEQUENTIAL_THRESHOLD = 1 << 9;
+    private const int  SEQUENTIAL_THRESHOLD = 1 << 9;
     private const int  VERTEX_STRIDE              = sizeof(float) * 14;
 
     private const int COLOR_MODE        = 0;
@@ -67,7 +67,7 @@ public sealed unsafe partial class Canvas : IDisposable
 
     private readonly Configuration            _configuration;
     private readonly Texture                  _whiteTexture;
-    private readonly StructureBuffer<Item>    _itemBuffer;
+    private readonly ItemBuffer               _itemBuffer;
     private readonly StructureBuffer<Vector2> _vertexBuffer;
 
     private Matrix4x4 _projectionMatrix;
@@ -121,7 +121,7 @@ public sealed unsafe partial class Canvas : IDisposable
         _context      = Allocator.Allocate(1u, VkCanvasContext.Create());
         _whiteTexture = Texture.Create(_vkContext, 1, 1, new byte[] { 255, 255, 255, 255 });
 
-        _itemBuffer   = new StructureBuffer<Item>(MAX_BATCH_SIZE);
+        _itemBuffer   = new ItemBuffer(MAX_BATCH_SIZE);
         _vertexBuffer = new StructureBuffer<Vector2>(32u);
 
         _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);

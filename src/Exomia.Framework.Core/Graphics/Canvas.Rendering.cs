@@ -148,12 +148,70 @@ public sealed unsafe partial class Canvas
             2u, pDescriptorSets,
             0u, null);
 
-        uint    count        = _itemBuffer.Count;
-        Buffer  vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, count);
-        Vertex* pVertex      = vertexBuffer.Map<Vertex>();
-        Item*   pItems       = _itemBuffer;
-        uint    offset       = 0u;
+        Item* pItems = _itemBuffer;
 
+        Buffer  vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _itemBuffer.RectangleCount);
+        Vertex* pVertex      = vertexBuffer.Map<Vertex>();
+
+        if (_itemBuffer.Count > SEQUENTIAL_THRESHOLD)
+        {
+            void VertexUpdate(int index)
+            {
+                Item* item = pItems + index;
+
+                switch (item->Type)
+                {
+                    case Item.ARC_TYPE:
+                        RenderArc(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_ARC_TYPE:
+                        RenderFillArc(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.LINE_TYPE:
+                        RenderLine(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.POLYGON_TYPE:
+                        RenderPolygon(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_POLYGON_TYPE:
+                        RenderFillPolygon(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                }
+            }
+
+            Parallel.For(0, (int)_itemBuffer.Count, VertexUpdate);
+        }
+        else
+        {
+            for (int index = 0; index < _itemBuffer.Count; index++)
+            {
+                Item* item = pItems + index;
+
+                switch (item->Type)
+                {
+                    case Item.ARC_TYPE:
+                        RenderArc(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_ARC_TYPE:
+                        RenderFillArc(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.LINE_TYPE:
+                        RenderLine(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.POLYGON_TYPE:
+                        RenderPolygon(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_POLYGON_TYPE:
+                        RenderFillPolygon(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                }
+            }
+        }
+
+        vertexBuffer.Unmap();
+
+        uint count  = _itemBuffer.RectangleCount;
+        uint offset = 0u;
         while (count > 0)
         {
             uint batchSize = count;
@@ -161,44 +219,6 @@ public sealed unsafe partial class Canvas
             {
                 batchSize = MAX_BATCH_SIZE;
             }
-
-            if (batchSize > BATCH_SEQUENTIAL_THRESHOLD)
-            {
-                void VertexUpdate(long index)
-                {
-                    Item* item = pItems + index;
-
-                    switch (item->Type)
-                    {
-                        case Item.ARC_TYPE:
-                            RenderArc(item, pVertex + (index << 2));
-                            break;
-                        case Item.FILL_ARC_TYPE:
-                            RenderFillArc(item, pVertex + (index << 2));
-                            break;
-                    }
-                }
-
-                Parallel.For(offset, offset + batchSize, VertexUpdate);
-            }
-            else
-            {
-                for (uint i = offset; i < offset + batchSize; i++)
-                {
-                    Item* item = pItems + i;
-
-                    switch (item->Type)
-                    {
-                        case Item.ARC_TYPE:
-                            RenderArc(item, pVertex + (i << 2));
-                            break;
-                        case Item.FILL_ARC_TYPE:
-                            RenderFillArc(item, pVertex + (i << 2));
-                            break;
-                    }
-                }
-            }
-
 
             VkDeviceSize vertexBufferOffset = (ulong)(offset * VERTICES_PER_OBJECT * sizeof(Vertex));
             vkCmdBindVertexBuffers(commandBuffer, 0u, 1u, vertexBuffer, &vertexBufferOffset);
@@ -213,9 +233,7 @@ public sealed unsafe partial class Canvas
             offset += batchSize;
             count  -= batchSize;
         }
-
-        vertexBuffer.Unmap();
-
+        
         _textureSlotMap.Clear();
         _fontTextureSlotMap.Clear();
 

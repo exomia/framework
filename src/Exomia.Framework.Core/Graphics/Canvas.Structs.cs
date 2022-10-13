@@ -46,13 +46,14 @@ public sealed unsafe partial class Canvas
     [StructLayout(LayoutKind.Explicit)]
     private struct Item
     {
-        private const int OFFSET_TYPE_KIND   = 0;
-        private const int OFFSET_VK_COLOR    = OFFSET_TYPE_KIND   + 4;
-        private const int OFFSET_ROTATION    = OFFSET_VK_COLOR    + (4 * 4);
-        private const int OFFSET_ORIGIN      = OFFSET_ROTATION    + 4;
-        private const int OFFSET_OPACITY     = OFFSET_ORIGIN      + (4 * 2);
-        private const int OFFSET_LAYER_DEPTH = OFFSET_OPACITY     + 4;
-        private const int OFFSET_TYPE_START  = OFFSET_LAYER_DEPTH + 4;
+        private const int OFFSET_RECTANGLE_START_OFFSET = 0;
+        private const int OFFSET_TYPE_KIND              = OFFSET_RECTANGLE_START_OFFSET + 4;
+        private const int OFFSET_VK_COLOR               = OFFSET_TYPE_KIND              + 4;
+        private const int OFFSET_ROTATION               = OFFSET_VK_COLOR               + (4 * 4);
+        private const int OFFSET_ORIGIN                 = OFFSET_ROTATION               + 4;
+        private const int OFFSET_OPACITY                = OFFSET_ORIGIN                 + (4 * 2);
+        private const int OFFSET_LAYER_DEPTH            = OFFSET_OPACITY                + 4;
+        private const int OFFSET_TYPE_START             = OFFSET_LAYER_DEPTH            + 4;
 
         public const int NONE_TYPE           = 0;
         public const int ARC_TYPE            = 1;
@@ -66,19 +67,20 @@ public sealed unsafe partial class Canvas
         public const int FILL_RECTANGLE_TYPE = 9;
         public const int FILL_TRIANGLE_TYPE  = 10;
 
-        [FieldOffset(OFFSET_TYPE_KIND)]   public int     Type;
-        [FieldOffset(OFFSET_VK_COLOR)]    public VkColor Color;
-        [FieldOffset(OFFSET_ROTATION)]    public float   Rotation;
-        [FieldOffset(OFFSET_ORIGIN)]      public Vector2 Origin;
-        [FieldOffset(OFFSET_OPACITY)]     public float   Opacity;
-        [FieldOffset(OFFSET_LAYER_DEPTH)] public float   LayerDepth;
+        [FieldOffset(OFFSET_RECTANGLE_START_OFFSET)] public uint    RectangleStartOffset;
+        [FieldOffset(OFFSET_TYPE_KIND)]              public int     Type;
+        [FieldOffset(OFFSET_VK_COLOR)]               public VkColor Color;
+        [FieldOffset(OFFSET_ROTATION)]               public float   Rotation;
+        [FieldOffset(OFFSET_ORIGIN)]                 public Vector2 Origin;
+        [FieldOffset(OFFSET_OPACITY)]                public float   Opacity;
+        [FieldOffset(OFFSET_LAYER_DEPTH)]            public float   LayerDepth;
 
-        [FieldOffset(OFFSET_TYPE_START)] public          ArcType       ArcType;
-        [FieldOffset(OFFSET_TYPE_START)] public          LineType      LineType;
-        [FieldOffset(OFFSET_TYPE_START)] public          PolygonType   PolygonType;
-        [FieldOffset(OFFSET_TYPE_START)] public          RectangleType RectangleType;
-        [FieldOffset(OFFSET_TYPE_START)] public readonly TextureType   TextureType;
-        [FieldOffset(OFFSET_TYPE_START)] public          TriangleType  TriangleType;
+        [FieldOffset(OFFSET_TYPE_START)] public ArcType       ArcType;
+        [FieldOffset(OFFSET_TYPE_START)] public LineType      LineType;
+        [FieldOffset(OFFSET_TYPE_START)] public PolygonType   PolygonType;
+        [FieldOffset(OFFSET_TYPE_START)] public RectangleType RectangleType;
+        [FieldOffset(OFFSET_TYPE_START)] public TextureType   TextureType;
+        [FieldOffset(OFFSET_TYPE_START)] public TriangleType  TriangleType;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -88,7 +90,6 @@ public sealed unsafe partial class Canvas
         public float Start;
         public float End;
         public float LineWidth;
-        public byte  Index;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -103,7 +104,7 @@ public sealed unsafe partial class Canvas
     private struct PolygonType
     {
         public Vector2* Vertices;
-        public int      VerticesCount;
+        public uint     VerticesCount;
         public float    LineWidth;
     }
 

@@ -20,7 +20,6 @@ using Exomia.Framework.Core.Vulkan.Configurations;
 using Exomia.Vulkan.Api.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
 using static Exomia.Vulkan.Api.Core.VkSubpassContents;
 
 namespace Exomia.Framework.Example.Canvas;
@@ -87,7 +86,7 @@ sealed unsafe class MyApplication : Application
     {
         // wait for the device idle before unloading content
         _vulkan.DeviceWaitIdle();
-        
+
         _contentManager.Unload<Texture>("icon.e1");
         _contentManager.Unload<SpriteFont>(Fonts.ARIAL_12_PX);
     }
@@ -101,45 +100,64 @@ sealed unsafe class MyApplication : Application
     {
         if (_renderer.Begin(out VkCommandBuffer commandBuffer))
         {
-             _swapchain.BeginRenderPass(commandBuffer, VkColors.CornflowerBlue, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS );
-            
+            _swapchain.BeginRenderPass(commandBuffer, VkColors.CornflowerBlue, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+
             _canvas.Begin();
 
-            Random2 rnd = new Random2(100); 
-            for (int i = 0; i < 1_000; i++)
-            {
-               // _canvas.RenderArc(
-               //      new Arc2(new Vector2(rnd.Next(150, 900), rnd.Next(150, 600)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS), rnd.NextSingle() * MathF.PI * 2f, rnd.NextSingle() * MathF.PI * 2f), 
-               //      20f,
-               //      new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
-               //      0f, 
-               //      Vector2.Zero, 
-               //      1f,
-               //      1f);
-               
-               _canvas.RenderFillArc(
-                   new Arc2(new Vector2(rnd.Next(150, 900), rnd.Next(150, 600)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS), rnd.NextSingle() * MathF.PI * 2f, rnd.NextSingle() * MathF.PI * 2f),
-                   new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
-                   0f, 
-                   Vector2.Zero, 
-                   1f,
-                   1f);
-            }
+            Random2 rnd = new Random2(100);
+            // for (int i = 0; i < 1_000; i++)
+            // {
+            //     _canvas.RenderArc(
+            //          new Arc2(new Vector2(rnd.Next(150, 900), rnd.Next(150, 600)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS), rnd.NextSingle() * MathF.PI * 2f, rnd.NextSingle() * MathF.PI * 2f), 
+            //          20f,
+            //          new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
+            //          1.0f,
+            //          0f, 
+            //          Vector2.Zero, 
+            //          1f);
+            //
+            //     _canvas.RenderFillArc(
+            //         new Arc2(new Vector2(rnd.Next(150, 900), rnd.Next(150, 600)), rnd.Next(60, 200) + 50 * MathF.Sin(time.TotalTimeS), rnd.NextSingle() * MathF.PI * 2f, rnd.NextSingle() * MathF.PI * 2f),
+            //         new VkColor(rnd.NextSingle(), rnd.NextSingle(), rnd.NextSingle(), 1.0f),
+            //         1.0f,
+            //         0f, 
+            //         Vector2.Zero,
+            //         1f);
+            // }
+
+            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100 + MathF.Sin(time.TotalTimeS) * 50, time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 40 + MathF.Sin(time.TotalTimeS) * 20,
+                VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(450, 450), 0f);
+
+             _canvas.RenderFillArc(
+                 new Arc2(new Vector2(300, 300), 100 + MathF.Sin(time.TotalTimeS) * 50, time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 
+                 VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(320, 320), 0f);
+             
+            _canvas.RenderLine(new Line2(new Vector2(100, 100), new Vector2(100, 200)), 10f, VkColors.Red,   1f, 0f, Vector2.Zero, 1.0f, 0f);
+            _canvas.RenderLine(new Line2(new Vector2(100, 100), new Vector2(100, 200)), 10f, VkColors.Black, 1f, 0f, Vector2.Zero, 0.5f, 0f);
             
-            _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100 + MathF.Sin(time.TotalTimeS) * 50, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 40 + MathF.Sin(time.TotalTimeS) * 20, VkColors.Black, time.TotalTimeS, new Vector2(450, 450), 1f, 0f);
+            _canvas.RenderLine(new Line2(new Vector2(300, 300), new Vector2(400, 400)), 10f, VkColors.Red,   1f, time.TotalTimeS, new Vector2(300, 300), 1.0f,                              0f);
+            _canvas.RenderLine(new Line2(new Vector2(300, 300), new Vector2(400, 400)), 10f, VkColors.Black, 1f, time.TotalTimeS, new Vector2(300, 300), 1.0f + MathF.Sin(time.TotalTimeS), 0f);
             
-            _canvas.RenderFillArc(new Arc2(new Vector2(300, 300), 100 + MathF.Sin(time.TotalTimeS) * 50, 0 + time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), VkColors.Black, time.TotalTimeS, new Vector2(320, 320), 1f, 0f);
+            _canvas.RenderFillPolygon(
+                new[] { new Vector2(500, 500), new Vector2(600, 550), new Vector2(600, 600), new Vector2(500, 580) }, VkColors.Red, 1.0f, 0f, Vector2.Zero, 0f);
+            _canvas.RenderPolygon(
+                new[] { new Vector2(500, 500), new Vector2(600, 550), new Vector2(600, 600), new Vector2(500, 580) }, 10, VkColors.Black, 1.0f, 0f, Vector2.Zero, 0f);
+            
+            _canvas.RenderFillPolygon(
+                new[] { new Vector2(200, 500), new Vector2(300, 550), new Vector2(300, 600), new Vector2(200, 580) }, VkColors.Red, 1.0f, time.TotalTimeS, new Vector2(200, 500), 0f);
+            _canvas.RenderPolygon(
+                new[] { new Vector2(200, 500), new Vector2(300, 550), new Vector2(300, 600), new Vector2(200, 580) }, 10, VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(200, 500), 0f);
             
             _canvas.End(commandBuffer);
-            
+
             _canvas.EndFrame();
-            
+
             _swapchain.EndRenderPass(commandBuffer);
-            
+
             _renderer.End(commandBuffer);
         }
-        
-        
+
+
         _timer += time.DeltaTimeS;
         if (_timer > 1.0f)
         {
@@ -148,7 +166,7 @@ sealed unsafe class MyApplication : Application
             _frames = 0;
         }
         _frames++;
-        
+
         base.Render(time);
     }
 

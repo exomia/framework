@@ -45,4 +45,53 @@ public sealed unsafe partial class Canvas
         item->Opacity               = opacity;
         item->LayerDepth            = layerDepth;
     }
+
+    private static void RenderLine(Item* item, Vertex* vertex)
+    {
+        Line2 l = item->Rotation == 0.0f
+            ? item->LineType.Line
+            : Line2.RotateAround(in item->LineType.Line, item->Rotation, item->Origin);
+
+        float dx = (l.X2 - l.X1) * item->LineType.LengthFactor;
+        float dy = (l.Y2 - l.Y1) * item->LineType.LengthFactor;
+
+        double dl = Math.Sqrt((dx * dx) + (dy * dy));
+
+        Vector2 n;
+        n.X = (float)((-dy / dl) * item->LineType.LineWidth * 0.5f);
+        n.Y = (float)((dx  / dl) * item->LineType.LineWidth * 0.5f);
+
+        // p1
+        vertex->XY    = l.XY1 - n;
+        vertex->Color = item->Color;
+        vertex->Z     = item->LayerDepth;
+        vertex->W     = item->Opacity;
+        vertex->M     = COLOR_MODE;
+        vertex++;
+
+        // p2
+        vertex->X     = l.X1 + dx - n.X;
+        vertex->Y     = l.Y1 + dy - n.Y;
+        vertex->Color = item->Color;
+        vertex->Z     = item->LayerDepth;
+        vertex->W     = item->Opacity;
+        vertex->M     = COLOR_MODE;
+        vertex++;
+
+        // p2'
+        vertex->X     = l.X1 + dx + n.X;
+        vertex->Y     = l.Y1 + dy + n.Y;
+        vertex->Color = item->Color;
+        vertex->Z     = item->LayerDepth;
+        vertex->W     = item->Opacity;
+        vertex->M     = COLOR_MODE;
+        vertex++;
+
+        // p1'
+        vertex->XY    = l.XY1 + n;
+        vertex->Color = item->Color;
+        vertex->Z     = item->LayerDepth;
+        vertex->W     = item->Opacity;
+        vertex->M     = COLOR_MODE;
+    }
 }
