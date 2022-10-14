@@ -17,7 +17,7 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
-    private static readonly float s_sin45 = MathF.Sin(45f.ToRadians());
+    private static readonly float s_sin45 = MathF.Sin(45f.ToRadiansF());
 
     /// <summary> Renders an arc. </summary>
     /// <param name="arc"> The arc. </param>

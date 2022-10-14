@@ -326,6 +326,8 @@ public static class Collision
                 return true;
             }
         }
+        
+        denominator *= denominator;
 
         //3x3 matrix for the first ray.
         float m11 = ray2.Position.X - ray1.Position.X;
@@ -337,29 +339,27 @@ public static class Collision
         float m31 = cross.X;
         float m32 = cross.Y;
         float m33 = cross.Z;
-
-        //Determinant of first matrix.
-        float dets =
+        
+        //t values of the point of intersection.
+        float s = ( //Determinant of the first matrix.
             m11 * m22 * m33 +
             m12 * m23 * m31 +
             m13 * m21 * m32 -
             m11 * m23 * m32 -
             m12 * m21 * m33 -
-            m13 * m22 * m31;
-
+            m13 * m22 * m31) / denominator;
+        
         //3x3 matrix for the second ray.
         m21 = ray1.Direction.X;
         m22 = ray1.Direction.Y;
         m23 = ray1.Direction.Z;
-
-        denominator *= denominator;
-        //t values of the point of intersection.
-        float s = dets / denominator;
-        float t = (m11 * m22 * m33 +
-            m12        * m23 * m31 +
-            m13        * m21 * m32 -
-            m11 * m23 * m32        -
-            m12 * m21 * m33        -
+        
+        float t = ( //Determinant of the second matrix.
+            m11 * m22 * m33 +
+            m12 * m23 * m31 +
+            m13 * m21 * m32 -
+            m11 * m23 * m32 -
+            m12 * m21 * m33 -
             m13 * m22 * m31) / denominator;
 
         //The points of intersection.
@@ -571,6 +571,7 @@ public static class Collision
 
             if (t1 > t2)
             {
+                // ReSharper disable once SwapViaDeconstruction
                 float temp = t1;
                 t1 = t2;
                 t2 = temp;
@@ -601,6 +602,7 @@ public static class Collision
 
             if (t1 > t2)
             {
+                // ReSharper disable once SwapViaDeconstruction
                 float temp = t1;
                 t1 = t2;
                 t2 = temp;
@@ -632,6 +634,7 @@ public static class Collision
 
             if (t1 > t2)
             {
+                // ReSharper disable once SwapViaDeconstruction
                 float temp = t1;
                 t1 = t2;
                 t2 = temp;
@@ -1126,14 +1129,14 @@ public static class Collision
             return ContainmentType.Disjoint;
         }
 
-        float radiussquared = sphere.Radius * sphere.Radius;
+        float radiusSquared = sphere.Radius * sphere.Radius;
 
         Vector3 vector;
         vector.X = sphere.Center.X - box.Minimum.X;
         vector.Y = sphere.Center.Y - box.Minimum.Y;
         vector.Z = sphere.Center.Z - box.Minimum.Z;
-
-        if (vector.LengthSquared() > radiussquared)
+        
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1142,7 +1145,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Maximum.Y;
         vector.Z = sphere.Center.Z - box.Maximum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1151,7 +1154,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Minimum.Y;
         vector.Z = sphere.Center.Z - box.Maximum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1160,7 +1163,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Minimum.Y;
         vector.Z = sphere.Center.Z - box.Maximum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1169,7 +1172,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Maximum.Y;
         vector.Z = sphere.Center.Z - box.Minimum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1178,7 +1181,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Maximum.Y;
         vector.Z = sphere.Center.Z - box.Minimum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1187,7 +1190,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Minimum.Y;
         vector.Z = sphere.Center.Z - box.Minimum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }
@@ -1196,7 +1199,7 @@ public static class Collision
         vector.Y = sphere.Center.Y - box.Minimum.Y;
         vector.Z = sphere.Center.Z - box.Minimum.Z;
 
-        if (vector.LengthSquared() > radiussquared)
+        if (vector.LengthSquared() > radiusSquared)
         {
             return ContainmentType.Intersects;
         }

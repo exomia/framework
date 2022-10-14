@@ -33,7 +33,25 @@ public static class NumericExtensions
     /// <param name="value"> The value to convert to degrees. </param>
     /// <returns> The value in degrees. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float ToDegree(this float value)
+    public static float ToDegreeF(this float value)
+    {
+        return value * I80_OVER_PI_F;
+    }
+
+    /// <summary> Convert to Degrees. </summary>
+    /// <param name="value"> The value to convert to degrees. </param>
+    /// <returns> The value in degrees. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double ToDegree(this long value)
+    {
+        return value * I80_OVER_PI_D;
+    }
+    
+    /// <summary> Convert to Degrees. </summary>
+    /// <param name="value"> The value to convert to degrees. </param>
+    /// <returns> The value in degrees. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ToDegreeF(this int value)
     {
         return value * I80_OVER_PI_F;
     }
@@ -51,7 +69,7 @@ public static class NumericExtensions
     /// <param name="value"> The value to convert to radians. </param>
     /// <returns> The value in radians. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float ToRadians(this float value)
+    public static float ToRadiansF(this float value)
     {
         return PI_OVER_180_F * value;
     }
@@ -60,8 +78,17 @@ public static class NumericExtensions
     /// <param name="value"> The value to convert to radians. </param>
     /// <returns> The value in radians. </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double ToRadians(this int value)
+    public static double ToRadians(this long value)
     {
         return PI_OVER_180_D * value;
+    }
+    
+    /// <summary> Convert to Radians. </summary>
+    /// <param name="value"> The value to convert to radians. </param>
+    /// <returns> The value in radians. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ToRadiansF(this int value)
+    {
+        return PI_OVER_180_F * value;
     }
 }
