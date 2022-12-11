@@ -9,12 +9,11 @@
 #endregion
 
 using System.Buffers;
-using System.IO.Compression;
 
 namespace Exomia.Framework.Core.Content.Compression;
 
 /// <summary> A content compressor. </summary>
-public static class ContentCompressor
+public static partial class ContentCompressor
 {
     private const int BUFFER_SIZE = 4096;
 
@@ -37,6 +36,10 @@ public static class ContentCompressor
             case CompressMode.Gzip:
                 dst.WriteByte((byte)compressMode);
                 GzipCompress(src, dst);
+                break;
+            case CompressMode.Brotli:
+                dst.WriteByte((byte)compressMode);
+                BrotliCompress(src, dst);
                 break;
             case CompressMode.None:
                 dst.WriteByte((byte)compressMode);
@@ -76,6 +79,9 @@ public static class ContentCompressor
             case CompressMode.Gzip:
                 GzipDecompress(src, dst);
                 break;
+            case CompressMode.Brotli:
+                BrotliDecompress(src, dst);
+                break;
             case CompressMode.None:
                 CopyStream(src, dst);
                 break;
@@ -99,44 +105,4 @@ public static class ContentCompressor
             ArrayPool<byte>.Shared.Return(buffer);
         }
     }
-
-    #region GZIP
-
-    private static void GzipCompress(Stream src, Stream dst)
-    {
-        using (GZipStream gs = new GZipStream(dst, CompressionLevel.Optimal, true))
-        {
-            CopyStream(src, gs);
-        }
-    }
-
-    private static void GzipDecompress(Stream src, Stream dst)
-    {
-        using (GZipStream gs = new GZipStream(src, CompressionMode.Decompress, true))
-        {
-            CopyStream(gs, dst);
-        }
-    }
-
-    #endregion
-
-    #region Deflate
-
-    private static void DeflateCompress(Stream src, Stream dst)
-    {
-        using (DeflateStream gs = new DeflateStream(dst, CompressionLevel.Optimal, true))
-        {
-            CopyStream(src, gs);
-        }
-    }
-
-    private static void DeflateDecompress(Stream src, Stream dst)
-    {
-        using (DeflateStream gs = new DeflateStream(src, CompressionMode.Decompress, true))
-        {
-            CopyStream(gs, dst);
-        }
-    }
-
-    #endregion
 }

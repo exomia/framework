@@ -20,5 +20,8 @@ public enum CompressMode : byte
     Deflate = 0x01,
 
     /// <summary> An enum constant representing the gzip option. </summary>
-    Gzip = 0x02
+    Gzip = 0x02,
+
+    /// <summary> An enum constant representing the brotli option. </summary>
+    Brotli = 0x04
 }
