@@ -5,9 +5,20 @@
     </PropertyGroup>
 
     <Target Name="CompilingShaders" BeforeTargets="PrepareForBuild">
-        <Exec Command="$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat" ContinueOnError="false" />
         <ItemGroup>
-            <CompiledAndOptimizedShaderSourceFiles Include="Resources\shaders\compiled\*-opt.spv" />
+            <SourceFilesVert Include="$(MSBuildProjectDirectory)\Resources\shaders\src\*.vert" />
+            <SourceFilesFrag Include="$(MSBuildProjectDirectory)\Resources\shaders\src\*.frag" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SourceFilesVert)" 
+              DestinationFolder="$(MSBuildProjectDirectory)\Resources\shaders\bin\$(TargetFramework)" 
+              ContinueOnError="false" />
+        <Copy SourceFiles="@(SourceFilesFrag)" 
+              DestinationFolder="$(MSBuildProjectDirectory)\Resources\shaders\bin\$(TargetFramework)"  
+              ContinueOnError="false" />
+        <Exec Command="$(MSBuildProjectDirectory)\Resources\shaders\compile_shaders.bat $(TargetFramework)"
+              ContinueOnError="false" />
+        <ItemGroup>
+            <CompiledAndOptimizedShaderSourceFiles Include="Resources\shaders\bin\$(TargetFramework)\compiled\*-opt.spv" />
         </ItemGroup>
         <ItemGroup>
             <EmbeddedResource Include="@(CompiledAndOptimizedShaderSourceFiles)">
