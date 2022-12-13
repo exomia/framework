@@ -75,7 +75,7 @@ public sealed unsafe class Buffer : IDisposable
     {
         return Create(
             context,
-            count * sizeof(T),
+            sizeof(T) * count,
             bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
@@ -98,7 +98,7 @@ public sealed unsafe class Buffer : IDisposable
     {
         return Create(
             context,
-            count * sizeof(T),
+            sizeof(T) * count,
             bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
@@ -117,11 +117,11 @@ public sealed unsafe class Buffer : IDisposable
     {
         Buffer indexBuffer = CreateIndexBuffer<T>(
             context,
-            (VkDeviceSize)items.Length,
+            items.Length,
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-        using (Buffer stagingIndexBuffer = CreateStagingBuffer<T>(context, (VkDeviceSize)items.Length))
+        using (Buffer stagingIndexBuffer = CreateStagingBuffer<T>(context, items.Length))
         {
             fixed (T* src = items)
             {
@@ -150,7 +150,7 @@ public sealed unsafe class Buffer : IDisposable
     {
         return Create(
             context,
-            count * sizeof(T),
+            sizeof(T) * count,
             bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
@@ -173,7 +173,7 @@ public sealed unsafe class Buffer : IDisposable
     {
         return Create(
             context,
-            count * sizeof(T),
+            sizeof(T) * count,
             bufferUsageFlagBits,
             VK_SHARING_MODE_EXCLUSIVE,
             memoryPropertyFlagBits);
@@ -196,7 +196,7 @@ public sealed unsafe class Buffer : IDisposable
     {
         return Create(
             context,
-            count * sizeof(T),
+            sizeof(T) * count,
             bufferUsageFlagBits,
             sharingMode,
             memoryPropertyFlagBits);
@@ -377,7 +377,7 @@ public sealed unsafe class Buffer : IDisposable
         where T : unmanaged
     {
         void* ptr;
-        vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
+        vkMapMemory(_device, _deviceMemory, VkDeviceSize.Zero, sizeof(T) * count, 0, &ptr)
 #if DEBUG
            .AssertVkResult()
 #endif
@@ -395,7 +395,7 @@ public sealed unsafe class Buffer : IDisposable
         where T : unmanaged
     {
         void* ptr;
-        vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)sizeof(T), 0, &ptr)
+        vkMapMemory(_device, _deviceMemory, sizeof(T) * offset, sizeof(T), 0, &ptr)
 #if DEBUG
            .AssertVkResult()
 #endif
@@ -414,7 +414,7 @@ public sealed unsafe class Buffer : IDisposable
         where T : unmanaged
     {
         void* ptr;
-        vkMapMemory(_device, _deviceMemory, offset * sizeof(T), (VkDeviceSize)(sizeof(T) * count), 0, &ptr)
+        vkMapMemory(_device, _deviceMemory, sizeof(T) * offset, sizeof(T) * count, 0, &ptr)
 #if DEBUG
            .AssertVkResult()
 #endif

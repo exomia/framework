@@ -87,7 +87,7 @@ public sealed class VertexInputConfiguration
 /// <summary> An input assembly configuration. This class cannot be inherited. </summary>
 public sealed class InputAssemblyConfiguration
 {
-    public VkPipelineInputAssemblyStateCreateFlags Flags                  { get; set; } = 0;
+    public VkPipelineInputAssemblyStateCreateFlags Flags                  { get; set; } = 0u;
     public VkPrimitiveTopology                     Topology               { get; set; } = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     public VkBool32                                PrimitiveRestartEnable { get; set; } = VkBool32.False;
 }
@@ -102,7 +102,7 @@ public sealed class ViewportConfiguration
 /// <summary> A rasterization configuration. This class cannot be inherited. </summary>
 public sealed class RasterizationConfiguration
 {
-    public VkPipelineRasterizationStateCreateFlags Flags                   { get; set; } = 0;
+    public VkPipelineRasterizationStateCreateFlags Flags                   { get; set; } = 0u;
     public VkBool32                                DepthClampEnable        { get; set; } = VkBool32.False;
     public VkBool32                                RasterizerDiscardEnable { get; set; } = VkBool32.False;
     public VkPolygonMode                           PolygonMode             { get; set; } = VK_POLYGON_MODE_FILL;
@@ -118,7 +118,7 @@ public sealed class RasterizationConfiguration
 /// <summary> A multisample configuration. This class cannot be inherited. </summary>
 public sealed unsafe class MultisampleConfiguration
 {
-    public VkPipelineMultisampleStateCreateFlags Flags                 { get; set; } = 0;
+    public VkPipelineMultisampleStateCreateFlags Flags                 { get; set; } = 0u;
     public VkSampleCountFlagBits                 RasterizationSamples  { get; set; } = VK_SAMPLE_COUNT_1_BIT;
     public VkBool32                              SampleShadingEnable   { get; set; } = VkBool32.False;
     public float                                 MinSampleShading      { get; set; } = 1.0f;
