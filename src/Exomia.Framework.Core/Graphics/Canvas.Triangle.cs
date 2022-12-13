@@ -9,6 +9,7 @@
 #endregion
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Mathematics;
 
 namespace Exomia.Framework.Core.Graphics;
@@ -16,6 +17,115 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
+    private static void RenderTriangle(Item* item, Vertex* vertex)
+    {
+        Triangle2 t = item->Rotation == 0.0
+            ? item->TriangleType.Triangle
+            : Triangle2.RotateAround(in item->TriangleType.Triangle, item->Rotation, in item->Origin);
+
+        float lineWidth = item->TriangleType.LineWidth;
+
+        Line2 a              = new Line2(in t.XY1, in t.XY2);
+        Line2 perpendicularA = a.GetPerpendicular(lineWidth);
+
+        Line2 b              = new Line2(in t.XY2, in t.XY3);
+        Line2 perpendicularB = b.GetPerpendicular(lineWidth);
+
+        Line2 c              = new Line2(in t.XY3, in t.XY1);
+        Line2 perpendicularC = c.GetPerpendicular(lineWidth);
+
+        if (!perpendicularA.IntersectWith(perpendicularB, out Vector2 ipAb))
+        {
+            throw new ArgumentException("The lines a and b are parallel to each other! Check the triangle points!");
+        }
+
+        if (!perpendicularB.IntersectWith(perpendicularC, out Vector2 ipBc))
+        {
+            throw new ArgumentException("The lines b and c are parallel to each other! Check the triangle points!");
+        }
+
+        if (!perpendicularC.IntersectWith(perpendicularA, out Vector2 ipCa))
+        {
+            throw new ArgumentException("The lines c and a are parallel to each other! Check the triangle points!");
+        }
+
+        DrawRect(vertex + 0, a, in ipCa, in ipAb, item);
+        DrawRect(vertex + 4, b, in ipAb, in ipBc, item);
+        DrawRect(vertex + 8, c, in ipBc, in ipCa, item);
+
+        static void DrawRect(Vertex* vertex, in Line2 line, in Vector2 bl, in Vector2 br, Item* item)
+        {
+            // p1
+            vertex->XY    = line.XY1;
+            vertex->Color = item->Color;
+            vertex->Z     = item->LayerDepth;
+            vertex->W     = item->Opacity;
+            vertex->M     = COLOR_MODE;
+            vertex++;
+
+            // p2
+            vertex->XY    = line.XY2;
+            vertex->Color = item->Color;
+            vertex->Z     = item->LayerDepth;
+            vertex->W     = item->Opacity;
+            vertex->M     = COLOR_MODE;
+            vertex++;
+
+            // p2'
+            vertex->XY    = br;
+            vertex->Color = item->Color;
+            vertex->Z     = item->LayerDepth;
+            vertex->W     = item->Opacity;
+            vertex->M     = COLOR_MODE;
+            vertex++;
+
+            // p1'
+            vertex->XY    = bl;
+            vertex->Color = item->Color;
+            vertex->Z     = item->LayerDepth;
+            vertex->W     = item->Opacity;
+            vertex->M     = COLOR_MODE;
+        }
+    }
+
+
+    private static void RenderFillTriangle(Item* item, Vertex* vertex)
+    {
+        Vector2* tPtr = (Vector2*)Unsafe.AsPointer(ref Unsafe.AsRef(item->TriangleType.Triangle));
+        if (item->Rotation == 0.0f)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                (vertex + i)->XY    = *(tPtr + i);
+                (vertex + i)->Color = item->Color;
+                (vertex + i)->Z     = item->LayerDepth;
+                (vertex + i)->W     = item->Opacity;
+                (vertex + i)->M     = COLOR_MODE;
+            }
+        }
+        else
+        {
+            Vector2 origin = item->Origin;
+
+            (float sin, float cos) = MathF.SinCos(item->Rotation);
+
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 v = *(tPtr + i) - origin;
+
+                (vertex + i)->X     = ((cos * v.X) - (sin * v.Y)) + origin.X;
+                (vertex + i)->Y     = ((sin * v.X) + (cos * v.Y)) + origin.Y;
+                (vertex + i)->Color = item->Color;
+                (vertex + i)->Z     = item->LayerDepth;
+                (vertex + i)->W     = item->Opacity;
+                (vertex + i)->M     = COLOR_MODE;
+            }
+        }
+
+        // INFO: currently we need 4 vertices (rectangle) and can't draw triangles directly so just use the first vertex as the last vertex too.
+        *(vertex + 3) = *vertex;
+    }
+
     /// <summary> Renders a triangle. </summary>
     /// <param name="triangle"> The triangle. </param>
     /// <param name="color"> The color. </param>
@@ -42,7 +152,7 @@ public sealed unsafe partial class Canvas
                                float        opacity,
                                float        layerDepth = 0.0f)
     {
-        Item* item = _itemBuffer.Reserve(1);
+        Item* item = _itemBuffer.Reserve(3);
         item->Type                   = Item.TRIANGLE_TYPE;
         item->TriangleType.Triangle  = triangle;
         item->TriangleType.LineWidth = lineWidth;

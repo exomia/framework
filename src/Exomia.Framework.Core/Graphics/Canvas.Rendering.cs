@@ -176,6 +176,18 @@ public sealed unsafe partial class Canvas
                     case Item.FILL_POLYGON_TYPE:
                         RenderFillPolygon(item, pVertex + (item->RectangleStartOffset << 2));
                         break;
+                    case Item.RECTANGLE_TYPE:
+                        RenderRectangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_RECTANGLE_TYPE:
+                        RenderFillRectangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.TRIANGLE_TYPE:
+                        RenderTriangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_TRIANGLE_TYPE:
+                        RenderFillTriangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
                 }
             }
 
@@ -203,6 +215,18 @@ public sealed unsafe partial class Canvas
                         break;
                     case Item.FILL_POLYGON_TYPE:
                         RenderFillPolygon(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.RECTANGLE_TYPE:
+                        RenderRectangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_RECTANGLE_TYPE:
+                        RenderFillRectangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.TRIANGLE_TYPE:
+                        RenderTriangle(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
+                    case Item.FILL_TRIANGLE_TYPE:
+                        RenderFillTriangle(item, pVertex + (item->RectangleStartOffset << 2));
                         break;
                 }
             }
@@ -233,7 +257,7 @@ public sealed unsafe partial class Canvas
             offset += batchSize;
             count  -= batchSize;
         }
-        
+
         _textureSlotMap.Clear();
         _fontTextureSlotMap.Clear();
 

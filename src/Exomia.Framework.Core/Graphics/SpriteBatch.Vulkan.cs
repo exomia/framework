@@ -22,7 +22,7 @@ public sealed unsafe partial class SpriteBatch
     private void Setup()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
-        
+
         using Stream vertexShaderStream =
             assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{Shaders.SPRITEBATCH_VERT_OPT}") ??
             throw new NullReferenceException($"{assembly.GetName().Name}.{Shaders.SPRITEBATCH_VERT_OPT}");

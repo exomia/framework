@@ -15,7 +15,7 @@ namespace Exomia.Framework.Core.Graphics;
 
 public partial class Canvas
 {
-    sealed unsafe class ItemBuffer : IDisposable
+    private sealed unsafe class ItemBuffer : IDisposable
     {
         private Item*    _buffer;
         private uint     _length;
@@ -30,7 +30,7 @@ public partial class Canvas
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _count; }
         }
-        
+
         /// <summary> Gets the current count of rectangles required. </summary>
         /// <value> The current amount of rectangles required. </value>
         public uint RectangleCount
@@ -43,8 +43,8 @@ public partial class Canvas
         /// <param name="initialCount"> The initial count of items the buffer can hold without resizing. </param>
         public ItemBuffer(uint initialCount)
         {
-            _buffer          = Allocator.Allocate<Item>(_length = initialCount);
-            _count           = 0;
+            _buffer           = Allocator.Allocate<Item>(_length = initialCount);
+            _count            = 0;
             _rectanglesOffset = 0;
         }
 
@@ -56,7 +56,7 @@ public partial class Canvas
             return buffer._buffer;
         }
 
-        /// <summary> Reserves one <see cref="Item"/>. </summary>
+        /// <summary> Reserves one <see cref="Item" />. </summary>
         /// <param name="rectangleCount"> The amount of rectangles to reserve. </param>
         /// <returns> A pointer to the reserved item. </returns>
         public Item* Reserve(uint rectangleCount)
@@ -93,7 +93,7 @@ public partial class Canvas
         public void Reset()
         {
             Interlocked.Exchange(ref _rectanglesOffset, 0);
-            Interlocked.Exchange(ref _count,           0);
+            Interlocked.Exchange(ref _count,            0);
         }
 
         #region IDisposable Support

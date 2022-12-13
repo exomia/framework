@@ -16,36 +16,6 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
-    /// <summary> Renders a line. </summary>
-    /// <param name="line"> The line. </param>
-    /// <param name="lineWidth"> The width of the line. </param>
-    /// <param name="color"> The color. </param>
-    /// <param name="opacity"> The opacity. </param>
-    /// <param name="rotation"> The rotation. </param>
-    /// <param name="origin"> The origin. </param>
-    /// <param name="lengthFactor"> (Optional) The length factor. </param>
-    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
-    public void RenderLine(in Line2   line,
-                           float      lineWidth,
-                           in VkColor color,
-                           float      opacity,
-                           float      rotation,
-                           in Vector2 origin,
-                           float      lengthFactor = 1.0f,
-                           float      layerDepth   = 0.0f)
-    {
-        Item* item = _itemBuffer.Reserve(1);
-        item->Type                  = Item.LINE_TYPE;
-        item->LineType.Line         = line;
-        item->LineType.LengthFactor = lengthFactor;
-        item->LineType.LineWidth    = lineWidth;
-        item->Color                 = color;
-        item->Rotation              = rotation;
-        item->Origin                = origin;
-        item->Opacity               = opacity;
-        item->LayerDepth            = layerDepth;
-    }
-
     private static void RenderLine(Item* item, Vertex* vertex)
     {
         Line2 l = item->Rotation == 0.0f
@@ -93,5 +63,35 @@ public sealed unsafe partial class Canvas
         vertex->Z     = item->LayerDepth;
         vertex->W     = item->Opacity;
         vertex->M     = COLOR_MODE;
+    }
+
+    /// <summary> Renders a line. </summary>
+    /// <param name="line"> The line. </param>
+    /// <param name="lineWidth"> The width of the line. </param>
+    /// <param name="color"> The color. </param>
+    /// <param name="opacity"> The opacity. </param>
+    /// <param name="rotation"> The rotation. </param>
+    /// <param name="origin"> The origin. </param>
+    /// <param name="lengthFactor"> (Optional) The length factor. </param>
+    /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
+    public void RenderLine(in Line2   line,
+                           float      lineWidth,
+                           in VkColor color,
+                           float      opacity,
+                           float      rotation,
+                           in Vector2 origin,
+                           float      lengthFactor = 1.0f,
+                           float      layerDepth   = 0.0f)
+    {
+        Item* item = _itemBuffer.Reserve(1);
+        item->Type                  = Item.LINE_TYPE;
+        item->LineType.Line         = line;
+        item->LineType.LengthFactor = lengthFactor;
+        item->LineType.LineWidth    = lineWidth;
+        item->Color                 = color;
+        item->Rotation              = rotation;
+        item->Origin                = origin;
+        item->Opacity               = opacity;
+        item->LayerDepth            = layerDepth;
     }
 }

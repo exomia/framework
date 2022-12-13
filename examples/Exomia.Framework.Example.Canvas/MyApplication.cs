@@ -128,26 +128,38 @@ sealed unsafe class MyApplication : Application
             _canvas.RenderArc(new Arc2(new Vector2(500, 500), 100 + MathF.Sin(time.TotalTimeS) * 50, time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 40 + MathF.Sin(time.TotalTimeS) * 20,
                 VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(450, 450), 0f);
 
-             _canvas.RenderFillArc(
-                 new Arc2(new Vector2(300, 300), 100 + MathF.Sin(time.TotalTimeS) * 50, time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS), 
-                 VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(320, 320), 0f);
-             
+            _canvas.RenderFillArc(
+                new Arc2(new Vector2(300, 300), 100 + MathF.Sin(time.TotalTimeS) * 50, time.TotalTimeS, MathF.PI / 2f + time.TotalTimeS),
+                VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(320, 320), 0f);
+
             _canvas.RenderLine(new Line2(new Vector2(100, 100), new Vector2(100, 200)), 10f, VkColors.Red,   1f, 0f, Vector2.Zero, 1.0f, 0f);
             _canvas.RenderLine(new Line2(new Vector2(100, 100), new Vector2(100, 200)), 10f, VkColors.Black, 1f, 0f, Vector2.Zero, 0.5f, 0f);
-            
+
             _canvas.RenderLine(new Line2(new Vector2(300, 300), new Vector2(400, 400)), 10f, VkColors.Red,   1f, time.TotalTimeS, new Vector2(300, 300), 1.0f,                              0f);
             _canvas.RenderLine(new Line2(new Vector2(300, 300), new Vector2(400, 400)), 10f, VkColors.Black, 1f, time.TotalTimeS, new Vector2(300, 300), 1.0f + MathF.Sin(time.TotalTimeS), 0f);
-            
+
             _canvas.RenderFillPolygon(
                 new[] { new Vector2(500, 500), new Vector2(600, 550), new Vector2(600, 600), new Vector2(500, 580) }, VkColors.Red, 1.0f, 0f, Vector2.Zero, 0f);
             _canvas.RenderPolygon(
                 new[] { new Vector2(500, 500), new Vector2(600, 550), new Vector2(600, 600), new Vector2(500, 580) }, 10, VkColors.Black, 1.0f, 0f, Vector2.Zero, 0f);
-            
+
             _canvas.RenderFillPolygon(
                 new[] { new Vector2(200, 500), new Vector2(300, 550), new Vector2(300, 600), new Vector2(200, 580) }, VkColors.Red, 1.0f, time.TotalTimeS, new Vector2(200, 500), 0f);
             _canvas.RenderPolygon(
                 new[] { new Vector2(200, 500), new Vector2(300, 550), new Vector2(300, 600), new Vector2(200, 580) }, 10, VkColors.Black, 1.0f, time.TotalTimeS, new Vector2(200, 500), 0f);
             
+            _canvas.RenderRectangle(new RectangleF(300, 100, 100, 100), VkColors.Red,  10.0f,                                    0f,              Vector2.Zero,          1f);
+            _canvas.RenderRectangle(new RectangleF(400, 100, 100, 100), VkColors.Blue, 10f + 10.0f * MathF.Sin(time.TotalTimeS), time.TotalTimeS, new Vector2(400, 100), 1f);
+            
+            _canvas.RenderFillRectangle(new RectangleF(500, 100, 100, 100), VkColors.Red,  0f,              Vector2.Zero,          1f);
+            _canvas.RenderFillRectangle(new RectangleF(600, 100, 100, 100), VkColors.Blue, time.TotalTimeS, new Vector2(600, 100), 1f);
+
+            _canvas.RenderTriangle(new Triangle2(250, 50, 350, 150, 150, 150), VkColors.Red,  10f, 0f,              Vector2.Zero,          1f);
+            _canvas.RenderTriangle(new Triangle2(250, 50, 350, 150, 150, 150), VkColors.Blue, 10f, time.TotalTimeS, new Vector2(250, 100), 1f);
+            
+            _canvas.RenderFillTriangle(new Triangle2(250 + 500, 50, 350 + 500, 150, 150 + 500, 150), VkColors.Red,  0f,              Vector2.Zero,                1f);
+            _canvas.RenderFillTriangle(new Triangle2(250 + 500, 50, 350 + 500, 150, 150 + 500, 150), VkColors.Blue, time.TotalTimeS, new Vector2(250 + 500, 50), 1f);
+
             _canvas.End(commandBuffer);
 
             _canvas.EndFrame();

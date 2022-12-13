@@ -90,7 +90,7 @@ public sealed unsafe class Texture : IDisposable
         VkFormat              imageFormat         = VK_FORMAT_R8G8B8A8_SRGB)
     {
         // TODO: add Vulkan.CreateImage(...) method -> duplicated code here and in swapchain CreateDepthResources
-        using (Buffer staging = Buffer.CreateStagingBuffer<byte>(vkContext, (VkDeviceSize)data.Length))
+        using (Buffer staging = Buffer.CreateStagingBuffer<byte>(vkContext, data.Length))
         {
             byte* dst = staging.Map<byte>();
             fixed (byte* src = data)

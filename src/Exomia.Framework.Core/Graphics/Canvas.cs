@@ -36,11 +36,11 @@ public sealed unsafe partial class Canvas : IDisposable
 #else
     private const uint MAX_BATCH_SIZE = 1 << 13;
 #endif
-    private const uint VERTICES_PER_OBJECT        = 4u;
-    private const uint INDICES_PER_OBJECT         = 6u;
-    private const uint MAX_INDEX_COUNT            = MAX_BATCH_SIZE * INDICES_PER_OBJECT;
+    private const uint VERTICES_PER_OBJECT  = 4u;
+    private const uint INDICES_PER_OBJECT   = 6u;
+    private const uint MAX_INDEX_COUNT      = MAX_BATCH_SIZE * INDICES_PER_OBJECT;
     private const int  SEQUENTIAL_THRESHOLD = 1 << 9;
-    private const int  VERTEX_STRIDE              = sizeof(float) * 14;
+    private const int  VERTEX_STRIDE        = sizeof(float) * 14;
 
     private const int COLOR_MODE        = 0;
     private const int TEXTURE_MODE      = 1;

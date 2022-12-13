@@ -29,7 +29,7 @@ public sealed partial class Canvas
                            ReadOnlySpan<char> text,
                            in Vector2         position,
                            in VkColor         color,
-                           float              rotation = 0.0f,
+                           float              rotation   = 0.0f,
                            float              layerDepth = 0.0f)
     {
         font.Render(RenderTextInternal, text, position, color, rotation, Vector2.Zero, 1.0f, TextureEffects.None, layerDepth);
