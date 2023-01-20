@@ -10,7 +10,6 @@
 
 //#define USE_32BIT_INDEX
 
-using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Buffers;
@@ -49,7 +48,6 @@ public sealed unsafe partial class Canvas : IDisposable
     private const int BORDER_ARC_MODE   = 4;
 
     private static readonly TIndex[]   s_indices;
-    private static readonly Vector2[]  s_cornerOffsets = { Vector2.Zero, Vector2.UnitX, Vector2.One, Vector2.UnitY };
     private static readonly Vector2    s_vector2Zero   = Vector2.Zero;
     private static readonly Rectangle? s_nullRectangle = null;
 
@@ -60,6 +58,7 @@ public sealed unsafe partial class Canvas : IDisposable
     private readonly Buffer                   _uniformBuffer;
     private readonly VertexBufferPool<Vertex> _vertexBufferPool;
     private readonly CommandBufferPool        _commandBufferPool;
+    private readonly DescriptorSetPool        _descriptorSetPool;
     private          Shader                   _shader   = null!;
     private          Pipeline?                _pipeline = null;
 
@@ -70,11 +69,11 @@ public sealed unsafe partial class Canvas : IDisposable
     private readonly ItemBuffer               _itemBuffer;
     private readonly StructureBuffer<Vector2> _vertexBuffer;
 
+    private readonly Dictionary<ulong, (uint slot, VkImageView imageView)> _textureMap;
+    private readonly Dictionary<ulong, (uint slot, VkImageView imageView)> _fontTextureMap;
+
     private Matrix4x4 _projectionMatrix;
     private VkRect2D  _scissorRectangle;
-
-    private readonly Dictionary<ulong, TextureInfo> _textureInfos    = new Dictionary<ulong, TextureInfo>(8);
-    private          SpinLock                       _textureSpinLock = new SpinLock(Debugger.IsAttached);
 
 #if DEBUG // only track in debug builds
     private bool _isBeginCalled;
@@ -118,18 +117,22 @@ public sealed unsafe partial class Canvas : IDisposable
         _swapchainContext = swapchain.Context;
         _vkContext        = swapchain.VkContext;
 
+        var k = _vkContext->PhysicalDeviceProperties2.properties.limits;
+
+        _textureMap     = new Dictionary<ulong, (uint, VkImageView)>((int)_configuration.MaxTextureSlots);
+        _fontTextureMap = new Dictionary<ulong, (uint, VkImageView)>((int)_configuration.MaxFontTextureSlots);
+
         _context      = Allocator.Allocate(1u, VkCanvasContext.Create());
         _whiteTexture = Texture.Create(_vkContext, 1, 1, new byte[] { 255, 255, 255, 255 });
 
         _itemBuffer   = new ItemBuffer(MAX_BATCH_SIZE);
         _vertexBuffer = new StructureBuffer<Vector2>(32u);
 
-        _indexBuffer   = Buffer.CreateIndexBuffer(_vkContext, s_indices);
-        _uniformBuffer = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
-        _vertexBufferPool =
-            new VertexBufferPool<Vertex>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_OBJECT, MAX_BATCH_SIZE);
-        _commandBufferPool =
-            new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+        _indexBuffer       = Buffer.CreateIndexBuffer(_vkContext, s_indices);
+        _uniformBuffer     = Buffer.CreateUniformBuffer<Matrix4x4>(_vkContext, (ulong)_swapchainContext->MaxFramesInFlight);
+        _vertexBufferPool  = new VertexBufferPool<Vertex>(_vkContext, _swapchainContext->MaxFramesInFlight, VERTICES_PER_OBJECT, MAX_BATCH_SIZE);
+        _commandBufferPool = new CommandBufferPool(_vkContext, _swapchainContext->MaxFramesInFlight, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+        _descriptorSetPool = new DescriptorSetPool(_vkContext, _swapchainContext->MaxFramesInFlight, _configuration, 4u);
 
         Setup();
 
@@ -147,21 +150,6 @@ public sealed unsafe partial class Canvas : IDisposable
 
     private void SwapchainOnCleanupSwapChain(Swapchain swapchain)
     {
-        bool lockTaken = false;
-        try
-        {
-            _textureSpinLock.Enter(ref lockTaken);
-            foreach ((ulong _, TextureInfo textureInfo) in _textureInfos)
-            {
-                Allocator.Free(textureInfo.DescriptorSets, _swapchainContext->MaxFramesInFlight);
-            }
-            _textureInfos.Clear();
-        }
-        finally
-        {
-            if (lockTaken) { _textureSpinLock.Exit(false); }
-        }
-
         CleanupVulkan();
     }
 
@@ -239,6 +227,7 @@ public sealed unsafe partial class Canvas : IDisposable
 
                 _uniformBuffer.Dispose();
                 _indexBuffer.Dispose();
+                _descriptorSetPool.Dispose();
                 _vertexBufferPool.Dispose();
                 _commandBufferPool.Dispose();
                 _shader.Dispose();

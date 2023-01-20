@@ -9,6 +9,7 @@
 #endregion
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
@@ -104,8 +105,7 @@ public sealed unsafe partial class SpriteBatch
         }
         else
         {
-            float cos = MathF.Cos(spriteInfo->Rotation);
-            float sin = MathF.Sin(spriteInfo->Rotation);
+            (float sin, float cos) = MathF.SinCos(spriteInfo->Rotation);
             for (int j = 0; j < VERTICES_PER_SPRITE; j++)
             {
                 Vertex* vertex = pVpct + j;
@@ -197,11 +197,20 @@ public sealed unsafe partial class SpriteBatch
 #endif
     }
 
-    /// <summary> Ends a frame. </summary>
+    /// <summary> Ends the frame. </summary>
     public void EndFrame()
     {
         _commandBufferPool.Reset(_swapchainContext->FrameInFlight);
         _vertexBufferPool.Reset(_swapchainContext->FrameInFlight);
+    }
+
+    /// <summary> Ends the current batch and the frame. </summary>
+    /// <remarks> Shorthand for calling <see cref="End(VkCommandBuffer)"/> and <see cref="EndFrame()"/>. </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void EndFrame(VkCommandBuffer commandBuffer)
+    {
+        End(commandBuffer);
+        EndFrame();
     }
 
     private void BeginRendering(out VkCommandBuffer commandBuffer)

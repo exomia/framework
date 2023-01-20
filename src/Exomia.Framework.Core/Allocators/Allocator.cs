@@ -174,6 +174,19 @@ public static unsafe class Allocator
         GC.AddMemoryPressure(sizeof(T*) * count);
         return ptr;
     }
+    
+    /// <summary> Allocates the given count of <typeparamref name="T" />. </summary>
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="count"> Number of <typeparamref name="T" /> to allocate. </param>
+    /// <returns> Null if it fails, else a <typeparamref name="T" />*. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T*** AllocatePtrPtr<T>(uint count)
+        where T : unmanaged
+    {
+        T*** ptr = (T***)NativeMemory.Alloc(count, (nuint)sizeof(T*));
+        GC.AddMemoryPressure(sizeof(T*) * count);
+        return ptr;
+    }
 
     /// <summary> Frees a given pointer. </summary>
     /// <param name="ptr"> [in,out] If non-null, the pointer. </param>

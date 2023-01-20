@@ -22,11 +22,8 @@ public sealed unsafe partial class Canvas
         public VkSampler             TextureSampler;
         public VkPipelineLayout      PipelineLayout;
         public VkDescriptorPool      DescriptorPool;
-        public VkDescriptorPool      TextureDescriptorPool;
         public VkDescriptorSetLayout DescriptorSetLayout;
-        public VkDescriptorSetLayout TextureDescriptorSetLayout;
         public VkDescriptorSet*      DescriptorSets;
-        public VkDescriptorSet*      TextureDescriptorSets;
 
         public static VkCanvasContext Create()
         {
@@ -34,11 +31,8 @@ public sealed unsafe partial class Canvas
             context.TextureSampler             = VkSampler.Null;
             context.PipelineLayout             = VkPipelineLayout.Null;
             context.DescriptorPool             = VkDescriptorPool.Null;
-            context.TextureDescriptorPool      = VkDescriptorPool.Null;
             context.DescriptorSetLayout        = VkDescriptorSetLayout.Null;
             context.DescriptorSets             = null;
-            context.TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
-            context.TextureDescriptorSets      = null;
             return context;
         }
     }
@@ -118,12 +112,13 @@ public sealed unsafe partial class Canvas
     [StructLayout(LayoutKind.Sequential)]
     private struct TextureType
     {
-        public readonly TextureInfo    TextureInfo;
-        public readonly RectangleF     Destination;
-        public readonly bool           ScaleDestination;
-        public readonly Rectangle?     SourceRectangle;
-        public readonly TextureEffects Effects;
-        public readonly float          Mode;
+        public TextureInfo    TextureInfo;
+        public RectangleF     Destination;
+        public bool           ScaleDestination;
+        public Rectangle?     SourceRectangle;
+        public TextureEffects Effects;
+        public float          Mode;
+        public uint           TextureSlot;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -136,17 +131,17 @@ public sealed unsafe partial class Canvas
     [StructLayout(LayoutKind.Sequential)]
     private struct TextureInfo
     {
-        public readonly ulong            ID;
-        public readonly uint             Width;
-        public readonly uint             Height;
-        public          VkDescriptorSet* DescriptorSets;
+        public readonly ulong       ID;
+        public readonly uint        Width;
+        public readonly uint        Height;
+        public readonly VkImageView VkImageView;
 
-        public TextureInfo(ulong id, uint width, uint height)
+        public TextureInfo(ulong id, uint width, uint height, VkImageView vkImageView)
         {
-            ID             = id;
-            Width          = width;
-            Height         = height;
-            DescriptorSets = null;
+            ID          = id;
+            Width       = width;
+            Height      = height;
+            VkImageView = vkImageView;
         }
     }
 

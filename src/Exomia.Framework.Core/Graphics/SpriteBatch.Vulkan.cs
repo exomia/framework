@@ -375,16 +375,16 @@ public sealed unsafe partial class SpriteBatch
             _context->DescriptorSetLayout = VkDescriptorSetLayout.Null;
         }
 
-        if (_context->TextureDescriptorSetLayout != VkDescriptorSetLayout.Null)
-        {
-            vkDestroyDescriptorSetLayout(_vkContext->Device, _context->TextureDescriptorSetLayout, null);
-            _context->TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
-        }
-
         if (_context->DescriptorPool != VkDescriptorPool.Null)
         {
             vkDestroyDescriptorPool(_vkContext->Device, _context->DescriptorPool, null);
             _context->DescriptorPool = VkDescriptorPool.Null;
+        }
+        
+        if (_context->TextureDescriptorSetLayout != VkDescriptorSetLayout.Null)
+        {
+            vkDestroyDescriptorSetLayout(_vkContext->Device, _context->TextureDescriptorSetLayout, null);
+            _context->TextureDescriptorSetLayout = VkDescriptorSetLayout.Null;
         }
 
         if (_context->TextureDescriptorPool != VkDescriptorPool.Null)

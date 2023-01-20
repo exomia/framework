@@ -10,6 +10,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Exomia.Framework.Core.Vulkan;
 
 namespace Exomia.Framework.Core.Graphics;
 
@@ -117,7 +118,9 @@ public partial class Canvas
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="ItemBuffer" /> class.
+        /// </summary>
         ~ItemBuffer()
         {
             ReleaseUnmanagedResources();

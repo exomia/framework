@@ -34,10 +34,10 @@ public sealed partial class Canvas
 
         /// <summary> Gets or sets the max texture slot count. </summary>
         /// <value> The texture slot count. </value>
-        public int MaxTextureSlots { get; set; } = 8;
+        public uint MaxTextureSlots { get; set; } = 8u;
 
         /// <summary> Gets or sets the max font texture slot count. </summary>
         /// <value> The font texture slot count. </value>
-        public int MaxFontTextureSlots { get; set; } = 4;
+        public uint MaxFontTextureSlots { get; set; } = 4u;
     }
 }

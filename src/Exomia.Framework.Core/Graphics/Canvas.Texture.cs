@@ -31,7 +31,7 @@ public sealed unsafe partial class Canvas
     {
         RenderTexture(
             texture, new RectangleF(position.X, position.Y, 1f, 1f),
-            true,    s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
+            true,    s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, TEXTURE_MODE, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -47,7 +47,7 @@ public sealed unsafe partial class Canvas
     {
         RenderTexture(
             texture, destinationRectangle,
-            false,   s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
+            false,   s_nullRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, TEXTURE_MODE, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -57,15 +57,15 @@ public sealed unsafe partial class Canvas
     /// <param name="color"> The color. </param>
     /// <param name="layerDepth"> (Optional) The layer depth [0.0;1.0]. </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Draw(Texture       texture,
-                     in Vector2    position,
-                     in Rectangle? sourceRectangle,
-                     in VkColor    color,
-                     float         layerDepth = 0.0f)
+    public void Render(Texture       texture,
+                       in Vector2    position,
+                       in Rectangle? sourceRectangle,
+                       in VkColor    color,
+                       float         layerDepth = 0.0f)
     {
         RenderTexture(
             texture, new RectangleF(position.X, position.Y, 1f, 1f),
-            true,    sourceRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
+            true,    sourceRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, TEXTURE_MODE, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -83,7 +83,7 @@ public sealed unsafe partial class Canvas
     {
         RenderTexture(
             texture, destinationRectangle,
-            false,   sourceRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, layerDepth);
+            false,   sourceRectangle, color, 0f, s_vector2Zero, 1.0f, TextureEffects.None, TEXTURE_MODE, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -109,7 +109,7 @@ public sealed unsafe partial class Canvas
     {
         RenderTexture(
             texture, destinationRectangle,
-            false,   sourceRectangle, color, rotation, origin, opacity, effects, layerDepth);
+            false,   sourceRectangle, color, rotation, origin, opacity, effects, TEXTURE_MODE, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -138,7 +138,7 @@ public sealed unsafe partial class Canvas
         RenderTexture(
             texture,
             new RectangleF(position.X, position.Y, scale, scale),
-            true, sourceRectangle, color, rotation, origin, opacity, effects, layerDepth);
+            true, sourceRectangle, color, rotation, origin, opacity, effects, TEXTURE_MODE, layerDepth);
     }
 
     /// <summary> Renders a texture. </summary>
@@ -167,7 +167,7 @@ public sealed unsafe partial class Canvas
         RenderTexture(
             texture,
             new RectangleF(position.X, position.Y, scale.X, scale.Y),
-            true, sourceRectangle, color, rotation, origin, opacity, effects, layerDepth);
+            true, sourceRectangle, color, rotation, origin, opacity, effects, TEXTURE_MODE, layerDepth);
     }
 
     private void RenderTexture(Texture        texture,
@@ -179,71 +179,89 @@ public sealed unsafe partial class Canvas
                                in Vector2     origin,
                                float          opacity,
                                TextureEffects effects,
-                               float          mode       = TEXTURE_MODE,
+                               float          mode,
                                float          layerDepth = 0f)
-
     {
-        if (!_textureInfos.TryGetValue(texture.ID, out TextureInfo textureInfo))
+        Item* item = _itemBuffer.Reserve(1);
+        item->Type                         = Item.TEXTURE_TYPE;
+        item->TextureType.Destination      = destination;
+        item->TextureType.TextureInfo      = new TextureInfo(texture.ID, texture.Width, texture.Height, texture);
+        item->TextureType.Effects          = effects;
+        item->TextureType.ScaleDestination = scaleDestination;
+        item->TextureType.Mode             = mode;
+        item->TextureType.SourceRectangle  = sourceRectangle;
+        item->Color                        = color;
+        item->Rotation                     = rotation;
+        item->Origin                       = origin;
+        item->Opacity                      = opacity;
+        item->LayerDepth                   = layerDepth;
+    }
+
+    private static void RenderTexture(Item* item, Vertex* vertex)
+    {
+        TextureInfo textureInfo     = item->TextureType.TextureInfo;
+        Rectangle   sourceRectangle = item->TextureType.SourceRectangle.GetValueOrDefault(new Rectangle(0, 0, (int)textureInfo.Width, (int)textureInfo.Height));
+        RectangleF  destination     = item->TextureType.Destination;
+        if (item->TextureType.ScaleDestination)
         {
-            bool lockTaken = false;
-            try
+            destination.Width  *= sourceRectangle.Width;
+            destination.Height *= sourceRectangle.Height;
+        }
+
+        if (destination.Width < 0)
+        {
+            destination.X     += destination.Width;
+            destination.Width =  -destination.Width;
+        }
+
+        if (destination.Height < 0)
+        {
+            destination.Y      += destination.Height;
+            destination.Height =  -destination.Height;
+        }
+
+        Vector2        origin  = item->Origin;
+        TextureEffects effects = item->TextureType.Effects;
+        
+        float deltaX = 1.0f / textureInfo.Width;
+        float deltaY = 1.0f / textureInfo.Height;
+        if (item->Rotation == 0.0f)
+        {
+            for (int j = 0; j < 4; j++)
             {
-                _textureSpinLock.Enter(ref lockTaken);
-                if (!_textureInfos.TryGetValue(texture.ID, out textureInfo))
-                {
-                    textureInfo = new TextureInfo(texture.ID, texture.Width, texture.Height);
-
-                    VkDescriptorSetLayout* textureLayouts = stackalloc VkDescriptorSetLayout[(int)_swapchainContext->MaxFramesInFlight];
-                    for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
-                    {
-                        *(textureLayouts + i) = _context->TextureDescriptorSetLayout;
-                    }
-
-                    VkDescriptorSetAllocateInfo textureDescriptorSetAllocateInfo;
-                    textureDescriptorSetAllocateInfo.sType              = VkDescriptorSetAllocateInfo.STYPE;
-                    textureDescriptorSetAllocateInfo.pNext              = null;
-                    textureDescriptorSetAllocateInfo.descriptorPool     = _context->TextureDescriptorPool;
-                    textureDescriptorSetAllocateInfo.descriptorSetCount = _swapchainContext->MaxFramesInFlight;
-                    textureDescriptorSetAllocateInfo.pSetLayouts        = textureLayouts;
-
-                    textureInfo.DescriptorSets = Allocator.Allocate<VkDescriptorSet>(_swapchainContext->MaxFramesInFlight);
-                    vkAllocateDescriptorSets(_vkContext->Device, &textureDescriptorSetAllocateInfo, textureInfo.DescriptorSets)
-                       .AssertVkResult();
-
-                    for (uint i = 0u; i < _swapchainContext->MaxFramesInFlight; i++)
-                    {
-                        VkDescriptorImageInfo descriptorImageInfo;
-                        descriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-                        descriptorImageInfo.imageView   = texture;
-                        descriptorImageInfo.sampler     = _context->TextureSampler;
-
-                        VkWriteDescriptorSet writeDescriptorSet;
-                        writeDescriptorSet.sType            = VkWriteDescriptorSet.STYPE;
-                        writeDescriptorSet.pNext            = null;
-                        writeDescriptorSet.dstSet           = *(textureInfo.DescriptorSets + i);
-                        writeDescriptorSet.dstBinding       = 0u;
-                        writeDescriptorSet.dstArrayElement  = 0u;
-                        writeDescriptorSet.descriptorCount  = 1u;
-                        writeDescriptorSet.descriptorType   = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-                        writeDescriptorSet.pImageInfo       = &descriptorImageInfo;
-                        writeDescriptorSet.pBufferInfo      = null;
-                        writeDescriptorSet.pTexelBufferView = null;
-
-                        vkUpdateDescriptorSets(
-                            _vkContext->Device,
-                            1u, &writeDescriptorSet,
-                            0u, null);
-                    }
-
-                    _textureInfos.Add(texture.ID, textureInfo);
-                }
+                Vector2 corner = s_rectangleCornerOffsets[j];
+                (vertex + j)->X     = destination.X + (corner.X * destination.Width);
+                (vertex + j)->Y     = destination.Y + (corner.Y * destination.Height);
+                (vertex + j)->Color = item->Color;
+                (vertex + j)->Z     = item->LayerDepth;
+                (vertex + j)->W     = item->Opacity;
+                (vertex + j)->M     = item->TextureType.Mode;
+                (vertex + j)->O     = item->TextureType.TextureSlot;
+                corner              = s_rectangleCornerOffsets[j ^ (int)effects];
+                (vertex + j)->U     = (sourceRectangle.X + (corner.X * sourceRectangle.Width))  * deltaX;
+                (vertex + j)->V     = (sourceRectangle.Y + (corner.Y * sourceRectangle.Height)) * deltaY;
             }
-            finally
+        }
+        else
+        {
+            (float sin, float cos) = MathF.SinCos(item->Rotation);
+
+            for (int j = 0; j < 4; j++)
             {
-                if (lockTaken)
-                {
-                    _textureSpinLock.Exit(false);
-                }
+                Vector2 corner = s_rectangleCornerOffsets[j];
+                float   posX   = (destination.X - origin.X) + (corner.X * destination.Width);
+                float   posY   = (destination.Y - origin.Y) + (corner.Y * destination.Height);
+
+                (vertex + j)->X     = (origin.X + (posX * cos)) - (posY * sin);
+                (vertex + j)->Y     = (origin.Y + (posX * sin)) + (posY * cos);
+                (vertex + j)->Color = item->Color;
+                (vertex + j)->Z     = item->LayerDepth;
+                (vertex + j)->W     = item->Opacity;
+                (vertex + j)->M     = item->TextureType.Mode;
+                (vertex + j)->O     = item->TextureType.TextureSlot;
+                corner              = s_rectangleCornerOffsets[j ^ (int)effects];
+                (vertex + j)->U     = (sourceRectangle.X + (corner.X * sourceRectangle.Width))  * deltaX;
+                (vertex + j)->V     = (sourceRectangle.Y + (corner.Y * sourceRectangle.Height)) * deltaY;
             }
         }
     }

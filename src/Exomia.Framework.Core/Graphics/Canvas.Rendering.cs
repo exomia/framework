@@ -9,6 +9,7 @@
 #endregion
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Exomia.Framework.Core.Mathematics;
 using Exomia.Framework.Core.Vulkan;
 using Buffer = Exomia.Framework.Core.Vulkan.Buffers.Buffer;
@@ -18,9 +19,6 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content> A canvas. This class cannot be inherited. </content>
 public sealed unsafe partial class Canvas
 {
-    private readonly Dictionary<long, int> _textureSlotMap     = new Dictionary<long, int>(8);
-    private readonly Dictionary<long, int> _fontTextureSlotMap = new Dictionary<long, int>(4);
-
     /// <summary> Begins a new batch. </summary>
     /// <param name="transformMatrix"> (Optional) The transform matrix. </param>
     /// <param name="scissorRectangle"> (Optional) The scissor rectangle. </param>
@@ -89,11 +87,21 @@ public sealed unsafe partial class Canvas
 #endif
     }
 
-    /// <summary> Ends a frame. </summary>
+    /// <summary> Ends the frame. </summary>
     public void EndFrame()
     {
         _commandBufferPool.Reset(_swapchainContext->FrameInFlight);
         _vertexBufferPool.Reset(_swapchainContext->FrameInFlight);
+        _descriptorSetPool.Reset(_swapchainContext->FrameInFlight);
+    }
+
+    /// <summary> Ends the current batch and the frame. </summary>
+    /// <remarks> Shorthand for calling <see cref="End(VkCommandBuffer)"/> and <see cref="EndFrame()"/>. </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void EndFrame(VkCommandBuffer commandBuffer)
+    {
+        End(commandBuffer);
+        EndFrame();
     }
 
     private void BeginRendering(out VkCommandBuffer commandBuffer)
@@ -134,10 +142,132 @@ public sealed unsafe partial class Canvas
 
     private void FlushBatch(VkCommandBuffer commandBuffer)
     {
+        Item* pItems = _itemBuffer;
+
+        uint rectangleStartOffset = 0;
+        uint offset               = 0;
+
+        for (uint index = 0; index < _itemBuffer.Count; index++)
+        {
+            Item* item = pItems + index;
+
+            switch (item->Type)
+            {
+                case Item.TEXTURE_TYPE:
+                    (uint maxSlots, Dictionary<ulong, (uint, VkImageView)> map) = item->TextureType.Mode switch
+                    {
+                        TEXTURE_MODE      => (_configuration.MaxTextureSlots, _textureMap),
+                        FONT_TEXTURE_MODE => (_configuration.MaxFontTextureSlots, _fontTextureMap),
+                        _                 => throw new IndexOutOfRangeException(nameof(TextureType.Mode))
+                    };
+                    if (map.TryGetValue(item->TextureType.TextureInfo.ID, out (uint slot, VkImageView) entry))
+                    {
+                        item->TextureType.TextureSlot = entry.slot;
+                        break;
+                    }
+
+                    if (map.Count >= maxSlots)
+                    {
+                        RenderBatch(commandBuffer, pItems + offset, index - offset, item->RectangleStartOffset);
+
+                        rectangleStartOffset = item->RectangleStartOffset;
+                        offset               = index;
+                    }
+
+                    map.Add(
+                        item->TextureType.TextureInfo.ID,
+                        (item->TextureType.TextureSlot = (uint)map.Count, item->TextureType.TextureInfo.VkImageView));
+
+                    break;
+            }
+
+            item->RectangleStartOffset -= rectangleStartOffset;
+        }
+
+        if (_itemBuffer.RectangleCount - rectangleStartOffset > 0)
+        {
+            RenderBatch(commandBuffer, pItems + offset, _itemBuffer.Count - offset, _itemBuffer.RectangleCount - rectangleStartOffset);
+        }
+
+        _itemBuffer.Reset();
+        _vertexBuffer.Reset();
+    }
+
+    private void PrepareRenderBatch(VkCommandBuffer commandBuffer)
+    {
+        VkDescriptorImageInfo* pTextureDescriptorImageInfo = stackalloc VkDescriptorImageInfo[(int)_configuration.MaxTextureSlots];
+        uint                   textureSlot                 = 0u;
+        foreach ((_, VkImageView imageView) in _textureMap.Values)
+        {
+            (pTextureDescriptorImageInfo + textureSlot)->imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            (pTextureDescriptorImageInfo + textureSlot)->imageView   = imageView;
+            (pTextureDescriptorImageInfo + textureSlot)->sampler     = VkSampler.Null;
+            textureSlot++;
+        }
+        for (uint i = textureSlot; i < _configuration.MaxTextureSlots; i++)
+        {
+            (pTextureDescriptorImageInfo + i)->imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            (pTextureDescriptorImageInfo + i)->imageView   = _whiteTexture;
+            (pTextureDescriptorImageInfo + i)->sampler     = VkSampler.Null;
+        }
+
+        VkDescriptorSet textureDescriptorSet = _descriptorSetPool.Next(_swapchainContext->FrameInFlight);
+
+        VkWriteDescriptorSet textureWriteDescriptorSet;
+        textureWriteDescriptorSet.sType            = VkWriteDescriptorSet.STYPE;
+        textureWriteDescriptorSet.pNext            = null;
+        textureWriteDescriptorSet.dstSet           = textureDescriptorSet;
+        textureWriteDescriptorSet.dstBinding       = 0u;
+        textureWriteDescriptorSet.dstArrayElement  = 0u;
+        textureWriteDescriptorSet.descriptorCount  = _configuration.MaxTextureSlots;
+        textureWriteDescriptorSet.descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        textureWriteDescriptorSet.pImageInfo       = pTextureDescriptorImageInfo;
+        textureWriteDescriptorSet.pBufferInfo      = null;
+        textureWriteDescriptorSet.pTexelBufferView = null;
+
+        VkDescriptorImageInfo* pFontTextureDescriptorImageInfo = stackalloc VkDescriptorImageInfo[(int)_configuration.MaxFontTextureSlots];
+        uint                   fontTextureSlot                 = 0u;
+        foreach ((_, VkImageView imageView) in _fontTextureMap.Values)
+        {
+            (pFontTextureDescriptorImageInfo + fontTextureSlot)->imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            (pFontTextureDescriptorImageInfo + fontTextureSlot)->imageView   = imageView;
+            (pFontTextureDescriptorImageInfo + fontTextureSlot)->sampler     = VkSampler.Null;
+            fontTextureSlot++;
+        }
+        for (uint i = fontTextureSlot; i < _configuration.MaxFontTextureSlots; i++)
+        {
+            (pFontTextureDescriptorImageInfo + i)->imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            (pFontTextureDescriptorImageInfo + i)->imageView   = _whiteTexture;
+            (pFontTextureDescriptorImageInfo + i)->sampler     = VkSampler.Null;
+        }
+
+        VkWriteDescriptorSet fontTextureWriteDescriptorSet;
+        fontTextureWriteDescriptorSet.sType            = VkWriteDescriptorSet.STYPE;
+        fontTextureWriteDescriptorSet.pNext            = null;
+        fontTextureWriteDescriptorSet.dstSet           = textureDescriptorSet;
+        fontTextureWriteDescriptorSet.dstBinding       = 1u;
+        fontTextureWriteDescriptorSet.dstArrayElement  = 0u;
+        fontTextureWriteDescriptorSet.descriptorCount  = _configuration.MaxFontTextureSlots;
+        fontTextureWriteDescriptorSet.descriptorType   = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        fontTextureWriteDescriptorSet.pImageInfo       = pFontTextureDescriptorImageInfo;
+        fontTextureWriteDescriptorSet.pBufferInfo      = null;
+        fontTextureWriteDescriptorSet.pTexelBufferView = null;
+
+        VkWriteDescriptorSet* pWriteDescriptorSets = stackalloc VkWriteDescriptorSet[2]
+        {
+            textureWriteDescriptorSet,
+            fontTextureWriteDescriptorSet
+        };
+
+        vkUpdateDescriptorSets(
+            _vkContext->Device,
+            2u, pWriteDescriptorSets,
+            0u, null);
+
         VkDescriptorSet* pDescriptorSets = stackalloc VkDescriptorSet[2]
         {
-            *(_context->DescriptorSets        + _swapchainContext->FrameInFlight),
-            *(_context->TextureDescriptorSets + _swapchainContext->FrameInFlight)
+            *(_context->DescriptorSets + _swapchainContext->FrameInFlight),
+            textureDescriptorSet
         };
 
         vkCmdBindDescriptorSets(
@@ -147,10 +277,13 @@ public sealed unsafe partial class Canvas
             0u,
             2u, pDescriptorSets,
             0u, null);
+    }
 
-        Item* pItems = _itemBuffer;
-
-        Buffer  vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, _itemBuffer.RectangleCount);
+    private void RenderBatch(VkCommandBuffer commandBuffer, Item* pItems, uint itemsCount, uint rectangleCount)
+    {
+        PrepareRenderBatch(commandBuffer);
+        
+        Buffer  vertexBuffer = _vertexBufferPool.Next(_swapchainContext->FrameInFlight, rectangleCount);
         Vertex* pVertex      = vertexBuffer.Map<Vertex>();
 
         if (_itemBuffer.Count > SEQUENTIAL_THRESHOLD)
@@ -188,14 +321,17 @@ public sealed unsafe partial class Canvas
                     case Item.FILL_TRIANGLE_TYPE:
                         RenderFillTriangle(item, pVertex + (item->RectangleStartOffset << 2));
                         break;
+                    case Item.TEXTURE_TYPE:
+                        RenderTexture(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
                 }
             }
 
-            Parallel.For(0, (int)_itemBuffer.Count, VertexUpdate);
+            Parallel.For(0, (int)itemsCount, VertexUpdate);
         }
         else
         {
-            for (int index = 0; index < _itemBuffer.Count; index++)
+            for (int index = 0; index < itemsCount; index++)
             {
                 Item* item = pItems + index;
 
@@ -228,15 +364,18 @@ public sealed unsafe partial class Canvas
                     case Item.FILL_TRIANGLE_TYPE:
                         RenderFillTriangle(item, pVertex + (item->RectangleStartOffset << 2));
                         break;
+                    case Item.TEXTURE_TYPE:
+                        RenderTexture(item, pVertex + (item->RectangleStartOffset << 2));
+                        break;
                 }
             }
         }
 
         vertexBuffer.Unmap();
 
-        uint count  = _itemBuffer.RectangleCount;
         uint offset = 0u;
-        while (count > 0)
+        uint count  = rectangleCount;
+        while (count != 0)
         {
             uint batchSize = count;
             if (batchSize > MAX_BATCH_SIZE)
@@ -258,10 +397,7 @@ public sealed unsafe partial class Canvas
             count  -= batchSize;
         }
 
-        _textureSlotMap.Clear();
-        _fontTextureSlotMap.Clear();
-
-        _itemBuffer.Reset();
-        _vertexBuffer.Reset();
+        _textureMap.Clear();
+        _fontTextureMap.Clear();
     }
 }

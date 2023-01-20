@@ -197,29 +197,29 @@ public sealed unsafe partial class Vulkan : IVkContextAccessor, IDisposable
 
     internal bool Initialize()
     {
-        using (_logger.BeginScope("[{method}] started...", nameof(Initialize)))
+        using (_logger.BeginScope("[VULKAN {method}] started...", nameof(Initialize)))
         {
             if (!InitializeInstance())
             {
-                _logger.LogCritical("{method} failed!", nameof(Initialize));
+                _logger.LogCritical("[VULKAN {method}] failed!", nameof(Initialize));
                 return false;
             }
 
             CreateDevice();
 
-            _logger.LogInformation("[{method}] done!", nameof(Initialize));
+            _logger.LogInformation("[VULKAN {method}] done!", nameof(Initialize));
             return true;
         }
     }
 
     internal void Cleanup()
     {
-        using (_logger.BeginScope("[{method}] started...", nameof(Cleanup)))
+        using (_logger.BeginScope("[VULKAN {method}] started...", nameof(Cleanup)))
         {
             DestroyDevice();
             CleanupInstance();
 
-            _logger.LogInformation("[{method}] done!", nameof(Cleanup));
+            _logger.LogInformation("[VULKAN {method}] done!", nameof(Cleanup));
         }
     }
 
