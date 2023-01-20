@@ -20,7 +20,8 @@ The exomia/framework can be used to develop cross platform applications, 2D/3D v
 &nbsp;&nbsp;&nbsp;&nbsp;(current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).  
 
 11/07/2022:  
-&nbsp;&nbsp;&nbsp;&nbsp;The setup, DI, logging and more has changed and introduced, we are working to get all the systems back and running.  
+&nbsp;&nbsp;&nbsp;&nbsp;The setup, DI, logging and more has changed and introduced,  
+&nbsp;&nbsp;&nbsp;&nbsp;we are working to get all the systems back and running.  
 &nbsp;&nbsp;&nbsp;&nbsp;Vulkan boilerplate is done and needs to be refined and adjusted to our needs.  
 &nbsp;&nbsp;&nbsp;&nbsp;(current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).  
 
