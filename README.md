@@ -13,11 +13,11 @@ The exomia/framework can be used to develop cross platform applications, 2D/3D v
 
 ## Announcements
 
-20/01/2023:
-&nbsp;&nbsp;&nbsp;&nbsp;Upgrade to .NET7 and C#11.
-&nbsp;&nbsp;&nbsp;&nbsp;Canvas and Spritebatch have been fundamentally implemented again and are now being refined.
-&nbsp;&nbsp;&nbsp;&nbsp;Example projects are working again.
-&nbsp;&nbsp;&nbsp;&nbsp;(current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).
+20/01/2023:  
+&nbsp;&nbsp;&nbsp;&nbsp;Upgrade to .NET7 and C#11.  
+&nbsp;&nbsp;&nbsp;&nbsp;Canvas and Spritebatch have been fundamentally implemented again and are now being refined.  
+&nbsp;&nbsp;&nbsp;&nbsp;Example projects are working again.  
+&nbsp;&nbsp;&nbsp;&nbsp;(current status can be found [here](https://github.com/exomia/framework/tree/feature/linux)).  
 
 11/07/2022:  
 &nbsp;&nbsp;&nbsp;&nbsp;The setup, DI, logging and more has changed and introduced, we are working to get all the systems back and running.  
