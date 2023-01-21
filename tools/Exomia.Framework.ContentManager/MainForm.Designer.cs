@@ -67,6 +67,7 @@
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.folderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.spriteFontToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,6 +78,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spriteFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
@@ -456,6 +458,7 @@
             this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.folderToolStripMenuItem,
             this.fontToolStripMenuItem1,
+            this.spriteFontToolStripMenuItem1,
             this.textureToolStripMenuItem1});
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
@@ -476,6 +479,14 @@
             this.fontToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.fontToolStripMenuItem1.Text = "Font";
             this.fontToolStripMenuItem1.Click += new System.EventHandler(this.addFontToolStripMenuItem_Click);
+            // 
+            // fontToolStripMenuItem1
+            // 
+            this.spriteFontToolStripMenuItem1.Image =  global::Exomia.Framework.ContentManager.Properties.Resources.AddFont_16x;
+            this.spriteFontToolStripMenuItem1.Name  =  "spriteFontToolStripMenuItem1";
+            this.spriteFontToolStripMenuItem1.Size  =  new System.Drawing.Size(180, 22);
+            this.spriteFontToolStripMenuItem1.Text  =  "SpriteFont";
+            this.spriteFontToolStripMenuItem1.Click += new System.EventHandler(this.addSpriteFontToolStripMenuItem_Click);
             // 
             // textureToolStripMenuItem1
             // 
@@ -533,6 +544,7 @@
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.fontToolStripMenuItem,
+            this.spriteFontToolStripMenuItem,
             this.textureToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
@@ -553,6 +565,14 @@
             this.fontToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fontToolStripMenuItem.Text = "Font";
             this.fontToolStripMenuItem.Click += new System.EventHandler(this.addFontToolStripMenuItem_Click);
+            // 
+            // fontToolStripMenuItem
+            // 
+            this.spriteFontToolStripMenuItem.Image =  global::Exomia.Framework.ContentManager.Properties.Resources.AddFont_16x;
+            this.spriteFontToolStripMenuItem.Name  =  "spriteFontToolStripMenuItem";
+            this.spriteFontToolStripMenuItem.Size  =  new System.Drawing.Size(180, 22);
+            this.spriteFontToolStripMenuItem.Text  =  "SpriteFont";
+            this.spriteFontToolStripMenuItem.Click += new System.EventHandler(this.addSpriteFontToolStripMenuItem_Click);
             // 
             // textureToolStripMenuItem
             // 
@@ -670,63 +690,65 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem projectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.MenuStrip            menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem    fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    projectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    closeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    saveToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip          statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.ContextMenuStrip folderContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem folderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem recentProjectsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ContextMenuStrip rootContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
-        private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem rebuildToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cleanToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.ToolStripMenuItem cancelBuildToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutExomiaFrameworkContentManagerToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip itemContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem9;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
-        private ToolStripMenuItem textureToolStripMenuItem1;
-        private ToolStripMenuItem textureToolStripMenuItem;
+        private System.Windows.Forms.Panel                panel1;
+        private System.Windows.Forms.ToolStripMenuItem    createToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator2;
+        private System.Windows.Forms.SplitContainer       splitContainer1;
+        private System.Windows.Forms.GroupBox             groupBox1;
+        private System.Windows.Forms.Panel                panel2;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem    exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    buildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    helpToolStripMenuItem;
+        private System.Windows.Forms.TreeView             treeView1;
+        private System.Windows.Forms.SplitContainer       splitContainer2;
+        private System.Windows.Forms.ImageList            imageList1;
+        private System.Windows.Forms.ContextMenuStrip     folderContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem    addToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem    cutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    renameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    folderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    recentProjectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator5;
+        private System.Windows.Forms.ContextMenuStrip     rootContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem6;
+        private System.Windows.Forms.PropertyGrid         propertyGrid1;
+        private System.Windows.Forms.ToolStripMenuItem    buildToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem    rebuildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    cleanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    fontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    spriteFontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    fontToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem    spriteFontToolStripMenuItem1;
+        private System.Windows.Forms.RichTextBox          richTextBox1;
+        private System.Windows.Forms.ToolStripMenuItem    cancelBuildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem    aboutExomiaFrameworkContentManagerToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip     itemContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem    editToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator   toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem8;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem9;
+        private System.Windows.Forms.ToolStripMenuItem    toolStripMenuItem10;
+        private ToolStripMenuItem                         textureToolStripMenuItem1;
+        private ToolStripMenuItem                         textureToolStripMenuItem;
     }
 }
 

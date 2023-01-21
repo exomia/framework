@@ -23,6 +23,7 @@ class ItemPropertyGridItem : PropertyGridItem
 {
     private IImporter? _importer;
     private IExporter? _exporter;
+    private object?    _settings;
 
     /// <summary>
     ///     Gets the importers.
@@ -56,7 +57,8 @@ class ItemPropertyGridItem : PropertyGridItem
         get { return _importer; }
         set
         {
-            _importer = value;
+            _settings = (_importer = value)?.CreateImporterSettings() ?? null;
+            
             if (_importer != null)
             {
                 if (_exporter == null || _exporter.ImportType != _importer.OutType)
@@ -97,6 +99,15 @@ class ItemPropertyGridItem : PropertyGridItem
     [DisplayName("Build Action")]
     [JsonConverter(typeof(StringEnumConverter))]
     public BuildAction BuildAction { get; set; } = BuildAction.Build;
+    
+    /// <summary>
+    ///     The importer additional options.
+    /// </summary>
+    [Category("Settings")]
+    [DisplayName("Importer Settings")]
+    [ReadOnly(true)]
+    [TypeConverter(typeof(SettingsConverter))]
+    public object? ImporterSettings { get => _settings; set => _settings = value; }
 
     public ItemPropertyGridItem Initialize()
     {

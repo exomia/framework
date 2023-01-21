@@ -8,13 +8,14 @@
 
 #endregion
 
-namespace Exomia.Framework.ContentManager.IO;
+using System.ComponentModel;
 
-interface IImporter
+namespace Exomia.Framework.ContentManager.Converters;
+
+/// <summary>
+///     The settings converter.
+/// </summary>
+public sealed class SettingsConverter : ExpandableObjectConverter
 {
-    Type OutType { get; }
-    
-    object? CreateImporterSettings();
 
-    Task<object?> ImportAsync(ImporterContext context, CancellationToken cancellationToken);
 }

@@ -13,6 +13,13 @@ namespace Exomia.Framework.Core.Resources;
 /// <summary> font paths </summary>
 public static class Fonts
 {
+    /// <summary> The arial font resource path. </summary>
+    public const string ARIAL = "Resources.fonts.arial.arial.e1";
+}
+
+/// <summary> sprite font paths </summary>
+public static class SpriteFonts
+{
     /// <summary> The arial 12 px font resource path. </summary>
     public const string ARIAL_12_PX = "Resources.fonts.arial.arial_12.e1";
 

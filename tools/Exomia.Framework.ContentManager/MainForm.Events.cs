@@ -204,10 +204,11 @@ partial class MainForm
 
     #region TreeView1
 
-    private const string ROOT_KEY_PREFIX    = "-ROOT-";
-    private const string FOLDER_KEY_PREFIX  = "-folder-";
-    private const string FONT_KEY_PREFIX    = "-font-";
-    private const string TEXTURE_KEY_PREFIX = "-texture-";
+    private const string ROOT_KEY_PREFIX       = "-ROOT-";
+    private const string FOLDER_KEY_PREFIX     = "-folder-";
+    private const string FONT_KEY_PREFIX       = "-texture-";
+    private const string SPRITEFONT_KEY_PREFIX = "-spritefont-";
+    private const string TEXTURE_KEY_PREFIX    = "-texture-";
 
     private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
     {
@@ -376,7 +377,9 @@ partial class MainForm
                 node.Tag = _projectFile.AddResource(
                     new FolderPropertyGridItem
                     {
-                        Name = node.Text, VirtualPath = node.Parent.FullPath, TotalItems = 0
+                        Name        = node.Text,
+                        VirtualPath = node.Parent.FullPath,
+                        TotalItems  = 0
                     });
                 node.ContextMenuStrip = folderContextMenuStrip;
 
@@ -401,7 +404,7 @@ partial class MainForm
         treeView1.InvokeIfRequired(x => x.SelectedNode.BeginEdit());
     }
 
-    private void addFontToolStripMenuItem_Click(object sender, EventArgs e)
+    private void addSpriteFontToolStripMenuItem_Click(object sender, EventArgs e)
     {
         treeView1.InvokeIfRequired(
             x =>
@@ -419,7 +422,7 @@ partial class MainForm
                                IsBold   = false,
                                AA       = true,
                                IsItalic = false
-                           }) { Text = "Add a new font to the project..." })
+                           }) { Text = "Add a new sprite font to the project..." })
                 {
                     if (jsonEditorForm.ShowDialog() != DialogResult.OK)
                     {
@@ -440,12 +443,13 @@ partial class MainForm
                         jsonEditorForm.Save(fntFilePath);
 
                         TreeNode node = selectedNode.Nodes.Add(
-                            $"{FONT_KEY_PREFIX}{selectedNodeCount}",
+                            $"{SPRITEFONT_KEY_PREFIX}{selectedNodeCount}",
                             Path.GetFileName(fntFilePath), 4, 4);
                         node.Tag = _projectFile.AddResource(
                                                     new ItemPropertyGridItem
                                                     {
-                                                        Name = node.Text, VirtualPath = node.Parent.FullPath
+                                                        Name        = node.Text,
+                                                        VirtualPath = node.Parent.FullPath
                                                     })
                                                .Initialize();
                         node.ContextMenuStrip = itemContextMenuStrip;
@@ -483,20 +487,78 @@ partial class MainForm
                         return;
                     }
 
-                    string fntFilePath = Path.Combine(
+                    string filePath = Path.Combine(
                         _projectFile!.Location, selectedNode.FullPath,
                         Path.GetFileName(dialog.SafeFileName));
-                    if (File.Exists(fntFilePath))
+                    if (File.Exists(filePath))
                     {
                         SetStatusLabel(StatusType.Error, "The texture is not added to the project!");
                         return;
                     }
 
-                    File.Copy(dialog.FileName, fntFilePath);
+                    File.Copy(dialog.FileName, filePath);
 
                     TreeNode node = selectedNode.Nodes.Add(
                         $"{TEXTURE_KEY_PREFIX}{selectedNodeCount}",
-                        Path.GetFileName(fntFilePath), 4, 4);
+                        Path.GetFileName(filePath), 4, 4);
+                    node.Tag = _projectFile.AddResource(
+                                                new ItemPropertyGridItem
+                                                {
+                                                    Name        = node.Text,
+                                                    VirtualPath = node.Parent.FullPath
+                                                })
+                                           .Initialize();
+                    node.ContextMenuStrip = itemContextMenuStrip;
+
+                    if (node.Parent.Tag is FolderPropertyGridItem folderPropertyGridItem)
+                    {
+                        folderPropertyGridItem.TotalItems++;
+                    }
+
+                    selectedNode.Expand();
+                    treeView1.SelectedNode = node;
+                    node.BeginEdit();
+                }
+            });
+    }
+
+    private void addFontToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        treeView1.InvokeIfRequired(
+            x =>
+            {
+                TreeNode? selectedNode = x.SelectedNode ?? x.TopNode;
+                if (selectedNode == null) { return; }
+                int selectedNodeCount = selectedNode.GetNodeCount(false);
+
+                using (OpenFileDialog dialog = new OpenFileDialog
+                       {
+                           Title            = "Add a new font to the project...",
+                           Filter           = "Font files (*.ttf, *.otf)|*.ttf;*.otf|All Files|*.*",
+                           Multiselect      = false,
+                           InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Fonts)
+                       })
+                {
+                    if (dialog.ShowDialog() != DialogResult.OK)
+                    {
+                        SetStatusLabel(StatusType.Error, "The font is not added to the project!");
+                        return;
+                    }
+
+                    string filePath = Path.Combine(
+                        _projectFile!.Location, selectedNode.FullPath,
+                        Path.GetFileName(dialog.SafeFileName));
+                    if (File.Exists(filePath))
+                    {
+                        SetStatusLabel(StatusType.Error, "The font is not added to the project!");
+                        return;
+                    }
+
+                    File.Copy(dialog.FileName, filePath);
+
+                    TreeNode node = selectedNode.Nodes.Add(
+                        $"{FONT_KEY_PREFIX}{selectedNodeCount}",
+                        Path.GetFileName(filePath), 4, 4);
                     node.Tag = _projectFile.AddResource(
                                                 new ItemPropertyGridItem
                                                 {

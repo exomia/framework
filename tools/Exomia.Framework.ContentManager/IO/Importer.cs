@@ -19,14 +19,51 @@ abstract class Importer<T> : IImporter
         get { return typeof(T); }
     }
 
-    async Task<object?> IImporter.ImportAsync(Stream            stream,
-                                              ImporterContext   context,
-                                              CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public virtual object? CreateImporterSettings()
     {
-        return await ImportAsync(stream, context, cancellationToken);
+        return null;
     }
 
-    public abstract Task<T?> ImportAsync(Stream            stream,
-                                         ImporterContext   context,
-                                         CancellationToken cancellationToken);
+    async Task<object?> IImporter.ImportAsync(
+        ImporterContext   context,
+        CancellationToken cancellationToken)
+    {
+        return await ImportAsync(context, cancellationToken);
+    }
+
+    protected abstract Task<T?> ImportAsync(
+        ImporterContext   context,
+        CancellationToken cancellationToken);
+}
+
+abstract class StreamImporter<T> : IImporter
+    where T : class
+{
+    /// <inheritdoc />
+    public Type OutType
+    {
+        get { return typeof(T); }
+    }
+
+    /// <inheritdoc />
+    public virtual object? CreateImporterSettings()
+    {
+        return null;
+    }
+
+    async Task<object?> IImporter.ImportAsync(
+        ImporterContext   context,
+        CancellationToken cancellationToken)
+    {
+        using (FileStream fs = new FileStream(context.FileName, FileMode.Open, FileAccess.Read))
+        {
+            return await ImportAsync(fs, context, cancellationToken);
+        }
+    }
+
+    protected abstract Task<T?> ImportAsync(
+        Stream            fs,
+        ImporterContext   context,
+        CancellationToken cancellationToken);
 }

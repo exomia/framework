@@ -47,26 +47,16 @@ partial class MainForm
 
         async Task ForTreeNode(TreeNode node, ContentPropertyGridItem contentPropertyGridItem)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-
             if (node.Tag is ItemPropertyGridItem gridItem)
             {
-                void SkipWithMessage(string msg)
-                {
-                    WriteLine(
-                        $"skipping item {{0}}! Reason: {msg}",
-                        Path.Combine(gridItem.VirtualPath!, gridItem.Name!));
-                    Interlocked.Increment(ref skipped);
-                }
-
                 foreach ((Func<ItemPropertyGridItem, bool> check, string msg) in s_checks)
                 {
                     if (check(gridItem))
                     {
-                        SkipWithMessage(msg);
+                        WriteLine(
+                            $"skipping item {{0}}! Reason: {msg}",
+                            Path.Combine(gridItem.VirtualPath!, gridItem.Name!));
+                        Interlocked.Increment(ref skipped);
                         return;
                     }
                 }
@@ -76,16 +66,13 @@ partial class MainForm
                     Path.Combine(gridItem.VirtualPath!, gridItem.Name!));
 
                 ImporterContext importerContext = new ImporterContext(
-                    gridItem.Name!, gridItem.VirtualPath!);
+                    Path.Combine(_projectFile!.Location, gridItem.VirtualPath!, gridItem.Name!),
+                    gridItem.Name!,
+                    gridItem.VirtualPath!,
+                    gridItem.ImporterSettings);
 
-                object? obj;
-                using (FileStream fs = new FileStream(
-                           Path.Combine(_projectFile!.Location, gridItem.VirtualPath!, gridItem.Name!),
-                           FileMode.Open, FileAccess.Read))
-                {
-                    obj = await gridItem.Importer!.ImportAsync(fs, importerContext, cancellationToken);
-                }
-
+                object? obj = await gridItem.Importer!.ImportAsync(importerContext, cancellationToken);
+                
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return;

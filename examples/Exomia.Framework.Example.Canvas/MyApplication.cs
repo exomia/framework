@@ -95,8 +95,8 @@ sealed unsafe class MyApplication : Application
         _texture3    = _contentManager.Load<Texture>("2.e1");
         _texture4    = _contentManager.Load<Texture>("3.e1");
         _texture5    = _contentManager.Load<Texture>("4.e1");
-        _spriteFont1 = _contentManager.Load<SpriteFont>(Fonts.ARIAL_24_PX, true);
-        _spriteFont2 = _contentManager.Load<SpriteFont>(Fonts.ARIAL_12_PX, true);
+        _spriteFont1 = _contentManager.Load<SpriteFont>(SpriteFonts.ARIAL_24_PX, true);
+        _spriteFont2 = _contentManager.Load<SpriteFont>(SpriteFonts.ARIAL_12_PX, true);
     }
 
     /// <inheritdoc />
@@ -110,8 +110,8 @@ sealed unsafe class MyApplication : Application
         _contentManager.Unload<Texture>("2.e1");
         _contentManager.Unload<Texture>("3.e1");
         _contentManager.Unload<Texture>("4.e1");
-        _contentManager.Unload<SpriteFont>(Fonts.ARIAL_24_PX);
-        _contentManager.Unload<SpriteFont>(Fonts.ARIAL_12_PX);
+        _contentManager.Unload<SpriteFont>(SpriteFonts.ARIAL_24_PX);
+        _contentManager.Unload<SpriteFont>(SpriteFonts.ARIAL_12_PX);
     }
 
     protected override bool BeginFrame()

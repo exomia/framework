@@ -18,7 +18,7 @@ using Exomia.Framework.Core.Mathematics;
 namespace Exomia.Framework.ContentManager.IO.Importer;
 
 [Importer("BMFont Importer", ".fnt")]
-sealed class BMFontImporter : Importer<FontFile>
+sealed class BMFontImporter : StreamImporter<FontFile>
 {
     private const string TEMP_FILE_DIR = "temp";
 
@@ -126,10 +126,9 @@ chars={fontDescription.Chars}
 # imported icon images";
     }
 
-    /// <inheritdoc />
-    public override async Task<FontFile?> ImportAsync(Stream            stream,
-                                                      ImporterContext   context,
-                                                      CancellationToken cancellationToken)
+    protected override async Task<FontFile?> ImportAsync(Stream            stream,
+                                                         ImporterContext   context,
+                                                         CancellationToken cancellationToken)
     {
         return await Task.Run(
             () =>

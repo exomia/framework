@@ -14,9 +14,9 @@ using System.Runtime.CompilerServices;
 namespace Exomia.Framework.ContentManager.IO.Importer;
 
 [Importer("Texture Importer", ".png", ".jpg", ".jpeg")]
-sealed class TextureImporter : Importer<Texture.Texture>
+sealed class TextureImporter : StreamImporter<Texture.Texture>
 {
-    public override async Task<Texture.Texture?> ImportAsync(Stream stream, ImporterContext context, CancellationToken cancellationToken)
+    protected override async Task<Texture.Texture?> ImportAsync(Stream stream, ImporterContext context, CancellationToken cancellationToken)
     {
         return await Task.Run(
             () =>

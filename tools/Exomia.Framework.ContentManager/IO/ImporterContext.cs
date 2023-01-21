@@ -14,20 +14,23 @@ sealed class ImporterContext
 {
     private readonly List<(string, object?[])> _messages;
 
-    public string ItemName { get; }
-
-    public string VirtualPath { get; }
+    public string  FileName         { get; }
+    public string  ItemName         { get; }
+    public string  VirtualPath      { get; }
+    public object? ImporterSettings { get; }
 
     internal IReadOnlyList<(string text, object?[] args)> Messages
     {
         get { return _messages; }
     }
 
-    public ImporterContext(string itemName, string virtualPath)
+    public ImporterContext(string fileName, string itemName, string virtualPath, object? importerSettings)
     {
-        ItemName    = itemName;
-        VirtualPath = virtualPath;
-        _messages   = new List<(string, object?[])>();
+        FileName         = fileName;
+        ItemName         = itemName;
+        VirtualPath      = virtualPath;
+        ImporterSettings = importerSettings;
+        _messages        = new List<(string, object?[])>();
     }
 
     public void AddMessage(string text, params object?[] args)
