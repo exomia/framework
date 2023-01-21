@@ -26,7 +26,7 @@ sealed class BMFontImporter : Importer<FontFile>
 
     public BMFontImporter()
     {
-        if (!File.Exists(_bmFontExeLocation = Path.Combine("tools", "bmfont64.exe")))
+        if (!File.Exists(_bmFontExeLocation = Path.Combine("third-party", "tools", "bmfont", "bmfont64.exe")))
         {
             throw new FileNotFoundException("The 'bmfont64.exe' is missing!", _bmFontExeLocation);
         }

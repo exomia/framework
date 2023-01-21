@@ -44,7 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="tools\bmfont64.exe">
+        <None Update="third-party\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
