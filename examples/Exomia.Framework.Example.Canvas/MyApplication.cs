@@ -200,9 +200,8 @@ sealed unsafe class MyApplication : Application
             _canvas.Render(_texture3, new RectangleF(750, 450, 100, 100), null, VkColors.White, time.TotalTimeS, new Vector2(750, 450), 1.0f, TextureEffects.None, 0f);
             _canvas.Render(_texture4, new RectangleF(850, 550, 100, 100), null, VkColors.White, time.TotalTimeS, new Vector2(850, 550), 1.0f, TextureEffects.None, 0f);
             _canvas.Render(_texture5, new RectangleF(950, 650, 100, 100), null, VkColors.White, time.TotalTimeS, new Vector2(950, 650), 1.0f, TextureEffects.None, 0f);
-
-
-            _canvas.RenderText(_spriteFont1, "test face ist doof", new Vector2(10, 10), VkColors.Black, 0f, 0f);
+            
+            _canvas.RenderText(_spriteFont1, "test test test\n              test", new Vector2(10, 10), VkColors.Black, 0f, 0f);
 
             _canvas.RenderText(_spriteFont2, _lastFrameCount.ToString(), new Vector2(10, 40), VkColors.Black, 0f, 0f);
             _canvas.EndFrame(commandBuffer);
