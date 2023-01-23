@@ -37,6 +37,12 @@ sealed class E1ContentReaderFactory : IContentReaderFactory
             return true;
         }
 
+        if (type == typeof(MsdfFont))
+        {
+            reader = new E1MsdfFontContentReader();
+            return true;
+        }
+
         reader = null;
         return false;
     }

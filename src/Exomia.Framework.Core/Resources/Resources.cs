@@ -10,8 +10,8 @@
 
 namespace Exomia.Framework.Core.Resources;
 
-/// <summary> font paths </summary>
-public static class Fonts
+/// <summary> msdf font paths </summary>
+public static class MsdfFonts
 {
     /// <summary> The arial font resource path. </summary>
     public const string ARIAL = "Resources.fonts.arial.arial.e1";

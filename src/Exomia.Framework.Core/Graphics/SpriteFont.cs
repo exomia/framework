@@ -43,6 +43,13 @@ public sealed partial class SpriteFont : IDisposable
         get { return _lineHeight; }
     }
 
+    /// <summary> Gets the glyphs. </summary>
+    /// <value> The glyphs. </value>
+    public Dictionary<int, Glyph> Glyphs
+    {
+        get { return _glyphs; }
+    }
+    
     /// <summary> Gets the kernings. </summary>
     /// <value> The kernings. </value>
     /// <remarks>
@@ -53,15 +60,8 @@ public sealed partial class SpriteFont : IDisposable
     {
         get { return _kernings; }
     }
-
-    /// <summary> Gets the glyphs. </summary>
-    /// <value> The glyphs. </value>
-    public Dictionary<int, Glyph> Glyphs
-    {
-        get { return _glyphs; }
-    }
-
-
+    
+    
     /// <summary> Gets or sets the texture. </summary>
     /// <value> The texture. </value>
     public Texture Texture

@@ -145,25 +145,23 @@ public static class E1Protocol
         ///         - 8 bytes (double): the advance<br />
         ///         - 1 byte (byte): != 0 if plane bounds are set<br />
         ///           -> plane bounds<br />
+        ///             - 8 bytes (double): the plane left<br />
         ///             - 8 bytes (double): the plane top<br />
         ///             - 8 bytes (double): the plane right<br />
         ///             - 8 bytes (double): the plane bottom<br />
-        ///             - 8 bytes (double): the plane left<br />
         ///         - 1 byte (byte): != 0 if atlas bounds are set<br />
         ///           -> atlas bounds<br />
+        ///             - 8 bytes (double): the atlas left<br />
         ///             - 8 bytes (double): the atlas top<br />
         ///             - 8 bytes (double): the atlas right<br />
         ///             - 8 bytes (double): the atlas bottom<br />
-        ///             - 8 bytes (double): the atlas left<br />
         ///     - 4 bytes (int): the kerning count<br />
         ///     - "kerning count" Kerning: the kerning data<br />
         ///       -> Kerning<br />
         ///         - 4 bytes (int): the unicode1<br />
         ///         - 4 bytes (int): the unicode2<br />
         ///         - 8 bytes (double): the advance<br />
-        ///     - 4 bytes (int): the texture width<br />
-        ///     - 4 bytes (int): the texture height<br />
-        ///     - "width * height" Pixel: the texture pixel data<br />
+        ///     - "atlas width * atlas height" Pixel: the texture pixel data<br />
         ///       -> Pixel<br />
         ///         - 1 byte (byte): red value<br />
         ///         - 1 byte (byte): green value<br />

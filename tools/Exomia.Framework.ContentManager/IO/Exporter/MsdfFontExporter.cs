@@ -40,17 +40,16 @@ sealed class MsdfFontExporter : Exporter<FontFile>
             bw.Write(fontFile.name);
             
             bw.Write(fontFile.atlas.type);
+            bw.Write(fontFile.atlas.distanceRange);
+            bw.Write(fontFile.atlas.size);
             bw.Write(fontFile.atlas.width);
             bw.Write(fontFile.atlas.height);
-            bw.Write(fontFile.atlas.size);
             bw.Write(fontFile.atlas.yOrigin);
-            bw.Write(fontFile.atlas.distanceRange);
             
-            bw.Write(fontFile.metrics.ascender);
-            bw.Write(fontFile.metrics.descender);
             bw.Write(fontFile.metrics.emSize);
             bw.Write(fontFile.metrics.lineHeight);
-            bw.Write(fontFile.metrics.emSize);
+            bw.Write(fontFile.metrics.ascender);
+            bw.Write(fontFile.metrics.descender);
             bw.Write(fontFile.metrics.underlineY);
             bw.Write(fontFile.metrics.underlineThickness);
 
@@ -63,18 +62,18 @@ sealed class MsdfFontExporter : Exporter<FontFile>
                 bw.Write(g.planeBounds != null);
                 if (g.planeBounds != null)
                 {
+                    bw.Write(g.planeBounds.left);
                     bw.Write(g.planeBounds.top);
                     bw.Write(g.planeBounds.right);
                     bw.Write(g.planeBounds.bottom);
-                    bw.Write(g.planeBounds.left);
                 } 
                 bw.Write(g.atlasBounds != null);
                 if (g.atlasBounds != null)
                 {
+                    bw.Write(g.atlasBounds.left);
                     bw.Write(g.atlasBounds.top);
                     bw.Write(g.atlasBounds.right);
                     bw.Write(g.atlasBounds.bottom);
-                    bw.Write(g.atlasBounds.left);
                 }
             }
             
@@ -90,9 +89,6 @@ sealed class MsdfFontExporter : Exporter<FontFile>
             using (FileStream fs = new FileStream(
                        fontFile.ImageDataFileName ?? throw new NullReferenceException(), FileMode.Open, FileAccess.Read))
             {
-                bw.Write(fontFile.atlas.width);
-                bw.Write(fontFile.atlas.height);
-                
                 byte[] buffer = new byte[2048];
                 int    read   = 0;
                 while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)

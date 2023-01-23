@@ -44,6 +44,14 @@ public static partial class Math2
     {
         return Math.Abs(a) < ZERO_TOLERANCE;
     }
+    
+    /// <summary> Determines whether the specified value is close to zero (0.0). </summary>
+    /// <param name="a"> The floating value. </param>
+    /// <returns> true if the specified value is close to zero (0.0f); otherwise, false. </returns>
+    public static bool IsZero(double a)
+    {
+        return Math.Abs(a) < ZERO_TOLERANCE;
+    }
 
     /// <summary> Determines whether the specified value is not close to zero (0.0f). </summary>
     /// <param name="a"> The floating value. </param>
@@ -101,6 +109,49 @@ public static partial class Math2
         // Choose of maxUlp = 4
         // according to http://code.google.com/p/googletest/source/browse/trunk/include/gtest/internal/gtest-internal.h
         const int maxUlp = 4;
+        return (ulp <= maxUlp);
+    }
+    
+    /// <summary>
+    ///     Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike
+    ///     <see cref="WithinEpsilon" /> method). See Remarks.
+    ///     See remarks.
+    /// </summary>
+    /// <param name="a"> The left value to compare. </param>
+    /// <param name="b"> The right value to compare. </param>
+    /// <returns> true if a almost equal to b, false otherwise. </returns>
+    /// <remarks>
+    ///     The code is using the technique described by Bruce Dawson in
+    ///     <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
+    ///         Comparing Floating point numbers 2012 edition
+    ///     </a>
+    ///     .
+    /// </remarks>
+    public static unsafe bool NearEqual(double a, double b)
+    {
+        // Check if the numbers are really close -- needed
+        // when comparing numbers near zero.
+        if (IsZero(a - b))
+        {
+            return true;
+        }
+
+        // Original from Bruce Dawson: http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+        long aInt = *(long*)&a;
+        long bInt = *(long*)&b;
+
+        // Different signs means they do not match.
+        if ((aInt < 0) != (bInt < 0))
+        {
+            return false;
+        }
+
+        // Find the difference in ULPs.
+        long ulp = Math.Abs(aInt - bInt);
+
+        // Choose of maxUlp = 4
+        // according to http://code.google.com/p/googletest/source/browse/trunk/include/gtest/internal/gtest-internal.h
+        const long maxUlp = 4;
         return (ulp <= maxUlp);
     }
 
