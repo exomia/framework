@@ -49,7 +49,7 @@ public sealed partial class SpriteFont : IDisposable
     {
         get { return _glyphs; }
     }
-    
+
     /// <summary> Gets the kernings. </summary>
     /// <value> The kernings. </value>
     /// <remarks>
@@ -60,8 +60,8 @@ public sealed partial class SpriteFont : IDisposable
     {
         get { return _kernings; }
     }
-    
-    
+
+
     /// <summary> Gets or sets the texture. </summary>
     /// <value> The texture. </value>
     public Texture Texture
@@ -76,8 +76,7 @@ public sealed partial class SpriteFont : IDisposable
         get { return _defaultCharacter; }
         set
         {
-            _defaultCharacter = value;
-            if (!_glyphs.TryGetValue(_defaultCharacter, out _defaultGlyph))
+            if (!_glyphs.TryGetValue(_defaultCharacter = value, out _defaultGlyph))
             {
                 throw new ArgumentException("Error setting default character! No glyph found!", nameof(DefaultCharacter));
             }
@@ -113,14 +112,10 @@ public sealed partial class SpriteFont : IDisposable
         _glyphs     = glyphs;
         _kernings   = kernings;
 
-        _defaultCharacter = defaultCharacter;
-
-        if (!_glyphs.TryGetValue(_defaultCharacter, out _defaultGlyph))
+        if (!_glyphs.TryGetValue(_defaultCharacter = defaultCharacter, out _defaultGlyph)
+         || !_glyphs.TryGetValue(_defaultCharacter = '?',              out _defaultGlyph))
         {
-            if (!_glyphs.TryGetValue(_defaultCharacter = '?', out _defaultGlyph))
-            {
-                throw new ArgumentException("Error setting default character! No glyph found!", nameof(defaultCharacter));
-            }
+            throw new ArgumentException("Error setting default character! No glyph found!", nameof(defaultCharacter));
         }
     }
 

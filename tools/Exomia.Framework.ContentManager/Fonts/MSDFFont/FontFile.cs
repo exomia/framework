@@ -12,10 +12,12 @@ namespace Exomia.Framework.ContentManager.Fonts.MSDFFont;
 
 public class FontFile
 {
-    public Atlas         atlas             { get; set; }
-    public string        name              { get; set; }
-    public Metrics       metrics           { get; set; }
-    public List<Glyph>   glyphs            { get; set; }
-    public List<Kerning> kerning           { get; set; }
-    public string        ImageDataFileName { get; set; }
+    public   Atlas         atlas                   { get; set; }
+    public   string        name                    { get; set; }
+    public   Metrics       metrics                 { get; set; }
+    public   List<Glyph>   glyphs                  { get; set; }
+    public   List<Kerning> kerning                 { get; set; }
+    internal string        ImageDataFileName       { get; set; }
+    internal bool          IgnoreUnknownCharacters { get; set; }
+    internal int           DefaultGlyph            { get; set; }
 }

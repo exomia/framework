@@ -52,6 +52,9 @@ sealed class MsdfFontExporter : Exporter<FontFile>
             bw.Write(fontFile.metrics.descender);
             bw.Write(fontFile.metrics.underlineY);
             bw.Write(fontFile.metrics.underlineThickness);
+            
+            bw.Write(fontFile.IgnoreUnknownCharacters);
+            bw.Write(fontFile.DefaultGlyph);
 
             bw.Write(fontFile.glyphs.Count);
             for (int i = 0; i < fontFile.glyphs.Count; i++)

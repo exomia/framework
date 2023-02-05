@@ -82,7 +82,7 @@ public static class E1Protocol
         ///     - 4 bytes (int): the font size<br />
         ///     - 4 bytes (int): the font line height<br />
         ///     - 4 bytes (int): the font default character <br />
-        ///     - 1 bytes (boolean): != 0 if font has to ignore unknown characters<br />
+        ///     - 1 bytes (boolean): != 0 if unknown characters should be ignored<br />
         ///     - 1 bytes (boolean): != 0 if font is bold<br />
         ///     - 1 bytes (boolean): != 0 if font is italic<br />
         ///     - 4 bytes (int): the glyph count<br />
@@ -128,16 +128,18 @@ public static class E1Protocol
         ///     - N bytes (string): the face string with prefixed length encoded as an integer 7 bits at a time<br />
         ///     - N bytes (string): the atlas type string with prefixed length encoded as an integer 7 bits at a time<br />
         ///     - 4 bytes (int): the atlas distance range<br />
-        ///     - 4 bytes (double): the atlas size<br />
+        ///     - 8 bytes (double): the atlas size<br />
         ///     - 4 bytes (int): the atlas width<br />
         ///     - 4 bytes (int): the atlas height<br />
         ///     - N bytes (string): the atlas y origin string with prefixed length encoded as an integer 7 bits at a time<br />
         ///     - 4 bytes (int): the metrics em size<br />
-        ///     - 4 bytes (double): the metrics line height<br />
-        ///     - 4 bytes (double): the metrics ascender<br />
-        ///     - 4 bytes (double): the metrics descender<br />
-        ///     - 4 bytes (double): the metrics underline y<br />
-        ///     - 4 bytes (double): the metrics underline thickness<br />
+        ///     - 8 bytes (double): the metrics line height<br />
+        ///     - 8 bytes (double): the metrics ascender<br />
+        ///     - 8 bytes (double): the metrics descender<br />
+        ///     - 8 bytes (double): the metrics underline y<br />
+        ///     - 8 bytes (double): the metrics underline thickness<br />
+        ///     - 1 bytes (boolean): != 0 if unknown characters should be ignored<br />
+        ///     - 4 bytes (int): the default unicode (glyph)<br />
         ///     - 4 bytes (int): the glyph count<br />
         ///     - "glyph count" Glyph: the glyph data<br />
         ///       -> Glyph<br />

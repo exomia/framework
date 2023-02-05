@@ -11,8 +11,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using Exomia.Framework.ContentManager.Extensions;
 using Exomia.Framework.ContentManager.Fonts.MSDFFont;
-using Exomia.Framework.Core.Extensions;
 
 namespace Exomia.Framework.ContentManager.IO.Importer;
 
@@ -39,6 +39,12 @@ sealed class MsdfFontImporter : Importer<FontFile>
 
     protected override async Task<FontFile?> ImportAsync(ImporterContext context, CancellationToken cancellationToken)
     {
+        if (context.ImporterSettings is not Settings settings)
+        {
+            context.AddMessage("Invalid importer settings!");
+            return null;
+        }
+
         return await Task.Run(
             () =>
             {
@@ -46,20 +52,19 @@ sealed class MsdfFontImporter : Importer<FontFile>
                     Path.Combine(TEMP_FILE_DIR, Path.GetRandomFileName());
 
                 StringBuilder sb = new StringBuilder($"-font \"{context.FileName}\" -fontname \"{context.ItemName}\" -imageout \"{tempFileName}.bin\" -json \"{tempFileName}.json\" -format bin");
-                if (context.ImporterSettings is Settings settings)
-                {
-                    // ReSharper disable HeapView.BoxingAllocation
-                    sb.AppendFormatIfNotNull(" -charset \"{0}\"",  settings.CharSet);
-                    sb.AppendFormatIfNotNull(" -glyphset \"{0}\"", settings.Glyphset);
-                    sb.AppendFormatIfNotNull(" -fontscale {0}",    settings.FontScale);
-                    sb.AppendFormat(" -type  {0:G}", settings.AtlasType);
-                    sb.AppendFormat(" -{0:G}",       settings.AtlasDimension);
-                    sb.AppendFormatIfNotNull(" -size  {0}",    settings.Size);
-                    sb.AppendFormatIfNotNull(" -minsize  {0}", settings.Minsize);
-                    sb.AppendFormatIfNotNull(" -emrange {0}",  settings.EmRange);
-                    sb.AppendFormat(" -pxrange {0}", settings.PxRange);
-                    // ReSharper enable HeapView.BoxingAllocation
-                }
+
+                // ReSharper disable HeapView.BoxingAllocation
+                sb.AppendFormatIfNotNull(" -charset \"{0}\"",  settings.CharSet);
+                sb.AppendFormatIfNotNull(" -glyphset \"{0}\"", settings.Glyphset);
+                sb.AppendFormatIfNotNull(" -fontscale {0}",    settings.FontScale);
+                sb.AppendFormat(" -type  {0:G}", settings.AtlasType);
+                sb.AppendFormat(" -{0:G}",       settings.AtlasDimension);
+                sb.AppendFormatIfNotNull(" -size  {0}",    settings.Size);
+                sb.AppendFormatIfNotNull(" -minsize  {0}", settings.Minsize);
+                sb.AppendFormatIfNotNull(" -emrange {0}",  settings.EmRange);
+                sb.AppendFormat(" -pxrange {0}", settings.PxRange);
+                // ReSharper enable HeapView.BoxingAllocation
+
 
                 using (Process p = Process.Start(
                            new ProcessStartInfo(_msdfAtlasGenExeLocation, sb.ToString())
@@ -96,11 +101,13 @@ sealed class MsdfFontImporter : Importer<FontFile>
                                 "The font file can't be deserialized!", $"{tempFileName}.json");
                             return null;
                         }
-
-                        fontFile.ImageDataFileName = $"{tempFileName}.bin";
+                        
+                        fontFile.DefaultGlyph            = settings.DefaultGlyph;
+                        fontFile.IgnoreUnknownCharacters = settings.IgnoreUnknownCharacters;
+                        fontFile.ImageDataFileName       = $"{tempFileName}.bin";
                         return fontFile;
                     }
-                    
+
                     context.AddMessage("Msdf Font Importer exited with code {0}!", p.ExitCode);
                     return null;
                 }
@@ -112,6 +119,14 @@ sealed class MsdfFontImporter : Importer<FontFile>
         [Category("Input")]
         [Description("sets the character set. The ASCII charset will be used if not specified.")]
         public string? CharSet { get; set; } = null;
+
+        [Category("Misc")]
+        [Description("true to ignore unknown characters. The default is false.")]
+        public bool IgnoreUnknownCharacters { get; set; } = false;
+
+        [Category("Misc")]
+        [Description("The default glyph to use for unknown characters. The default is '?'.")]
+        public int DefaultGlyph { get; set; } = '?';
 
         [Category("Input")]
         [Description("sets the set of input glyphs using their indices within the font file.")]

@@ -10,7 +10,7 @@
 
     <!-- vulkan definitions -->
     <PropertyGroup>
-        <VulkanVersion>1.3.237</VulkanVersion>
+        <VulkanVersion>1.3.240</VulkanVersion>
     </PropertyGroup>
 
     <PropertyGroup>

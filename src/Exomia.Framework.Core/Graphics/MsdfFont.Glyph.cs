@@ -15,7 +15,7 @@ namespace Exomia.Framework.Core.Graphics;
 /// <content>
 /// The msdf font class
 /// </content>
-public partial class MsdfFont
+public sealed partial class MsdfFont
 {
     /// <summary>
     /// The glyph class
@@ -25,16 +25,27 @@ public partial class MsdfFont
         /// <summary>
         /// Gets or sets the value of the advance
         /// </summary>
-        public double Advance { get; set; }
+#if NET7_0_OR_GREATER
+        public required double Advance { get; init; }
+#else
+        public double Advance { get; init; }
+#endif
 
         /// <summary>
         /// Gets or sets the value of the plane bounds
         /// </summary>
-        public RectangleD PlaneBounds { get; set; }
-
+#if NET7_0_OR_GREATER
+        public required RectangleD PlaneBounds { get; init; }
+#else
+        public RectangleD PlaneBounds { get; init; }
+#endif
         /// <summary>
         /// Gets or sets the value of the atlas bounds
         /// </summary>
-        public RectangleD AtlasBounds { get; set; }
+#if NET7_0_OR_GREATER
+        public required RectangleD AtlasBounds { get; init; }
+#else
+        public RectangleD AtlasBounds { get; init; }
+#endif
     }
 }

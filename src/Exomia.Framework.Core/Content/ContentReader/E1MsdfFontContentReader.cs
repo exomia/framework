@@ -88,6 +88,9 @@ sealed unsafe class E1MsdfFontContentReader : IContentReader
             UnderlineThickness = br.ReadDouble()
         };
 
+        bool ignoreUnknownCharacters = br.ReadBoolean();
+        int  defaultUnicode          = br.ReadInt32();
+
         Dictionary<int, MsdfFont.Glyph> glyphs     = new();
         int                             glyphCount = br.ReadInt32();
         for (int i = 0; i < glyphCount; i++)
@@ -115,6 +118,9 @@ sealed unsafe class E1MsdfFontContentReader : IContentReader
 
         VkContext* vkContext = contentManager.ServiceProvider.GetRequiredService<IVkContextAccessor>().Context;
         Texture    texture   = Texture.Create(vkContext, (uint)atlas.Width, (uint)atlas.Height, data);
-        return new MsdfFont(name, atlas, metrics, glyphs, kernings, texture);
+        return new MsdfFont(name, atlas, metrics, glyphs, kernings, texture, defaultUnicode)
+        {
+            IgnoreUnknownCharacters = ignoreUnknownCharacters
+        };
     }
 }
